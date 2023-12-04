@@ -4,20 +4,15 @@
 
 const {assert} = chai;
 
+import * as Root from '../../../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as ObjectUI from '../../../../../../../front_end/ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
-import * as Bindings from '../../../../../../../front_end/models/bindings/bindings.js';
-import * as Root from '../../../../../../../front_end/core/root/root.js';
 
-import {describeWithRealConnection, getExecutionContext} from '../../../../helpers/RealConnection.js';
-import {someMutations} from '../../../../helpers/MutationHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
-import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../../helpers/MockConnection.js';
-import {type Chrome} from '../../../../../../../extension-api/ExtensionAPI.js';
-import {TestPlugin} from '../../../../helpers/LanguagePluginHelpers.js';
-import * as LinearMemoryInspector from '../../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
+import {someMutations} from '../../../../helpers/MutationHelpers.js';
+import {describeWithRealConnection, getExecutionContext} from '../../../../helpers/RealConnection.js';
 
 describeWithRealConnection('ObjectPropertiesSection', () => {
   async function setupTreeOutline(
@@ -218,48 +213,30 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
   });
 });
 
-describeWithMockConnection('ObjectPropertiesSection', () => {
-  it('appends a memory icon for allowed remote object types', () => {
-    const subtypesForIcon = LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES;
-    for (const subtype of subtypesForIcon) {
-      const remoteObj = {
-        type: 'object',
-        subtype: subtype,
-      } as SDK.RemoteObject.RemoteObject;
+describeWithEnvironment('ObjectPropertiesSection', () => {
+  describe('ObjectPropertiesSection', () => {
+    describe('appendMemoryIcon', () => {
+      it('appends a memory icon for inspectable object types', () => {
+        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+        object.isLinearMemoryInspectable.returns(true);
 
-      const div = document.createElement('div');
-      assert.isFalse(div.hasChildNodes());
-      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, remoteObj);
-      assert.isTrue(div.hasChildNodes());
-      const icon = div.getElementsByClassName('devtools-icon');
-      assert.isNotNull(icon);
-    }
-  });
+        const div = document.createElement('div');
+        assert.isFalse(div.hasChildNodes());
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
+        assert.isTrue(div.hasChildNodes());
+        const icon = div.getElementsByClassName('devtools-icon');
+        assert.isNotNull(icon);
+      });
 
-  it('appends a memory icon for DWARF inspectable objects', () => {
-    const target = createTarget();
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNullOrUndefined(debuggerModel);
-    const callFrame = {
-      debuggerModel,
-    } as SDK.DebuggerModel.CallFrame;
-    {
-      const extensionObject = {
-        type: 'string' as Chrome.DevTools.RemoteObjectType,
-        hasChildren: false,
-        description: 'hello',
-        linearMemoryAddress: 2,
-      };
-      const plugin = new TestPlugin('LinearMemoryInspectorTestPlugin');
-      const remoteObject =
-          new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
+      it('doesn\'t append a memory icon for non-inspectable object types', () => {
+        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+        object.isLinearMemoryInspectable.returns(false);
 
-      const div = document.createElement('div');
-      assert.isFalse(div.hasChildNodes());
-      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, remoteObject);
-      assert.isTrue(div.hasChildNodes());
-      const icon = div.getElementsByClassName('devtools-icon');
-      assert.isNotNull(icon);
-    }
+        const div = document.createElement('div');
+        assert.isFalse(div.hasChildNodes());
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
+        assert.isFalse(div.hasChildNodes());
+      });
+    });
   });
 });

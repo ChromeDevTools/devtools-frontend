@@ -404,11 +404,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static appendMemoryIcon(element: Element, obj: SDK.RemoteObject.RemoteObject, expression?: string): void {
-    const isOfMemoryType =
-        (obj.type === 'object' && obj.subtype &&
-         LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype));
-
-    if (!isOfMemoryType && !LinearMemoryInspector.LinearMemoryInspectorController.isDWARFMemoryObject(obj)) {
+    if (!obj.isLinearMemoryInspectable()) {
       return;
     }
 

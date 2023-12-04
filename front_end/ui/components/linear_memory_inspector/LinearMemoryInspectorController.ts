@@ -31,7 +31,6 @@ const str_ =
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
 const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
-export const ACCEPTED_MEMORY_TYPES = ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'];
 
 let controllerInstance: LinearMemoryInspectorController;
 
@@ -63,8 +62,6 @@ export class RemoteArrayBufferWrapper implements LazyUint8Array {
 }
 
 async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<SDK.RemoteObject.RemoteArrayBuffer> {
-  console.assert(obj.type === 'object');
-  console.assert(obj.subtype !== undefined && ACCEPTED_MEMORY_TYPES.includes(obj.subtype));
   const response = await obj.runtimeModel().agent.invoke_callFunctionOn({
     objectId: obj.objectId,
     functionDeclaration:
@@ -86,15 +83,6 @@ export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean
   if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
     return obj.linearMemoryAddress !== undefined;
   }
-  return false;
-}
-
-export function isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
-  const isWasmOrBuffer = obj.type === 'object' && obj.subtype && ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
-  if (isWasmOrBuffer || isDWARFMemoryObject(obj)) {
-    return true;
-  }
-
   return false;
 }
 

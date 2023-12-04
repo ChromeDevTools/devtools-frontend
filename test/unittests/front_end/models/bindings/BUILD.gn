@@ -9,6 +9,7 @@ ts_library("bindings") {
   sources = [
     "CompilerScriptMapping_test.ts",
     "ContentProviderBasedProject_test.ts",
+    "DebuggerLanguagePlugins_test.ts",
     "DebuggerWorkspaceBinding_test.ts",
     "DefaultScriptMapping_test.ts",
     "FileUtils_test.ts",

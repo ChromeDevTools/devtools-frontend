@@ -305,6 +305,14 @@ export class RemoteObject {
     return false;
   }
 
+  /**
+   * Checks whether this object can be inspected with the Linear Memory Inspector.
+   * @returns `true` if this object can be inspected with the Linear Memory Inspector.
+   */
+  isLinearMemoryInspectable(): boolean {
+    return false;
+  }
+
   webIdl?: RemoteObjectWebIdlTypeMetadata;
 }
 
@@ -419,7 +427,8 @@ export class RemoteObjectImpl extends RemoteObject {
     return this.#classNameInternal;
   }
 
-  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false):
+      Promise<GetPropertiesResult> {
     return this.doGetProperties(true, false, nonIndexedPropertiesOnly, generatePreview);
   }
 
@@ -504,7 +513,8 @@ export class RemoteObjectImpl extends RemoteObject {
     return {properties: result, internalProperties: internalPropertiesResult};
   }
 
-  override async setPropertyValue(name: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {
+  override async setPropertyValue(name: string|Protocol.Runtime.CallArgument, value: string):
+      Promise<string|undefined> {
     if (!this.#objectIdInternal) {
       return 'Can’t set a property of non-object.';
     }
@@ -630,6 +640,11 @@ export class RemoteObjectImpl extends RemoteObject {
   override isNode(): boolean {
     return Boolean(this.#objectIdInternal) && this.type === 'object' && this.subtype === 'node';
   }
+
+  override isLinearMemoryInspectable(): boolean {
+    return this.type === 'object' && this.subtype !== undefined &&
+        ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'].includes(this.subtype);
+  }
 }
 
 export class ScopeRemoteObject extends RemoteObjectImpl {
@@ -673,8 +688,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
     return allProperties;
   }
 
-  override async doSetObjectPropertyValue(result: Protocol.Runtime.RemoteObject, argumentName: Protocol.Runtime.CallArgument):
-      Promise<string|undefined> {
+  override async doSetObjectPropertyValue(
+      result: Protocol.Runtime.RemoteObject, argumentName: Protocol.Runtime.CallArgument): Promise<string|undefined> {
     const name = (argumentName.value as string);
     const error = await this.debuggerModel().setVariableValue(
         this.#scopeRef.number, name, RemoteObject.toCallArgument(result),

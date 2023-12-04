@@ -306,8 +306,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements
   appendApplicableItems(
       event: Event, contextMenu: UI.ContextMenu.ContextMenu,
       target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
-    if (target.property && target.property.value &&
-        LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(target.property.value)) {
+    if (target.property && target.property.value && target.property.value.isLinearMemoryInspectable()) {
       const expression = target.path();
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.revealInMemoryInspectorPanel),

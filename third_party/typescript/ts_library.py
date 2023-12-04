@@ -43,6 +43,8 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'request_idle_callback.d.ts'),
     # Types for W3C FileSystem API
     path.join(NODE_MODULES_DIRECTORY, '@types', 'filesystem', 'index.d.ts'),
+    # Types for WebGPU API
+    path.join(NODE_MODULES_DIRECTORY, '@webgpu/types', 'dist', 'index.d.ts'),
 ]
 
 

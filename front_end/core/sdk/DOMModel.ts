@@ -974,6 +974,9 @@ export class DOMNode {
       const classList = classes.trim().split(/\s+/g);
       return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => CSS.escape(cls)).join('.');
     }
+    if (this.pseudoIdentifier()) {
+      return `${lowerCaseName}(${this.pseudoIdentifier()})`;
+    }
     return lowerCaseName;
   }
 }

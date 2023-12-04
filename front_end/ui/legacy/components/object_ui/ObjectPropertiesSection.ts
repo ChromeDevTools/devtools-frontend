@@ -425,7 +425,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       const controller =
           LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
       Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
-      void controller.openInspectorView(obj, /* address */ undefined, expression);
+      void controller.openInspectorView(obj, expression);
     };
 
     const revealText = i18nString(UIStrings.revealInMemoryInpector);

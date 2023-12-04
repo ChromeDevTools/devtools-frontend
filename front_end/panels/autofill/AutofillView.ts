@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
@@ -58,8 +59,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent implements
-    SDK.TargetManager.SDKModelObserver<SDK.AutofillModel.AutofillModel> {
+export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-autofill-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
@@ -68,7 +68,14 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [autofillViewStyles];
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.AutofillModel.AutofillModel, this, {scoped: true});
+    const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
+    const formFilledEvent = autofillManager.getLastFilledAddressForm();
+    if (formFilledEvent) {
+      ({addressUi: this.#addressUi, filledFields: this.#filledFields} = formFilledEvent.event);
+    }
+    autofillManager.addEventListener(
+        AutofillManager.AutofillManager.Events.AddressFormFilled, this.#onAddressFormFilled, this);
+
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
@@ -82,9 +89,8 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
-  #addressFormFilled({data}: Common.EventTarget
-                         .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>):
-      void {
+  #onAddressFormFilled(
+      {data}: Common.EventTarget.EventTargetEvent<AutofillManager.AutofillManager.AddressFormFilledEvent>): void {
     ({addressUi: this.#addressUi, filledFields: this.#filledFields} = data.event);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
@@ -224,14 +230,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         `: LitHtml.nothing}
     `;
     // clang-format on
-  }
-
-  modelAdded(model: SDK.AutofillModel.AutofillModel): void {
-    model.addEventListener(SDK.AutofillModel.Events.AddressFormFilled, this.#addressFormFilled, this);
-  }
-
-  modelRemoved(model: SDK.AutofillModel.AutofillModel): void {
-    model.removeEventListener(SDK.AutofillModel.Events.AddressFormFilled, this.#addressFormFilled, this);
   }
 }
 

@@ -21,6 +21,7 @@ devtools_module("main") {
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../models/autofill_manager:bundle",
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/issues_manager:bundle",

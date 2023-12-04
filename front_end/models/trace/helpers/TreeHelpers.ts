@@ -218,7 +218,7 @@ export function walkEntireTree(
     tree: TraceEntryTree,
     onEntryStart: (entry: Types.TraceEvents.TraceEntry) => void,
     onEntryEnd: (entry: Types.TraceEvents.TraceEntry) => void,
-    traceWindowToInclude?: Types.Timing.TraceWindow,
+    traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
     minDuration?: Types.Timing.MicroSeconds,
     ): void {
   for (const rootNode of tree.roots) {
@@ -231,7 +231,7 @@ function walkTreeByNode(
     rootNode: TraceEntryNode,
     onEntryStart: (entry: Types.TraceEvents.TraceEntry) => void,
     onEntryEnd: (entry: Types.TraceEvents.TraceEntry) => void,
-    traceWindowToInclude?: Types.Timing.TraceWindow,
+    traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
     minDuration?: Types.Timing.MicroSeconds,
     ): void {
   if (traceWindowToInclude && !treeNodeIsInWindow(rootNode, traceWindowToInclude)) {
@@ -262,7 +262,7 @@ function walkTreeByNode(
  * window. The entire node does not have to fit inside the window, but it does
  * have to partially intersect it.
  */
-function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindow): boolean {
+function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindowMicroSeconds): boolean {
   const startTime = node.entry.ts;
   const endTime = node.entry.ts + (node.entry.dur || 0);
 

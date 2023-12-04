@@ -18,7 +18,7 @@ function makeFakeMainThreadTraceEntry(payload: FakeEventPayload): TraceEngine.Ty
   return makeFakeEventPayload(payload) as unknown as TraceEngine.Types.TraceEvents.TraceEntry;
 }
 
-function makeFakeBounds(min: number, max: number): TraceEngine.Types.Timing.TraceWindow {
+function makeFakeBounds(min: number, max: number): TraceEngine.Types.Timing.TraceWindowMicroSeconds {
   return {
     min: TraceEngine.Types.Timing.MicroSeconds(min),
     max: TraceEngine.Types.Timing.MicroSeconds(max),

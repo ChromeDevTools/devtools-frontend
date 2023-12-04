@@ -26,7 +26,7 @@ let gpuThreadId: Types.TraceEvents.ThreadID = Types.TraceEvents.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
 
 const topLevelRendererIds = new Set<Types.TraceEvents.ProcessID>();
-const traceBounds: Types.Timing.TraceWindow = {
+const traceBounds: Types.Timing.TraceWindowMicroSeconds = {
   min: Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY),
   max: Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY),
   range: Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY),
@@ -104,7 +104,8 @@ function updateRendererProcessByFrame(
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
       () => new Map<
-          Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>());
+          Types.TraceEvents.ProcessID,
+          {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>());
   const rendererProcessInfo = Platform.MapUtilities.getWithDefault(rendererProcessInFrame, frame.processId, () => {
     return [];
   });
@@ -317,7 +318,7 @@ export async function finalize(): Promise<void> {
 }
 
 export type MetaHandlerData = {
-  traceBounds: Types.Timing.TraceWindow,
+  traceBounds: Types.Timing.TraceWindowMicroSeconds,
   browserProcessId: Types.TraceEvents.ProcessID,
   browserThreadId: Types.TraceEvents.ThreadID,
   gpuProcessId: Types.TraceEvents.ProcessID,
@@ -360,7 +361,8 @@ export type MetaHandlerData = {
 // and https://web.dev/same-site-same-origin/
 export type FrameProcessData =
     Map<string,
-        Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>>;
+        Map<Types.TraceEvents.ProcessID,
+            {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>>;
 
 export function data(): MetaHandlerData {
   if (handlerState !== HandlerState.FINALIZED) {

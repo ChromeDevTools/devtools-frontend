@@ -286,7 +286,7 @@ export enum Events {
 export interface WindowChangedEvent {
   startTime: number;
   endTime: number;
-  breadcrumb?: TraceEngine.Types.Timing.TraceWindow;
+  breadcrumb?: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
 }
 
 export interface BreadcrumbAddedEvent {

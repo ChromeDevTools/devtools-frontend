@@ -23,7 +23,7 @@ describe('BreadcrumbsUI', async () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(10),
       range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -49,13 +49,13 @@ describe('BreadcrumbsUI', async () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(2),
       max: TraceEngine.Types.Timing.MicroSeconds(9),
       range: TraceEngine.Types.Timing.MicroSeconds(7),
     };
 
-    const traceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(10),
       range: TraceEngine.Types.Timing.MicroSeconds(9),

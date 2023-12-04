@@ -5,7 +5,7 @@
 import type * as TraceEngine from '../../../models/trace/trace.js';
 
 export interface Breadcrumb {
-  window: TraceEngine.Types.Timing.TraceWindow;
+  window: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
   child: Breadcrumb|null;
 }
 
@@ -28,7 +28,7 @@ export class Breadcrumbs {
   readonly initialBreadcrumb: Breadcrumb;
   lastBreadcrumb: Breadcrumb;
 
-  constructor(initialTraceWindow: TraceEngine.Types.Timing.TraceWindow) {
+  constructor(initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
     this.initialBreadcrumb = {
       window: initialTraceWindow,
       child: null,
@@ -36,7 +36,7 @@ export class Breadcrumbs {
     this.lastBreadcrumb = this.initialBreadcrumb;
   }
 
-  add(newBreadcrumbTraceWindow: TraceEngine.Types.Timing.TraceWindow): void {
+  add(newBreadcrumbTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {
     if (this.isTraceWindowWithinTraceWindow(newBreadcrumbTraceWindow, this.lastBreadcrumb.window)) {
       const newBreadcrumb = {
         window: newBreadcrumbTraceWindow,
@@ -53,7 +53,8 @@ export class Breadcrumbs {
 
   // Breadcumb should be within the bounds of the parent and can not have both start and end be equal to the parent
   isTraceWindowWithinTraceWindow(
-      child: TraceEngine.Types.Timing.TraceWindow, parent: TraceEngine.Types.Timing.TraceWindow): boolean {
+      child: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
+      parent: TraceEngine.Types.Timing.TraceWindowMicroSeconds): boolean {
     return (child.min >= parent.min && child.max <= parent.max) &&
         !(child.min === parent.min && child.max === parent.max);
   }

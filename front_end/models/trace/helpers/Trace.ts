@@ -138,10 +138,10 @@ export function extractId(event: Types.TraceEvents.TraceEventNestableAsync|
 
 export function activeURLForFrameAtTime(
     frameId: string, time: Types.Timing.MicroSeconds,
-    rendererProcessesByFrame: Map<
-        string,
-        Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>>):
-    string|null {
+    rendererProcessesByFrame:
+        Map<string,
+            Map<Types.TraceEvents.ProcessID,
+                {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>>): string|null {
   const processData = rendererProcessesByFrame.get(frameId);
   if (!processData) {
     return null;

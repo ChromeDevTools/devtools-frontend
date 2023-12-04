@@ -5,8 +5,8 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export function calculateWindow(
-    traceBounds: Types.Timing.TraceWindow,
-    mainThreadEntries: readonly Types.TraceEvents.TraceEntry[]): Types.Timing.TraceWindow {
+    traceBounds: Types.Timing.TraceWindowMicroSeconds,
+    mainThreadEntries: readonly Types.TraceEvents.TraceEntry[]): Types.Timing.TraceWindowMicroSeconds {
   if (!mainThreadEntries.length) {
     return traceBounds;
   }

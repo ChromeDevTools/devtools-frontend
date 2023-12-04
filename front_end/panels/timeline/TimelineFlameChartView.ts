@@ -74,7 +74,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
-  #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindow;
+  #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
   private selectedGroupName: string|null = null;
   constructor(delegate: TimelineModeViewDelegate) {
     super();

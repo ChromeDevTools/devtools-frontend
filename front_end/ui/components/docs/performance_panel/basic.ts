@@ -103,6 +103,9 @@ if (params.has('initiators')) {
   Root.Runtime.experiments.setEnabled('timelineEventInitiators', true);
 }
 
+Root.Runtime.experiments.setEnabled(
+    Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL, params.has('breadcrumbs'));
+
 const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
 const container = document.getElementById('container');
 if (!container) {

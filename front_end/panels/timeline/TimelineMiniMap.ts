@@ -104,7 +104,7 @@ export class TimelineMiniMap extends
     const startWithoutMin = startTime - this.#minTime;
     const endWithoutMin = endTime - this.#minTime;
 
-    const traceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(startWithoutMin),
       max: TraceEngine.Types.Timing.MicroSeconds(endWithoutMin),
       range: TraceEngine.Types.Timing.MicroSeconds(endWithoutMin - startWithoutMin),

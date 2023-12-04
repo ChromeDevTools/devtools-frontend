@@ -1144,14 +1144,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
-    if (traceParsedData) {
-      TraceBounds.TraceBounds.BoundsManager.instance({
-        forceNew: true,
-        initialBounds: traceParsedData.Meta.traceBounds,
-      });
-    }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
     this.#minimapComponent.reset();
+    if (traceParsedData) {
+      TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
+          traceParsedData.Meta.traceBounds,
+      );
+    }
     if (model) {
       model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
       this.#minimapComponent.setBounds(

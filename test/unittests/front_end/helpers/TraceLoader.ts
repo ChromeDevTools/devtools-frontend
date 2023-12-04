@@ -178,10 +178,11 @@ export class TraceLoader {
     await performanceModel.setTracingModel(tracingModel);
     const timelineModel = performanceModel.timelineModel();
 
-    TraceBounds.TraceBounds.BoundsManager.instance({
-      forceNew: true,
-      initialBounds: traceEngineData.traceParsedData.Meta.traceBounds,
-    });
+    TraceBounds.TraceBounds.BoundsManager
+        .instance({
+          forceNew: true,
+        })
+        .resetWithNewBounds(traceEngineData.traceParsedData.Meta.traceBounds);
 
     const result: AllModelsLoaded = {
       tracingModel,

@@ -28,7 +28,7 @@ export class BreadcrumbsUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-breadcrumbs-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  readonly #traceWindow: TraceEngine.Types.Timing.TraceWindow = {
+  readonly #traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
     min: TraceEngine.Types.Timing.MicroSeconds(0),
     max: TraceEngine.Types.Timing.MicroSeconds(0),
     range: TraceEngine.Types.Timing.MicroSeconds(0),

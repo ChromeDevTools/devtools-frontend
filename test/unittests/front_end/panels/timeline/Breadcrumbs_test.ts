@@ -7,7 +7,7 @@ import * as TimelineComponents from '../../../../../front_end/panels/timeline/co
 
 describe('Timeline breadcrumbs', () => {
   it('can create breadcrumbs', () => {
-    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(10),
       range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -15,13 +15,13 @@ describe('Timeline breadcrumbs', () => {
 
     const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
-    const traceWindow1: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(3),
       max: TraceEngine.Types.Timing.MicroSeconds(9),
       range: TraceEngine.Types.Timing.MicroSeconds(6),
     };
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(4),
       max: TraceEngine.Types.Timing.MicroSeconds(6),
       range: TraceEngine.Types.Timing.MicroSeconds(2),
@@ -53,7 +53,7 @@ describe('Timeline breadcrumbs', () => {
   });
 
   it('can remove breadcrumbs', () => {
-    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(10),
       range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -61,13 +61,13 @@ describe('Timeline breadcrumbs', () => {
 
     const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
-    const traceWindow1: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(3),
       max: TraceEngine.Types.Timing.MicroSeconds(9),
       range: TraceEngine.Types.Timing.MicroSeconds(6),
     };
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(4),
       max: TraceEngine.Types.Timing.MicroSeconds(6),
       range: TraceEngine.Types.Timing.MicroSeconds(2),
@@ -106,7 +106,7 @@ describe('Timeline breadcrumbs', () => {
 
   it('can not create a breadcrumb equal to the parent breadcrumb', () => {
     assert.throws(() => {
-      const initialTraceWindow: TraceEngine.Types.Timing.TraceWindow = {
+      const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
         min: TraceEngine.Types.Timing.MicroSeconds(1),
         max: TraceEngine.Types.Timing.MicroSeconds(10),
         range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -114,7 +114,7 @@ describe('Timeline breadcrumbs', () => {
 
       const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
-      const traceWindow1: TraceEngine.Types.Timing.TraceWindow = {
+      const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
         min: TraceEngine.Types.Timing.MicroSeconds(1),
         max: TraceEngine.Types.Timing.MicroSeconds(10),
         range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -125,7 +125,7 @@ describe('Timeline breadcrumbs', () => {
   });
 
   it('can create breadcrumbs with equal start or end as the parent breadcrumb', () => {
-    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindow = {
+    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(10),
       range: TraceEngine.Types.Timing.MicroSeconds(9),
@@ -133,13 +133,13 @@ describe('Timeline breadcrumbs', () => {
 
     const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
-    const traceWindow1: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(1),
       max: TraceEngine.Types.Timing.MicroSeconds(9),
       range: TraceEngine.Types.Timing.MicroSeconds(8),
     };
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindow = {
+    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
       min: TraceEngine.Types.Timing.MicroSeconds(3),
       max: TraceEngine.Types.Timing.MicroSeconds(9),
       range: TraceEngine.Types.Timing.MicroSeconds(6),

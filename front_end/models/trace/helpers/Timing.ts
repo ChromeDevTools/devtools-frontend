@@ -127,7 +127,7 @@ export function formatMicrosecondsTime(
 
 export function timeStampForEventAdjustedByClosestNavigation(
     event: Types.TraceEvents.TraceEventData,
-    traceBounds: Types.Timing.TraceWindow,
+    traceBounds: Types.Timing.TraceWindowMicroSeconds,
     navigationsByNavigationId: Map<string, Types.TraceEvents.TraceEventNavigationStart>,
     navigationsByFrameId: Map<string, Types.TraceEvents.TraceEventNavigationStart[]>,
     ): Types.Timing.MicroSeconds {
@@ -187,7 +187,8 @@ export function eventTimingsSeconds(event: Types.TraceEvents.TraceEventData): Ev
   };
 }
 
-export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindow): Types.Timing.TraceWindowMilliSeconds {
+export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicroSeconds):
+    Types.Timing.TraceWindowMilliSeconds {
   return {
     min: microSecondsToMilliseconds(bounds.min),
     max: microSecondsToMilliseconds(bounds.max),
@@ -196,7 +197,7 @@ export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindow): Types
 }
 
 export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilliSeconds):
-    Types.Timing.TraceWindow {
+    Types.Timing.TraceWindowMicroSeconds {
   return {
     min: millisecondsToMicroseconds(bounds.min),
     max: millisecondsToMicroseconds(bounds.max),
@@ -205,8 +206,8 @@ export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.Trace
 }
 
 export function traceWindowFromMilliSeconds(
-    min: Types.Timing.MilliSeconds, max: Types.Timing.MilliSeconds): Types.Timing.TraceWindow {
-  const traceWindow: Types.Timing.TraceWindow = {
+    min: Types.Timing.MilliSeconds, max: Types.Timing.MilliSeconds): Types.Timing.TraceWindowMicroSeconds {
+  const traceWindow: Types.Timing.TraceWindowMicroSeconds = {
     min: millisecondsToMicroseconds(min),
     max: millisecondsToMicroseconds(max),
     range: millisecondsToMicroseconds(Types.Timing.MilliSeconds(max - min)),

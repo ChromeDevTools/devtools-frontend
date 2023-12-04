@@ -8,7 +8,8 @@ import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as AutofillManager from '../../../../../front_end/models/autofill_manager/autofill_manager.js';
 import * as Autofill from '../../../../../front_end/panels/autofill/autofill.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertGridContents} from '../../ui/components/DataGridHelpers.js';
@@ -136,9 +137,11 @@ describeWithMockConnection('AutofillView', () => {
   it('shows content if the view is created after the event was received', async () => {
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
     assertNotNullOrUndefined(autofillModel);
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
 
     view = new Autofill.AutofillView.AutofillView();
     renderElementIntoDOM(view);
@@ -146,5 +149,43 @@ describeWithMockConnection('AutofillView', () => {
     await coordinator.done();
     assertShadowRoot(view.shadowRoot);
     assertViewShowsEventData(view.shadowRoot);
+
+    showViewStub.restore();
+  });
+
+  it('auto-open can be turned off/on', async () => {
+    const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
+    assertNotNullOrUndefined(autofillModel);
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+
+    view = new Autofill.AutofillView.AutofillView();
+    renderElementIntoDOM(view);
+    await view.render();
+    await coordinator.done();
+    assertShadowRoot(view.shadowRoot);
+
+    autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    showViewStub.reset();
+
+    const checkbox = view.shadowRoot.querySelector('input');
+    assertElement(checkbox, HTMLInputElement);
+    assert.isTrue(checkbox.checked);
+    checkbox.checked = false;
+    let event = new Event('change');
+    checkbox.dispatchEvent(event);
+
+    autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.isTrue(showViewStub.notCalled);
+
+    checkbox.checked = true;
+    event = new Event('change');
+    checkbox.dispatchEvent(event);
+
+    autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    await coordinator.done();
+    showViewStub.restore();
   });
 });

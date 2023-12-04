@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -10,8 +10,10 @@ import * as AutofillManager from '../../models/autofill_manager/autofill_manager
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
+import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import autofillViewStyles from './autofillView.css.js';
 
@@ -54,6 +56,11 @@ const UIStrings = {
    * which Chrome used heuristics to deduce the form field's autocomplete category.
    */
   heur: 'heur',
+  /**
+   * @description Label for checkbox in the Autofill tab. If checked, this tab will open
+   * automatically whenever a form is being autofilled.
+   */
+  autoShow: 'Automatically open tab on autofill',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);
@@ -65,9 +72,10 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   readonly #renderBound = this.#render.bind(this);
   #addressUi: Protocol.Autofill.AddressUI = {addressFields: []};
   #filledFields: Protocol.Autofill.FilledField[] = [];
+  #autoOpenViewSetting?: Common.Settings.Setting<boolean>;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [autofillViewStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles];
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const formFilledEvent = autofillManager.getLastFilledAddressForm();
     if (formFilledEvent) {
@@ -79,6 +87,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
+    this.#autoOpenViewSetting = Common.Settings.Settings.instance().createSetting('autoOpenAutofillViewOnEvent', true);
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
@@ -104,7 +113,13 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <div class="placeholder-container">
+        <div class="top-right-corner">
+          <label class="checkbox-label">
+            <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+            <span>${i18nString(UIStrings.autoShow)}</span>
+          </label>
+        </div>
+        <div class="placeholder-container" jslog=${VisualLogging.pane().context('autofill-empty')}>
           <div class="placeholder">${i18nString(UIStrings.noDataAvailable)}</h1>
         </div>
       `, this.#shadow, {host: this});
@@ -115,12 +130,25 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <div class="content-container">
-        ${this.#renderAddressUi()}
+      <div class="content-container" jslog=${VisualLogging.pane().context('autofill')}>
+        <div class="right-to-left">
+          <div class="label-container">
+            <label class="checkbox-label">
+              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+              <span>${i18nString(UIStrings.autoShow)}</span>
+            </label>
+          </div>
+          ${this.#renderAddressUi()}
+        </div>
         ${this.#renderFilledFields()}
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
+  }
+
+  #onAutoOpenCheckboxChanged(e: Event): void {
+    const {checked} = e.target as HTMLInputElement;
+    this.#autoOpenViewSetting?.set(checked);
   }
 
   #renderAddressUi(): LitHtml.LitTemplate {

@@ -11,6 +11,7 @@ import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
 describeWithMockConnection('AutofillManager', () => {
   let target: SDK.Target.Target;
@@ -24,6 +25,7 @@ describeWithMockConnection('AutofillManager', () => {
   });
 
   it('re-emits autofill events from autofill model', async () => {
+    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const dispatchedAutofillEvents: SDK.AutofillModel.AddressFormFilledEvent[] = [];
     autofillManager.addEventListener(
@@ -52,7 +54,10 @@ describeWithMockConnection('AutofillManager', () => {
     };
     model.dispatchEventToListeners(
         SDK.AutofillModel.Events.AddressFormFilled, {autofillModel: model, event: addressFormFilledEvent});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     assert.strictEqual(dispatchedAutofillEvents.length, 1);
     assert.deepStrictEqual(dispatchedAutofillEvents[0].event, addressFormFilledEvent);
+    showViewStub.restore();
   });
 });

@@ -27,7 +27,7 @@ enum VisualElements {
   AccessibilityPane = 4,
   AccessibilitySourceOrder = 5,
   Toggle = 6,
-  /* 7 used to be AddStylesRule, but free to grab now */
+  Tree = 7,
   TextField = 8,
   ShowAllStyleProperties = 9,
   Section = 10,
@@ -80,10 +80,10 @@ enum VisualElements {
   GridOverlays = 57,
   JumpToElement = 58,
   /* 59 used to be ElementsPanel, but free to grab now */
-  ElementsTreeOutline = 60,
+  /* 60 used to be ElementsTreeOutline, but free to grab now */
   /* 61 used to be RenderingPanel, but free to grab now */
   ElementsBreadcrumbs = 62,
-  FullAccessibilityTree = 63,
+  /* 63 used to be FullAccessibilityTree, but free to grab now */
   /* 64 used to be ToggleDeviceMode, but free to grab now */
   /* 65 used to be ToggleElementSearch, but free to grab now */
   PanelTabHeader = 66,

@@ -1163,16 +1163,15 @@ export class NetworkRequestNode extends NetworkNode {
       return iconElement;
     }
 
-    if (request.wasIntercepted()) {
+    const isHeaderOverriden = request.hasOverriddenHeaders();
+    const isContentOverriden = request.hasOverriddenContent;
+    if (isHeaderOverriden || isContentOverriden) {
       const iconData = {
         iconName: 'document',
         color: 'var(--icon-default)',
       };
 
       let title: Common.UIString.LocalizedString;
-      const isHeaderOverriden = request.hasOverriddenHeaders();
-      const isContentOverriden = request.hasOverriddenContent;
-
       if (isHeaderOverriden && isContentOverriden) {
         title = i18nString(UIStrings.requestContentHeadersOverridden);
       } else if (isContentOverriden) {

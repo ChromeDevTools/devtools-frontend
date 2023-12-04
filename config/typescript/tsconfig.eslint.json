@@ -8,7 +8,6 @@
       "webworker",
       "webworker.iterable"
     ],
-    "types": ["@webgpu/types"],
     "outDir": "ignored-for-vscode"
   },
   "include": [

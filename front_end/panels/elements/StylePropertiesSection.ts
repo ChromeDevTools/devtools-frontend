@@ -827,7 +827,10 @@ export class StylePropertiesSection {
       queryText: containerQuery.text,
       onQueryTextClick,
     };
-    void this.addContainerForContainerQuery(containerQuery);
+    if (!/^style\(.*\)/.test(containerQuery.text)) {
+      // We only add container element for non-style queries.
+      void this.addContainerForContainerQuery(containerQuery);
+    }
     return containerQueryElement;
   }
 

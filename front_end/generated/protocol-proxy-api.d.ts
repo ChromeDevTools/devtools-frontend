@@ -3798,6 +3798,12 @@ declare namespace ProtocolProxyApi {
   export interface FedCmDispatcher {
     dialogShown(params: Protocol.FedCm.DialogShownEvent): void;
 
+    /**
+     * Triggered when a dialog is closed, either by user action, JS abort,
+     * or a command below.
+     */
+    dialogClosed(params: Protocol.FedCm.DialogClosedEvent): void;
+
   }
 
   export interface DebuggerApi {

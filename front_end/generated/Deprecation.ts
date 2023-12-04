@@ -67,10 +67,6 @@ export const UIStrings = {
    */
   DOMMutationEvents: "DOM Mutation Events, including `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, and `DOMCharacterDataModified` are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use `MutationObserver` instead.",
   /**
-   * @description This message is shown when the deprecated Expect-CT header is present.
-   */
-  ExpectCTHeader: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
-  /**
    * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
   GeolocationInsecureOrigin: "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.",
@@ -223,6 +219,10 @@ export const UIStrings = {
    */
   TextToSpeech_DisallowedByAutoplay: "`speechSynthesis.speak()` without user activation is deprecated and will be removed.",
   /**
+   * @description A deprecation warning shown in the DevTools Issues tab. It's shown when a listener for the `unload` event is added.
+   */
+  UnloadHandler: "Unload event listeners are deprecated and will be removed.",
+  /**
    * @description A deprecation warning shown in the DevTools Issues tab. The placeholder is always the noun 'SharedArrayBuffer' which refers to a JavaScript construct. 'Extensions' refers to Chrome extensions. The warning is shown when Chrome Extensions attempt to use 'SharedArrayBuffer's under insecure circumstances.
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.",
@@ -299,10 +299,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "milestone": 115
   },
-  "ExpectCTHeader": {
-    "chromeStatusFeature": 6244547273687040,
-    "milestone": 107
-  },
   "IdentityInCanMakePaymentEvent": {
     "chromeStatusFeature": 5190978431352832
   },
@@ -373,6 +369,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "TextToSpeech_DisallowedByAutoplay": {
     "chromeStatusFeature": 5687444770914304,
     "milestone": 71
+  },
+  "UnloadHandler": {
+    "chromeStatusFeature": 5579556305502208
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96

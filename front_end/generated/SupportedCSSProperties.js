@@ -1362,8 +1362,7 @@ export const generatedProperties = [
    "normal",
    "inline-size",
    "size",
-   "sticky",
-   "snap"
+   "scroll-state"
   ],
   "name": "container-type"
  },
@@ -2098,6 +2097,26 @@ export const generatedProperties = [
   "name": "inset"
  },
  {
+  "keywords": [
+   "none",
+   "top",
+   "bottom",
+   "center",
+   "left",
+   "right",
+   "x-start",
+   "x-end",
+   "y-start",
+   "y-end",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "all"
+  ],
+  "name": "inset-area"
+ },
+ {
   "longhands": [
    "inset-block-start",
    "inset-block-end"
@@ -2434,7 +2453,7 @@ export const generatedProperties = [
   "name": "mix-blend-mode"
  },
  {
-  "name": "navigation-trigger"
+  "name": "navigation"
  },
  {
   "name": "negative"
@@ -4385,8 +4404,7 @@ export const generatedPropertyValues = {
    "normal",
    "inline-size",
    "size",
-   "sticky",
-   "snap"
+   "scroll-state"
   ]
  },
  "content-visibility": {
@@ -4843,6 +4861,25 @@ export const generatedPropertyValues = {
  "inline-size": {
   "values": [
    "auto"
+  ]
+ },
+ "inset-area": {
+  "values": [
+   "none",
+   "top",
+   "bottom",
+   "center",
+   "left",
+   "right",
+   "x-start",
+   "x-end",
+   "y-start",
+   "y-end",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "all"
   ]
  },
  "isolation": {

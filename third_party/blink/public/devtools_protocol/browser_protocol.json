@@ -8572,6 +8572,21 @@
                     ]
                 },
                 {
+                    "id": "DevicePosture",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "description": "Current posture of the device",
+                            "type": "string",
+                            "enum": [
+                                "continuous",
+                                "folded"
+                            ]
+                        }
+                    ]
+                },
+                {
                     "id": "MediaFeature",
                     "type": "object",
                     "properties": [
@@ -8958,6 +8973,13 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "DisplayFeature"
+                        },
+                        {
+                            "name": "devicePosture",
+                            "description": "If set, the posture of a foldable device. If not set the posture is set\nto continuous.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "DevicePosture"
                         }
                     ]
                 },
@@ -16322,6 +16344,7 @@
                         "sync-xhr",
                         "unload",
                         "usb",
+                        "usb-unrestricted",
                         "vertical-scroll",
                         "web-printing",
                         "web-share",
@@ -23616,6 +23639,18 @@
                             "description": "Sets whether User Verification succeeds or fails for an authenticator.\nDefaults to false.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "defaultBackupEligibility",
+                            "description": "Credentials created by this authenticator will have the backup\neligibility (BE) flag set to this value. Defaults to false.\nhttps://w3c.github.io/webauthn/#sctn-credential-backup",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "defaultBackupState",
+                            "description": "Credentials created by this authenticator will have the backup state\n(BS) flag set to this value. Defaults to false.\nhttps://w3c.github.io/webauthn/#sctn-credential-backup",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -24604,7 +24639,8 @@
                     "enum": [
                         "AccountChooser",
                         "AutoReauthn",
-                        "ConfirmIdpLogin"
+                        "ConfirmIdpLogin",
+                        "Error"
                     ]
                 },
                 {
@@ -24612,7 +24648,9 @@
                     "description": "The buttons on the FedCM dialog.",
                     "type": "string",
                     "enum": [
-                        "ConfirmIdpLoginContinue"
+                        "ConfirmIdpLoginContinue",
+                        "ErrorGotIt",
+                        "ErrorMoreDetails"
                     ]
                 },
                 {
@@ -24693,6 +24731,16 @@
                         {
                             "name": "subtitle",
                             "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "dialogClosed",
+                    "description": "Triggered when a dialog is closed, either by user action, JS abort,\nor a command below.",
+                    "parameters": [
+                        {
+                            "name": "dialogId",
                             "type": "string"
                         }
                     ]

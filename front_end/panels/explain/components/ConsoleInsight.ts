@@ -264,6 +264,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #popover: UI.PopoverHelper.PopoverHelper;
   #id: number;
+  #popoverInitiatedViaKeyboard = false;
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -284,39 +285,7 @@ export class ConsoleInsight extends HTMLElement {
     this.tabIndex = 0;
     this.#id = nextInstanceId++;
     this.focus();
-    this.#popover = new UI.PopoverHelper.PopoverHelper(this, event => {
-      const hoveredNode = event.composedPath()[0] as Element;
-      if (!hoveredNode ||
-          (!hoveredNode?.matches('.info') && !hoveredNode.parentElementOrShadowHost()?.matches('.info'))) {
-        return null;
-      }
-
-      return {
-        box: hoveredNode.boxInWindow(),
-        show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-          const {sources} = await this.#promptBuilder.buildPrompt();
-          const container = document.createElement('div');
-          container.style.display = 'flex';
-          container.style.flexDirection = 'column';
-          container.style.fontSize = '13px';
-          container.style.lineHeight = '20px';
-          const text = document.createElement('p');
-          text.innerText = i18nString(UIStrings.refineButtonHint);
-          text.style.margin = '0';
-          const list = document.createElement('devtools-console-insight-sources-list');
-          list.sources = sources;
-          container.append(text);
-          container.append(list);
-          container.setAttribute('role', 'tooltip');
-          const tooltipId = `console-insight-tooltip-${this.#id}`;
-          container.setAttribute('id', tooltipId);
-          this.#shadow.querySelector('.info')?.setAttribute('aria-describedby', tooltipId);
-          popover.contentElement.append(container);
-          popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
-          return true;
-        },
-      };
-    });
+    this.#popover = new UI.PopoverHelper.PopoverHelper(this, this.#onPopoverRequest.bind(this));
     this.#popover.setTimeout(300);
     this.#popover.setHasPadding(true);
     // Measure the height of the element after an animation. `--actual-height` can
@@ -324,6 +293,93 @@ export class ConsoleInsight extends HTMLElement {
     this.addEventListener('animationend', () => {
       this.style.setProperty('--actual-height', `${this.offsetHeight}px`);
     });
+  }
+
+  #onPopoverRequest(event: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
+    const hoveredNode = event.composedPath()[0] as Element;
+    if (!hoveredNode ||
+        (!hoveredNode?.matches('.info') && !hoveredNode.parentElementOrShadowHost()?.matches('.info'))) {
+      return null;
+    }
+
+    const popoverInitiatedViaKeyboard = this.#popoverInitiatedViaKeyboard;
+
+    return {
+      box: hoveredNode.boxInWindow(),
+      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+        const {sources} = await this.#promptBuilder.buildPrompt();
+
+        const dialogId = `dialog-${this.#id}`;
+
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.fontSize = '13px';
+        container.style.lineHeight = '20px';
+        container.setAttribute('aria-modal', 'true');
+        container.tabIndex = -1;
+        container.role = 'dialog';
+
+        if (popoverInitiatedViaKeyboard) {
+          container.addEventListener('keydown', event => {
+            const keyboardEvent = event as KeyboardEvent;
+
+            if (keyboardEvent.key === 'Tab') {
+              const focusableElements = getFocusableElements(popover);
+              const focusedElement = getFocusedElement(popover);
+              // Trap focus for the tab navigation inside the dialog.
+              if (focusedElement) {
+                const focusedItemIdx = focusableElements.indexOf(focusedElement);
+                if (event.shiftKey && focusedItemIdx === 0) {
+                  focusableElements.at(-1)?.focus();
+                  event.preventDefault();
+                } else if (!event.shiftKey && focusedItemIdx === focusableElements.length - 1) {
+                  focusableElements.at(0)?.focus();
+                  event.preventDefault();
+                }
+              }
+            } else if (keyboardEvent.key === 'Escape') {
+              // Restore focus to the info icon.
+              this.#popover.hidePopover();
+              (this.#shadow.querySelector('.info') as HTMLElement)?.focus();
+            }
+          });
+        }
+
+        const doc = document.createElement('div');
+        doc.role = 'document';
+        doc.tabIndex = 0;
+        doc.setAttribute('aria-describedby', dialogId);
+        container.append(doc);
+
+        const text = document.createElement('p');
+        text.id = dialogId;
+        text.innerText = i18nString(UIStrings.refineButtonHint);
+        text.style.margin = '0';
+        doc.append(text);
+
+        const list = document.createElement('devtools-console-insight-sources-list');
+        list.sources = sources;
+        doc.append(list);
+
+        popover.contentElement.append(container);
+        popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
+
+        if (popoverInitiatedViaKeyboard) {
+          const origShow = popover.show;
+          popover.show = (document: Document): void => {
+            origShow.call(popover, document);
+            (popover.contentElement.querySelector('[role=document]') as HTMLElement)?.focus();
+          };
+          const origHide = popover.hide;
+          popover.hide = (): void => {
+            origHide.call(popover);
+            (this.#shadow.querySelector('.info') as HTMLElement)?.focus();
+          };
+        }
+        return true;
+      },
+    };
   }
 
   connectedCallback(): void {
@@ -457,13 +513,18 @@ export class ConsoleInsight extends HTMLElement {
           break;
         case 'Enter':
         case ' ':
-          event.target?.dispatchEvent(new MouseEvent('mousedown', {
-            bubbles: true,
-            composed: true,
-            cancelable: true,
-            clientX: (event.target as HTMLElement).getBoundingClientRect().x,
-            clientY: (event.target as HTMLElement).getBoundingClientRect().y,
-          }));
+          this.#popoverInitiatedViaKeyboard = true;
+          try {
+            event.target?.dispatchEvent(new MouseEvent('mousedown', {
+              bubbles: true,
+              composed: true,
+              cancelable: true,
+              clientX: (event.target as HTMLElement).getBoundingClientRect().x,
+              clientY: (event.target as HTMLElement).getBoundingClientRect().y,
+            }));
+          } finally {
+            this.#popoverInitiatedViaKeyboard = false;
+          }
           break;
       }
     }
@@ -786,4 +847,50 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
     }
     return super.templateForToken(token);
   }
+}
+
+function getFocusedElement(popover: UI.GlassPane.GlassPane): HTMLElement|undefined {
+  const root = popover.contentElement.getComponentRoot();
+  if (!(root instanceof ShadowRoot)) {
+    throw new Error('Expected a shadow root');
+  }
+  let focusedElement = root.activeElement;
+  while (focusedElement && focusedElement.shadowRoot?.activeElement) {
+    focusedElement = focusedElement.shadowRoot?.activeElement;
+  }
+  return focusedElement as HTMLElement | undefined;
+}
+
+function getFocusableElements(popover: UI.GlassPane.GlassPane): HTMLElement[] {
+  const root = popover.contentElement.getComponentRoot();
+  if (!(root instanceof ShadowRoot)) {
+    throw new Error('Expected a shadow root');
+  }
+
+  const focusableSelectors = [
+    'x-link',
+    '[role=document]',
+  ];
+
+  const result: HTMLElement[] = [];
+
+  function walk(root: Node): void {
+    const iter = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+    do {
+      const currentNode = iter.currentNode as HTMLElement;
+      if (currentNode.shadowRoot) {
+        walk(currentNode.shadowRoot);
+      }
+      if (currentNode instanceof ShadowRoot) {
+        continue;
+      }
+      if (currentNode !== root && focusableSelectors.some(selector => currentNode.matches(selector))) {
+        result.push(currentNode);
+      }
+    } while (iter.nextNode());
+  }
+
+  walk(root.host);
+
+  return result;
 }

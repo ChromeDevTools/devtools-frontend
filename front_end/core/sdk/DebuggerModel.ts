@@ -32,23 +32,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
-import {ScopeRef, type GetPropertiesResult, type RemoteObject} from './RemoteObject.js';
+import {type GetPropertiesResult, type RemoteObject, ScopeRef} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-
-import {RuntimeModel, type EvaluationOptions, type EvaluationResult, type ExecutionContext} from './RuntimeModel.js';
+import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
-
-import {Capability, Type, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
+import {Capability, type Target, Type} from './Target.js';
 
 const UIStrings = {
   /**
@@ -1154,16 +1152,16 @@ export interface MissingDebugInfoDetails {
 
 export class CallFrame {
   debuggerModel: DebuggerModel;
-  readonly #scriptInternal: Script;
+  readonly script: Script;
   payload: Protocol.Debugger.CallFrame;
   readonly #locationInternal: Location;
   readonly #scopeChainInternal: Scope[];
   readonly #localScopeInternal: Scope|null;
-  readonly #inlineFrameIndexInternal: number;
-  readonly #functionNameInternal: string;
+  readonly inlineFrameIndex: number;
+  readonly functionName: string;
   readonly #functionLocationInternal: Location|undefined;
   #returnValueInternal: RemoteObject|null;
-  #missingDebugInfoDetails: MissingDebugInfoDetails|null = null;
+  missingDebugInfoDetails: MissingDebugInfoDetails|null;
 
   readonly canBeRestarted: boolean;
 
@@ -1171,13 +1169,14 @@ export class CallFrame {
       debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number,
       functionName?: string) {
     this.debuggerModel = debuggerModel;
-    this.#scriptInternal = script;
+    this.script = script;
     this.payload = payload;
     this.#locationInternal = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
     this.#scopeChainInternal = [];
     this.#localScopeInternal = null;
-    this.#inlineFrameIndexInternal = inlineFrameIndex || 0;
-    this.#functionNameInternal = functionName || payload.functionName;
+    this.inlineFrameIndex = inlineFrameIndex || 0;
+    this.functionName = functionName || payload.functionName;
+    this.missingDebugInfoDetails = null;
     this.canBeRestarted = Boolean(payload.canBeRestarted);
     for (let i = 0; i < payload.scopeChain.length; ++i) {
       const scope = new Scope(this, i);
@@ -1206,27 +1205,11 @@ export class CallFrame {
   }
 
   createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame {
-    return new CallFrame(this.debuggerModel, this.#scriptInternal, this.payload, inlineFrameIndex, name);
-  }
-
-  setMissingDebugInfoDetails(details: MissingDebugInfoDetails): void {
-    this.#missingDebugInfoDetails = details;
-  }
-
-  get missingDebugInfoDetails(): MissingDebugInfoDetails|null {
-    return this.#missingDebugInfoDetails;
-  }
-
-  get script(): Script {
-    return this.#scriptInternal;
+    return new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name);
   }
 
   get id(): Protocol.Debugger.CallFrameId {
     return this.payload.callFrameId;
-  }
-
-  get inlineFrameIndex(): number {
-    return this.#inlineFrameIndexInternal;
   }
 
   scopeChain(): Scope[] {
@@ -1261,10 +1244,6 @@ export class CallFrame {
     }
     this.#returnValueInternal = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
     return this.#returnValueInternal;
-  }
-
-  get functionName(): string {
-    return this.#functionNameInternal;
   }
 
   location(): Location {

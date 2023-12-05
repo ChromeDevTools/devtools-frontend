@@ -483,12 +483,12 @@ export class DebuggerLanguagePluginManager implements
             if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
               const resources = functionInfo.missingSymbolFiles;
               const details = i18nString(UIStrings.debugSymbolsIncomplete, {PH1: callFrame.functionName});
-              callFrame.setMissingDebugInfoDetails({details, resources});
+              callFrame.missingDebugInfoDetails = {details, resources};
             } else {
-              callFrame.setMissingDebugInfoDetails({
-                resources: [],
+              callFrame.missingDebugInfoDetails = {
                 details: i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: callFrame.functionName}),
-              });
+                resources: [],
+              };
             }
           }
           return callFrame;

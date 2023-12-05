@@ -972,7 +972,6 @@ export enum DevtoolsExperiments {
   'contrastIssues' = 44,
   'experimentalCookieFeatures' = 45,
   'cssTypeComponentLength' = 52,
-  'preciseChanges' = 53,
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
   'headerOverrides' = 56,

@@ -293,7 +293,6 @@ export enum ExperimentName {
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
-  PRECISE_CHANGES = 'preciseChanges',
   STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
   HEADER_OVERRIDES = 'headerOverrides',
   EYEDROPPER_COLOR_PICKER = 'eyedropperColorPicker',

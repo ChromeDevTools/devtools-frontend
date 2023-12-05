@@ -347,10 +347,6 @@ export class MainImpl {
         'cssTypeComponentLength', 'Enable CSS <length> authoring tool in the Styles pane', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-96/#length', 'https://g.co/devtools/length-feedback');
 
-    // Display precise changes in the Changes tab.
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.PRECISE_CHANGES, 'Display more precise changes in the Changes tab');
-
     // Integrate CSS changes in the Styles pane.
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES, 'Sync CSS changes in the Styles pane');
@@ -431,7 +427,6 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',
-      Root.Runtime.ExperimentName.PRECISE_CHANGES,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,

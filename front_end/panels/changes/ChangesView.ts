@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import type * as Formatter from '../../models/formatter/formatter.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -170,8 +169,7 @@ export class ChangesView extends UI.Widget.VBox {
         // Unfortunately, caretRangeFromPoint is broken in shadow
         // roots, which makes determining the character offset more
         // work than justified here.
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES) &&
-            this.#selectedSourceCodeFormattedMapping) {
+        if (this.#selectedSourceCodeFormattedMapping) {
           lineNumber = this.#selectedSourceCodeFormattedMapping.formattedToOriginal(lineNumber, 0)[0];
         }
         void Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(lineNumber, 0), false);
@@ -225,9 +223,7 @@ export class ChangesView extends UI.Widget.VBox {
       this.hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    const diffResponse = await this.workspaceDiff.requestDiff(
-        uiSourceCode,
-        {shouldFormatDiff: Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES)});
+    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
     if (this.selectedUISourceCode !== uiSourceCode) {
       return;
     }

@@ -121,6 +121,18 @@ export class TimelineMiniMap extends
     this.#breadcrumbsUI.data = {
       breadcrumb: this.breadcrumbs.initialBreadcrumb,
     };
+
+    // Dispatch event to update the breadcrumb in TimelineFlameChardView
+    this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.WindowChanged, {
+      startTime: startTime,
+      endTime: endTime,
+      breadcrumb: {
+        min: TraceEngine.Types.Timing.MicroSeconds(this.breadcrumbs.lastBreadcrumb.window.min + this.#minTime),
+        max: TraceEngine.Types.Timing.MicroSeconds(this.breadcrumbs.lastBreadcrumb.window.max + this.#minTime),
+        range: TraceEngine.Types.Timing.MicroSeconds(
+            this.breadcrumbs.lastBreadcrumb.window.max - this.breadcrumbs.lastBreadcrumb.window.min),
+      },
+    });
   }
 
   removeBreadcrumb(breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb): void {
@@ -136,8 +148,8 @@ export class TimelineMiniMap extends
     }
 
     this.setBounds(startMSWithMin, endMSWithMin);
+    this.setWindowTimes(startMSWithMin, endMSWithMin);
     this.#overviewComponent.scheduleUpdate(startMSWithMin, endMSWithMin);
-    this.#overviewComponent.setWindowTimes(startMSWithMin, endMSWithMin);
   }
 
   override wasShown(): void {
@@ -155,7 +167,13 @@ export class TimelineMiniMap extends
   }
 
   setWindowTimes(left: number, right: number): void {
-    this.#overviewComponent.setWindowTimes(left, right);
+    // If breadcrumbs exist, make sure that selectected window is within timeline boundaries
+    if (!this.breadcrumbsActivated ||
+        (this.#overviewComponent.overviewCalculator.minimumBoundary() <= TraceEngine.Types.Timing.MilliSeconds(left) &&
+         this.#overviewComponent.overviewCalculator.maximumBoundary() >=
+             TraceEngine.Types.Timing.MilliSeconds(right))) {
+      this.#overviewComponent.setWindowTimes(left, right);
+    }
   }
 
   #setMarkers(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): void {

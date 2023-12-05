@@ -186,11 +186,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     if (event.data.breadcrumbWindow) {
       this.#currentBreadcrumbTimeWindow = event.data.breadcrumbWindow;
-      const minMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.data.breadcrumbWindow.min);
-      const maxMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.data.breadcrumbWindow.max);
-      this.mainFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
-      this.networkFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
-      this.mainFlameChart.update();
     } else {
       this.#currentBreadcrumbTimeWindow = undefined;
     }

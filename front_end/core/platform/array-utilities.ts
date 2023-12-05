@@ -135,6 +135,8 @@ export function lowerBound<T>(
     right?: number): number;
 export function lowerBound<S, T>(
     array: S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
+export function lowerBound<S, T>(
+    array: readonly S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
 export function lowerBound<S, T, A extends S[]>(
     array: A, needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number {
   let l = left || 0;

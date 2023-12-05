@@ -10,7 +10,6 @@ ts_library("timeline_model") {
     "Initiators_test.ts",
     "PerformanceModel_test.ts",
     "TimelineFrameBeginFrameQueue_test.ts",
-    "TimelineFrameModel_test.ts",
     "TimelineModelFilter_test.ts",
     "TimelineModel_test.ts",
     "TimelineProfileTree_test.ts",

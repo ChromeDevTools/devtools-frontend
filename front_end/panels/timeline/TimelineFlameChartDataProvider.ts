@@ -123,7 +123,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // tracks have been migrated to the new system, all entries will be of the
 // TraceEventData type.
 export type TimelineFlameChartEntry =
-    (TraceEngine.Legacy.Event|TimelineModel.TimelineFrameModel.TimelineFrame|
+    (TraceEngine.Legacy.Event|TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|
      TraceEngine.Types.TraceEvents.TraceEventData);
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
@@ -831,8 +831,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */, expanded);
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.Frame;
-    for (const frame of this.legacyPerformanceModel.frames()) {
-      this.appendFrame(frame);
+    for (const frame of this.traceEngineData.Frames.frames) {
+      this.#appendNewEngineFrame(frame);
     }
     ++this.currentLevel;
 
@@ -915,8 +915,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       title = this.entryTitle(entryIndex);
 
     } else if (entryType === EntryType.Frame) {
-      const frame = (this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
-      time = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);
+      const frame = (this.entryData[entryIndex] as TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
+      time = i18n.TimeUtilities.preciseMillisToString(
+          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.duration), 1);
 
       if (frame.idle) {
         title = i18nString(UIStrings.idleFrame);
@@ -1046,7 +1047,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
       barWidth: number, barHeight: number): void {
     const hPadding = 1;
-    const frame = (this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
+    const frame = (this.entryData[entryIndex] as TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame);
     barX += hPadding;
     barWidth -= 2 * hPadding;
     if (frame.idle) {
@@ -1074,7 +1075,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     context.fillRect(barX, barY, barWidth, barHeight);
 
-    const frameDurationText = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);
+    const frameDurationText = i18n.TimeUtilities.preciseMillisToString(
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.duration), 1);
     const textWidth = context.measureText(frameDurationText).width;
     if (textWidth <= barWidth) {
       context.fillStyle = this.textColor(entryIndex);
@@ -1304,16 +1306,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
   }
 
-  private appendFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): void {
+  #appendNewEngineFrame(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): void {
     const index = this.entryData.length;
     this.entryData.push(frame);
-    this.entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(frame.duration, true);
+    const durationMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.duration);
+    this.entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(durationMilliseconds, true);
     if (!this.timelineDataInternal) {
       return;
     }
     this.timelineDataInternal.entryLevels[index] = this.currentLevel;
-    this.timelineDataInternal.entryTotalTimes[index] = frame.duration;
-    this.timelineDataInternal.entryStartTimes[index] = frame.startTime;
+    this.timelineDataInternal.entryTotalTimes[index] = durationMilliseconds;
+    this.timelineDataInternal.entryStartTimes[index] =
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime);
   }
 
   createSelection(entryIndex: number): TimelineSelection|null {
@@ -1323,8 +1327,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entry && TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
       timelineSelection = TimelineSelection.fromTraceEvent(entry);
     } else if (entryType === EntryType.Frame) {
-      timelineSelection =
-          TimelineSelection.fromFrame((this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame));
+      timelineSelection = TimelineSelection.fromFrame(
+          (this.entryData[entryIndex] as TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame));
     }
     if (timelineSelection) {
       this.lastSelection = new Selection(timelineSelection, entryIndex);

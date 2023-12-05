@@ -1169,7 +1169,7 @@ export function isTraceEventCommit(event: TraceEventData): event is TraceEventCo
 export interface TraceEventRasterTask extends TraceEventComplete {
   name: KnownEventName.RasterTask;
   args: TraceEventArgs&{
-    tileData: {
+    tileData?: {
       layerId: number,
       sourceFrameNumber: number,
       tileId: {
@@ -1659,23 +1659,25 @@ export interface TraceEventLayerTreeHostImplSnapshot extends TraceEventData {
   name: KnownEventName.LayerTreeHostImplSnapshot;
   ph: Phase.OBJECT_SNAPSHOT;
   id: string;
-  /* eslint-disable @typescript-eslint/naming-convention */
   args: TraceEventArgs&{
-    active_tiles: Array<{
-      id: string,
-      layer_id: string,
-      gpu_memory_usage: number,
-      content_rect: number[],
-    }>,
-    device_viewport_size: {
-      width: number,
-      height: number,
+    snapshot: {
+      /* eslint-disable @typescript-eslint/naming-convention */
+      active_tiles: Array<{
+        id: string,
+        layer_id: string,
+        gpu_memory_usage: number,
+        content_rect: number[],
+      }>,
+      device_viewport_size: {
+        width: number,
+        height: number,
+      },
+      active_tree: {
+        root_layer: TraceLayer,
+        layers: TraceLayer[],
+      },
+      /* eslint-enable @typescript-eslint/naming-convention */
     },
-    active_tree: {
-      root_layer: TraceLayer,
-      layers: TraceLayer[],
-    },
-    /* eslint-enable @typescript-eslint/naming-convention */
   };
 }
 

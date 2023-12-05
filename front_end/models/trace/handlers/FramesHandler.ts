@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -48,6 +49,10 @@ export async function finalize(): Promise<void> {
     throw new Error('FramesHandler is not initialized');
   }
 
+  // Snapshot events can be emitted out of order, so we need to sort before
+  // building the frames model.
+  Helpers.Trace.sortTraceEventsInPlace(allEvents);
+
   const modelForTrace = new TimelineFrameModel(
       allEvents,
       rendererHandlerData(),
@@ -60,11 +65,13 @@ export async function finalize(): Promise<void> {
 
 export interface FramesData {
   frames: readonly TimelineFrame[];
+  framesById: Readonly<Record<number, TimelineFrame|undefined>>;
 }
 
 export function data(): FramesData {
   return {
     frames: model ? Array.from(model.frames()) : [],
+    framesById: model ? {...model.framesById()} : {},
   };
 }
 
@@ -93,17 +100,6 @@ function isFrameEvent(event: Types.TraceEvents.TraceEventData): event is FrameEv
       Types.TraceEvents.isTraceEventActivateLayerTree(event) || Types.TraceEvents.isTraceEventDrawFrame(event));
 }
 
-function idForEntry(entry: Types.TraceEvents.TraceEventData): string|undefined {
-  const scope = Types.TraceEvents.isTraceEventInstant(entry) && entry.s || undefined;
-
-  if (Types.TraceEvents.isNestableAsyncPhase(entry.ph)) {
-    const id = Helpers.Trace.extractId(entry as Types.TraceEvents.TraceEventNestableAsync);
-    return scope ? `${scope}@${id}` : id;
-  }
-
-  return undefined;
-}
-
 function entryIsTopLevel(entry: Types.TraceEvents.TraceEventData): boolean {
   const devtoolsTimelineCategory = 'disabled-by-default-devtools.timeline';
   return entry.name === Types.TraceEvents.KnownEventName.RunTask && entry.cat.includes(devtoolsTimelineCategory);
@@ -115,7 +111,6 @@ export class TimelineFrameModel {
     [x: number]: TimelineFrame,
   } = {};
   #beginFrameQueue: TimelineFrameBeginFrameQueue = new TimelineFrameBeginFrameQueue();
-  #minimumRecordTime: Types.Timing.MicroSeconds = Types.Timing.MicroSeconds(Infinity);
   #lastFrame: TimelineFrame|null = null;
   #mainFrameCommitted = false;
   #mainFrameRequested = false;
@@ -149,6 +144,10 @@ export class TimelineFrameModel {
 
     this.#layerTreeData = layerTreeData;
     this.#addTraceEvents(allEvents, threadData, metaData.mainFrameId);
+  }
+
+  framesById(): Readonly<Record<number, TimelineFrame|undefined>> {
+    return this.#frameById;
   }
 
   frames(): TimelineFrame[] {
@@ -260,7 +259,7 @@ export class TimelineFrameModel {
       this.#flushFrame(this.#lastFrame, startTime);
     }
     this.#lastFrame =
-        new TimelineFrame(seqId, startTime, Types.Timing.MicroSeconds(startTime - this.#minimumRecordTime));
+        new TimelineFrame(seqId, startTime, Types.Timing.MicroSeconds(startTime - metaHandlerData().traceBounds.min));
   }
 
   #flushFrame(frame: TimelineFrame, endTime: Types.Timing.MicroSeconds): void {
@@ -313,17 +312,10 @@ export class TimelineFrameModel {
   }
 
   #addTraceEvent(event: Types.TraceEvents.TraceEventData, mainFrameId: string): void {
-    if (event.ts && event.ts < this.#minimumRecordTime) {
-      this.#minimumRecordTime = event.ts;
-    }
-
-    const entryId = idForEntry(event);
-
     if (Types.TraceEvents.isTraceEventSetLayerId(event) && event.args.data.frame === mainFrameId) {
       this.#layerTreeId = event.args.data.layerTreeId;
     } else if (
-        entryId && Types.TraceEvents.isTraceEventLayerTreeHostImplSnapshot(event) &&
-        Number(entryId) === this.#layerTreeId) {
+        Types.TraceEvents.isTraceEventLayerTreeHostImplSnapshot(event) && Number(event.id) === this.#layerTreeId) {
       this.#handleLayerTreeSnapshot({
         entry: event,
         paints: [],
@@ -555,4 +547,13 @@ export class TimelineFrameBeginFrameQueue {
     }
     return framesToVisualize;
   }
+}
+
+export function framesWithinWindow(
+    frames: readonly TimelineFrame[], startTime: Types.Timing.MicroSeconds,
+    endTime: Types.Timing.MicroSeconds): TimelineFrame[] {
+  const firstFrame = Platform.ArrayUtilities.lowerBound(frames, startTime || 0, (time, frame) => time - frame.endTime);
+  const lastFrame =
+      Platform.ArrayUtilities.lowerBound(frames, endTime || Infinity, (time, frame) => time - frame.startTime);
+  return frames.slice(firstFrame, lastFrame);
 }

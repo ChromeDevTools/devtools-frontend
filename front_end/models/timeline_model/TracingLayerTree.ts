@@ -7,8 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-
-import {type LayerPaintEvent} from './TimelineFrameModel.js';
+import type * as TraceEngine from '../trace/trace.js';
 
 export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   private tileById: Map<string, TracingLayerTile>;
@@ -20,8 +19,9 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     this.paintProfilerModel = target && target.model(SDK.PaintProfiler.PaintProfilerModel);
   }
 
-  async setLayers(root: TracingLayerPayload|null, layers: TracingLayerPayload[]|null, paints: LayerPaintEvent[]):
-      Promise<void> {
+  async setLayers(
+      root: TracingLayerPayload|null, layers: TracingLayerPayload[]|null,
+      paints: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent[]): Promise<void> {
     const idsToResolve = new Set<Protocol.DOM.BackendNodeId>();
     if (root) {
       // This is a legacy code path for compatibility, as cc is removing
@@ -78,7 +78,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     return layer.pictureForRect(tile.content_rect);
   }
 
-  private setPaints(paints: LayerPaintEvent[]): void {
+  private setPaints(paints: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent[]): void {
     for (let i = 0; i < paints.length; ++i) {
       const layer = (this.layersById.get(paints[i].layerId()) as TracingLayer | null);
       if (layer) {
@@ -119,6 +119,34 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     }
   }
 }
+export class TracingFrameLayerTree {
+  readonly #target: SDK.Target.Target|null;
+  readonly #snapshot: TraceEngine.Types.TraceEvents.TraceEventLayerTreeHostImplSnapshot;
+  readonly #paints: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent[] = [];
+
+  constructor(target: SDK.Target.Target|null, data: TraceEngine.Handlers.ModelHandlers.Frames.FrameLayerTreeData) {
+    this.#target = target;
+    this.#snapshot = data.entry;
+    this.#paints = data.paints;
+  }
+
+  async layerTreePromise(): Promise<TracingLayerTree|null> {
+    const data = this.#snapshot.args.snapshot;
+    const viewport = data['device_viewport_size'];
+    const tiles = data['active_tiles'];
+    const rootLayer = data['active_tree']['root_layer'];
+    const layers = data['active_tree']['layers'];
+    const layerTree = new TracingLayerTree(this.#target);
+    layerTree.setViewportSize(viewport);
+    layerTree.setTiles(tiles);
+    await layerTree.setLayers(rootLayer, layers, this.#paints || []);
+    return layerTree;
+  }
+
+  paints(): TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent[] {
+    return this.#paints;
+  }
+}
 
 export class TracingLayer implements SDK.LayerTreeBase.Layer {
   private parentLayerId: string|null;
@@ -133,7 +161,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   private quadInternal: number[];
   private scrollRectsInternal: Protocol.LayerTree.ScrollRect[];
   private gpuMemoryUsageInternal: number;
-  private paints: LayerPaintEvent[];
+  private paints: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent[];
   private compositingReasons: string[];
   private compositingReasonIds: string[];
   private drawsContentInternal: boolean;
@@ -282,17 +310,25 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   snapshots(): Promise<SDK.PaintProfiler.SnapshotWithRect|null>[] {
-    return this.paints.map(paint => paint.snapshotPromise().then(snapshot => {
+    return this.paints.map(async paint => {
+      if (!this.paintProfilerModel) {
+        return null;
+      }
+
+      const snapshot = await getPaintProfilerSnapshot(
+          this.paintProfilerModel,
+          paint,
+      );
       if (!snapshot) {
         return null;
       }
       const rect = {x: snapshot.rect[0], y: snapshot.rect[1], width: snapshot.rect[2], height: snapshot.rect[3]};
       return {rect: rect, snapshot: snapshot.snapshot};
-    }));
+    });
   }
 
-  pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
-    return Promise.all(this.paints.map(paint => paint.picturePromise())).then(pictures => {
+  async pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
+    return Promise.all(this.paints.map(paint => paint.picture())).then(pictures => {
       const filteredPictures = (pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)) as {
         rect: Array<number>,
         serializedPicture: string,
@@ -353,7 +389,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.scrollRectsInternal = nonPayloadScrollRects;
   }
 
-  addPaintEvent(paint: LayerPaintEvent): void {
+  addPaintEvent(paint: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent): void {
     this.paints.push(paint);
   }
 
@@ -394,4 +430,18 @@ export interface TracingLayerTile {
   layer_id: string;
   gpu_memory_usage: number;
   content_rect: number[];
+}
+
+async function getPaintProfilerSnapshot(
+    paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel,
+    paint: TraceEngine.Handlers.ModelHandlers.Frames.LayerPaintEvent): Promise<{
+  rect: number[],
+  snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
+}|null> {
+  const picture = paint.picture();
+  if (!picture || !paintProfilerModel) {
+    return null;
+  }
+  const snapshot = await paintProfilerModel.loadSnapshot(picture.serializedPicture);
+  return snapshot ? {rect: picture.rect, snapshot: snapshot} : null;
 }

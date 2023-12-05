@@ -74,4 +74,23 @@ describeWithMockConnection('FramesHandler', () => {
     assert.strictEqual(frameWithPaints.seqId, 1127448);
     assert.lengthOf(frameWithPaints.paints, 7);
   });
+
+  it('can return frames within a given window', async function() {
+    const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+    await processTrace(rawEvents);
+
+    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    assert.lengthOf(parsedFrames, 18);
+
+    const startTime = TraceEngine.Types.Timing.MicroSeconds(parsedFrames[0].startTime);
+    const endTime = TraceEngine.Types.Timing.MicroSeconds(parsedFrames[3].endTime);
+    const framesWithinWindow =
+        TraceEngine.Handlers.ModelHandlers.Frames.framesWithinWindow(parsedFrames, startTime, endTime);
+    assert.deepEqual(framesWithinWindow, [
+      parsedFrames[0],
+      parsedFrames[1],
+      parsedFrames[2],
+      parsedFrames[3],
+    ]);
+  });
 });

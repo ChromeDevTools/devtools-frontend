@@ -37,13 +37,13 @@ const UIStrings = {
    */
   eventLog: 'Event Log',
   /**
-   *@description Title of the Layers tool
-   */
-  layers: 'Layers',
-  /**
    *@description Title of the paint profiler, old name of the performance pane
    */
   paintProfiler: 'Paint Profiler',
+  /**
+   *@description Title of the Layers tool
+   */
+  layers: 'Layers',
   /**
    *@description Text in Timeline Details View of the Performance panel
    *@example {1ms} PH1
@@ -208,15 +208,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.updateContents();
   }
 
-  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame|null {
+  #getFilmStripFrame(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame
+      |null {
     if (!this.#filmStrip) {
       return null;
     }
-    const screenshotTime = TraceEngine.Types.Timing.MilliSeconds(frame.idle ? frame.startTime : frame.endTime);
-    const screenshotTimeMicroSeconds = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(screenshotTime);
-
-    const filmStripFrame =
-        TraceEngine.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, screenshotTimeMicroSeconds);
+    const screenshotTime = (frame.idle ? frame.startTime : frame.endTime);
+    const filmStripFrame = TraceEngine.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, screenshotTime);
     if (!filmStripFrame) {
       return null;
     }
@@ -249,9 +247,11 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const frame = selectionObject;
       const matchedFilmStripFrame = this.#getFilmStripFrame(frame);
       this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));
-      if (frame.layerTree) {
+      const target = SDK.TargetManager.TargetManager.instance().rootTarget();
+      if (frame.layerTree && target) {
+        const layerTreeForFrame = new TimelineModel.TracingLayerTree.TracingFrameLayerTree(target, frame.layerTree);
         const layersView = this.layersView();
-        layersView.showLayerTree(frame.layerTree);
+        layersView.showLayerTree(layerTreeForFrame);
         if (!this.tabbedPane.hasTab(Tab.LayerViewer)) {
           this.appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
         }
@@ -280,16 +280,22 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     return this.lazyLayersView;
   }
 
-  private paintProfilerView(): TimelinePaintProfilerView {
+  private paintProfilerView(): TimelinePaintProfilerView|null {
     if (this.lazyPaintProfilerView) {
       return this.lazyPaintProfilerView;
     }
-    this.lazyPaintProfilerView = new TimelinePaintProfilerView(this.model.frameModel());
+    if (!this.#traceEngineData) {
+      return null;
+    }
+    this.lazyPaintProfilerView = new TimelinePaintProfilerView(this.#traceEngineData);
     return this.lazyPaintProfilerView;
   }
 
   private showSnapshotInPaintProfiler(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
     const paintProfilerView = this.paintProfilerView();
+    if (!paintProfilerView) {
+      return;
+    }
     paintProfilerView.setSnapshot(snapshot);
     if (!this.tabbedPane.hasTab(Tab.PaintProfiler)) {
       this.appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView, true);
@@ -300,24 +306,26 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private appendDetailsTabsForTraceEventAndShowDetails(event: TraceEngine.Legacy.CompatibleTraceEvent, content: Node):
       void {
     this.setContent(content);
+    // TODO: once the legacy engine types are fully removed, this conditional
+    // can be removed.
     if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-      // TODO(crbug.com/1386091): Add support for this use case in the
-      // new engine.
-      return;
-    }
-    if (event.name === TimelineModel.TimelineModel.RecordType.Paint ||
-        event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
-      this.showEventInPaintProfiler(event);
+      if (TraceEngine.Types.TraceEvents.isTraceEventPaint(event) ||
+          TraceEngine.Types.TraceEvents.isTraceEventRasterTask(event)) {
+        this.showEventInPaintProfiler(event);
+      }
     }
   }
 
-  private showEventInPaintProfiler(event: TraceEngine.Legacy.Event): void {
+  private showEventInPaintProfiler(event: TraceEngine.Types.TraceEvents.TraceEventData): void {
     const paintProfilerModel =
         SDK.TargetManager.TargetManager.instance().models(SDK.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {
       return;
     }
     const paintProfilerView = this.paintProfilerView();
+    if (!paintProfilerView) {
+      return;
+    }
     const hasProfileData = paintProfilerView.setEvent(paintProfilerModel, event);
     if (!hasProfileData) {
       return;

@@ -13,12 +13,13 @@ const {assert} = chai;
 
 describeWithEnvironment('TimelineSelection', function() {
   it('can be created with a frame', function() {
-    const frame =
-        new TimelineModel.TimelineFrameModel.TimelineFrame(/* seqId */ 1, /* startTime */ 1, /* start offset */ 0);
+    const frame = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame(
+        /* seqId */ 1, /* startTime */ TraceEngine.Types.Timing.MicroSeconds(1000),
+        /* start offset */ TraceEngine.Types.Timing.MicroSeconds(0));
     const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
     assert.strictEqual(selection.object, frame);
-    assert.strictEqual(selection.startTime, frame.startTime);
-    assert.strictEqual(selection.endTime, frame.endTime);
+    assert.strictEqual(selection.startTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime));
+    assert.strictEqual(selection.endTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.endTime));
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isFrameObject(selection.object));
   });
 

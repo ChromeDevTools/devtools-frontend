@@ -621,9 +621,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('can generate details for a frame', async function() {
-    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
-    const frame = data.performanceModel.frames()[0];
-    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(data.traceParsedData);
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const frame = traceParsedData.Frames.frames.at(0);
+    if (!frame) {
+      throw new Error('Could not find expected frame');
+    }
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     const details =
         Timeline.TimelineUIUtils.TimelineUIUtils.generateDetailsContentForFrame(frame, filmStrip, filmStrip.frames[0]);
     const container = document.createElement('div');
@@ -639,9 +642,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
     if (!durationValue) {
       throw new Error('Could not find duration');
     }
-    // Strip the unicode spaces out and replace with simple spaces for easy assertions.
+    // Strip the unicode spaces out and replace with simple spaces for easy
+    // assertions.
     const value = (durationValue.innerText.replaceAll(/\s/g, ' '));
-    assert.strictEqual(value, '2.77 ms (at 136.45 ms)');
+    assert.strictEqual(value, '37.85 ms (at 109.82 ms)');
   });
 
   describe('buildNetworkRequestDetails', function() {

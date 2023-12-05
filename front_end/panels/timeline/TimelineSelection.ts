@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
-type PermittedObjectTypes = TimelineModel.TimelineFrameModel.TimelineFrame|TraceEngine.Legacy.Event|
+type PermittedObjectTypes = TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame|TraceEngine.Legacy.Event|
                             TraceEngine.Types.TraceEvents.TraceEventData|SelectionRange;
 
 const SelectionRangeSymbol = Symbol('SelectionRange');
@@ -24,14 +23,15 @@ export class TimelineSelection {
     this.object = object;
   }
 
-  static isFrameObject(object: PermittedObjectTypes): object is TimelineModel.TimelineFrameModel.TimelineFrame {
-    return object instanceof TimelineModel.TimelineFrameModel.TimelineFrame;
+  static isFrameObject(object: PermittedObjectTypes):
+      object is TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame {
+    return object instanceof TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame;
   }
 
-  static fromFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TimelineSelection {
+  static fromFrame(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): TimelineSelection {
     return new TimelineSelection(
-        TraceEngine.Types.Timing.MilliSeconds(frame.startTime), TraceEngine.Types.Timing.MilliSeconds(frame.endTime),
-        frame);
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime),
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.endTime), frame);
   }
 
   static isSyntheticNetworkRequestDetailsEventSelection(object: PermittedObjectTypes):

@@ -1515,7 +1515,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void this.stopRecording();
   }
 
-  private frameForSelection(selection: TimelineSelection): TimelineModel.TimelineFrameModel.TimelineFrame|null {
+  private frameForSelection(selection: TimelineSelection): TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame
+      |null {
     if (TimelineSelection.isFrameObject(selection.object)) {
       return selection.object;
     }
@@ -1527,7 +1528,22 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (!this.performanceModel) {
         return null;
       }
-      return this.performanceModel.frameModel().getFramesWithinWindow(selection.endTime, selection.endTime)[0];
+      const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+      if (!traceData) {
+        return null;
+      }
+      // If the user has selected a time range, the frame we want is the last
+      // frame in that time window, hence why the window we look for is the
+      // endTime to the endTime.
+      const endTimeMicro = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(selection.endTime);
+      const lastFrameInSelection = TraceEngine.Handlers.ModelHandlers.Frames
+                                       .framesWithinWindow(
+                                           traceData.Frames.frames,
+                                           endTimeMicro,
+                                           endTimeMicro,
+                                           )
+                                       .at(0);
+      return lastFrameInSelection || null;
     }
     console.assert(false, 'Should never be reached');
     return null;
@@ -1538,12 +1554,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!currentFrame || !this.performanceModel) {
       return;
     }
-    const frames = this.performanceModel.frames();
-    let index = frames.indexOf(currentFrame);
+    const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+    if (!traceData) {
+      return;
+    }
+    let index = traceData.Frames.frames.indexOf(currentFrame);
     console.assert(index >= 0, 'Can\'t find current frame in the frame list');
-    index = Platform.NumberUtilities.clamp(index + offset, 0, frames.length - 1);
-    const frame = frames[index];
-    this.revealTimeRange(frame.startTime, frame.endTime);
+    index = Platform.NumberUtilities.clamp(index + offset, 0, traceData.Frames.frames.length - 1);
+    const frame = traceData.Frames.frames[index];
+    this.revealTimeRange(
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime),
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.endTime));
     this.select(TimelineSelection.fromFrame(frame));
     return true;
   }
@@ -1577,7 +1598,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.highlightEvent(event);
   }
 
-  private revealTimeRange(startTime: number, endTime: number): void {
+  private revealTimeRange(
+      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
     if (!this.performanceModel) {
       return;
     }

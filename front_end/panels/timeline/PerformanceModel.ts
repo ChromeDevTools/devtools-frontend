@@ -8,14 +8,11 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
-import {TimelineUIUtils} from './TimelineUIUtils.js';
-
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mainTargetInternal: SDK.Target.Target|null;
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
   private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
-  private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
   private windowInternal: Window;
   private recordStartTimeInternal?: number;
   #activeBreadcrumbWindow?: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
@@ -27,9 +24,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.filtersInternal = [];
 
     this.timelineModelInternal = new TimelineModel.TimelineModel.TimelineModelImpl();
-    this.frameModelInternal = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
-        event => TimelineUIUtils.eventStyle(event).category.name);
-
     this.windowInternal = {left: 0, right: Infinity};
 
     this.recordStartTimeInternal = undefined;
@@ -66,17 +60,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false): Promise<void> {
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model, isFreshRecording);
-
-    const mainTracks = this.timelineModelInternal.tracks().filter(
-        track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
-            track.events.length);
-
-    const threadData = mainTracks.map(track => {
-      const event = track.events[0];
-      return {thread: event.thread, time: event.startTime};
-    });
-    this.frameModelInternal.addTraceEvents(
-        this.mainTargetInternal, this.timelineModelInternal.inspectedTargetEvents(), threadData);
   }
 
   tracingModel(): TraceEngine.Legacy.TracingModel {
@@ -88,14 +71,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   timelineModel(): TimelineModel.TimelineModel.TimelineModelImpl {
     return this.timelineModelInternal;
-  }
-
-  frames(): TimelineModel.TimelineFrameModel.TimelineFrame[] {
-    return this.frameModelInternal.getFrames();
-  }
-
-  frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {
-    return this.frameModelInternal;
   }
 
   setWindow(window: Window, animate?: boolean, breadcrumb?: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {

@@ -144,7 +144,8 @@ describe('Performance panel', function() {
   });
 
   itScreenshot('renders screenshots in the frames track', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&flamechart-force-expand=frames');
+    await loadComponentDocExample(
+        'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
     // With some changes made to timeline-details-view it passes with a diff of 1.98 so reduce it to 1.

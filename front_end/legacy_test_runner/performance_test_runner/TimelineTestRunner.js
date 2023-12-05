@@ -122,10 +122,6 @@ PerformanceTestRunner.timelineModel = function() {
   return PerformanceTestRunner.performanceModel().timelineModel();
 };
 
-PerformanceTestRunner.timelineFrameModel = function() {
-  return PerformanceTestRunner.performanceModel().frameModel();
-};
-
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
   const tracingModel = new Trace.Legacy.TracingModel();
   tracingModel.addEvents(events);

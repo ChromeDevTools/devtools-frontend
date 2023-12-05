@@ -1000,14 +1000,6 @@ const UIStrings = {
   frame: 'Frame',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
-   */
-  layerTree: 'Layer tree',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  show: 'Show',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
    *@example {10ms} PH1
    *@example {10ms} PH2
    */
@@ -1892,9 +1884,9 @@ export class TimelineUIUtils {
             precomputedFeatures: undefined,
           });
         } else if (
-            event instanceof TraceEngine.Legacy.Event &&
-            TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).picture) {
-          previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
+            traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+            TraceEngine.Types.TraceEvents.isTraceEventPaint(event)) {
+          previewElement = await TimelineUIUtils.buildPicturePreviewContent(traceParseData, event, target);
         }
         // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
         event[previewElementSymbol] = previewElement;
@@ -2824,10 +2816,28 @@ export class TimelineUIUtils {
     return hasChildren;
   }
 
-  static async buildPicturePreviewContent(event: TraceEngine.Legacy.Event, target: SDK.Target.Target):
-      Promise<Element|null> {
-    const snapshotWithRect =
-        await new TimelineModel.TimelineFrameModel.LayerPaintEvent(event, target).snapshotPromise();
+  static async buildPicturePreviewContent(
+      traceData: TraceEngine.Handlers.Types.TraceParseData, event: TraceEngine.Types.TraceEvents.TraceEventPaint,
+      target: SDK.Target.Target): Promise<Element|null> {
+    const snapshotEvent = traceData.LayerTree.paintsToSnapshots.get(event);
+    if (!snapshotEvent) {
+      return null;
+    }
+
+    const paintProfilerModel = target.model(SDK.PaintProfiler.PaintProfilerModel);
+    if (!paintProfilerModel) {
+      return null;
+    }
+    const snapshot = await paintProfilerModel.loadSnapshot(snapshotEvent.args.snapshot.skp64);
+    if (!snapshot) {
+      return null;
+    }
+
+    const snapshotWithRect = {
+      snapshot,
+      rect: snapshotEvent.args.snapshot.params?.layer_rect,
+    };
+
     if (!snapshotWithRect) {
       return null;
     }
@@ -3009,7 +3019,7 @@ export class TimelineUIUtils {
   }
 
   static generateDetailsContentForFrame(
-      frame: TimelineModel.TimelineFrameModel.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.Data|null,
+      frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.Data|null,
       filmStripFrame: TraceEngine.Extras.FilmStrip.Frame|null): DocumentFragment {
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(UIStrings.frame));
@@ -3025,12 +3035,6 @@ export class TimelineUIUtils {
       filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStrip, filmStripFrame), false);
     }
 
-    if (frame.layerTree) {
-      contentHelper.appendElementRow(
-          i18nString(UIStrings.layerTree),
-          LegacyComponents.Linkifier.Linkifier.linkifyRevealable(frame.layerTree, i18nString(UIStrings.show)));
-    }
-
     function frameClicked(
         filmStrip: TraceEngine.Extras.FilmStrip.Data, filmStripFrame: TraceEngine.Extras.FilmStrip.Frame): void {
       PerfUI.FilmStripView.Dialog.fromFilmStrip(filmStrip, filmStripFrame.index);
@@ -3039,10 +3043,14 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static frameDuration(frame: TimelineModel.TimelineFrameModel.TimelineFrame): Element {
+  static frameDuration(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): Element {
+    const offsetMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTimeOffset);
+    const durationMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+        TraceEngine.Types.Timing.MicroSeconds(frame.endTime - frame.startTime));
+
     const durationText = i18nString(UIStrings.sAtSParentheses, {
-      PH1: i18n.TimeUtilities.millisToString(frame.endTime - frame.startTime, true),
-      PH2: i18n.TimeUtilities.millisToString(frame.startTimeOffset, true),
+      PH1: i18n.TimeUtilities.millisToString(durationMilli, true),
+      PH2: i18n.TimeUtilities.millisToString(offsetMilli, true),
     });
     return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: durationText});
   }

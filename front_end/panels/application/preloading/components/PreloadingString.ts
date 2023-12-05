@@ -109,9 +109,10 @@ const UIStrings = {
    */
   PrefetchNotUsedProbeFailed: 'The prefetch was blocked by your Internet Service Provider or network administrator.',
   /**
-   *@description  Description text for Prefetch status PrefetchEvicted.
+   *@description  Description text for Prefetch status PrefetchEvictedForNewerPrefetch.
    */
-  PrefetchEvicted: 'The prefetch was discarded for a newer prefetch because |kPrefetchNewLimits| is enabled',
+  PrefetchEvictedForNewerPrefetch:
+      'The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest.',
   /**
    *@description  Description text for Prefetch status PrefetchNotEligibleBatterySaverEnabled.
    */
@@ -413,7 +414,7 @@ export const PrefetchReasonDescription: {[key: string]: {name: () => Platform.UI
   'PrefetchNotUsedCookiesChanged': {name: i18nLazyString(UIStrings.PrefetchNotUsedCookiesChanged)},
   'PrefetchProxyNotAvailable': {name: i18nLazyString(UIStrings.PrefetchProxyNotAvailable)},
   'PrefetchNotUsedProbeFailed': {name: i18nLazyString(UIStrings.PrefetchNotUsedProbeFailed)},
-  'PrefetchEvicted': {name: i18nLazyString(UIStrings.PrefetchEvicted)},
+  'PrefetchEvictedForNewerPrefetch': {name: i18nLazyString(UIStrings.PrefetchEvictedForNewerPrefetch)},
   'PrefetchNotEligibleBatterySaverEnabled': {name: i18nLazyString(UIStrings.PrefetchNotEligibleBatterySaverEnabled)},
   'PrefetchNotEligiblePreloadingDisabled': {name: i18nLazyString(UIStrings.PrefetchNotEligiblePreloadingDisabled)},
 };
@@ -456,8 +457,10 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
       return PrefetchReasonDescription['PrefetchFailedPerPageLimitExceeded'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchIneligibleRetryAfter:
       return PrefetchReasonDescription['PrefetchIneligibleRetryAfter'].name();
-    case Protocol.Preload.PrefetchStatus.PrefetchEvicted:
-      return PrefetchReasonDescription['PrefetchEvicted'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchEvictedForNewerPrefetch:
+      return PrefetchReasonDescription['PrefetchEvictedForNewerPrefetch'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchEvictedAfterCandidateRemoved:
+      return null;
     case Protocol.Preload.PrefetchStatus.PrefetchIsPrivacyDecoy:
       return PrefetchReasonDescription['PrefetchIsPrivacyDecoy'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchIsStale:

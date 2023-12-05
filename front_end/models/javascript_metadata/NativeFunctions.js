@@ -7575,6 +7575,18 @@ export const NativeFunctions = [
     signatures: [['input','filter','?options']]
   },
   {
+    name: 'equal',
+    signatures: [['a','b']]
+  },
+  {
+    name: 'greater',
+    signatures: [['a','b']]
+  },
+  {
+    name: 'lesser',
+    signatures: [['a','b']]
+  },
+  {
     name: 'neg',
     signatures: [['x']]
   },
@@ -7617,6 +7629,10 @@ export const NativeFunctions = [
   {
     name: 'matmul',
     signatures: [['a','b']]
+  },
+  {
+    name: 'layerNormalization',
+    signatures: [['input','?options']]
   },
   {
     name: 'leakyRelu',

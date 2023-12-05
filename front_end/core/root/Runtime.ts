@@ -321,4 +321,5 @@ export enum ExperimentName {
 export enum ConditionName {
   CAN_DOCK = 'can_dock',
   NOT_SOURCES_HIDE_ADD_FOLDER = '!sources.hide_add_folder',
+  REACT_NATIVE_UNSTABLE_NETWORK_PANEL = 'unstable_enableNetworkPanel',
 }

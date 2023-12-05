@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../legacy/legacy.js';
 
 import type * as LinearMemoryInspector from './linear_memory_inspector.js';
@@ -40,5 +42,16 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
     return LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.RemoteObject.LinearMemoryInspectable];
+  },
+  destination: Common.Revealer.RevealerDestination.MEMORY_INSPECTOR_PANEL,
+  async loadRevealer() {
+    const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
+    return LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
   },
 });

@@ -10,9 +10,11 @@ import * as ObjectUI from '../../../../../../../front_end/ui/legacy/components/o
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
 
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
+import {dispatchClickEvent} from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
 import {someMutations} from '../../../../helpers/MutationHelpers.js';
 import {describeWithRealConnection, getExecutionContext} from '../../../../helpers/RealConnection.js';
+import {TestRevealer} from '../../../../helpers/RevealerHelpers.js';
 
 describeWithRealConnection('ObjectPropertiesSection', () => {
   async function setupTreeOutline(
@@ -224,7 +226,7 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
         assert.isFalse(div.hasChildNodes());
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
         assert.isTrue(div.hasChildNodes());
-        const icon = div.getElementsByClassName('devtools-icon');
+        const icon = div.querySelector('devtools-icon');
         assert.isNotNull(icon);
       });
 
@@ -236,6 +238,26 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
         assert.isFalse(div.hasChildNodes());
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object);
         assert.isFalse(div.hasChildNodes());
+      });
+
+      it('triggers the correct revealer upon \'click\'', () => {
+        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+        object.isLinearMemoryInspectable.returns(true);
+        const expression = 'foo';
+
+        const div = document.createElement('div');
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object, expression);
+        const icon = div.querySelector('devtools-icon');
+        assertNotNullOrUndefined(icon);
+        const reveal = sinon.spy();
+        TestRevealer.install(reveal);
+        try {
+          dispatchClickEvent(icon);
+
+          sinon.assert.calledOnceWithMatch(reveal, sinon.match({object, expression}));
+        } finally {
+          TestRevealer.reset();
+        }
       });
     });
   });

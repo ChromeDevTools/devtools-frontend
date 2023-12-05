@@ -28,13 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
-import * as LinearMemoryInspector from '../../ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -301,22 +300,19 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 }
 
-export class OpenLinearMemoryInspector extends UI.Widget.VBox implements
+export class OpenLinearMemoryInspector implements
     UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
   appendApplicableItems(
-      event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
       target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
     if (target.property && target.property.value && target.property.value.isLinearMemoryInspectable()) {
       const expression = target.path();
-      contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.revealInMemoryInspectorPanel),
-          this.openMemoryInspector.bind(this, expression, target.property.value));
+      const object = target.property.value;
+      contextMenu.debugSection().appendItem(i18nString(UIStrings.revealInMemoryInspectorPanel), () => {
+        Host.userMetrics.linearMemoryInspectorRevealedFrom(
+            Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
+        void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
+      });
     }
-  }
-
-  private async openMemoryInspector(expression: string, obj: SDK.RemoteObject.RemoteObject): Promise<void> {
-    const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
-    Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
-    void controller.openInspectorView(obj, expression);
   }
 }

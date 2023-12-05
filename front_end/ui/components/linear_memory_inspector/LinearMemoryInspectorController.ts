@@ -92,7 +92,8 @@ type SerializableSettings = {
   endianness: Endianness,
 };
 
-export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
+export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel>
+    implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable> {
   #paneInstance = LinearMemoryInspectorPane.instance();
   #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
   #bufferIdToHighlightInfo: Map<string, HighlightInfo> = new Map();
@@ -277,29 +278,30 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return expression;
   }
 
-  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, expression?: string): Promise<void> {
-    const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(obj);
-    let memoryObj = obj;
+  async reveal({object, expression}: SDK.RemoteObject.LinearMemoryInspectable, omitFocus?: boolean|undefined):
+      Promise<void> {
+    const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(object);
+    let memoryObject = object;
     let memoryAddress = undefined;
     if (response !== undefined) {
       memoryAddress = response.address;
-      memoryObj = response.obj;
+      memoryObject = response.obj;
     }
 
     if (memoryAddress !== undefined) {
       Host.userMetrics.linearMemoryInspectorTarget(
           Host.UserMetrics.LinearMemoryInspectorTarget.DWARFInspectableAddress);
-    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Arraybuffer) {
+    } else if (memoryObject.subtype === Protocol.Runtime.RemoteObjectSubtype.Arraybuffer) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.ArrayBuffer);
-    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Dataview) {
+    } else if (memoryObject.subtype === Protocol.Runtime.RemoteObjectSubtype.Dataview) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.DataView);
-    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Typedarray) {
+    } else if (memoryObject.subtype === Protocol.Runtime.RemoteObjectSubtype.Typedarray) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.TypedArray);
     } else {
-      console.assert(memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Webassemblymemory);
+      console.assert(memoryObject.subtype === Protocol.Runtime.RemoteObjectSubtype.Webassemblymemory);
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.WebAssemblyMemory);
     }
-    const buffer = await getBufferFromObject(memoryObj);
+    const buffer = await getBufferFromObject(memoryObject);
     const {internalProperties} = await buffer.object().getOwnProperties(false);
     const idProperty = internalProperties?.find(({name}) => name === '[[ArrayBufferData]]');
     const id = idProperty?.value?.value;
@@ -308,7 +310,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
     const memoryProperty = internalProperties?.find(({name}) => name === '[[WebAssemblyMemory]]');
     const memory = memoryProperty?.value;
-    const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, expression);
+    const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(object, expression);
     if (highlightInfo) {
       this.setHighlightInfo(id, highlightInfo);
     } else {
@@ -316,7 +318,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
     if (this.#bufferIdToRemoteObject.has(id)) {
       this.#paneInstance.reveal(id, memoryAddress);
-      void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+      void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector', omitFocus);
       return;
     }
 
@@ -325,7 +327,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
     this.#paneInstance.create(id, title, arrayBufferWrapper, memoryAddress);
-    void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+    void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector', omitFocus);
   }
 
   static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string): HighlightInfo|undefined {

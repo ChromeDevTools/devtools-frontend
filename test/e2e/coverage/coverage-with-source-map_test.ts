@@ -42,7 +42,8 @@ describe('Coverage Panel', function() {
     await waitFor('.data-grid-data-grid-node:not(.parent)', resultsElement);  // wait for children to be loaded
   });
 
-  it('Shows coverage data for sources if a script has source map', async () => {
+  // Flakily has navigation errors in the "beforeEach".
+  it.skip('[crbug.com/1508272] Shows coverage data for sources if a script has source map', async () => {
     const URL_PREFIX = `https://localhost:${getTestServerPort()}/test/e2e/resources/coverage`;
     const expected = [
       {

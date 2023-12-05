@@ -42,7 +42,7 @@ const UIStrings = {
   /**
    *@description Text in Sources View of the Sources panel.
    */
-  selectFolder: 'select folder',
+  selectFolder: 'Select folder',
   /**
    *@description Accessible label for Sources placeholder view actions list
    */

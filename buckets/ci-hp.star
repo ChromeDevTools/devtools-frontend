@@ -33,37 +33,9 @@ highly_privileged_builder(
     name = ROLL_BUILDER_NAME,
     service_account = AUTOROLLER_ACCOUNT,
     schedule = "0 3,12 * * *",
-    recipe_name = "v8/auto_roll_incoming_deps",
+    recipe_name = "devtools/auto_roll_incoming",
     dimensions = dimensions.default_ubuntu,
     execution_timeout = default_timeout,
-    properties = {
-        "autoroller_config": {
-            "target_config": {
-                "solution_name": "devtools-frontend",
-                "project_name": "devtools/devtools-frontend",
-                "account": AUTOROLLER_ACCOUNT,
-                "log_template": "Rolling %s: %s/+log/%s..%s",
-                "cipd_log_template": "Rolling %s: %s..%s",
-            },
-            "subject": "Update DevTools DEPS",
-            "excludes": [
-                # `esbuild` is manually rolled; Chromium pulls our version from
-                # devtools-frontend.
-                "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
-            ],
-            "reviewers": [
-                "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com",
-            ],
-            "show_commit_log": False,
-            "roll_chromium_pin": True,
-            "scripted_rolls": [
-                "puppeteer-core",
-                "puppeteer-replay",
-            ],
-            # "Bug: none" is required to pass presubmit tests
-            "bugs": "none",
-        },
-    },
     notifies = [
         "autoroll sheriff notifier",
         "autoroll deps look up notifier",

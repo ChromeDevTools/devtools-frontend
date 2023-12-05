@@ -962,6 +962,61 @@ const emulatedDevices = [
     ],
   },
   {
+    'order': 35,
+    'show-by-default': true,
+    'dual-screen': true,
+    'title': 'Asus Zenbook Fold',
+    'screen': {
+      'horizontal': {'width': 1280, 'height': 853},
+      'device-pixel-ratio': 1.5,
+      'vertical': {'width': 853, 'height': 1280},
+      'vertical-spanned': {
+        'width': 1706,
+        'height': 1280,
+        'hinge': {
+          'width': 107,
+          'height': 1280,
+          'x': 800,
+          'y': 0,
+          'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 0.2},
+          'outlineColor': {'r': 38, 'g': 38, 'b': 38, 'a': 0.7},
+        },
+      },
+      'horizontal-spanned': {
+        'width': 1280,
+        'height': 1706,
+        'hinge': {
+          'width': 1706,
+          'height': 107,
+          'x': 0,
+          'y': 800,
+          'contentColor': {'r': 38, 'g': 38, 'b': 38, 'a': 0.2},
+          'outlineColor': {'r': 38, 'g': 38, 'b': 38, 'a': 0.7},
+        },
+      },
+    },
+    'capabilities': ['touch'],
+    'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'user-agent-metadata':
+        {'platform': 'Windows', 'platformVersion': '11.0', 'architecture': '', 'model': 'UX9702AA', 'mobile': false},
+    'type': 'tablet',
+    'modes': [
+      {'title': 'default', 'orientation': 'vertical', 'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}},
+      {'title': 'default', 'orientation': 'horizontal', 'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}},
+      {
+        'title': 'spanned',
+        'orientation': 'vertical-spanned',
+        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0},
+      },
+      {
+        'title': 'spanned',
+        'orientation': 'horizontal-spanned',
+        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0},
+      },
+    ],
+  },
+  {
     'order': 36,
     'show-by-default': true,
     'title': 'Samsung Galaxy A51/71',

@@ -682,11 +682,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         positionY: positionY,
         dontSetVisibleSize: true,
         displayFeature: undefined,
+        devicePosture: undefined,
         screenOrientation: undefined,
       };
       const displayFeature = this.getDisplayFeature();
       if (displayFeature) {
         metrics.displayFeature = displayFeature;
+        metrics.devicePosture = {type: Protocol.Emulation.DevicePostureType.Folded};
+      } else {
+        metrics.devicePosture = {type: Protocol.Emulation.DevicePostureType.Continuous};
       }
       if (screenOrientation) {
         metrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};

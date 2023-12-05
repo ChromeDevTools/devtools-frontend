@@ -1,11 +1,11 @@
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2023 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
-import("../visibility.gni")
+import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
@@ -19,12 +19,10 @@ generate_css("css_files") {
   ]
 }
 
-devtools_module("linear_memory_inspector") {
+devtools_module("components") {
   sources = [
     "LinearMemoryHighlightChipList.ts",
     "LinearMemoryInspector.ts",
-    "LinearMemoryInspectorController.ts",
-    "LinearMemoryInspectorPane.ts",
     "LinearMemoryInspectorUtils.ts",
     "LinearMemoryNavigator.ts",
     "LinearMemoryValueInterpreter.ts",
@@ -48,31 +46,23 @@ devtools_module("linear_memory_inspector") {
     "../../../ui/legacy/components/utils:bundle",
     "../../../ui/lit-html:bundle",
   ]
-
-  visibility = [ "../../../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "linear_memory_inspector.ts"
+  entrypoint = "components.ts"
 
   deps = [
+    ":components",
     ":css_files",
-    ":linear_memory_inspector",
-    "../../legacy:css_files",
   ]
 
   visibility = [
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../legacy/components/object_ui/*",
+    ":*",
+    "../:*",
+    "../../../ui/components/docs/linear_memory_inspector/*",
+    "../../../../test/unittests/front_end/panels/linear_memory_inspector/components/*",
+    "../../../../test/unittests/front_end/panels/linear_memory_inspector/*",
   ]
 
-  visibility += default_components_visibility
-}
-
-devtools_entrypoint("meta") {
-  entrypoint = "linear_memory_inspector-meta.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../../../entrypoints/*" ]
+  visibility += devtools_panels_visibility
 }

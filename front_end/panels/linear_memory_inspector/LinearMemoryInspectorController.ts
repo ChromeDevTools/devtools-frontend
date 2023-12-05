@@ -2,32 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as UI from '../../legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import type * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import {type Settings} from './LinearMemoryInspector.js';
+import * as LinearMemoryInspectorComponents from './components/components.js';
 import {Events as LmiEvents, LinearMemoryInspectorPane} from './LinearMemoryInspectorPane.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
-import {
-  Endianness,
-  getDefaultValueTypeMapping,
-  type ValueType,
-  type ValueTypeMode,
-} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**
    *@description Error message that shows up in the console if a buffer to be opened in the linear memory inspector cannot be found.
    */
   couldNotOpenLinearMemory: 'Could not open linear memory inspector: failed locating buffer.',
+  /**
+   *@description A context menu item in the Scope View of the Sources Panel
+   */
+  revealInMemoryInspectorPanel: 'Reveal in Memory Inspector panel',
 };
 const str_ =
-    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);
+    i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
 const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
@@ -87,16 +85,22 @@ export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean
 }
 
 type SerializableSettings = {
-  valueTypes: ValueType[],
-  valueTypeModes: [ValueType, ValueTypeMode][],
-  endianness: Endianness,
+  valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[],
+  valueTypeModes:
+      [
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode,
+      ][],
+  endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness,
 };
 
 export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel>
-    implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable> {
+    implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable>,
+               UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
   #paneInstance = LinearMemoryInspectorPane.instance();
   #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
-  #bufferIdToHighlightInfo: Map<string, HighlightInfo> = new Map();
+  #bufferIdToHighlightInfo: Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo> =
+      new Map();
   #settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {
@@ -109,11 +113,12 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.#onDebuggerPause, this);
 
-    const defaultValueTypeModes = getDefaultValueTypeMapping();
+    const defaultValueTypeModes =
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping();
     const defaultSettings: SerializableSettings = {
       valueTypes: Array.from(defaultValueTypeModes.keys()),
       valueTypeModes: Array.from(defaultValueTypeModes),
-      endianness: Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
     };
     this.#settings = Common.Settings.Settings.instance().createSetting('lmiInterpreterSettings', defaultSettings);
   }
@@ -164,13 +169,13 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return result.object;
   }
 
-  saveSettings(data: Settings): void {
+  saveSettings(data: LinearMemoryInspectorComponents.LinearMemoryInspector.Settings): void {
     const valueTypes = Array.from(data.valueTypes);
     const modes = [...data.modes];
     this.#settings.set({valueTypes, valueTypeModes: modes, endianness: data.endianness});
   }
 
-  loadSettings(): Settings {
+  loadSettings(): LinearMemoryInspectorComponents.LinearMemoryInspector.Settings {
     const settings = this.#settings.get();
     return {
       valueTypes: new Set(settings.valueTypes),
@@ -179,18 +184,20 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     };
   }
 
-  getHighlightInfo(bufferId: string): HighlightInfo|undefined {
+  getHighlightInfo(bufferId: string): LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo|undefined {
     return this.#bufferIdToHighlightInfo.get(bufferId);
   }
 
-  removeHighlight(bufferId: string, highlightInfo: HighlightInfo): void {
+  removeHighlight(
+      bufferId: string, highlightInfo: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo): void {
     const currentHighlight = this.getHighlightInfo(bufferId);
     if (currentHighlight === highlightInfo) {
       this.#bufferIdToHighlightInfo.delete(bufferId);
     }
   }
 
-  setHighlightInfo(bufferId: string, highlightInfo: HighlightInfo): void {
+  setHighlightInfo(
+      bufferId: string, highlightInfo: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo): void {
     this.#bufferIdToHighlightInfo.set(bufferId, highlightInfo);
   }
 
@@ -330,7 +337,21 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector', omitFocus);
   }
 
-  static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string): HighlightInfo|undefined {
+  appendApplicableItems(
+      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
+    if (target.property.value?.isLinearMemoryInspectable()) {
+      const expression = target.path();
+      const object = target.property.value;
+      contextMenu.debugSection().appendItem(i18nString(UIStrings.revealInMemoryInspectorPanel), () => {
+        Host.userMetrics.linearMemoryInspectorRevealedFrom(
+            Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
+        void this.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
+      });
+    }
+  }
+  static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string):
+      LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo|undefined {
     if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject)) {
       return undefined;
     }
@@ -413,7 +434,9 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
   }
 
-  #pointToSameMemoryObject(highlightInfoA: HighlightInfo, highlightInfoB: HighlightInfo): boolean {
+  #pointToSameMemoryObject(
+      highlightInfoA: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo,
+      highlightInfoB: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo): boolean {
     return highlightInfoA.type === highlightInfoB.type && highlightInfoA.startAddress === highlightInfoB.startAddress;
   }
 }

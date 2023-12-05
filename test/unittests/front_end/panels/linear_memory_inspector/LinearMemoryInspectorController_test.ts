@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as LinearMemoryInspectorComponents from '../../../../../front_end/panels/linear_memory_inspector/components/components.js';
+import * as LinearMemoryInspector from '../../../../../front_end/panels/linear_memory_inspector/linear_memory_inspector.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
-const {LinearMemoryInspectorController, ValueInterpreterDisplayUtils} = LinearMemoryInspector;
+const {LinearMemoryInspectorController} = LinearMemoryInspector;
+const {ValueInterpreterDisplayUtils} = LinearMemoryInspectorComponents;
 
 class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   private objSubtype?: string;
@@ -161,7 +163,7 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
 
   it('removes the provided highlightInfo when it is stored in the Controller', () => {
     const highlightInfo = {startAddress: 0, size: 16, name: 'myNumbers', type: 'int[]'} as
-        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+        LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo;
     const bufferId = 'someBufferId';
     const instance = LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
 
@@ -174,9 +176,9 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
 
   it('does not change the stored highlight when the provided highlightInfo does not match', () => {
     const highlightInfo = {startAddress: 0, size: 16, name: 'myNumbers', type: 'int[]'} as
-        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+        LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo;
     const differentHighlightInfo = {startAddress: 20, size: 50, name: 'myBytes', type: 'bool[]'} as
-        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+        LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo;
     const bufferId = 'someBufferId';
     const instance = LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
 

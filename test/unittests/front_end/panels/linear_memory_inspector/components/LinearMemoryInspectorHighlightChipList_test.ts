@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -20,12 +20,12 @@ export const HIGHLIGHT_PILL_VARIABLE_NAME = HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR 
 export const HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR = '.delete-highlight-button';
 
 describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
-  let component: LinearMemoryInspector.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList;
+  let component: LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList;
 
   beforeEach(renderHighlightRow);
 
   function renderHighlightRow() {
-    component = new LinearMemoryInspector.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList();
+    component = new LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList();
     renderElementIntoDOM(component);
     const highlightInfo = {
       startAddress: 10,
@@ -66,7 +66,7 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
     const data = {
       highlightInfos: [highlightedMemory],
       focusedMemoryHighlight: highlightedMemory,
-    } as LinearMemoryInspector.LinearMemoryHighlightChipList.LinearMemoryHighlightChipListData;
+    } as LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.LinearMemoryHighlightChipListData;
     component.data = data;
     assert.isTrue(chip.classList.contains('focused'));
   });
@@ -97,8 +97,9 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
 
   it('sends event when clicking on jump to highlighted memory', async () => {
     const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent>(
-            component, LinearMemoryInspector.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent.eventName);
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent>(
+            component,
+            LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.JumpToHighlightedMemoryEvent.eventName);
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
@@ -111,8 +112,9 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
 
   it('sends event when clicking on delete highlight chip', async () => {
     const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent>(
-            component, LinearMemoryInspector.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent.eventName);
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent>(
+            component,
+            LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent.eventName);
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);

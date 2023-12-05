@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
@@ -15,18 +15,18 @@ export const ENDIANNESS_SELECTOR = '[data-endianness]';
 
 function assertSettingsRenders(component: HTMLElement) {
   const settings = getElementWithinComponent(
-      component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
+      component, SETTINGS_SELECTOR, LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
   assert.isNotNull(settings);
 }
 
 function assertDisplayRenders(component: HTMLElement) {
   const display = getElementWithinComponent(
-      component, DISPLAY_SELECTOR, LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay);
+      component, DISPLAY_SELECTOR, LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay);
   assert.isNotNull(display);
 }
 
 function clickSettingsButton(
-    component: LinearMemoryInspector.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter) {
+    component: LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter) {
   const settingsButton = getElementWithinComponent(component, '[data-settings]', HTMLButtonElement);
   settingsButton.click();
 }
@@ -34,11 +34,11 @@ function clickSettingsButton(
 describeWithLocale('LinearMemoryValueInterpreter', () => {
   function setUpComponent() {
     const buffer = new Uint8Array([34, 234, 12, 3]).buffer;
-    const component = new LinearMemoryInspector.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();
     component.data = {
       value: buffer,
-      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
-      valueTypes: new Set([LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8]),
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8]),
       memoryLength: buffer.byteLength,
     };
     renderElementIntoDOM(component);
@@ -70,13 +70,15 @@ describeWithLocale('LinearMemoryValueInterpreter', () => {
     clickSettingsButton(component);
 
     const settings = getElementWithinComponent(
-        component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
-        component, 'valuetypetoggled');
-    const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64;
+        component, SETTINGS_SELECTOR,
+        LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings);
+    const eventPromise =
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
+            component, 'valuetypetoggled');
+    const expectedType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64;
     const expectedChecked = true;
     const typeToggleEvent =
-        new LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent(expectedType, expectedChecked);
+        new LinearMemoryInspectorComponents.ValueInterpreterSettings.TypeToggleEvent(expectedType, expectedChecked);
     settings.dispatchEvent(typeToggleEvent);
 
     const event = await eventPromise;
@@ -87,12 +89,12 @@ describeWithLocale('LinearMemoryValueInterpreter', () => {
   it('renders the endianness options', () => {
     const component = setUpComponent();
     const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
-    assert.deepEqual(input.value, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);
+    assert.deepEqual(input.value, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little);
     const options = input.querySelectorAll('option');
     const endiannessSettings = Array.from(options).map(option => option.value);
     assert.deepEqual(endiannessSettings, [
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Big,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Big,
     ]);
   });
 
@@ -100,12 +102,13 @@ describeWithLocale('LinearMemoryValueInterpreter', () => {
     const component = setUpComponent();
     const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
 
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.EndiannessChangedEvent>(
-        component, 'endiannesschanged');
+    const eventPromise =
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent>(
+            component, 'endiannesschanged');
     const changeEvent = new Event('change');
     input.dispatchEvent(changeEvent);
 
     const event = await eventPromise;
-    assert.deepEqual(event.data, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);
+    assert.deepEqual(event.data, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little);
   });
 });

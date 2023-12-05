@@ -2,21 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as UI from '../../legacy/legacy.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {DeleteMemoryHighlightEvent} from './LinearMemoryHighlightChipList.js';
-import {
-  AddressChangedEvent,
-  LinearMemoryInspector,
-  MemoryRequestEvent,
-  type Settings,
-  SettingsChangedEvent,
-} from './LinearMemoryInspector.js';
+import * as LinearMemoryInspectorComponents from './components/components.js';
 import {type LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
@@ -25,8 +17,7 @@ const UIStrings = {
    */
   noOpenInspections: 'No open inspections',
 };
-const str_ =
-    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorInstance: LinearMemoryInspectorPane;
 
@@ -106,7 +97,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   #memoryWrapper: LazyUint8Array;
   #address: number;
   #tabId: string;
-  #inspector: LinearMemoryInspector;
+  #inspector: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;
   firstTimeOpen: boolean;
   constructor(memoryWrapper: LazyUint8Array, address: number|undefined = 0, tabId: string) {
     super(false);
@@ -118,22 +109,30 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#memoryWrapper = memoryWrapper;
     this.#address = address;
     this.#tabId = tabId;
-    this.#inspector = new LinearMemoryInspector();
-    this.#inspector.addEventListener(MemoryRequestEvent.eventName, (event: MemoryRequestEvent) => {
-      this.#memoryRequested(event);
-    });
-    this.#inspector.addEventListener(AddressChangedEvent.eventName, (event: AddressChangedEvent) => {
-      this.updateAddress(event.data);
-    });
-    this.#inspector.addEventListener(SettingsChangedEvent.eventName, (event: SettingsChangedEvent) => {
-      // Stop event from bubbling up, since no element further up needs the event.
-      event.stopPropagation();
-      this.saveSettings(event.data);
-    });
-    this.#inspector.addEventListener(DeleteMemoryHighlightEvent.eventName, (event: DeleteMemoryHighlightEvent) => {
-      LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, event.data);
-      this.refreshData();
-    });
+    this.#inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName,
+        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent) => {
+          this.#memoryRequested(event);
+        });
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent.eventName,
+        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent) => {
+          this.updateAddress(event.data);
+        });
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent.eventName,
+        (event: LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent) => {
+          // Stop event from bubbling up, since no element further up needs the event.
+          event.stopPropagation();
+          this.saveSettings(event.data);
+        });
+    this.#inspector.addEventListener(
+        LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent.eventName,
+        (event: LinearMemoryInspectorComponents.LinearMemoryHighlightChipList.DeleteMemoryHighlightEvent) => {
+          LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, event.data);
+          this.refreshData();
+        });
     this.contentElement.appendChild(this.#inspector);
     this.firstTimeOpen = true;
   }
@@ -142,7 +141,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.refreshData();
   }
 
-  saveSettings(settings: Settings): void {
+  saveSettings(settings: LinearMemoryInspectorComponents.LinearMemoryInspector.Settings): void {
     LinearMemoryInspectorController.instance().saveSettings(settings);
   }
 
@@ -181,7 +180,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     });
   }
 
-  #memoryRequested(event: MemoryRequestEvent): void {
+  #memoryRequested(event: LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent): void {
     const {start, end, address} = event.data;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');
@@ -198,7 +197,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     });
   }
 
-  #getHighlightInfo(): HighlightInfo|undefined {
+  #getHighlightInfo(): LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo|undefined {
     const highlightInfo = LinearMemoryInspectorController.instance().getHighlightInfo(this.#tabId);
     if (highlightInfo !== undefined) {
       if (highlightInfo.startAddress < 0 || highlightInfo.startAddress >= this.#memoryWrapper.length()) {

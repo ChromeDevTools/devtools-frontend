@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {
   assertElement,
   assertElements,
@@ -27,7 +27,8 @@ describe('LinearMemoryViewer', () => {
     const data = createComponentData();
     component.data = data;
 
-    const event = await getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ResizeEvent>(component, 'resize');
+    const event =
+        await getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
     const numBytesPerPage = event.data;
     assert.isAbove(numBytesPerPage, 4);
 
@@ -37,7 +38,7 @@ describe('LinearMemoryViewer', () => {
   async function setUpComponentWithHighlightInfo() {
     const component = createComponent();
     const data = createComponentData();
-    const highlightInfo: LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo = {
+    const highlightInfo: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo = {
       startAddress: 2,
       size: 21,  // A large enough odd number so that the highlight spans mulitple rows.
       type: 'bool[]',
@@ -47,7 +48,8 @@ describe('LinearMemoryViewer', () => {
       highlightInfo: highlightInfo,
     };
 
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ResizeEvent>(component, 'resize');
+    const eventPromise =
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
     component.data = dataWithHighlightInfo;
     const event = await eventPromise;
     const numBytesPerPage = event.data;
@@ -57,7 +59,7 @@ describe('LinearMemoryViewer', () => {
   }
 
   function createComponent() {
-    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
     const flexWrapper = document.createElement('div');
     flexWrapper.style.width = '500px';
     flexWrapper.style.height = '500px';
@@ -84,7 +86,7 @@ describe('LinearMemoryViewer', () => {
   }
 
   function getCellsPerRow(
-      component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string) {
+      component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string) {
     assertShadowRoot(component.shadowRoot);
     const row = component.shadowRoot.querySelector(VIEWER_ROW_SELECTOR);
     assertElement(row, HTMLDivElement);
@@ -95,7 +97,8 @@ describe('LinearMemoryViewer', () => {
   }
 
   function assertSelectedCellIsHighlighted(
-      component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string, index: number) {
+      component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string,
+      index: number) {
     assertShadowRoot(component.shadowRoot);
     const selectedCells = component.shadowRoot.querySelectorAll(cellSelector + '.selected');
     assert.lengthOf(selectedCells, 1);
@@ -110,9 +113,10 @@ describe('LinearMemoryViewer', () => {
   }
 
   async function assertEventTriggeredOnArrowNavigation(
-      component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, code: string, expectedAddress: number) {
-    const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
+      component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer, code: string,
+      expectedAddress: number) {
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
+        component, 'byteselected');
     const view = getElementWithinComponent(component, '.view', HTMLDivElement);
     view.dispatchEvent(new KeyboardEvent('keydown', {'code': code}));
     const event = await eventPromise;
@@ -123,7 +127,7 @@ describe('LinearMemoryViewer', () => {
     const data = createComponentData();
     data.memoryOffset = 1;
     assert.isAbove(data.address, data.memoryOffset);
-    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
     component.data = data;
     renderElementIntoDOM(component);
 
@@ -134,7 +138,7 @@ describe('LinearMemoryViewer', () => {
 
   it('triggers an event on resize', async () => {
     const data = createComponentData();
-    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
     component.data = data;
 
     const thinWrapper = document.createElement('div');
@@ -144,7 +148,8 @@ describe('LinearMemoryViewer', () => {
     thinWrapper.appendChild(component);
     renderElementIntoDOM(thinWrapper);
 
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ResizeEvent>(component, 'resize');
+    const eventPromise =
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
     thinWrapper.style.width = '800px';
 
     assert.isNotNull(await eventPromise);
@@ -181,7 +186,7 @@ describe('LinearMemoryViewer', () => {
     const thinWrapper = document.createElement('div');
     thinWrapper.style.width = '10px';
 
-    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
     component.data = createComponentData();
     thinWrapper.appendChild(component);
     renderElementIntoDOM(thinWrapper);
@@ -212,8 +217,8 @@ describe('LinearMemoryViewer', () => {
     const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
     assertElement(byte, HTMLSpanElement);
 
-    const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
+        component, 'byteselected');
     byte.click();
     const {data: address} = await eventPromise;
     assert.strictEqual(address, data.memoryOffset);
@@ -258,15 +263,15 @@ describe('LinearMemoryViewer', () => {
     const asciiCell = component.shadowRoot.querySelector(VIEWER_TEXT_CELL_SELECTOR);
     assertElement(asciiCell, HTMLSpanElement);
 
-    const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
+        component, 'byteselected');
     asciiCell.click();
     const {data: address} = await eventPromise;
     assert.strictEqual(address, data.memoryOffset);
   });
 
   it('highlights selected byte value on setting an address', () => {
-    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
     const memory = new Uint8Array([2, 3, 5, 3]);
     const address = 2;
 

@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
-import * as Input from '../input/input.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Input from '../../../ui/components/input/input.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 import valueInterpreterSettingsStyles from './valueInterpreterSettings.css.js';
@@ -20,7 +20,7 @@ const UIStrings = {
   otherGroup: 'Other',
 };
 const str_ =
-    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/ValueInterpreterSettings.ts', UIStrings);
+    i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterSettings.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ValueInterpreterSettingsData {

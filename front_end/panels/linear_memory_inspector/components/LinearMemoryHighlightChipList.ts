@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
-import * as IconButton from '../icon_button/icon_button.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryHighlightChipListStyles from './linearMemoryHighlightChipList.css.js';
 import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
@@ -24,8 +24,8 @@ const UIStrings = {
    */
   deleteHighlight: 'Stop highlighting this memory',
 };
-const str_ =
-    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings(
+    'panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 

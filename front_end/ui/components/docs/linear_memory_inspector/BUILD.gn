@@ -11,8 +11,8 @@ ts_library("ts") {
 
   deps = [
     "../../../../../test/unittests/front_end/helpers",
+    "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../ui/components/helpers:bundle",
-    "../../../../ui/components/linear_memory_inspector:bundle",
   ]
 }
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {
   assertElement,
   assertElements,
@@ -22,18 +22,18 @@ export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historynavigation
 export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refreshrequested]';
 
 describeWithLocale('LinearMemoryNavigator', () => {
-  let component: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator;
+  let component: LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator;
 
   beforeEach(renderNavigator);
 
   function renderNavigator() {
-    component = new LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator();
+    component = new LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator();
     renderElementIntoDOM(component);
 
     component.data = {
       address: '20',
       valid: true,
-      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Submitted,
       error: undefined,
       canGoBackInHistory: true,
       canGoForwardInHistory: true,
@@ -49,16 +49,16 @@ describeWithLocale('LinearMemoryNavigator', () => {
 
     const navigation = [];
     for (const button of pageNavigationButtons) {
-      const eventPromise =
-          getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.PageNavigationEvent>(component, eventType);
+      const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryNavigator.PageNavigationEvent>(
+          component, eventType);
       button.click();
       const event = await eventPromise;
       navigation.push(event.data);
     }
 
     assert.deepEqual(navigation, [
-      LinearMemoryInspector.LinearMemoryNavigator.Navigation.Backward,
-      LinearMemoryInspector.LinearMemoryNavigator.Navigation.Forward,
+      LinearMemoryInspectorComponents.LinearMemoryNavigator.Navigation.Backward,
+      LinearMemoryInspectorComponents.LinearMemoryNavigator.Navigation.Forward,
     ]);
   }
 
@@ -74,7 +74,7 @@ describeWithLocale('LinearMemoryNavigator', () => {
     component.data = {
       address: '16',
       valid: true,
-      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Submitted,
       error: undefined,
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
@@ -88,7 +88,7 @@ describeWithLocale('LinearMemoryNavigator', () => {
   });
 
   it('sends event when clicking on refresh', async () => {
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.RefreshRequestedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryNavigator.RefreshRequestedEvent>(
         component, 'refreshrequested');
 
     const shadowRoot = component.shadowRoot;
@@ -112,7 +112,7 @@ describeWithLocale('LinearMemoryNavigator', () => {
     component.data = {
       address: '0',
       valid: true,
-      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Submitted,
       error: undefined,
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
@@ -138,7 +138,7 @@ describeWithLocale('LinearMemoryNavigator', () => {
     component.data = {
       address: invalidAddress,
       valid: false,
-      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.InvalidSubmit,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.InvalidSubmit,
       error,
       canGoBackInHistory: false,
       canGoForwardInHistory: false,
@@ -158,7 +158,7 @@ describeWithLocale('LinearMemoryNavigator', () => {
     component.data = {
       address: '60',
       valid: false,
-      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode.Edit,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Edit,
       error,
       canGoBackInHistory: false,
       canGoForwardInHistory: false,

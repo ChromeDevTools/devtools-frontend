@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as LinearMemoryInspectorModule from
-    '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
-import {assertElement} from '../../../helpers/DOMHelpers.js';
+    '../../../../../front_end/panels/linear_memory_inspector/linear_memory_inspector.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 function createArray() {
   const array = [];
@@ -21,7 +20,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
 
   before(async () => {
     LinearMemoryInspector =
-        await import('../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js');
+        await import('../../../../../front_end/panels/linear_memory_inspector/linear_memory_inspector.js');
   });
 
   class Uint8Wrapper {
@@ -48,8 +47,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
 
     const tabbedPane = instance.contentElement.querySelector('.tabbed-pane');
     assertNotNullOrUndefined(tabbedPane);
-    const inspector = tabbedPane.querySelector<LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector>(
-        'devtools-linear-memory-inspector-inspector');
-    assertElement(inspector, LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector);
+    const inspector = tabbedPane.querySelector('devtools-linear-memory-inspector-inspector');
+    assert.notInstanceOf(inspector, HTMLSpanElement);
   });
 });

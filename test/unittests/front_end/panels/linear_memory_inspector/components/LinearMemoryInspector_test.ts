@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspectorModule from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {
   dispatchClickEvent,
   getElementsWithinComponent,
@@ -28,24 +28,24 @@ const VIEWER_SELECTOR = 'devtools-linear-memory-inspector-viewer';
 const INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';
 
 describeWithLocale('LinearMemoryInspector', () => {
-  function getViewer(component: LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector) {
+  function getViewer(component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector) {
     return getElementWithinComponent(
-        component, VIEWER_SELECTOR, LinearMemoryInspectorModule.LinearMemoryViewer.LinearMemoryViewer);
+        component, VIEWER_SELECTOR, LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer);
   }
 
-  function getNavigator(component: LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector) {
+  function getNavigator(component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector) {
     return getElementWithinComponent(
-        component, NAVIGATOR_SELECTOR, LinearMemoryInspectorModule.LinearMemoryNavigator.LinearMemoryNavigator);
+        component, NAVIGATOR_SELECTOR, LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator);
   }
 
-  function getValueInterpreter(component: LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector) {
+  function getValueInterpreter(component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector) {
     return getElementWithinComponent(
         component, INTERPRETER_SELECTOR,
-        LinearMemoryInspectorModule.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter);
+        LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter);
   }
 
   function setUpComponent() {
-    const component = new LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector();
+    const component = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
 
     const flexWrapper = document.createElement('div');
     flexWrapper.style.width = '500px';
@@ -64,9 +64,9 @@ describeWithLocale('LinearMemoryInspector', () => {
       address: 20,
       memoryOffset: 0,
       outerMemoryLength: memory.length,
-      endianness: LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Little,
-      valueTypes: new Set<LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType>(
-          LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping().keys()),
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set<LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType>(
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping().keys()),
     };
     component.data = data;
 
@@ -74,15 +74,16 @@ describeWithLocale('LinearMemoryInspector', () => {
   }
 
   function triggerAddressChangedEvent(
-      component: LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector, address: string,
-      mode: LinearMemoryInspectorModule.LinearMemoryNavigator.Mode) {
+      component: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector, address: string,
+      mode: LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode) {
     const navigator = getNavigator(component);
-    const changeEvent = new LinearMemoryInspectorModule.LinearMemoryNavigator.AddressInputChangedEvent(address, mode);
+    const changeEvent =
+        new LinearMemoryInspectorComponents.LinearMemoryNavigator.AddressInputChangedEvent(address, mode);
     navigator.dispatchEvent(changeEvent);
   }
 
   function assertUpdatesInNavigator(
-      navigator: LinearMemoryInspectorModule.LinearMemoryNavigator.LinearMemoryNavigator, expectedAddress: string,
+      navigator: LinearMemoryInspectorComponents.LinearMemoryNavigator.LinearMemoryNavigator, expectedAddress: string,
       expectedTooltip: string) {
     const address = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     const addressValue = address.value;
@@ -128,7 +129,7 @@ describeWithLocale('LinearMemoryInspector', () => {
 
     for (const index of byteIndices) {
       const byteSelectedPromise =
-          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
+          getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
       dispatchClickEvent(byteCells[index]);
       await byteSelectedPromise;
     }
@@ -155,7 +156,7 @@ describeWithLocale('LinearMemoryInspector', () => {
 
     for (let i = 1; i < historyLength; ++i) {
       const byteSelectedPromise =
-          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
+          getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
       dispatchClickEvent(byteCells[i]);
       const byteSelectedEvent = await byteSelectedPromise;
       visitedByteValue.push(byteSelectedEvent.data);
@@ -218,10 +219,11 @@ describeWithLocale('LinearMemoryInspector', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     const select = getElementWithinComponent(interpreter, ENDIANNESS_SELECTOR, HTMLSelectElement);
-    assert.deepEqual(select.value, LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Little);
+    assert.deepEqual(select.value, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little);
 
-    const endianSetting = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Big;
-    const event = new LinearMemoryInspectorModule.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianSetting);
+    const endianSetting = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Big;
+    const event =
+        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianSetting);
     interpreter.dispatchEvent(event);
 
     assert.deepEqual(select.value, event.data);
@@ -229,17 +231,17 @@ describeWithLocale('LinearMemoryInspector', () => {
 
   it('updates current address if user triggers a jumptopointeraddress event', () => {
     const {component, data} = setUpComponent();
-    data.valueTypes = new Set([LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Pointer32]);
+    data.valueTypes = new Set([LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32]);
     data.memory = new Uint8Array([2, 0, 0, 0]);
     data.outerMemoryLength = data.memory.length;
     data.address = 0;
-    data.endianness = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Little;
+    data.endianness = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little;
     component.data = data;
 
     const interpreter = getValueInterpreter(component);
     const display = getElementWithinComponent(
         interpreter, 'devtools-linear-memory-inspector-interpreter-display',
-        LinearMemoryInspectorModule.ValueInterpreterDisplay.ValueInterpreterDisplay);
+        LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay);
     const button = getElementWithinComponent(display, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
     dispatchClickEvent(button);
 
@@ -254,28 +256,28 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('leaves the navigator address as inputted by user on edit event', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
-    triggerAddressChangedEvent(component, '2', LinearMemoryInspectorModule.LinearMemoryNavigator.Mode.Edit);
+    triggerAddressChangedEvent(component, '2', LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Edit);
     assertUpdatesInNavigator(navigator, '2', 'Enter address');
   });
 
   it('changes navigator address (to hex) on valid user submit event', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
-    triggerAddressChangedEvent(component, '2', LinearMemoryInspectorModule.LinearMemoryNavigator.Mode.Submitted);
+    triggerAddressChangedEvent(component, '2', LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Submitted);
     assertUpdatesInNavigator(navigator, '0x00000002', 'Enter address');
   });
 
   it('leaves the navigator address as inputted by user on invalid edit event', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
-    triggerAddressChangedEvent(component, '-2', LinearMemoryInspectorModule.LinearMemoryNavigator.Mode.Edit);
+    triggerAddressChangedEvent(component, '-2', LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Edit);
     assertUpdatesInNavigator(navigator, '-2', 'Address has to be a number between 0x00000000 and 0x000003E8');
   });
 
   it('leaves the navigator address as inputted by user on invalid submit event', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
-    triggerAddressChangedEvent(component, '-2', LinearMemoryInspectorModule.LinearMemoryNavigator.Mode.Submitted);
+    triggerAddressChangedEvent(component, '-2', LinearMemoryInspectorComponents.LinearMemoryNavigator.Mode.Submitted);
     assertUpdatesInNavigator(navigator, '-2', 'Address has to be a number between 0x00000000 and 0x000003E8');
   });
 
@@ -287,9 +289,9 @@ describeWithLocale('LinearMemoryInspector', () => {
     const bytes = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytes.length;
 
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.MemoryRequestEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent>(
         component, 'memoryrequest');
-    navigator.dispatchEvent(new LinearMemoryInspectorModule.LinearMemoryNavigator.RefreshRequestedEvent());
+    navigator.dispatchEvent(new LinearMemoryInspectorComponents.LinearMemoryNavigator.RefreshRequestedEvent());
     const event = await eventPromise;
     const {start, end, address} = event.data;
 
@@ -300,7 +302,7 @@ describeWithLocale('LinearMemoryInspector', () => {
 
   it('triggers event on address change when byte is selected', async () => {
     const {component, data} = setUpComponent();
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.AddressChangedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent>(
         component, 'addresschanged');
     const viewer = getViewer(component);
     const bytes = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
@@ -314,7 +316,7 @@ describeWithLocale('LinearMemoryInspector', () => {
 
   it('triggers event on address change when data is set', async () => {
     const {component, data} = setUpComponent();
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.AddressChangedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.AddressChangedEvent>(
         component, 'addresschanged');
     data.address = 10;
     component.data = data;
@@ -325,11 +327,11 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('triggers event on settings changed when value type is changed', async () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(
         component, 'settingschanged');
-    const valueType = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Int16;
+    const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16;
     interpreter.dispatchEvent(
-        new LinearMemoryInspectorModule.LinearMemoryValueInterpreter.ValueTypeToggledEvent(valueType, false));
+        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.ValueTypeToggledEvent(valueType, false));
     const event = await eventPromise;
     assert.isTrue(event.data.valueTypes.size > 1);
     assert.isFalse(event.data.valueTypes.has(valueType));
@@ -338,12 +340,12 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('triggers event on settings changed when value type mode is changed', async () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(
         component, 'settingschanged');
-    const valueType = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Int16;
-    const valueTypeMode = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal;
-    interpreter.dispatchEvent(
-        new LinearMemoryInspectorModule.ValueInterpreterDisplay.ValueTypeModeChangedEvent(valueType, valueTypeMode));
+    const valueType = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16;
+    const valueTypeMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal;
+    interpreter.dispatchEvent(new LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueTypeModeChangedEvent(
+        valueType, valueTypeMode));
     const event = await eventPromise;
     assert.isTrue(event.data.valueTypes.has(valueType));
     assert.strictEqual(event.data.modes.get(valueType), valueTypeMode);
@@ -352,11 +354,11 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('triggers event on settings changed when endianness is changed', async () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
-    const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
+    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryInspector.SettingsChangedEvent>(
         component, 'settingschanged');
-    const endianness = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Big;
+    const endianness = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Big;
     interpreter.dispatchEvent(
-        new LinearMemoryInspectorModule.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianness));
+        new LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianness));
     const event = await eventPromise;
     assert.strictEqual(event.data.endianness, endianness);
   });
@@ -364,42 +366,44 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('formats a hexadecimal number', () => {
     const number = 23;
     assert.strictEqual(
-        LinearMemoryInspectorModule.LinearMemoryInspectorUtils.toHexString({number, pad: 0, prefix: false}), '17');
+        LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.toHexString({number, pad: 0, prefix: false}), '17');
   });
 
   it('formats a hexadecimal number and adds padding', () => {
     const number = 23;
     assert.strictEqual(
-        LinearMemoryInspectorModule.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: false}), '00017');
+        LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: false}),
+        '00017');
   });
 
   it('formats a hexadecimal number and adds prefix', () => {
     const number = 23;
     assert.strictEqual(
-        LinearMemoryInspectorModule.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: true}), '0x00017');
+        LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: true}),
+        '0x00017');
   });
 
   it('can parse a valid hexadecimal address', () => {
     const address = '0xa';
-    const parsedAddress = LinearMemoryInspectorModule.LinearMemoryInspectorUtils.parseAddress(address);
+    const parsedAddress = LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, 10);
   });
 
   it('can parse a valid decimal address', () => {
     const address = '20';
-    const parsedAddress = LinearMemoryInspectorModule.LinearMemoryInspectorUtils.parseAddress(address);
+    const parsedAddress = LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, 20);
   });
 
   it('returns undefined on parsing invalid address', () => {
     const address = '20a';
-    const parsedAddress = LinearMemoryInspectorModule.LinearMemoryInspectorUtils.parseAddress(address);
+    const parsedAddress = LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, undefined);
   });
 
   it('returns undefined on parsing negative address', () => {
     const address = '-20';
-    const parsedAddress = LinearMemoryInspectorModule.LinearMemoryInspectorUtils.parseAddress(address);
+    const parsedAddress = LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, undefined);
   });
 });

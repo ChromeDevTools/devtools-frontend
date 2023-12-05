@@ -28,8 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -71,10 +70,6 @@ const UIStrings = {
    *@description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   returnValue: 'Return value',
-  /**
-   *@description A context menu item in the Scope View of the Sources Panel
-   */
-  revealInMemoryInspectorPanel: 'Reveal in Memory Inspector panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -297,22 +292,5 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     super.wasShown();
     this.treeOutline.registerCSSFiles([scopeChainSidebarPaneStyles]);
     this.registerCSSFiles([scopeChainSidebarPaneStyles]);
-  }
-}
-
-export class OpenLinearMemoryInspector implements
-    UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
-  appendApplicableItems(
-      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
-      target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
-    if (target.property && target.property.value && target.property.value.isLinearMemoryInspectable()) {
-      const expression = target.path();
-      const object = target.property.value;
-      contextMenu.debugSection().appendItem(i18nString(UIStrings.revealInMemoryInspectorPanel), () => {
-        Host.userMetrics.linearMemoryInspectorRevealedFrom(
-            Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
-        void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
-      });
-    }
   }
 }

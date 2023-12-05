@@ -13,8 +13,7 @@ const UIStrings = {
    */
   notApplicable: 'N/A',
 };
-const str_ =
-    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;

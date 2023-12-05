@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import * as LinearMemoryInspectorComponents from '../../../../../../front_end/panels/linear_memory_inspector/components/components.js';
 import {
   assertElement,
   getElementsWithinComponent,
@@ -19,12 +19,12 @@ const SETTINGS_LABEL_SELECTOR = '.type-label';
 
 describeWithLocale('ValueInterpreterSettings', () => {
   function setUpComponent() {
-    const component = new LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings();
+    const component = new LinearMemoryInspectorComponents.ValueInterpreterSettings.ValueInterpreterSettings();
     const data = {
       valueTypes: new Set([
-        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
-        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
-        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
       ]),
     };
     component.data = data;
@@ -37,14 +37,14 @@ describeWithLocale('ValueInterpreterSettings', () => {
     const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
     const checkboxLabels = Array.from(checkboxes, checkbox => checkbox.getAttribute('title'));
     assert.deepEqual(checkboxLabels, [
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
     ]);
   });
 
@@ -60,8 +60,8 @@ describeWithLocale('ValueInterpreterSettings', () => {
 
       const checked = checkbox.checked;
 
-      const eventPromise =
-          getEventPromise<LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent>(component, 'typetoggle');
+      const eventPromise = getEventPromise<LinearMemoryInspectorComponents.ValueInterpreterSettings.TypeToggleEvent>(
+          component, 'typetoggle');
       checkbox.click();
       const event = await eventPromise;
 
@@ -87,14 +87,14 @@ describeWithLocale('ValueInterpreterSettings', () => {
 
     const uncheckedTitles = new Set(elements.filter(n => !n.checked).map(n => n.title.innerText));
     const allTypesTitle = [
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer32,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+      LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
     ];
     const expectedUncheckedTitles = new Set(allTypesTitle.filter(title => !expectedTitles.has(title)));
     assert.deepEqual(uncheckedTitles, expectedUncheckedTitles);

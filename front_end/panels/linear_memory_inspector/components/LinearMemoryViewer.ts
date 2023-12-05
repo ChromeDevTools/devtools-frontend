@@ -1,9 +1,10 @@
 // Copyright (c) 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as LitHtml from '../../lit-html/lit-html.js';
-import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
+
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {toHexString} from './LinearMemoryInspectorUtils.js';
 import linearMemoryViewerStyles from './linearMemoryViewer.css.js';

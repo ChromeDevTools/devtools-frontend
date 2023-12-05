@@ -130,8 +130,7 @@ export class ContrastRatioLineBuilder {
     let currentSlope = 0;
     const candidateHSVA: Common.ColorUtils.Color4D = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder: string[] = [];
-    const candidateRGBA: Common.ColorUtils.Color4D = [0, 0, 0, 0];
-    Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
+    const candidateRGBA = Common.Color.hsva2rgba(candidateHSVA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
     let candidateLuminance: ((candidateHSVA: Common.ColorUtils.Color4D) => number)|

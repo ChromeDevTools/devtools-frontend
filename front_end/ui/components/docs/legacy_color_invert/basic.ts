@@ -67,8 +67,7 @@ function patchColor(colorAsText: string, colorUsage: ColorUsage): string {
   const hsla: Common.ColorUtils.Color4D = [color.h, color.s, color.l, color.alpha ?? 1];
   patchHSLA(hsla, colorUsage);
 
-  const rgba: Common.ColorUtils.Color4D = [0, 0, 0, 0];
-  Common.Color.hsl2rgb(hsla, rgba);
+  const rgba = Common.Color.hsl2rgb(hsla);
   const outColor = new Common.Color.Legacy(rgba, Common.Color.Format.RGBA);
   let outText = outColor.asString();
   if (!outText) {

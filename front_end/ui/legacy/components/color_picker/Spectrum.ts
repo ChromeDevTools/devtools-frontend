@@ -197,8 +197,7 @@ function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D)
   const color: Common.Color.Legacy = Common.Color.Legacy.fromHSVA(hsva);
   switch (gamut) {
     case SpectrumGamut.DISPLAY_P3: {
-      const rgba: Common.ColorUtils.Color4D = [0, 0, 0, 0];
-      Common.Color.hsva2rgba(hsva, rgba);
+      const rgba = Common.Color.hsva2rgba(hsva);
       return new Common.Color.ColorFunction(
           Common.Color.Format.DISPLAY_P3, rgba[0], rgba[1], rgba[2], rgba[3], undefined);
     }

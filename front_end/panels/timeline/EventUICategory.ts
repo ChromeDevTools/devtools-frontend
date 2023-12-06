@@ -764,7 +764,7 @@ function maybeInitSylesMap(): EventStylesMap {
       new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), defaultCategoryStyles.Scripting),
     ],
     [
-      TraceEngine.Types.TraceEvents.KnownEventName.CompileScript,
+      TraceEngine.Types.TraceEvents.KnownEventName.Compile,
       new TimelineRecordStyle(i18nString(UIStrings.compileScript), defaultCategoryStyles.Scripting),
     ],
     [

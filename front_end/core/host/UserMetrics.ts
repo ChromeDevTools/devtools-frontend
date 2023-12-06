@@ -955,7 +955,6 @@ export enum DevtoolsExperiments {
   'captureNodeCreationStacks' = 1,
   'liveHeapProfile' = 11,
   'protocolMonitor' = 13,
-  'developerResourcesView' = 15,
   'samplingHeapProfilerTimeline' = 17,
   'showOptionToExposeInternalsInHeapSnapshot' = 18,
   'timelineEventInitiators' = 24,

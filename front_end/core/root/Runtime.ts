@@ -287,7 +287,6 @@ export enum ExperimentName {
   CAPTURE_NODE_CREATION_STACKS = 'captureNodeCreationStacks',
   CSS_OVERVIEW = 'cssOverview',
   LIVE_HEAP_PROFILE = 'liveHeapProfile',
-  DEVELOPER_RESOURCES_VIEW = 'developerResourcesView',
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',

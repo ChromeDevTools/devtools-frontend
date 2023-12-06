@@ -271,7 +271,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'protocolMonitor', 'Protocol Monitor', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
-    Root.Runtime.experiments.register('developerResourcesView', 'Show developer resources view');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
         'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');
@@ -430,7 +429,6 @@ export class MainImpl {
     }
     Root.Runtime.experiments.enableExperimentsTransiently([
       'bfcacheDisplayTree',
-      'developerResourcesView',
     ]);
 
     if (Host.InspectorFrontendHost.isUnderTest()) {

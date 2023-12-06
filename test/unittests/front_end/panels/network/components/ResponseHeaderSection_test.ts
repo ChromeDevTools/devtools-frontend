@@ -256,13 +256,17 @@ describeWithEnvironment('ResponseHeaderSection', () => {
   it('marks overridden headers', async () => {
     const request = {
       sortedResponseHeaders: [
+        // keep names in alphabetical order
         {name: 'duplicate-both-no-mismatch', value: 'foo'},
         {name: 'duplicate-both-no-mismatch', value: 'bar'},
         {name: 'duplicate-both-with-mismatch', value: 'Chrome'},
         {name: 'duplicate-both-with-mismatch', value: 'DevTools'},
+        {name: 'duplicate-different-order', value: 'aaa'},
+        {name: 'duplicate-different-order', value: 'bbb'},
         {name: 'duplicate-in-actual-headers', value: 'first'},
         {name: 'duplicate-in-actual-headers', value: 'second'},
         {name: 'duplicate-in-original-headers', value: 'two'},
+        {name: 'duplicate-single-line', value: 'first line, second line'},
         {name: 'is-in-original-headers', value: 'not an override'},
         {name: 'not-in-original-headers', value: 'is an override'},
         {name: 'triplicate', value: '1'},
@@ -273,13 +277,18 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       blockedResponseCookies: () => [],
       wasBlocked: () => false,
       originalResponseHeaders: [
+        // keep names in alphabetical order
         {name: 'duplicate-both-no-mismatch', value: 'foo'},
         {name: 'duplicate-both-no-mismatch', value: 'bar'},
         {name: 'duplicate-both-with-mismatch', value: 'Chrome'},
         {name: 'duplicate-both-with-mismatch', value: 'Canary'},
+        {name: 'duplicate-different-order', value: 'bbb'},
+        {name: 'duplicate-different-order', value: 'aaa'},
         {name: 'duplicate-in-actual-headers', value: 'first'},
         {name: 'duplicate-in-original-headers', value: 'one'},
         {name: 'duplicate-in-original-headers', value: 'two'},
+        {name: 'duplicate-single-line', value: 'first line'},
+        {name: 'duplicate-single-line', value: 'second line'},
         {name: 'is-in-original-headers', value: 'not an override'},
         {name: 'triplicate', value: '1'},
         {name: 'triplicate', value: '1'},
@@ -311,23 +320,29 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(rows[3].shadowRoot);
     checkRow(rows[3].shadowRoot, 'duplicate-both-with-mismatch:', 'DevTools', true);
     assertShadowRoot(rows[4].shadowRoot);
-    checkRow(rows[4].shadowRoot, 'duplicate-in-actual-headers:', 'first', true);
+    checkRow(rows[4].shadowRoot, 'duplicate-different-order:', 'aaa', true);
     assertShadowRoot(rows[5].shadowRoot);
-    checkRow(rows[5].shadowRoot, 'duplicate-in-actual-headers:', 'second', true);
+    checkRow(rows[5].shadowRoot, 'duplicate-different-order:', 'bbb', true);
     assertShadowRoot(rows[6].shadowRoot);
-    checkRow(rows[6].shadowRoot, 'duplicate-in-original-headers:', 'two', true);
+    checkRow(rows[6].shadowRoot, 'duplicate-in-actual-headers:', 'first', true);
     assertShadowRoot(rows[7].shadowRoot);
-    checkRow(rows[7].shadowRoot, 'is-in-original-headers:', 'not an override', false);
+    checkRow(rows[7].shadowRoot, 'duplicate-in-actual-headers:', 'second', true);
     assertShadowRoot(rows[8].shadowRoot);
-    checkRow(rows[8].shadowRoot, 'not-in-original-headers:', 'is an override', true);
+    checkRow(rows[8].shadowRoot, 'duplicate-in-original-headers:', 'two', true);
     assertShadowRoot(rows[9].shadowRoot);
-    checkRow(rows[9].shadowRoot, 'triplicate:', '1', true);
+    checkRow(rows[9].shadowRoot, 'duplicate-single-line:', 'first line, second line', false);
     assertShadowRoot(rows[10].shadowRoot);
-    checkRow(rows[10].shadowRoot, 'triplicate:', '2', true);
+    checkRow(rows[10].shadowRoot, 'is-in-original-headers:', 'not an override', false);
     assertShadowRoot(rows[11].shadowRoot);
-    checkRow(rows[11].shadowRoot, 'triplicate:', '2', true);
+    checkRow(rows[11].shadowRoot, 'not-in-original-headers:', 'is an override', true);
     assertShadowRoot(rows[12].shadowRoot);
-    checkRow(rows[12].shadowRoot, 'xyz:', 'contains  ab', false);
+    checkRow(rows[12].shadowRoot, 'triplicate:', '1', true);
+    assertShadowRoot(rows[13].shadowRoot);
+    checkRow(rows[13].shadowRoot, 'triplicate:', '2', true);
+    assertShadowRoot(rows[14].shadowRoot);
+    checkRow(rows[14].shadowRoot, 'triplicate:', '2', true);
+    assertShadowRoot(rows[15].shadowRoot);
+    checkRow(rows[15].shadowRoot, 'xyz:', 'contains  ab', false);
   });
 
   it('correctly sets headers as "editable" when matching ".headers" file exists and setting is turned on', async () => {

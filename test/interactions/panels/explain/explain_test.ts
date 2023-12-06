@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, hover, raf, waitFor} from '../../../shared/helper.js';
-import {describe, itScreenshot} from '../../../shared/mocha-extensions.js';
+import {describe, it, itScreenshot} from '../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../helpers/shared.js';
 

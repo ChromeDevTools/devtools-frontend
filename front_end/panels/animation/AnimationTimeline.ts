@@ -160,7 +160,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.element.style.setProperty('--timeline-controls-width', `${this.#timelineControlsWidth}px`);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this.nodeRemoved, this, {scoped: true});
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, ev => this.markNodeAsRemoved(ev.data.node), this,
+        {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(AnimationModel, this, {scoped: true});
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.nodeChanged, this);
 
@@ -316,7 +317,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     this.#gridHeader = container.createChild('div', 'animation-grid-header');
     UI.UIUtils.installDragHandle(
-        this.#gridHeader, this.repositionScrubber.bind(this), this.scrubberDragMove.bind(this),
+        this.#gridHeader, this.scrubberDragStart.bind(this), this.scrubberDragMove.bind(this),
         this.scrubberDragEnd.bind(this), null);
     this.#gridWrapper.appendChild(this.createScrubber());
 
@@ -413,7 +414,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       return;
     }
 
-    this.#controlButton.setEnabled(Boolean(this.#selectedGroup));
+    this.#controlButton.setEnabled(Boolean(this.#selectedGroup) && this.hasAnimationGroupActiveNodes());
     if (this.#selectedGroup && this.#selectedGroup.paused()) {
       this.#controlState = ControlState.Play;
       this.#controlButton.setToggled(true);
@@ -453,7 +454,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private replay(): void {
-    if (!this.#selectedGroup) {
+    if (!this.#selectedGroup || !this.hasAnimationGroupActiveNodes()) {
       return;
     }
     this.#selectedGroup.seekTo(0);
@@ -477,7 +478,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#animationsContainer.removeChildren();
     this.#durationInternal = this.#defaultDuration;
     this.#timelineScrubber.classList.add('hidden');
-    this.#gridHeader.classList.remove('has-selected-group');
+    this.#gridHeader.classList.remove('scrubber-enabled');
     this.#selectedGroup = null;
     if (this.#scrubberPlayer) {
       this.#scrubberPlayer.cancel();
@@ -610,7 +611,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     switch (event.key) {
       case ' ':
       case 'Enter':
-        this.selectAnimationGroup(group);
+        void this.selectAnimationGroup(group);
         break;
       case 'Backspace':
       case 'Delete':
@@ -675,11 +676,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  private selectAnimationGroup(group: AnimationGroup): void {
-    function applySelectionClass(this: AnimationTimeline, ui: AnimationGroupPreviewUI, group: AnimationGroup): void {
-      ui.element.classList.toggle('selected', this.#selectedGroup === group);
-    }
-
+  private async selectAnimationGroup(group: AnimationGroup): Promise<void> {
     if (this.#selectedGroup === group) {
       this.togglePause(false);
       this.replay();
@@ -687,27 +684,28 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
     this.clearTimeline();
     this.#selectedGroup = group;
-    this.#previewMap.forEach(applySelectionClass, this);
+    this.#previewMap.forEach((previewUI: AnimationGroupPreviewUI, group: AnimationGroup) => {
+      previewUI.element.classList.toggle('selected', this.#selectedGroup === group);
+    });
     this.setDuration(Math.max(500, group.finiteDuration() + 100));
-    for (const anim of group.animations()) {
-      this.addAnimation(anim);
-    }
+    // Wait for all animations to be added and nodes to be resolved
+    // until we schedule a redraw.
+    await Promise.all(group.animations().map(anim => this.addAnimation(anim)));
     this.scheduleRedraw();
-    this.#timelineScrubber.classList.remove('hidden');
-    this.#gridHeader.classList.add('has-selected-group');
     this.togglePause(false);
     this.replay();
-  }
-
-  private addAnimation(animation: AnimationImpl): void {
-    function nodeResolved(this: AnimationTimeline, node: SDK.DOMModel.DOMNode|null): void {
-      uiAnimation.setNode(node);
-      if (node && nodeUI) {
-        nodeUI.nodeResolved(node);
-        nodeUIsByNode.set(node, nodeUI);
-      }
+    if (this.hasAnimationGroupActiveNodes()) {
+      this.#timelineScrubber.classList.remove('hidden');
+      this.#gridHeader.classList.add('scrubber-enabled');
     }
 
+    this.animationGroupSelectedForTest();
+  }
+
+  animationGroupSelectedForTest(): void {
+  }
+
+  private async addAnimation(animation: AnimationImpl): Promise<void> {
     let nodeUI = this.#nodesMap.get(animation.source().backendNodeId());
     if (!nodeUI) {
       nodeUI = new NodeUI(animation.source());
@@ -716,18 +714,51 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
     const nodeRow = nodeUI.createNewRow();
     const uiAnimation = new AnimationUI(animation, this, nodeRow);
-    animation.source().deferredNode().resolve(nodeResolved.bind(this));
+    const node = await animation.source().deferredNode().resolvePromise();
+    uiAnimation.setNode(node);
+    if (node && nodeUI) {
+      nodeUI.nodeResolved(node);
+      nodeUIsByNode.set(node, nodeUI);
+    }
     this.#uiAnimations.push(uiAnimation);
     this.#animationsMap.set(animation.id(), animation);
   }
 
-  private nodeRemoved(
-      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>): void {
-    const {node} = event.data;
-    const nodeUI = nodeUIsByNode.get(node);
-    if (nodeUI) {
-      nodeUI.nodeRemoved();
+  private markNodeAsRemoved(node: SDK.DOMModel.DOMNode): void {
+    nodeUIsByNode.get(node)?.nodeRemoved();
+
+    // Mark nodeUIs of pseudo elements of the node as removed for instance, for view transitions.
+    for (const pseudoElements of node.pseudoElements().values()) {
+      pseudoElements.forEach(pseudoElement => this.markNodeAsRemoved(pseudoElement));
     }
+
+    // Mark nodeUIs of children as node removed.
+    node.children()?.forEach(child => {
+      this.markNodeAsRemoved(child);
+    });
+
+    // If the user already has a selected animation group and
+    // some of the nodes are removed, we check whether all the nodes
+    // are removed for the currently selected animation. If that's the case
+    // we remove the scrubber and update control button to be disabled.
+    if (!this.hasAnimationGroupActiveNodes()) {
+      this.#gridHeader.classList.remove('scrubber-enabled');
+      this.#timelineScrubber.classList.add('hidden');
+      this.#scrubberPlayer?.cancel();
+      this.#scrubberPlayer = undefined;
+      this.#currentTime.textContent = '';
+      this.updateControlButton();
+    }
+  }
+
+  private hasAnimationGroupActiveNodes(): boolean {
+    for (const nodeUI of this.#nodesMap.values()) {
+      if (nodeUI.hasActiveNode()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private renderGrid(): void {
@@ -794,7 +825,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private syncScrubber(): void {
-    if (!this.#selectedGroup) {
+    if (!this.#selectedGroup || !this.hasAnimationGroupActiveNodes()) {
       return;
     }
     void this.#selectedGroup.currentTimePromise()
@@ -832,8 +863,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  private repositionScrubber(event: Event): boolean {
-    if (!this.#selectedGroup) {
+  private scrubberDragStart(event: Event): boolean {
+    if (!this.#selectedGroup || !this.hasAnimationGroupActiveNodes()) {
       return false;
     }
 
@@ -904,6 +935,7 @@ export class NodeUI {
   element: HTMLDivElement;
   readonly #description: HTMLElement;
   readonly #timelineElement: HTMLElement;
+  #overlayElement?: HTMLElement;
   #node?: SDK.DOMModel.DOMNode|null;
 
   constructor(_animationEffect: AnimationEffect) {
@@ -939,7 +971,16 @@ export class NodeUI {
 
   nodeRemoved(): void {
     this.element.classList.add('animation-node-removed');
+    if (!this.#overlayElement) {
+      this.#overlayElement = document.createElement('div');
+      this.#overlayElement.classList.add('animation-node-removed-overlay');
+      this.#description.appendChild(this.#overlayElement);
+    }
     this.#node = null;
+  }
+
+  hasActiveNode(): boolean {
+    return Boolean(this.#node);
   }
 
   nodeChanged(): void {

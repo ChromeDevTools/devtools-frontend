@@ -1022,7 +1022,7 @@ export class TimelineModelImpl {
             }
           });
           break;
-        } 
+        }
         this.scheduledLayoutInvalidate.push(event);
         break;
       }
@@ -1122,7 +1122,10 @@ export class TimelineModelImpl {
       case RecordType.Coherent_DrawSubLayerWithCustomEffect:
       case RecordType.Coherent_DrawFillRectShaderAndMask:
       case RecordType.Coherent_DrawSubLayerWithShaderBlendMode:
-      case RecordType.Coherent_DrawSubLayerWithShaderFilter: {
+      case RecordType.Coherent_DrawSubLayerWithShaderFilter:
+      case RecordType.Coherent_DrawStackingContext:
+      case RecordType.Coherent_SynchronizeNode:
+      case RecordType.Coherent_ResolveNodeStyles: {
         if (parseInt(event.args['int0']) > 0) {
           timelineData.backendNodeIds.push(event.args['int0']);
         }
@@ -1758,6 +1761,48 @@ export enum RecordType {
   Coherent_BackendExecute = 'Coherent_BackendExecute',
   Coherent_ExecuteBackendBuffers = 'Coherent_ExecuteBackendBuffers',
   Coherent_CaptureTextureData = 'Coherent_CaptureTextureData',
+
+  Coherent_ResolveNodeStyles = 'Coherent_ResolveNodeStyles',
+  Coherent_DrawStackingContext = 'Coherent_DrawStackingContext',
+  Coherent_SolveElements = 'Coherent_SolveElements',
+  Coherent_SolveAnonymousElements = 'Coherent_SolveAnonymousElements',
+  Coherent_ResolveNodes = 'Coherent_ResolveNodes',
+  Coherent_UpdateMainLayoutTree = 'Coherent_UpdateMainLayoutTree',
+  Coherent_SynchronizeMainToLayout = 'Coherent_SynchronizeMainToLayout',
+  Coherent_RecursiveTransformNodes = 'Coherent_RecursiveTransformNodes',
+  Coherent_UpdateLayoutNodes = 'Coherent_UpdateLayoutNodes',
+  Coherent_RegisterImagesInRenoir = 'Coherent_RegisterImagesInRenoir',
+  Coherent_CreateGPUImageResources = 'Coherent_CreateGPUImageResources',
+  Coherent_FreeGPUTextures = 'Coherent_FreeGPUTextures',
+  Coherent_TickAnimations = 'Coherent_TickAnimations',
+  Coherent_SynchronizeLayoutToMain = 'Coherent_SynchronizeLayoutToMain',
+  Coherent_SynchronizeNode = 'Coherent_SynchronizeNode',
+
+  Coherent_ProcessClientBuffer = 'Coherent_ProcessClientBuffer',
+  Coherent_FetchTessellatedPath = 'Coherent_FetchTessellatedPath',
+  Coherent_TessellatePath = 'Coherent_TessellatePath',
+  Coherent_TessellateHairlinePath = 'Coherent_TessellateHairlinePath',
+  Coherent_TessellateMultiLineSegmentPath = 'Coherent_TessellateMultiLineSegmentPath',
+  Coherent_FillRect = 'Coherent_FillRect',
+  Coherent_FillQuad = 'Coherent_FillQuad',
+  Coherent_StrokeRect = 'Coherent_StrokeRect',
+  Coherent_FillRoundedRect = 'Coherent_FillRoundedRect',
+  Coherent_StrokeRoundedRect = 'Coherent_StrokeRoundedRect',
+  Coherent_RenderTargetWithCustomEffect = 'Coherent_RenderTargetWithCustomEffect',
+  Coherent_ImageRectToRect = 'Coherent_ImageRectToRect',
+  Coherent_BlurRenderTarget = 'Coherent_BlurRenderTarget',
+  Coherent_ImageRepeat = 'Coherent_ImageRepeat',
+  Coherent_DrawFillRectShaderAndMaskRepeat = 'Coherent_DrawFillRectShaderAndMaskRepeat',
+  Coherent_ConvertTextCommandToTextRun = 'Coherent_ConvertTextCommandToTextRun',
+  Coherent_DrawYUV2RGB = 'Coherent_DrawYUV2RGB',
+  Coherent_ExecuteGlyphResourceCommands = 'Coherent_ExecuteGlyphResourceCommands',
+  Coherent_PrepareGlyphGPUResources = 'Coherent_PrepareGlyphGPUResources',
+  Coherent_CopyGlyphGeometryDataToGPU = 'Coherent_CopyGlyphGeometryDataToGPU',
+  Coherent_ScratchTextureManagerEndFrame = 'Coherent_ScratchTextureManagerEndFrame',
+  Coherent_BackendExecuteResourceCommands = 'Coherent_BackendExecuteResourceCommands',
+  Coherent_CopyDataToGPU = 'Coherent_CopyDataToGPU',
+  Coherent_CopyTesseletionsDataToGPU = 'Coherent_CopyTesseletionsDataToGPU',
+  Coherent_CopyGeometryDataToGPU = 'Coherent_CopyGeometryDataToGPU',
 
   Coherent_TextureCreated = 'Coherent_TextureCreated',
   Coherent_TextureDestroyed = 'Coherent_TextureDestroyed',

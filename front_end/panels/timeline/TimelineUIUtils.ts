@@ -2577,13 +2577,144 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_DrawSubLayerWithShaderBlendMode:
       case recordTypes.Coherent_DrawSubLayerWithCustomEffect:
       case recordTypes.Coherent_DrawFillRectShaderAndMask:
-      case recordTypes.Coherent_DrawSubLayerWithShaderFilter: {
+      case recordTypes.Coherent_DrawSubLayerWithShaderFilter:
+      case recordTypes.Coherent_DrawStackingContext:
+      case recordTypes.Coherent_SynchronizeNode:
+      case recordTypes.Coherent_ResolveNodeStyles: {
         if (parseInt(event.args['int0']) > 0) {
           contentHelper.appendTextRow('Node id: ', event.args['int0']);
           relatedNodeLabel = 'Node: ';
         }
         break;
       }
+
+      case recordTypes.Coherent_ProcessClientBuffer: {
+        contentHelper.appendTextRow('Total used memory: ', event.args['int0']);
+        contentHelper.appendTextRow('Client Commnads Count: ', event.args['int1']);
+        contentHelper.appendTextRow('Resource Commands Count: ', event.args['int2']);
+        break;
+      }
+
+      case recordTypes.Coherent_SolveElements:
+      case recordTypes.Coherent_SolveAnonymousElements: {
+        contentHelper.appendTextRow('Nodes Solved', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_UpdateMainLayoutTree:
+      case recordTypes.Coherent_ResolveNodes: {
+        contentHelper.appendTextRow('Nodes with changed layout style', event.args['int0']);
+        contentHelper.appendTextRow('Nodes with changed transform style', event.args['int1']);
+        contentHelper.appendTextRow('Nodes with changed visual style', event.args['int2']);
+        break;
+      }
+
+      case recordTypes.Coherent_SynchronizeMainToLayout: {
+        contentHelper.appendTextRow('Changed nodes: ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_RecursiveTransformNodes: {
+        contentHelper.appendTextRow('Touched nodes: ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_TickAnimations: {
+        contentHelper.appendTextRow('Transitioned Elements: ', event.args['int0']);
+        contentHelper.appendTextRow('Animated Elements: ', event.args['int1']);
+        break;
+      }
+      case recordTypes.Coherent_SynchronizeLayoutToMain: {
+        contentHelper.appendTextRow('Laid Out Nodes', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_RegisterImagesInRenoir: {
+        contentHelper.appendTextRow('Images : ', event.args['int0']);
+        contentHelper.appendTextRow('User Images : ', event.args['int1']);
+        contentHelper.appendTextRow('Not Cached Images: ', event.args['int2']);
+        contentHelper.appendTextRow('Not Cached Preloaded Images: ', event.args['int3']);
+        break;
+      }
+
+      case recordTypes.Coherent_CreateGPUImageResources: {
+        contentHelper.appendTextRow('Uploaded Images : ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_FreeGPUTextures: {
+        contentHelper.appendTextRow('Freed Images', event.args['int0']);
+        contentHelper.appendTextRow('Freed User Images', event.args['int1']);
+        break;
+      }
+
+      case recordTypes.Coherent_UpdateLayoutNodes: {
+        contentHelper.appendTextRow('Changed nodes: ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_TessellatePath:
+      case recordTypes.Coherent_TessellateHairlinePath:
+      case recordTypes.Coherent_TessellateMultiLineSegmentPath: {
+        contentHelper.appendTextRow('Path Commands Count: ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_FillRect:
+      case recordTypes.Coherent_FillQuad:
+      case recordTypes.Coherent_StrokeRect:
+      case recordTypes.Coherent_FillRoundedRect:
+      case recordTypes.Coherent_StrokeRoundedRect: {
+        contentHelper.appendTextRow('Commands Count: ', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_BlurRenderTarget: {
+        contentHelper.appendTextRow('Blur Radius X: ', event.args['int0']);
+        contentHelper.appendTextRow('Blur Radius Y: ', event.args['int1']);
+        break;
+      }
+
+      case recordTypes.Coherent_ConvertTextCommandToTextRun: {
+        contentHelper.appendTextRow('Glyphs Count', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_DrawSubLayerWithShaderFilter: {
+        contentHelper.appendTextRow('Filters Count', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_ExecuteGlyphResourceCommands: {
+        contentHelper.appendTextRow('Resource Commands Count', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_PrepareGlyphGPUResources: {
+        contentHelper.appendTextRow('Uploaded Glyph Images', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_CopyGlyphGeometryDataToGPU: {
+        contentHelper.appendTextRow('Draw Elements', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_ScratchTextureManagerEndFrame: {
+        contentHelper.appendTextRow('Pending Textures for Destroy', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_CopyTesseletionsDataToGPU: {
+        contentHelper.appendTextRow('Path Count to Copy', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_CopyGeometryDataToGPU: {
+        contentHelper.appendTextRow('Draw Elements', event.args['int0']);
+        break;
+      }
+
       // COHERENT END
       default: {
         const detailsNode =

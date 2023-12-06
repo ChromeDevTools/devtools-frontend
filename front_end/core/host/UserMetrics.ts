@@ -971,7 +971,6 @@ export enum DevtoolsExperiments {
   'ignoreListJSFramesOnTimeline' = 43,
   'contrastIssues' = 44,
   'experimentalCookieFeatures' = 45,
-  'cssTypeComponentLength' = 52,
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
   'headerOverrides' = 56,

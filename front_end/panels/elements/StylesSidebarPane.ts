@@ -2387,7 +2387,7 @@ export class StylesSidebarPropertyRenderer {
       }
       processors.push(this.fontHandler);
     }
-    if (Root.Runtime.experiments.isEnabled('cssTypeComponentLength') && this.lengthHandler) {
+    if (this.lengthHandler) {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
       regexes.push(InlineEditor.CSSLengthUtils.CSSLengthRegex);
       processors.push(this.lengthHandler);

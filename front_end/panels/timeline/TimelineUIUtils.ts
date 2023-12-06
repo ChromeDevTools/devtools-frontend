@@ -2792,7 +2792,8 @@ export class TimelineUIUtils {
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        const {startTime: nextEventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(nextEvent);
+        const {startTime: nextEventStartTime, selfTime: nextEventSelfTime} =
+            TraceEngine.Legacy.timesForEventInMilliseconds(nextEvent);
         if (nextEventStartTime >= endTime) {
           break;
         }
@@ -2806,7 +2807,7 @@ export class TimelineUIUtils {
           hasChildren = true;
         }
         const categoryName = TimelineUIUtils.eventStyle(nextEvent).category.name;
-        total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime;
+        total[categoryName] = (total[categoryName] || 0) + nextEventSelfTime;
       }
     }
     if (TraceEngine.Types.TraceEvents.isAsyncPhase(TraceEngine.Legacy.phaseForEvent(event))) {
@@ -3004,7 +3005,10 @@ export class TimelineUIUtils {
     // Add other categories.
     for (const categoryName in TimelineUIUtils.categories()) {
       const category = TimelineUIUtils.categories()[categoryName];
-      if (category === selfCategory) {
+      if (categoryName === selfCategory?.name) {
+        // Do not add an entry for this event's self category because 2
+        // entries for it where added just before this for loop (for
+        // self and children times).
         continue;
       }
       appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.getCSSValue());

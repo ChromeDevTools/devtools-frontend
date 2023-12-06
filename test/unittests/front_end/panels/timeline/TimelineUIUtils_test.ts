@@ -309,6 +309,18 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   }
 
+  function getPieChartDataForDetailsElement(details: DocumentFragment) {
+    const pieChartComp = details.querySelector<HTMLDivElement>('devtools-perf-piechart');
+    if (!pieChartComp?.shadowRoot) {
+      return [];
+    }
+    return Array.from(pieChartComp.shadowRoot.querySelectorAll<HTMLElement>('.pie-chart-legend-row')).map(row => {
+      const title = row.querySelector<HTMLDivElement>('.pie-chart-name')?.innerText;
+      const value = row.querySelector<HTMLDivElement>('.pie-chart-size')?.innerText;
+      return {title, value};
+    });
+  }
+
   describe('colors', function() {
     before(() => {
       // Rather than use the real colours here and burden the test with having to
@@ -647,6 +659,35 @@ describeWithMockConnection('TimelineUIUtils', function() {
              expectedRowData,
          );
        });
+
+    it('shows the aggregated time information for an event', async function() {
+      const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
+      const event =
+          data.traceParsedData.Renderer?.allTraceEntries.find(e => e.ts === 1020034919877 && e.name === 'RunTask');
+      if (!event) {
+        throw new Error('Could not find renderer events');
+      }
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          event,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          true,
+          data.traceParsedData,
+      );
+      const pieChartData = getPieChartDataForDetailsElement(details);
+
+      const expectedPieChartData = [
+        {title: 'System (self)', value: '2\u00A0ms'},
+        {title: 'System (children)', value: '2\u00A0ms'},
+        {title: 'Rendering', value: '28\u00A0ms'},
+        {title: 'Painting', value: '2\u00A0ms'},
+        {title: 'Total', value: '34\u00A0ms'},
+      ];
+      assert.deepEqual(
+          pieChartData,
+          expectedPieChartData,
+      );
+    });
   });
 
   it('can generate details for a frame', async function() {

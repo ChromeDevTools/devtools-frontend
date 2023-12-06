@@ -1358,12 +1358,7 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('can restore breakpoints in scripts with language plugins', async () => {
-      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
-
-      const pluginManager =
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
-      assertNotNullOrUndefined(pluginManager);
-
+      const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
       const scriptInfo = {url: URL, content: ''};
       const script = await backend.addScript(target, scriptInfo, null);
 
@@ -1496,8 +1491,6 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.strictEqual(1, reloadedBoundLocations.length);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
-
-      Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
     });
 
     it('can move breakpoints to network files that are set in matching file system files', async () => {

@@ -588,7 +588,7 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(
             addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile), {jslogContext: 'add-source-map'});
         if (scriptFile.script?.isWasm() &&
-            !Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager?.hasPluginForScript(
+            !Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.hasPluginForScript(
                 scriptFile.script)) {
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.addWasmDebugInfo), addDebugInfoURL.bind(null, scriptFile),

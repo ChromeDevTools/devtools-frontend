@@ -110,7 +110,6 @@ const REGISTERED_EXPERIMENTS = [
   'bfcacheDisplayTree',
   'captureNodeCreationStacks',
   'protocolMonitor',
-  'wasmDWARFDebugging',
   'timelineShowAllEvents',
   'timelineV8RuntimeCallStats',
   'timelineInvalidationTracking',

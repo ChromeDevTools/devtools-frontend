@@ -175,7 +175,7 @@ describeWithMockConnection('PersistenceImpl', () => {
        await persistence.removeBinding(binding);
        await moveResponse;
 
-       assertBreakLocationUiSourceCodes([fileSystemUiSourceCode, networkUiSourceCode]);
+       assertBreakLocationUiSourceCodes([networkUiSourceCode, fileSystemUiSourceCode]);
        project.dispose();
      });
 

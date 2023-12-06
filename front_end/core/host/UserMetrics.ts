@@ -963,7 +963,6 @@ export enum DevtoolsExperiments {
   'timelineInvalidationTracking' = 26,
   'timelineShowAllEvents' = 27,
   'timelineV8RuntimeCallStats' = 28,
-  'wasmDWARFDebugging' = 31,
   'APCA' = 39,
   'fontEditor' = 41,
   'fullAccessibilityTree' = 42,

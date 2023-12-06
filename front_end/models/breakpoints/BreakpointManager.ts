@@ -31,17 +31,15 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
-
+import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
-import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
-
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 let breakpointManagerInstance: BreakpointManager;
 const INITIAL_RESTORE_BREAKPOINT_COUNT = 100;
@@ -186,17 +184,15 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
     // Handle language plugins
     const {pluginManager} = this.debuggerWorkspaceBinding;
-    if (pluginManager) {
-      const sourceUrls = await pluginManager.getSourcesForScript(script);
-      if (Array.isArray(sourceUrls)) {
-        for (const sourceURL of sourceUrls) {
-          if (this.#hasBreakpointsForUrl(sourceURL)) {
-            const uiSourceCode =
-                await this.debuggerWorkspaceBinding.uiSourceCodeForDebuggerLanguagePluginSourceURLPromise(
-                    debuggerModel, sourceURL);
-            assertNotNullOrUndefined(uiSourceCode);
-            await this.#restoreBreakpointsForUrl(uiSourceCode);
-          }
+    const sourceUrls = await pluginManager.getSourcesForScript(script);
+    if (Array.isArray(sourceUrls)) {
+      for (const sourceURL of sourceUrls) {
+        if (this.#hasBreakpointsForUrl(sourceURL)) {
+          const uiSourceCode =
+              await this.debuggerWorkspaceBinding.uiSourceCodeForDebuggerLanguagePluginSourceURLPromise(
+                  debuggerModel, sourceURL);
+          assertNotNullOrUndefined(uiSourceCode);
+          await this.#restoreBreakpointsForUrl(uiSourceCode);
         }
       }
     }

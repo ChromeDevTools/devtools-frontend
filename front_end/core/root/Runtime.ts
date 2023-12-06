@@ -288,7 +288,6 @@ export enum ExperimentName {
   CSS_OVERVIEW = 'cssOverview',
   LIVE_HEAP_PROFILE = 'liveHeapProfile',
   DEVELOPER_RESOURCES_VIEW = 'developerResourcesView',
-  WASM_DWARF_DEBUGGING = 'wasmDWARFDebugging',
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',

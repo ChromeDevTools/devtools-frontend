@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
@@ -99,16 +97,12 @@ describeWithMockConnection('SourceMapsResolver', () => {
       }
     }
 
-    Root.Runtime.experiments.setEnabled('wasmDWARFDebugging', true);
-    const pluginManager =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
-    assertNotNullOrUndefined(pluginManager);
+    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     pluginManager.addPlugin(new Plugin());
     const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
     await resolver.install();
     assert.strictEqual(
         TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, profileCall),
         PLUGIN_FUNCTION_NAME);
-
   });
 });

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Webauthn from './webauthn.js';
@@ -41,5 +40,4 @@ UI.ViewManager.registerViewExtension({
     const Webauthn = await loadWebauthnModule();
     return Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
   },
-  experiment: Root.Runtime.ExperimentName.WEBAUTHN_PANE,
 });

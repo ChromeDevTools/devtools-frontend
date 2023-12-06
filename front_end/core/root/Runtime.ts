@@ -291,7 +291,6 @@ export enum ExperimentName {
   WASM_DWARF_DEBUGGING = 'wasmDWARFDebugging',
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
-  WEBAUTHN_PANE = 'webauthnPane',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
   STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
   HEADER_OVERRIDES = 'headerOverrides',

@@ -959,7 +959,6 @@ export enum DevtoolsExperiments {
   'samplingHeapProfilerTimeline' = 17,
   'showOptionToExposeInternalsInHeapSnapshot' = 18,
   'sourceOrderViewer' = 20,
-  'webauthnPane' = 22,
   'timelineEventInitiators' = 24,
   'timelineInvalidationTracking' = 26,
   'timelineShowAllEvents' = 27,

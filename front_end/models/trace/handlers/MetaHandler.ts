@@ -241,7 +241,11 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (Types.TraceEvents.isTraceEventNavigationStartWithURL(event) && event.args.data) {
     const navigationId = event.args.data.navigationId;
     if (navigationsByNavigationId.has(navigationId)) {
-      throw new Error('Found multiple navigation start events with the same navigation ID.');
+      // We have only ever seen this situation once, in crbug.com/1503982, where the user ran:
+      // window.location.href = 'javascript:console.log("foo")'
+      // In this situation two identical navigationStart events are emitted with the same data, URL and ID.
+      // So, in this situation we drop/ignore any subsequent navigations if we have already seen that ID.
+      return;
     }
     navigationsByNavigationId.set(navigationId, event);
 

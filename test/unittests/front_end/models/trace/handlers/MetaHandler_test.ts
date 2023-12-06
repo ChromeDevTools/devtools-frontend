@@ -518,4 +518,21 @@ describe('MetaHandler', function() {
       ],
     ]);
   });
+
+  it('can handle edge cases where there are multiple navigations with the same ID', async function() {
+    // For context to why this test and trace file exist, see crbug.com/1503982
+    // If an HTML page contains <script>window.location.href =
+    // 'javascript:console.log(1)'</script>, the backend will emit two
+    // navigationStarted events that are identical except for timestamps, and
+    // this caused the trace engine to crash.
+    // To ensure that we handle this case, we have this test which makes sure a
+    // trace that does have two navigations with the same ID does not cause the
+    // MetaHandler to throw an error.
+    const events = await TraceLoader.rawEvents(this, 'multiple-navigations-same-id.json.gz');
+    assert.doesNotThrow(function() {
+      for (const event of events) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+      }
+    });
+  });
 });

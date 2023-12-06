@@ -140,3 +140,7 @@ Contains a `setTimeout`, `requestAnimationFrame` and `requestIdleCallback` call.
 ### nested-initiators
 
 Contains a `setTimeout` triggered by a prior `setTimeout`, so there is a larger initiator chain.
+
+### multiple-navigations-same-id
+
+Contains a trace with two identical navigation events with matching IDs. See crbug.com/1503982 for the context and comments in MetaHandler.ts for the fix. This trace is included to avoid a regression.

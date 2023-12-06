@@ -275,9 +275,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
         'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');
-    Root.Runtime.experiments.register(
-        'sourceOrderViewer', 'Source order viewer', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');
 
     // Back/forward cache
     Root.Runtime.experiments.register(
@@ -412,7 +409,6 @@ export class MainImpl {
     }
 
     Root.Runtime.experiments.enableExperimentsByDefault([
-      'sourceOrderViewer',
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,

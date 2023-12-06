@@ -958,7 +958,6 @@ export enum DevtoolsExperiments {
   'developerResourcesView' = 15,
   'samplingHeapProfilerTimeline' = 17,
   'showOptionToExposeInternalsInHeapSnapshot' = 18,
-  'sourceOrderViewer' = 20,
   'timelineEventInitiators' = 24,
   'timelineInvalidationTracking' = 26,
   'timelineShowAllEvents' = 27,

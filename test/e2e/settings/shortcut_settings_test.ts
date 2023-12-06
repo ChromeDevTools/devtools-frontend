@@ -50,7 +50,7 @@ describe('Shortcuts Settings tab', async () => {
 
     await waitForVSCodeShortcutPreset();
 
-    const shortcutsShortcuts = await shortcutsForAction('Shortcuts');
+    const shortcutsShortcuts = await shortcutsForAction('Show Shortcuts');
     const settingsShortcuts = await shortcutsForAction('Settings');
     const pauseShortcuts = await shortcutsForAction('Pause script execution');
     assert.deepStrictEqual(shortcutsShortcuts, VS_CODE_SHORTCUTS_SHORTCUTS);
@@ -73,7 +73,7 @@ describe('Shortcuts Settings tab', async () => {
     await waitFor(QUICK_OPEN_SELECTOR);
 
     // make sure the command menu reflects the new shortcuts
-    await frontend.keyboard.type('Shortcuts');
+    await frontend.keyboard.type('Show Shortcuts');
     const shortcutsItemText = await getSelectedItemText();
 
     assert.strictEqual(shortcutsItemText, VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT);
@@ -81,7 +81,7 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should allow users to open the shortcut editor and view the current shortcut', async () => {
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     const shortcutInputsText = await shortcutInputValues();
     assert.deepStrictEqual(shortcutInputsText, CONSOLE_SHORTCUT_INPUT_TEXT);
@@ -91,7 +91,7 @@ describe('Shortcuts Settings tab', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     await frontend.keyboard.down('Control');
     await frontend.keyboard.press('1');
@@ -108,7 +108,7 @@ describe('Shortcuts Settings tab', async () => {
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Show Console');
+    const shortcuts = await shortcutsForAction('Toggle Console');
     assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
   });
 
@@ -150,7 +150,7 @@ describe('Shortcuts Settings tab', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     await frontend.keyboard.down('Control');
     await frontend.keyboard.press('1');
@@ -180,7 +180,7 @@ describe('Shortcuts Settings tab', async () => {
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Show Console');
+    const shortcuts = await shortcutsForAction('Toggle Console');
     assert.deepStrictEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
@@ -188,7 +188,7 @@ describe('Shortcuts Settings tab', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     await frontend.keyboard.down('Control');
     await frontend.keyboard.press('1');
@@ -205,7 +205,7 @@ describe('Shortcuts Settings tab', async () => {
     await clickShortcutCancelButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Show Console');
+    const shortcuts = await shortcutsForAction('Toggle Console');
     assert.deepStrictEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
@@ -213,7 +213,7 @@ describe('Shortcuts Settings tab', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     await frontend.keyboard.down('Control');
     await frontend.keyboard.press('1');
@@ -227,7 +227,7 @@ describe('Shortcuts Settings tab', async () => {
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-    const shortcuts = await shortcutsForAction('Show Console');
+    const shortcuts = await shortcutsForAction('Toggle Console');
     assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT);
   });
 
@@ -235,7 +235,7 @@ describe('Shortcuts Settings tab', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    await editShortcutListItem('Toggle Console');
 
     await frontend.keyboard.down('Control');
     await frontend.keyboard.down('Alt');
@@ -254,7 +254,7 @@ describe('Shortcuts Settings tab', async () => {
       const {frontend} = getBrowserAndPages();
 
       await openSettingsTab('Shortcuts');
-      await editShortcutListItem('Show Console');
+      await editShortcutListItem('Toggle Console');
 
       await frontend.keyboard.down('Control');
       await frontend.keyboard.press('1');
@@ -269,7 +269,7 @@ describe('Shortcuts Settings tab', async () => {
       await clickShortcutConfirmButton();
       await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
-      const shortcuts = await shortcutsForAction('Show Console');
+      const shortcuts = await shortcutsForAction('Toggle Console');
       assert.deepStrictEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
     });
   });

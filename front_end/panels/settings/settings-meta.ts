@@ -163,7 +163,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.SETTINGS,
   actionId: 'settings.shortcuts',
-  title: i18nLazyString(UIStrings.shortcuts),
+  title: i18nLazyString(UIStrings.showShortcuts),
   async loadActionDelegate() {
     const Settings = await loadSettingsModule();
     return new Settings.SettingsScreen.ActionDelegate();

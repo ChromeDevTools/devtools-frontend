@@ -1844,6 +1844,24 @@ export function isWebSocketTraceEvent(event: TraceEventData): event is TraceEven
       isTraceEventWebSocketReceiveHandshakeResponse(event) || isTraceEventWebSocketSendHandshakeRequest(event);
 }
 
+export interface TraceEventV8Compile extends TraceEventComplete {
+  name: KnownEventName.Compile;
+  args: TraceEventArgs&{
+    data?: {
+      url?: string,
+      columnNumber?: number,
+      lineNumber?: number,
+      notStreamedReason?: string,
+      streamed?: boolean,
+      eager?: boolean,
+    },
+    fileName?: string,
+  };
+}
+export function isTraceEventV8Compile(event: TraceEventData): event is TraceEventV8Compile {
+  return event.name === KnownEventName.Compile;
+}
+
 /**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame
@@ -1867,9 +1885,15 @@ export const enum KnownEventName {
   ParseHTML = 'ParseHTML',
   ParseCSS = 'ParseAuthorStyleSheet',
   /* V8 */
-  CompileScript = 'V8.CompileScript',
   CompileCode = 'V8.CompileCode',
   CompileModule = 'V8.CompileModule',
+  // Although V8 emits the V8.CompileScript event, the event that actually
+  // contains the useful information about the script (URL, etc), is contained
+  // in the v8.compile event.
+  // Yes, it is all lowercase compared to all the rest of the V8... events,
+  // that is not a typo :)
+  Compile = 'v8.compile',
+  CompileScript = 'V8.CompileScript',
   Optimize = 'V8.OptimizeCode',
   WasmStreamFromResponseCallback = 'v8.wasm.streamFromResponseCallback',
   WasmCompiledModule = 'v8.wasm.compiledModule',

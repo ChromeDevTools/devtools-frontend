@@ -468,6 +468,35 @@ describeWithMockConnection('TimelineUIUtils', function() {
       ]);
     });
 
+    it('renders details for a v8.compile ("Compile Script") event', async function() {
+      const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
+      const compileEvent =
+          data.traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventV8Compile);
+      if (!compileEvent) {
+        throw new Error('Could not find expected event');
+      }
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          compileEvent,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(rowData, [
+        {
+          title: 'Script',
+          // URL plus line/col number
+          value: 'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:1:1',
+        },
+        {
+          title: 'Streamed',
+          value: 'false: inline script',
+        },
+        {title: 'Compilation cache status', value: 'script not eligible'},
+      ]);
+    });
+
     it('renders the details for a layout shift properly', async function() {
       Common.Linkifier.registerLinkifier({
         contextTypes() {

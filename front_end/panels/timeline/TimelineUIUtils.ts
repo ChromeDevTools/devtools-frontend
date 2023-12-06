@@ -1970,6 +1970,25 @@ export class TimelineUIUtils {
       return contentHelper.fragment;
     }
 
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isTraceEventV8Compile(event)) {
+      url = event.args.data?.url as Platform.DevToolsPath.UrlString;
+      if (url) {
+        const lineNumber = event.args?.data?.lineNumber || 0;
+        const columnNumber = event.args?.data?.columnNumber;
+        contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber, columnNumber);
+      }
+      const isEager = Boolean(event.args.data?.eager);
+      if (isEager) {
+        contentHelper.appendTextRow(i18nString(UIStrings.eagerCompile), true);
+      }
+
+      const isStreamed = Boolean(event.args.data?.streamed);
+      contentHelper.appendTextRow(
+          i18nString(UIStrings.streamed),
+          isStreamed + (isStreamed ? '' : `: ${event.args.data?.notStreamedReason || ''}`));
+      TimelineUIUtils.buildConsumeCacheDetails(eventData, contentHelper);
+    }
+
     switch (event.name) {
       case recordTypes.GCEvent:
       case recordTypes.MajorGC:
@@ -2014,21 +2033,8 @@ export class TimelineUIUtils {
         contentHelper.appendLocationRow(i18nString(UIStrings.module), event.args['fileName'], 0);
         break;
       }
-
       case recordTypes.CompileScript: {
-        url = eventData && eventData['url'] as Platform.DevToolsPath.UrlString;
-        if (url) {
-          contentHelper.appendLocationRow(
-              i18nString(UIStrings.script), url, eventData['lineNumber'], eventData['columnNumber']);
-        }
-        const isEager = eventData['eager'] ?? false;
-        if (isEager) {
-          contentHelper.appendTextRow(i18nString(UIStrings.eagerCompile), true);
-        }
-        const isStreamed = eventData['streamed'];
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.streamed), isStreamed + (isStreamed ? '' : `: ${eventData['notStreamedReason']}`));
-        TimelineUIUtils.buildConsumeCacheDetails(eventData, contentHelper);
+        // This case is handled above
         break;
       }
 
@@ -3453,7 +3459,7 @@ export class TimelineDetailsContentHelper {
   }
 
   appendLocationRow(title: string, url: string, startLine: number, startColumn?: number): void {
-    if (!this.linkifierInternal || !this.target) {
+    if (!this.linkifierInternal) {
       return;
     }
 

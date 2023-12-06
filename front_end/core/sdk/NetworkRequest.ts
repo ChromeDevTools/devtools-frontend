@@ -1034,8 +1034,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.#sortedOriginalResponseHeaders = this.originalResponseHeaders.slice();
     return this.#sortedOriginalResponseHeaders.sort(function(a, b) {
-      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase()) ||
-          Platform.StringUtilities.compare(a.value, b.value);
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
   }
 
@@ -1061,20 +1060,32 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#hasOverriddenContent = value;
   }
 
+  #deduplicateHeaders(sortedHeaders: NameValue[]): NameValue[] {
+    const dedupedHeaders: NameValue[] = [];
+    for (const header of sortedHeaders) {
+      if (dedupedHeaders.length && dedupedHeaders[dedupedHeaders.length - 1].name === header.name) {
+        dedupedHeaders[dedupedHeaders.length - 1].value += `, ${header.value}`;
+      } else {
+        dedupedHeaders.push({name: header.name, value: header.value});
+      }
+    }
+    return dedupedHeaders;
+  }
+
   hasOverriddenHeaders(): boolean {
     if (!this.#originalResponseHeaders.length) {
       return false;
     }
-    const sortedResponseHeaders = this.sortedResponseHeaders;
-    const sortedOriginalResponseHeaders = this.sortedOriginalResponseHeaders;
-    if (sortedOriginalResponseHeaders.length !== sortedResponseHeaders.length) {
+    const responseHeaders = this.#deduplicateHeaders(this.sortedResponseHeaders);
+    const originalResponseHeaders = this.#deduplicateHeaders(this.sortedOriginalResponseHeaders);
+    if (responseHeaders.length !== originalResponseHeaders.length) {
       return true;
     }
-    for (let i = 0; i < sortedResponseHeaders.length; i++) {
-      if (sortedResponseHeaders[i].name.toLowerCase() !== sortedOriginalResponseHeaders[i].name.toLowerCase()) {
+    for (let i = 0; i < responseHeaders.length; i++) {
+      if (responseHeaders[i].name.toLowerCase() !== originalResponseHeaders[i].name.toLowerCase()) {
         return true;
       }
-      if (sortedResponseHeaders[i].value !== sortedOriginalResponseHeaders[i].value) {
+      if (responseHeaders[i].value !== originalResponseHeaders[i].value) {
         return true;
       }
     }

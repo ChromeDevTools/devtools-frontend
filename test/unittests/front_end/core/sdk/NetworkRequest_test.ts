@@ -121,10 +121,14 @@ describe('NetworkRequest', () => {
     request.originalResponseHeaders =
         [{name: 'one', value: 'first'}, {name: 'two', value: 'second'}, {name: 'two', value: 'second'}];
     assert.isTrue(request.hasOverriddenHeaders());
+  });
 
+  it('considers duplicate headers which only differ in the order of their values as overridden', () => {
+    const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);
     request.responseHeaders = [{name: 'duplicate', value: 'first'}, {name: 'duplicate', value: 'second'}];
-    request.originalResponseHeaders = [{name: 'duplicate', value: 'second'}, {name: 'Duplicate', value: 'first'}];
-    assert.isFalse(request.hasOverriddenHeaders());
+    request.originalResponseHeaders = [{name: 'duplicate', value: 'second'}, {name: 'duplicate', value: 'first'}];
+    assert.isTrue(request.hasOverriddenHeaders());
   });
 
   it('can handle the case of duplicate cookies with only 1 of them being blocked', async () => {
@@ -166,5 +170,13 @@ describe('NetworkRequest', () => {
       resourceIPAddressSpace: 'Public' as Protocol.Network.IPAddressSpace,
     } as unknown as SDK.NetworkRequest.ExtraResponseInfo);
     assert.deepEqual(request.sortedResponseHeaders, responseHeaders);
+  });
+
+  it('treats multiple headers with the same name the same as single header with comma-separated values', () => {
+    const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);
+    request.responseHeaders = [{name: 'duplicate', value: 'first, second'}];
+    request.originalResponseHeaders = [{name: 'duplicate', value: 'first'}, {name: 'duplicate', value: 'second'}];
+    assert.isFalse(request.hasOverriddenHeaders());
   });
 });

@@ -17,7 +17,9 @@ describeWithRealConnection('TimelineController', () => {
       loadingStarted: sinon.stub(),
       processingStarted: sinon.stub(),
       loadingProgress: sinon.stub(),
-      loadingComplete: sinon.stub().callsFake(function(_tracingModel: TraceEngine.Legacy.TracingModel|null) {}),
+      loadingComplete: sinon.stub().callsFake(function(
+          _collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
+          _tracingModel: TraceEngine.Legacy.TracingModel|null) {}),
     };
     const client: Timeline.TimelineController.Client = {
       recordingProgress(usage) {
@@ -32,8 +34,8 @@ describeWithRealConnection('TimelineController', () => {
       loadingProgress() {
         stubs.loadingProgress();
       },
-      async loadingComplete(tracingModel, _exclusiveFilter) {
-        stubs.loadingComplete(tracingModel);
+      async loadingComplete(collectedEvents, tracingModel, _exclusiveFilter) {
+        stubs.loadingComplete(collectedEvents, tracingModel);
       },
       loadingCompleteForTest() {},
     };
@@ -72,9 +74,13 @@ describeWithRealConnection('TimelineController', () => {
     assert.strictEqual(stubs.loadingStarted.callCount, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
     assert.strictEqual(stubs.loadingComplete.callCount, 1);
-    const tracingModel = stubs.loadingComplete.getCall(0).firstArg as TraceEngine.Legacy.TracingModel;
+    const [collectedEvents, tracingModel] =
+        stubs.loadingComplete.getCall(0)
+            .args as [TraceEngine.Types.TraceEvents.TraceEventData[], TraceEngine.Legacy.TracingModel];
     assert.isDefined(tracingModel);
     // Sanity check: ensure that we saw some events during the trace.
     assert.isTrue(tracingModel.allRawEvents().length > 0);
+    assert.isTrue(collectedEvents.length > 0);
+    assert.strictEqual(collectedEvents.length, tracingModel.allRawEvents().length);
   });
 });

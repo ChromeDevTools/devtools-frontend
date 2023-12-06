@@ -26,6 +26,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   readonly rootTarget: SDK.Target.Target;
   private tracingManager: TraceEngine.TracingManager.TracingManager|null;
   private performanceModel: PerformanceModel;
+  #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   private readonly client: Client;
   private readonly tracingModel: TraceEngine.Legacy.TracingModel;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -170,6 +171,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   }
 
   traceEventsCollected(events: TraceEngine.TracingManager.EventPayload[]): void {
+    this.#collectedEvents =
+        this.#collectedEvents.concat(events as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
     this.tracingModel.addEvents(events);
   }
 
@@ -189,7 +192,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   private async finalizeTrace(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.tracingModel.tracingComplete();
-    await this.client.loadingComplete(this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
+    await this.client.loadingComplete(
+        this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
     this.client.loadingCompleteForTest();
   }
 
@@ -208,6 +212,7 @@ export interface Client {
   processingStarted(): void;
   loadingProgress(progress?: number): void;
   loadingComplete(
+      collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
       isCpuProfile: boolean): Promise<void>;

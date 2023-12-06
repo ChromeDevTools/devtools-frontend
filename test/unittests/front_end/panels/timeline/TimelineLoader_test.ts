@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import type * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
-
-import type * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-
 import {describeWithEnvironment} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {makeFakeEventPayload} from '../../helpers/TraceHelpers.js';
 
@@ -50,11 +48,12 @@ describeWithEnvironment('TimelineLoader', () => {
       processingStartedSpy();
     },
     async loadingComplete(
+        collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
         tracingModel: TraceEngine.Legacy.TracingModel|null,
         exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
         isCpuProfile: boolean,
     ) {
-      loadingCompleteSpy(tracingModel, exclusiveFilter, isCpuProfile);
+      loadingCompleteSpy(collectedEvents, tracingModel, exclusiveFilter, isCpuProfile);
     },
     recordingProgress: function(usage: number): void {
       recordingProgressSpy(usage);
@@ -89,7 +88,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [tracingModel, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, tracingModel, exclusiveFilter, isCpuProfile] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.isNull(exclusiveFilter);  // We are not filtering out any events for this trace.
     if (!tracingModel) {
@@ -97,6 +96,7 @@ describeWithEnvironment('TimelineLoader', () => {
     }
     // Ensure that we loaded something that looks about right!
     assert.lengthOf(tracingModel.allRawEvents(), 8252);
+    assert.lengthOf(collectedEvents, 8252);
     assert.isFalse(isCpuProfile);
   });
 
@@ -115,7 +115,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [tracingModel, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, tracingModel, exclusiveFilter, isCpuProfile] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.deepEqual(exclusiveFilter, Timeline.TimelineLoader.TimelineLoader.getCpuProfileFilter());
     if (!tracingModel) {
@@ -124,6 +124,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // We create fake trace event for CPU profile, includes one for TracingStartedInPage,
     // one for metadata, one for root, and one for CPU profile
     assert.lengthOf(tracingModel.allRawEvents(), 4);
+    assert.lengthOf(collectedEvents, 4);
     assert.isTrue(isCpuProfile);
   });
 
@@ -144,7 +145,7 @@ describeWithEnvironment('TimelineLoader', () => {
         dur: 5_000,
       }),
     ];
-    const loader = await Timeline.TimelineLoader.TimelineLoader.loadFromEvents(testTraceEvents, client);
+    const loader = Timeline.TimelineLoader.TimelineLoader.loadFromEvents(testTraceEvents, client);
     await loader.traceFinalizedForTest();
     assert.isTrue(loadingStartedSpy.calledOnce);
     // For the trace events we are testing, loadingProgress will be called only once, because the
@@ -157,7 +158,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [tracingModel, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, tracingModel, exclusiveFilter, isCpuProfile] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.isNull(exclusiveFilter);
     if (!tracingModel) {
@@ -165,12 +166,13 @@ describeWithEnvironment('TimelineLoader', () => {
     }
     // Ensure that we loaded something that looks about right!
     assert.lengthOf(tracingModel.allRawEvents(), testTraceEvents.length);
+    assert.lengthOf(collectedEvents, testTraceEvents.length);
     assert.isFalse(isCpuProfile);
   });
 
   it('can load recorded CPUProfile correctly', async () => {
     const testProfile: Protocol.Profiler.Profile = {nodes: [], startTime: 0, endTime: 0};
-    const loader = await Timeline.TimelineLoader.TimelineLoader.loadFromCpuProfile(testProfile, client);
+    const loader = Timeline.TimelineLoader.TimelineLoader.loadFromCpuProfile(testProfile, client);
     await loader.traceFinalizedForTest();
     assert.isTrue(loadingStartedSpy.calledOnce);
     // For the CPU Profile we are testing, loadingProgress will be called only once, because the
@@ -183,7 +185,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [tracingModel, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, tracingModel, exclusiveFilter, isCpuProfile] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.deepEqual(exclusiveFilter, Timeline.TimelineLoader.TimelineLoader.getCpuProfileFilter());
     if (!tracingModel) {
@@ -192,6 +194,7 @@ describeWithEnvironment('TimelineLoader', () => {
     // We create fake trace event for CPU profile, includes one for TracingStartedInPage,
     // one for metadata, one for root, and one for CPU profile
     assert.lengthOf(tracingModel.allRawEvents(), 4);
+    assert.lengthOf(collectedEvents, 4);
     assert.isTrue(isCpuProfile);
   });
 });

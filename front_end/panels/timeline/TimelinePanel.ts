@@ -1028,7 +1028,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // When recording failed, we should load null to go back to the landing page.
         async () => {
           this.statusPane?.remove();
-          await this.loadingComplete(/* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
+          await this.loadingComplete(
+              /* no collectedEvents */[],
+              /* tracingModel= */ null,
+              /* exclusiveFilter= */ null,
+              /* isCpuProfile= */ false);
         });
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.recordingFailed));
@@ -1356,6 +1360,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async loadingComplete(
+      collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
       isCpuProfile: boolean): Promise<void> {
@@ -1388,7 +1393,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // TODO(paulirish): Resolve this, or just wait for the death of tracingModel. :)
         this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
         this.#executeNewTraceEngine(
-            tracingModel, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
+            collectedEvents, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
       ]);
 
       // This code path is only executed when a new trace is recorded/imported,
@@ -1463,18 +1468,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
-  /**
-   * Call into the new Trace Engine to parse the data. We don't currently do
-   * anything with this data, but we are calling it here to ensure that all the
-   * pieces are connected together and we are able to parse data in the new engine
-   * from OPP.
-   *
-   * The trace engine model runs the parsing in a worker, so this should not
-   * impact the main thread, as we `void` it to ensure we don't want for the
-   * parsing to complete.
-   **/
   async #executeNewTraceEngine(
-      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean, isCpuProfile: boolean,
+      collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[], isFreshRecording: boolean, isCpuProfile: boolean,
       recordStartTime?: number): Promise<void> {
     const shouldGatherMetadata = isFreshRecording && !isCpuProfile;
     const metadata = shouldGatherMetadata ? await TraceEngine.Extras.Metadata.forNewRecording(recordStartTime) : {};
@@ -1482,9 +1477,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         isCpuProfile ? TraceEngine.Types.File.DataOrigin.CPUProfile : TraceEngine.Types.File.DataOrigin.TraceEvents;
 
     return this.#traceEngineModel.parse(
-        // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
-        // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
-        tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[],
+        collectedEvents,
         {
           metadata,
           isFreshRecording,

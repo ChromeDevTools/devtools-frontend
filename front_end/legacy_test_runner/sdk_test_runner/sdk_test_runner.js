@@ -176,7 +176,7 @@ SDKTestRunner.PageMock = class {
 
   debuggerEnable(id, params) {
     this.enabledDomains.add('Debugger');
-    this.sendResponse(id, {debuggerId: 'MOCK_DEBUGGER_ID'});
+    this.sendResponse(id, {});
 
     for (const script of this.scripts) {
       this.fireEvent('Debugger.scriptParsed', script);

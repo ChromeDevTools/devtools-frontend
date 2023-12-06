@@ -70,6 +70,7 @@ import * as ScreenCaptureModel from './ScreenCaptureModel.js';
 import * as Script from './Script.js';
 import * as SDKModel from './SDKModel.js';
 import * as SecurityOriginManager from './SecurityOriginManager.js';
+import * as ServerSentEventProtocol from './ServerSentEventsProtocol.js';
 import * as ServerTiming from './ServerTiming.js';
 import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
@@ -142,6 +143,7 @@ export {
   Script,
   SDKModel,
   SecurityOriginManager,
+  ServerSentEventProtocol,
   ServerTiming,
   ServiceWorkerCacheModel,
   ServiceWorkerManager,

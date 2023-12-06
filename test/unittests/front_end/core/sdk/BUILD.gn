@@ -36,6 +36,7 @@ ts_library("sdk") {
     "ResourceTreeModel_test.ts",
     "RuntimeModel_test.ts",
     "Script_test.ts",
+    "ServerSentEventsProtocol_test.ts",
     "ServerTiming_test.ts",
     "ServiceWorkerManager_test.ts",
     "SourceMapManager_test.ts",

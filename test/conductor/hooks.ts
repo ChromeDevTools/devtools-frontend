@@ -156,13 +156,15 @@ export async function unregisterAllServiceWorkers() {
 }
 
 export async function resetPages() {
+  const {frontend, target} = getBrowserAndPages();
+
+  await target.bringToFront();
   await targetTab.reset();
 
-  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   await throttleCPUIfRequired(frontend);
   await delayPromisesIfRequired(frontend);
 
-  await frontend.bringToFront();
   if (TEST_SERVER_TYPE === 'hosted-mode') {
     await frontendTab.reset();
   } else if (TEST_SERVER_TYPE === 'component-docs') {

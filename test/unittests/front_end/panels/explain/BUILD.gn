@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("explain") {
   testonly = true
-  sources = [ "PromptBuilder_test.ts" ]
+  sources = [
+    "InsightProvider_test.ts",
+    "PromptBuilder_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/panels/explain:bundle",

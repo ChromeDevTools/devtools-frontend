@@ -114,6 +114,11 @@ const UIStrings = {
   PrefetchEvictedForNewerPrefetch:
       'The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest.',
   /**
+   *@description Description text for Prefetch status PrefetchEvictedAfterCandidateRemoved.
+   */
+  PrefetchEvictedAfterCandidateRemoved:
+      'The prefetch was discarded because no speculation rule in the initating page triggers a prefetch for this URL anymore.',
+  /**
    *@description  Description text for Prefetch status PrefetchNotEligibleBatterySaverEnabled.
    */
   PrefetchNotEligibleBatterySaverEnabled:
@@ -415,6 +420,7 @@ export const PrefetchReasonDescription: {[key: string]: {name: () => Platform.UI
   'PrefetchProxyNotAvailable': {name: i18nLazyString(UIStrings.PrefetchProxyNotAvailable)},
   'PrefetchNotUsedProbeFailed': {name: i18nLazyString(UIStrings.PrefetchNotUsedProbeFailed)},
   'PrefetchEvictedForNewerPrefetch': {name: i18nLazyString(UIStrings.PrefetchEvictedForNewerPrefetch)},
+  'PrefetchEvictedAfterCandidateRemoved': {name: i18nLazyString(UIStrings.PrefetchEvictedAfterCandidateRemoved)},
   'PrefetchNotEligibleBatterySaverEnabled': {name: i18nLazyString(UIStrings.PrefetchNotEligibleBatterySaverEnabled)},
   'PrefetchNotEligiblePreloadingDisabled': {name: i18nLazyString(UIStrings.PrefetchNotEligiblePreloadingDisabled)},
 };
@@ -460,7 +466,7 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
     case Protocol.Preload.PrefetchStatus.PrefetchEvictedForNewerPrefetch:
       return PrefetchReasonDescription['PrefetchEvictedForNewerPrefetch'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchEvictedAfterCandidateRemoved:
-      return null;
+      return PrefetchReasonDescription['PrefetchEvictedAfterCandidateRemoved'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchIsPrivacyDecoy:
       return PrefetchReasonDescription['PrefetchIsPrivacyDecoy'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchIsStale:

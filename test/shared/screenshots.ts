@@ -95,7 +95,11 @@ const assertScreenshotUnchangedWithRetries = async (
     const goldenScreenshotPath = path.join(GOLDENS_FOLDER, fileNameForPlatform);
     const generatedScreenshotPath = path.join(generatedScreenshotFolder, fileNameForPlatform);
 
-    if (fs.existsSync(generatedScreenshotPath)) {
+    // You can run the tests with ITERATIONS=2 to run each test twice. In that
+    // case we would expect the generated screenshots to already exists, so if
+    // we are running more than 1 iteration, we do not error.
+    const testIterations = process.env.ITERATIONS ? parseInt(process.env.ITERATIONS, 10) : 1;
+    if (fs.existsSync(generatedScreenshotPath) && testIterations < 2) {
       // If this happened something went wrong during the clean-up at the start of the test run, so let's bail.
       throw new Error(`${generatedScreenshotPath} already exists.`);
     }

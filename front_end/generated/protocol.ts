@@ -9389,6 +9389,20 @@ export namespace Network {
     userAgentMetadata?: Emulation.UserAgentMetadata;
   }
 
+  export interface StreamResourceContentRequest {
+    /**
+     * Identifier of the request to stream.
+     */
+    requestId: RequestId;
+  }
+
+  export interface StreamResourceContentResponse extends ProtocolResponseWithError {
+    /**
+     * Data that has been buffered until streaming is enabled.
+     */
+    bufferedData: binary;
+  }
+
   export interface GetSecurityIsolationStatusRequest {
     /**
      * If no frameId is provided, the status of the target is provided.
@@ -9447,6 +9461,10 @@ export namespace Network {
      * Actual bytes received (might be less than dataLength for compressed encodings).
      */
     encodedDataLength: integer;
+    /**
+     * Data that was received.
+     */
+    data?: binary;
   }
 
   /**

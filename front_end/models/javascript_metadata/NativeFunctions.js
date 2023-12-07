@@ -7639,6 +7639,10 @@ export const NativeFunctions = [
     signatures: [['?options'],['x','?options']]
   },
   {
+    name: 'linear',
+    signatures: [['?options'],['input','?options']]
+  },
+  {
     name: 'pad',
     signatures: [['input','beginningPadding','endingPadding','?options']]
   },

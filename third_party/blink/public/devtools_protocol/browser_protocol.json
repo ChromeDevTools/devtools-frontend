@@ -14121,6 +14121,25 @@
                     ]
                 },
                 {
+                    "name": "streamResourceContent",
+                    "description": "Enables streaming of the response for the given requestId.\nIf enabled, the dataReceived event contains the data that was received during streaming.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "Identifier of the request to stream.",
+                            "$ref": "RequestId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "bufferedData",
+                            "description": "Data that has been buffered until streaming is enabled.",
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
                     "name": "getSecurityIsolationStatus",
                     "description": "Returns information about the COEP/COOP isolation status.",
                     "experimental": true,
@@ -14205,6 +14224,13 @@
                             "name": "encodedDataLength",
                             "description": "Actual bytes received (might be less than dataLength for compressed encodings).",
                             "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "description": "Data that was received.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "binary"
                         }
                     ]
                 },

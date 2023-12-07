@@ -1550,13 +1550,11 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  private appendSubtitle(
-      cellElement: Element, subtitleText: string, showInlineWhenSelected: boolean|undefined = false,
-      tooltipText: string|undefined = ''): void {
+  private appendSubtitle(cellElement: Element, subtitleText: string, alwaysVisible = false, tooltipText = ''): void {
     const subtitleElement = document.createElement('div');
     subtitleElement.classList.add('network-cell-subtitle');
-    if (showInlineWhenSelected) {
-      subtitleElement.classList.add('network-cell-subtitle-show-inline-when-selected');
+    if (alwaysVisible) {
+      subtitleElement.classList.add('always-visible');
     }
     subtitleElement.textContent = subtitleText;
     if (tooltipText) {

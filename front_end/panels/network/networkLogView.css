@@ -186,7 +186,7 @@
   display: none;
 }
 
-.network-log-grid.data-grid.small tr.selected .network-cell-subtitle-show-inline-when-selected {
+.network-log-grid.data-grid.small .network-cell-subtitle.always-visible {
   display: inline;
   margin-left: 4px;
 }

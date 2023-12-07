@@ -23,7 +23,10 @@ const bidiServerLogger = (prefix, ...args) => {
 /**
  * @internal
  */
-export async function connectBidiOverCdp(cdp) {
+export async function connectBidiOverCdp(cdp, 
+// TODO: replace with `BidiMapper.MapperOptions`, once it's exported in
+//  https://github.com/puppeteer/puppeteer/pull/11415.
+options) {
     const transportBiDi = new NoOpTransport();
     const cdpConnectionAdapter = new CdpConnectionAdapter(cdp);
     const pptrTransport = {
@@ -34,6 +37,7 @@ export async function connectBidiOverCdp(cdp) {
         close() {
             bidiServer.close();
             cdpConnectionAdapter.close();
+            cdp.dispose();
         },
         onmessage(_message) {
             // The method is overridden by the Connection.
@@ -46,7 +50,7 @@ export async function connectBidiOverCdp(cdp) {
     const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport);
     const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, 
     // TODO: most likely need a little bit of refactoring
-    cdpConnectionAdapter.browserClient(), '', undefined, bidiServerLogger);
+    cdpConnectionAdapter.browserClient(), '', options, undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
 /**
@@ -56,13 +60,13 @@ export async function connectBidiOverCdp(cdp) {
 class CdpConnectionAdapter {
     #cdp;
     #adapters = new Map();
-    #browser;
+    #browserCdpConnection;
     constructor(cdp) {
         this.#cdp = cdp;
-        this.#browser = new CDPClientAdapter(cdp);
+        this.#browserCdpConnection = new CDPClientAdapter(cdp);
     }
     browserClient() {
-        return this.#browser;
+        return this.#browserCdpConnection;
     }
     getCdpClient(id) {
         const session = this.#cdp.session(id);
@@ -70,14 +74,14 @@ class CdpConnectionAdapter {
             throw new Error(`Unknown CDP session with id ${id}`);
         }
         if (!this.#adapters.has(session)) {
-            const adapter = new CDPClientAdapter(session, id, this.#browser);
+            const adapter = new CDPClientAdapter(session, id, this.#browserCdpConnection);
             this.#adapters.set(session, adapter);
             return adapter;
         }
         return this.#adapters.get(session);
     }
     close() {
-        this.#browser.close();
+        this.#browserCdpConnection.close();
         for (const adapter of this.#adapters.values()) {
             adapter.close();
         }

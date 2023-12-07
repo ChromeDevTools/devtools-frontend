@@ -133,7 +133,6 @@ export class IsolatedWorld extends Realm {
             if (this.#contextBindings.has(name)) {
                 return;
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const _ = __addDisposableResource(env_1, await this.#mutex.acquire(), false);
             try {
                 await context._client.send('Runtime.addBinding', context._contextName

@@ -16,7 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Puppeteer = void 0;
-const BrowserConnector_js_1 = require("../cdp/BrowserConnector.js");
+const BrowserConnector_js_1 = require("./BrowserConnector.js");
 const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
 /**
  * The main Puppeteer class.
@@ -103,12 +103,7 @@ class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        if (options.protocol === 'webDriverBiDi') {
-            return (0, BrowserConnector_js_1._connectToBiDiOverCdpBrowser)(options);
-        }
-        else {
-            return (0, BrowserConnector_js_1._connectToCdpBrowser)(options);
-        }
+        return (0, BrowserConnector_js_1._connectToBrowser)(options);
     }
 }
 exports.Puppeteer = Puppeteer;

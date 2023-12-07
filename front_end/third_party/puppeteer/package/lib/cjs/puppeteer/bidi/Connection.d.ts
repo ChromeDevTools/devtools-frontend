@@ -85,12 +85,20 @@ export interface Commands {
         params: Bidi.BrowsingContext.SetViewportParameters;
         returnType: Bidi.EmptyResult;
     };
+    'browsingContext.traverseHistory': {
+        params: Bidi.BrowsingContext.TraverseHistoryParameters;
+        returnType: Bidi.EmptyResult;
+    };
     'input.performActions': {
         params: Bidi.Input.PerformActionsParameters;
         returnType: Bidi.EmptyResult;
     };
     'input.releaseActions': {
         params: Bidi.Input.ReleaseActionsParameters;
+        returnType: Bidi.EmptyResult;
+    };
+    'session.end': {
+        params: Bidi.EmptyParams;
         returnType: Bidi.EmptyResult;
     };
     'session.new': {
@@ -145,6 +153,15 @@ export declare class BidiConnection extends EventEmitter<BidiEvents> {
     getBrowsingContext(contextId: string): BrowsingContext;
     getTopLevelContext(contextId: string): BrowsingContext;
     unregisterBrowsingContexts(id: string): void;
+    /**
+     * Unbinds the connection, but keeps the transport open. Useful when the transport will
+     * be reused by other connection e.g. with different protocol.
+     * @internal
+     */
+    unbind(): void;
+    /**
+     * Unbinds the connection and closes the transport.
+     */
     dispose(): void;
 }
 //# sourceMappingURL=Connection.d.ts.map

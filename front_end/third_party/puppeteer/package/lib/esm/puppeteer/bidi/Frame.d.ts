@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 import type { CDPSession } from '../api/CDPSession.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
+import type { WaitForSelectorOptions } from '../api/Page.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
-import type { Awaitable } from '../common/types.js';
+import type { Awaitable, NodeFor } from '../common/types.js';
 import { disposeSymbol } from '../util/disposable.js';
 import type { BrowsingContext } from './BrowsingContext.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
@@ -47,5 +49,6 @@ export declare class BidiFrame extends Frame {
     get detached(): boolean;
     [disposeSymbol](): void;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
+    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
 }
 //# sourceMappingURL=Frame.d.ts.map

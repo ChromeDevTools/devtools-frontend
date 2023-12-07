@@ -26,6 +26,10 @@ export const debugError = debug('puppeteer:error');
 /**
  * @internal
  */
+export const DEFAULT_VIEWPORT = Object.freeze({ width: 800, height: 600 });
+/**
+ * @internal
+ */
 export function createEvaluationError(details) {
     let name;
     let message;
@@ -395,18 +399,6 @@ export async function getReadableFromProtocolStream(client, handle) {
             }
         },
     });
-}
-/**
- * @internal
- */
-export async function setPageContent(page, content) {
-    // We rely upon the fact that document.open() will reset frame lifecycle with "init"
-    // lifecycle event. @see https://crrev.com/608658
-    return await page.evaluate(html => {
-        document.open();
-        document.write(html);
-        document.close();
-    }, content);
 }
 /**
  * @internal

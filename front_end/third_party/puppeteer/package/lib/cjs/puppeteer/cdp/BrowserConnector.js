@@ -14,55 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._connectToBiDiOverCdpBrowser = exports._connectToCdpBrowser = void 0;
-const Errors_js_1 = require("../common/Errors.js");
-const fetch_js_1 = require("../common/fetch.js");
+exports._connectToCdpBrowser = void 0;
 const util_js_1 = require("../common/util.js");
-const environment_js_1 = require("../environment.js");
-const assert_js_1 = require("../util/assert.js");
-const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Browser_js_1 = require("./Browser.js");
 const Connection_js_1 = require("./Connection.js");
-const DEFAULT_VIEWPORT = Object.freeze({ width: 800, height: 600 });
-const getWebSocketTransportClass = async () => {
-    return environment_js_1.isNode
-        ? (await Promise.resolve().then(() => __importStar(require('../node/NodeWebSocketTransport.js')))).NodeWebSocketTransport
-        : (await Promise.resolve().then(() => __importStar(require('../common/BrowserWebSocketTransport.js'))))
-            .BrowserWebSocketTransport;
-};
 /**
  * Users should never call this directly; it's called when calling
  * `puppeteer.connect` with `protocol: 'cdp'`.
  *
  * @internal
  */
-async function _connectToCdpBrowser(options) {
-    const { ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT, targetFilter, _isPageTarget: isPageTarget, } = options;
-    const connection = await getCdpConnection(options);
+async function _connectToCdpBrowser(connectionTransport, url, options) {
+    const { ignoreHTTPSErrors = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, } = options;
+    const connection = new Connection_js_1.Connection(url, connectionTransport, slowMo, protocolTimeout);
     const version = await connection.send('Browser.getVersion');
     const product = version.product.toLowerCase().includes('firefox')
         ? 'firefox'
@@ -74,77 +39,4 @@ async function _connectToCdpBrowser(options) {
     return browser;
 }
 exports._connectToCdpBrowser = _connectToCdpBrowser;
-/**
- * Users should never call this directly; it's called when calling
- * `puppeteer.connect` with `protocol: 'webDriverBiDi'`.
- *
- * @internal
- */
-async function _connectToBiDiOverCdpBrowser(options) {
-    const { ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT } = options;
-    const connection = await getCdpConnection(options);
-    const version = await connection.send('Browser.getVersion');
-    if (version.product.toLowerCase().includes('firefox')) {
-        throw new Errors_js_1.UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');
-    }
-    // TODO: use other options too.
-    const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ '../bidi/bidi.js')));
-    const bidiConnection = await BiDi.connectBidiOverCdp(connection);
-    const bidiBrowser = await BiDi.BidiBrowser.create({
-        connection: bidiConnection,
-        closeCallback: () => {
-            return connection.send('Browser.close').catch(util_js_1.debugError);
-        },
-        process: undefined,
-        defaultViewport: defaultViewport,
-        ignoreHTTPSErrors: ignoreHTTPSErrors,
-    });
-    return bidiBrowser;
-}
-exports._connectToBiDiOverCdpBrowser = _connectToBiDiOverCdpBrowser;
-async function getWSEndpoint(browserURL) {
-    const endpointURL = new URL('/json/version', browserURL);
-    const fetch = await (0, fetch_js_1.getFetch)();
-    try {
-        const result = await fetch(endpointURL.toString(), {
-            method: 'GET',
-        });
-        if (!result.ok) {
-            throw new Error(`HTTP ${result.statusText}`);
-        }
-        const data = await result.json();
-        return data.webSocketDebuggerUrl;
-    }
-    catch (error) {
-        if ((0, ErrorLike_js_1.isErrorLike)(error)) {
-            error.message =
-                `Failed to fetch browser webSocket URL from ${endpointURL}: ` +
-                    error.message;
-        }
-        throw error;
-    }
-}
-/**
- * Returns a CDP connection for the given options.
- */
-async function getCdpConnection(options) {
-    const { browserWSEndpoint, browserURL, transport, headers = {}, slowMo = 0, protocolTimeout, } = options;
-    (0, assert_js_1.assert)(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
-        1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
-    if (transport) {
-        return new Connection_js_1.Connection('', transport, slowMo, protocolTimeout);
-    }
-    else if (browserWSEndpoint) {
-        const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
-        return new Connection_js_1.Connection(browserWSEndpoint, connectionTransport, slowMo, protocolTimeout);
-    }
-    else if (browserURL) {
-        const connectionURL = await getWSEndpoint(browserURL);
-        const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(connectionURL);
-        return new Connection_js_1.Connection(connectionURL, connectionTransport, slowMo, protocolTimeout);
-    }
-    throw new Error('Invalid connection options');
-}
 //# sourceMappingURL=BrowserConnector.js.map

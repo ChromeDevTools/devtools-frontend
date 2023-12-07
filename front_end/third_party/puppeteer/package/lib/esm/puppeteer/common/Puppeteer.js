@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { _connectToBiDiOverCdpBrowser, _connectToCdpBrowser, } from '../cdp/BrowserConnector.js';
+import { _connectToBrowser } from './BrowserConnector.js';
 import { customQueryHandlers, } from './CustomQueryHandler.js';
 /**
  * The main Puppeteer class.
@@ -100,12 +100,7 @@ export class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        if (options.protocol === 'webDriverBiDi') {
-            return _connectToBiDiOverCdpBrowser(options);
-        }
-        else {
-            return _connectToCdpBrowser(options);
-        }
+        return _connectToBrowser(options);
     }
 }
 //# sourceMappingURL=Puppeteer.js.map

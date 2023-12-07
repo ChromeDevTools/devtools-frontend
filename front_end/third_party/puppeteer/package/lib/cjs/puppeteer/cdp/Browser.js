@@ -231,12 +231,13 @@ class CdpBrowser extends Browser_js_1.Browser {
     }
     async close() {
         await this.#closeCallback.call(null);
-        this.disconnect();
+        await this.disconnect();
     }
     disconnect() {
         this.#targetManager.dispose();
         this.#connection.dispose();
         this._detach();
+        return Promise.resolve();
     }
     get connected() {
         return !this.#connection._closed;

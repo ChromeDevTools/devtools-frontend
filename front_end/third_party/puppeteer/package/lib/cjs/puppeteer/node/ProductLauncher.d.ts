@@ -56,7 +56,7 @@ export declare abstract class ProductLauncher {
     /**
      * @internal
      */
-    protected closeBrowser(browserProcess: ReturnType<typeof launch>, connection?: Connection): Promise<void>;
+    protected closeBrowser(browserProcess: ReturnType<typeof launch>, cdpConnection?: Connection): Promise<void>;
     /**
      * @internal
      */

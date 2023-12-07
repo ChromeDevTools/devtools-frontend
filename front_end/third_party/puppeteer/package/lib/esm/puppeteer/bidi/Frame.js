@@ -51,7 +51,7 @@ import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { from, fromEvent, merge, map, forkJoin, first, firstValueFrom, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { UTILITY_WORLD_NAME, setPageContent, timeout } from '../common/util.js';
+import { UTILITY_WORLD_NAME, timeout } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { ExposeableFunction } from './ExposedFunction.js';
@@ -137,7 +137,7 @@ let BidiFrame = (() => {
             await firstValueFrom(this.#page
                 ._waitWithNetworkIdle(forkJoin([
                 fromEvent(this.#context, waitEvent).pipe(first()),
-                from(setPageContent(this, html)),
+                from(this.setFrameContent(html)),
             ]).pipe(map(() => {
                 return null;
             })), networkIdle)
@@ -194,6 +194,12 @@ let BidiFrame = (() => {
                 this.#exposedFunctions.delete(name);
                 throw error;
             }
+        }
+        waitForSelector(selector, options) {
+            if (selector.startsWith('aria')) {
+                throw new UnsupportedOperation('ARIA selector is not supported for BiDi!');
+            }
+            return super.waitForSelector(selector, options);
         }
     };
 })();

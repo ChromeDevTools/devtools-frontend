@@ -163,7 +163,7 @@ let BidiFrame = (() => {
             await (0, rxjs_js_1.firstValueFrom)(this.#page
                 ._waitWithNetworkIdle((0, rxjs_js_1.forkJoin)([
                 (0, rxjs_js_1.fromEvent)(this.#context, waitEvent).pipe((0, rxjs_js_1.first)()),
-                (0, rxjs_js_1.from)((0, util_js_1.setPageContent)(this, html)),
+                (0, rxjs_js_1.from)(this.setFrameContent(html)),
             ]).pipe((0, rxjs_js_1.map)(() => {
                 return null;
             })), networkIdle)
@@ -220,6 +220,12 @@ let BidiFrame = (() => {
                 this.#exposedFunctions.delete(name);
                 throw error;
             }
+        }
+        waitForSelector(selector, options) {
+            if (selector.startsWith('aria')) {
+                throw new Errors_js_1.UnsupportedOperation('ARIA selector is not supported for BiDi!');
+            }
+            return super.waitForSelector(selector, options);
         }
     };
 })();

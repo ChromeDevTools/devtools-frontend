@@ -184,7 +184,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           await client.send('Emulation.setAutomationOverride', {enabled: false});
         }
       }
-      browser.disconnect();
+      await browser.disconnect();
     } catch (err) {
       console.error('Error disconnecting Puppeteer', err.message);
     }

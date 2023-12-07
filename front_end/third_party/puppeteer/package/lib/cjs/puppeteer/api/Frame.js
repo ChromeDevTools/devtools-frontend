@@ -574,6 +574,16 @@ let Frame = (() => {
             return await this.evaluate(util_js_1.getPageContent);
         }
         /**
+         * @internal
+         */
+        async setFrameContent(content) {
+            return await this.evaluate(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            }, content);
+        }
+        /**
          * The frame's `name` attribute as specified in the tag.
          *
          * @remarks

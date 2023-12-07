@@ -186,9 +186,10 @@ class BidiBrowser extends Browser_js_1.Browser {
         if (this.#connection.closed) {
             return;
         }
-        await this.#connection.send('browser.close', {});
-        this.#connection.dispose();
+        // `browser.close` can close connection before the response is received.
+        await this.#connection.send('browser.close', {}).catch(util_js_1.debugError);
         await this.#closeCallback?.call(null);
+        this.#connection.dispose();
     }
     get connected() {
         return !this.#connection.closed;
@@ -242,8 +243,15 @@ class BidiBrowser extends Browser_js_1.Browser {
     target() {
         return this.#browserTarget;
     }
-    disconnect() {
-        this;
+    async disconnect() {
+        try {
+            // Fail silently if the session cannot be ended.
+            await this.#connection.send('session.end', {});
+        }
+        catch (e) {
+            (0, util_js_1.debugError)(e);
+        }
+        this.#connection.dispose();
     }
 }
 exports.BidiBrowser = BidiBrowser;

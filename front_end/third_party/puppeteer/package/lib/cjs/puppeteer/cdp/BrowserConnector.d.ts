@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { BidiBrowser } from '../bidi/Browser.js';
+import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { BrowserConnectOptions, ConnectOptions } from '../common/ConnectOptions.js';
 import { CdpBrowser } from './Browser.js';
 /**
@@ -22,12 +22,5 @@ import { CdpBrowser } from './Browser.js';
  *
  * @internal
  */
-export declare function _connectToCdpBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<CdpBrowser>;
-/**
- * Users should never call this directly; it's called when calling
- * `puppeteer.connect` with `protocol: 'webDriverBiDi'`.
- *
- * @internal
- */
-export declare function _connectToBiDiOverCdpBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<BidiBrowser>;
+export declare function _connectToCdpBrowser(connectionTransport: ConnectionTransport, url: string, options: BrowserConnectOptions & ConnectOptions): Promise<CdpBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

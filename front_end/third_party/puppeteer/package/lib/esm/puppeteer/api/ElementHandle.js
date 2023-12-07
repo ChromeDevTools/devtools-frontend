@@ -1187,46 +1187,26 @@ let ElementHandle = (() => {
             return point;
         }
         async screenshot(options = {}) {
-            const env_6 = { stack: [], error: void 0, hasError: false };
-            try {
-                const { scrollIntoView = true, captureBeyondViewport = true, allowViewportExpansion = captureBeyondViewport, } = options;
-                let clip = await this.#nonEmptyVisibleBoundingBox();
-                const page = this.frame.page();
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const _ = __addDisposableResource(env_6, allowViewportExpansion && clip
-                    ? await page._createTemporaryViewportContainingBox(clip)
-                    : null, true);
-                if (scrollIntoView) {
-                    await this.scrollIntoViewIfNeeded();
-                    // We measure again just in case.
-                    clip = await this.#nonEmptyVisibleBoundingBox();
+            const { scrollIntoView = true } = options;
+            let clip = await this.#nonEmptyVisibleBoundingBox();
+            const page = this.frame.page();
+            if (scrollIntoView) {
+                await this.scrollIntoViewIfNeeded();
+                // We measure again just in case.
+                clip = await this.#nonEmptyVisibleBoundingBox();
+            }
+            const [pageLeft, pageTop] = await this.evaluate(() => {
+                if (!window.visualViewport) {
+                    throw new Error('window.visualViewport is not supported.');
                 }
-                const [pageLeft, pageTop] = await this.evaluate(() => {
-                    if (!window.visualViewport) {
-                        throw new Error('window.visualViewport is not supported.');
-                    }
-                    return [
-                        window.visualViewport.pageLeft,
-                        window.visualViewport.pageTop,
-                    ];
-                });
-                clip.x += pageLeft;
-                clip.y += pageTop;
-                return await page.screenshot({
-                    ...options,
-                    captureBeyondViewport: false,
-                    clip,
-                });
-            }
-            catch (e_6) {
-                env_6.error = e_6;
-                env_6.hasError = true;
-            }
-            finally {
-                const result_1 = __disposeResources(env_6);
-                if (result_1)
-                    await result_1;
-            }
+                return [
+                    window.visualViewport.pageLeft,
+                    window.visualViewport.pageTop,
+                ];
+            });
+            clip.x += pageLeft;
+            clip.y += pageTop;
+            return await page.screenshot({ ...options, clip });
         }
         async #nonEmptyVisibleBoundingBox() {
             const box = await this.boundingBox();
@@ -1272,12 +1252,12 @@ let ElementHandle = (() => {
          * (full intersection). Defaults to 1.
          */
         async isIntersectingViewport(options = {}) {
-            const env_7 = { stack: [], error: void 0, hasError: false };
+            const env_6 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
                 // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
-                const target = __addDisposableResource(env_7, handle && (await handle.#getOwnerSVGElement()), false);
+                const target = __addDisposableResource(env_6, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {
                     const visibleRatio = await new Promise(resolve => {
                         const observer = new IntersectionObserver(entries => {
@@ -1289,12 +1269,12 @@ let ElementHandle = (() => {
                     return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
                 }, options.threshold ?? 0);
             }
-            catch (e_7) {
-                env_7.error = e_7;
-                env_7.hasError = true;
+            catch (e_6) {
+                env_6.error = e_6;
+                env_6.hasError = true;
             }
             finally {
-                __disposeResources(env_7);
+                __disposeResources(env_6);
             }
         }
         /**

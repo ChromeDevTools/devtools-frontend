@@ -48,7 +48,7 @@ export declare class CdpBrowser extends BrowserBase {
     version(): Promise<string>;
     userAgent(): Promise<string>;
     close(): Promise<void>;
-    disconnect(): void;
+    disconnect(): Promise<void>;
     get connected(): boolean;
 }
 /**

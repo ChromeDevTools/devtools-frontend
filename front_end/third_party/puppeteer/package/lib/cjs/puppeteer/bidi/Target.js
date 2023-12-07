@@ -92,7 +92,7 @@ class BiDiPageTarget extends BiDiBrowsingContextTarget {
     #page;
     constructor(browserContext, browsingContext) {
         super(browserContext, browsingContext);
-        this.#page = new Page_js_1.BidiPage(browsingContext, browserContext);
+        this.#page = new Page_js_1.BidiPage(browsingContext, browserContext, this);
     }
     async page() {
         return this.#page;

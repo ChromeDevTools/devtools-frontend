@@ -20,6 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeMatchingFlags = exports.getFeatures = exports.ChromeLauncher = void 0;
 const promises_1 = require("fs/promises");
+const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
 const browsers_1 = require("@puppeteer/browsers");
 const util_js_1 = require("../common/util.js");
@@ -47,6 +48,21 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
                 '  Consider opting in early by passing `headless: "new"` to `puppeteer.launch()`',
                 '  If you encounter any bugs, please report them to https://github.com/puppeteer/puppeteer/issues/new/choose.\x1B[0m\n',
             ].join('\n  '));
+        }
+        if (this.puppeteer.configuration.logLevel === 'warn' &&
+            process.platform === 'darwin' &&
+            process.arch === 'x64') {
+            const cpus = os_1.default.cpus();
+            if (cpus[0]?.model.includes('Apple')) {
+                console.warn([
+                    '\x1B[1m\x1B[43m\x1B[30m',
+                    'Degraded performance warning:\x1B[0m\x1B[33m',
+                    'Launching Chrome on Mac Silicon (arm64) from an x64 Node installation results in',
+                    'Rosetta translating the Chrome binary, even if Chrome is already arm64. This would',
+                    'result in huge performance issues. To resolve this, you must run Puppeteer with',
+                    'a version of Node built for arm64.',
+                ].join('\n  '));
+            }
         }
         return super.launch(options);
     }

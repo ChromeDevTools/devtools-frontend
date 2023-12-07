@@ -558,6 +558,10 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<void>;
     /**
+     * @internal
+     */
+    setFrameContent(content: string): Promise<void>;
+    /**
      * The frame's `name` attribute as specified in the tag.
      *
      * @remarks

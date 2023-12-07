@@ -22,7 +22,6 @@ import type { Readable } from 'stream';
 import type { Protocol } from 'devtools-protocol';
 import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
-import type { Page } from '../api/Page.js';
 import type { Deferred } from '../util/Deferred.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
 import type { NetworkManagerEvents } from './NetworkManagerEvents.js';
@@ -30,6 +29,13 @@ import type { NetworkManagerEvents } from './NetworkManagerEvents.js';
  * @internal
  */
 export declare const debugError: (...args: unknown[]) => void;
+/**
+ * @internal
+ */
+export declare const DEFAULT_VIEWPORT: Readonly<{
+    width: 800;
+    height: 600;
+}>;
 /**
  * @internal
  */
@@ -107,10 +113,6 @@ export declare function getReadableAsBuffer(readable: Readable, path?: string): 
  * @internal
  */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
-/**
- * @internal
- */
-export declare function setPageContent(page: Pick<Page, 'evaluate'>, content: string): Promise<void>;
 /**
  * @internal
  */

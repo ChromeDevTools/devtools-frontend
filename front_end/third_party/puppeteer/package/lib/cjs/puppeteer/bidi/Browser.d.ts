@@ -61,6 +61,6 @@ export declare class BidiBrowser extends Browser {
     targets(): Target[];
     _getTargetById(id: string): BidiTarget;
     target(): Target;
-    disconnect(): void;
+    disconnect(): Promise<void>;
 }
 //# sourceMappingURL=Browser.d.ts.map

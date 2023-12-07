@@ -84,7 +84,7 @@ export interface Point {
  */
 export interface ElementScreenshotOptions extends ScreenshotOptions {
     /**
-     * @defaultValue true
+     * @defaultValue `true`
      */
     scrollIntoView?: boolean;
 }
@@ -494,7 +494,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
      * For locals script connecting to remote chrome environments, paths must be
      * absolute.
-     *
      */
     abstract uploadFile(this: ElementHandle<HTMLInputElement>, ...paths: string[]): Promise<void>;
     /**

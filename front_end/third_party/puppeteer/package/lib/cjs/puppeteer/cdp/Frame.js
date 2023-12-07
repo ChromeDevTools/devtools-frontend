@@ -52,7 +52,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpFrame = void 0;
 const Frame_js_1 = require("../api/Frame.js");
 const Errors_js_1 = require("../common/Errors.js");
-const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
@@ -213,7 +212,9 @@ let CdpFrame = (() => {
         }
         async setContent(html, options = {}) {
             const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-            await (0, util_js_1.setPageContent)(this.isolatedRealm(), html);
+            // We rely upon the fact that document.open() will reset frame lifecycle with "init"
+            // lifecycle event. @see https://crrev.com/608658
+            await this.setFrameContent(html);
             const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
             const error = await Deferred_js_1.Deferred.race([
                 watcher.terminationPromise(),

@@ -137,7 +137,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
   } finally {
     // endTimespan will need to use the same connection as startTimespan.
     if (action !== 'startTimespan') {
-      puppeteerHandle?.browser.disconnect();
+      await puppeteerHandle?.browser.disconnect();
     }
   }
 }

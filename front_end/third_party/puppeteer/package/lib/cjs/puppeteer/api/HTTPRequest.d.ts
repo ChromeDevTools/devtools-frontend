@@ -267,13 +267,6 @@ export declare abstract class HTTPRequest {
     /**
      * Continues request with optional request overrides.
      *
-     * @remarks
-     *
-     * To use this, request
-     * interception should be enabled with {@link Page.setRequestInterception}.
-     *
-     * Exception is immediately thrown if the request interception is not enabled.
-     *
      * @example
      *
      * ```ts
@@ -289,20 +282,19 @@ export declare abstract class HTTPRequest {
      * ```
      *
      * @param overrides - optional overrides to apply to the request.
-     * @param priority - If provided, intercept is resolved using
-     * cooperative handling rules. Otherwise, intercept is resolved
-     * immediately.
+     * @param priority - If provided, intercept is resolved using cooperative
+     * handling rules. Otherwise, intercept is resolved immediately.
+     *
+     * @remarks
+     *
+     * To use this, request interception should be enabled with
+     * {@link Page.setRequestInterception}.
+     *
+     * Exception is immediately thrown if the request interception is not enabled.
      */
     abstract continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
     /**
      * Fulfills a request with the given response.
-     *
-     * @remarks
-     *
-     * To use this, request
-     * interception should be enabled with {@link Page.setRequestInterception}.
-     *
-     * Exception is immediately thrown if the request interception is not enabled.
      *
      * @example
      * An example of fulfilling all requests with 404 responses:
@@ -325,20 +317,28 @@ export declare abstract class HTTPRequest {
      * @param priority - If provided, intercept is resolved using
      * cooperative handling rules. Otherwise, intercept is resolved
      * immediately.
+     *
+     * @remarks
+     *
+     * To use this, request
+     * interception should be enabled with {@link Page.setRequestInterception}.
+     *
+     * Exception is immediately thrown if the request interception is not enabled.
      */
     abstract respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
     /**
      * Aborts a request.
      *
-     * @remarks
-     * To use this, request interception should be enabled with
-     * {@link Page.setRequestInterception}. If it is not enabled, this method will
-     * throw an exception immediately.
-     *
      * @param errorCode - optional error code to provide.
      * @param priority - If provided, intercept is resolved using
      * cooperative handling rules. Otherwise, intercept is resolved
      * immediately.
+     *
+     * @remarks
+     *
+     * To use this, request interception should be enabled with
+     * {@link Page.setRequestInterception}. If it is not enabled, this method will
+     * throw an exception immediately.
      */
     abstract abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
 }

@@ -72,6 +72,7 @@ import { debugError, evaluationString, NETWORK_IDLE_TIME, timeout, validateDialo
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
+import { isErrorLike } from '../util/ErrorLike.js';
 import { BrowsingContextEvent, CdpSessionWrapper, } from './BrowsingContext.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiDialog } from './Dialog.js';
@@ -150,13 +151,15 @@ export class BidiPage extends Page {
     #keyboard;
     #browsingContext;
     #browserContext;
+    #target;
     _client() {
         return this.mainFrame().context().cdpSession;
     }
-    constructor(browsingContext, browserContext) {
+    constructor(browsingContext, browserContext, target) {
         super();
         this.#browsingContext = browsingContext;
         this.#browserContext = browserContext;
+        this.#target = target;
         this.#connection = browsingContext.connection;
         for (const [event, subscriber] of this.#browsingContextEvents) {
             this.#browsingContext.on(event, subscriber);
@@ -386,7 +389,7 @@ export class BidiPage extends Page {
     isClosed() {
         return this.#closedDeferred.finished();
     }
-    async close() {
+    async close(options) {
         if (this.#closedDeferred.finished()) {
             return;
         }
@@ -394,6 +397,7 @@ export class BidiPage extends Page {
         this.#networkManager.dispose();
         await this.#connection.send('browsingContext.close', {
             context: this.mainFrame()._id,
+            promptUnload: options?.runBeforeUnload ?? false,
         });
         this.emit("close" /* PageEvent.Close */, undefined);
         this.removeAllListeners();
@@ -495,10 +499,7 @@ export class BidiPage extends Page {
         }
     }
     async _screenshot(options) {
-        const { clip, type, captureBeyondViewport, allowViewportExpansion, quality } = options;
-        if (captureBeyondViewport && !allowViewportExpansion) {
-            throw new UnsupportedOperation(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
-        }
+        const { clip, type, captureBeyondViewport, quality } = options;
         if (options.omitBackground !== undefined && options.omitBackground) {
             throw new UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
         }
@@ -508,19 +509,39 @@ export class BidiPage extends Page {
         if (options.fromSurface !== undefined && !options.fromSurface) {
             throw new UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
         }
+        let box;
+        if (clip) {
+            if (captureBeyondViewport) {
+                box = clip;
+            }
+            else {
+                const [pageLeft, pageTop] = await this.evaluate(() => {
+                    if (!window.visualViewport) {
+                        throw new Error('window.visualViewport is not supported.');
+                    }
+                    return [
+                        window.visualViewport.pageLeft,
+                        window.visualViewport.pageTop,
+                    ];
+                });
+                box = {
+                    ...clip,
+                    x: clip.x - pageLeft,
+                    y: clip.y - pageTop,
+                };
+            }
+        }
         if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
             throw new UnsupportedOperation(`BiDi does not support 'scale' in 'clip'.`);
         }
         const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
             context: this.mainFrame()._id,
+            origin: captureBeyondViewport ? 'document' : 'viewport',
             format: {
                 type: `image/${type}`,
-                quality: quality ? quality / 100 : undefined,
+                ...(quality !== undefined ? { quality: quality / 100 } : {}),
             },
-            clip: clip && {
-                type: 'box',
-                ...clip,
-            },
+            ...(box ? { clip: { type: 'box', ...box } } : {}),
         });
         return data;
     }
@@ -591,7 +612,7 @@ export class BidiPage extends Page {
         throw new UnsupportedOperation();
     }
     target() {
-        throw new UnsupportedOperation();
+        return this.#target;
     }
     waitForFileChooser() {
         throw new UnsupportedOperation();
@@ -636,11 +657,32 @@ export class BidiPage extends Page {
     metrics() {
         throw new UnsupportedOperation();
     }
-    goBack() {
-        throw new UnsupportedOperation();
+    async goBack(options = {}) {
+        return await this.#go(-1, options);
     }
-    goForward() {
-        throw new UnsupportedOperation();
+    async goForward(options = {}) {
+        return await this.#go(+1, options);
+    }
+    async #go(delta, options) {
+        try {
+            const result = await Promise.all([
+                this.waitForNavigation(options),
+                this.#connection.send('browsingContext.traverseHistory', {
+                    delta,
+                    context: this.mainFrame()._id,
+                }),
+            ]);
+            return result[0];
+        }
+        catch (err) {
+            // TODO: waitForNavigation should be cancelled if an error happens.
+            if (isErrorLike(err)) {
+                if (err.message.includes('no such history entry')) {
+                    return null;
+                }
+            }
+            throw err;
+        }
     }
     waitForDevicePrompt() {
         throw new UnsupportedOperation();

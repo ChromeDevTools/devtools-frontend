@@ -73,7 +73,7 @@ export const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * // Store the endpoint to be able to reconnect to the browser.
  * const browserWSEndpoint = browser.wsEndpoint();
  * // Disconnect puppeteer from the browser.
- * browser.disconnect();
+ * await browser.disconnect();
  *
  * // Use the endpoint to reestablish a connection
  * const browser2 = await puppeteer.connect({browserWSEndpoint});

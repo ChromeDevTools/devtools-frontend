@@ -21,6 +21,7 @@ import type Protocol from 'devtools-protocol';
 import type { Observable, ObservableInput } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
 import { Page, type GeolocationOptions, type MediaFeature, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -38,13 +39,14 @@ import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
 import type { BiDiNetworkIdle } from './lifecycle.js';
+import type { BiDiPageTarget } from './Target.js';
 /**
  * @internal
  */
 export declare class BidiPage extends Page {
     #private;
     _client(): CDPSession;
-    constructor(browsingContext: BrowsingContext, browserContext: BidiBrowserContext);
+    constructor(browsingContext: BrowsingContext, browserContext: BidiBrowserContext, target: BiDiPageTarget);
     /**
      * @internal
      */
@@ -71,7 +73,9 @@ export declare class BidiPage extends Page {
     childFrames(frameId: string): BidiFrame[];
     getNavigationResponse(id?: string | null): BidiHTTPResponse | null;
     isClosed(): boolean;
-    close(): Promise<void>;
+    close(options?: {
+        runBeforeUnload?: boolean;
+    }): Promise<void>;
     reload(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
@@ -119,7 +123,7 @@ export declare class BidiPage extends Page {
     isDragInterceptionEnabled(): boolean;
     setCacheEnabled(enabled?: boolean): Promise<void>;
     isServiceWorkerBypassed(): never;
-    target(): never;
+    target(): BiDiPageTarget;
     waitForFileChooser(): never;
     workers(): never;
     setRequestInterception(): never;
@@ -134,8 +138,8 @@ export declare class BidiPage extends Page {
     authenticate(): never;
     setExtraHTTPHeaders(): never;
     metrics(): never;
-    goBack(): never;
-    goForward(): never;
+    goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
+    goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     waitForDevicePrompt(): never;
 }
 //# sourceMappingURL=Page.d.ts.map

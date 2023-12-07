@@ -17,6 +17,7 @@ import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import { debug } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
+import { assert } from '../util/assert.js';
 import { cdpSessions } from './BrowsingContext.js';
 const debugProtocolSend = debug('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = debug('puppeteer:webDriverBiDi:RECV ◀');
@@ -38,7 +39,7 @@ export class BidiConnection extends EventEmitter {
         this.#timeout = timeout ?? 180000;
         this.#transport = transport;
         this.#transport.onmessage = this.onMessage.bind(this);
-        this.#transport.onclose = this.#onClose.bind(this);
+        this.#transport.onclose = this.unbind.bind(this);
     }
     get closed() {
         return this.#closed;
@@ -47,6 +48,7 @@ export class BidiConnection extends EventEmitter {
         return this.#url;
     }
     send(method, params) {
+        assert(!this.#closed, 'Protocol error: Connection closed.');
         return this.#callbacks.create(method, this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 id,
@@ -80,11 +82,22 @@ export class BidiConnection extends EventEmitter {
                     this.#callbacks.reject(object.id, createProtocolError(object), object.message);
                     return;
                 case 'event':
+                    if (isCdpEvent(object)) {
+                        cdpSessions
+                            .get(object.params.session)
+                            ?.emit(object.params.event, object.params.params);
+                        return;
+                    }
                     this.#maybeEmitOnContext(object);
                     // SAFETY: We know the method and parameter still match here.
                     this.emit(object.method, object.params);
                     return;
             }
+        }
+        // Even if the response in not in BiDi protocol format but `id` is provided, reject
+        // the callback. This can happen if the endpoint supports CDP instead of BiDi.
+        if ('id' in object) {
+            this.#callbacks.reject(object.id, `Protocol Error. Message is not in BiDi protocol format: '${message}'`, object.message);
         }
         debugError(object);
     }
@@ -98,11 +111,6 @@ export class BidiConnection extends EventEmitter {
         else if ('source' in event.params &&
             event.params.source.context !== undefined) {
             context = this.#browsingContexts.get(event.params.source.context);
-        }
-        else if (isCdpEvent(event)) {
-            cdpSessions
-                .get(event.params.session)
-                ?.emit(event.params.event, event.params.params);
         }
         context?.emit(event.method, event.params);
     }
@@ -133,7 +141,12 @@ export class BidiConnection extends EventEmitter {
     unregisterBrowsingContexts(id) {
         this.#browsingContexts.delete(id);
     }
-    #onClose() {
+    /**
+     * Unbinds the connection, but keeps the transport open. Useful when the transport will
+     * be reused by other connection e.g. with different protocol.
+     * @internal
+     */
+    unbind() {
         if (this.#closed) {
             return;
         }
@@ -141,10 +154,14 @@ export class BidiConnection extends EventEmitter {
         // Both may still be invoked and produce errors
         this.#transport.onmessage = () => { };
         this.#transport.onclose = () => { };
+        this.#browsingContexts.clear();
         this.#callbacks.clear();
     }
+    /**
+     * Unbinds the connection and closes the transport.
+     */
     dispose() {
-        this.#onClose();
+        this.unbind();
         this.#transport.close();
     }
 }

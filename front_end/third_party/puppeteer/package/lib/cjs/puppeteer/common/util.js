@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NETWORK_IDLE_TIME = exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.NETWORK_IDLE_TIME = exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
@@ -49,6 +49,10 @@ const Errors_js_1 = require("./Errors.js");
  * @internal
  */
 exports.debugError = (0, Debug_js_1.debug)('puppeteer:error');
+/**
+ * @internal
+ */
+exports.DEFAULT_VIEWPORT = Object.freeze({ width: 800, height: 600 });
 /**
  * @internal
  */
@@ -439,19 +443,6 @@ async function getReadableFromProtocolStream(client, handle) {
     });
 }
 exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
-/**
- * @internal
- */
-async function setPageContent(page, content) {
-    // We rely upon the fact that document.open() will reset frame lifecycle with "init"
-    // lifecycle event. @see https://crrev.com/608658
-    return await page.evaluate(html => {
-        document.open();
-        document.write(html);
-        document.close();
-    }, content);
-}
-exports.setPageContent = setPageContent;
 /**
  * @internal
  */

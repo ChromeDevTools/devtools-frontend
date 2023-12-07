@@ -86,7 +86,7 @@ export class BiDiPageTarget extends BiDiBrowsingContextTarget {
     #page;
     constructor(browserContext, browsingContext) {
         super(browserContext, browsingContext);
-        this.#page = new BidiPage(browsingContext, browserContext);
+        this.#page = new BidiPage(browsingContext, browserContext, this);
     }
     async page() {
         return this.#page;

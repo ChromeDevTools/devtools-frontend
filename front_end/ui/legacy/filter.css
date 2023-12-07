@@ -200,20 +200,23 @@
 .filter-input-clear-button {
   opacity: 70%;
   height: 16px;
-  margin-top: 1px;
+  margin: 0;
   cursor: pointer;
-}
+  border: none;
+  background: none;
+  padding: 1px 2px;
 
-.filter-cancel-button {
-  display: block;
+  devtools-icon {
+    display: block;
+  }
+
+  &:hover {
+    opacity: 99%;
+  }
 }
 
 .filter-text-empty .filter-input-clear-button {
   display: none;
-}
-
-.filter-input-clear-button:hover {
-  opacity: 99%;
 }
 
 button.toolbar-item:focus-visible {

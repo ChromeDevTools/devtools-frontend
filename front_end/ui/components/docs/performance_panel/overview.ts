@@ -26,8 +26,22 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
     throw new Error('could not find container');
   }
   const models = await TraceLoader.TraceLoader.allModels(null, fileName);
-  const {left, right} = models.performanceModel.calculateWindowForMainThreadActivity();
-  models.performanceModel.setWindow({left, right});
+
+  const mainThread = TraceEngine.Handlers.Threads
+                         .threadsInRenderer(models.traceParsedData.Renderer, models.traceParsedData.AuctionWorklets)
+                         .find(t => t.type === TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD);
+  if (!mainThread) {
+    throw new Error('Could not find main thread.');
+  }
+  const zoomedWindow = TraceEngine.Extras.MainThreadActivity.calculateWindow(
+      models.traceParsedData.Meta.traceBounds,
+      mainThread.entries,
+  );
+  const zoomedWindowMilli = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(zoomedWindow);
+  models.performanceModel.setWindow({
+    left: zoomedWindowMilli.min,
+    right: zoomedWindowMilli.max,
+  });
 
   const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
   minimap.activateBreadcrumbs();

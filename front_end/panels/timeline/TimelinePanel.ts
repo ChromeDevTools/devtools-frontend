@@ -1153,18 +1153,40 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     if (model) {
       model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
-      this.#minimapComponent.setBounds(
-          TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().minimumRecordTime()),
-          TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().maximumRecordTime()));
       PerfUI.LineLevelProfile.Performance.instance().reset();
       this.flameChart.setSelection(null);
-      const {left, right} = model.calculateWindowForMainThreadActivity();
-      model.setWindow({left, right});
-      this.#minimapComponent.setWindowTimes(left, right);
-      if (traceParsedData) {
-        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-            TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(left, right),
-        );
+    }
+
+    if (traceParsedData) {
+      // Set the absolute bounds for the minimap.
+      const traceBoundsMilliSeconds =
+          TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds);
+
+      this.#minimapComponent.setBounds(traceBoundsMilliSeconds.min, traceBoundsMilliSeconds.max);
+      // To calculate the activity we might want to zoom in, we find the last
+      // main thread. Or we find the CPU Profile thread, for e.g. Node traces.
+      const mainThreadTypes = [
+        TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD,
+        TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE,
+      ];
+      const lastMainThread = TraceEngine.Handlers.Threads.threadsInTrace(traceParsedData)
+                                 .filter(data => mainThreadTypes.includes(data.type))
+                                 .at(-1);
+      if (lastMainThread) {
+        const zoomedInBounds = TraceEngine.Extras.MainThreadActivity.calculateWindow(
+            traceParsedData.Meta.traceBounds, lastMainThread.entries);
+
+        const zoomedInMilliseconds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(zoomedInBounds);
+
+        this.#minimapComponent.setWindowTimes(zoomedInMilliseconds.min, zoomedInMilliseconds.max);
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
+
+        // Temporary to maintain correct old model whilst we work on removing it.
+        // We need this for now because it is this code that ensures the UI
+        // does not let the user scroll beyond these bounds.
+        if (model) {
+          model.setWindow({left: zoomedInMilliseconds.min, right: zoomedInMilliseconds.max});
+        }
       }
     }
     // Set up line level profiling with CPU profiles, if we found any.

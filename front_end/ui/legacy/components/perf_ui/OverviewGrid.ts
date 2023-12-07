@@ -240,16 +240,16 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   changeBreadcrumbButtonVisibilityOnInteraction(element: Element): void {
     element.addEventListener('mouseover', () => {
       if ((this.windowLeft ?? 0) <= 0 && (this.windowRight ?? 1) >= 1) {
-        this.breadcrumbButtonContainerElement.style.visibility = 'hidden';
+        this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', false);
         this.#mouseOverGridOverview = false;
       } else {
-        this.breadcrumbButtonContainerElement.style.visibility = 'visible';
+        this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', true);
         this.#mouseOverGridOverview = true;
       }
     });
 
     element.addEventListener('mouseout', () => {
-      this.breadcrumbButtonContainerElement.style.visibility = 'hidden';
+      this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', false);
       this.#mouseOverGridOverview = false;
     });
   }
@@ -398,7 +398,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
   private windowDragging(event: Event): void {
     this.#mouseOverGridOverview = true;
-    this.breadcrumbButtonContainerElement.style.visibility = 'visible';
+    this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', true);
     const mouseEvent = (event as MouseEvent);
     mouseEvent.preventDefault();
     let delta: number = (mouseEvent.pageX - this.dragStartPoint) / this.parentElement.clientWidth;
@@ -505,8 +505,11 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
   // "Create breadcrumb" button is only visible when the window is set to something other than the full range and mouse is hovering over the MiniMap
   private changeBreadcrumbButtonVisibility(windowLeft: number, windowRight: number): void {
-    this.breadcrumbButtonContainerElement.style.visibility =
-        ((windowRight >= 1 && windowLeft <= 0) || !this.#mouseOverGridOverview) ? 'hidden' : 'visible';
+    if ((windowRight >= 1 && windowLeft <= 0) || !this.#mouseOverGridOverview) {
+      this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', false);
+    } else {
+      this.breadcrumbButtonContainerElement.classList.toggle('is-breadcrumb-button-visible', true);
+    }
   }
 
   createBreadcrumb(): void {

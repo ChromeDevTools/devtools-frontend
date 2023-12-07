@@ -2492,8 +2492,6 @@ export class TimelineUIUtils {
       }
       case recordTypes.Coherent_Advance:
       case recordTypes.Coherent_ExecuteTimers:
-      case recordTypes.Coherent_RecalcVisualStyle:
-      case recordTypes.Coherent_UpdateNodeTransforms:
       case recordTypes.Coherent_Paint:
       case recordTypes.Coherent_WaitPendingFrame:
       case recordTypes.Coherent_MatchElements: {
@@ -2572,7 +2570,6 @@ export class TimelineUIUtils {
         break;
       }
       case recordTypes.Coherent_DrawSubLayer:
-      case recordTypes.Coherent_ProcessLayer:
       case recordTypes.Coherent_ProcessSimpleSublayer:
       case recordTypes.Coherent_DrawSubLayerWithShaderBlendMode:
       case recordTypes.Coherent_DrawSubLayerWithCustomEffect:
@@ -2585,6 +2582,30 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow('Node id: ', event.args['int0']);
           relatedNodeLabel = 'Node: ';
         }
+        break;
+      }
+
+      case recordTypes.Coherent_ProcessLayer: {
+        if (parseInt(event.args['int0']) > 0) {
+          contentHelper.appendTextRow('Node id: ', event.args['int0']);
+          relatedNodeLabel = 'Node: ';
+        }
+        contentHelper.appendTextRow('Batches', event.args['int1']);
+        break;
+      }
+
+      case recordType.Coherent_BatchCommands: {
+        if (parseInt(event.args['int0']) > 0) {
+          contentHelper.appendTextRow('Node id: ', event.args['int0']);
+          relatedNodeLabel = 'Node: ';
+        }
+        contentHelper.appendTextRow('Buffer Commands: ', event.args['int1']);
+        break;
+      }
+
+      case recordTypes.Coherent_UpdateNodeTransforms: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow('Changed nodes: ', event.args['int1']);
         break;
       }
 
@@ -2626,6 +2647,13 @@ export class TimelineUIUtils {
       }
       case recordTypes.Coherent_SynchronizeLayoutToMain: {
         contentHelper.appendTextRow('Laid Out Nodes', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_RecalcVisualStyle: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow('Nodes With Visual Style Changed', event.args['int1']);
+        contentHelper.appendTextRow('SVG Nodes With Visual Style Changed', event.args['int2']);
         break;
       }
 

@@ -339,6 +339,7 @@ export class ConsoleInsight extends HTMLElement {
                 }
               }
             } else if (keyboardEvent.key === 'Escape') {
+              event.consume(true);
               // Restore focus to the info icon.
               this.#popover.hidePopover();
               (this.#shadow.querySelector('.info') as HTMLElement)?.focus();
@@ -509,10 +510,12 @@ export class ConsoleInsight extends HTMLElement {
     if (event instanceof KeyboardEvent) {
       switch (event.key) {
         case 'Escape':
+          event.consume(true);
           this.#popover.hidePopover();
           break;
         case 'Enter':
         case ' ':
+          event.consume(true);
           this.#popoverInitiatedViaKeyboard = true;
           try {
             event.target?.dispatchEvent(new MouseEvent('mousedown', {

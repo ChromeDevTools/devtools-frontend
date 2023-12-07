@@ -445,7 +445,7 @@ text.animation-timeline-grid-label {
 
 @keyframes newGroupAnim {
   from {
-    clip-path: polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%);
+    clip-path: polygon(0% 0%, 0% 100%, 50% 100%, 50% 0%);
   }
 
   to {

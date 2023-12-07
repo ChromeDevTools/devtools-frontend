@@ -20,7 +20,7 @@ export async function navigateToSiteWithAnimation() {
 export async function waitForAnimationContent() {
   const firstAnimationPreviewSelector = '.animation-buffer-preview[aria-label="Animation Preview 1"]';
   await waitFor(firstAnimationPreviewSelector);
-  await click(firstAnimationPreviewSelector);
+  await click(firstAnimationPreviewSelector, {clickOptions: {offset: {x: 0, y: 0}}});
   await waitFor('.animation-node-row');
   await waitFor('svg.animation-ui');
 }

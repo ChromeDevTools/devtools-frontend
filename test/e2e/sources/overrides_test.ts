@@ -396,7 +396,8 @@ describe('Overrides panel', async function() {
 });
 
 describe('Overrides panel', () => {
-  it('appends correct overrides context menu for Sources > Page file', async () => {
+  // Context menu is flakily not populated yet with the "Open in Sources panel".
+  it.skip('[crbug.com/1509276] appends correct overrides context menu for Sources > Page file', async () => {
     await goToResource('elements/elements-panel-styles.html');
     await openNetworkTab();
     await waitForSomeRequestsToAppear(2);

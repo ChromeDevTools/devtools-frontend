@@ -970,7 +970,6 @@ export enum DevtoolsExperiments {
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
   'evaluateExpressionsWithSourceMaps' = 58,
-  'eyedropperColorPicker' = 60,
   'instrumentationBreakpoints' = 61,
   'authoredDeployedGrouping' = 63,
   'importantDOMProperties' = 64,

@@ -589,6 +589,7 @@ export interface TraceEventUpdateCounters extends TraceEventInstant {
       jsEventListeners: number,
       jsHeapSizeUsed: number,
       nodes: number,
+      gpuMemoryLimitKB?: number,
     },
   };
 }

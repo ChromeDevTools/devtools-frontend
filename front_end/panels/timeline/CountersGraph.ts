@@ -31,7 +31,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -138,7 +137,9 @@ export class CountersGraph extends UI.Widget.VBox {
     this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
   }
 
-  setModel(model: PerformanceModel|null, events: TraceEngine.Legacy.CompatibleTraceEvent[]|null): void {
+  setModel(
+      model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
+      events: TraceEngine.Legacy.CompatibleTraceEvent[]|null): void {
     this.#events = events;
     if (!events) {
       return;
@@ -152,7 +153,10 @@ export class CountersGraph extends UI.Widget.VBox {
         this.model.addEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
     }
-    this.calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
+    const minTime =
+        traceEngineData ? TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceEngineData.Meta.traceBounds).min : 0;
+    this.calculator.setZeroTime(minTime);
+
     for (let i = 0; i < this.counters.length; ++i) {
       this.counters[i].reset();
       this.counterUI[i].reset();
@@ -160,7 +164,11 @@ export class CountersGraph extends UI.Widget.VBox {
     this.scheduleRefresh();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters) {
+      if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+        // Can remove this check once the old engine is fully removed.
+        continue;
+      }
+      if (!TraceEngine.Types.TraceEvents.isTraceEventUpdateCounters(event)) {
         continue;
       }
 
@@ -172,13 +180,13 @@ export class CountersGraph extends UI.Widget.VBox {
         const counter = this.countersByName.get(name);
         if (counter) {
           const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-          counter.appendSample(startTime, counters[name]);
+          counter.appendSample(
+              startTime, counters[name as 'documents' | 'jsEventListeners' | 'jsHeapSizeUsed' | 'nodes']);
         }
       }
 
-      const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';
-      if (gpuMemoryLimitCounterName in counters) {
-        this.gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
+      if (typeof counters.gpuMemoryLimitKB !== 'undefined') {
+        this.gpuMemoryCounter.setLimit(counters.gpuMemoryLimitKB);
       }
     }
   }

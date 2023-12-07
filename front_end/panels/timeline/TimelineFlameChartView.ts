@@ -277,7 +277,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   #updateDetailViews(): void {
-    this.countersView.setModel(this.model, this.#selectedEvents);
+    this.countersView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
     // TODO(crbug.com/1459265):  Change to await after migration work.
     void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
   }

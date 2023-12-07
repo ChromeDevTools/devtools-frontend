@@ -5,7 +5,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -312,8 +311,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
 
   #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
                         undefined): LitHtml.LitTemplate {
-    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0) ||
-        !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
+    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0)) {
       return LitHtml.nothing;
     }
 
@@ -563,7 +561,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   }
 
   #renderFramesPerReason(frames: string[]|undefined): LitHtml.LitTemplate {
-    if (frames === undefined || frames.length === 0 || !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
+    if (frames === undefined || frames.length === 0) {
       return LitHtml.nothing;
     }
     const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];

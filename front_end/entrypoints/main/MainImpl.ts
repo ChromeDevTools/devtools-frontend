@@ -275,10 +275,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');
 
-    // Back/forward cache
-    Root.Runtime.experiments.register(
-        'bfcacheDisplayTree', 'Show back/forward cache blocking reasons in the frame tree structure view');
-
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Root.Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
@@ -418,9 +414,7 @@ export class MainImpl {
     if (enabledExperiments) {
       Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
     }
-    Root.Runtime.experiments.enableExperimentsTransiently([
-      'bfcacheDisplayTree',
-    ]);
+    Root.Runtime.experiments.enableExperimentsTransiently([]);
 
     if (Host.InspectorFrontendHost.isUnderTest()) {
       const testParam = Root.Runtime.Runtime.queryParam('test');

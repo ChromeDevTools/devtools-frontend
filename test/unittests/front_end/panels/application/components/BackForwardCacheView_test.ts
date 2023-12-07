@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
@@ -17,8 +17,6 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
-
-import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -148,7 +146,6 @@ describeWithMockConnection('BackForwardCacheView', () => {
     });
 
     it('renders explanation tree', async () => {
-      Root.Runtime.experiments.enableForTest('bfcacheDisplayTree');
       resourceTreeModel.mainFrame = {
         url: 'https://www.example.com/',
         backForwardCacheDetails: {

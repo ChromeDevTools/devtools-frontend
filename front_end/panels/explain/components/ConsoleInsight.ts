@@ -302,7 +302,7 @@ export class ConsoleInsight extends HTMLElement {
       return null;
     }
 
-    const popoverInitiatedViaKeyboard = this.#popoverInitiatedViaKeyboard;
+    const trapFocus = this.#popoverInitiatedViaKeyboard || event.type !== 'mousemove';
 
     return {
       box: hoveredNode.boxInWindow(),
@@ -320,7 +320,7 @@ export class ConsoleInsight extends HTMLElement {
         container.tabIndex = -1;
         container.role = 'dialog';
 
-        if (popoverInitiatedViaKeyboard) {
+        if (trapFocus) {
           container.addEventListener('keydown', event => {
             const keyboardEvent = event as KeyboardEvent;
 
@@ -366,7 +366,7 @@ export class ConsoleInsight extends HTMLElement {
         popover.contentElement.append(container);
         popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
 
-        if (popoverInitiatedViaKeyboard) {
+        if (trapFocus) {
           const origShow = popover.show;
           popover.show = (document: Document): void => {
             origShow.call(popover, document);

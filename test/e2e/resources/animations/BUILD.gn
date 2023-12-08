@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("animations") {
-  sources = [ "default.html" ]
+  sources = [
+    "animations-shown.html",
+    "default.html",
+  ]
 }

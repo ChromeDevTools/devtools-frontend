@@ -2594,7 +2594,19 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.Coherent_BatchCommands: {
+      case recordTypes.Coherent_ProcessResourceCommands: {
+        contentHelper.appendTextRow('Images to allocate with data: ', event.args['int0']);
+        contentHelper.appendTextRow('Images to wrap: ', event.args['int1']);
+        contentHelper.appendTextRow('Images to update: ', event.args['int2']);
+        break;
+      }
+
+      case recordTypes.Coherent_DistributeLayers: {
+        contentHelper.appendTextRow('Distributed Layers', event.args['int0']);
+        break;
+      }
+
+      case recordTypes.Coherent_BatchCommands: {
         if (parseInt(event.args['int0']) > 0) {
           contentHelper.appendTextRow('Node id: ', event.args['int0']);
           relatedNodeLabel = 'Node: ';

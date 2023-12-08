@@ -291,7 +291,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _traceLevelsDefinitions: Protocol.Tracing.TraceCategoryDefinition[];
   _traceSystemsDefinitions: Protocol.Tracing.TraceCategoryDefinition[];
   // COHERENT_END
-  
+
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _startCoverage: Common.Settings.Setting<any>;
@@ -332,7 +332,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _traceLevelSelect?: UI.Toolbar.ToolbarComboBox;
   _traceSystemSelect?: UI.Toolbar.ToolbarComboBox;
   _traceFilterEbabledCheckbox?: UI.Toolbar.ToolbarItem;
-  // COHERENT_END  
+  _traceCategory?: UI.Widget.VBox;
+  // COHERENT_END
   _cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   _fileSelectorElement?: HTMLInputElement;
   _selection?: TimelineSelection|null;
@@ -360,6 +361,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this._viewModeSetting = Common.Settings.Settings.instance().createSetting('timelineViewMode', ViewMode.FlameChart);
 
+    // COHERENT_BEGIN
+    this._traceLevel = Common.Settings.Settings.instance().createSetting('traceLevel', '');
+    this._traceLevel.setTitle(i18nString(UIStrings.traceL1));
+
+    this._traceSystem = Common.Settings.Settings.instance().createSetting('traceSystem', '');
+    this._traceSystem.setTitle("TraceSystem");
+
+    this._traceFiltering = Common.Settings.Settings.instance().createSetting('traceFilteringEnabled', true);
+    this._traceFiltering.setTitle("Trace Filtering Enabled");
+    // COHERENT_END
+
     this._disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('timelineDisableJSSampling', false);
     this._disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
@@ -367,67 +379,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Common.Settings.Settings.instance().createSetting('timelineCaptureLayersAndPictures', false);
     this._captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
 
-    
-    // COHERENT_BEGIN
-    this._traceLevel = Common.Settings.Settings.instance().createSetting('traceLevel', '');
-    this._traceLevel.setTitle(i18nString(UIStrings.traceL1));
-    
-    this._traceSystem = Common.Settings.Settings.instance().createSetting('traceSystem', '');
-    this._traceSystem.setTitle("TraceSystem");
-    
-    this._traceFiltering = Common.Settings.Settings.instance().createSetting('traceFilteringEnabled', true);
-    this._traceFiltering.setTitle("Trace Filtering Enabled");
-    
-    this._traceLevelsDefinitions = [];
-    this._traceSystemsDefinitions = [];
-    
-    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
-    if (UIDevtoolsUtils.isUiDevTools()) {
-      this._controller = new UIDevtoolsController(mainTarget, this);
-    } else {
-      this._controller = new TimelineController(mainTarget, this);
-    }
-
-    this._controller?._tracingManager?.fetchTraceSystemsAndLevels().then((res) => {
-      this._traceSystemsDefinitions = res.systems;
-      this._traceLevelsDefinitions = res.levels;
-
-      if (this._traceLevelsDefinitions.length != 0) {
-        this._controller?.dispose();
-        this._controller = null;
-      }
-
-      // setup the trace systems
-      {
-        this._traceSystemSelect?.selectElement().removeChildren();
-        this._traceSystemsDefinitions.forEach((element) => {
-          this._traceSystemSelect?.selectElement().appendChild(new Option(element.name, element.categoryString));
-        });
-        
-        this._traceSystemSelect?.setSelectedIndex(0);
-        const selectedValue = this._traceSystemSelect?.selectedOption()?.value;
-        if (selectedValue) {
-          this._traceSystem.set(selectedValue.toString());
-        }
-      }
-      
-      // setup the trace levels
-      {
-        this._traceLevelSelect?.selectElement().removeChildren();
-        this._traceLevelsDefinitions.forEach((element) => {
-          this._traceLevelSelect?.selectElement().appendChild(new Option(element.name, element.categoryString));
-        });
-
-        this._traceLevelSelect?.setSelectedIndex(0);
-        const selectedValue = this._traceLevelSelect?.selectedOption()?.value;
-        if (selectedValue) {
-          this._traceLevel.set(selectedValue.toString());
-        }
-
-      }
-    });
-    // COHERENT_END
-    
     this._showScreenshotsSetting = Common.Settings.Settings.instance().createSetting('timelineShowScreenshots', true);
     this._showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this._showScreenshotsSetting.addChangeListener(this._updateOverviewControls, this);
@@ -499,6 +450,55 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+
+    // COHERENT_BEGIN
+
+    this._traceLevelsDefinitions = [];
+    this._traceSystemsDefinitions = [];
+    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
+    if (UIDevtoolsUtils.isUiDevTools()) {
+      this._controller = new UIDevtoolsController(mainTarget, this);
+    } else {
+      this._controller = new TimelineController(mainTarget, this);
+    }
+
+    this._controller?._tracingManager?.fetchTraceSystemsAndLevels().then((res) => {
+      this._traceSystemsDefinitions = res.systems;
+      this._traceLevelsDefinitions = res.levels;
+
+      this._controller?.dispose();
+      this._controller = null;
+
+      // setup the trace systems
+      {
+        this._traceSystemSelect?.selectElement().removeChildren();
+        this._traceSystemsDefinitions.forEach((element) => {
+          this._traceSystemSelect?.selectElement().appendChild(new Option(element.name, element.categoryString));
+        });
+
+        this._traceSystemSelect?.setSelectedIndex(0);
+        const selectedValue = this._traceSystemSelect?.selectedOption()?.value;
+        if (selectedValue) {
+          this._traceSystem.set(selectedValue.toString());
+        }
+      }
+
+      // setup the trace levels
+      {
+        this._traceLevelSelect?.selectElement().removeChildren();
+        this._traceLevelsDefinitions.forEach((element) => {
+          this._traceLevelSelect?.selectElement().appendChild(new Option(element.name, element.categoryString));
+        });
+
+        this._traceLevelSelect?.setSelectedIndex(0);
+        const selectedValue = this._traceLevelSelect?.selectedOption()?.value;
+        if (selectedValue) {
+          this._traceLevel.set(selectedValue.toString());
+        }
+
+      }
+    });
+    // COHERENT_END
   }
 
   static instance(opts: {
@@ -657,32 +657,32 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     networkThrottlingToolbar.appendText(i18nString(UIStrings.network));
     this._networkThrottlingSelect = this._createNetworkConditionsSelect();
     networkThrottlingToolbar.appendToolbarItem(this._networkThrottlingSelect);
-    
+
     const cpuThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     cpuThrottlingToolbar.appendText(i18nString(UIStrings.cpu));
     this._cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
     cpuThrottlingToolbar.appendToolbarItem(this._cpuThrottlingSelect);
 
     // COHERENT_BEGIN
-    const traceCategory = new UI.Widget.VBox();
-    traceCategory.element.classList.add('flex-auto');
-    traceCategory.show(this._settingsPane.element);
 
-    
-    const traceFilteringEnabledToolbar = new UI.Toolbar.Toolbar('', traceCategory.element);
+    this._traceCategory = new UI.Widget.VBox();
+    this._traceCategory.element.classList.add('flex-auto');
+    this._traceCategory.show(this._settingsPane.element);
+
+    const traceFilteringEnabledToolbar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
 
     this._traceFilterEbabledCheckbox = this._createSettingCheckbox(this._traceFiltering, "Trace Filtering Enabled");
     traceFilteringEnabledToolbar.appendToolbarItem(this._traceFilterEbabledCheckbox);
-    
-    const traceLevelToolBar = new UI.Toolbar.Toolbar('', traceCategory.element);
+
+    const traceLevelToolBar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
     traceLevelToolBar.appendText("Trace Level");
-    
+
     this._traceLevelSelect = this._createTraceFilterSelect("Trace Level", 140, this._traceLevel);
     traceLevelToolBar.appendToolbarItem(this._traceLevelSelect);
-    
-    const traceSystemToolBar = new UI.Toolbar.Toolbar('', traceCategory.element);
+
+    const traceSystemToolBar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
     traceSystemToolBar.appendText("Trace System");
-    
+
     this._traceSystemSelect = this._createTraceFilterSelect("Trace System", 240, this._traceSystem);
     traceSystemToolBar.appendToolbarItem(this._traceSystemSelect);
     // COHERENT_END
@@ -728,7 +728,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         setting.set(selectedValue);
       }
     }, false);
-    
+
     return toolbarItem;
   }
   // COHERENT_END

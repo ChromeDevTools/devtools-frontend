@@ -1117,6 +1117,7 @@ export class TimelineModelImpl {
       }
 
       case RecordType.Coherent_ProcessLayer:
+      case RecordType.Coherent_BatchCommands:
       case RecordType.Coherent_DrawSubLayer:
       case RecordType.Coherent_ProcessSimpleSublayer:
       case RecordType.Coherent_DrawSubLayerWithCustomEffect:
@@ -1744,6 +1745,7 @@ export enum RecordType {
   Coherent_Disabled = 'Coherent_Disabled',
   Coherent_ProcessFrontendCommands = 'Coherent_ProcessFrontendCommands',
   Coherent_ProcessLayer = 'Coherent_ProcessLayer',
+  Coherent_ProcessResourceCommands = 'Coherent_ProcessResourceCommands',
   Coherent_BatchCommands = 'Coherent_BatchCommands',
   Coherent_DistributeLayers = 'Coherent_DistributeLayers',
 
@@ -1774,7 +1776,7 @@ export enum RecordType {
   Coherent_RegisterImagesInRenoir = 'Coherent_RegisterImagesInRenoir',
   Coherent_CreateGPUImageResources = 'Coherent_CreateGPUImageResources',
   Coherent_FreeGPUTextures = 'Coherent_FreeGPUTextures',
-  Coherent_TickAnimations = 'Coherent_TickAnimations',
+  Coherent_TickAnimations = 'Coherent_IterateTickAnimations',
   Coherent_SynchronizeLayoutToMain = 'Coherent_SynchronizeLayoutToMain',
   Coherent_SynchronizeNode = 'Coherent_SynchronizeNode',
 

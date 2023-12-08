@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import pieChartStyles from './pieChart.css.js';
 
@@ -72,7 +73,8 @@ export class PieChart extends HTMLElement {
     this.lastAngle = -Math.PI / 2;
     // clang-format off
     const output = html`
-      <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}>
+      <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}
+          jslog=${VisualLogging.pieChart().track({keydown: 'ArrowUp|ArrowDown'})}>
         <div class="chart-root" style="width: ${this.size}px; height: ${this.size}px;">
           ${svg`
           <svg>
@@ -83,6 +85,7 @@ export class PieChart extends HTMLElement {
               const selected = this.sliceSelected === index;
               const tabIndex = selected && !this.showLegend ? '0' : '-1';
               return svg`<path class="slice ${selected ? 'selected' : ''}"
+                  jslog=${VisualLogging.pieChartSlice().track({click: true})}
                   @click=${this.onSliceClicked(index)} tabIndex=${tabIndex}
                   fill=${slice.color} d=${this.getPathStringForSlice(slice)}
                   aria-label=${slice.title} id=${selected ? 'selectedSlice' : ''}></path>`;
@@ -95,17 +98,19 @@ export class PieChart extends HTMLElement {
           `}
           <div class="pie-chart-foreground">
             <div class="pie-chart-total ${this.totalSelected ? 'selected' : ''}" @click=${this.selectTotal}
+                jslog=${VisualLogging.pieChartTotal().track({click: true}).context('select-total')}
                 tabIndex=${this.totalSelected && !this.showLegend ? '1' : '-1'}>
               ${this.total ? this.formatter(this.total) : ''}
             </div>
           </div>
         </div>
         ${this.showLegend ? html`
-        <div class="pie-chart-legend">
+        <div class="pie-chart-legend" jslog=${VisualLogging.section().context('legend')}>
           ${this.slices.map((slice, index): LitHtml.TemplateResult => {
             const selected = this.sliceSelected === index;
             return html`
               <div class="pie-chart-legend-row ${selected ? 'selected' : ''}"
+                  jslog=${VisualLogging.pieChartSlice().track({click: true})}
                   @click=${this.onSliceClicked(index)} tabIndex=${selected ? '0' : '-1'}>
                 <div class="pie-chart-size">${this.formatter(slice.value)}</div>
                 <div class="pie-chart-swatch" style="background-color: ${slice.color};"></div>
@@ -113,6 +118,7 @@ export class PieChart extends HTMLElement {
               </div>`;
           })}
           <div class="pie-chart-legend-row ${this.totalSelected ? 'selected' : ''}"
+              jslog=${VisualLogging.pieChartTotal().track({click: true}).context('select-total')}
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? '0' : '-1'}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
             <div class="pie-chart-swatch"></div>

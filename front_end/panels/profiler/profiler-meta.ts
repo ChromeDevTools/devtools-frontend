@@ -45,6 +45,10 @@ const UIStrings = {
    */
   showLiveHeapProfile: 'Show Live Heap Profile',
   /**
+   *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
+   */
+  clearAllProfiles: 'Clear all profiles',
+  /**
    *@description Tooltip text that appears when hovering over the largeicon download button
    */
   saveProfile: 'Save profile…',
@@ -161,6 +165,20 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+E',
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.clear-all',
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  iconClass: UI.ActionRegistration.IconClass.CLEAR,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfilesPanel.ProfilesPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return new Profiler.ProfilesPanel.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.clearAllProfiles),
 });
 
 UI.ActionRegistration.registerActionExtension({

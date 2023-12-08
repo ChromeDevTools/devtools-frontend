@@ -36,15 +36,15 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type ChildrenProvider} from './ChildrenProvider.js';
-
 import {
-  HeapSnapshotSortableDataGridEvents,
   type AllocationDataGrid,
   type HeapSnapshotConstructorsDataGrid,
   type HeapSnapshotDiffDataGrid,
   type HeapSnapshotSortableDataGrid,
+  HeapSnapshotSortableDataGridEvents,
 } from './HeapSnapshotDataGrids.js';
 import {type HeapSnapshotProviderProxy, type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import {type DataDisplayDelegate} from './ProfileHeader.js';
@@ -240,7 +240,8 @@ export class HeapSnapshotGridNode extends
   }
 
   createValueCell(columnId: string): HTMLElement {
-    const cell = (UI.Fragment.html`<td class="numeric-column" />` as HTMLElement);
+    const jslog = VisualLogging.tableCell().track({click: true}).context('numeric-column');
+    const cell = (UI.Fragment.html`<td class="numeric-column" jslog=${jslog} />` as HTMLElement);
     const dataGrid = (this.dataGrid as HeapSnapshotSortableDataGrid);
     if (dataGrid.snapshot && dataGrid.snapshot.totalSize !== 0) {
       const div = document.createElement('div');
@@ -589,8 +590,9 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
   }
 
   createObjectCellWithValue(valueStyle: string, value: string): HTMLElement {
+    const jslog = VisualLogging.tableCell().track({click: true}).context('object-column');
     const fragment = UI.Fragment.Fragment.build`
-  <td class="object-column disclosure">
+  <td class="object-column disclosure" jslog=${jslog}>
   <div class="source-code event-properties" style="overflow: visible;" $="container">
   <span class="value object-value-${valueStyle}">${value}</span>
   <span class="object-value-id">@${this.snapshotNodeId}</span>

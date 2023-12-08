@@ -53,10 +53,6 @@ import {instance} from './ProfileTypeRegistry.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
-   */
-  clearAllProfiles: 'Clear all profiles',
-  /**
    *@description Text in Profiles Panel of a profiler tool
    *@example {'.js', '.json'} PH1
    */
@@ -111,7 +107,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   readonly toolbarElement: HTMLDivElement;
   toggleRecordAction: UI.ActionRegistration.Action;
   readonly toggleRecordButton: UI.Toolbar.ToolbarButton;
-  clearResultsButton: UI.Toolbar.ToolbarButton;
   readonly #saveToFileAction: UI.ActionRegistration.Action;
   readonly profileViewToolbar: UI.Toolbar.Toolbar;
   profileGroups: {};
@@ -163,9 +158,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
     toolbar.appendToolbarItem(this.toggleRecordButton);
 
-    this.clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAllProfiles), 'clear');
-    this.clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.reset, this);
-    toolbar.appendToolbarItem(this.clearResultsButton);
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('profiler.clear-all'));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('profiler.load-from-file'));
     this.#saveToFileAction = UI.ActionRegistry.ActionRegistry.instance().getAction('profiler.save-to-file');
@@ -826,6 +819,14 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
+      case 'profiler.clear-all': {
+        const profilesPanel = context.flavor(ProfilesPanel);
+        if (profilesPanel !== null) {
+          profilesPanel.reset();
+          return true;
+        }
+        return false;
+      }
       case 'profiler.load-from-file': {
         const profilesPanel = context.flavor(ProfilesPanel);
         if (profilesPanel !== null) {

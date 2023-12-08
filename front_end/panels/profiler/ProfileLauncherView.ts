@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import {type ProfileType} from './ProfileHeader.js';
@@ -108,7 +109,11 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
 
     const buttonsDiv = this.contentElementInternal.createChild('div', 'hbox profile-launcher-buttons');
     this.controlButton = UI.UIUtils.createTextButton('', this.controlButtonClicked.bind(this), '', /* primary */ true);
+    this.controlButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('profiler.heap-toggle-recording')}`);
     this.loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this.loadButtonClicked.bind(this), '');
+    this.loadButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('profiler.load-from-file')}`);
     buttonsDiv.appendChild(this.controlButton);
     buttonsDiv.appendChild(this.loadButton);
     this.recordButtonEnabled = true;
@@ -165,7 +170,8 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   addProfileType(profileType: ProfileType): void {
-    const labelElement = UI.UIUtils.createRadioLabel('profile-type', profileType.name);
+    const labelElement =
+        UI.UIUtils.createRadioLabel('profile-type', profileType.name, undefined, 'profiler.profile-type');
     this.profileTypeSelectorForm.appendChild(labelElement);
     const optionElement = labelElement.radioElement;
     this.typeIdToOptionElementAndProfileType.set(profileType.id, {optionElement, profileType});

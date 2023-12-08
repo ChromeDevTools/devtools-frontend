@@ -42,34 +42,31 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   AllocationDataGrid,
-  HeapSnapshotSortableDataGridEvents,
   HeapSnapshotConstructorsDataGrid,
+  HeapSnapshotContainmentDataGrid,
   HeapSnapshotDiffDataGrid,
   HeapSnapshotRetainmentDataGrid,
-  HeapSnapshotContainmentDataGrid,
   type HeapSnapshotSortableDataGrid,
+  HeapSnapshotSortableDataGridEvents,
 } from './HeapSnapshotDataGrids.js';
-
 import {
-  HeapSnapshotGenericObjectNode,
   type AllocationGridNode,
+  HeapSnapshotGenericObjectNode,
   type HeapSnapshotGridNode,
 } from './HeapSnapshotGridNodes.js';
-
-import {HeapSnapshotWorkerProxy, type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
-
-import {HeapTimelineOverview, Events, Samples, type IdsRangeChangedEvent} from './HeapTimelineOverview.js';
+import {type HeapSnapshotProxy, HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';
+import {Events, HeapTimelineOverview, type IdsRangeChangedEvent, Samples} from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
-
 import {
+  type DataDisplayDelegate,
   Events as ProfileHeaderEvents,
   ProfileEvents as ProfileTypeEvents,
   ProfileHeader,
   ProfileType,
-  type DataDisplayDelegate,
 } from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {instance} from './ProfileTypeRegistry.js';
@@ -355,6 +352,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.constructorsDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
     this.constructorsWidget = this.constructorsDataGrid.asWidget();
     this.constructorsWidget.setMinimumSize(50, 25);
+    this.constructorsWidget.element.setAttribute(
+        'jslog', `${VisualLogging.section().context('heap-snapshot.constructors-view')}`);
 
     this.diffDataGrid = new HeapSnapshotDiffDataGrid(heapProfilerModel, this);
     this.diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
@@ -380,6 +379,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.retainmentWidget = this.retainmentDataGrid.asWidget();
     this.retainmentWidget.setMinimumSize(50, 21);
     this.retainmentWidget.element.classList.add('retaining-paths-view');
+    this.retainmentWidget.element.setAttribute(
+        'jslog', `${VisualLogging.section().context('heap-snapshot.retaining-paths-view')}`);
 
     let splitWidgetResizer;
     if (this.allocationStackView) {
@@ -421,15 +422,18 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     this.perspectives.push(new StatisticsPerspective());
 
-    this.perspectiveSelect =
-        new UI.Toolbar.ToolbarComboBox(this.onSelectedPerspectiveChanged.bind(this), i18nString(UIStrings.perspective));
+    this.perspectiveSelect = new UI.Toolbar.ToolbarComboBox(
+        this.onSelectedPerspectiveChanged.bind(this), i18nString(UIStrings.perspective), undefined,
+        'profiler.heap-snapshot-perspective');
     this.updatePerspectiveOptions();
 
-    this.baseSelect = new UI.Toolbar.ToolbarComboBox(this.changeBase.bind(this), i18nString(UIStrings.baseSnapshot));
+    this.baseSelect = new UI.Toolbar.ToolbarComboBox(
+        this.changeBase.bind(this), i18nString(UIStrings.baseSnapshot), undefined, 'profiler.heap-snapshot-base');
     this.baseSelect.setVisible(false);
     this.updateBaseOptions();
 
-    this.filterSelect = new UI.Toolbar.ToolbarComboBox(this.changeFilter.bind(this), i18nString(UIStrings.filter));
+    this.filterSelect = new UI.Toolbar.ToolbarComboBox(
+        this.changeFilter.bind(this), i18nString(UIStrings.filter), undefined, 'profiler.heap-snapshot-filter');
     this.filterSelect.setVisible(false);
     this.updateFilterOptions();
 
@@ -1798,6 +1802,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('profiler.heap-snapshot-statistics-view')}`);
     this.pieChart = new PerfUI.PieChart.PieChart();
     this.setTotalAndRecords(0, []);
     this.pieChart.classList.add('heap-snapshot-stats-pie-chart');

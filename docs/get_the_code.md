@@ -40,13 +40,13 @@ There are two tips to have a faster development workflow:
 #### Disabling type checking
 You can disable type checking for TypeScript by using `devtools_skip_typecheck` argument:
 ```bash
-gn gen out/fast-build --args='devtools_skip_typecheck=true'
+gn gen out/fast-build --args="devtools_skip_typecheck=true"
 ```
 
 #### Faster incremental builds & CSS hot reload
 In addition to that, you can enable CSS hot reload while using `watch` script with `devtools_css_hot_reload_enabled` argument:
 ```bash
-gn gen out/fast-build --args='devtools_css_hot_reload_enabled=true'
+gn gen out/fast-build --args="devtools_css_hot_reload_enabled=true"
 ```
 
 with this and `devtools_skip_typecheck=true` in place, you can use `watch` script by:
@@ -109,7 +109,7 @@ To run on **Linux**:
 To run on **Windows**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-win/chrome.exe --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>\third_party\chrome\chrome-win\chrome.exe --disable-infobars --custom-devtools-frontend="<path-to-devtools-frontend>\out\Default\gen\front_end"
 ```
 
 Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.
@@ -119,6 +119,8 @@ Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
 If you get errors along the line of `Uncaught TypeError: Cannot read property 'setInspectedTabId'` you probably specified an incorrect path - the path has to be absolute. On Mac and Linux, the file url will start with __three__ slashes: `file:///Users/...`.
 
 **Tip**: You can inspect DevTools with DevTools by undocking DevTools and then opening a second instance of DevTools (see keyboard shortcut above).
+
+**Tip**: On Windows it is possible the browser will re-attach to an existing session without applying command arguments. Make sure that there are no active Chrome sessions running.
 
 #### Running from remote URL
 

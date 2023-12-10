@@ -374,6 +374,7 @@ export const enum IconClass {
   DOWNLOAD = 'download',
   LARGEICON_PAUSE = 'pause',
   LARGEICON_RESUME = 'resume',
+  MOP = 'mop',
   BIN = 'bin',
   LARGEICON_SETTINGS_GEAR = 'gear',
   LARGEICON_STEP_OVER = 'step-over',

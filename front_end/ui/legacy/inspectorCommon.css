@@ -776,6 +776,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-list);
 }
 
+.spritesheet-mop.icon-mask {
+  -webkit-mask-image: var(--image-file-mop);
+}
+
 .spritesheet-pause.icon-mask {
   -webkit-mask-image: var(--image-file-pause);
 }

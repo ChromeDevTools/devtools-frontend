@@ -172,6 +172,7 @@ grd_files_release_sources = [
   "front_end/Images/memory.svg",
   "front_end/Images/minus.svg",
   "front_end/Images/minus_icon.svg",
+  "front_end/Images/mop.svg",
   "front_end/Images/mouse.svg",
   "front_end/Images/navigationControls.png",
   "front_end/Images/navigationControls_2x.png",

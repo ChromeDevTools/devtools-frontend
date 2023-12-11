@@ -175,6 +175,7 @@ devtools_svg_sources = [
   "memory.svg",
   "minus.svg",
   "minus_icon.svg",
+  "mop.svg",
   "mouse.svg",
   "network-settings.svg",
   "node_search_icon.svg",

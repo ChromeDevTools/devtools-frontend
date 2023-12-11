@@ -2,38 +2,51 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('BlockedURLsPane', () => {
-  let target: SDK.Target.Target;
-
   beforeEach(() => {
-    target = createTarget();
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
   });
 
-  const updatesOnEvent = (inScope: boolean) => async () => {
-    const updateThrottler = {schedule: sinon.stub()};
-    Network.BlockedURLsPane.BlockedURLsPane.instance(
-        {forceNew: true, updateThrottler: updateThrottler as unknown as Common.Throttler.Throttler});
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(networkManager);
-    assert.isFalse(updateThrottler.schedule.called);
-    networkManager.dispatchEventToListeners(
-        SDK.NetworkManager.Events.RequestFinished,
-        {wasBlocked: () => true, url: () => 'http://example.com'} as SDK.NetworkRequest.NetworkRequest);
-    assert.strictEqual(updateThrottler.schedule.called, inScope);
-  };
+  describe('update', () => {
+    const updatesOnRequestFinishedEvent = (inScope: boolean) => () => {
+      const target = createTarget();
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assertNotNullOrUndefined(networkManager);
+      const updateStub = sinon.stub(blockedURLsPane, 'update');
 
-  it('updates on in scope request', updatesOnEvent(true));
-  it('does not update on out of scope request', updatesOnEvent(false));
+      const request = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
+        wasBlocked: true,
+        url: 'http://example.com' as Platform.DevToolsPath.UrlString,
+      });
+      networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+      assert.strictEqual(updateStub.calledOnce, inScope);
+    };
+
+    it('is called upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
+    it('is called upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
+
+    it('is called upon Reset event', () => {
+      const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
+      const updateStub = sinon.stub(blockedURLsPane, 'update');
+
+      Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
+          Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
+
+      assert.isTrue(updateStub.calledOnce);
+    });
+  });
 });

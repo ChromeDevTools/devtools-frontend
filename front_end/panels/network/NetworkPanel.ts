@@ -48,7 +48,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
-import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
@@ -505,7 +504,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   private onNetworkLogReset(event: Common.EventTarget.EventTargetEvent<Logs.NetworkLog.ResetEvent>): void {
     const {clearIfPreserved} = event.data;
-    BlockedURLsPane.reset();
     if (!this.preserveLogSetting.get() || clearIfPreserved) {
       this.calculator.reset();
       this.overviewPane.reset();

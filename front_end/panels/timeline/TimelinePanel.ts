@@ -1543,15 +1543,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.setSelection(selection);
   }
 
-  selectEntryAtTime(events: TraceEngine.Legacy.Event[]|null, time: number): void {
+  selectEntryAtTime(events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, time: number): void {
     if (!events) {
       return;
     }
+
+    if (events.length === 0) {
+      this.select(null);
+      return;
+    }
+
     // Find best match, then backtrack to the first visible entry.
-    for (let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.startTime) - 1;
-         index >= 0; --index) {
+    for (let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.ts) - 1; index >= 0;
+         --index) {
       const event = events[index];
-      const endTime = event.endTime || event.startTime;
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
       if (TraceEngine.Legacy.TracingModel.isTopLevelEvent(event) && endTime < time) {
         break;
       }
@@ -1631,7 +1637,7 @@ export const rowHeight = 18;
 export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
-  selectEntryAtTime(events: TraceEngine.Legacy.CompatibleTraceEvent[]|null, time: number): void;
+  selectEntryAtTime(events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, time: number): void;
   highlightEvent(event: TraceEngine.Legacy.CompatibleTraceEvent|null): void;
 }
 

@@ -61,7 +61,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private readonly defaultDetailsContentElement: HTMLElement;
   private rangeDetailViews: Map<string, TimelineTreeView>;
   private model!: PerformanceModel;
-  #selectedEvents?: TraceEngine.Legacy.CompatibleTraceEvent[]|null;
+  #selectedEvents?: TraceEngine.Types.TraceEvents.TraceEventData[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
@@ -123,7 +123,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   async setModel(
       model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
-      selectedEvents: TraceEngine.Legacy.CompatibleTraceEvent[]|null): Promise<void> {
+      selectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|null): Promise<void> {
     if (this.model !== model) {
       this.model = (model as PerformanceModel);
     }

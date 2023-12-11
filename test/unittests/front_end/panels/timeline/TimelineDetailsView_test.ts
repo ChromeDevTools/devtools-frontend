@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
@@ -12,7 +12,7 @@ const {assert} = chai;
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   select(_selection: Timeline.TimelineSelection.TimelineSelection|null): void {
   }
-  selectEntryAtTime(_events: TraceEngine.Legacy.CompatibleTraceEvent[]|null, _time: number): void {
+  selectEntryAtTime(_events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, _time: number): void {
   }
   highlightEvent(_event: TraceEngine.Legacy.CompatibleTraceEvent|null): void {
   }

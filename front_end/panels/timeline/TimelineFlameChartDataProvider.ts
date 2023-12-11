@@ -302,9 +302,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group.track || null;
   }
 
-  groupTreeEvents(group: PerfUI.FlameChart.Group): TraceEngine.Legacy.CompatibleTraceEvent[]|null {
-    const eventsFromAppenderSystem = this.compatibilityTracksAppender?.groupEventsForTreeView(group);
-    return eventsFromAppenderSystem || group.track?.eventsForTreeView() || null;
+  groupTreeEvents(group: PerfUI.FlameChart.Group): TraceEngine.Types.TraceEvents.TraceEventData[]|null {
+    return this.compatibilityTracksAppender?.groupEventsForTreeView(group) ?? null;
   }
 
   mainFrameNavigationStartEvents(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[] {

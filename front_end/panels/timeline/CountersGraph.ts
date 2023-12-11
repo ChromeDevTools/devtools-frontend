@@ -82,7 +82,7 @@ export class CountersGraph extends UI.Widget.VBox {
   private readonly counterUI: CounterUI[];
   private readonly countersByName: Map<string, Counter>;
   private readonly gpuMemoryCounter: Counter;
-  #events: TraceEngine.Legacy.CompatibleTraceEvent[]|null = null;
+  #events: TraceEngine.Types.TraceEvents.TraceEventData[]|null = null;
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
@@ -149,7 +149,7 @@ export class CountersGraph extends UI.Widget.VBox {
 
   setModel(
       traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
-      events: TraceEngine.Legacy.CompatibleTraceEvent[]|null): void {
+      events: TraceEngine.Types.TraceEvents.TraceEventData[]|null): void {
     this.#events = events;
     if (!events) {
       return;
@@ -165,10 +165,6 @@ export class CountersGraph extends UI.Widget.VBox {
     this.#scheduleRefresh();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-        // Can remove this check once the old engine is fully removed.
-        continue;
-      }
       if (!TraceEngine.Types.TraceEvents.isTraceEventUpdateCounters(event)) {
         continue;
       }

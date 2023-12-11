@@ -15,7 +15,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   select(selection: Timeline.TimelineSelection.TimelineSelection|null): void {
     this.selection = selection;
   }
-  selectEntryAtTime(_events: TraceEngine.Legacy.Event[]|null, _time: number): void {
+  selectEntryAtTime(_events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, _time: number): void {
   }
   highlightEvent(_event: TraceEngine.Legacy.Event|null): void {
   }

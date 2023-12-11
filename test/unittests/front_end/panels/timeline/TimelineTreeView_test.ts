@@ -13,7 +13,7 @@ const {assert} = chai;
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   select(_selection: Timeline.TimelineSelection.TimelineSelection|null): void {
   }
-  selectEntryAtTime(_events: TraceEngine.Legacy.CompatibleTraceEvent[]|null, _time: number): void {
+  selectEntryAtTime(_events: TraceEngine.Types.TraceEvents.TraceEventData[]|null, _time: number): void {
   }
   highlightEvent(_event: TraceEngine.Legacy.CompatibleTraceEvent|null): void {
   }

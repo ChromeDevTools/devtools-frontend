@@ -47,7 +47,7 @@ export class PerformanceModel {
     return this.filtersInternal;
   }
 
-  isVisible(event: TraceEngine.Legacy.Event): boolean {
+  isVisible(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
     return this.filtersInternal.every(f => f.accept(event));
   }
 

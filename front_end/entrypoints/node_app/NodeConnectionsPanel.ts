@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 
 const UIStrings = {
   /**
@@ -35,12 +36,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let nodeConnectionsPanelInstance: NodeConnectionsPanel;
-
 export class NodeConnectionsPanel extends UI.Panel.Panel {
   #config!: Adb.Config;
   readonly #networkDiscoveryView: NodeConnectionsView;
-  private constructor() {
+  constructor() {
     super('node-connection');
 
     this.contentElement.classList.add('node-panel');
@@ -65,17 +64,6 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesDiscoveryConfig(this.#config);
     });
     this.#networkDiscoveryView.show(container);
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): NodeConnectionsPanel {
-    const {forceNew} = opts;
-    if (!nodeConnectionsPanelInstance || forceNew) {
-      nodeConnectionsPanelInstance = new NodeConnectionsPanel();
-    }
-
-    return nodeConnectionsPanelInstance;
   }
 
   #devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {

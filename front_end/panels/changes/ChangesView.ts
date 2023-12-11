@@ -56,8 +56,6 @@ function diffStats(diff: Diff.Diff.DiffArray): string {
   return `${insertionText}, ${deletionText}`;
 }
 
-let changesViewInstance: ChangesView;
-
 export class ChangesView extends UI.Widget.VBox {
   private emptyWidget: UI.EmptyWidget.EmptyWidget;
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
@@ -110,15 +108,6 @@ export class ChangesView extends UI.Widget.VBox {
 
     this.hideDiff(i18nString(UIStrings.noChanges));
     this.selectedUISourceCodeChanged();
-  }
-
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ChangesView {
-    const {forceNew} = opts;
-    if (!changesViewInstance || forceNew) {
-      changesViewInstance = new ChangesView();
-    }
-
-    return changesViewInstance;
   }
 
   private selectedUISourceCodeChanged(): void {
@@ -254,22 +243,19 @@ export class ChangesView extends UI.Widget.VBox {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    const changesView = context.flavor(ChangesView);
+    if (changesView === null) {
+      return false;
+    }
     switch (actionId) {
       case 'changes.revert':
-        ChangesView.instance().revert();
+        changesView.revert();
         return true;
       case 'changes.copy':
-        void ChangesView.instance().copy();
+        void changesView.copy();
         return true;
     }
     return false;
-  }
-}
-
-export class DiffUILocationRevealer implements Common.Revealer.Revealer<WorkspaceDiff.WorkspaceDiff.DiffUILocation> {
-  async reveal(diffUILocation: WorkspaceDiff.WorkspaceDiff.DiffUILocation, omitFocus?: boolean): Promise<void> {
-    await UI.ViewManager.ViewManager.instance().showView('changes.changes');
-    ChangesView.instance().changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }

@@ -315,11 +315,4 @@ export function workspaceDiff(): WorkspaceDiffImpl {
   return _instance;
 }
 
-export class DiffUILocation {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    this.uiSourceCode = uiSourceCode;
-  }
-}
-
 export const UpdateTimeout = 200;

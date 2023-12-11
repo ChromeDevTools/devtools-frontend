@@ -39,7 +39,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Issues = await loadIssuesModule();
-    return Issues.IssuesPane.IssuesPane.instance();
+    return new Issues.IssuesPane.IssuesPane();
   },
 });
 

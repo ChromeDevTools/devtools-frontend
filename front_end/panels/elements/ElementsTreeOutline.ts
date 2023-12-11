@@ -45,7 +45,6 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import {IssuesPane} from '../issues/IssuesPane.js';
 
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -236,10 +235,7 @@ export class ElementsTreeOutline extends
           box: hoveredNode.boxInWindow(),
           show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
             popover.setIgnoreLeftMargin(true);
-            const openIssueEvent = (): void => {
-              void UI.ViewManager.ViewManager.instance().showView('issues-pane');
-              void IssuesPane.instance().reveal(issue);
-            };
+            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
             viewIssueElement.addEventListener('click', () => openIssueEvent());
             issueKindIcon.addEventListener('click', () => openIssueEvent());
             popover.contentElement.appendChild(element);

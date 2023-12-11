@@ -168,8 +168,6 @@ export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boole
   return Common.Settings.Settings.instance().createSetting('groupIssuesByCategory', false);
 }
 
-let issuesPaneInstance: IssuesPane;
-
 export class IssuesPane extends UI.Widget.VBox {
   #categoryViews: Map<IssuesManager.Issue.IssueCategory, IssueCategoryView>;
   #issueViews: Map<AggregationKey, IssueView>;
@@ -182,7 +180,7 @@ export class IssuesPane extends UI.Widget.VBox {
   #aggregator: IssueAggregator;
   #issueViewUpdatePromise: Promise<void> = Promise.resolve();
 
-  private constructor() {
+  constructor() {
     super(true);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel().context('issues')}`);
@@ -217,15 +215,6 @@ export class IssuesPane extends UI.Widget.VBox {
     this.#onFullUpdate();
     this.#issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#updateCounts, this);
-  }
-
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IssuesPane {
-    const {forceNew} = opts;
-    if (!issuesPaneInstance || forceNew) {
-      issuesPaneInstance = new IssuesPane();
-    }
-
-    return issuesPaneInstance;
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

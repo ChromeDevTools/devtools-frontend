@@ -10,7 +10,7 @@ import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import type * as Workspace from '../workspace/workspace.js';
 
-import {ScopeTreeCache} from './ScopeTreeCache.js';
+import {scopeTreeForScript} from './ScopeTreeCache.js';
 
 interface CachedScopeMap {
   sourceMap: SDK.SourceMap.SourceMap|undefined;
@@ -64,7 +64,7 @@ scopeTree:
     return null;
   }
 
-  const scopeTree = await ScopeTreeCache.instance().scopeTreeForScript(script);
+  const scopeTree = await scopeTreeForScript(script);
   if (!scopeTree) {
     return null;
   }

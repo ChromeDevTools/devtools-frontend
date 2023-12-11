@@ -81,28 +81,6 @@ describe('EntriesFilter', function() {
     assert.strictEqual(stack.invisibleEntries().length, 1);
   });
 
-  it('supports removing an action', async function() {
-    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-
-    // First we merge basicTwo() into its parent which is the same as the test above.
-    const mainThread = getMainThread(data.Renderer);
-    const entryTwo = findFirstEntry(mainThread.entries, entry => {
-      // Processing this trace ends up with two distinct stacks for basicTwo()
-      // So we find the first one so we can focus this test on just one stack.
-      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
-          entry.dur === 827;
-    });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: entryTwo});
-    assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisible');
-    // Only one entry - the one for the `basicTwo` function - should have been hidden.
-    assert.strictEqual(stack.invisibleEntries().length, 1);
-
-    // Now remove the action and ensure that all entries are now visible.
-    stack.removeActiveAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: entryTwo});
-    assert.strictEqual(stack.invisibleEntries().length, 0, 'All the entries should be visible.');
-  });
-
   it('supports collapsing an entry', async function() {
     const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const mainThread = getMainThread(data.Renderer);
@@ -152,48 +130,6 @@ describe('EntriesFilter', function() {
       return stack.invisibleEntries().includes(fibCall);
     });
     assert.isTrue(allFibonacciInStackAreHidden, 'Some fibonacci calls are still visible');
-  });
-
-  it('supports undo collapsing an entry by applying context menu undo action', async function() {
-    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-    // First we collapse the children of basicTwo() which is the same as the test above.
-    const mainThread = getMainThread(data.Renderer);
-    const basicTwoCallEntry = findFirstEntry(mainThread.entries, entry => {
-      // Processing this trace ends up with two distinct stacks for basicTwo()
-      // So we find the first one so we can focus this test on just one stack.
-      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
-          entry.dur === 827;
-    });
-    const fibonacciCalls = mainThread.entries.filter(entry => {
-      const isFibCall =
-          TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'fibonacci';
-      if (!isFibCall) {
-        return false;
-      }
-      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
-      const basicTwoCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(basicTwoCallEntry).endTime;
-      return endTime <= basicTwoCallEndTime;
-    });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
-
-    // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.
-    assert.isFalse(stack.invisibleEntries().includes(basicTwoCallEntry), 'entryTwo is not visible');
-    // But all fib() calls below it in the stack should now be invisible.
-    const allFibonacciInStackAreHidden = fibonacciCalls.every(fibCall => {
-      return stack.invisibleEntries().includes(fibCall);
-    });
-    assert.isTrue(allFibonacciInStackAreHidden, 'Some fibonacci calls are still visible');
-
-    // Apply UNDO_COLLAPSE_FUNCTION action to bring back all collapsed childred of basicTwo().
-    stack.applyAction(
-        {type: TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
-
-    // All fib() calls under basicTwo() should be visible again.
-    const allFibonacciInStackAreVisible = fibonacciCalls.every(fibCall => {
-      return !stack.invisibleEntries().includes(fibCall);
-    });
-    assert.isTrue(allFibonacciInStackAreVisible, 'Some fibonacci calls are still invisible');
   });
 
   it('supports collapsing all repeating entries among descendants', async function() {
@@ -266,60 +202,6 @@ describe('EntriesFilter', function() {
     });
     assert.isTrue(allFoo2InStackAreVisible, 'Some foo2 calls are invisible');
   });
-
-  it('supports undo collapsing all repeating entries among descendants by applying context menu undo action',
-     async function() {
-       const data = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
-       // First we collapse all repeating foo() which is the same as the test above.
-       const mainThread = getMainThread(data.Renderer);
-       const firstFooCallEntry = findFirstEntry(mainThread.entries, entry => {
-         return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo' &&
-             entry.dur === 233;
-       });
-
-       // Gather the foo() and foo2() calls under and including the first foo entry, by finding all
-       // the calls whose end time is less than or equal to the end time of the first `foo` function.
-       const firstFooCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(firstFooCallEntry).endTime;
-       const fooCalls = mainThread.entries.filter(entry => {
-         const isFooCall = TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo';
-         if (!isFooCall) {
-           return false;
-         }
-         const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
-         return endTime <= firstFooCallEndTime;
-       });
-
-       const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-       stack.applyAction({
-         type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS,
-         entry: firstFooCallEntry,
-       });
-
-       // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
-       // but all foo() calls below it in the stack should now be invisible.
-       const allFooExceptFirstInStackAreHidden = fooCalls.every((fooCall, i) => {
-         if (i === 0) {
-           // First foo should not be invisible.
-           return !stack.invisibleEntries().includes(fooCall);
-         }
-         return stack.invisibleEntries().includes(fooCall);
-       });
-       assert.isTrue(
-           allFooExceptFirstInStackAreHidden, 'First foo is invisible or some following foo calls are still visible');
-
-       // Apply UNDO_COLLAPSE_REPEATING_DESCENDANTS action to bring back all collapsed foo() entries.
-       stack.applyAction({
-         type: TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS,
-         entry: firstFooCallEntry,
-       });
-
-       // All foo() calls should be visible again.
-       const allFooAreVisible = fooCalls.every(fooCall => {
-         return !stack.invisibleEntries().includes(fooCall);
-       });
-
-       assert.isTrue(allFooAreVisible, 'Some foo calls are still invisible');
-     });
 
   it('supports undo all filter actions by applying context menu undo action', async function() {
     const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');

@@ -786,20 +786,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS);
     });
 
-    contextMenu.headerSection().appendItem('Undo collapse function', () => {
-      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_FUNCTION);
-    });
-
-    contextMenu.headerSection().appendItem('Undo collapse repeating descendants', () => {
-      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS);
-    });
-
     contextMenu.headerSection().appendItem('Undo all actions', () => {
       dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS);
     });
-
-    contextMenu.defaultSection().appendAction('timeline.load-from-file');
-    contextMenu.defaultSection().appendAction('timeline.save-to-file');
 
     void contextMenu.show();
   }

@@ -16,11 +16,8 @@ export const enum FilterApplyAction {
   COLLAPSE_REPEATING_DESCENDANTS = 'COLLAPSE_REPEATING_DESCENDANTS',
 }
 
-// TODO(crbug.com/1469887): Implement UNDO_MERGE function when it's decided how to select merged function.
 export const enum FilterUndoAction {
   UNDO_ALL_ACTIONS = 'UNDO_ALL_ACTIONS',
-  UNDO_COLLAPSE_FUNCTION = 'UNDO_COLLAPSE_FUNCTION',
-  UNDO_COLLAPSE_REPEATING_DESCENDANTS = 'UNDO_COLLAPSE_REPEATING_DESCENDANTS',
 }
 
 const filterApplyActionSet: Set<FilterApplyAction> = new Set([
@@ -31,13 +28,6 @@ const filterApplyActionSet: Set<FilterApplyAction> = new Set([
 
 const filterUndoActionSet: Set<FilterUndoAction> = new Set([
   FilterUndoAction.UNDO_ALL_ACTIONS,
-  FilterUndoAction.UNDO_COLLAPSE_FUNCTION,
-  FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS,
-]);
-
-const actionToUndoActionMap: Map<FilterUndoAction, FilterApplyAction> = new Map([
-  [FilterUndoAction.UNDO_COLLAPSE_FUNCTION, FilterApplyAction.COLLAPSE_FUNCTION],
-  [FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS, FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS],
 ]);
 
 // Object passed from the frontend that can be either Undo or Apply filter action.
@@ -96,7 +86,7 @@ export class EntriesFilter {
       const entryIndex = this.#modifiedVisibleEntries.indexOf(action.entry);
       this.#modifiedVisibleEntries.splice(entryIndex);
 
-      this.#applyUndoAction(action.type, action.entry);
+      this.#applyUndoAction(action.type);
     }
     // Clear the last list of invisible entries - this invalidates the cache and
     // ensures that the invisible list will be recalculated, which we have to do
@@ -106,46 +96,16 @@ export class EntriesFilter {
 
   /**
    * If undo action is UNDO_ALL_ACTIONS, assign activeActions array to an empty one.
-   * Otherwise, get the action to remove from actionToUndoActionMap and remove it form the activeActions array.
-   * Afterwards, the FlameChart will be rerendered and activeActions will be reaplied without the removed action.
    * **/
-  #applyUndoAction(action: FilterUndoAction, entry: Types.TraceEvents.TraceEntry): void {
+  // TODO(crbug.com/1469887): Implement RESET_CHILDREN function to show all hidden children of a node.
+  #applyUndoAction(action: FilterUndoAction): void {
     switch (action) {
       case FilterUndoAction.UNDO_ALL_ACTIONS: {
         this.#activeActions = [];
         this.#modifiedVisibleEntries = [];
         break;
       }
-      default: {
-        const actionToRemove = actionToUndoActionMap.get(action);
-        if (actionToRemove) {
-          this.removeActiveAction(
-              {
-                type: actionToRemove,
-                entry: entry,
-              },
-          );
-        }
-        break;
-      }
     }
-  }
-
-  /**
-   * Removes a matching action, if one is found, from the active actions set.
-   * Note that we do not match on action equality and instead search through
-   * the set of active actions for one that is of the same type, and has the
-   * same entry associated with it.
-   *
-   * This is a no-op if the action is not active.
-   **/
-  removeActiveAction(action: UserFilterAction): void {
-    this.#activeActions = this.#activeActions.filter(activeAction => {
-      if (activeAction.type === action.type && activeAction.entry === action.entry) {
-        return false;
-      }
-      return true;
-    });
   }
 
   #actionIsActive(action: UserApplyFilterAction): boolean {

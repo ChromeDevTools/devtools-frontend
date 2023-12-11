@@ -91,39 +91,35 @@ describe('The styles pane', () => {
     }
   });
 
-  // Flaky from time to time.
-  it.skip(
-      '[crbug.com/1509274]shows a collapsed @property section when there are more than 5 registered properties',
-      async () => {
-        await goToResourceAndWaitForStyleSection('elements/at-property.html');
-        const {target, frontend} = getBrowserAndPages();
+  it('shows a collapsed @property section when there are more than 5 registered properties', async () => {
+    await goToResourceAndWaitForStyleSection('elements/at-property.html');
+    const {target, frontend} = getBrowserAndPages();
 
-        // Add some properties to go above the threshold
-        await target.evaluate(() => {
-          for (let n = 0; n < 5; ++n) {
-            CSS.registerProperty(
-                {name: `--custom-prop-${n}`, inherits: false, syntax: '<length>', initialValue: '0px'});
-          }
-        });
+    // Add some properties to go above the threshold
+    await target.evaluate(() => {
+      for (let n = 0; n < 5; ++n) {
+        CSS.registerProperty({name: `--custom-prop-${n}`, inherits: false, syntax: '<length>', initialValue: '0px'});
+      }
+    });
 
-        await frontend.reload();
+    await frontend.reload();
 
-        const stylesPane = await waitFor('div.styles-pane');
-        {
-          const section = await waitForElementWithTextContent('@property', stylesPane);
-          assert.deepStrictEqual(await section.evaluate(e => e.ariaExpanded), 'false');
-          // Pick the style rule added last to ensure the sections are fully drawn
-          const rule = await getStyleRule('--custom-prop-4');
-          assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
-        }
+    const stylesPane = await waitFor('div.styles-pane');
+    {
+      const section = await waitForElementWithTextContent('@property', stylesPane);
+      assert.deepStrictEqual(await section.evaluate(e => e.ariaExpanded), 'false');
+      // Pick the style rule added last to ensure the sections are fully drawn
+      const rule = await getStyleRule('--custom-prop-4');
+      assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
+    }
 
-        {
-          const section = await click('pierceShadowText/@property', {root: stylesPane});
-          await waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
-          const rule = await getStyleRule('--custom-prop-4');
-          await waitForFunction(() => rule.evaluate(e => !e.classList.contains('hidden')));
-        }
-      });
+    await waitForFunction(async () => {
+      const section = await click('pierceShadowText/@property', {root: stylesPane});
+      await waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
+      const rule = await getStyleRule('--custom-prop-4');
+      return rule.evaluate(e => !e.classList.contains('hidden'));
+    });
+  });
 
   it('shows registration information in a variable popover', async () => {
     async function hoverVariable(label: string) {

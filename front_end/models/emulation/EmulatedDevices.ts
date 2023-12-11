@@ -47,6 +47,7 @@ export class EmulatedDevice {
   userAgentMetadata: Protocol.Emulation.UserAgentMetadata|null;
   modes: Mode[];
   isDualScreen: boolean;
+  isFoldableScreen: boolean;
   verticalSpanned: Orientation;
   horizontalSpanned: Orientation;
   #showInternal: string;
@@ -64,6 +65,7 @@ export class EmulatedDevice {
     this.modes = [];
 
     this.isDualScreen = false;
+    this.isFoldableScreen = false;
     this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
 
@@ -216,12 +218,13 @@ export class EmulatedDevice {
       result.vertical = parseOrientation(parseValue(json['screen'], 'vertical', 'object'));
       result.horizontal = parseOrientation(parseValue(json['screen'], 'horizontal', 'object'));
       result.isDualScreen = (parseValue(json, 'dual-screen', 'boolean', false) as boolean);
+      result.isFoldableScreen = (parseValue(json, 'foldable-screen', 'boolean', false) as boolean);
 
-      if (result.isDualScreen) {
+      if (result.isDualScreen || result.isFoldableScreen) {
         result.verticalSpanned = parseOrientation(parseValue(json['screen'], 'vertical-spanned', 'object', null));
         result.horizontalSpanned = parseOrientation(parseValue(json['screen'], 'horizontal-spanned', 'object', null));
       }
-      if (result.isDualScreen && (!result.verticalSpanned || !result.horizontalSpanned)) {
+      if ((result.isDualScreen || result.isFoldableScreen) && (!result.verticalSpanned || !result.horizontalSpanned)) {
         throw new Error('Emulated device \'' + result.title + '\'has dual screen without spanned orientations');
       }
 
@@ -329,7 +332,7 @@ export class EmulatedDevice {
       'horizontal-spanned': (object | undefined),
     };
 
-    if (this.isDualScreen) {
+    if (this.isDualScreen || this.isFoldableScreen) {
       json['screen']['vertical-spanned'] = this.orientationToJSON(this.verticalSpanned);
       json['screen']['horizontal-spanned'] = this.orientationToJSON(this.horizontalSpanned);
     }
@@ -352,6 +355,7 @@ export class EmulatedDevice {
 
     json['show-by-default'] = this.#showByDefault;
     json['dual-screen'] = this.isDualScreen;
+    json['foldable-screen'] = this.isFoldableScreen;
     json['show'] = this.#showInternal;
 
     if (this.userAgentMetadata) {
@@ -935,7 +939,7 @@ const emulatedDevices = [
   {
     'order': 34,
     'show-by-default': true,
-    'dual-screen': true,
+    'foldable-screen': true,
     'title': 'Galaxy Fold',
     'screen': {
       'horizontal': {'width': 653, 'height': 280},
@@ -964,7 +968,7 @@ const emulatedDevices = [
   {
     'order': 35,
     'show-by-default': true,
-    'dual-screen': true,
+    'foldable-screen': true,
     'title': 'Asus Zenbook Fold',
     'screen': {
       'horizontal': {'width': 1280, 'height': 853},

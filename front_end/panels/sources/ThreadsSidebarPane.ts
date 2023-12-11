@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 
 const UIStrings = {
@@ -17,7 +18,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ThreadsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let threadsSidebarPaneInstance: ThreadsSidebarPane;
 
 export class ThreadsSidebarPane extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
@@ -26,7 +26,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   private readonly list: UI.ListControl.ListControl<SDK.DebuggerModel.DebuggerModel>;
   private selectedModel: SDK.DebuggerModel.DebuggerModel|null;
 
-  private constructor() {
+  constructor() {
     super(true);
 
     this.items = new UI.ListModel.ListModel();
@@ -37,13 +37,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.targetFlavorChanged, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
-  }
-
-  static instance(): ThreadsSidebarPane {
-    if (!threadsSidebarPaneInstance) {
-      threadsSidebarPaneInstance = new ThreadsSidebarPane();
-    }
-    return threadsSidebarPaneInstance;
   }
 
   static shouldBeShown(): boolean {

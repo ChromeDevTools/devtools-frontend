@@ -568,12 +568,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment|Common.Settings.Setting<unknown>> {
-  reveal(object: Root.Runtime.Experiment|Common.Settings.Setting<unknown>): Promise<void> {
+  async reveal(object: Root.Runtime.Experiment|Common.Settings.Setting<unknown>): Promise<void> {
     if (object instanceof Root.Runtime.Experiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-      void SettingsScreen.showSettingsScreen({name: 'experiments'})
-          .then(() => ExperimentsSettingsTab.instance().highlightObject(object));
-      return Promise.resolve();
+      await SettingsScreen.showSettingsScreen({name: 'experiments'});
+      ExperimentsSettingsTab.instance().highlightObject(object);
+      return;
     }
 
     for (const settingRegistration of Common.Settings.getRegisteredSettings()) {
@@ -582,8 +582,9 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
       }
       if (settingRegistration.settingName === object.name) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        void SettingsScreen.showSettingsScreen().then(() => GenericSettingsTab.instance().highlightObject(object));
-        return Promise.resolve();
+        await SettingsScreen.showSettingsScreen();
+        GenericSettingsTab.instance().highlightObject(object);
+        return;
       }
     }
 
@@ -597,17 +598,14 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
       const settings = view.settings();
       if (settings && settings.indexOf(object.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        void SettingsScreen.showSettingsScreen({name: id}).then(async () => {
-          const widget = await view.widget();
-          if (widget instanceof SettingsTab) {
-            widget.highlightObject(object);
-          }
-        });
-        return Promise.resolve();
+        await SettingsScreen.showSettingsScreen({name: id});
+        const widget = await view.widget();
+        if (widget instanceof SettingsTab) {
+          widget.highlightObject(object);
+        }
+        return;
       }
     }
-
-    return Promise.reject();
   }
 }
 export interface ShowSettingsScreenOptions {

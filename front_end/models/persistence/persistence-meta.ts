@@ -73,7 +73,7 @@ UI.ViewManager.registerViewExtension({
   order: 1,
   async loadView() {
     const Persistence = await loadPersistenceModule();
-    return Persistence.WorkspaceSettingsTab.WorkspaceSettingsTab.instance();
+    return new Persistence.WorkspaceSettingsTab.WorkspaceSettingsTab();
   },
 });
 

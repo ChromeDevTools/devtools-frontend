@@ -40,14 +40,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let workspaceSettingsTabInstance: WorkspaceSettingsTab;
-
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
   private readonly fileSystemsListContainer: HTMLElement;
   private readonly elementByPath: Map<Platform.DevToolsPath.UrlString, Element>;
   private readonly mappingViewByPath: Map<Platform.DevToolsPath.UrlString, EditFileSystemView>;
-  private constructor() {
+
+  constructor() {
     super();
 
     this.element.setAttribute('jslog', `${VisualLogging.section().context('workspace')}`);
@@ -88,15 +87,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     for (let i = 0; i < fileSystems.length; ++i) {
       this.addItem(fileSystems[i]);
     }
-  }
-
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceSettingsTab {
-    const {forceNew} = opts;
-    if (!workspaceSettingsTabInstance || forceNew) {
-      workspaceSettingsTabInstance = new WorkspaceSettingsTab();
-    }
-
-    return workspaceSettingsTabInstance;
   }
 
   override wasShown(): void {

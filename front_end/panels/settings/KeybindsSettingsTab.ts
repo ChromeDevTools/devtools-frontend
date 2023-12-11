@@ -78,12 +78,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/settings/KeybindsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let keybindsSettingsTabInstance: KeybindsSettingsTab;
 export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListControl.ListDelegate<KeybindsItem> {
   private readonly items: UI.ListModel.ListModel<KeybindsItem>;
   private list: UI.ListControl.ListControl<string|UI.ActionRegistration.Action>;
   private editingItem: UI.ActionRegistration.Action|null;
   private editingRow: ShortcutListItem|null;
+
   constructor() {
     super(true);
 
@@ -128,15 +128,6 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     this.editingRow = null;
 
     this.update();
-  }
-
-  static instance(opts = {forceNew: null}): KeybindsSettingsTab {
-    const {forceNew} = opts;
-    if (!keybindsSettingsTabInstance || forceNew) {
-      keybindsSettingsTabInstance = new KeybindsSettingsTab();
-    }
-
-    return keybindsSettingsTabInstance;
   }
 
   createElementForItem(item: KeybindsItem): Element {

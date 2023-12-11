@@ -8,21 +8,12 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
-let cspViolationBreakpointsSidebarPaneInstance: CSPViolationBreakpointsSidebarPane;
-
 export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSidebarPane {
-  private constructor() {
+  constructor() {
     const breakpoints: SDK.DOMDebuggerModel.CSPViolationBreakpoint[] =
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     super(breakpoints, 'sources.cspViolationBreakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-csp-breakpoints')}`);
-  }
-
-  static instance(): CSPViolationBreakpointsSidebarPane {
-    if (!cspViolationBreakpointsSidebarPaneInstance) {
-      cspViolationBreakpointsSidebarPaneInstance = new CSPViolationBreakpointsSidebarPane();
-    }
-    return cspViolationBreakpointsSidebarPaneInstance;
   }
 
   protected override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
@@ -33,7 +24,8 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
     return breakpoint ? breakpoint : null;
   }
 
-  protected override toggleBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean): void {
+  protected override toggleBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean):
+      void {
     breakpoint.setEnabled(enabled);
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance().updateCSPViolationBreakpoints();
   }

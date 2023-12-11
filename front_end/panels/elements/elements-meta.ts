@@ -254,7 +254,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Elements = await loadElementsModule();
-    return Elements.NodeStackTraceWidget.NodeStackTraceWidget.instance();
+    return new Elements.NodeStackTraceWidget.NodeStackTraceWidget();
   },
 });
 

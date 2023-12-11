@@ -64,7 +64,7 @@ UI.ViewManager.registerViewExtension({
   order: 35,
   async loadView() {
     const MobileThrottling = await loadMobileThrottlingModule();
-    return MobileThrottling.ThrottlingSettingsTab.ThrottlingSettingsTab.instance();
+    return new MobileThrottling.ThrottlingSettingsTab.ThrottlingSettingsTab();
   },
   settings: [
     'customNetworkConditions',

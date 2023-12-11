@@ -38,6 +38,6 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Webauthn = await loadWebauthnModule();
-    return Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
+    return new Webauthn.WebauthnPane.WebauthnPaneImpl();
   },
 });

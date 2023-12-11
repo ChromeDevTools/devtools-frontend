@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Sensors from './sensors.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    * @description Title of the Sensors tool. The sensors tool contains GPS, orientation sensors, touch
@@ -115,7 +115,7 @@ UI.ViewManager.registerViewExtension({
   order: 100,
   async loadView() {
     const Sensors = await loadEmulationModule();
-    return Sensors.SensorsView.SensorsView.instance();
+    return new Sensors.SensorsView.SensorsView();
   },
   tags: [
     i18nLazyString(UIStrings.geolocation),
@@ -135,7 +135,7 @@ UI.ViewManager.registerViewExtension({
   order: 40,
   async loadView() {
     const Sensors = await loadEmulationModule();
-    return Sensors.LocationsSettingsTab.LocationsSettingsTab.instance();
+    return new Sensors.LocationsSettingsTab.LocationsSettingsTab();
   },
   settings: [
     'emulation.locations',

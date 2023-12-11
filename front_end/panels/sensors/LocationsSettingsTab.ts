@@ -9,8 +9,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
 
-let locationsSettingsTabInstance: LocationsSettingsTab;
-
 const UIStrings = {
   /**
    *@description Title in the Locations Settings Tab, where custom geographic locations that the user
@@ -103,7 +101,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   private readonly customSetting: Common.Settings.Setting<LocationDescription[]>;
   private editor?: UI.ListWidget.Editor<LocationDescription>;
 
-  private constructor() {
+  constructor() {
     super(true);
 
     this.element.setAttribute('jslog', `${VisualLogging.section().context('emulation-locations')}`);
@@ -148,14 +146,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this.customSetting.addChangeListener(this.locationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
-  }
-
-  static instance(): LocationsSettingsTab {
-    if (!locationsSettingsTabInstance) {
-      locationsSettingsTabInstance = new LocationsSettingsTab();
-    }
-
-    return locationsSettingsTabInstance;
   }
 
   override wasShown(): void {

@@ -222,8 +222,6 @@ type AvailableAuthenticatorOptions = Protocol.WebAuthn.VirtualAuthenticatorOptio
   authenticatorId: Protocol.WebAuthn.AuthenticatorId,
 };
 
-let webauthnPaneImplInstance: WebauthnPaneImpl;
-
 // We extrapolate this variable as otherwise git detects a private key, even though we
 // perform string manipulation. If we extract the name, then the regex doesn't match
 // and we can upload as expected.
@@ -279,14 +277,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
     this.#createNewAuthenticatorSection();
     this.#updateVisibility(false);
-  }
-
-  static instance(opts?: {forceNew: boolean}): WebauthnPaneImpl {
-    if (!webauthnPaneImplInstance || opts?.forceNew) {
-      webauthnPaneImplInstance = new WebauthnPaneImpl();
-    }
-
-    return webauthnPaneImplInstance;
   }
 
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {

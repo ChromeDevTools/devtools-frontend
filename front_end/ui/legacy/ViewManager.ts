@@ -45,11 +45,11 @@ export const defaultOptionsForTabs = {
 
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
-  private widgetRequested: boolean;
+  private widgetPromise: Promise<Widget>|null;
 
   constructor(viewRegistration: ViewRegistration) {
     this.viewRegistration = viewRegistration;
-    this.widgetRequested = false;
+    this.widgetPromise = null;
   }
 
   title(): Common.UIString.LocalizedString {
@@ -100,23 +100,27 @@ export class PreRegisteredView implements View {
   }
 
   async toolbarItems(): Promise<ToolbarItem[]> {
-    if (this.viewRegistration.hasToolbar) {
-      return this.widget().then(widget => (widget as unknown as ItemsProvider).toolbarItems());
+    if (!this.viewRegistration.hasToolbar) {
+      return [];
     }
-    return [];
+    const provider = await this.widget() as unknown as ItemsProvider;
+    return provider.toolbarItems();
   }
 
-  async widget(): Promise<Widget> {
-    this.widgetRequested = true;
-    return this.viewRegistration.loadView();
+  widget(): Promise<Widget> {
+    if (this.widgetPromise === null) {
+      this.widgetPromise = this.viewRegistration.loadView();
+    }
+    return this.widgetPromise;
   }
 
   async disposeView(): Promise<void> {
-    if (!this.widgetRequested) {
+    if (this.widgetPromise === null) {
       return;
     }
 
-    const widget = await this.widget();
+    const widget = await this.widgetPromise;
+    this.widgetPromise = null;
     await widget.ownerViewDisposed();
   }
 

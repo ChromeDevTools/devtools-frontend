@@ -98,7 +98,7 @@ UI.ViewManager.registerViewExtension({
   order: 4,
   async loadView() {
     const Settings = await loadSettingsModule();
-    return Settings.FrameworkIgnoreListSettingsTab.FrameworkIgnoreListSettingsTab.instance();
+    return new Settings.FrameworkIgnoreListSettingsTab.FrameworkIgnoreListSettingsTab();
   },
 });
 
@@ -110,7 +110,7 @@ UI.ViewManager.registerViewExtension({
   order: 100,
   async loadView() {
     const Settings = await loadSettingsModule();
-    return Settings.KeybindsSettingsTab.KeybindsSettingsTab.instance();
+    return new Settings.KeybindsSettingsTab.KeybindsSettingsTab();
   },
 });
 

@@ -23,7 +23,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let webAudioViewInstance: WebAudioView;
 export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     SDK.TargetManager.SDKModelObserver<WebAudioModel> {
   private readonly contextSelector: AudioContextSelector;
@@ -76,15 +75,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
         });
 
     SDK.TargetManager.TargetManager.instance().observeModels(WebAudioModel, this);
-  }
-
-  static instance(opts = {forceNew: null}): WebAudioView {
-    const {forceNew} = opts;
-    if (!webAudioViewInstance || forceNew) {
-      webAudioViewInstance = new WebAudioView();
-    }
-
-    return webAudioViewInstance;
   }
 
   override wasShown(): void {

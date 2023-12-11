@@ -466,15 +466,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     test.sendRawMessage(command, parameters, () => {}, sessionId);
   }
 
-  static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {
-    const {forceNew} = opts;
-    if (!protocolMonitorImplInstance || forceNew) {
-      protocolMonitorImplInstance = new ProtocolMonitorImpl();
-    }
-
-    return protocolMonitorImplInstance;
-  }
-
   override wasShown(): void {
     if (this.started) {
       return;
@@ -653,7 +644,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   }
 }
 
-let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   #split: UI.SplitWidget.SplitWidget;
   #editorWidget = new EditorWidget();
@@ -678,14 +668,6 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#editorWidget.addEventListener(Events.CommandSent, event => {
       this.#protocolMonitorDataGrid.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
     });
-  }
-
-  static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {
-    const {forceNew} = opts;
-    if (!protocolMonitorImplInstance || forceNew) {
-      protocolMonitorImplInstance = new ProtocolMonitorImpl();
-    }
-    return protocolMonitorImplInstance;
   }
 }
 

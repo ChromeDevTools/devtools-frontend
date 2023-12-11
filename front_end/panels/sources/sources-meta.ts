@@ -512,7 +512,7 @@ UI.ViewManager.registerViewExtension({
   condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.ThreadsSidebarPane.ThreadsSidebarPane.instance();
+    return new Sources.ThreadsSidebarPane.ThreadsSidebarPane();
   },
 });
 

@@ -211,10 +211,8 @@ const supportsPrefersContrast = (): boolean => {
   return window.matchMedia(query).matches;
 };
 
-let renderingOptionsViewInstance: RenderingOptionsView;
-
 export class RenderingOptionsView extends UI.Widget.VBox {
-  private constructor() {
+  constructor() {
     super(true);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel().context('rendering')}`);
@@ -299,17 +297,6 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): RenderingOptionsView {
-    const {forceNew} = opts;
-    if (!renderingOptionsViewInstance || forceNew) {
-      renderingOptionsViewInstance = new RenderingOptionsView();
-    }
-
-    return renderingOptionsViewInstance;
   }
 
   #appendCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):

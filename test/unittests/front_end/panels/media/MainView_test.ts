@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Media from '../../../../../front_end/panels/media/media.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const {assert} = chai;
 
@@ -29,7 +29,7 @@ describeWithMockConnection('MediaMainView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const downloadStore = new Media.MainView.PlayerDataDownloadManager();
     const expectedCall = sinon.stub(downloadStore, expectedMethod).returns();
-    const mainView = Media.MainView.MainView.instance({forceNew: true, downloadStore});
+    const mainView = new Media.MainView.MainView(downloadStore);
     mainView.markAsRoot();
     mainView.show(document.body);
     const model = target.model(Media.MediaModel.MediaModel);

@@ -50,7 +50,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
-import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
+import {PerformanceModel} from './PerformanceModel.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
@@ -286,7 +286,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly panelToolbar: UI.Toolbar.Toolbar;
   private readonly panelRightToolbar: UI.Toolbar.Toolbar;
   private readonly timelinePane: UI.Widget.VBox;
-  readonly #minimapComponent;
+  readonly #minimapComponent = new TimelineMiniMap();
   private readonly statusPaneContainer: HTMLElement;
   private readonly flameChart: TimelineFlameChartView;
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
@@ -322,7 +322,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   constructor() {
     super('timeline');
-    this.#minimapComponent = new TimelineMiniMap();
 
     const config = TraceEngine.Types.Configuration.DEFAULT;
     config.experiments.timelineShowAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
@@ -376,8 +375,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     topPaneElement.id = 'timeline-overview-panel';
 
     this.#minimapComponent.show(topPaneElement);
-    this.#minimapComponent.addEventListener(
-        PerfUI.TimelineOverviewPane.Events.WindowChanged, this.onOverviewWindowChanged.bind(this));
 
     this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
 
@@ -482,32 +479,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.prepareToLoadTimeline();
     this.loader = TimelineLoader.loadFromCpuProfile(profile, this, title);
-  }
-
-  private onOverviewWindowChanged(
-      event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>): void {
-    if (!this.performanceModel) {
-      return;
-    }
-
-    const left = (event.data.startTime > 0) ? event.data.startTime : this.performanceModel.minimumRecordTime();
-    const right = Number.isFinite(event.data.endTime) ? event.data.endTime : this.performanceModel.maximumRecordTime();
-    this.performanceModel.setWindow({left, right}, /* animate */ true, event.data.breadcrumb);
-
-    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
-            TraceEngine.Types.Timing.MilliSeconds(left),
-            TraceEngine.Types.Timing.MilliSeconds(right),
-            ),
-        {
-          shouldAnimate: true,
-        },
-    );
-  }
-
-  private onModelWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
-    const window = event.data.window;
-    this.#minimapComponent.setWindowTimes(window.left, window.right);
   }
 
   private setState(state: State): void {
@@ -1110,9 +1081,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private reset(): void {
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    if (this.performanceModel) {
-      this.performanceModel.removeEventListener(Events.NamesResolved, this.#onSourceMapsNodeNamesResolved, this);
-    }
     if (this.#sourceMapsResolver) {
       this.#sourceMapsResolver.removeEventListener(
           NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
@@ -1134,9 +1102,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   setModel(
       model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
       traceEngineIndex: number = -1): void {
-    if (this.performanceModel) {
-      this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
-    }
     this.performanceModel = model;
     if (model) {
       this.searchableViewInternal.showWidget();
@@ -1148,51 +1113,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
-    this.flameChart.setModel(model, traceParsedData, isCpuProfile);
+
     this.#minimapComponent.reset();
+    // Order is important: the bounds must be set before we initiate any UI
+    // rendering.
     if (traceParsedData) {
       TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
           traceParsedData.Meta.traceBounds,
       );
     }
-    if (model) {
-      model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
-      PerfUI.LineLevelProfile.Performance.instance().reset();
-      this.flameChart.setSelection(null);
-    }
+    this.flameChart.setModel(model, traceParsedData, isCpuProfile);
+    this.flameChart.setSelection(null);
 
-    if (traceParsedData) {
-      // Set the absolute bounds for the minimap.
-      const traceBoundsMilliSeconds =
-          TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds);
-
-      this.#minimapComponent.setBounds(traceBoundsMilliSeconds.min, traceBoundsMilliSeconds.max);
-      // To calculate the activity we might want to zoom in, we find the last
-      // main thread. Or we find the CPU Profile thread, for e.g. Node traces.
-      const mainThreadTypes = [
-        TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD,
-        TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE,
-      ];
-      const lastMainThread = TraceEngine.Handlers.Threads.threadsInTrace(traceParsedData)
-                                 .filter(data => mainThreadTypes.includes(data.type))
-                                 .at(-1);
-      if (lastMainThread) {
-        const zoomedInBounds = TraceEngine.Extras.MainThreadActivity.calculateWindow(
-            traceParsedData.Meta.traceBounds, lastMainThread.entries);
-
-        const zoomedInMilliseconds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(zoomedInBounds);
-
-        this.#minimapComponent.setWindowTimes(zoomedInMilliseconds.min, zoomedInMilliseconds.max);
-        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
-
-        // Temporary to maintain correct old model whilst we work on removing it.
-        // We need this for now because it is this code that ensures the UI
-        // does not let the user scroll beyond these bounds.
-        if (model) {
-          model.setWindow({left: zoomedInMilliseconds.min, right: zoomedInMilliseconds.max});
-        }
-      }
-    }
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
     if (traceParsedData && traceParsedData.Samples.profilesInProcess.size) {
@@ -1211,8 +1143,30 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateOverviewControls();
     if (this.flameChart) {
       this.flameChart.resizeToPreferredHeights();
-      if (this.#minimapComponent.breadcrumbsActivated) {
-        this.#minimapComponent.addInitialBreadcrumb();
+    }
+
+    // Set the initial zoom: if we are using breadcrumbs we leave the entire
+    // window visible, but if not we zoom into the biggest period of activity
+    // (we might want to consider doing the same for breadcrumbs)
+    if (this.#minimapComponent.breadcrumbsActivated) {
+      this.#minimapComponent.addInitialBreadcrumb();
+    } else if (traceParsedData) {
+      // We expect traceParsedData to always exist, this check is to keep TS happy.
+
+      // To calculate the activity we might want to zoom in, we find the last
+      // main thread. Or we find the CPU Profile thread, for e.g. Node traces.
+      const mainThreadTypes = [
+        TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD,
+        TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE,
+      ];
+      const lastMainThread = TraceEngine.Handlers.Threads.threadsInTrace(traceParsedData)
+                                 .filter(data => mainThreadTypes.includes(data.type))
+                                 .at(-1);
+      if (lastMainThread) {
+        const zoomedInBounds = TraceEngine.Extras.MainThreadActivity.calculateWindow(
+            traceParsedData.Meta.traceBounds, lastMainThread.entries);
+
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
       }
     }
     this.updateTimelineControls();
@@ -1566,7 +1520,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   jumpToFrame(offset: number): true|undefined {
     const currentFrame = this.selection && this.frameForSelection(this.selection);
-    if (!currentFrame || !this.performanceModel) {
+    if (!currentFrame) {
       return;
     }
     const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
@@ -1577,7 +1531,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     console.assert(index >= 0, 'Can\'t find current frame in the frame list');
     index = Platform.NumberUtilities.clamp(index + offset, 0, traceData.Frames.frames.length - 1);
     const frame = traceData.Frames.frames[index];
-    this.revealTimeRange(
+    this.#revealTimeRange(
         TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime),
         TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.endTime));
     this.select(TimelineSelection.fromFrame(frame));
@@ -1613,24 +1567,24 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.highlightEvent(event);
   }
 
-  private revealTimeRange(
-      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
-    if (!this.performanceModel) {
+  #revealTimeRange(startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds):
+      void {
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (!traceBoundsState) {
       return;
     }
-    const window = this.performanceModel.window();
-    let offset = 0;
-    if (window.right < endTime) {
-      offset = endTime - window.right;
-    } else if (window.left > startTime) {
-      offset = startTime - window.left;
-    }
-    this.performanceModel.setWindow({left: window.left + offset, right: window.right + offset}, /* animate */ true);
+    const traceWindow = traceBoundsState.milli.timelineTraceWindow;
 
+    let offset = 0;
+    if (traceWindow.max < endTime) {
+      offset = endTime - traceWindow.max;
+    } else if (traceWindow.min > startTime) {
+      offset = startTime - traceWindow.min;
+    }
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
-            TraceEngine.Types.Timing.MilliSeconds(window.left + offset),
-            TraceEngine.Types.Timing.MilliSeconds(window.right + offset),
+            TraceEngine.Types.Timing.MilliSeconds(traceWindow.min + offset),
+            TraceEngine.Types.Timing.MilliSeconds(traceWindow.max + offset),
             ),
         {
           shouldAnimate: true,

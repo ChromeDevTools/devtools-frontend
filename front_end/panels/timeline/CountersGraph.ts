@@ -32,10 +32,10 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {Events, type PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 
 const UIStrings = {
@@ -72,7 +72,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CountersGraph extends UI.Widget.VBox {
   private readonly delegate: TimelineModeViewDelegate;
   private readonly calculator: Calculator;
-  private model!: PerformanceModel|null;
   private readonly header: UI.Widget.HBox;
   readonly toolbar: UI.Toolbar.Toolbar;
   private graphsContainer: UI.Widget.VBox;
@@ -86,6 +85,7 @@ export class CountersGraph extends UI.Widget.VBox {
   #events: TraceEngine.Legacy.CompatibleTraceEvent[]|null = null;
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
+  #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -135,23 +135,24 @@ export class CountersGraph extends UI.Widget.VBox {
     this.gpuMemoryCounter = this.createCounter(
         i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.bytesToString);
     this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
+
+    TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  #onTraceBoundsChange(event: TraceBounds.TraceBounds.StateChangedEvent): void {
+    if (event.updateType === 'RESET' || event.updateType === 'VISIBLE_WINDOW') {
+      const newWindow = event.state.milli.timelineTraceWindow;
+      this.calculator.setWindow(newWindow.min, newWindow.max);
+      this.#scheduleRefresh();
+    }
   }
 
   setModel(
-      model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
+      traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
       events: TraceEngine.Legacy.CompatibleTraceEvent[]|null): void {
     this.#events = events;
     if (!events) {
       return;
-    }
-    if (this.model !== model) {
-      if (this.model) {
-        this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
-      }
-      this.model = model;
-      if (this.model) {
-        this.model.addEventListener(Events.WindowChanged, this.onWindowChanged, this);
-      }
     }
     const minTime =
         traceEngineData ? TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceEngineData.Meta.traceBounds).min : 0;
@@ -161,7 +162,7 @@ export class CountersGraph extends UI.Widget.VBox {
       this.counters[i].reset();
       this.counterUI[i].reset();
     }
-    this.scheduleRefresh();
+    this.#scheduleRefresh();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
       if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
@@ -215,13 +216,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this.refresh();
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
-    const window = event.data.window;
-    this.calculator.setWindow(window.left, window.right);
-    this.scheduleRefresh();
-  }
-
-  scheduleRefresh(): void {
+  #scheduleRefresh(): void {
     UI.UIUtils.invokeOnceAfterBatchUpdate(this, this.refresh);
   }
 

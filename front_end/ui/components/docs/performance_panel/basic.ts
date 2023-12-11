@@ -90,6 +90,7 @@ UI.ActionRegistration.registerActionExtension({
     },
   ],
 });
+
 const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
 UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistry});
 Common.Settings.settingForTest('flamechartMouseWheelAction').set('zoom');

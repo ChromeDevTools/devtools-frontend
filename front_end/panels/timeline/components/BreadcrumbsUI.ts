@@ -28,12 +28,7 @@ export class BreadcrumbsUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-breadcrumbs-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  readonly #traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-    min: TraceEngine.Types.Timing.MicroSeconds(0),
-    max: TraceEngine.Types.Timing.MicroSeconds(0),
-    range: TraceEngine.Types.Timing.MicroSeconds(0),
-  };
-  #breadcrumb: Breadcrumb = {window: this.#traceWindow, child: null};
+  #breadcrumb: Breadcrumb|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [breadcrumbsUIStyles];
@@ -48,14 +43,15 @@ export class BreadcrumbsUI extends HTMLElement {
     this.dispatchEvent(new BreadcrumbRemovedEvent(breadcrumb));
   }
 
-  #renderElement(breadcrumb: Breadcrumb, index: number): LitHtml.TemplateResult {
+  #renderElement(breadcrumb: Breadcrumb, index: number): LitHtml.LitTemplate {
+    const breadcrumbRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(breadcrumb.window.range);
     // clang-format off
     return html`
           <div class="breadcrumb" @click=${(): void => this.#removeBreadcrumb(breadcrumb)}>
            <span class="${(index !== 0 && breadcrumb.child === null) ? 'last-breadcrumb' : ''} range">
             ${(index === 0) ?
-              `Full range (${(breadcrumb.window.range).toFixed(2)}ms)` :
-              `${(breadcrumb.window.range).toFixed(2)}ms`}
+              `Full range (${breadcrumbRange.toFixed(2)}ms)` :
+              `${breadcrumbRange.toFixed(2)}ms`}
             </span>
           </div>
           ${breadcrumb.child !== null ?
@@ -68,14 +64,18 @@ export class BreadcrumbsUI extends HTMLElement {
             } as IconButton.Icon.IconData}>`
             : ''}
       `;
+    // clang-format on
   }
 
   #render(): void {
+    // clang-format off
     const output = html`
-      <div class="breadcrumbs">
-      ${flattenBreadcrumbs(this.#breadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
-      </div>`;
-      render(output, this.#shadow, {host: this});
+      ${this.#breadcrumb === null ? html`` : html`<div class="breadcrumbs">
+        ${flattenBreadcrumbs(this.#breadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
+      </div>`}
+    `;
+    // clang-format on
+    render(output, this.#shadow, {host: this});
   }
 }
 

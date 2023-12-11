@@ -233,7 +233,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     // Create top overview component.
     this.overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
     this.overviewPane.addEventListener(
-        PerfUI.TimelineOverviewPane.Events.WindowChanged, this.onWindowChanged.bind(this));
+        PerfUI.TimelineOverviewPane.Events.OverviewPaneWindowChanged, this.onWindowChanged.bind(this));
     this.overviewPane.element.id = 'network-overview-panel';
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
@@ -365,8 +365,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return this.throttlingSelect;
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>):
-      void {
+  private onWindowChanged(
+      event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.OverviewPaneWindowChangedEvent>): void {
     const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1000);
     const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1000);
     if (startTime === this.calculator.minimumBoundary() && endTime === this.calculator.maximumBoundary()) {
@@ -772,7 +772,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
         TraceEngine.Types.Timing.MilliSeconds(this.calculator.minimumBoundary() * 1000),
         TraceEngine.Types.Timing.MilliSeconds(this.calculator.maximumBoundary() * 1000));
     this.networkOverview.updateRequest(request);
-    this.overviewPane.scheduleUpdate();
   }
 
   resolveLocation(locationName: string): UI.View.ViewLocation|null {

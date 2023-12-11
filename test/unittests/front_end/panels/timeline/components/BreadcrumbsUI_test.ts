@@ -7,6 +7,12 @@ import * as TimelineComponents from '../../../../../../front_end/panels/timeline
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
+function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
+  return TraceEngine.Helpers.Timing.millisecondsToMicroseconds(
+      TraceEngine.Types.Timing.MilliSeconds(x),
+  );
+}
+
 describe('BreadcrumbsUI', async () => {
   const {BreadcrumbsUI} = TimelineComponents.BreadcrumbsUI;
 
@@ -24,9 +30,9 @@ describe('BreadcrumbsUI', async () => {
     renderElementIntoDOM(component);
 
     const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(1),
-      max: TraceEngine.Types.Timing.MicroSeconds(10),
-      range: TraceEngine.Types.Timing.MicroSeconds(9),
+      min: milliToMicro(1),
+      max: milliToMicro(10),
+      range: milliToMicro(9),
     };
 
     const breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb = {
@@ -50,15 +56,15 @@ describe('BreadcrumbsUI', async () => {
     renderElementIntoDOM(component);
 
     const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(2),
-      max: TraceEngine.Types.Timing.MicroSeconds(9),
-      range: TraceEngine.Types.Timing.MicroSeconds(7),
+      min: milliToMicro(2),
+      max: milliToMicro(9),
+      range: milliToMicro(7),
     };
 
     const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(1),
-      max: TraceEngine.Types.Timing.MicroSeconds(10),
-      range: TraceEngine.Types.Timing.MicroSeconds(9),
+      min: milliToMicro(1),
+      max: milliToMicro(10),
+      range: milliToMicro(9),
     };
 
     const breadcrumb2: TimelineComponents.Breadcrumbs.Breadcrumb = {

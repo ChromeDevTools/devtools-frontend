@@ -210,7 +210,17 @@ export function traceWindowFromMilliSeconds(
   const traceWindow: Types.Timing.TraceWindowMicroSeconds = {
     min: millisecondsToMicroseconds(min),
     max: millisecondsToMicroseconds(max),
-    range: millisecondsToMicroseconds(Types.Timing.MilliSeconds(max - min)),
+    range: Types.Timing.MicroSeconds(millisecondsToMicroseconds(max) - millisecondsToMicroseconds(min)),
+  };
+  return traceWindow;
+}
+
+export function traceWindowFromMicroSeconds(
+    min: Types.Timing.MicroSeconds, max: Types.Timing.MicroSeconds): Types.Timing.TraceWindowMicroSeconds {
+  const traceWindow: Types.Timing.TraceWindowMicroSeconds = {
+    min,
+    max,
+    range: Types.Timing.MicroSeconds(max - min),
   };
   return traceWindow;
 }

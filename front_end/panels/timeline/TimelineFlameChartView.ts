@@ -15,7 +15,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';
-import {Events as PerformanceModelEvents, type PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
+import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
@@ -74,8 +74,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
-  #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
   private selectedGroupName: string|null = null;
+  #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
@@ -155,6 +155,23 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         'timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
     this.groupBySetting.addChangeListener(this.updateColorMapper, this);
     this.updateColorMapper();
+
+    TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  #onTraceBoundsChange(event: TraceBounds.TraceBounds.StateChangedEvent): void {
+    if (event.updateType === 'MINIMAP_BOUNDS') {
+      // If the update type was a changing of the minimap bounds, we do not
+      // need to redraw the timeline.
+      return;
+    }
+
+    const visibleWindow = event.state.milli.timelineTraceWindow;
+    const shouldAnimate = Boolean(event.options.shouldAnimate);
+    this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
+    this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
+    this.updateSearchResults(false, false);
   }
 
   onEntriesModified(): void {
@@ -162,9 +179,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
     this.mainDataProvider.timelineData(true);
-    const window = this.model.window();
-    if (window) {
-      this.mainFlameChart.setWindowTimes(window.left, window.right);
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (traceBoundsState) {
+      const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+      this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
     }
     this.mainFlameChart.update();
   }
@@ -181,34 +199,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.update();
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
-    const {window, animate} = event.data;
-
-    if (event.data.breadcrumbWindow) {
-      this.#currentBreadcrumbTimeWindow = event.data.breadcrumbWindow;
-    } else {
-      this.#currentBreadcrumbTimeWindow = undefined;
-    }
-
-    // If breadcrumbs are not activated, update window times at all times,
-    // If breadcrumbs exist, do not update to window times outside the breadcrumb
-    const isWindowWithinBreadcrumb =
-        (this.#currentBreadcrumbTimeWindow &&
-         !(this.#currentBreadcrumbTimeWindow.min > window.left ||
-           this.#currentBreadcrumbTimeWindow.max < window.right));
-    if (!this.#currentBreadcrumbTimeWindow || isWindowWithinBreadcrumb) {
-      this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
-      this.networkDataProvider.setWindowTimes(window.left, window.right);
-      this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
-    }
-
-    this.updateSearchResults(false, false);
-  }
-
-  windowChanged(windowStartTime: number, windowEndTime: number, animate: boolean): void {
-    if (this.model) {
-      this.model.setWindow({left: windowStartTime, right: windowEndTime}, animate, this.#currentBreadcrumbTimeWindow);
-    }
+  windowChanged(
+      windowStartTime: TraceEngine.Types.Timing.MilliSeconds, windowEndTime: TraceEngine.Types.Timing.MilliSeconds,
+      animate: boolean): void {
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
             TraceEngine.Types.Timing.MilliSeconds(windowStartTime),
@@ -248,17 +241,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainDataProvider.setModel(this.model, newTraceEngineData, isCpuProfile);
     this.networkDataProvider.setModel(newTraceEngineData);
     this.#reset();
-    if (this.model) {
-      this.eventListeners = [
-        this.model.addEventListener(PerformanceModelEvents.WindowChanged, this.onWindowChanged, this),
-      ];
-      const window = this.model.window();
-      this.mainFlameChart.setWindowTimes(window.left, window.right);
-      this.networkDataProvider.setWindowTimes(window.left, window.right);
-      this.networkFlameChart.setWindowTimes(window.left, window.right);
-      this.updateSearchResults(false, false);
-      this.updateColorMapper();
+
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (!traceBoundsState) {
+      throw new Error('TimelineFlameChartView could not set the window bounds.');
     }
+    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+    this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.updateSearchResults(false, false);
+    this.updateColorMapper();
     this.#updateFlameCharts();
   }
 
@@ -277,7 +270,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   #updateDetailViews(): void {
-    this.countersView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
+    this.countersView.setModel(this.#traceEngineData, this.#selectedEvents);
     // TODO(crbug.com/1459265):  Change to await after migration work.
     void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
   }
@@ -434,6 +427,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   private updateSearchResults(shouldJump: boolean, jumpBackwards?: boolean): void {
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (!traceBoundsState) {
+      return;
+    }
+
     const oldSelectedSearchResult = (this.selectedSearchResult as number);
     delete this.selectedSearchResult;
     this.searchResults = [];
@@ -441,8 +439,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
     const regExpFilter = new TimelineRegExp(this.searchRegex);
-    const window = this.model.window();
-    this.searchResults = this.mainDataProvider.search(window.left, window.right, regExpFilter);
+    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+    this.searchResults = this.mainDataProvider.search(visibleWindow.min, visibleWindow.max, regExpFilter);
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
     if (!shouldJump || !this.searchResults.length) {
       return;

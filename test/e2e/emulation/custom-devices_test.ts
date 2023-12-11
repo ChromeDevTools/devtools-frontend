@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
+
 import {
   click,
+  clickElement,
   getBrowserAndPages,
   goToResource,
   pressKey,
@@ -12,7 +14,7 @@ import {
   typeText,
   waitFor,
   waitForAria,
-  clickElement,
+  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
@@ -200,6 +202,7 @@ describe('Custom devices', async () => {
     const finishAddText = await elementTextContent(finishAdd);
     assert.strictEqual(finishAddText, 'Add');
     await clickElement(finishAdd);
+    await waitForNone(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Select the device in the menu.
     await selectDevice('Prime numbers');

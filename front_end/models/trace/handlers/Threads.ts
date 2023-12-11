@@ -27,6 +27,7 @@ export const enum ThreadType {
   AUCTION_WORKLET = 'AUCTION_WORKLET',
   OTHER = 'OTHER',
   CPU_PROFILE = 'CPU_PROFILE',
+  THREAD_POOL = 'THREAD_POOL',
 }
 
 function getThreadTypeForRendererThread(
@@ -41,6 +42,9 @@ function getThreadTypeForRendererThread(
     threadType = ThreadType.RASTERIZER;
   } else if (auctionWorkletsData.worklets.has(pid)) {
     threadType = ThreadType.AUCTION_WORKLET;
+  } else if (thread.name?.startsWith('ThreadPool')) {
+    // TODO(paulirish): perhaps exclude ThreadPoolServiceThread entirely
+    threadType = ThreadType.THREAD_POOL;
   }
   return threadType;
 }

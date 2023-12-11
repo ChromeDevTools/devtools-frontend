@@ -27,6 +27,10 @@ If you have created an example website to generate a trace, consider contributin
 
 ## basic
 
+Contains a navigation to about:blank first and then to another URL. Includes data from about:blank to ensure a track for that URL is rendered.
+
+## basic
+
 A very barebones trace; contains info on browser processes and threads but very little else.
 
 ## slow-interaction-button-click

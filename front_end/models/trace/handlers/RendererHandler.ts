@@ -268,10 +268,6 @@ export function sanitizeProcesses(processes: Map<Types.TraceEvents.ProcessID, Re
       }
       continue;
     }
-    const asUrl = new URL(process.url);
-    if (asUrl.protocol === 'about:') {
-      processes.delete(pid);
-    }
   }
 }
 

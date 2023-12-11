@@ -85,7 +85,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
         // nested inside the same header.
         await initTrackAppender(this, 'lcp-images.json.gz');
         const rasterTracks = tracksAppender.threadAppenders().filter(
-            threadAppender => threadAppender.threadType === Timeline.ThreadAppender.ThreadType.RASTERIZER);
+            threadAppender => threadAppender.threadType === TraceModel.Handlers.Threads.ThreadType.RASTERIZER);
         assert.strictEqual(rasterTracks.length, 2);
 
         const raster1Events = tracksAppender.eventsInTrack(rasterTracks[0]);

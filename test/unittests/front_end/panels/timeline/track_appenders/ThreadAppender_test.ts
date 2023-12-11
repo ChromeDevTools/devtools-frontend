@@ -92,6 +92,13 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(flameChartData.groups[1].name, 'Frame — https://www.example.com/');
   });
 
+  it('renders tracks for threads in correct order when a process url is about:blank', async function() {
+    const {flameChartData} = await renderThreadAppendersFromTrace(this, 'about-blank-first.json.gz');
+    assert.strictEqual(flameChartData.groups[0].name, 'Main — chrome://new-tab-page/');
+    assert.isTrue(flameChartData.groups[1].name.startsWith('Frame — chrome-untrusted://new-tab-page/'));
+    assert.strictEqual(flameChartData.groups[2].name, 'Main — about:blank');
+  });
+
   it('marks all levels used by the track with the TrackAppender type', async function() {
     const {entryTypeByLevel} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     // This includes all tracks rendered by the ThreadAppender.

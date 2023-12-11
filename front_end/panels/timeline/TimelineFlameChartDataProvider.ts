@@ -44,7 +44,7 @@ import * as Components from './components/components.js';
 import {type TimelineCategory} from './EventUICategory.js';
 import {eventInitiatorPairsToDraw} from './Initiators.js';
 import {type PerformanceModel} from './PerformanceModel.js';
-import {ThreadAppender, ThreadType} from './ThreadAppender.js';
+import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelineSelection.js';
@@ -265,7 +265,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.timelineDataInternal = this.#instantiateTimelineData();
       this.compatibilityTracksAppender = new CompatibilityTracksAppender(
           this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
-          this.legacyTimelineModel, this.isCpuProfile);
+          this.legacyTimelineModel);
     }
     return this.compatibilityTracksAppender;
   }
@@ -517,7 +517,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // If it is, we mark the group as selected.
       if (this.timelineDataInternal && !this.timelineDataInternal.selectedGroup) {
         if (appender instanceof ThreadAppender &&
-            (appender.threadType === ThreadType.MAIN_THREAD || appender.threadType === ThreadType.CPU_PROFILE)) {
+            (appender.threadType === TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD ||
+             appender.threadType === TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE)) {
           const group = this.compatibilityTracksAppender?.groupForAppender(appender);
           if (group) {
             this.timelineDataInternal.selectedGroup = group;

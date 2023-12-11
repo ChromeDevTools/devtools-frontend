@@ -139,16 +139,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export const enum ThreadType {
-  MAIN_THREAD = 'MAIN_THREAD',
-  WORKER = 'WORKER',
-  RASTERIZER = 'RASTERIZER',
-  THREAD_POOL = 'THREAD_POOL',
-  AUCTION_WORKLET = 'AUCTION_WORKLET',
-  OTHER = 'OTHER',
-  CPU_PROFILE = 'CPU_PROFILE',
-}
-
 // This appender is only triggered when the Renderer handler is run. At
 // the moment this only happens in the basic component server example.
 // In the future, once this appender fully supports the behaviour of the
@@ -168,15 +158,16 @@ export class ThreadAppender implements TrackAppender {
   #threadDefaultName: string;
   #expanded = false;
   #headerAppended: boolean = false;
-  readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
+  readonly threadType: TraceEngine.Handlers.Threads.ThreadType = TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
   #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
   #entriesFilter?: TraceEngine.EntriesFilter.EntriesFilter;
+  #url: string = '';
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
-      threadName: string|null, type: ThreadType) {
+      threadName: string|null, type: TraceEngine.Handlers.Threads.ThreadType) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old
@@ -194,10 +185,10 @@ export class ThreadAppender implements TrackAppender {
 
     // When loading a CPU profile, only CPU data will be available, thus
     // we get the data from the SamplesHandler.
-    const entries = type === ThreadType.CPU_PROFILE ?
+    const entries = type === TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE ?
         this.#traceParsedData.Samples?.profilesInProcess.get(processId)?.get(threadId)?.profileCalls :
         this.#traceParsedData.Renderer?.processes.get(processId)?.threads?.get(threadId)?.entries;
-    const tree = type === ThreadType.CPU_PROFILE ?
+    const tree = type === TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE ?
         this.#traceParsedData.Samples?.profilesInProcess.get(processId)?.get(threadId)?.profileTree :
         this.#traceParsedData.Renderer?.processes.get(processId)?.threads?.get(threadId)?.tree;
     if (!entries || !tree) {
@@ -216,8 +207,10 @@ export class ThreadAppender implements TrackAppender {
     }
 
     this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(
-        this.threadType === ThreadType.CPU_PROFILE ? traceParsedData.Samples.entryToNode :
-                                                     traceParsedData.Renderer.entryToNode);
+        this.threadType === TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE ? traceParsedData.Samples.entryToNode :
+                                                                                  traceParsedData.Renderer.entryToNode);
+
+    this.#url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
   }
 
   modifyTree(
@@ -265,7 +258,8 @@ export class ThreadAppender implements TrackAppender {
     if (this.#headerAppended) {
       return;
     }
-    if (this.threadType === ThreadType.RASTERIZER || this.threadType === ThreadType.THREAD_POOL) {
+    if (this.threadType === TraceEngine.Handlers.Threads.ThreadType.RASTERIZER ||
+        this.threadType === TraceEngine.Handlers.Threads.ThreadType.THREAD_POOL) {
       this.#appendGroupedTrackHeaderAndTitle(trackStartLevel, this.threadType);
     } else {
       this.#appendTrackHeaderAtLevel(trackStartLevel);
@@ -303,8 +297,10 @@ export class ThreadAppender implements TrackAppender {
    * flamechart. However, each thread has a unique title which needs to
    * be added to the flamechart data.
    */
-  #appendGroupedTrackHeaderAndTitle(trackStartLevel: number, threadType: ThreadType.RASTERIZER|ThreadType.THREAD_POOL):
-      void {
+  #appendGroupedTrackHeaderAndTitle(
+      trackStartLevel: number,
+      threadType: TraceEngine.Handlers.Threads.ThreadType.RASTERIZER|
+      TraceEngine.Handlers.Threads.ThreadType.THREAD_POOL): void {
     const currentTrackCount = this.#compatibilityBuilder.getCurrentTrackCountForThreadType(threadType);
     if (currentTrackCount === 0) {
       const trackIsCollapsible = this.#entries.length > 0;
@@ -317,7 +313,7 @@ export class ThreadAppender implements TrackAppender {
     // Nesting is set to 1 because the track is appended inside the
     // header for all raster threads.
     const titleStyle = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
-    const rasterizerTitle = this.threadType === ThreadType.RASTERIZER ?
+    const rasterizerTitle = this.threadType === TraceEngine.Handlers.Threads.ThreadType.RASTERIZER ?
         i18nString(UIStrings.rasterizerThreadS, {PH1: currentTrackCount + 1}) :
         i18nString(UIStrings.threadPoolThreadS, {PH1: currentTrackCount + 1});
     const titleGroup =
@@ -326,37 +322,37 @@ export class ThreadAppender implements TrackAppender {
   }
 
   trackName(): string {
-    // This UI string doesn't yet use the i18n API because it is not
-    // shown in production, only in the component server, reason being
-    // it is not ready to be shipped.
-    const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
     let threadTypeLabel: string|null = null;
     switch (this.threadType) {
-      case ThreadType.MAIN_THREAD:
-        threadTypeLabel =
-            this.isOnMainFrame ? i18nString(UIStrings.mainS, {PH1: url}) : i18nString(UIStrings.frameS, {PH1: url});
+      case TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD:
+        threadTypeLabel = this.isOnMainFrame ? i18nString(UIStrings.mainS, {PH1: this.#url}) :
+                                               i18nString(UIStrings.frameS, {PH1: this.#url});
         break;
-      case ThreadType.CPU_PROFILE:
+      case TraceEngine.Handlers.Threads.ThreadType.CPU_PROFILE:
         threadTypeLabel = i18nString(UIStrings.main);
         break;
-      case ThreadType.WORKER:
+      case TraceEngine.Handlers.Threads.ThreadType.WORKER:
         threadTypeLabel = this.#buildNameForWorker();
         break;
-      case ThreadType.RASTERIZER:
+      case TraceEngine.Handlers.Threads.ThreadType.RASTERIZER:
         threadTypeLabel = i18nString(UIStrings.raster);
         break;
-      case ThreadType.THREAD_POOL:
+      case TraceEngine.Handlers.Threads.ThreadType.THREAD_POOL:
         threadTypeLabel = i18nString(UIStrings.threadPool);
         break;
-      case ThreadType.OTHER:
+      case TraceEngine.Handlers.Threads.ThreadType.OTHER:
         break;
-      case ThreadType.AUCTION_WORKLET:
+      case TraceEngine.Handlers.Threads.ThreadType.AUCTION_WORKLET:
         threadTypeLabel = this.#buildNameForAuctionWorklet();
         break;
       default:
         return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
     return threadTypeLabel || this.#threadDefaultName;
+  }
+
+  getUrl(): string {
+    return this.#url;
   }
 
   #buildNameForAuctionWorklet(): string {

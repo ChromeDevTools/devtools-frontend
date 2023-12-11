@@ -99,10 +99,6 @@ const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
-if (params.has('initiators')) {
-  Root.Runtime.experiments.setEnabled('timelineEventInitiators', true);
-}
-
 Root.Runtime.experiments.setEnabled(
     Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL, params.has('breadcrumbs'));
 

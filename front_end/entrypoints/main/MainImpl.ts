@@ -276,7 +276,6 @@ export class MainImpl {
         'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');
 
     // Timeline
-    Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Root.Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
     Root.Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);
     Root.Runtime.experiments.register(

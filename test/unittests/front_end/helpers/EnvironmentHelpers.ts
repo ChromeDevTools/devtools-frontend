@@ -115,7 +115,6 @@ const REGISTERED_EXPERIMENTS = [
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
   'stylesPaneCSSChanges',
-  'timelineEventInitiators',
   'timelineAsConsoleProfileResultPanel',
   'headerOverrides',
   'highlightErrorsElementsPanel',

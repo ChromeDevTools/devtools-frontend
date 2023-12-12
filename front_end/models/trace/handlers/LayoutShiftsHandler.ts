@@ -44,7 +44,8 @@ interface LayoutShifts {
   clsWindowID: number;
   // We use these to calculate root causes for a given LayoutShift
   prePaintEvents: Types.TraceEvents.TraceEventPrePaint[];
-  layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidation[];
+  layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
+  scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[];
   styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[];
   scoreRecords: ScoreRecord[];
   backendNodeIds: Protocol.DOM.BackendNodeId[];
@@ -69,7 +70,8 @@ const layoutShiftEvents: Types.TraceEvents.TraceEventLayoutShift[] = [];
 
 // These events denote potential node resizings. We store them to link captured
 // layout shifts to the resizing of unsized elements.
-const layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidation[] = [];
+const layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTracking[] = [];
+const scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[] = [];
 const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
@@ -110,6 +112,8 @@ export function reset(): void {
   handlerState = HandlerState.UNINITIALIZED;
   layoutShiftEvents.length = 0;
   layoutInvalidationEvents.length = 0;
+  scheduleStyleInvalidationEvents.length = 0;
+  styleRecalcInvalidationEvents.length = 0;
   prePaintEvents.length = 0;
   backendNodeIds.clear();
   clusters.length = 0;
@@ -127,9 +131,12 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     layoutShiftEvents.push(event);
     return;
   }
-  if (Types.TraceEvents.isTraceEventLayoutInvalidation(event)) {
+  if (Types.TraceEvents.isTraceEventLayoutInvalidationTracking(event)) {
     layoutInvalidationEvents.push(event);
     return;
+  }
+  if (Types.TraceEvents.isTraceEventScheduleStyleInvalidationTracking(event)) {
+    scheduleStyleInvalidationEvents.push(event);
   }
   if (Types.TraceEvents.isTraceEventStyleRecalcInvalidation(event)) {
     styleRecalcInvalidationEvents.push(event);
@@ -206,12 +213,18 @@ function collectNodes(): void {
     }
   }
 
-  // Collect the node ids present in LayoutInvalidation events.
+  // Collect the node ids present in LayoutInvalidation & scheduleStyleInvalidation events.
   for (const layoutInvalidation of layoutInvalidationEvents) {
     if (!layoutInvalidation.args.data?.nodeId) {
       continue;
     }
     backendNodeIds.add(layoutInvalidation.args.data.nodeId);
+  }
+  for (const scheduleStyleInvalidation of scheduleStyleInvalidationEvents) {
+    if (!scheduleStyleInvalidation.args.data?.nodeId) {
+      continue;
+    }
+    backendNodeIds.add(scheduleStyleInvalidation.args.data.nodeId);
   }
 }
 
@@ -228,6 +241,7 @@ export async function finalize(): Promise<void> {
   collectNodes();
   handlerState = HandlerState.FINALIZED;
 }
+
 async function buildLayoutShiftsClusters(): Promise<void> {
   const {navigationsByFrameId, mainFrameId, traceBounds} = metaHandlerData();
   const navigations = navigationsByFrameId.get(mainFrameId) || [];
@@ -420,6 +434,7 @@ export function data(): LayoutShifts {
     clsWindowID,
     prePaintEvents: [...prePaintEvents],
     layoutInvalidationEvents: [...layoutInvalidationEvents],
+    scheduleStyleInvalidationEvents: [...scheduleStyleInvalidationEvents],
     styleRecalcInvalidationEvents: [],
     scoreRecords: [...scoreRecords],
     backendNodeIds: [...backendNodeIds],

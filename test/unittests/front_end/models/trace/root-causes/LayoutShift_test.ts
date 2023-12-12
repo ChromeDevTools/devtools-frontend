@@ -49,10 +49,10 @@ describeWithMockConnection('LayoutShift root causes', () => {
   describe('assigns root causes to layout shifts', () => {
     let rootCausesEngine: TraceEngine.RootCauses.RootCauses.RootCauses;
     let prePaintEvents: TraceEngine.Types.TraceEvents.TraceEventPrePaint[];
-    let resizeEvents: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
-    let injectedIframeEvents: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
-    let fontChanges: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
-    let unknownLayoutInvalidation: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
+    let resizeEvents: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
+    let injectedIframeEvents: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
+    let fontChanges: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
+    let unknownLayoutInvalidation: TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
     let domNodeByBackendIdMap: Map<Protocol.DOM.BackendNodeId, Protocol.DOM.Node|null>;
     let model: TraceParseData;
     let modelMut: TraceParseDataMutable;
@@ -88,15 +88,16 @@ describeWithMockConnection('LayoutShift root causes', () => {
           TraceEngine.Types.TraceEvents.TraceEventPrePaint[];
 
       resizeEvents = [{ts: 0}, {ts: 25}, {ts: 80}, {ts: 100}] as unknown as
-          TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
+          TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
 
       injectedIframeEvents =
-          [{ts: 2}, {ts: 81}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
+          [{ts: 2}, {ts: 81}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
 
-      fontChanges = [{ts: 3}, {ts: 35}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
+      fontChanges =
+          [{ts: 3}, {ts: 35}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
 
       unknownLayoutInvalidation =
-          [{ts: 4}, {ts: 36}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidation[];
+          [{ts: 4}, {ts: 36}] as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
 
       // |Resize|---|Iframe|---|Fonts-|---|--PrePaint 1--|----|Resize|---|Fonts-|-|---PrePaint 2---|---|Resize|---|Iframe|---|PrePaint 3|
       // ----------------------------------|LS 1|-|LS 2|----------------------------|LS 3|-|LS 4|-----------------------------|LS 5|
@@ -179,6 +180,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
       modelMut.LayoutShifts.layoutInvalidationEvents = layoutInvalidationEvents;
       modelMut.LayoutShifts.backendNodeIds = [...domNodeByBackendIdMap.keys()] as Protocol.DOM.BackendNodeId[];
       modelMut.LayoutShifts.clusters = clusters;
+      modelMut.LayoutShifts.scheduleStyleInvalidationEvents = [];
       modelMut.Initiators = {
         eventToInitiator: new Map(),
         initiatorToEvents: new Map(),

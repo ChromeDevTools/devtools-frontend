@@ -859,8 +859,8 @@ export const enum LayoutInvalidationReason {
   UNKNOWN = 'Unknown',
 }
 
-export interface TraceEventLayoutInvalidation extends TraceEventInstant {
-  name: 'LayoutInvalidationTracking'|'ScheduleStyleInvalidationTracking';
+export interface TraceEventLayoutInvalidationTracking extends TraceEventInstant {
+  name: KnownEventName.LayoutInvalidationTracking;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       frame: string,
@@ -869,6 +869,26 @@ export interface TraceEventLayoutInvalidation extends TraceEventInstant {
       nodeName?: string,
     },
   };
+}
+
+export interface TraceEventScheduleStyleInvalidationTracking extends TraceEventInstant {
+  name: KnownEventName.ScheduleStyleInvalidationTracking;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      frame: string,
+      nodeId: Protocol.DOM.BackendNodeId,
+      invalidationSet?: string,
+      invalidatedSelectorId?: string,
+      reason?: LayoutInvalidationReason,
+      changedClass?: string,
+      nodeName?: string,
+      stackTrace?: TraceEventCallFrame[],
+    },
+  };
+}
+export function isTraceEventScheduleStyleInvalidationTracking(event: TraceEventData):
+    event is TraceEventScheduleStyleInvalidationTracking {
+  return event.name === KnownEventName.ScheduleStyleInvalidationTracking;
 }
 
 export const enum StyleRecalcInvalidationReason {
@@ -1379,11 +1399,10 @@ export function isTraceEventLayoutShift(
   return traceEventData.name === 'LayoutShift';
 }
 
-export function isTraceEventLayoutInvalidation(
+export function isTraceEventLayoutInvalidationTracking(
     traceEventData: TraceEventData,
-    ): traceEventData is TraceEventLayoutInvalidation {
-  return traceEventData.name === 'LayoutInvalidationTracking' ||
-      traceEventData.name === 'ScheduleStyleInvalidationTracking';
+    ): traceEventData is TraceEventLayoutInvalidationTracking {
+  return traceEventData.name === KnownEventName.LayoutInvalidationTracking;
 }
 
 export function isTraceEventStyleRecalcInvalidation(traceEventData: TraceEventData):

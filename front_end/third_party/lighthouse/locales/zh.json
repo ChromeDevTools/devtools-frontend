@@ -639,7 +639,7 @@
     "message": "使用视频格式提供动画内容"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对现代浏览器而言并不是必需的。对于捆绑的 JavaScript，请采用现代脚本部署策略，以便利用 module/nomodule 功能检测机制来减少传送到现代浏览器的代码量，同时保留对旧版浏览器的支持。[了解如何使用现代 JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对现代浏览器而言并不是必需的。对于捆绑的 JavaScript，请采用现代脚本部署策略，以便利用 module/nomodule 功能检测机制来减少传送到现代浏览器的代码量，同时保留对旧版浏览器的支持。[了解如何使用现代 JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "应避免向新型浏览器提供旧版 JavaScript"
@@ -993,7 +993,7 @@
     "message": "预期大小"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "图片的自然尺寸应与显示屏大小及像素比成正比，这样才能令图片达到最清晰的显示效果。[了解如何提供自适应图片](https://web.dev/serve-responsive-images/)。"
+    "message": "图片的自然尺寸应与显示屏大小及像素比成正比，这样才能令图片达到最清晰的显示效果。[了解如何提供自适应图片](https://web.dev/articles/serve-responsive-images)。"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "所提供的部分图片采用了较低的分辨率"
@@ -1158,13 +1158,13 @@
     "message": "对 CLS 的影响程度"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "这些 DOM 元素对该网页的 CLS 影响最大。[了解如何改善 CLS](https://web.dev/optimize-cls/)"
+    "message": "这些 DOM 元素对该网页的 CLS 影响最大。[了解如何改善 CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "请避免出现大幅度的布局偏移"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "被延迟加载的首屏图片会在页面生命周期内的较晚时间渲染，这可能会致使系统延迟 Largest Contentful Paint。[详细了解最佳延迟加载](https://web.dev/lcp-lazy-loading/)。"
+    "message": "被延迟加载的首屏图片会在页面生命周期内的较晚时间渲染，这可能会致使系统延迟 Largest Contentful Paint。[详细了解最佳延迟加载](https://web.dev/articles/lcp-lazy-loading)。"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Largest Contentful Paint 所对应的图片被延迟加载了"
@@ -1173,7 +1173,7 @@
     "message": "Largest Contentful Paint 所对应的图片未被延迟加载"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "列出了主线程中运行时间最长的任务，有助于识别出导致输入延迟的最主要原因。[了解如何避免出现长时间运行的主线程任务](https://web.dev/long-tasks-devtools/)"
+    "message": "列出了主线程中运行时间最长的任务，有助于识别出导致输入延迟的最主要原因。[了解如何避免出现长时间运行的主线程任务](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{发现了 # 项长时间运行的任务}other{发现了 # 项长时间运行的任务}}"
@@ -1221,7 +1221,7 @@
     "message": "清单含有可遮罩的图标"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Cumulative Layout Shift 旨在衡量可见元素在视口内的移动情况。[详细了解 Cumulative Layout Shift 指标](https://web.dev/cls/)。"
+    "message": "Cumulative Layout Shift 旨在衡量可见元素在视口内的移动情况。[详细了解 Cumulative Layout Shift 指标](https://web.dev/articles/cls)。"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint 标记了绘制出首个文本或首张图片的时间。[详细了解 First Contentful Paint 指标](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)。"
@@ -1230,7 +1230,7 @@
     "message": "“首次有效绘制时间”测量的是网页主要内容开始对用户显示的时间。[详细了解“首次有效绘制时间”指标](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)。"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint 用于衡量网页响应速度，即网页需要多久才会明显响应用户输入。[详细了解 Interaction to Next Paint 指标](https://web.dev/inp/)。"
+    "message": "Interaction to Next Paint 用于衡量网页响应速度，即网页需要多久才会明显响应用户输入。[详细了解 Interaction to Next Paint 指标](https://web.dev/articles/inp)。"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "“Time to Interactive”是指网页需要多长时间才能提供完整的交互功能。[详细了解“Time to Interactive”指标](https://developer.chrome.com/docs/lighthouse/performance/interactive/)。"
@@ -1260,7 +1260,7 @@
     "message": "服务器后端延迟"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "“`unload`”事件不会可靠地触发，而且监听该事件可能会妨碍系统实施“往返缓存”之类的浏览器优化策略。请改用“`pagehide`”或“`visibilitychange`”事件。[详细了解如何卸载事件监听器](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "“`unload`”事件不会可靠地触发，而且监听该事件可能会妨碍系统实施“往返缓存”之类的浏览器优化策略。请改用“`pagehide`”或“`visibilitychange`”事件。[详细了解如何卸载事件监听器](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "注册“`unload`”事件监听器"
@@ -1305,7 +1305,7 @@
     "message": "性能预算"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "请预加载 `optional` 字体以方便初访者使用。[详细了解如何预加载字体](https://web.dev/preload-optional-fonts/)"
+    "message": "请预加载 `optional` 字体以方便初访者使用。[详细了解如何预加载字体](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "未预加载使用 `font-display: optional` 的字体"
@@ -1314,7 +1314,7 @@
     "message": "已预加载使用 `font-display: optional` 的字体"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "如果向网页中动态添加 LCP 元素，您应预加载图片以缩短 LCP 用时。[详细了解如何预加载 LCP 元素](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)。"
+    "message": "如果向网页中动态添加 LCP 元素，您应预加载图片以缩短 LCP 用时。[详细了解如何预加载 LCP 元素](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)。"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "预加载 LCP 元素所用图片"
@@ -1587,7 +1587,7 @@
     "message": "时间预算"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "请为图片元素设置明确的宽度值和高度值，以减少布局偏移并改善 CLS。[了解如何设置图片尺寸](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "请为图片元素设置明确的宽度值和高度值，以减少布局偏移并改善 CLS。[了解如何设置图片尺寸](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "图片元素没有明确的`width`和`height`"
@@ -1662,7 +1662,7 @@
     "message": "具有包含 `width` 或 `initial-scale` 的 `<meta name=\"viewport\">` 标记"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "这是在 Interaction to Next Paint 测量期间发生的线程阻塞工作。[详细了解 Interaction to Next Paint 指标](https://web.dev/inp/)。"
+    "message": "这是在 Interaction to Next Paint 测量期间发生的线程阻塞工作。[详细了解 Interaction to Next Paint 指标](https://web.dev/articles/inp)。"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "事件“{interactionType}”花费了 {timeInMs, number, milliseconds} 毫秒"
@@ -1704,10 +1704,10 @@
     "message": "最佳做法"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "这些检查会突出显示可[改进您 Web 应用的无障碍功能](https://developer.chrome.com/docs/lighthouse/accessibility/)的提示。自动检测功能只能检测到一部分问题，无法保证您 Web 应用的无障碍程度，因此您不妨再[手动测试](https://web.dev/how-to-review/)一下。"
+    "message": "这些检查会突出显示可[改进您 Web 应用的无障碍功能](https://developer.chrome.com/docs/lighthouse/accessibility/)的提示。自动检测功能只能检测到一部分问题，无法保证您 Web 应用的无障碍程度，因此您不妨再[手动测试](https://web.dev/articles/how-to-review)一下。"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "这些条目旨在检查自动化测试工具未涵盖的方面。如需了解详情，请参阅有关如何[执行无障碍功能审查](https://web.dev/how-to-review/)的指南。"
+    "message": "这些条目旨在检查自动化测试工具未涵盖的方面。如需了解详情，请参阅有关如何[执行无障碍功能审查](https://web.dev/articles/how-to-review)的指南。"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "无障碍"
@@ -1794,10 +1794,10 @@
     "message": "性能"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "此类检查会验证渐进式 Web 应用的各个方面。[了解如何构建优秀的渐进式 Web 应用](https://web.dev/pwa-checklist/)。"
+    "message": "此类检查会验证渐进式 Web 应用的各个方面。[了解如何构建优秀的渐进式 Web 应用](https://web.dev/articles/pwa-checklist)。"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "基准 [PWA 核对清单](https://web.dev/pwa-checklist/)要求必须进行此类检查，但 Lighthouse 不会自动进行此类检查。它们不会影响您的得分，但您必须手动对其进行验证。"
+    "message": "基准 [PWA 核对清单](https://web.dev/articles/pwa-checklist)要求必须进行此类检查，但 Lighthouse 不会自动进行此类检查。它们不会影响您的得分，但您必须手动对其进行验证。"
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "优化 PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "此类检查可确保您的网页遵循了基本的搜索引擎优化建议。还有很多其他因素可能会影响您的网页在搜索引擎结果中的排名，但未被 Lighthouse 纳入此处的评估范围，其中包括[核心网页指标](https://web.dev/learn-core-web-vitals/)衡量结果。[详细了解 Google Search Essentials](https://support.google.com/webmasters/answer/35769)。"
+    "message": "此类检查可确保您的网页遵循了基本的搜索引擎优化建议。还有很多其他因素可能会影响您的网页在搜索引擎结果中的排名，但未被 Lighthouse 纳入此处的评估范围，其中包括[核心网页指标](https://web.dev/explore/vitals)衡量结果。[详细了解 Google Search Essentials](https://support.google.com/webmasters/answer/35769)。"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "请在您的网站上运行这些额外的验证程序，以检查其他 SEO 最佳做法。"
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "您提供的网址似乎无效。"
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse 无法可靠地加载您请求的页面。请确保您测试的网址正确无误并且服务器可正确响应所有请求。（状态代码：{errorCode}）"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "页面 MIME 类型为 XHTML：Lighthouse 未明确支持此文档类型"
   },
@@ -3108,22 +3111,22 @@
     "message": "在 NitroPack 中使用 [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) 可缩减向浏览器发送的文件的大小。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "请使用 `nuxt/image` 组件并采用如下设置：`format=\"webp\"`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#format)。"
+    "message": "请使用 `nuxt/image` 组件并采用如下设置：`format=\"webp\"`。[了解详情](https://image.nuxt.com/usage/nuxt-img#format)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "对于屏幕外图片，请使用 `nuxt/image` 组件并采用如下设置：`loading=\"lazy\"`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#loading)。"
+    "message": "对于屏幕外图片，请使用 `nuxt/image` 组件并采用如下设置：`loading=\"lazy\"`。[了解详情](https://image.nuxt.com/usage/nuxt-img#loading)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "对于 LCP 图片，请使用 `nuxt/image` 组件并指定 `preload`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#preload)。"
+    "message": "对于 LCP 图片，请使用 `nuxt/image` 组件并指定 `preload`。[了解详情](https://image.nuxt.com/usage/nuxt-img#preload)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "请使用 `nuxt/image` 组件并指定明确的 `width` 和 `height`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#width--height)。"
+    "message": "请使用 `nuxt/image` 组件并指定明确的 `width` 和 `height`。[了解详情](https://image.nuxt.com/usage/nuxt-img#width-height)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "请使用 `nuxt/image` 组件并设置适当的 `quality`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#quality)。"
+    "message": "请使用 `nuxt/image` 组件并设置适当的 `quality`。[了解详情](https://image.nuxt.com/usage/nuxt-img#quality)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "请使用 `nuxt/image` 组件并设置适当的 `sizes`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#sizes)。"
+    "message": "请使用 `nuxt/image` 组件并设置适当的 `sizes`。[了解详情](https://image.nuxt.com/usage/nuxt-img#sizes)。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[将 GIF 动画替换为视频](https://web.dev/replace-gifs-with-videos/)以提高网页加载速度，并考虑使用现代文件格式（例如 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)），通过目前最先进的 VP9 视频编解码器将压缩效率提高 30% 以上。"
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初始网页加载"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "时间点快照"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "用户互动时间跨度"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "自定义节流"
   },
@@ -3393,10 +3402,10 @@
     "message": "用户代理（网络）"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "单次网页加载"
+    "message": "单页会话"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "此数据是取自单次网页加载，现场数据则是汇总了许多次网页加载。"
+    "message": "此数据是取自单页会话，现场数据则是汇总了许多次会话。"
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "低速 4G 节流"

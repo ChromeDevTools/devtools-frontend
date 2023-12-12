@@ -639,7 +639,7 @@
     "message": "Uporabite oblike zapisa videoposnetkov za animirano vsebino"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Elementi »polyfill« in »transform« starejšim brskalnikom omogočajo uporabo novih funkcij JavaScripta. Pri sodobnih brskalnikih pa številni niso potrebni. Za JavaScript v svežnju uporabite sodobno strategijo uvajanja skriptov z zaznavanjem funkcij modulov/nemodulov, da zmanjšate količino kode, poslane sodobnim brskalnikom, hkrati pa ohranite podporo za starejše brskalnike. [Preberite več o uporabi sodobnega JavaScripta](https://web.dev/publish-modern-javascript/)."
+    "message": "Elementi »polyfill« in »transform« starejšim brskalnikom omogočajo uporabo novih funkcij JavaScripta. Pri sodobnih brskalnikih pa številni niso potrebni. Za JavaScript v svežnju uporabite sodobno strategijo uvajanja skriptov z zaznavanjem funkcij modulov/nemodulov, da zmanjšate količino kode, poslane sodobnim brskalnikom, hkrati pa ohranite podporo za starejše brskalnike. [Preberite več o uporabi sodobnega JavaScripta](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Izogibajte se prikazovanju starejšega JavaScripta v sodobnih brskalnikih"
@@ -993,7 +993,7 @@
     "message": "Pričakovana velikost"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Naravne mere slike morajo biti sorazmerne velikosti zaslona in razmerju slikovnih pik zaradi zagotavljanja največje mogoče jasnosti slike. [Preberite, kako zagotovite odzivne slike](https://web.dev/serve-responsive-images/)."
+    "message": "Naravne mere slike morajo biti sorazmerne velikosti zaslona in razmerju slikovnih pik zaradi zagotavljanja največje mogoče jasnosti slike. [Preberite, kako zagotovite odzivne slike](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Prikaže slike z nizko ločljivostjo"
@@ -1158,13 +1158,13 @@
     "message": "Prispevek k CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ti elementi DOM največ prispevajo k CLS-ju strani. [Preberite, kako izboljšate CLS](https://web.dev/optimize-cls/)"
+    "message": "Ti elementi DOM največ prispevajo k CLS-ju strani. [Preberite, kako izboljšate CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Izogibajte se velikim pomikom postavitve"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Slike na vrhu strani, ki so odloženo naložene, se upodabljajo pozneje v življenjskem ciklu strani, zato lahko pride do zakasnitve največjega vsebinskega izrisa. [Preberite več o optimalnem odloženem nalaganju](https://web.dev/lcp-lazy-loading/)."
+    "message": "Slike na vrhu strani, ki so odloženo naložene, se upodabljajo pozneje v življenjskem ciklu strani, zato lahko pride do zakasnitve največjega vsebinskega izrisa. [Preberite več o optimalnem odloženem nalaganju](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Slika največjega vsebinskega izrisa je bila odloženo naložena"
@@ -1173,7 +1173,7 @@
     "message": "Slika največjega vsebinskega izrisa ni bila odloženo naložena"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Navede najdaljša opravila v glavni niti, kar je koristno za prepoznavanje elementov, ki največ prispevajo k zakasnitvi vnosa. [Preberite, kako se izognete dolgim opravilom v glavni niti](https://web.dev/long-tasks-devtools/)."
+    "message": "Navede najdaljša opravila v glavni niti, kar je koristno za prepoznavanje elementov, ki največ prispevajo k zakasnitvi vnosa. [Preberite, kako se izognete dolgim opravilom v glavni niti](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Najdeno je bilo # dolgo opravilo}one{Najdeno je bilo # dolgo opravilo}two{Najdeni sta bili # dolgi opravili}few{Najdena so bila # dolga opravila}other{Najdenih je bilo # dolgih opravil}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifest ima ikono, ki omogoča maskiranje"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulativna sprememba postavitve meri premikanje vidnih elementov znotraj vidnega območja. [Preberite več o meritvi »Kumulativna sprememba postavitve«](https://web.dev/cls/)."
+    "message": "Kumulativna sprememba postavitve meri premikanje vidnih elementov znotraj vidnega območja. [Preberite več o meritvi »Kumulativna sprememba postavitve«](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Prvi vsebinski izris označuje čas, ko je izrisano prvo besedilo oziroma je izrisana prva slika. [Preberite več o meritvi prvega vsebinskega izrisa](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Prvo smiselno barvanje meri, kdaj je vidna glavna vsebina strani. [Preberite več o meritvi prvega smiselnega izrisa](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interakcija do naslednjega izrisa meri odzivnost strani, kako dolgo traja, da se stran vidno odzove na vnos uporabnika. [Preberite več o meritvi interakcije do naslednjega izrisa](https://web.dev/inp/)."
+    "message": "Interakcija do naslednjega izrisa meri odzivnost strani, kako dolgo traja, da se stran vidno odzove na vnos uporabnika. [Preberite več o meritvi interakcije do naslednjega izrisa](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Čas do interaktivnosti je čas, potreben, da stran postane povsem interaktivna. [Preberite več o meritvi »Čas do interaktivnosti«](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Zakasnitve strežnikovega zaledja"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Dogodek `unload` se ne aktivira zanesljivo in poslušanje, kdaj se aktivira, lahko prepreči optimizacije brskalnika, kot je predpomnjenje pomikanja naprej in nazaj. Uporabite dogodke `pagehide` ali `visibilitychange`. [Preberite več o odstranjevanju poslušalcev dogodkov](https://web.dev/bfcache/#never-use-the-unload-event)."
+    "message": "Dogodek `unload` se ne aktivira zanesljivo in poslušanje, kdaj se aktivira, lahko prepreči optimizacije brskalnika, kot je predpomnjenje pomikanja naprej in nazaj. Uporabite dogodke `pagehide` ali `visibilitychange`. [Preberite več o odstranjevanju poslušalcev dogodkov](https://web.dev/articles/bfcache#never_use_the_unload_event)."
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrira poslušalca dogodka `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Proračun za uspešnost"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Vnaprej naložite pisave (`optional`), da jih bodo novi obiskovalci lahko uporabili. [Preberite več o vnaprejšnjem nalaganju pisav](https://web.dev/preload-optional-fonts/)."
+    "message": "Vnaprej naložite pisave (`optional`), da jih bodo novi obiskovalci lahko uporabili. [Preberite več o vnaprejšnjem nalaganju pisav](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Pisave z vrednostjo `font-display: optional` niso vnaprej naložene"
@@ -1314,7 +1314,7 @@
     "message": "Pisave z vrednostjo `font-display: optional` so vnaprej naložene"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Če je element LCP dinamično dodan na stran, morate za izboljšanje časa za LCP sliko vnaprej naložiti. [Preberite več o vnaprejšnjem nalaganju elementov LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Če je element LCP dinamično dodan na stran, morate za izboljšanje časa za LCP sliko vnaprej naložiti. [Preberite več o vnaprejšnjem nalaganju elementov LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Vnaprejšnje nalaganje slike največjega vsebinskega izrisa"
@@ -1587,7 +1587,7 @@
     "message": "Časovni proračun"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Če želite zmanjšati pomike postavitve in izboljšati CLS, za elemente slik nastavite eksplicitno širino in višino. [Preberite, kako nastavite mere slik](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Če želite zmanjšati pomike postavitve in izboljšati CLS, za elemente slik nastavite eksplicitno širino in višino. [Preberite, kako nastavite mere slik](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Elementi slik nimajo izrecnih atributov `width` in `height`"
@@ -1662,7 +1662,7 @@
     "message": "Ima oznako `<meta name=\"viewport\">` s tem: `width` ali `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "To je delo za blokiranje niti, do katerega pride med meritvijo interakcije do naslednjega izrisa. [Preberite več o meritvi interakcije do naslednjega izrisa](https://web.dev/inp/)."
+    "message": "To je delo za blokiranje niti, do katerega pride med meritvijo interakcije do naslednjega izrisa. [Preberite več o meritvi interakcije do naslednjega izrisa](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms je bilo porabljenih za dogodek »{interactionType}«"
@@ -1704,10 +1704,10 @@
     "message": "Najboljši postopki"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Ta preverjanja izpostavijo priložnosti [ za izboljšanje dostopnosti spletne aplikacije](https://developer.chrome.com/docs/lighthouse/accessibility/). Samodejno zaznavanje lahko zazna samo podnabor težav in ne jamči za dostopnost spletne aplikacije, zato priporočamo [ročno preizkušanje](https://web.dev/how-to-review/)."
+    "message": "Ta preverjanja izpostavijo priložnosti [ za izboljšanje dostopnosti spletne aplikacije](https://developer.chrome.com/docs/lighthouse/accessibility/). Samodejno zaznavanje lahko zazna samo podnabor težav in ne jamči za dostopnost spletne aplikacije, zato priporočamo [ročno preizkušanje](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Ti elementi se nanašajo na področja, ki jih ne more obdelati samodejno orodje za preizkušanje. Več o tem lahko preberete v našem vodniku o [izvedbi pregleda dostopnosti](https://web.dev/how-to-review/)."
+    "message": "Ti elementi se nanašajo na področja, ki jih ne more obdelati samodejno orodje za preizkušanje. Več o tem lahko preberete v našem vodniku o [izvedbi pregleda dostopnosti](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Dostopnost"
@@ -1794,10 +1794,10 @@
     "message": "Delovanje"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Ta preverjanja potrjujejo vidike moderne spletne aplikacije. [Preberite, kaj odlikuje dobro moderno spletno aplikacijo](https://web.dev/pwa-checklist/)."
+    "message": "Ta preverjanja potrjujejo vidike moderne spletne aplikacije. [Preberite, kaj odlikuje dobro moderno spletno aplikacijo](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Ta preverjanja zahteva osnovni [kontrolni seznam za MSA](https://web.dev/pwa-checklist/), vendar jih Lighthouse ne opravi samodejno. Preverjanja vplivajo na vaš rezultat, vendar je pomembno, da jih opravite ročno."
+    "message": "Ta preverjanja zahteva osnovni [kontrolni seznam za MSA](https://web.dev/articles/pwa-checklist), vendar jih Lighthouse ne opravi samodejno. Preverjanja vplivajo na vaš rezultat, vendar je pomembno, da jih opravite ročno."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "MSA"
@@ -1809,7 +1809,7 @@
     "message": "Optimizirano za PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "S temi preverjanji se zagotovi, da stran upošteva osnovna priporočila glede optimizacije iskalnikov. Lighthouse pri tem ne upošteva številnih dodatnih dejavnikov, ki lahko vplivajo na uvrstitev v rezultatih iskanja, vključno z učinkovitostjo delovanja v [osnovnih podatkih za splet](https://web.dev/learn-core-web-vitals/). [Preberite več o osnovah Iskanja Google](https://support.google.com/webmasters/answer/35769)."
+    "message": "S temi preverjanji se zagotovi, da stran upošteva osnovna priporočila glede optimizacije iskalnikov. Lighthouse pri tem ne upošteva številnih dodatnih dejavnikov, ki lahko vplivajo na uvrstitev v rezultatih iskanja, vključno z učinkovitostjo delovanja v [osnovnih podatkih za splet](https://web.dev/explore/vitals). [Preberite več o osnovah Iskanja Google](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Na spletnem mestu izvedite ta dodatna preverjanja, da preverite dodatne najboljše postopke za SEO."
@@ -2643,7 +2643,7 @@
     "message": "Orodje Lighthouse ni utegnilo zanesljivo naložiti zahtevane strani. Poskrbite, da preizkušate pravilen URL in da se strežnik ustrezno odziva na vse zahteve. (Podrobnosti: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Orodje Lighthouse ni utegnilo zanesljivo naložiti zahtevane strani. Poskrbite, da preizkušate pravilen URL in da se strežnik ustrezno odziva na vse zahteve. (Koda stanja: {statusCode})"
+    "message": "Orodje Lighthouse ni moglo zanesljivo naložiti zahtevane strani. Poskrbite, da preizkušate pravilen URL in da se strežnik ustrezno odziva na vse zahteve. (Koda stanja: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Nalaganje strani je trajalo predolgo. Upoštevajte priložnosti v poročilu, da zmanjšate čas nalaganja strani, nato poskusite znova zagnati Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Videti je, da ste navedli neveljaven URL."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Orodje Lighthouse ni moglo zanesljivo naložiti zahtevane strani. Poskrbite, da preizkušate pravilen URL in da se strežnik ustrezno odziva na vse zahteve. (Koda stanja: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Vrsta razširitve MIME strani je XHTML: Lighthouse izrecno ne podpira te vrste dokumenta."
@@ -3108,22 +3111,22 @@
     "message": "Uporabite funkcijo [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) v ogrodju NitroPack, da zmanjšate velikost datotek, ki so poslane v brskalnik."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Uporabite komponento `nuxt/image` in nastavite `format=\"webp\"`. [Več o tem](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Uporabite komponento `nuxt/image` in nastavite `format=\"webp\"`. [Več o tem](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Uporabite komponento `nuxt/image` in nastavite `loading=\"lazy\"` za slike, ki niso na zaslonu. [Več o tem](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Uporabite komponento `nuxt/image` in nastavite `loading=\"lazy\"` za slike, ki niso na zaslonu. [Več o tem](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Uporabite komponento `nuxt/image` in določite `preload` za sliko LCP. [Več o tem](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Uporabite komponento `nuxt/image` in določite `preload` za sliko LCP. [Več o tem](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Uporabite komponento `nuxt/image` in določite eksplicitni `width` in `height` (širino in dolžino). [Več o tem](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Uporabite komponento `nuxt/image` in določite eksplicitni `width` in `height` (širino in dolžino). [Več o tem](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Uporabite komponento `nuxt/image` in nastavite ustrezno `quality` (kakovost). [Več o tem](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Uporabite komponento `nuxt/image` in nastavite ustrezno `quality` (kakovost). [Več o tem](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Uporabite komponento `nuxt/image` in nastavite ustrezne `sizes` (velikosti). [Več o tem](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Uporabite komponento `nuxt/image` in nastavite ustrezne `sizes` (velikosti). [Več o tem](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "Za hitrejše nalaganje spletnih strani lahko [animirane slike GIF nadomestite z videoposnetki](https://web.dev/replace-gifs-with-videos/), razmislite pa tudi o uporabi sodobnih oblik datotek, kot je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ali [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), da učinkovitost stiskanja izboljšate za več kot 30 % v primerjavi s trenutno najboljšim videokodekom VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Začetno nalaganje st rani"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Posnetek stanja v določenem trenutku"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Časovno obdobje uporabniških interakcij"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Zaviranje po meri"
   },
@@ -3393,10 +3402,10 @@
     "message": "Uporabnikov posrednik (omrežje)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Nalaganje ene strani"
+    "message": "Seja na eni strani"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Ti podatki za razliko od podatkov iz polja, ki povzemajo več sej, izvirajo iz nalaganja ene strani."
+    "message": "Ti podatki za razliko od podatkov iz polja, ki povzemajo več sej, izvirajo iz seje na eni strani."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Počasno zaviranje pri povezavi 4G"

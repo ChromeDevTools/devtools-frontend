@@ -639,7 +639,7 @@
     "message": "Izmantojiet video failu formātus animētam saturam"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Funkcionalitāšu un pārveidošanas kodi ļauj mantotos pārlūkos izmantot jaunas JavaScript funkcijas. Tomēr modernos pārlūkos daudzi no tiem nav nepieciešami. JavaScript pakai pielāgojiet modernu skripta izvietošanas stratēģiju, izmantojot moduļa/bez moduļa funkcijas noteikšanu, lai samazinātu uz moderniem pārlūkiem nosūtīta koda apjomu, vienlaikus nodrošinot atbalstu mantotiem pārlūkiem. [Uzziniet, kā izmantot modernu JavaScript](https://web.dev/publish-modern-javascript/)."
+    "message": "Funkcionalitāšu un pārveidošanas kodi ļauj mantotos pārlūkos izmantot jaunas JavaScript funkcijas. Tomēr modernos pārlūkos daudzi no tiem nav nepieciešami. JavaScript pakai pielāgojiet modernu skripta izvietošanas stratēģiju, izmantojot moduļa/bez moduļa funkcijas noteikšanu, lai samazinātu uz moderniem pārlūkiem nosūtīta koda apjomu, vienlaikus nodrošinot atbalstu mantotiem pārlūkiem. [Uzziniet, kā izmantot modernu JavaScript](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Novērsiet mantotā JavaScript koda izmantošanu modernos pārlūkos"
@@ -993,7 +993,7 @@
     "message": "Paredzamie izmēri"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Lai attēls būtu pēc iespējas skaidrāks, tā sākotnējiem izmēriem ir jābūt proporcionāliem attēlojuma lielumam un pikseļu attiecībai. [Uzziniet, kā iesniegt adaptīvus attēlus](https://web.dev/serve-responsive-images/)."
+    "message": "Lai attēls būtu pēc iespējas skaidrāks, tā sākotnējiem izmēriem ir jābūt proporcionāliem attēlojuma lielumam un pikseļu attiecībai. [Uzziniet, kā iesniegt adaptīvus attēlus](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Attēli tiek rādīti zemā izšķirtspējā"
@@ -1158,13 +1158,13 @@
     "message": "CLS daļa"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Šie DOM elementi visvairāk veicina lapas CLS. [Uzziniet, kā uzlabot CLS](https://web.dev/optimize-cls/)."
+    "message": "Šie DOM elementi visvairāk veicina lapas CLS. [Uzziniet, kā uzlabot CLS](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Centieties novērst lielas izkārtojuma nobīdes"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Attēli pirmajā ekrānā, kam tiek veikta atliktā ielāde, tiek atveidoti vēlāk lapas darbības ciklā. Tas var aizkavēt Largest Contentful Paint. [Uzziniet vairāk par optimālu atlikto ielādi](https://web.dev/lcp-lazy-loading/)."
+    "message": "Attēli pirmajā ekrānā, kam tiek veikta atliktā ielāde, tiek atveidoti vēlāk lapas darbības ciklā. Tas var aizkavēt Largest Contentful Paint. [Uzziniet vairāk par optimālu atlikto ielādi](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Lielākā satura atveidojuma attēlam tika veikta atliktā ielāde"
@@ -1173,7 +1173,7 @@
     "message": "Largest Contentful Paint attēlam netika veikta atliktā ielāde"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Šeit ir norādīti galvenā pavediena uzdevumi ar visilgāko izpildes laiku, lai palīdzētu noteikt, kuri uzdevumi visvairāk palielina ievades aizkavi. [Uzziniet, kā izvairīties no ilgiem galvenā pavediena uzdevumiem](https://web.dev/long-tasks-devtools/)."
+    "message": "Šeit ir norādīti galvenā pavediena uzdevumi ar visilgāko izpildes laiku, lai palīdzētu noteikt, kuri uzdevumi visvairāk palielina ievades aizkavi. [Uzziniet, kā izvairīties no ilgiem galvenā pavediena uzdevumiem](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Tika atrasts # uzdevums ar ilgu izpildes laiku}zero{Tika atrasti # uzdevumi ar ilgu izpildes laiku}one{Tika atrasts # uzdevums ar ilgu izpildes laiku}other{Tika atrasti # uzdevumi ar ilgu izpildes laiku}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifestā ir maskējama ikona"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Cumulative Layout Shift norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk par rādītāju “Cumulative Layout Shift”](https://web.dev/cls/)."
+    "message": "Cumulative Layout Shift norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk par rādītāju “Cumulative Layout Shift”](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Rādītājs “First Contentful Paint” ataino laiku, kad tiek atveidots pirmais teksts vai attēls. [Uzziniet vairāk par rādītāju “First Contentful Paint”](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Rādītājs “Pirmais nozīmīgais satura atveidojums” ataino, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk par rādītāju “Pirmais nozīmīgais satura atveidojums”](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
+    "message": "Interaction to Next Paint nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Rādītājs “Time to Interactive” ir laiks, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk par rādītāju “Time to Interactive”](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Servera aizmugursistēmas latentums"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Notikums “`unload`” nenodrošināja uzticamu aktivizēšanu, un tā uztveršana var liegt pārlūka optimizāciju, piemēram, pilnīgu saglabāšanu kešatmiņā. Tā vietā izmantojiet notikumu “`pagehide`” vai “`visibilitychange`”. [Uzziniet vairāk par ielādes atcelšanas notikumu uztvērējiem](https://web.dev/bfcache/#never-use-the-unload-event)."
+    "message": "Notikums “`unload`” nenodrošināja uzticamu aktivizēšanu, un tā uztveršana var liegt pārlūka optimizāciju, piemēram, pilnīgu saglabāšanu kešatmiņā. Tā vietā izmantojiet notikumu “`pagehide`” vai “`visibilitychange`”. [Uzziniet vairāk par ielādes atcelšanas notikumu uztvērējiem](https://web.dev/articles/bfcache#never_use_the_unload_event)."
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Reģistrē notikuma “`unload`” uztvērēju"
@@ -1305,7 +1305,7 @@
     "message": "Izpildes budžets"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Lai jaunie apmeklētāji varētu izmantot fontus ar atribūtu “`optional`”, ielādējiet tos iepriekš. [Uzziniet vairāk par fontu iepriekšēju ielādi](https://web.dev/preload-optional-fonts/)."
+    "message": "Lai jaunie apmeklētāji varētu izmantot fontus ar atribūtu “`optional`”, ielādējiet tos iepriekš. [Uzziniet vairāk par fontu iepriekšēju ielādi](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Fonti ar atribūtu `font-display: optional` nav iepriekš ielādēti"
@@ -1314,7 +1314,7 @@
     "message": "Fonti ar atribūtu `font-display: optional` ir ielādēti iepriekš"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Ja LCP elements tiek dinamiski pievienots lapai, jums attēls ir jāielādē iepriekš, lai varētu uzlabot LCP. [Uzziniet vairāk par LCP elementu iepriekšēju ielādi](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Ja LCP elements tiek dinamiski pievienots lapai, jums attēls ir jāielādē iepriekš, lai varētu uzlabot LCP. [Uzziniet vairāk par LCP elementu iepriekšēju ielādi](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Largest Contentful Paint attēla iepriekšēja ielāde"
@@ -1587,7 +1587,7 @@
     "message": "Laika budžets"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Iestatiet konkrētu platumu un augstumu attēlu elementiem, lai samazinātu izkārtojuma nobīdes un uzlabotu CLS. [Uzziniet, kā iestatīt attēlu izmērus](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Iestatiet konkrētu platumu un augstumu attēlu elementiem, lai samazinātu izkārtojuma nobīdes un uzlabotu CLS. [Uzziniet, kā iestatīt attēlu izmērus](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Attēlu elementiem nav konkrēts `width` un `height`"
@@ -1662,7 +1662,7 @@
     "message": "Ir tags `<meta name=\"viewport\">` ar `width` vai `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Tas ir pavediena bloķēšanas darbs laikā, kad notiek Interaction to Next Paint mērīšana. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
+    "message": "Tas ir pavediena bloķēšanas darbs laikā, kad notiek Interaction to Next Paint mērīšana. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms tika patērēts notikumam “{interactionType}”"
@@ -1704,10 +1704,10 @@
     "message": "Paraugprakse"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Šīs pārbaudes izceļ iespējas [uzlabot tīmekļa lietotnes pieejamību](https://developer.chrome.com/docs/lighthouse/accessibility/). Automātiski var noteikt tikai daļu no problēmām, un netiek garantēta jūsu tīmekļa lietotnes atbilstība pieejamības standartiem, tādēļ ieteicams veikt arī [manuālu testēšanu](https://web.dev/how-to-review/)."
+    "message": "Šīs pārbaudes izceļ iespējas [uzlabot tīmekļa lietotnes pieejamību](https://developer.chrome.com/docs/lighthouse/accessibility/). Automātiski var noteikt tikai daļu no problēmām, un netiek garantēta jūsu tīmekļa lietotnes atbilstība pieejamības standartiem, tādēļ ieteicams veikt arī [manuālu testēšanu](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Šie vienumi norāda uz vietām, kurām automātiskais testēšanas rīks nevar piekļūt. Uzziniet vairāk mūsu ceļvedī par [pieejamības pārskata veikšanu](https://web.dev/how-to-review/)."
+    "message": "Šie vienumi norāda uz vietām, kurām automātiskais testēšanas rīks nevar piekļūt. Uzziniet vairāk mūsu ceļvedī par [pieejamības pārskata veikšanu](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Pieejamība"
@@ -1794,10 +1794,10 @@
     "message": "Veiktspēja"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Veicot šīs pārbaudes, varat validēt progresīvo tīmekļa lietotņu aspektus. [Uzziniet, kas veido labu progresīvo tīmekļa lietotni](https://web.dev/pwa-checklist/)."
+    "message": "Veicot šīs pārbaudes, varat validēt progresīvo tīmekļa lietotņu aspektus. [Uzziniet, kas veido labu progresīvo tīmekļa lietotni](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Šīs pārbaudes ir vajadzīgas saskaņā ar standarta [PWA kontrolsarakstu](https://web.dev/pwa-checklist/), taču Lighthouse neveic tās automātiski. Tās neietekmē jūsu rezultātu, taču ir svarīgi pārbaudīt šos lietotnes aspektus manuāli."
+    "message": "Šīs pārbaudes ir vajadzīgas saskaņā ar standarta [PWA kontrolsarakstu](https://web.dev/articles/pwa-checklist), taču Lighthouse neveic tās automātiski. Tās neietekmē jūsu rezultātu, taču ir svarīgi pārbaudīt šos lietotnes aspektus manuāli."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PTL"
@@ -1809,7 +1809,7 @@
     "message": "PTL optimizācija"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Šīs pārbaudes nodrošina, ka jūsu lapa atbilst meklētājprogrammu optimizācijas pamatnostādnēm. Ir daudz papildu faktoru, kurus Lighthouse neņem vērā, taču kuri var ietekmēt jūsu meklēšanas rezultātu ranžēšanu, tostarp [Core Web Vitals](https://web.dev/learn-core-web-vitals/) veiktspēju. [Uzziniet vairāk par Google meklēšanas pamatiem](https://support.google.com/webmasters/answer/35769)."
+    "message": "Šīs pārbaudes nodrošina, ka jūsu lapa atbilst meklētājprogrammu optimizācijas pamatnostādnēm. Ir daudz papildu faktoru, kurus Lighthouse neņem vērā, taču kuri var ietekmēt jūsu meklēšanas rezultātu ranžēšanu, tostarp [Core Web Vitals](https://web.dev/explore/vitals) veiktspēju. [Uzziniet vairāk par Google meklēšanas pamatiem](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Palaidiet savā vietnē šos papildu apstiprināšanas rīkus, lai aplūkotu papildu MPO paraugpraksi."
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse nevarēja uzticami ielādēt jūsu pieprasīto lapu. Nodrošiniet, ka pārbaudāt pareizo URL un ka serveris pareizi reaģē uz visiem pieprasījumiem. (Detalizēta informācija: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse nevarēja uzticami ielādēt jūsu pieprasīto lapu. Nodrošiniet, ka pārbaudāt pareizo URL un ka serveris pareizi reaģē uz visiem pieprasījumiem. (Statusa kods: {statusCode})"
+    "message": "Lighthouse nevarēja uzticami ielādēt jūsu pieprasīto lapu. Pārliecinieties, ka pārbaudāt pareizo URL un ka serveris pareizi reaģē uz visiem pieprasījumiem. (Statusa kods: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Lapas ielādei bija nepieciešams pārāk ilgs laiks. Lūdzu, izmantojiet pārskatā sniegtās iespējas, lai samazinātu lapas ielādes laiku, un pēc tam mēģiniet atkārtoti palaist Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Šķiet, ka jūsu norādītais URL nav derīgs."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse nevarēja uzticami ielādēt jūsu pieprasīto lapu. Pārliecinieties, ka pārbaudāt pareizo URL un ka serveris pareizi reaģē uz visiem pieprasījumiem. (Statusa kods: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Lapas MIME veids ir XHTML: rīkā Lighthouse šis dokumenta veids netiek atbalstīts."
@@ -3108,22 +3111,22 @@
     "message": "Izmantojiet funkciju [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ietvarā NitroPack, lai samazinātu pārlūkam nosūtīto failu lielumu."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet vērtību `format=\"webp\"`. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet vērtību `format=\"webp\"`. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet vērtību `loading=\"lazy\"` ārpus ekrāna esošajiem attēliem. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet vērtību `loading=\"lazy\"` ārpus ekrāna esošajiem attēliem. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Izmantojiet komponentu `nuxt/image` un norādiet elementa `preload` vērtību LCP attēlam. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Izmantojiet komponentu `nuxt/image` un norādiet elementa `preload` vērtību LCP attēlam. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Izmantojiet komponentu `nuxt/image` un norādiet skaidras vērtības `width` un `height`. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Izmantojiet komponentu `nuxt/image` un norādiet skaidras vērtības `width` un `height`. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet atbilstošo elementa `quality` vērtību. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet atbilstošo elementa `quality` vērtību. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet atbilstošo elementa `sizes` vērtību. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Izmantojiet komponentu `nuxt/image` un iestatiet atbilstošo elementa `sizes` vērtību. [Uzziniet vairāk](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Aizstājiet animētus GIF attēlus ar videoklipiem](https://web.dev/replace-gifs-with-videos/), lai paātrinātu tīmekļa lapas ielādi, un apsveriet iespēju izmantot modernus failu formātus, piemēram, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), lai uzlabotu saspiešanas efektivitāti par vairāk nekā 30%, salīdzinot ar pašreizējo nozarē vadošo video kodeku VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Sākotnējā lapas ielāde"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Momentuzņēmums konkrētā brīdī"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Lietotāju mijiedarbības laika posms"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Pielāgota ierobežošana"
   },
@@ -3393,10 +3402,10 @@
     "message": "Lietotāja aģents (tīkls)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Vienreizēja lapas ielāde"
+    "message": "Vienas lapas sesija"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Šie dati ir iegūti no vienas lapas ielādes atšķirībā no lauka datiem, kas tiek apkopoti par daudzām sesijām."
+    "message": "Šie dati ir iegūti no vienas lapas sesijas atšķirībā no lauka datiem, kas tiek apkopoti par daudzām sesijām."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Lēna 4G savienojuma ierobežošana"

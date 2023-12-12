@@ -639,7 +639,7 @@
     "message": "애니메이션 콘텐츠에 동영상 형식 사용하기"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill 및 변환을 통해 레거시 브라우저에서 새로운 자바스크립트 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 번들로 포함된 자바스크립트의 경우, module/nomodule 기능 감지를 사용하는 최신 스크립트 배포 전략을 채택하여 최신 브라우저에 적용되는 코드를 줄이고 레거시 브라우저 지원을 유지할 수 있습니다. [최신 자바스크립트 사용 방법 알아보기](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill 및 변환을 통해 레거시 브라우저에서 새로운 자바스크립트 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 번들로 포함된 자바스크립트의 경우, module/nomodule 기능 감지를 사용하는 최신 스크립트 배포 전략을 채택하여 최신 브라우저에 적용되는 코드를 줄이고 레거시 브라우저 지원을 유지할 수 있습니다. [최신 자바스크립트 사용 방법 알아보기](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "레거시 JavaScript를 최신 브라우저에 제공하지 않기"
@@ -993,7 +993,7 @@
     "message": "예상 크기"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "이미지의 본래 크기가 표시 크기와 픽셀 비율에 비례해야 이미지가 가장 선명하게 보입니다. [반응형 이미지를 제공하는 방법 알아보기](https://web.dev/serve-responsive-images/)"
+    "message": "이미지의 본래 크기가 표시 크기와 픽셀 비율에 비례해야 이미지가 가장 선명하게 보입니다. [반응형 이미지를 제공하는 방법 알아보기](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "이미지가 낮은 해상도로 제공됨"
@@ -1158,13 +1158,13 @@
     "message": "CLS에 기여한 양"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "DOM 요소가 페이지 CLS의 대부분을 차지합니다. [CLS 개선 방법 알아보기](https://web.dev/optimize-cls/)"
+    "message": "DOM 요소가 페이지 CLS의 대부분을 차지합니다. [CLS 개선 방법 알아보기](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "대규모 레이아웃 변경 피하기"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "스크롤 없이 볼 수 있는 이미지가 지연 로드되면 페이지 수명 주기 후반에 렌더링되므로 최대 콘텐츠 렌더링 시간이 늘어날 수 있습니다. [최적의 지연 로드에 관해 자세히 알아보기](https://web.dev/lcp-lazy-loading/)"
+    "message": "스크롤 없이 볼 수 있는 이미지가 지연 로드되면 페이지 수명 주기 후반에 렌더링되므로 최대 콘텐츠 렌더링 시간이 늘어날 수 있습니다. [최적의 지연 로드에 관해 자세히 알아보기](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "최대 콘텐츠 렌더링 시간 이미지가 지연 로드되었습니다"
@@ -1173,7 +1173,7 @@
     "message": "최대 콘텐츠 렌더링 시간 이미지가 지연 로드되지 않았습니다"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "기본 스레드의 가장 긴 작업을 열거합니다. 입력 지연을 가장 많이 유발하는 작업을 찾을 때 용이합니다. [긴 기본 스레드 작업을 방지하는 방법 알아보기](https://web.dev/long-tasks-devtools/)"
+    "message": "기본 스레드의 가장 긴 작업을 열거합니다. 입력 지연을 가장 많이 유발하는 작업을 찾을 때 용이합니다. [긴 기본 스레드 작업을 방지하는 방법 알아보기](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{긴 작업 #개 발견}other{긴 작업 #개 발견}}"
@@ -1221,7 +1221,7 @@
     "message": "매니페스트에 마스크 가능한 아이콘이 있음"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "레이아웃 변경 횟수는 표시 영역 안에 보이는 요소의 이동을 측정합니다. [레이아웃 변경 횟수 측정항목에 관해 자세히 알아보기](https://web.dev/cls/)"
+    "message": "레이아웃 변경 횟수는 표시 영역 안에 보이는 요소의 이동을 측정합니다. [레이아웃 변경 횟수 측정항목에 관해 자세히 알아보기](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "콘텐츠가 포함된 첫 페인트는 첫 번째 텍스트 또는 이미지가 표시되는 시간을 나타냅니다. [콘텐츠가 포함된 첫 페인트 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "유의미한 첫 페인트는 페이지의 기본 콘텐츠가 표시되는 경우를 측정합니다. [유의미한 첫 페인트 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint(다음 페인트와의 상호작용)은 페이지 응답성, 즉 페이지가 사용자 입력에 시각적으로 반응하는 데 걸리는 시간을 측정합니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/inp/)"
+    "message": "Interaction to Next Paint(다음 페인트와의 상호작용)은 페이지 응답성, 즉 페이지가 사용자 입력에 시각적으로 반응하는 데 걸리는 시간을 측정합니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "상호작용 시작 시간은 페이지와 완전히 상호작용할 수 있게 될 때까지 걸리는 시간입니다. [상호작용 시작 시간 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "서버 백엔드 지연 시간"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` 이벤트는 안정적으로 실행되지 않으며 이 이벤트를 수신 대기하면 '뒤로-앞으로 캐시'와 같은 브라우저 최적화 기능을 사용하지 못할 수 있습니다. `pagehide` 또는 `visibilitychange` 이벤트를 대신 사용하세요. [이벤트 리스너 로드 취소에 관해 자세히 알아보기](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` 이벤트는 안정적으로 실행되지 않으며 이 이벤트를 수신 대기하면 '뒤로-앞으로 캐시'와 같은 브라우저 최적화 기능을 사용하지 못할 수 있습니다. `pagehide` 또는 `visibilitychange` 이벤트를 대신 사용하세요. [이벤트 리스너 로드 취소에 관해 자세히 알아보기](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` 리스너 등록"
@@ -1305,7 +1305,7 @@
     "message": "성능 예산"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "신규 방문자가 사용할 수 있도록 `optional` 글꼴을 미리 로드하세요 [글꼴 미리 로드에 관해 자세히 알아보기](https://web.dev/preload-optional-fonts/)"
+    "message": "신규 방문자가 사용할 수 있도록 `optional` 글꼴을 미리 로드하세요 [글꼴 미리 로드에 관해 자세히 알아보기](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional`을 사용하는 글꼴이 미리 로드되지 않음"
@@ -1314,7 +1314,7 @@
     "message": "`font-display: optional`을 사용하는 글꼴이 미리 로드됨"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "LCP(최대 콘텐츠 렌더링 시간) 요소가 페이지에 동적으로 추가되는 경우 LCP를 개선하기 위해 이미지를 미리 로드해야 합니다. [LCP 요소 미리 로드에 관해 자세히 알아보기](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "LCP(최대 콘텐츠 렌더링 시간) 요소가 페이지에 동적으로 추가되는 경우 LCP를 개선하기 위해 이미지를 미리 로드해야 합니다. [LCP 요소 미리 로드에 관해 자세히 알아보기](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "콘텐츠가 포함된 최대 페인트 이미지 미리 로드"
@@ -1587,7 +1587,7 @@
     "message": "시기 예산"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "이미지 요소에 명시적인 너비 및 높이를 설정하여 레이아웃 변경 횟수를 줄이고 누적 레이아웃 변경을 개선합니다. [이미지 크기 설정 방법 알아보기](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "이미지 요소에 명시적인 너비 및 높이를 설정하여 레이아웃 변경 횟수를 줄이고 누적 레이아웃 변경을 개선합니다. [이미지 크기 설정 방법 알아보기](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "이미지 요소에 `width` 및 `height`가 명시되어 있지 않습니다"
@@ -1662,7 +1662,7 @@
     "message": "`width` 또는 `initial-scale`이(가) 포함된 `<meta name=\"viewport\">` 태그가 있음"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Interaction to Next Paint(다음 페인트와의 상호작용) 측정 중에 발생하는 스레드 차단 작업입니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/inp/)"
+    "message": "Interaction to Next Paint(다음 페인트와의 상호작용) 측정 중에 발생하는 스레드 차단 작업입니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "'{interactionType}' 이벤트에 {timeInMs, number, milliseconds}ms 소요"
@@ -1704,10 +1704,10 @@
     "message": "권장사항"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "이 검사에서는 [웹 앱의 접근성을 개선](https://developer.chrome.com/docs/lighthouse/accessibility/)하도록 추천된 사항을 강조합니다. 자동 감지는 일부 문제만 감지할 수 있고 웹 앱의 접근성을 보장하지 않으므로 [직접 테스트](https://web.dev/how-to-review/)해 보는 것이 좋습니다."
+    "message": "이 검사에서는 [웹 앱의 접근성을 개선](https://developer.chrome.com/docs/lighthouse/accessibility/)하도록 추천된 사항을 강조합니다. 자동 감지는 일부 문제만 감지할 수 있고 웹 앱의 접근성을 보장하지 않으므로 [직접 테스트](https://web.dev/articles/how-to-review)해 보는 것이 좋습니다."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "자동화된 테스트 도구가 처리할 수 없는 영역을 다루는 항목입니다. [접근성 검토 실시](https://web.dev/how-to-review/)에 관한 가이드에서 자세히 알아보세요."
+    "message": "자동화된 테스트 도구가 처리할 수 없는 영역을 다루는 항목입니다. [접근성 검토 실시](https://web.dev/articles/how-to-review)에 관한 가이드에서 자세히 알아보세요."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "접근성"
@@ -1794,10 +1794,10 @@
     "message": "성능"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "프로그레시브 웹 앱의 요소를 확인하는 검사입니다. [좋은 프로그레시브 웹 앱의 특징 알아보기](https://web.dev/pwa-checklist/)"
+    "message": "프로그레시브 웹 앱의 요소를 확인하는 검사입니다. [좋은 프로그레시브 웹 앱의 특징 알아보기](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "이 검사는 기준 [PWA 체크리스트](https://web.dev/pwa-checklist/)의 필수 항목이지만 Lighthouse에서 자동으로 확인되지는 않습니다. 점수에 영향을 미치지는 않지만 직접 확인하는 것이 중요합니다."
+    "message": "이 검사는 기준 [PWA 체크리스트](https://web.dev/articles/pwa-checklist)의 필수 항목이지만 Lighthouse에서 자동으로 확인되지는 않습니다. 점수에 영향을 미치지는 않지만 직접 확인하는 것이 중요합니다."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA 최적화됨"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "페이지가 기본적인 검색엔진 최적화 권고를 따르는지 확인하는 검사입니다. Lighthouse가 여기에서 고려하지는 않지만 검색 순위에 영향을 줄 수 있는 요소(예: [코어 웹 바이탈](https://web.dev/learn-core-web-vitals/) 실적)는 이 외에도 많이 있습니다. [Google 검색 Essentials에 관해 자세히 알아보기](https://support.google.com/webmasters/answer/35769)"
+    "message": "페이지가 기본적인 검색엔진 최적화 권고를 따르는지 확인하는 검사입니다. Lighthouse가 여기에서 고려하지는 않지만 검색 순위에 영향을 줄 수 있는 요소(예: [코어 웹 바이탈](https://web.dev/explore/vitals) 실적)는 이 외에도 많이 있습니다. [Google 검색 Essentials에 관해 자세히 알아보기](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "사이트에서 이러한 추가 검증 도구를 실행하여 추가적인 검색엔진 최적화 권장사항을 확인합니다."
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse에서 사용자가 요청한 페이지를 안정적으로 로드하지 못했습니다. 올바른 URL로 테스트하고 있으며 서버가 모든 요청에 적절하게 응답하고 있는지 확인하세요. (세부정보: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse에서 사용자가 요청한 페이지를 안정적으로 로드하지 못했습니다. 올바른 URL로 테스트하고 있으며 서버가 모든 요청에 적절하게 응답하고 있는지 확인하세요. (상태 코드: {statusCode})"
+    "message": "Lighthouse에서 사용자가 요청한 페이지를 안정적으로 로드할 수 없습니다. 정확한 URL로 테스트하고 있으며 서버가 모든 요청에 적절하게 응답하고 있는지 확인하세요. (상태 코드: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "페이지 로드에 시간이 너무 오래 걸립니다. 보고서의 추천에 따라 페이지 로드 시간을 줄인 다음 Lighthouse를 다시 실행해 보세요. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "사용자가 제공한 URL이 잘못되었습니다."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse에서 사용자가 요청한 페이지를 안정적으로 로드할 수 없습니다. 정확한 URL로 테스트하고 있으며 서버가 모든 요청에 적절하게 응답하고 있는지 확인하세요. (상태 코드: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "페이지 MIME 유형이 XHTML입니다. Lighthouse는 이 문서 유형을 명시적으로 지원하지 않습니다."
@@ -3108,22 +3111,22 @@
     "message": "브라우저로 전송되는 파일의 크기를 줄이려면 NitroPack에서 [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression)을 사용합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` 구성요소를 사용해 `format=\"webp\"` 형식을 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "`nuxt/image` 구성요소를 사용해 `format=\"webp\"` 형식을 설정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "`nuxt/image` 구성요소를 사용해 오프스크린 이미지에 대해 `loading=\"lazy\"`를 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "`nuxt/image` 구성요소를 사용해 오프스크린 이미지에 대해 `loading=\"lazy\"`를 설정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "`nuxt/image` 구성요소를 사용해 LCP 이미지의 `preload`를 지정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "`nuxt/image` 구성요소를 사용해 LCP 이미지의 `preload`를 지정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` 구성요소를 사용해 명시적인 `width` 및 `height`를 지정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "`nuxt/image` 구성요소를 사용해 명시적인 `width` 및 `height`를 지정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` 구성요소를 사용해 적절한 `quality`을 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "`nuxt/image` 구성요소를 사용해 적절한 `quality`을 설정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` 구성요소를 사용해 적절한 `sizes`를 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "`nuxt/image` 구성요소를 사용해 적절한 `sizes`를 설정하세요. [자세히 알아보기](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "빠른 웹페이지 로딩을 위해서는 [애니메이션 GIF를 동영상으로 대체](https://web.dev/replace-gifs-with-videos/)하고 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 또는 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)과 같은 최신 파일 형식을 사용하여 압축 효율성을 현재 최첨단으로 여겨지는 동영상 코덱 VP9 대비 30% 이상 높여 보세요."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "초기 페이지 로드"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "특정 시점 스냅샷"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "사용자 상호작용 기간"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "맞춤형 제한"
   },
@@ -3393,10 +3402,10 @@
     "message": "사용자 에이전트(네트워크)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "단일 페이지 로드"
+    "message": "단일 페이지 세션"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "여러 세션을 요약하는 필드 데이터와는 반대로 이 데이터는 단일 페이지 로드에서 가져옵니다."
+    "message": "이 데이터는 여러 세션을 요약하는 필드 데이터와는 달리 단일 페이지 세션에서 가져옵니다."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "느린 4G 제한"

@@ -639,7 +639,7 @@
     "message": "Gebruik video-indelingen voor content met animaties"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Met polyfills en transformaties kunnen verouderde browsers nieuwe JavaScript-functies gebruiken. Voor moderne browsers is dit meestal niet nodig. Volg voor je gebundelde JavaScript een implementatiestrategie voor moderne scripts op basis van module/nomodule-detectie. Dan beperk je namelijk de hoeveelheid code die naar moderne browsers wordt gestuurd, terwijl oudere browsers ondersteund blijven. [Meer informatie over hoe je modern JavaScript gebruikt](https://web.dev/publish-modern-javascript/)"
+    "message": "Met polyfills en transformaties kunnen verouderde browsers nieuwe JavaScript-functies gebruiken. Voor moderne browsers is dit meestal niet nodig. Volg voor je gebundelde JavaScript een implementatiestrategie voor moderne scripts op basis van module/nomodule-detectie. Dan beperk je namelijk de hoeveelheid code die naar moderne browsers wordt gestuurd, terwijl oudere browsers ondersteund blijven. [Meer informatie over hoe je modern JavaScript gebruikt](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Voorkomen dat verouderde JavaScript wordt geleverd aan moderne browsers"
@@ -993,7 +993,7 @@
     "message": "Verwacht formaat"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "De natuurlijke afmetingen van de afbeelding moeten in verhouding zijn tot het weergaveformaat en de pixelratio om de helderheid van de afbeelding te maximaliseren. [Meer informatie over het leveren van responsieve afbeeldingen](https://web.dev/serve-responsive-images/)"
+    "message": "De natuurlijke afmetingen van de afbeelding moeten in verhouding zijn tot het weergaveformaat en de pixelratio om de helderheid van de afbeelding te maximaliseren. [Meer informatie over het leveren van responsieve afbeeldingen](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Levert afbeeldingen met lage resolutie"
@@ -1158,13 +1158,13 @@
     "message": "CLS-bijdrage"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Deze DOM-elementen dragen het meeste bij aan de CLS van de pagina. [Meer informatie over hoe je CLS kunt verbeteren](https://web.dev/optimize-cls/)"
+    "message": "Deze DOM-elementen dragen het meeste bij aan de CLS van de pagina. [Meer informatie over hoe je CLS kunt verbeteren](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Grote indelingsverschuivingen vermijden"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Afbeeldingen boven de vouw die worden geladen met lazy loading, worden later tijdens de levenscyclus van de pagina weergegeven. Hierdoor kan de Grootste weergave met content (LCP) worden vertraagd. [Meer informatie over optimale lazy loading](https://web.dev/lcp-lazy-loading/)"
+    "message": "Afbeeldingen boven de vouw die worden geladen met lazy loading, worden later tijdens de levenscyclus van de pagina weergegeven. Hierdoor kan de Grootste weergave met content (LCP) worden vertraagd. [Meer informatie over optimale lazy loading](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Afbeelding voor Grootste weergave met content (LCP) is geladen met lazy loading"
@@ -1173,7 +1173,7 @@
     "message": "Afbeelding voor Grootste weergave met content (LCP) is niet geladen met lazy loading"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Vermeldt de langste taken in de primaire thread (dit is handig om de factoren te identificeren die tot de meeste invoervertraging leiden). [Meer informatie over hoe je lange taken voor de hoofdthread voorkomt](https://web.dev/long-tasks-devtools/)"
+    "message": "Vermeldt de langste taken in de primaire thread (dit is handig om de factoren te identificeren die tot de meeste invoervertraging leiden). [Meer informatie over hoe je lange taken voor de hoofdthread voorkomt](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# lange taak gevonden}other{# lange taken gevonden}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifest heeft een maskeerbaar icoon"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Cumulatieve indelingsverschuiving (CLS) meet de beweging van zichtbare elementen binnen de viewport. [Meer informatie over de statistiek Cumulatieve indelingsverschuiving (CLS)](https://web.dev/cls/)"
+    "message": "Cumulatieve indelingsverschuiving (CLS) meet de beweging van zichtbare elementen binnen de viewport. [Meer informatie over de statistiek Cumulatieve indelingsverschuiving (CLS)](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Eerste weergave met content (FCP) geeft de tijd aan waarbinnen de eerste tekst of afbeelding wordt weergegeven. [Meer informatie over de statistiek Eerste weergave met content (LCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "Eerste nuttige weergave (FMP) meet wanneer de primaire content van een pagina zichtbaar is. [Meer informatie over de statistiek Eerste nuttige weergave (FMP)](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interactie tot Volgende weergave meet de responsiviteit van de pagina, dat wil zeggen hoelang het duurt voordat de pagina zichtbaar reageert op gebruikersinvoer. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/inp/)"
+    "message": "Interactie tot Volgende weergave meet de responsiviteit van de pagina, dat wil zeggen hoelang het duurt voordat de pagina zichtbaar reageert op gebruikersinvoer. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tijd tot interactief is de hoeveelheid tijd die nodig is voordat een pagina volledig interactief is. [Meer informatie over de statistiek Tijd tot interactief](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "Wachttijden van server-backend"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "De gebeurtenis `unload` wordt niet op een betrouwbare manier geactiveerd en hierop wachten kan ertoe leiden dat browseroptimalisaties zoals de Back-Forward Cache niet worden uitgevoerd. Gebruik in plaats daarvan de gebeurtenis `pagehide` of `visibilitychange`. [Meer informatie over het ongedaan maken van laden van event-listeners](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "De gebeurtenis `unload` wordt niet op een betrouwbare manier geactiveerd en hierop wachten kan ertoe leiden dat browseroptimalisaties zoals de Back-Forward Cache niet worden uitgevoerd. Gebruik in plaats daarvan de gebeurtenis `pagehide` of `visibilitychange`. [Meer informatie over het ongedaan maken van laden van event-listeners](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registreert een `unload`-listener"
@@ -1305,7 +1305,7 @@
     "message": "Prestatiebudget"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Laad lettertypen `optional` vooraf zodat nieuwe bezoekers deze kunnen gebruiken. [Meer informatie over het vooraf laden van lettertypen](https://web.dev/preload-optional-fonts/)"
+    "message": "Laad lettertypen `optional` vooraf zodat nieuwe bezoekers deze kunnen gebruiken. [Meer informatie over het vooraf laden van lettertypen](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Lettertypen met `font-display: optional` zijn niet vooraf geladen"
@@ -1314,7 +1314,7 @@
     "message": "Lettertypen met `font-display: optional` zijn vooraf geladen"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Als het LCP-element dynamisch wordt toegevoegd aan de pagina, moet je de afbeelding vooraf laden om LCP te optimaliseren. [Meer informatie over het vooraf laden van LCP-elementen](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "Als het LCP-element dynamisch wordt toegevoegd aan de pagina, moet je de afbeelding vooraf laden om LCP te optimaliseren. [Meer informatie over het vooraf laden van LCP-elementen](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Afbeelding voor Grootste weergave met content (LCP) vooraf laden"
@@ -1587,7 +1587,7 @@
     "message": "Timingbudget"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Stel een expliciete breedte en hoogte in voor afbeeldingselementen om opmaakverschuivingen te verminderen en CLS te verbeteren. [Meer informatie over hoe je afbeeldingsafmetingen instelt](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Stel een expliciete breedte en hoogte in voor afbeeldingselementen om opmaakverschuivingen te verminderen en CLS te verbeteren. [Meer informatie over hoe je afbeeldingsafmetingen instelt](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Afbeeldingselementen hebben geen expliciete `width` en `height`"
@@ -1662,7 +1662,7 @@
     "message": "Bevat een `<meta name=\"viewport\">`-tag met `width` of `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Dit is het werk dat threads blokkeert tijdens het meten van de Interactie tot de Volgende weergave. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/inp/)"
+    "message": "Dit is het werk dat threads blokkeert tijdens het meten van de Interactie tot de Volgende weergave. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms besteed aan gebeurtenis '{interactionType}'"
@@ -1704,10 +1704,10 @@
     "message": "Praktische tips"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Deze controles wijzen op mogelijkheden om [de toegankelijkheid van je web-app te verbeteren](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatische detectie kan alleen een subset van problemen vaststellen en biedt geen garantie voor de toegankelijkheid van je web-app. Daarom wordt ook [handmatig testen](https://web.dev/how-to-review/) aanbevolen."
+    "message": "Deze controles wijzen op mogelijkheden om [de toegankelijkheid van je web-app te verbeteren](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatische detectie kan alleen een subset van problemen vaststellen en biedt geen garantie voor de toegankelijkheid van je web-app. Daarom wordt ook [handmatig testen](https://web.dev/articles/how-to-review) aanbevolen."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Deze items gaan over gebieden die niet kunnen worden getest met een automatische testtool. Bekijk meer informatie in onze gids over [het uitvoeren van een toegankelijkheidscontrole](https://web.dev/how-to-review/)."
+    "message": "Deze items gaan over gebieden die niet kunnen worden getest met een automatische testtool. Bekijk meer informatie in onze gids over [het uitvoeren van een toegankelijkheidscontrole](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Toegankelijkheid"
@@ -1794,10 +1794,10 @@
     "message": "Prestaties"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Deze checks valideren de aspecten van een progressive web-app. [Meer informatie over wat een goede progressive web-app is](https://web.dev/pwa-checklist/)"
+    "message": "Deze checks valideren de aspecten van een progressive web-app. [Meer informatie over wat een goede progressive web-app is](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Deze controles worden vereist door de baseline [PWA-checklist](https://web.dev/pwa-checklist/) maar worden niet automatisch gecontroleerd door Lighthouse. Ze zijn niet van invloed op je score, maar het is wel belangrijk dat je ze handmatig verifieert."
+    "message": "Deze controles worden vereist door de baseline [PWA-checklist](https://web.dev/articles/pwa-checklist) maar worden niet automatisch gecontroleerd door Lighthouse. Ze zijn niet van invloed op je score, maar het is wel belangrijk dat je ze handmatig verifieert."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Geoptimaliseerd voor PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Deze checks zorgen ervoor dat je pagina het algemene advies voor zoekmachineoptimalisatie volgt. Er zijn veel aanvullende factoren waarvoor Lighthouse hier geen score geeft, maar die wel van invloed kunnen zijn op je zoekpositie, waaronder de prestaties voor [Site-vitaliteit](https://web.dev/learn-core-web-vitals/). [Meer informatie over Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
+    "message": "Deze checks zorgen ervoor dat je pagina het algemene advies voor zoekmachineoptimalisatie volgt. Er zijn veel aanvullende factoren waarvoor Lighthouse hier geen score geeft, maar die wel van invloed kunnen zijn op je zoekpositie, waaronder de prestaties voor [Site-vitaliteit](https://web.dev/explore/vitals). [Meer informatie over Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Voer deze extra validators op je site uit om aanvullende praktische tips voor SEO te controleren."
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse kan de aangevraagde pagina niet goed laden. Zorg ervoor dat je de juiste URL test en dat de server correct reageert op alle verzoeken. (Details: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse kan de aangevraagde pagina niet goed laden. Zorg ervoor dat je de juiste URL test en dat de server correct reageert op alle verzoeken. (Statuscode: {statusCode})"
+    "message": "Lighthouse kan de aangevraagde pagina niet goed laden. Zorg dat je de juiste URL test en de server correct reageert op alle verzoeken. (Statuscode: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Het laden van je pagina duurde te lang. Volg de suggesties in het rapport om de laadtijd van je pagina te beperken. Voer Lighthouse daarna opnieuw uit. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Het lijkt erop dat je een ongeldige URL hebt opgegeven."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse kan de aangevraagde pagina niet goed laden. Zorg dat je de juiste URL test en de server correct reageert op alle verzoeken. (Statuscode: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Het MIME-type van de pagina is XHTML: Lighthouse ondersteunt dit documenttype niet expliciet"
@@ -3108,22 +3111,22 @@
     "message": "Gebruik [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack om de grootte te verkleinen van de bestanden die naar de browser worden gestuurd."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Gebruik de component `nuxt/image` en stel `format=\"webp\"` in. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "Gebruik de component `nuxt/image` en stel `format=\"webp\"` in. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Gebruik de component `nuxt/image` en stel `loading=\"lazy\"` in voor afbeeldingen buiten het scherm. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "Gebruik de component `nuxt/image` en stel `loading=\"lazy\"` in voor afbeeldingen buiten het scherm. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Gebruik de component `nuxt/image` en geef `preload` voor de LCP-afbeelding op. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "Gebruik de component `nuxt/image` en geef `preload` voor de LCP-afbeelding op. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Gebruik de component `nuxt/image` en geef expliciet `width` en `height` op. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "Gebruik de component `nuxt/image` en geef expliciet `width` en `height` op. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Gebruik de component `nuxt/image` en stel de juiste `quality` in. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "Gebruik de component `nuxt/image` en stel de juiste `quality` in. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Gebruik de component `nuxt/image` en stel de juiste `sizes` in. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "Gebruik de component `nuxt/image` en stel de juiste `sizes` in. [Meer informatie](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Vervang geanimeerde gif's door video](https://web.dev/replace-gifs-with-videos/) zodat de webpagina sneller laadt en overweeg moderne bestandsindelingen zoals [webm](https://web.dev/replace-gifs-with-videos/#create-webm-videos) of [av1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) te gebruiken voor een tot 30% efficiëntere compressie vergeleken met de huidige geavanceerde videocodec, vp9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Eerste keer laden van de pagina"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Momentopname op een specifiek tijdstip"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tijdsduur van gebruikersinteracties"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Aangepaste throttling"
   },
@@ -3393,10 +3402,10 @@
     "message": "User-agent (netwerk)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Laden van één pagina"
+    "message": "Sessie waarbij één pagina wordt geladen"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Deze gegevens zijn afkomstig van het laden van één pagina, in tegenstelling tot veldgegevens die veel sessies samenvatten."
+    "message": "Deze gegevens zijn afkomstig van een sessie waarbij één pagina wordt geladen, in tegenstelling tot veldgegevens die veel sessies samenvatten."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Langzame 4G-throttling"

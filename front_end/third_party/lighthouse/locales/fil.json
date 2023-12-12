@@ -639,7 +639,7 @@
     "message": "Gumamit ng mga format ng video para sa animated na content"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga legacy na browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Para sa iyong naka-bundle na JavaScript, gumamit ng modernong diskarte sa deployment ng script gamit ang pag-detect ng feature na module/nomodule para mabawasan ang dami ng code na ipinapadala sa mga modernong browser, habang pinapanatili ang suporta para sa mga legacy na browser. [Alamin kung paano gamitin ang modernong JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga legacy na browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Para sa iyong naka-bundle na JavaScript, gumamit ng modernong diskarte sa deployment ng script gamit ang pag-detect ng feature na module/nomodule para mabawasan ang dami ng code na ipinapadala sa mga modernong browser, habang pinapanatili ang suporta para sa mga legacy na browser. [Alamin kung paano gamitin ang modernong JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Iwasan ang paghahatid ng legacy na JavaScript sa mga modernong browser"
@@ -993,7 +993,7 @@
     "message": "Inaasahang laki"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Dapat ay kasukat ng mga natural na dimensyon ng larawan ang laki ng display at ratio ng pixel para ma-maximize ang pagiging malinaw ng larawan. [Alamin kung paano magbigay ng mga responsive na larawan](https://web.dev/serve-responsive-images/)."
+    "message": "Dapat ay kasukat ng mga natural na dimensyon ng larawan ang laki ng display at ratio ng pixel para ma-maximize ang pagiging malinaw ng larawan. [Alamin kung paano magbigay ng mga responsive na larawan](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Nagpapakita ng mga larawang may mababang resolution"
@@ -1158,13 +1158,13 @@
     "message": "Kontribusyon sa CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ang mga DOM element na ito ang may pinakamalaking kontribusyon sa CLS ng page. [Alamin kung paano pahusayin ang CLS](https://web.dev/optimize-cls/)"
+    "message": "Ang mga DOM element na ito ang may pinakamalaking kontribusyon sa CLS ng page. [Alamin kung paano pahusayin ang CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Iwasan ang malalaking pagbabago ng layout"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Sa lifecycle ng page, mas nahuhuling ma-render ang mga larawan sa itaas ng fold na mabagal ang pag-load, at puwede nitong maantala ang largest contentful paint. [Matuto pa tungkol sa mahusay na mabagal na pag-load](https://web.dev/lcp-lazy-loading/)."
+    "message": "Sa lifecycle ng page, mas nahuhuling ma-render ang mga larawan sa itaas ng fold na mabagal ang pag-load, at puwede nitong maantala ang largest contentful paint. [Matuto pa tungkol sa mahusay na mabagal na pag-load](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Mabagal ang pag-load ng Largest Contentful Paint image"
@@ -1173,7 +1173,7 @@
     "message": "Hindi mabagal ang pag-load ng Largest Contentful Paint image"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Inililista ang pinakamatatagal na gawain sa pangunahing thread, na kapaki-pakinabang para sa pagtukoy ng mga pinakanakakapagpatagal ng input delay. [Alamin kung paano iwasan ang matatagal na gawain sa pangunahing thread](https://web.dev/long-tasks-devtools/)"
+    "message": "Inililista ang pinakamatatagal na gawain sa pangunahing thread, na kapaki-pakinabang para sa pagtukoy ng mga pinakanakakapagpatagal ng input delay. [Alamin kung paano iwasan ang matatagal na gawain sa pangunahing thread](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# matagal na gawain ang nakita}one{# matagal na gawain ang nakita}other{# na matagal na gawain ang nakita}}"
@@ -1221,7 +1221,7 @@
     "message": "May nama-mask na icon ang manifest"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Sinusukat ng Cumulative Layout Shift ang paggalaw ng mga nakikitang element sa loob ng viewport. [Matuto pa tungkol sa sukatang Cumulative Layout Shift](https://web.dev/cls/)."
+    "message": "Sinusukat ng Cumulative Layout Shift ang paggalaw ng mga nakikitang element sa loob ng viewport. [Matuto pa tungkol sa sukatang Cumulative Layout Shift](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Minamarkahan ng First Contentful Paint ang tagal bago ma-paint ang unang text o larawan. [Matuto pa tungkol sa sukatang First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Sinusukat ng First Meaningful Paint ang bilis ng pagpapakita ng pangunahing content ng isang page. [Matuto pa tungkol sa sukatang First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Sinusukat ng Interaction to Next Paint ang pagiging responsive ng page, kung gaano katagal bago makitang tumutugon ang page sa input ng user. [Matuto pa tungkol sa sukatang Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Sinusukat ng Interaction to Next Paint ang pagiging responsive ng page, kung gaano katagal bago makitang tumutugon ang page sa input ng user. [Matuto pa tungkol sa sukatang Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Ang Oras bago maging Interactive ay ang panahon bago maging ganap na interactive ang page. [Matuto pa tungkol sa sukatang Oras bago maging Interactive](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Mga Latency sa Backend ng Server"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Hindi palaging gumagana nang maayos ang event na `unload` at puwedeng mapigilan ng paghihintay rito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Gamitin na lang ang event na `pagehide` o `visibilitychange`. [Matuto pa tungkol sa pag-unload ng mga event listener](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Hindi palaging gumagana nang maayos ang event na `unload` at puwedeng mapigilan ng paghihintay rito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Gamitin na lang ang event na `pagehide` o `visibilitychange`. [Matuto pa tungkol sa pag-unload ng mga event listener](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Nagrerehistro ng listener na `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Badyet sa performance"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Mag-preload ng mga `optional` na font para magamit ng mga unang beses na bisita ang mga ito. [Matuto pa tungkol sa pag-preload ng mga font](https://web.dev/preload-optional-fonts/)"
+    "message": "Mag-preload ng mga `optional` na font para magamit ng mga unang beses na bisita ang mga ito. [Matuto pa tungkol sa pag-preload ng mga font](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Hindi na-preload ang mga font na may `font-display: optional`"
@@ -1314,7 +1314,7 @@
     "message": "Na-preload ang mga font na may `font-display: optional`"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Kung dynamic na idaragdag sa page ang element ng LCP, dapat mong i-preload ang larawan para pahusayin ang LCP. [Matuto pa tungkol sa pag-preload ng mga element ng LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Kung dynamic na idaragdag sa page ang element ng LCP, dapat mong i-preload ang larawan para pahusayin ang LCP. [Matuto pa tungkol sa pag-preload ng mga element ng LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "I-preload ang larawan ng Largest Contentful Paint"
@@ -1587,7 +1587,7 @@
     "message": "Badyet sa timing"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Magtakda ng malinaw na lapad at taas sa mga element na larawan para mabawasan ang mga pagbabago sa layout at mapahusay ang CLS. [Alamin kung paano magtakda ng mga dimensyon ng larawan](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Magtakda ng malinaw na lapad at taas sa mga element na larawan para mabawasan ang mga pagbabago sa layout at mapahusay ang CLS. [Alamin kung paano magtakda ng mga dimensyon ng larawan](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Walang tahasang `width` at `height` ang mga element na larawan"
@@ -1662,7 +1662,7 @@
     "message": "May tag na `<meta name=\"viewport\">` na may `width` o `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Ito ang pag-block ng thread na nangyayari sa panahon ng pagsukat sa Interaction to Next Paint. [Matuto pa tungkol sa sukatang Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Ito ang pag-block ng thread na nangyayari sa panahon ng pagsukat sa Interaction to Next Paint. [Matuto pa tungkol sa sukatang Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms ang ginugol sa event '{interactionType}'"
@@ -1704,10 +1704,10 @@
     "message": "Pinakamahuhusay na kagawian"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Hina-highlight ng mga pagsusuring ito ang mga pagkakataong [pahusayin ang accessibility ng iyong web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Isang subset lang ng mga isyu ang made-detect ng awtomatikong pag-detect at hindi nito magagarantiya ang accessibility ng web app mo, kaya hinihikayat din ang [manual na pagsusuri](https://web.dev/how-to-review/)."
+    "message": "Hina-highlight ng mga pagsusuring ito ang mga pagkakataong [pahusayin ang accessibility ng iyong web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Isang subset lang ng mga isyu ang made-detect ng awtomatikong pag-detect at hindi nito magagarantiya ang accessibility ng web app mo, kaya hinihikayat din ang [manual na pagsusuri](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Tinutugunan ng mga item na ito ang mga bahaging hindi masasakop ng naka-automate na tool sa pagsusuri. Matuto pa sa aming gabay sa [pagsasagawa ng pagsusuri sa pagiging accessible](https://web.dev/how-to-review/)."
+    "message": "Tinutugunan ng mga item na ito ang mga bahaging hindi masasakop ng naka-automate na tool sa pagsusuri. Matuto pa sa aming gabay sa [pagsasagawa ng pagsusuri sa pagiging accessible](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Pagiging accessible"
@@ -1794,10 +1794,10 @@
     "message": "Performance"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Vina-validate ng mga pagsusuring ito ang mga aspeto ng isang Progressive Web App. [Alamin kung ano ang mayroon sa isang Progressive Web App](https://web.dev/pwa-checklist/)."
+    "message": "Vina-validate ng mga pagsusuring ito ang mga aspeto ng isang Progressive Web App. [Alamin kung ano ang mayroon sa isang Progressive Web App](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Kinakailangan ang mga pagsusuring ito ng baseline na [Checklist ng PWA ](https://web.dev/pwa-checklist/) pero hindi ito awtomatikong sinusuri ng Lighthouse. Hindi nakakaapekto ang mga ito sa iyong score pero mahalagang ma-verify mo ang mga ito nang manual."
+    "message": "Kinakailangan ang mga pagsusuring ito ng baseline na [Checklist ng PWA ](https://web.dev/articles/pwa-checklist) pero hindi ito awtomatikong sinusuri ng Lighthouse. Hindi nakakaapekto ang mga ito sa iyong score pero mahalagang ma-verify mo ang mga ito nang manual."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Na-optimize ang PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Tinitiyak ng mga pagsusuring ito na nakakasunod ang iyong page sa pangunahing payo sa pag-optimize sa search engine. Marami pang karagdagang salik na hindi minamarkahan ng Lighthouse dito na posibleng makaapekto sa iyong ranking sa paghahanap, kabilang ang performance sa [Core Web Vitals](https://web.dev/learn-core-web-vitals/). [Matuto pa tungkol sa Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Tinitiyak ng mga pagsusuring ito na nakakasunod ang iyong page sa pangunahing payo sa pag-optimize sa search engine. Marami pang karagdagang salik na hindi minamarkahan ng Lighthouse dito na posibleng makaapekto sa iyong ranking sa paghahanap, kabilang ang performance sa [Core Web Vitals](https://web.dev/explore/vitals). [Matuto pa tungkol sa Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Paganahin ang mga karagdagang validator na ito sa iyong site para tingnan ang karagdagang pinakamahuhusay na kagawian sa SEO."
@@ -2643,7 +2643,7 @@
     "message": "Hindi na-load nang maayos ng Lighthouse ang page na hiniling mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan. (Mga Detalye: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Hindi na-load nang maayos ng Lighthouse ang page na hiniling mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan. (Status code: {statusCode})"
+    "message": "Hindi na-load nang maayos ng Lighthouse ang page na ni-request mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng request. (Status code: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Masyadong matagal na na-load ang iyong page. Pakisunod ang mga pagkakataon sa ulat para mabawasan ang tagal ng pag-load ng iyong page, at pagkatapos ay paganahin ulit ang Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Mukhang invalid ang URL na ibinigay mo."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Hindi na-load nang maayos ng Lighthouse ang page na ni-request mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng request. (Status code: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "XHTML ang uri ng MIME ng page: Hindi explicit na sinusuportahan ng Lighthouse ang uri ng dokumentong ito"
@@ -3108,22 +3111,22 @@
     "message": "Gamitin ang [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) sa NitroPack para mabawasan ang laki ng mga file na ipinapadala sa browser."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang `format=\"webp\"`. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang `format=\"webp\"`. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang `loading=\"lazy\"` para sa mga offscreen na larawan. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang `loading=\"lazy\"` para sa mga offscreen na larawan. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Gamitin ang bahaging `nuxt/image` at tukuyin ang `preload` para sa larawan ng LCP. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Gamitin ang bahaging `nuxt/image` at tukuyin ang `preload` para sa larawan ng LCP. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Gamitin ang bahaging `nuxt/image` at tukuyin ang partikular na `width` at `height`. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Gamitin ang bahaging `nuxt/image` at tukuyin ang partikular na `width` at `height`. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang naaangkop na `quality`. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang naaangkop na `quality`. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang naaangkop na `sizes`. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Gamitin ang bahaging `nuxt/image` at itakda ang naaangkop na `sizes`. [Matuto pa](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Palitan ang mga animated na GIF ng video](https://web.dev/replace-gifs-with-videos/) para sa mas mabibilis na pag-load ng web page at pag-isipang gumamit ng mga modernong format ng file gaya ng [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mapahusay ang efficiency ng pag-compress nang mahigit 30% kaysa sa kasalukuyang state-of-the-art na video codec na VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Paunang pag-load ng page"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Snapshot ng isang sandali"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tagal ng panahon ng mga interaction ng user"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Custom na pag-throttle"
   },
@@ -3393,10 +3402,10 @@
     "message": "User agent (network)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Isang pag-load ng page"
+    "message": "Session sa isang page"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Kinuha ang data na ito mula sa isang pag-load ng page, kumpara sa data ng field na nagbubuod sa maraming session."
+    "message": "Kinuha ang data na ito mula sa session sa isang page, kumpara sa data ng field na nagbubuod sa maraming session."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Pag-throttle sa mabagal na 4G"

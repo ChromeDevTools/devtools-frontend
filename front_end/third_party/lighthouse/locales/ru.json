@@ -639,7 +639,7 @@
     "message": "Используйте видеоформаты для анимированного контента"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Полифилы и преобразования позволяют работать с новыми возможностями JavaScript в устаревших браузерах. Однако для современных браузеров большинство из них не требуется. Используйте новую стратегию развертывания скриптов в пакетах JavaScript. Обнаружение модульных и немодульных функций сократит объем кода в современных браузерах и обеспечит поддержку устаревших браузеров. Подробнее о том, [как использовать новую стратегию работы с JavaScript](https://web.dev/publish-modern-javascript/)…"
+    "message": "Полифилы и преобразования позволяют работать с новыми возможностями JavaScript в устаревших браузерах. Однако для современных браузеров большинство из них не требуется. Используйте новую стратегию развертывания скриптов в пакетах JavaScript. Обнаружение модульных и немодульных функций сократит объем кода в современных браузерах и обеспечит поддержку устаревших браузеров. Подробнее о том, [как использовать новую стратегию работы с JavaScript](https://web.dev/articles/publish-modern-javascript)…"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Не отправляйте устаревший код JavaScript в современные браузеры"
@@ -993,7 +993,7 @@
     "message": "Ожидаемый размер"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Чтобы обеспечить максимальное качество, размеры исходного изображения должны быть пропорциональны размерам при отображении на экране с учетом соотношения пикселей. Подробнее о том, [как добавлять адаптивные изображения](https://web.dev/serve-responsive-images/)…"
+    "message": "Чтобы обеспечить максимальное качество, размеры исходного изображения должны быть пропорциональны размерам при отображении на экране с учетом соотношения пикселей. Подробнее о том, [как добавлять адаптивные изображения](https://web.dev/articles/serve-responsive-images)…"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Изображения показываются в низком разрешении"
@@ -1158,13 +1158,13 @@
     "message": "Фактор совокупного смещения макета"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Эти элементы DOM больше всего влияют на совокупное смещение макета страницы. Узнайте, [как его уменьшить](https://web.dev/optimize-cls/)."
+    "message": "Эти элементы DOM больше всего влияют на совокупное смещение макета страницы. Узнайте, [как его уменьшить](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Устраните большие смещения макета"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Отложенная загрузка изображений в видимой части страницы приводит к тому, что они позже показываются. Это может замедлить отрисовку самого крупного контента. Подробнее [об оптимальной отложенной загрузке](https://web.dev/lcp-lazy-loading/)…"
+    "message": "Отложенная загрузка изображений в видимой части страницы приводит к тому, что они позже показываются. Это может замедлить отрисовку самого крупного контента. Подробнее [об оптимальной отложенной загрузке](https://web.dev/articles/lcp-lazy-loading)…"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Изображение, которое отображается при отрисовке самого крупного контента, загружено с задержкой"
@@ -1173,7 +1173,7 @@
     "message": "Изображение, которое отображается при отрисовке самого крупного контента, загружено без задержки"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Для основного потока создается список самых длительных задач. Это позволяет выявлять главные факторы, которые приводят к задержкам после ввода. Подробнее о том, [как предотвратить появление длительных задач в основном потоке](https://web.dev/long-tasks-devtools/)…"
+    "message": "Для основного потока создается список самых длительных задач. Это позволяет выявлять главные факторы, которые приводят к задержкам после ввода. Подробнее о том, [как предотвратить появление длительных задач в основном потоке](https://web.dev/articles/long-tasks-devtools)…"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Обнаружена # длительная задача}one{Обнаружена # длительная задача}few{Обнаружено # длительные задачи}many{Обнаружено # длительных задач}other{Обнаружено # длительной задачи}}"
@@ -1221,7 +1221,7 @@
     "message": "Манифест содержит маскируемый значок"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Совокупное смещение макета – это величина, на которую смещаются видимые элементы области просмотра при загрузке. Подробнее о [совокупном смещении макета](https://web.dev/cls/)…"
+    "message": "Совокупное смещение макета – это величина, на которую смещаются видимые элементы области просмотра при загрузке. Подробнее о [совокупном смещении макета](https://web.dev/articles/cls)…"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Первая отрисовка контента – показатель, который отражает время между началом загрузки страницы и появлением первого изображения или блока текста. Подробнее [о первой отрисовке контента](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)…"
@@ -1230,7 +1230,7 @@
     "message": "Первая значимая отрисовка – показатель, определяющий интервал времени между началом загрузки страницы и появлением основного контента. Подробнее [о первой значимой отрисовке](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)…"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Взаимодействие до следующей отрисовки – показатель скорости отклика страницы. Он отражает, через какое время становится виден ответ страницы на ввод данных пользователем. Подробнее [о взаимодействии до следующей отрисовки](https://web.dev/inp/)…"
+    "message": "Взаимодействие до следующей отрисовки – показатель скорости отклика страницы. Он отражает, через какое время становится виден ответ страницы на ввод данных пользователем. Подробнее [о взаимодействии до следующей отрисовки](https://web.dev/articles/inp)…"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Время загрузки для взаимодействия – показатель, который отражает время, за которое страница полностью подготавливается к взаимодействию с пользователем. Подробнее [о времени загрузки для взаимодействия](https://developer.chrome.com/docs/lighthouse/performance/interactive/)…"
@@ -1260,7 +1260,7 @@
     "message": "Задержка со стороны сервера"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Событие `unload` активируется не всегда. Если для него создан прослушиватель, это может привести к ошибкам средств оптимизации браузера, например функции возвратного кеша. Рекомендуем использовать события `pagehide` или `visibilitychange`. Подробнее [о прослушивателе событий unload](https://web.dev/bfcache/#never-use-the-unload-event)…"
+    "message": "Событие `unload` активируется не всегда. Если для него создан прослушиватель, это может привести к ошибкам средств оптимизации браузера, например функции возвратного кеша. Рекомендуем использовать события `pagehide` или `visibilitychange`. Подробнее [о прослушивателе событий unload](https://web.dev/articles/bfcache#never_use_the_unload_event)…"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Регистрируется прослушиватель для события `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Бюджет производительности"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Выполняйте предварительную загрузку шрифтов, задав дескриптору font-display значение `optional`, чтобы новые посетители могли воспользоваться ими. Подробнее [о предзагрузке шрифтов](https://web.dev/preload-optional-fonts/)…"
+    "message": "Выполняйте предварительную загрузку шрифтов, задав дескриптору font-display значение `optional`, чтобы новые посетители могли воспользоваться ими. Подробнее [о предзагрузке шрифтов](https://web.dev/articles/preload-optional-fonts)…"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Шрифты со свойством `font-display: optional` не загружены"
@@ -1314,7 +1314,7 @@
     "message": "Шрифты со свойством `font-display: optional` предварительно загружены"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Если вы динамически добавляете элемент LCP на страницу, настройте его предзагрузку, чтобы оптимизировать время отрисовки самого крупного контента. Подробнее [о предзагрузке элементов LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)…"
+    "message": "Если вы динамически добавляете элемент LCP на страницу, настройте его предзагрузку, чтобы оптимизировать время отрисовки самого крупного контента. Подробнее [о предзагрузке элементов LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)…"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Предзагрузите изображение для элемента \"Отрисовка самого крупного контента\""
@@ -1587,7 +1587,7 @@
     "message": "Время на загрузку"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Чтобы уменьшить совокупное смещение макета и избежать проблем, связанных со смещением элементов, рекомендуем всегда явным образом задавать ширину и высоту для изображений. Подробнее о том, [как задавать размеры изображений](https://web.dev/optimize-cls/#images-without-dimensions)…"
+    "message": "Чтобы уменьшить совокупное смещение макета и избежать проблем, связанных со смещением элементов, рекомендуем всегда явным образом задавать ширину и высоту для изображений. Подробнее о том, [как задавать размеры изображений](https://web.dev/articles/optimize-cls#images_without_dimensions)…"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Для изображений не заданы явным образом атрибуты `width` и `height`."
@@ -1662,7 +1662,7 @@
     "message": "Присутствует метатег `<meta name=\"viewport\">` со свойством `width` или `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Это работа, блокирующая поток, которая происходит после взаимодействия со страницей и до следующей отрисовки. Подробнее [о взаимодействии до следующей отрисовки](https://web.dev/inp/)…"
+    "message": "Это работа, блокирующая поток, которая происходит после взаимодействия со страницей и до следующей отрисовки. Подробнее [о взаимодействии до следующей отрисовки](https://web.dev/articles/inp)…"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "На обработку события {interactionType} ушло {timeInMs, number, milliseconds} мс"
@@ -1704,10 +1704,10 @@
     "message": "Рекомендации"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Узнайте, какие трудности могут возникнуть у людей с ограниченными возможностями при использовании вашего веб-приложения, и [сделайте его доступнее](https://developer.chrome.com/docs/lighthouse/accessibility/). Автоматические проверки не гарантируют доступность приложения, поэтому мы рекомендуем выполнять [тестирование вручную](https://web.dev/how-to-review/). Оно поможет выявить оставшиеся проблемы."
+    "message": "Узнайте, какие трудности могут возникнуть у людей с ограниченными возможностями при использовании вашего веб-приложения, и [сделайте его доступнее](https://developer.chrome.com/docs/lighthouse/accessibility/). Автоматические проверки не гарантируют доступность приложения, поэтому мы рекомендуем выполнять [тестирование вручную](https://web.dev/articles/how-to-review). Оно поможет выявить оставшиеся проблемы."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Ручная проверка позволяет охватить области, которые невозможно протестировать автоматически. Подробнее [о проверке специальных возможностей](https://web.dev/how-to-review/)…"
+    "message": "Ручная проверка позволяет охватить области, которые невозможно протестировать автоматически. Подробнее [о проверке специальных возможностей](https://web.dev/articles/how-to-review)…"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Специальные возможности"
@@ -1794,10 +1794,10 @@
     "message": "Производительность"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Здесь проверяется соответствие нормам современных веб-приложений. Подробнее о том, [как создать качественное современное веб-приложение](https://web.dev/pwa-checklist/)…"
+    "message": "Здесь проверяется соответствие нормам современных веб-приложений. Подробнее о том, [как создать качественное современное веб-приложение](https://web.dev/articles/pwa-checklist)…"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Lighthouse не проверяет эти пункты автоматически, но они необходимы для соответствия базовому [контрольному списку современных веб-приложений](https://web.dev/pwa-checklist/). Они не влияют на показатель приложения, однако их следует проверить вручную."
+    "message": "Lighthouse не проверяет эти пункты автоматически, но они необходимы для соответствия базовому [контрольному списку современных веб-приложений](https://web.dev/articles/pwa-checklist). Они не влияют на показатель приложения, однако их следует проверить вручную."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Соответствие рекомендациям для PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Эти проверки позволяют узнать, соответствует ли страница основным рекомендациям к поисковой оптимизации. Lighthouse оценивает не все факторы, которые могут повлиять на позицию сайта в результатах поиска (например, производительность по [основным интернет-показателям](https://web.dev/learn-core-web-vitals/)). Подробнее [о факторах, важных для Google Поиска](https://support.google.com/webmasters/answer/35769)…"
+    "message": "Эти проверки позволяют узнать, соответствует ли страница основным рекомендациям к поисковой оптимизации. Lighthouse оценивает не все факторы, которые могут повлиять на позицию сайта в результатах поиска (например, производительность по [основным интернет-показателям](https://web.dev/explore/vitals)). Подробнее [о факторах, важных для Google Поиска](https://support.google.com/webmasters/answer/35769)…"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Проверьте, соответствует ли ваш сайт рекомендациям по поисковой оптимизации (SEO), с помощью этих дополнительных сервисов."
@@ -2643,7 +2643,7 @@
     "message": "Не удалось загрузить страницу. Убедитесь, что URL введен правильно и сервер отвечает на все запросы. Подробнее: {errorDetails}."
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Не удалось загрузить страницу. Убедитесь, что URL введен правильно и сервер отвечает на все запросы. Код статуса: {statusCode}."
+    "message": "Не удалось загрузить страницу. Убедитесь, что URL введен правильно и сервер корректно отвечает на все запросы. Код статуса: {statusCode}."
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Страница загружалась слишком долго. Уменьшите время загрузки, выполнив рекомендации из отчета, а затем перезапустите Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Недействительный URL."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Не удалось загрузить страницу. Убедитесь, что URL введен правильно и сервер корректно отвечает на все запросы. Код статуса: {errorCode}."
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Эта страница имеет MIME-тип XHTML. Lighthouse не поддерживает этот тип документов."
@@ -3108,22 +3111,22 @@
     "message": "Воспользуйтесь функцией [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) в настройках NitroPack, чтобы уменьшить размер файлов, отправляемых в браузер."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `format=\"webp\"`. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `format=\"webp\"`. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `loading=\"lazy\"` для закадровых изображений. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `loading=\"lazy\"` для закадровых изображений. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `preload` для изображения LCP. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "Используйте компонент `nuxt/image`, чтобы установить значение `preload` для изображения LCP. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Используйте компонент `nuxt/image`, чтобы явно задать значения для параметров `width` и `height`. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "Используйте компонент `nuxt/image`, чтобы явно задать значения для параметров `width` и `height`. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Используйте компонент `nuxt/image`, чтобы задать подходящее значение для параметра `quality`. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "Используйте компонент `nuxt/image`, чтобы задать подходящее значение для параметра `quality`. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Используйте компонент `nuxt/image`, чтобы задать подходящее значение для параметра `sizes`. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "Используйте компонент `nuxt/image`, чтобы задать подходящее значение для параметра `sizes`. [Подробнее…](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Смените анимированные GIF-файлы на видео](https://web.dev/replace-gifs-with-videos/), чтобы ускорить загрузку страниц. Также рекомендуем использовать современные форматы файлов, такие как [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) и [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder). Это позволит повысить эффективность сжатия более чем на 30 % по сравнению с показателями новейшего видеокодека VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Начальная загрузка страницы"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Сводка по состоянию на определенный момент"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Период, в течение которого пользователь взаимодействовал со страницей"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Настраиваемое ограничение"
   },
@@ -3393,10 +3402,10 @@
     "message": "Агент пользователя (сеть)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Одна загрузка страницы"
+    "message": "Сеанс с просмотром одной страницы"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Это данные одной загрузки страницы, а не сводка множества сеансов."
+    "message": "Это данные загрузки одной страницы, а не сводка множества сеансов."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Ограничение для сети 4G с низкой скоростью"

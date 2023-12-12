@@ -639,7 +639,7 @@
     "message": "அனிமேஷன் செய்யப்பட்ட உள்ளடக்கங்களுக்கு வீடியோ வடிவமைப்புகளைப் பயன்படுத்தவும்"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "புதிய JavaScript அம்சங்களைப் பழைய உலாவிகள் பயன்படுத்த பாலிஃபில்களும் ட்ரான்ஸ்ஃபார்ம்களும் உதவுகின்றன. எனினும் நவீன உலாவிகளுக்கு இவற்றுள் பல தேவைப்படுவதில்லை. தொகுக்கப்பட்ட JavaScriptடிற்கு பழைய உலாவிகளுக்கான ஆதரவைத் தக்க வைக்கும் அதே நேரத்தில், நவீன உலாவிகளுக்கு மாற்றப்படும் குறியீடுகளைக் குறைக்க மாடியூல்/நோமாடியூல் அம்சக் கண்டறிதலைப் பயன்படுத்தி நவீன ஸ்கிரிப்ட் பயன்படுத்துதல் உத்தியைப் பயன்படுத்துங்கள். [நவீன JavaScriptடைப் பயன்படுத்துவது எப்படி என அறிக](https://web.dev/publish-modern-javascript/)"
+    "message": "புதிய JavaScript அம்சங்களைப் பழைய உலாவிகள் பயன்படுத்த பாலிஃபில்களும் ட்ரான்ஸ்ஃபார்ம்களும் உதவுகின்றன. எனினும் நவீன உலாவிகளுக்கு இவற்றுள் பல தேவைப்படுவதில்லை. தொகுக்கப்பட்ட JavaScriptடிற்கு பழைய உலாவிகளுக்கான ஆதரவைத் தக்க வைக்கும் அதே நேரத்தில், நவீன உலாவிகளுக்கு மாற்றப்படும் குறியீடுகளைக் குறைக்க மாடியூல்/நோமாடியூல் அம்சக் கண்டறிதலைப் பயன்படுத்தி நவீன ஸ்கிரிப்ட் பயன்படுத்துதல் உத்தியைப் பயன்படுத்துங்கள். [நவீன JavaScriptடைப் பயன்படுத்துவது எப்படி என அறிக](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "நவீன உலாவிகளில் லெகஸி JavaScript சேவை வழங்குவதைத் தவிர்த்தல்"
@@ -993,7 +993,7 @@
     "message": "எதிர்பார்க்கப்படும் அளவு"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "படத்தின் தெளிவுத்தன்மையை அதிகரிக்க, படத்தின் இயல்புப் பரிமாண அளவுகள் காட்சி அளவிற்கும் பிக்சல் விகிதத்திற்கும் சரிவிகிதத்தில் இருக்க வேண்டும். [தானாகப் பொருந்தும் தன்மை கொண்ட படங்களை வழங்குவது எப்படி என அறிக](https://web.dev/serve-responsive-images/)."
+    "message": "படத்தின் தெளிவுத்தன்மையை அதிகரிக்க, படத்தின் இயல்புப் பரிமாண அளவுகள் காட்சி அளவிற்கும் பிக்சல் விகிதத்திற்கும் சரிவிகிதத்தில் இருக்க வேண்டும். [தானாகப் பொருந்தும் தன்மை கொண்ட படங்களை வழங்குவது எப்படி என அறிக](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "குறைந்த தெளிவுத்திறனைக் கொண்ட படங்களை வழங்குதல்"
@@ -1158,13 +1158,13 @@
     "message": "CLS பங்களிப்பு"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "பக்கத்தின் பெரும்பான்மையான CLSஸில் இந்த DOM உறுப்புகள் பங்களிக்கின்றன. [CLSஸை எப்படி மேம்படுத்துவது என அறிக](https://web.dev/optimize-cls/)"
+    "message": "பக்கத்தின் பெரும்பான்மையான CLSஸில் இந்த DOM உறுப்புகள் பங்களிக்கின்றன. [CLSஸை எப்படி மேம்படுத்துவது என அறிக](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "பெரிய தளவமைப்பு ஷிஃப்ட்களைத் தவிர்த்தல்"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "தேவையுள்ளபோது காட்டப்படும் வகையில் ஏற்றப்படும் ‘பக்கத்தின் மேல் பகுதியில்’ உள்ள படங்கள் பக்க லைஃப்சைக்கிள் செயல்முறையின் பிற்பகுதியில் ரென்டரிங் ஆகும். இதனால் பெரிய பகுதியைக் காட்டும் நேரத்தில் தாமதம் ஏற்படலாம். [பொருத்தமான 'தேவையுள்ளபோது காண்பித்தல்' முறை குறித்து மேலும் அறிக](https://web.dev/lcp-lazy-loading/)."
+    "message": "தேவையுள்ளபோது காட்டப்படும் வகையில் ஏற்றப்படும் ‘பக்கத்தின் மேல் பகுதியில்’ உள்ள படங்கள் பக்க லைஃப்சைக்கிள் செயல்முறையின் பிற்பகுதியில் ரென்டரிங் ஆகும். இதனால் பெரிய பகுதியைக் காட்டும் நேரத்தில் தாமதம் ஏற்படலாம். [பொருத்தமான 'தேவையுள்ளபோது காண்பித்தல்' முறை குறித்து மேலும் அறிக](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "பெரிய பகுதியைக் காட்டும் நேரப் படம் தேவையுள்ளபோது காட்டப்படும் வகையில் ஏற்றப்பட்டது"
@@ -1173,7 +1173,7 @@
     "message": "பெரிய பகுதியைக் காட்டும் நேரப் படம் தேவையுள்ளபோது காட்டப்படும் வகையில் ஏற்றப்பட்டவில்லை"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "முதன்மைத் தொடரிழையில் உள்ள மிக நீளமான பணிகளைப் பட்டியலிடுகிறது. உள்ளீட்டுத் தாமதத்திற்கு அதிகமாகப் பங்களிப்பவற்றை அடையாளம் காண இது உதவுகிறது. [நீண்ட முதன்மைத் தொடர் பணிகளைத் தவிர்ப்பது எப்படி என அறிக](https://web.dev/long-tasks-devtools/)"
+    "message": "முதன்மைத் தொடரிழையில் உள்ள மிக நீளமான பணிகளைப் பட்டியலிடுகிறது. உள்ளீட்டுத் தாமதத்திற்கு அதிகமாகப் பங்களிப்பவற்றை அடையாளம் காண இது உதவுகிறது. [நீண்ட முதன்மைத் தொடர் பணிகளைத் தவிர்ப்பது எப்படி என அறிக](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# நீண்ட பணி உள்ளது}other{# நீண்ட பணிகள் உள்ளன}}"
@@ -1221,7 +1221,7 @@
     "message": "மாஸ்க் செய்யப்பட்ட ஐகான் மெனிஃபெஸ்டில் உள்ளது"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "காட்சிப் பகுதிக்குள் தெரியக்கூடிய கூறுகளின் நகர்வை கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவிடுகிறது. [கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவீடு குறித்து மேலும் அறிக](https://web.dev/cls/)."
+    "message": "காட்சிப் பகுதிக்குள் தெரியக்கூடிய கூறுகளின் நகர்வை கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவிடுகிறது. [கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவீடு குறித்து மேலும் அறிக](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "'உள்ளடக்கத்துடன் முதல் தோற்றம்' என்பது வார்த்தைகளோ படமோ முதலில் தோன்றும் நேரத்தைக் குறிக்கிறது. ['உள்ளடக்கத்துடன் முதல் தோற்றம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "'பயனுள்ள முதல் தோற்றம்' என்பது பக்கத்தின் முதன்மை உள்ளடக்கம் எப்போது தெரிகிறது என்பதை அளவிடுகிறது. ['பயனுள்ள முதல் தோற்றம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "செயல்-காட்சி நேரம் என்பது பக்கத்தின் பதிலளிக்கும் தன்மையை அளவிடுகிறது, அதாவது பயனர் உள்ளீட்டிற்குப் பக்கத்தின் தெரிவுநிலை எந்த அளவிற்கு உள்ளது என்பதை அளவிடுவது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/inp/)."
+    "message": "செயல்-காட்சி நேரம் என்பது பக்கத்தின் பதிலளிக்கும் தன்மையை அளவிடுகிறது, அதாவது பயனர் உள்ளீட்டிற்குப் பக்கத்தின் தெரிவுநிலை எந்த அளவிற்கு உள்ளது என்பதை அளவிடுவது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "பக்கம் முழுமையாகப் பங்கேற்கத்தக்க வகையில் ஏற்றப்பட எடுத்துக்கொள்ளும் நேரம் எதிர்வினை நேரம் எனப்படும். ['எதிர்வினை நேரம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "சேவையக பேக்எண்ட் தாமதங்கள்"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` நிகழ்வு நம்பத்தகுந்த வகையில் தொடங்கவில்லை, பக்கங்கள் மேற்கொண்டு இதைக் கையாண்டால் உலாவியின் மேம்பட்ட திறன்கள் தடுக்கப்படலாம் (‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் போன்றவை). இதற்குப் பதிலாக `pagehide` அல்லது `visibilitychange` நிகழ்வுகளைப் பயன்படுத்தவும். [அன்லோடு ஈவண்ட் லிசனர்கள் குறித்து மேலும் அறிக](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` நிகழ்வு நம்பத்தகுந்த வகையில் தொடங்கவில்லை, பக்கங்கள் மேற்கொண்டு இதைக் கையாண்டால் உலாவியின் மேம்பட்ட திறன்கள் தடுக்கப்படலாம் (‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் போன்றவை). இதற்குப் பதிலாக `pagehide` அல்லது `visibilitychange` நிகழ்வுகளைப் பயன்படுத்தவும். [அன்லோடு ஈவண்ட் லிசனர்கள் குறித்து மேலும் அறிக](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` நிகழ்வு லிசனரைப் பதிவுசெய்கிறது"
@@ -1305,7 +1305,7 @@
     "message": "செயல்திறன் பட்ஜெட்"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "`optional` என அமைக்கப்பட்டுள்ள எழுத்து வடிவங்களை முன்கூட்டியே ஏற்றுவதால் முதல் முறையாக வரும் பயனர்கள் அவற்றைப் பயன்படுத்தக்கூடும். [எழுத்து வடிவங்களை முன்கூட்டியே ஏற்றுவது குறித்து மேலும் அறிக](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` என அமைக்கப்பட்டுள்ள எழுத்து வடிவங்களை முன்கூட்டியே ஏற்றுவதால் முதல் முறையாக வரும் பயனர்கள் அவற்றைப் பயன்படுத்தக்கூடும். [எழுத்து வடிவங்களை முன்கூட்டியே ஏற்றுவது குறித்து மேலும் அறிக](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` என அமைக்கப்பட்டுள்ள எழுத்துருக்கள் முன்கூட்டியே ஏற்றப்படவில்லை"
@@ -1314,7 +1314,7 @@
     "message": "`font-display: optional` என அமைக்கப்பட்டுள்ள எழுத்துருக்கள் முன்கூட்டியே ஏற்றப்பட்டன"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "பக்கத்தில் LCP உறுப்பு மாறிக்கொண்டே இருக்கும் வகையில் சேர்க்கப்பட்டிருந்தால் LCPயை மேம்படுத்த படத்தை முன்கூட்டியே ஏற்ற வேண்டும். [LCP உறுப்புகளை முன்கூட்டியே ஏற்றுதல் குறித்து மேலும் அறிக](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "பக்கத்தில் LCP உறுப்பு மாறிக்கொண்டே இருக்கும் வகையில் சேர்க்கப்பட்டிருந்தால் LCPயை மேம்படுத்த படத்தை முன்கூட்டியே ஏற்ற வேண்டும். [LCP உறுப்புகளை முன்கூட்டியே ஏற்றுதல் குறித்து மேலும் அறிக](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "பெரிய பகுதியைக் காண்பிக்கும் படத்தை முன்கூட்டியே ஏற்றுதல்"
@@ -1587,7 +1587,7 @@
     "message": "டைமிங் பட்ஜெட்"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "தளவமைப்பு மாற்றங்களைக் குறைப்பதற்கும் CLSஸை மேம்படுத்துவதற்கும் படத்தின் துல்லியமான அகலத்தையும் உயரத்தையும் அமைக்கவும். [படத்தின் பரிமாணங்களை அமைப்பது எப்படி என அறிக](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "தளவமைப்பு மாற்றங்களைக் குறைப்பதற்கும் CLSஸை மேம்படுத்துவதற்கும் படத்தின் துல்லியமான அகலத்தையும் உயரத்தையும் அமைக்கவும். [படத்தின் பரிமாணங்களை அமைப்பது எப்படி என அறிக](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "பட உறுப்புகள் துல்லியமான `width`, `height` ஆகியவற்றைக் கொண்டிருக்கவில்லை"
@@ -1662,7 +1662,7 @@
     "message": "`width` அல்லது `initial-scale` உடன் `<meta name=\"viewport\">` குறிச்சொல் அமைக்கப்பட்டுள்ளது"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "இது ஒரு வரிசைத் தடுப்புப் பணியாகும். இது செயல்-காட்சி நேர அளவீட்டின்போது நடைபெறுகிறது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/inp/)."
+    "message": "இது ஒரு வரிசைத் தடுப்புப் பணியாகும். இது செயல்-காட்சி நேர அளவீட்டின்போது நடைபெறுகிறது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "'{interactionType}' நிகழ்விற்கு {timeInMs, number, milliseconds} ms நேரம் ஆனது"
@@ -1704,10 +1704,10 @@
     "message": "சிறந்த நடைமுறைகள்"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "[உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை மேம்படுத்துவதற்கான](https://developer.chrome.com/docs/lighthouse/accessibility/) வாய்ப்புகளை இந்தச் சரிபார்ப்புகள் தனிப்படுத்திக் காட்டுகின்றன. தானியங்குக் கண்டறிதல் மூலம் சிக்கல்களில் சிலவற்றை மட்டுமே கண்டறிய முடியும் என்பதுடன் உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை உறுதிசெய்ய முடியாது என்பதாலும் [நேரடியாகப் பரிசோதனை](https://web.dev/how-to-review/) செய்யுமாறு ஊக்குவிக்கிறோம்."
+    "message": "[உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை மேம்படுத்துவதற்கான](https://developer.chrome.com/docs/lighthouse/accessibility/) வாய்ப்புகளை இந்தச் சரிபார்ப்புகள் தனிப்படுத்திக் காட்டுகின்றன. தானியங்குக் கண்டறிதல் மூலம் சிக்கல்களில் சிலவற்றை மட்டுமே கண்டறிய முடியும் என்பதுடன் உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை உறுதிசெய்ய முடியாது என்பதாலும் [நேரடியாகப் பரிசோதனை](https://web.dev/articles/how-to-review) செய்யுமாறு ஊக்குவிக்கிறோம்."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "தானியங்கி சோதனைக் கருவியால் சோதிக்க முடியாத பகுதிகளை இவை சோதிக்கும். எங்கள் வழிகாட்டியில் [அணுகல்தன்மை மதிப்பாய்வை நடத்துவதைப்](https://web.dev/how-to-review/) பற்றி மேலும் தெரிந்துகொள்ளலாம்."
+    "message": "தானியங்கி சோதனைக் கருவியால் சோதிக்க முடியாத பகுதிகளை இவை சோதிக்கும். எங்கள் வழிகாட்டியில் [அணுகல்தன்மை மதிப்பாய்வை நடத்துவதைப்](https://web.dev/articles/how-to-review) பற்றி மேலும் தெரிந்துகொள்ளலாம்."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "அணுகல்தன்மை"
@@ -1794,10 +1794,10 @@
     "message": "இணையச் செயல்திறன்"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "இந்தச் சரிபார்ப்புகள் மேம்பட்ட இணைய ஆப்ஸின் அம்சங்களை மதிப்பிடும்.[ஒரு நல்ல மேம்பட்ட இணைய ஆப்ஸின் தன்மைகள் குறித்து அறிக](https://web.dev/pwa-checklist/)."
+    "message": "இந்தச் சரிபார்ப்புகள் மேம்பட்ட இணைய ஆப்ஸின் அம்சங்களை மதிப்பிடும்.[ஒரு நல்ல மேம்பட்ட இணைய ஆப்ஸின் தன்மைகள் குறித்து அறிக](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "பேஸ்லைன் [PWA சரிபார்ப்புப் பட்டியலுக்கு ](https://web.dev/pwa-checklist/) இந்தச் சரிபார்ப்புகள் தேவை, இருப்பினும் இவற்றை Lighthouse தானாகச் சரிபார்ப்பதில்லை. அவை உங்களின் ஸ்கோரில் பாதிப்பை ஏற்படுத்தாது, இருப்பினும் நீங்களாகவே அவற்றைச் சரிபார்ப்பது முக்கியமாகும்."
+    "message": "பேஸ்லைன் [PWA சரிபார்ப்புப் பட்டியலுக்கு ](https://web.dev/articles/pwa-checklist) இந்தச் சரிபார்ப்புகள் தேவை, இருப்பினும் இவற்றை Lighthouse தானாகச் சரிபார்ப்பதில்லை. அவை உங்களின் ஸ்கோரில் பாதிப்பை ஏற்படுத்தாது, இருப்பினும் நீங்களாகவே அவற்றைச் சரிபார்ப்பது முக்கியமாகும்."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA மேம்படுத்தப்பட்டுள்ளது"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "தேடலில் மேம்படுத்துதல் செயல்முறையின் அடிப்படை வழிமுறையை உங்கள் பக்கம் பின்பற்றுகிறது என்பதை இந்தச் சரிபார்ப்புகள் உறுதிசெய்கின்றன. Lighthouse கணக்கில் எடுத்துக்கொள்ளாத பல கூடுதல் காரணிகள் உங்கள் தேடல் தரவரிசையைப் பாதிக்கக்கூடும். அவற்றில் [வலைதளத்தின் முக்கிய அடிப்படை விவரங்கள்](https://web.dev/learn-core-web-vitals/) மீதான செயல்திறனும் அடங்கும். [Google Search Essentials குறித்து மேலும் அறிக](https://support.google.com/webmasters/answer/35769)."
+    "message": "தேடலில் மேம்படுத்துதல் செயல்முறையின் அடிப்படை வழிமுறையை உங்கள் பக்கம் பின்பற்றுகிறது என்பதை இந்தச் சரிபார்ப்புகள் உறுதிசெய்கின்றன. Lighthouse கணக்கில் எடுத்துக்கொள்ளாத பல கூடுதல் காரணிகள் உங்கள் தேடல் தரவரிசையைப் பாதிக்கக்கூடும். அவற்றில் [வலைதளத்தின் முக்கிய அடிப்படை விவரங்கள்](https://web.dev/explore/vitals) மீதான செயல்திறனும் அடங்கும். [Google Search Essentials குறித்து மேலும் அறிக](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "மேலும் சில சிறந்த SEO நடைமுறைகளைச் சோதனை செய்ய, உங்கள் தளத்தில் இந்தக் கூடுதல் வேலிடேட்டர்களை இயக்கவும்."
@@ -2643,7 +2643,7 @@
     "message": "நீங்கள் கோரிய பக்கத்தை Lighthouseஸால் முழுமையாக ஏற்ற முடியவில்லை. நீங்கள் சரியான URLலைப் பரிசோதிப்பதையும் அனைத்துக் கோரிக்கைகளுக்கும் சேவையகம் முறையாக பதிலளிப்பதையும் உறுதிசெய்து கொள்ளவும். (விவரங்கள்: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "நீங்கள் கோரிய பக்கத்தை Lighthouseஸால் முழுமையாக ஏற்ற முடியவில்லை. நீங்கள் சரியான URLலைப் பரிசோதிப்பதையும் அனைத்துக் கோரிக்கைகளுக்கும் சேவையகம் முறையாக பதிலளிப்பதையும் உறுதிசெய்து கொள்ளவும். (நிலைக் குறியீடு: {statusCode})"
+    "message": "நீங்கள் கோரிய பக்கத்தை Lighthouseஸால் முழுமையாக ஏற்ற முடியவில்லை. நீங்கள் சரியான URLலைப் பரிசோதிப்பதையும் அனைத்து கோரிக்கைகளுக்கும் சேவையகம் முறையாகப் பதிலளிப்பதையும் உறுதிசெய்துகொள்ளவும். (நிலைக் குறியீடு: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "உங்கள் பக்கம் ஏற்றப்பட நீண்ட நேரம் எடுத்துக்கொண்டது. பக்கம் ஏற்றப்படும் நேரத்தைக் குறைக்க அறிக்கையிலுள்ள வாய்ப்புகளைப் பின்பற்றி Lighthouseஸை மீண்டும் இயக்கவும். ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "நீங்கள் அளித்துள்ள URL செல்லாததெனத் தோன்றுகிறது."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "நீங்கள் கோரிய பக்கத்தை Lighthouseஸால் முழுமையாக ஏற்ற முடியவில்லை. நீங்கள் சரியான URLலைப் பரிசோதிப்பதையும் அனைத்து கோரிக்கைகளுக்கும் சேவையகம் முறையாகப் பதிலளிப்பதையும் உறுதிசெய்துகொள்ளவும். (நிலைக் குறியீடு: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "பக்கத்தின் MIME வகை XHTMLலைச் சார்ந்தது: Lighthouse இந்த ஆவண வகையை வெளிப்படையாக ஆதரிக்காது"
@@ -3108,22 +3111,22 @@
     "message": "உலாவிக்கு அனுப்பப்படும் ஃபைல்களின் அளவைக் குறைக்க, NitroPackகில் [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ஐ பயன்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, `format=\"webp\"` வடிவமைப்பை அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, `format=\"webp\"` வடிவமைப்பை அமைக்கவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "திரையில் காட்டப்படாத படங்களைத் தேவையுள்ளபோது ஏற்ற, `nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `loading=\"lazy\"` என அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "திரையில் காட்டப்படாத படங்களைத் தேவையுள்ளபோது ஏற்ற, `nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `loading=\"lazy\"` என அமைக்கவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "LCP படத்தை ஏற்ற, `nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `preload` எனக் குறிப்பிடவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "LCP படத்தை ஏற்ற, `nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `preload` எனக் குறிப்பிடவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `width`, `height` ஆகியவற்றைத் துல்லியமாகக் குறிப்பிடவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி `width`, `height` ஆகியவற்றைத் துல்லியமாகக் குறிப்பிடவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, பொருத்தமான `quality` ஐ அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, பொருத்தமான `quality` ஐ அமைக்கவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, பொருத்தமான `sizes` ஐ அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, பொருத்தமான `sizes` ஐ அமைக்கவும். [மேலும் அறிக](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "இணையப் பக்கம் விரைவாக ஏற்றப்படுவதற்கு, [வீடியோவிற்குப் பதிலாக அனிமேஷன் செய்யப்பட்ட GIFகளைப் பயன்படுத்தவும்](https://web.dev/replace-gifs-with-videos/). மேலும் சுருக்குதல் செயல்திறனைத் தற்போதைய அதிநவீன VP9 வீடியோ கோடெக்கை விட 30% கூடுதலாக மேம்படுத்த [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos), [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) போன்ற நவீன ஃபைல் வடிவமைப்புகளைப் பயன்படுத்தவும்."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "பக்கத்தின் முதற்கட்ட ஏற்றம்"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "பாயிண்ட்-இன்-டைம் ஸ்னாப்ஷாட்"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "பயனர் இன்டராக்ஷன்களின் கால அளவு"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "பிரத்தியேகமான த்ராட்லிங்"
   },
@@ -3393,10 +3402,10 @@
     "message": "பயனர் ஏஜெண்ட் (நெட்வொர்க்)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "ஒற்றைப் பக்க ஏற்றம்"
+    "message": "ஒற்றைப் பக்க அமர்வு"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "ஒன்றுக்கும் மேற்பட்ட அமர்வுகளைப் பற்றிய சுருக்கவிவரத்தை வழங்கும் புலத் தரவுக்குப் பதிலாக ஒற்றைப் பக்கம் ஏற்றப்படும் செயலாக்கத்தின் மூலம் இந்தத் தரவு பெறப்பட்டது."
+    "message": "ஒன்றுக்கும் மேற்பட்ட அமர்வுகளைப் பற்றிய சுருக்கவிவரத்தை வழங்கும் புலத் தரவுக்குப் பதிலாக ஒற்றைப் பக்க அமர்வு செயலாக்கத்தின் மூலம் இந்தத் தரவு பெறப்பட்டது."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "வேகம் குறைவான 4G த்ராட்லிங்"

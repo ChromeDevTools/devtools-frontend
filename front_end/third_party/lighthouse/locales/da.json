@@ -639,7 +639,7 @@
     "message": "Brug videoformater til animeret indhold"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill-koder og transformeringer gør det muligt for browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Hvis du har JavaScript-pakker, skal du bruge en strategi til implementering af moderne scripts, der anvender registrering af funktioner med eller uden moduler til at reducere mængden af kode, som sendes til moderne browsere, men som samtidig bevarer understøttelsen af forældede browsere. [Få flere oplysninger om, hvordan du bruger moderne JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill-koder og transformeringer gør det muligt for browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Hvis du har JavaScript-pakker, skal du bruge en strategi til implementering af moderne scripts, der anvender registrering af funktioner med eller uden moduler til at reducere mængden af kode, som sendes til moderne browsere, men som samtidig bevarer understøttelsen af forældede browsere. [Få flere oplysninger om, hvordan du bruger moderne JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Undgå at vise forældet JavaScript i moderne browsere"
@@ -651,7 +651,7 @@
     "message": "Vis billeder i formater af næste generation"
   },
   "core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Overvej at bruge lazy loading til billeder, der ikke er på skærmen, eller som er skjulte, når alle kritiske ressourcer er indlæst for at reducere den tiden inden interaktiv tilstand. [Få flere oplysninger om, hvordan du udskyder indlæsning af billeder, der ikke er på skærmen](https://developer.chrome.com/docs/lighthouse/performance/offscreen-images/)."
+    "message": "Overvej at bruge lazy loading til billeder, der ikke er på skærmen, eller som er skjulte, når alle kritiske ressourcer er indlæst for at reducere den tiden inden interaktiv tilstand (Time to Interactive). [Få flere oplysninger om, hvordan du udskyder indlæsning af billeder, der ikke er på skærmen](https://developer.chrome.com/docs/lighthouse/performance/offscreen-images/)."
   },
   "core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Udskyd billeder, der ikke er på skærmen"
@@ -993,7 +993,7 @@
     "message": "Forventet størrelse"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "For at gøre billedet så tydeligt som muligt bør billedets naturlige mål være proportionelt med både skærmens størrelse og pixelratioen. [Få flere oplysninger om, hvordan du leverer responsive billeder](https://web.dev/serve-responsive-images/)."
+    "message": "For at gøre billedet så tydeligt som muligt bør billedets naturlige mål være proportionelt med både skærmens størrelse og pixelratioen. [Få flere oplysninger om, hvordan du leverer responsive billeder](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Viser billeder med en lav opløsning"
@@ -1137,7 +1137,7 @@
     "message": "Timing"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
-    "message": "Dette element har den største udfyldning af indhold i det synlige område. [Få flere oplysninger om elementet med den største udfyldning af indhold](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+    "message": "Dette element har den største udfyldning af indhold (Largest Contentful Paint) i det synlige område. [Få flere oplysninger om elementet med Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
     "message": "Indlæsningsforsinkelse"
@@ -1152,28 +1152,28 @@
     "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
-    "message": "Element med størst udfyldning af indhold"
+    "message": "Element med Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
     "message": "CLS-bidrag"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Disse DOM-elementer bidrager mest til sidens CLS. [Se, hvordan du forbedrer CLS](https://web.dev/optimize-cls/)"
+    "message": "Disse DOM-elementer bidrager mest til sidens CLS. [Se, hvordan du forbedrer CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Undgå store layoutskift"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Billeder over skillelinjen, der anvender lazy loading, gengives senere på siden, hvilket kan forsinke den største udfyldning af indhold. [Få flere oplysninger om optimal lazy loading](https://web.dev/lcp-lazy-loading/)."
+    "message": "Billeder over skillelinjen, der anvender lazy loading, gengives senere på siden, hvilket kan forsinke den største udfyldning af indhold. [Få flere oplysninger om optimal lazy loading](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
-    "message": "Den største udfyldning af billedindhold blev indlæst med lazy loading"
+    "message": "Largest Contentful Paint blev indlæst med lazy loading"
   },
   "core/audits/lcp-lazy-loaded.js | title": {
-    "message": "Den største udfyldning af billedindhold blev ikke indlæst med lazy loading"
+    "message": "Largest Contentful Paint blev ikke indlæst med lazy loading"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Angiver lange opgaver i hovedtråden, hvilket er nyttigt til at identificere de bidragydere, der forårsager mest forsinkelse. [Få flere oplysninger om, hvordan du undgår lange opgaver i hovedtråden](https://web.dev/long-tasks-devtools/)"
+    "message": "Angiver lange opgaver i hovedtråden, hvilket er nyttigt til at identificere de bidragydere, der forårsager mest forsinkelse. [Få flere oplysninger om, hvordan du undgår lange opgaver i hovedtråden](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Der blev fundet # lang  opgave}one{Der blev fundet # lang  opgave}other{Der blev fundet # lange  opgaver}}"
@@ -1221,31 +1221,31 @@
     "message": "Manifestet har et ikon, der kan maskeres"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Akkumuleret layoutskift måler synlige elementers bevægelse i det synlige område. [Få flere oplysninger om metric'en Akkumuleret layoutskift](https://web.dev/cls/)."
+    "message": "Cumulative Layout Shift måler synlige elementers bevægelse i det synlige område. [Få flere oplysninger om metric'en Cumulative Layout Shift](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Første visning af indhold markerer tidspunktet, hvor den første tekst eller det første billede vises. [Få flere oplysninger om metric'en Første visning af indhold](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
+    "message": "First Contentful Paint markerer tidspunktet, hvor den første tekst eller det første billede vises. [Få flere oplysninger om metric'en First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Første meningsfulde visning måler, hvornår det primære indhold på en side kan ses. [Få flere oplysninger om metric'en Første meningsfulde visning](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+    "message": "First Meaningful Paint måler, hvornår det primære indhold på en side kan ses. [Få flere oplysninger om metric'en First Meaningful Paint\n](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaktion indtil næste visning måler sidens svartid, dvs. hvor lang tid det tager, før siden reagerer på brugerinput på en synlig måde. [Få flere oplysninger om metric'en for interaktion indtil næste visning](https://web.dev/inp/)."
+    "message": "Interaktion indtil næste visning (Interaction to Next Paint) måler sidens svartid, dvs. hvor lang tid det tager, før siden reagerer på brugerinput på en synlig måde. [Få flere oplysninger om metric'en Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
-    "message": "Tid inden interaktiv tilstand er den mængde tid, det tager, før siden er helt interaktiv. [Få flere oplysninger om metric'en Tid inden interaktiv tilstand](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
+    "message": "Time to Interactive er den mængde tid, det tager, før siden er helt interaktiv. [Få flere oplysninger om metric'en Time to Interactive\n](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
   },
   "core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Største udfyldning af indhold angiver det tidspunkt, hvor den største tekst eller det største billede blev anvendt. [Få flere oplysninger om metric'en Største udfyldning af indhold](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+    "message": "Largest Contentful Paint angiver det tidspunkt, hvor den største tekst eller det største billede blev anvendt. [Få flere oplysninger om metric'en Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Den maksimale potentielle ventetid efter første input, som dine brugere kan opleve, er varigheden af den længste proces. [Få flere oplysninger om metric'en for maksimal potentiel ventetid efter første input](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
+    "message": "Den maksimale potentielle ventetid efter første input (First Input Delay), som dine brugere kan opleve, er varigheden af den længste proces. [Få flere oplysninger om metric'en First Input Delay](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
   },
   "core/audits/metrics/speed-index.js | description": {
     "message": "Speed Index viser, hvor hurtigt indholdet på en side er visuelt udfyldt. [Få flere oplysninger om metric'en Speed Index](https://developer.chrome.com/docs/lighthouse/performance/speed-index/)."
   },
   "core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Summen af alle tidsrum mellem første visning af indhold og tid inden interaktiv tilstand, når proceslængden overstiger 50 ms, udtrykt i millisekunder. [Få flere oplysninger om metric'en Total Blocking Time](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)."
+    "message": "Summen af alle tidsrum mellem FCP og Time to Interactive, når proceslængden overstiger 50 ms, udtrykt i millisekunder. [Få flere oplysninger om metric'en Total Blocking Time](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)."
   },
   "core/audits/network-rtt.js | description": {
     "message": "Netværkets pingtid har stor indflydelse på ydeevnen. Hvis pingtiden til et oprindelsespunkt er lang, er det tegn på, at servere, der er tættere på brugeren, kan forbedre ydeevnen. [Få flere oplysninger om pingtid](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -1260,7 +1260,7 @@
     "message": "Forsinkelser for serverens backend"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Hændelsen `unload` starter ikke stabilt, og hvis der ventes på den, kan det forhindre browseroptimeringer som f.eks. Back-Forward Cache. Anvend hændelsen `pagehide` eller `visibilitychange` i stedet. [Få flere oplysninger om hændelsesfunktioner for frigivelse](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Hændelsen `unload` starter ikke stabilt, og hvis der ventes på den, kan det forhindre browseroptimeringer som f.eks. Back-Forward Cache. Anvend hændelsen `pagehide` eller `visibilitychange` i stedet. [Få flere oplysninger om hændelsesfunktioner for frigivelse](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerer en hændelsesfunktion for `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Budget for ydeevne"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Forudindlæs skrifttyper med `optional`, så førstegangsbesøgende kan bruge dem. [Få flere oplysninger om forudindlæsning af skrifttyper](https://web.dev/preload-optional-fonts/)"
+    "message": "Forudindlæs skrifttyper med `optional`, så førstegangsbesøgende kan bruge dem. [Få flere oplysninger om forudindlæsning af skrifttyper](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Skrifttyper med `font-display: optional` er ikke forudindlæst"
@@ -1314,10 +1314,10 @@
     "message": "Skrifttyper med `font-display: optional` er forudindlæst"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Hvis LCP-elementet føjes til siden dynamisk, skal du forudindlæse billedet for at forbedre LCP. [Få flere oplysninger om forudindlæsning af LCP-elementer](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Hvis LCP-elementet føjes til siden dynamisk, skal du forudindlæse billedet for at forbedre LCP. [Få flere oplysninger om forudindlæsning af LCP-elementer](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
-    "message": "Forudindlæs billedet med størst udfyldning af indhold"
+    "message": "Forudindlæs billedet Largest Contentful Paint"
   },
   "core/audits/redirects.js | description": {
     "message": "Omdirigeringer medfører yderligere forsinkelser, inden siden kan indlæses. [Få oplysninger om, hvordan du undgår sideomdirigeringer](https://developer.chrome.com/docs/lighthouse/performance/redirects/)."
@@ -1587,7 +1587,7 @@
     "message": "Tidsbudget"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Anvend en fast bredde og højde for billedelementer for at reducere layoutskift og forbedre CLS. [Få flere oplysninger om, hvordan du angiver billedmål](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Anvend en fast bredde og højde for billedelementer for at reducere layoutskift og forbedre CLS. [Få flere oplysninger om, hvordan du angiver billedmål](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Billedelementerne har ikke eksplicit `width` og `height`"
@@ -1662,7 +1662,7 @@
     "message": "Der er et `<meta name=\"viewport\">`-tag med `width` eller `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Dette er trådblokeringopgaver, der sker under interaktionen indtil målingen af næste visning. [Få flere oplysninger om metric'en for interaktion indtil næste visning](https://web.dev/inp/)."
+    "message": "Dette er trådblokeringopgaver, der sker under interaktionen indtil målingen af næste visning (Interaction to Next Paint). [Få flere oplysninger om metric'en Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms blev brugt på hændelsen \"{interactionType}\""
@@ -1704,10 +1704,10 @@
     "message": "Optimale løsninger"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Disse tjek fremhæver muligheder for at [forbedre tilgængeligheden af din webapp](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk registrering kan kun registrere en del af problemerne og garanterer ikke, at din webapp er tilgængelig, så en [manuel test](https://web.dev/how-to-review/) anbefales også."
+    "message": "Disse tjek fremhæver muligheder for at [forbedre tilgængeligheden af din webapp](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk registrering kan kun registrere en del af problemerne og garanterer ikke, at din webapp er tilgængelig, så en [manuel test](https://web.dev/articles/how-to-review) anbefales også."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Disse elementer omhandler områder, som et automatisk testværktøj ikke kan dække. Få flere oplysninger ved at læse vores vejledning i, hvordan du [udfører en gennemgang af hjælpefunktioner](https://web.dev/how-to-review/)."
+    "message": "Disse elementer omhandler områder, som et automatisk testværktøj ikke kan dække. Få flere oplysninger ved at læse vores vejledning i, hvordan du [udfører en gennemgang af hjælpefunktioner](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Hjælpefunktioner"
@@ -1770,7 +1770,7 @@
     "message": "Diagnostik"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "Det vigtigste aspekt af effektivitet er, hvor hurtigt pixels gengives på skærmen. Vigtige metrics: Første udfyldning af indhold, Første betydningsfulde udfyldning"
+    "message": "Det vigtigste aspekt af effektivitet er, hvor hurtigt pixels gengives på skærmen. Vigtige metrics: First Contentful Paint, First Meaningful Paint\nMeaning"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "Forbedringer af første udfyldning"
@@ -1785,7 +1785,7 @@
     "message": "Metrics"
   },
   "core/config/default-config.js | overallImprovementsGroupDescription": {
-    "message": "Gør den overordnede indlæsning bedre, så siden hurtigst muligt bliver responsiv og klar til brug. Vigtige metrics: Tid inden interaktiv tilstand, Hastighedsindeks"
+    "message": "Gør den overordnede indlæsning bedre, så siden hurtigst muligt bliver responsiv og klar til brug. Vigtige metrics: Time to Interactive, Speed Index\nMeaning"
   },
   "core/config/default-config.js | overallImprovementsGroupTitle": {
     "message": "Overordnede forbedringer"
@@ -1794,10 +1794,10 @@
     "message": "Effektivitet"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Disse tjek validerer aspekterne i en progressiv webapp. [Se, hvad der gør en progressiv webapp god](https://web.dev/pwa-checklist/)."
+    "message": "Disse tjek validerer aspekterne i en progressiv webapp. [Se, hvad der gør en progressiv webapp god](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Disse tjek kræves af den grundlæggende [tjekliste til progressive webapps](https://web.dev/pwa-checklist/), men de udføres ikke automatisk af Lighthouse. De påvirker ikke dine resultater, men det er vigtigt, at du verificerer dem manuelt."
+    "message": "Disse tjek kræves af den grundlæggende [tjekliste til progressive webapps](https://web.dev/articles/pwa-checklist), men de udføres ikke automatisk af Lighthouse. De påvirker ikke dine resultater, men det er vigtigt, at du verificerer dem manuelt."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA-optimeret"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Disse tjek sikrer, at din side følger de grundlæggende råd om søgemaskineoptimering. Der er mange yderligere faktorer, som Lighthouse ikke medregner her, der kan påvirke din søgerangering, bl.a. dine resultater i [Core Web Vitals](https://web.dev/learn-core-web-vitals/). [Få flere oplysninger om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Disse tjek sikrer, at din side følger de grundlæggende råd om søgemaskineoptimering. Der er mange yderligere faktorer, som Lighthouse ikke medregner her, der kan påvirke din søgerangering, bl.a. dine resultater i [Core Web Vitals](https://web.dev/explore/vitals). [Få flere oplysninger om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kør disse yderligere valideringer på dit website for at tjekke andre optimale SEO-løsninger."
@@ -2532,7 +2532,7 @@
     "message": "First Contentful Paint"
   },
   "core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
-    "message": "Første betydningsfulde udfyldning"
+    "message": "First Meaningful Paint"
   },
   "core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Skrifttype"
@@ -2541,7 +2541,7 @@
     "message": "Billede"
   },
   "core/lib/i18n/i18n.js | interactionToNextPaint": {
-    "message": "Interaktion indtil næste visning"
+    "message": "Interaction to Next Paint"
   },
   "core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
@@ -2559,7 +2559,7 @@
     "message": "Largest Contentful Paint"
   },
   "core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
-    "message": "Maks. potentiel ventetid efter første input"
+    "message": "Max Potential First Input Delay"
   },
   "core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Medier"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Den angivne webadresse lader til at være ugyldig."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse kunne ikke indlæse den side, du anmodede om. Sørg for, at du tester den rigtige webadresse, og tjek, at serveren svarer korrekt på alle anmodninger. (Statuskode: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Sidens MIME-type er XHTML: Lighthouse understøtter ikke udtrykkeligt denne dokumenttype"
@@ -3108,22 +3111,22 @@
     "message": "Brug [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack for at reducere størrelsen på de filer, der sendes til browseren."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Brug komponenten `nuxt/image`, og angiv `format=\"webp\"`. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Brug komponenten `nuxt/image`, og angiv `format=\"webp\"`. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Brug komponenten `nuxt/image`, og angiv `loading=\"lazy\"` for billeder, der ikke er på skærmen. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Brug komponenten `nuxt/image`, og angiv `loading=\"lazy\"` for billeder, der ikke er på skærmen. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Brug komponenten `nuxt/image`, og angiv `preload` for LCP-billedet. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Brug komponenten `nuxt/image`, og angiv `preload` for LCP-billedet. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Brug komponenten `nuxt/image`, og angiv udtrykkeligt `width` og `height`. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Brug komponenten `nuxt/image`, og angiv udtrykkeligt `width` og `height`. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Brug komponenten `nuxt/image`, og angiv den relevante `quality`. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Brug komponenten `nuxt/image`, og angiv den relevante `quality`. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Brug komponenten `nuxt/image`, og angiv de relevante `sizes`. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Brug komponenten `nuxt/image`, og angiv de relevante `sizes`. [Få flere oplysninger](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Udskift animerede giffer med video](https://web.dev/replace-gifs-with-videos/) for at få hurtigere websideindlæsning, og overvej at bruge moderne filformater som f.eks. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) for at forbedre effektiviteten af komprimering med mere end 30 % i forhold til det topmoderne videocodec VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Oprindelig sideindlæsning"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Øjebliksbillede fra et bestemt tidspunkt"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tidsperiode for brugerinteraktioner"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Tilpasset begrænsning"
   },
@@ -3393,10 +3402,10 @@
     "message": "Brugeragent (netværk)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Enkeltstående sideindlæsning"
+    "message": "Enkeltsidesession"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Disse data stammer fra en enkelt sideindlæsning i modsætning til feltdata, der omfatter flere sessioner."
+    "message": "Disse data stammer fra en enkeltsidesession i modsætning til feltdata, der omfatter flere sessioner."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Begrænsning til langsom 4G-forbindelse"

@@ -91,7 +91,7 @@ describe('Timespan', async function() {
     assert.strictEqual(devicePixelRatio, 1);
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-    assert.strictEqual(auditResults.length, 45);
+    assert.strictEqual(auditResults.length, 47);
     assert.deepStrictEqual(erroredAudits, []);
     assert.deepStrictEqual(failedAudits.map(audit => audit.id), []);
 

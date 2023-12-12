@@ -639,7 +639,7 @@
     "message": "Bruk videoformat for animert innhold"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill- og transform-kode gjør det mulig for nettlesere i eldre versjoner å bruke nye JavaScript-funksjoner. Mange former for slik kode trengs imidlertid ikke i moderne nettlesere. Ta i bruk en moderne skriptimplementeringsstrategi for JavaScript-pakken din ved å bruke module/nomodule-funksjonsoppdagelse for å redusere mengden kode som sendes til moderne nettlesere, samtidig som støtten for nettlesere i eldre versjoner ivaretas. [Finn ut hvordan du bruker moderne JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill- og transform-kode gjør det mulig for nettlesere i eldre versjoner å bruke nye JavaScript-funksjoner. Mange former for slik kode trengs imidlertid ikke i moderne nettlesere. Ta i bruk en moderne skriptimplementeringsstrategi for JavaScript-pakken din ved å bruke module/nomodule-funksjonsoppdagelse for å redusere mengden kode som sendes til moderne nettlesere, samtidig som støtten for nettlesere i eldre versjoner ivaretas. [Finn ut hvordan du bruker moderne JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Unngå å sende JavaScript i en eldre versjon til moderne nettlesere"
@@ -993,7 +993,7 @@
     "message": "Forventet størrelse"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Bildets naturlige dimensjoner bør være proporsjonale med skjermstørrelsen og pikslenes høyde/bredde-forhold for at bildet skal være så tydelig som mulig. [Finn ut hvordan du viser responsive bilder](https://web.dev/serve-responsive-images/)."
+    "message": "Bildets naturlige dimensjoner bør være proporsjonale med skjermstørrelsen og pikslenes høyde/bredde-forhold for at bildet skal være så tydelig som mulig. [Finn ut hvordan du viser responsive bilder](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Viser bilder med lav oppløsning"
@@ -1158,13 +1158,13 @@
     "message": "CLS-bidrag"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Disse DOM-elementene bidrar mest til CLS på siden. [Finn ut hvordan du kan gjøre CLS bedre](https://web.dev/optimize-cls/)"
+    "message": "Disse DOM-elementene bidrar mest til CLS på siden. [Finn ut hvordan du kan gjøre CLS bedre](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Unngå store utseendeforskyvninger"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Bilder på den synlige delen av nettsiden som lastes inn utsatt, gjengis senere i sidens livssyklus, noe som kan forsinke den største innholdsrike opptegningen (LCP). [Finn ut mer om optimal bruk av utsatt innlasting](https://web.dev/lcp-lazy-loading/)."
+    "message": "Bilder på den synlige delen av nettsiden som lastes inn utsatt, gjengis senere i sidens livssyklus, noe som kan forsinke den største innholdsrike opptegningen (LCP). [Finn ut mer om optimal bruk av utsatt innlasting](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Bildet med største innholdsrike opptegning (LCP) ble lastet inn utsatt"
@@ -1173,7 +1173,7 @@
     "message": "Bildet med største innholdsrike opptegning (LCP) ble ikke lastet inn utsatt"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Viser de lengste oppgavene på hovedtråden. Dette er nyttig for å finne ut hvilke oppgaver som bidrar mest til inndataforsinkelser. [Finn ut hvordan du unngår langvarige oppgaver på hovedtråden](https://web.dev/long-tasks-devtools/)"
+    "message": "Viser de lengste oppgavene på hovedtråden. Dette er nyttig for å finne ut hvilke oppgaver som bidrar mest til inndataforsinkelser. [Finn ut hvordan du unngår langvarige oppgaver på hovedtråden](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# lang oppgave funnet}other{# lange oppgaver funnet}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifestet har et maskerbart ikon"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Akkumulert utseendeforskyvning (CLS) måler bevegelsene til synlige elementer i det synlige området. [Finn ut mer om beregningen Akkumulert utseendeforskyvning (CLS)](https://web.dev/cls/)."
+    "message": "Akkumulert utseendeforskyvning (CLS) måler bevegelsene til synlige elementer i det synlige området. [Finn ut mer om beregningen Akkumulert utseendeforskyvning (CLS)](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Den første innholdsrike opptegningen (FCP) markerer den første gangen tekst eller bilder tegnes opp. [Finn ut mer om beregningen Første innholdsrike opptegning (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Første vesentlige opptegning (FMP) måler når hovedinnholdet på en side er synlig. [Finn ut mer om beregningen Første vesentlige opptegning (FMP)](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Tid fra interaksjon til neste opptegning måler hvor responsiv siden er, altså hvor lang tid siden bruker på å gi en synlig respons på inndata fra brukerne. [Finn ut mer om beregningen Tid fra interaksjon til neste opptegning](https://web.dev/inp/)."
+    "message": "Tid fra interaksjon til neste opptegning måler hvor responsiv siden er, altså hvor lang tid siden bruker på å gi en synlig respons på inndata fra brukerne. [Finn ut mer om beregningen Tid fra interaksjon til neste opptegning](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tid til interaktiv vil si hvor lang tid det tar før siden blir helt interaktiv. [Finn ut mer om beregningen Tid til interaktiv](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Forsinkelser i tjenerdelen"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer, som frem-og-tilbake-bufferen. Bruk hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer om utlasting av hendelseslyttere](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer, som frem-og-tilbake-bufferen. Bruk hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer om utlasting av hendelseslyttere](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerer en `unload`-lytter"
@@ -1305,7 +1305,7 @@
     "message": "Ytelsesbudsjett"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Forhåndslast `optional` skrifttyper, slik at førstegangsbesøkende kan bruke dem. [Finn ut mer om forhåndslasting av skrifttyper](https://web.dev/preload-optional-fonts/)"
+    "message": "Forhåndslast `optional` skrifttyper, slik at førstegangsbesøkende kan bruke dem. [Finn ut mer om forhåndslasting av skrifttyper](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Skrifttyper med `font-display: optional` forhåndslastes ikke"
@@ -1314,7 +1314,7 @@
     "message": "Skrifttyper med `font-display: optional` forhåndslastes"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Hvis LCP-elementet legges til på siden dynamisk, bør du forhåndslaste bildet for å forbedre LCP-tiden. [Finn ut mer om forhåndslasting av LCP-elementer](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Hvis LCP-elementet legges til på siden dynamisk, bør du forhåndslaste bildet for å forbedre LCP-tiden. [Finn ut mer om forhåndslasting av LCP-elementer](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Forhåndslast bildet med største innholdsrike opptegning"
@@ -1587,7 +1587,7 @@
     "message": "Tidsbudsjett"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Angi bredden og høyden på bildeelementer eksplisitt for å redusere utseendeforskyvninger og oppnå bedre CLS. [Finn ut hvordan du angir bildedimensjoner](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Angi bredden og høyden på bildeelementer eksplisitt for å redusere utseendeforskyvninger og oppnå bedre CLS. [Finn ut hvordan du angir bildedimensjoner](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Bildeelementer har ikke eksplisitte `width`- og `height`-attributter"
@@ -1662,7 +1662,7 @@
     "message": "Har en `<meta name=\"viewport\">`-tag med `width` eller `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Dette er det trådblokkerende arbeidet som utføres under beregningen av Tid fra interaksjon til neste opptegning. [Finn ut mer om beregningen Tid fra interaksjon til neste opptegning](https://web.dev/inp/)."
+    "message": "Dette er det trådblokkerende arbeidet som utføres under beregningen av Tid fra interaksjon til neste opptegning. [Finn ut mer om beregningen Tid fra interaksjon til neste opptegning](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms ble brukt på hendelsen «{interactionType}»"
@@ -1704,10 +1704,10 @@
     "message": "Anbefalte fremgangsmåter"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Disse kontrollene fremhever muligheter til [å gjøre nettappen din mer tilgjengelig](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk registrering kan bare oppdage et utvalg av mulige problemer og garanterer ikke at nettappen din er tilgjengelig. Vi anbefaler derfor også [manuell testing](https://web.dev/how-to-review/)."
+    "message": "Disse kontrollene fremhever muligheter til [å gjøre nettappen din mer tilgjengelig](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk registrering kan bare oppdage et utvalg av mulige problemer og garanterer ikke at nettappen din er tilgjengelig. Vi anbefaler derfor også [manuell testing](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Disse punktene tar for seg områder som ikke kan dekkes av automatiske testverktøy. Finn ut mer i veiledningen vår om [å utføre tilgjengelighetsgjennomganger](https://web.dev/how-to-review/)."
+    "message": "Disse punktene tar for seg områder som ikke kan dekkes av automatiske testverktøy. Finn ut mer i veiledningen vår om [å utføre tilgjengelighetsgjennomganger](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Tilgjengelighet"
@@ -1794,10 +1794,10 @@
     "message": "Resultater"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Disse kontrollene validerer ulike aspekter av progressive nettprogrammer. [Finn ut hva som gjør et progressivt nettprogram bra](https://web.dev/pwa-checklist/)."
+    "message": "Disse kontrollene validerer ulike aspekter av progressive nettprogrammer. [Finn ut hva som gjør et progressivt nettprogram bra](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Disse kontrollene kreves av den grunnleggende [sjekklisten for progressive nettprogrammer](https://web.dev/pwa-checklist/), men kontrolleres ikke automatisk av Lighthouse. De påvirker ikke poengsummen din, men det er viktig at du verifiserer dem manuelt."
+    "message": "Disse kontrollene kreves av den grunnleggende [sjekklisten for progressive nettprogrammer](https://web.dev/articles/pwa-checklist), men kontrolleres ikke automatisk av Lighthouse. De påvirker ikke poengsummen din, men det er viktig at du verifiserer dem manuelt."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA (progressive web app – progressivt nettprogram)"
@@ -1809,7 +1809,7 @@
     "message": "PWA-optimalisert"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Disse kontrollene sørger for at siden din følger grunnleggende råd for søkemotoroptimalisering. Det finnes mange tilleggsfaktorer som Lighthouse ikke evaluerer her, men som kan påvirke søkerangeringen din, inkludert ytelse på [Kjernestatistikk for nett](https://web.dev/learn-core-web-vitals/). [Finn ut mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Disse kontrollene sørger for at siden din følger grunnleggende råd for søkemotoroptimalisering. Det finnes mange tilleggsfaktorer som Lighthouse ikke evaluerer her, men som kan påvirke søkerangeringen din, inkludert ytelse på [Kjernestatistikk for nett](https://web.dev/explore/vitals). [Finn ut mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kjør disse tilleggsvalideringene på nettstedet ditt for å sjekke flere anbefalte fremgangsmåter for SEO."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Nettadressen du oppga, ser ut til å være ugyldig."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse kunne ikke laste inn den forespurte siden på en pålitelig måte. Sjekk at du tester riktig nettadresse, og at tjeneren svarer ordentlig på alle forespørsler. (Statuskode: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "MIME-typen for siden er XHTML: Lighthouse støtter ikke denne dokumenttypen eksplisitt"
   },
@@ -3108,22 +3111,22 @@
     "message": "Bruk [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack for å redusere størrelsen på filene som sendes til nettleseren."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Bruk `nuxt/image`-komponenten og angi `format=\"webp\"`. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Bruk `nuxt/image`-komponenten og angi `format=\"webp\"`. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Bruk `nuxt/image`-komponenten og angi `loading=\"lazy\"` for bilder som ikke er på skjermen. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Bruk `nuxt/image`-komponenten og angi `loading=\"lazy\"` for bilder som ikke er på skjermen. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Bruk `nuxt/image`-komponenten og angi `preload` for LCP-bildet. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Bruk `nuxt/image`-komponenten og angi `preload` for LCP-bildet. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Bruk `nuxt/image`-komponenten og angi attributtene `width` og `height` eksplisitt. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Bruk `nuxt/image`-komponenten og angi attributtene `width` og `height` eksplisitt. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Bruk `nuxt/image`-komponenten og angi riktig verdi for `quality`. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Bruk `nuxt/image`-komponenten og angi riktig verdi for `quality`. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Bruk `nuxt/image`-komponenten og angi riktig verdi for `sizes`. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Bruk `nuxt/image`-komponenten og angi riktig verdi for `sizes`. [Finn ut mer](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Erstatt animerte GIF-er med video](https://web.dev/replace-gifs-with-videos/) for raskere nettsideinnlasteringer, og vurder å bruke moderne filformater, som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), for å øke komprimeringseffektiviteten med mer enn 30 % sammenlignet med den mest avanserte videokodeken, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Første sideinnlasting"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Øyeblikksbilde"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tidsspenn for brukerinteraksjoner"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Egendefinert struping"
   },
@@ -3393,10 +3402,10 @@
     "message": "Brukeragent (nettverk)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Enkelt sideinnlasting"
+    "message": "Enkeltsideøkt"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Disse dataene er hentet fra én enkelt sideinnlasting, i motsetning til feltdata som oppsummerer mange økter."
+    "message": "Disse dataene er hentet fra en enkeltsideøkt, i motsetning til feltdata som oppsummerer mange økter."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Treg 4G-struping"

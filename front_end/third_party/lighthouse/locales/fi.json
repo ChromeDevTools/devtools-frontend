@@ -639,7 +639,7 @@
     "message": "Jakele animaatiosisältöä videomuodossa"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill- ja transform-merkintöjen avulla vanhat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Käytä JavaScript-paketissasi nykyaikaista käyttöönottostrategiaa, jossa havaitaan moduuli/ei-moduuli-ominaisuus, minkä avulla vähennetään nykyaikaisiin selaimiin lähetetyn koodin määrää mutta säilytetään silti vanhojen selaimien tuki. [Lue lisää modernin JavaScriptin käyttämisestä](https://web.dev/publish-modern-javascript/)."
+    "message": "Polyfill- ja transform-merkintöjen avulla vanhat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Käytä JavaScript-paketissasi nykyaikaista käyttöönottostrategiaa, jossa havaitaan moduuli/ei-moduuli-ominaisuus, minkä avulla vähennetään nykyaikaisiin selaimiin lähetetyn koodin määrää mutta säilytetään silti vanhojen selaimien tuki. [Lue lisää modernin JavaScriptin käyttämisestä](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Vältä vanhan JavaScriptin näyttämistä nykyaikaisilla selaimilla"
@@ -993,7 +993,7 @@
     "message": "Odotettu koko"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Kuvan luonnollisten mittojen pitäisi olla suhteutettu näytön kokoon ja pikselisuhteeseen, jotta kuva on mahdollisimman selkeä. [Lue lisää responsiivisten kuvien lisäämisestä](https://web.dev/serve-responsive-images/)."
+    "message": "Kuvan luonnollisten mittojen pitäisi olla suhteutettu näytön kokoon ja pikselisuhteeseen, jotta kuva on mahdollisimman selkeä. [Lue lisää responsiivisten kuvien lisäämisestä](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Näyttää kuvat alhaisella resoluutiolla"
@@ -1158,13 +1158,13 @@
     "message": "CLS-vaikuttavuus"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Nämä DOM-elementit tuottavat suurimman osan sivun CLS-arvosta. [Katso, miten voit parantaa CLS:ää](https://web.dev/optimize-cls/)"
+    "message": "Nämä DOM-elementit tuottavat suurimman osan sivun CLS-arvosta. [Katso, miten voit parantaa CLS:ää](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Vältä suuria asettelun muutoksia"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Laiskasti latautuvat sivun yläosan kuvat renderöidään sivulla myöhemmin, mikä voi viivästyttää sivun latautumisaikaa. [Lue lisää optimaalisesta laiskasta latautumisesta](https://web.dev/lcp-lazy-loading/)."
+    "message": "Laiskasti latautuvat sivun yläosan kuvat renderöidään sivulla myöhemmin, mikä voi viivästyttää sivun latautumisaikaa. [Lue lisää optimaalisesta laiskasta latautumisesta](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Sivun latautumisajan kuva latautui laiskasti"
@@ -1173,7 +1173,7 @@
     "message": "Sivun latautumisajan kuva ei latautunut laiskasti"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Näyttää pääsäikeen pitkäkestoisimmat tehtävät, mistä on apua syöttöviiveen pahimpien aiheuttajien tunnistamisessa. [Katso, miten voit välttää pitkät pääsäikeen tehtävät](https://web.dev/long-tasks-devtools/)."
+    "message": "Näyttää pääsäikeen pitkäkestoisimmat tehtävät, mistä on apua syöttöviiveen pahimpien aiheuttajien tunnistamisessa. [Katso, miten voit välttää pitkät pääsäikeen tehtävät](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# pitkäkestoinen tehtävä löydetty}other{# pitkäkestoista tehtävää löydetty}}"
@@ -1221,7 +1221,7 @@
     "message": "Teknisissä tiedoissa on peitettävä kuvake"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulatiivinen asettelumuutos mittaa näkymässä olevien elementtien liikettä. [Lue lisää Kumulatiivinen asettelumuutos ‐mittarista](https://web.dev/cls/)."
+    "message": "Kumulatiivinen asettelumuutos mittaa näkymässä olevien elementtien liikettä. [Lue lisää Kumulatiivinen asettelumuutos ‐mittarista](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Ensimmäinen sisällön renderöinti kertoo, milloin ensimmäinen tekstikohde tai kuva renderöidään. [Lue lisää Ensimmäinen sisällön renderöinti ‐mittarista](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Ensimmäinen merkityksellinen renderöinti kertoo, milloin sivun ensisijainen sisältö tulee näkyviin. [Lue lisää Ensimmäinen merkityksellinen renderöinti ‐mittarista](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaktiosta seuraavaan renderöintiin ‐mittari mittaa sivun responsiivisuutta eli sitä, kuinka pian sivu vastaa näkyvästi käyttäjän palautteeseen. [Lue lisää Interaktiosta seuraavaan renderöintiin ‐mittarista](https://web.dev/inp/)."
+    "message": "Interaktiosta seuraavaan renderöintiin ‐mittari mittaa sivun responsiivisuutta eli sitä, kuinka pian sivu vastaa näkyvästi käyttäjän palautteeseen. [Lue lisää Interaktiosta seuraavaan renderöintiin ‐mittarista](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Interaktiivisuutta edeltävä aika tarkoittaa aikaa, joka sivulla kestää siihen, että se on täysin interaktiivinen. [Lue lisää Interaktiivisuutta edeltävä aika ‐mittarista](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Palvelimen taustaviiveet"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. Back-Forward-välimuistin toiminnan. Käytä sen sijaan `pagehide`- tai `visibilitychange`-tapahtumia. [Lue lisää tapahtumaseurainten tyhjentämisestä](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. Back-Forward-välimuistin toiminnan. Käytä sen sijaan `pagehide`- tai `visibilitychange`-tapahtumia. [Lue lisää tapahtumaseurainten tyhjentämisestä](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Rekisteröi (`unload`) kuuntelijan"
@@ -1305,7 +1305,7 @@
     "message": "Tehokkuusbudjetti"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Esilataa `optional` fonttia ensikertalaisten kävijöiden saataville. [Lue lisää fonttien esilataamisesta](https://web.dev/preload-optional-fonts/)."
+    "message": "Esilataa `optional` fonttia ensikertalaisten kävijöiden saataville. [Lue lisää fonttien esilataamisesta](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Fontteja, joissa on `font-display: optional`, ei ole esiladattu"
@@ -1314,7 +1314,7 @@
     "message": "Fontit, joissa on `font-display: optional`, on esiladattu"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Jos LCP-elementti on lisätty dynaamisesti sivulle, sinun pitää esiladata kuva LCP:n parantamiseksi. [Lue lisää LCP-elementtien esilataamisesta](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Jos LCP-elementti on lisätty dynaamisesti sivulle, sinun pitää esiladata kuva LCP:n parantamiseksi. [Lue lisää LCP-elementtien esilataamisesta](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Esilataa sivun latautumisajan kuva"
@@ -1587,7 +1587,7 @@
     "message": "Aikabudjetti"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Lisää kuvaelementeille kiinteä leveys ja pituus, jotta asettelu muuttuu vähemmän ja CLS paranee. [Katso, miten voit valita kuvan mitat](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Lisää kuvaelementeille kiinteä leveys ja pituus, jotta asettelu muuttuu vähemmän ja CLS paranee. [Katso, miten voit valita kuvan mitat](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Kuvaelementeiltä puuttuu kiinteä `width` ja `height`"
@@ -1662,7 +1662,7 @@
     "message": "`<meta name=\"viewport\">` ‑tagi, jossa `width` tai `initial-scale`, löytyy"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Tämä on säikeiden esto, joka tapahtuu Interaktiosta seuraavaan renderöintiin ‐mittauksen aikana. [Lue lisää Interaktiosta seuraavaan renderöintiin ‐mittarista](https://web.dev/inp/)."
+    "message": "Tämä on säikeiden esto, joka tapahtuu Interaktiosta seuraavaan renderöintiin ‐mittauksen aikana. [Lue lisää Interaktiosta seuraavaan renderöintiin ‐mittarista](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms käytetty tapahtumassa \"{interactionType}\""
@@ -1704,10 +1704,10 @@
     "message": "Parhaat käytännöt"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Nämä tarkistukset tuovat esiin kohtia, joissa voit [parantaa verkkosovelluksen saavutettavuutta](https://developer.chrome.com/docs/lighthouse/accessibility/). Automaattinen tunnistus voi havaita vain osan ongelmista, eikä se takaa verkkosovelluksen saavutettavuutta, joten suosittelemme myös [manuaalista testausta](https://web.dev/how-to-review/)."
+    "message": "Nämä tarkistukset tuovat esiin kohtia, joissa voit [parantaa verkkosovelluksen saavutettavuutta](https://developer.chrome.com/docs/lighthouse/accessibility/). Automaattinen tunnistus voi havaita vain osan ongelmista, eikä se takaa verkkosovelluksen saavutettavuutta, joten suosittelemme myös [manuaalista testausta](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Nämä kohteet koskevat alueita, joita automaattinen testaustyökalu ei voi testata. Lue lisää [saavutettavuustarkistuksen tekemisen](https://web.dev/how-to-review/) oppaastamme."
+    "message": "Nämä kohteet koskevat alueita, joita automaattinen testaustyökalu ei voi testata. Lue lisää [saavutettavuustarkistuksen tekemisen](https://web.dev/articles/how-to-review) oppaastamme."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Esteettömyys"
@@ -1794,10 +1794,10 @@
     "message": "Tehokkuus"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Näillä testeillä vahvistetaan progressiivisen web-sovelluksen ominaisuudet. [Katso ohjeita hyvään progressiiviseen web-sovellukseen](https://web.dev/pwa-checklist/)."
+    "message": "Näillä testeillä vahvistetaan progressiivisen web-sovelluksen ominaisuudet. [Katso ohjeita hyvään progressiiviseen web-sovellukseen](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Normaali [PWA Checklist](https://web.dev/pwa-checklist/) sisältää nämä kohdat, mutta Lighthouse ei tarkista niitä automaattisesti. Ne eivät vaikuta tulokseesi, mutta on tärkeää, että tarkistat kohdat manuaalisesti."
+    "message": "Normaali [PWA Checklist](https://web.dev/articles/pwa-checklist) sisältää nämä kohdat, mutta Lighthouse ei tarkista niitä automaattisesti. Ne eivät vaikuta tulokseesi, mutta on tärkeää, että tarkistat kohdat manuaalisesti."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA optimoitu"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Näillä testeillä varmistetaan, että sivusi seuraa hakukoneoptimoinnin perusneuvoja. On myös monia muita tekijöitä, joita Lighthouse ei ota täällä huomioon mutta jotka voivat vaikuttaa hakusijoitukseesi, esim. [Sivuston suorituskyky](https://web.dev/learn-core-web-vitals/) ‑tulokset. [Lue lisää Google Haun perusteista](https://support.google.com/webmasters/answer/35769)."
+    "message": "Näillä testeillä varmistetaan, että sivusi seuraa hakukoneoptimoinnin perusneuvoja. On myös monia muita tekijöitä, joita Lighthouse ei ota täällä huomioon mutta jotka voivat vaikuttaa hakusijoitukseesi, esim. [Sivuston suorituskyky](https://web.dev/explore/vitals) ‑tulokset. [Lue lisää Google Haun perusteista](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Käytä näitä lisätarkistustyökaluja sivustollasi tarkistaaksesi kaikki hakukoneoptimoinnin parhaat käytännöt."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Kirjoittamasi URL-osoite näyttää olevan virheellinen."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse ei pystynyt lataamaan pyytämääsi sivua luotettavasti. Varmista, että testaat oikeaa URL-osoitetta ja että palvelin vastaa kunnolla kaikkiin pyyntöihin. (Tilakoodi: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Sivun MIME-tyyppi on XHTML: Lighthouse ei erikseen tue tätä dokumenttityyppiä"
   },
@@ -3108,22 +3111,22 @@
     "message": "Voit pienentää selaimeen lähetettyjen tiedostojen kokoa [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ‑ominaisuudella NitroPackissa."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Käytä `nuxt/image`-komponenttia ja määritä `format=\"webp\"`. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Käytä `nuxt/image`-komponenttia ja määritä `format=\"webp\"`. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Käytä `nuxt/image`-komponenttia ja määritä `loading=\"lazy\"` muille kuin näytöllä näkyville kuville. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Käytä `nuxt/image`-komponenttia ja määritä `loading=\"lazy\"` muille kuin näytöllä näkyville kuville. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Käytä `nuxt/image`-komponenttia ja määritä `preload` LCP-kuvalle. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Käytä `nuxt/image`-komponenttia ja määritä `preload` LCP-kuvalle. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Käytä `nuxt/image`-komponenttia ja määritä `width` ja `height` erikseen. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Käytä `nuxt/image`-komponenttia ja määritä `width` ja `height` erikseen. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Käytä `nuxt/image`-komponenttia ja aseta oikea `quality`-arvo. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Käytä `nuxt/image`-komponenttia ja aseta oikea `quality`-arvo. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Käytä `nuxt/image`-komponenttia ja aseta oikea `sizes`-arvo. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Käytä `nuxt/image`-komponenttia ja aseta oikea `sizes`-arvo. [Lue lisää](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Korvaa animoidut GIFit videoilla](https://web.dev/replace-gifs-with-videos/), mikä nopeuttaa verkkosivujen latautumista. Kannattaa myös käyttää nykyaikaisia tiedostomuotoja (esim. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) tai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)), jotka voivat pakata yli 30 % tehokkaammin kuin VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Ensimmäinen sivun lataus"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Tietyn ajankohdan katsaus"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Käyttäjien interaktioiden aikajana"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Omat rajoitukset"
   },
@@ -3393,10 +3402,10 @@
     "message": "Käyttäjäagentti (verkko)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Yksi sivun lataus"
+    "message": "Yhden sivun istunto"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Tämä data on peräisin yhdestä sivun latauksesta, toisin kuin kenttädata, joka on yhteenveto useista käyttökerroista."
+    "message": "Tämä data on peräisin yhden sivun istunnosta, toisin kuin kenttädata, joka on yhteenveto useista käyttökerroista."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Hidasta 4G-yhteyttä simuloiva rajoitus"

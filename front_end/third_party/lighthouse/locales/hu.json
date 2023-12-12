@@ -639,7 +639,7 @@
     "message": "Használjon videoformátumot az animált tartalmakhoz"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "A polifill és az átalakítás lehetővé teszi, hogy a régi böngészők is használhassák az újabb JavaScript-funkciókat. A modern böngészők esetében azonban sok polifill és átalakítás szükségtelen. Használjon modern szkripttelepítő módszert csomagolt JavaScript-kódjaihoz, amely észleli a module/nomodule utasításokat. Így kevesebb kódot küld a modern böngészőknek, mégis megtarthatja a régi böngészők támogatását. [További információ a modern JavaScript használatáról](https://web.dev/publish-modern-javascript/)."
+    "message": "A polifill és az átalakítás lehetővé teszi, hogy a régi böngészők is használhassák az újabb JavaScript-funkciókat. A modern böngészők esetében azonban sok polifill és átalakítás szükségtelen. Használjon modern szkripttelepítő módszert csomagolt JavaScript-kódjaihoz, amely észleli a module/nomodule utasításokat. Így kevesebb kódot küld a modern böngészőknek, mégis megtarthatja a régi böngészők támogatását. [További információ a modern JavaScript használatáról](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Kerülje régi JavaScript megjelenítését a modern böngészőkben"
@@ -993,7 +993,7 @@
     "message": "Várt méret"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "A kép természetes méreteinek arányosnak kell lenniük a megjelenítési mérettel és a pixelaránnyal a lehető legnagyobb képtisztaság érdekében. [További információ a reszponzív képek megadásáról](https://web.dev/serve-responsive-images/)."
+    "message": "A kép természetes méreteinek arányosnak kell lenniük a megjelenítési mérettel és a pixelaránnyal a lehető legnagyobb képtisztaság érdekében. [További információ a reszponzív képek megadásáról](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "A képek megjelenítése alacsony felbontásban történik"
@@ -1158,13 +1158,13 @@
     "message": "CLS-hozzájárulás"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ezek a DOM-elemek járulnak hozzá leginkább az oldal CLS-éhez. [További információ a CLS javításáról](https://web.dev/optimize-cls/)."
+    "message": "Ezek a DOM-elemek járulnak hozzá leginkább az oldal CLS-éhez. [További információ a CLS javításáról](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Az elrendezés nagy mértékű mozgásának elkerülése"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "A késleltetve betöltött, hajtás feletti képek az oldal életciklusában később jelennek meg, ami késleltetheti a legnagyobb vizuális tartalomválaszt. [További információ az optimális késleltetett betöltésről](https://web.dev/lcp-lazy-loading/)."
+    "message": "A késleltetve betöltött, hajtás feletti képek az oldal életciklusában később jelennek meg, ami késleltetheti a legnagyobb vizuális tartalomválaszt. [További információ az optimális késleltetett betöltésről](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "A legnagyobb vizuális tartalomválasz késleltetve lett betöltve"
@@ -1173,7 +1173,7 @@
     "message": "A legnagyobb vizuális tartalomválasz nem késleltetve lett betöltve"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "A fő szál leghosszabb feladatait listázza. Hasznos az interakciótól számított késéshez legnagyobb mértékben hozzájáruló elemek azonosításához. [További információ arról, hogy miként kerülhetők el a hosszú feladatok a fő szálban](https://web.dev/long-tasks-devtools/)."
+    "message": "A fő szál leghosszabb feladatait listázza. Hasznos az interakciótól számított késéshez legnagyobb mértékben hozzájáruló elemek azonosításához. [További információ arról, hogy miként kerülhetők el a hosszú feladatok a fő szálban](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# hosszú feladat található}other{# hosszú feladat található}}"
@@ -1221,7 +1221,7 @@
     "message": "A manifest tartalmaz maszkolható ikont"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Az Elrendezés összmozgása mutató az oldal megjelenítési területén látható elemek mozgását méri. [További információ az Elrendezés összmozgása mutatóról](https://web.dev/cls/)."
+    "message": "Az Elrendezés összmozgása mutató az oldal megjelenítési területén látható elemek mozgását méri. [További információ az Elrendezés összmozgása mutatóról](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Az első vizuális tartalomválasz azt az időpontot jelöli, amikor a rendszer megkezdi az első szöveg vagy kép megjelenítését. [További információ az Első vizuális tartalomválasz mutatóról](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Az első releváns vizuális válasz azt méri, hogy mikor válik láthatóvá az oldal elsődleges tartalma. [További információ az Első releváns vizuális válasz mutatóról](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Az interakciótól a következő vizuális válaszig eltelt idő az oldal válaszadási hajlandóságát méri, vagyis azt, hogy az oldal mennyi idő alatt reagál láthatóan a felhasználói bevitelre. [További információ Az interakciótól a következő vizuális válaszig eltelt idő mutatóról](https://web.dev/inp/)."
+    "message": "Az interakciótól a következő vizuális válaszig eltelt idő az oldal válaszadási hajlandóságát méri, vagyis azt, hogy az oldal mennyi idő alatt reagál láthatóan a felhasználói bevitelre. [További információ Az interakciótól a következő vizuális válaszig eltelt idő mutatóról](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Az interaktivitásig eltelt idő az az idő, amely ahhoz szükséges, hogy az oldal teljesen interaktívvá váljon. [További információ az Interaktivitásig eltelt idő mutatóról](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Várakozási idő a háttérszervereknél"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Az `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például az előre-vissza gyorsítótárazást). Használja helyette a következő események valamelyikét: `pagehide` vagy `visibilitychange`. [További információ az eseményfigyelők kiürítéséről](https://web.dev/bfcache/#never-use-the-unload-event)."
+    "message": "Az `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például az előre-vissza gyorsítótárazást). Használja helyette a következő események valamelyikét: `pagehide` vagy `visibilitychange`. [További információ az eseményfigyelők kiürítéséről](https://web.dev/articles/bfcache#never_use_the_unload_event)."
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload`-figyelőt regisztrál"
@@ -1305,7 +1305,7 @@
     "message": "Teljesítménybüdzsé"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Töltse elő az `optional` betűtípusokat, hogy az első alkalommal érkező látogatók is használhassák őket. [További információ a betűtípusok előtöltéséről](https://web.dev/preload-optional-fonts/)."
+    "message": "Töltse elő az `optional` betűtípusokat, hogy az első alkalommal érkező látogatók is használhassák őket. [További információ a betűtípusok előtöltéséről](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "A(z) `font-display: optional` attribútumot használó betűtípusokat nem tölti elő a rendszer"
@@ -1314,7 +1314,7 @@
     "message": "A(z) `font-display: optional` attribútumot használó betűtípusokat előtölti a rendszer"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Ha az LCP-elemet dinamikusan adja hozzá az oldalhoz, elő kell töltenie a képet az LCP javításához. [További információ az LCP-elemek előtöltéséről](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Ha az LCP-elemet dinamikusan adja hozzá az oldalhoz, elő kell töltenie a képet az LCP javításához. [További információ az LCP-elemek előtöltéséről](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "A legnagyobb vizuális tartalomválasz képének előtöltése"
@@ -1587,7 +1587,7 @@
     "message": "Időkeret"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Adja meg a képelemek pontos szélességét és magasságát, hogy kevésbé csússzon el az elrendezés, és javuljon a CLS. [További információ a képméretek beállításáról](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Adja meg a képelemek pontos szélességét és magasságát, hogy kevésbé csússzon el az elrendezés, és javuljon a CLS. [További információ a képméretek beállításáról](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "A képelemekhez nem tartozik meghatározott `width` és `height`"
@@ -1662,7 +1662,7 @@
     "message": "Van `width` vagy `initial-scale` beállítással rendelkező `<meta name=\"viewport\">` címkéje"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Ez az a szálblokkoló tevékenység, amely Az interakciótól a következő vizuális válaszig eltelt idő során fordul elő. [További információ Az interakciótól a következő vizuális válaszig eltelt idő mutatóról](https://web.dev/inp/)."
+    "message": "Ez az a szálblokkoló tevékenység, amely Az interakciótól a következő vizuális válaszig eltelt idő során fordul elő. [További információ Az interakciótól a következő vizuális válaszig eltelt idő mutatóról](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms az „{interactionType}” eseményen"
@@ -1704,10 +1704,10 @@
     "message": "Bevált módszerek"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Ezek az ellenőrzések kiemelik azokat a lehetőségeket, amelyekkel [javíthatók az internetes alkalmazásának a kisegítő lehetőségei](https://developer.chrome.com/docs/lighthouse/accessibility/). Az automatikus észlelés csak a problémák egy részhalmazát képes észlelni, és nem garantálja az internetes alkalmazás kisegítő lehetőségeinek működését, ezért a [manuális tesztelés](https://web.dev/how-to-review/) is javasolt."
+    "message": "Ezek az ellenőrzések kiemelik azokat a lehetőségeket, amelyekkel [javíthatók az internetes alkalmazásának a kisegítő lehetőségei](https://developer.chrome.com/docs/lighthouse/accessibility/). Az automatikus észlelés csak a problémák egy részhalmazát képes észlelni, és nem garantálja az internetes alkalmazás kisegítő lehetőségeinek működését, ezért a [manuális tesztelés](https://web.dev/articles/how-to-review) is javasolt."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Az alábbiak automatikus tesztelőeszközzel nem ellenőrizhető területekre vonatkoznak. További információt a [kisegítő lehetőségek felülvizsgálatáról](https://web.dev/how-to-review/) szóló útmutatónkban talál."
+    "message": "Az alábbiak automatikus tesztelőeszközzel nem ellenőrizhető területekre vonatkoznak. További információt a [kisegítő lehetőségek felülvizsgálatáról](https://web.dev/articles/how-to-review) szóló útmutatónkban talál."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Kisegítő lehetőségek"
@@ -1794,10 +1794,10 @@
     "message": "Teljesítmény"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Ezek az ellenőrzések különböző szempontokból érvényesítik a progresszív webes alkalmazásokat. [További információ arról, mitől lesz jó egy progresszív webes alkalmazás](https://web.dev/pwa-checklist/)."
+    "message": "Ezek az ellenőrzések különböző szempontokból érvényesítik a progresszív webes alkalmazásokat. [További információ arról, mitől lesz jó egy progresszív webes alkalmazás](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Ezek az ellenőrzések kötelezők a [progresszív webes alkalmazások alapvető ellenőrzőlistáján](https://web.dev/pwa-checklist/), de a Lighthouse nem végzi el őket automatikusan. Az ellenőrzések a kapott pontszámot nem befolyásolják, de fontos a manuális végrehajtásuk."
+    "message": "Ezek az ellenőrzések kötelezők a [progresszív webes alkalmazások alapvető ellenőrzőlistáján](https://web.dev/articles/pwa-checklist), de a Lighthouse nem végzi el őket automatikusan. Az ellenőrzések a kapott pontszámot nem befolyásolják, de fontos a manuális végrehajtásuk."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA-optimalizálás"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Ezekkel az ellenőrzésekkel győződhet meg arról, hogy oldala követi a keresőoptimalizálásra vonatkozó alapvető tanácsokat. Számos olyan, a Lighthouse által itt nem értékelt tényező van még, amely hatással lehet a keresésbeli rangsorolásra, beleértve az [Alapvető webes vitals-mutatók](https://web.dev/learn-core-web-vitals/) teljesítményét is. [További információ a Google Kereső Essentials szolgáltatásról](https://support.google.com/webmasters/answer/35769)."
+    "message": "Ezekkel az ellenőrzésekkel győződhet meg arról, hogy oldala követi a keresőoptimalizálásra vonatkozó alapvető tanácsokat. Számos olyan, a Lighthouse által itt nem értékelt tényező van még, amely hatással lehet a keresésbeli rangsorolásra, beleértve az [Alapvető webes vitals-mutatók](https://web.dev/explore/vitals) teljesítményét is. [További információ a Google Kereső Essentials szolgáltatásról](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Ha ezeket a további érvényesítőket is futtatja webhelyén, egyéb bevált SEO-módszereket is ellenőrizhet."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Úgy tűnik, a megadott URL érvénytelen."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "A Lighthouse nem tudta megbízhatóan betölteni a kért oldalt. Ellenőrizze, hogy a helyes URL-t teszteli-e, és hogy a szerver minden kérésre megfelelően reagál-e. (Állapotkód: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Az oldal MIME-típusa XHTML: A Lighthouse nem támogatja kifejezetten ezt a dokumentumtípust."
   },
@@ -3108,22 +3111,22 @@
     "message": "A NitroPackben a(z) [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) segítségével csökkentheti a böngészőnek küldött fájlok méretét."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a következőt: `format=\"webp\"`. [További információ](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a következőt: `format=\"webp\"`. [További információ](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a következőt a képernyőn kívüli képeknél: `loading=\"lazy\"`. [További információ](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a következőt a képernyőn kívüli képeknél: `loading=\"lazy\"`. [További információ](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és adja meg a következőt az LCP-képhez: `preload`. [További információ](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és adja meg a következőt az LCP-képhez: `preload`. [További információ](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és adjon meg explicit `width` és `height` paramétert. [További információ](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és adjon meg explicit `width` és `height` paramétert. [További információ](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a megfelelő `quality` paramétert. [További információ](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a megfelelő `quality` paramétert. [További információ](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a megfelelő `sizes` paramétert. [További információ](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a megfelelő `sizes` paramétert. [További információ](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Cserélje le az animált GIF-eket videókra](https://web.dev/replace-gifs-with-videos/) a gyorsabban betöltődő weboldalak érdekében, és fontolja meg modern fájlformátumok (pl. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vagy [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)) használatát, amelyekkel a tömörítési hatékonyságot több mint 30%-kal javíthatja a jelenlegi legmodernebb videokodekkel, a VP9-cel szemben."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Első oldalbetöltés"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Adott időpont pillanatképe"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Felhasználói interakciók időtartama"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Egyéni korlátozás"
   },
@@ -3393,10 +3402,10 @@
     "message": "Felhasználói ügynök (hálózat)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Egyetlen oldalbetöltés"
+    "message": "Egyoldalas munkamenet"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Ez az adat egyetlen oldalbetöltésből származik, nem pedig számos munkamenet összesítéséből."
+    "message": "Ez az adat egyoldalas munkamenetből származik, nem pedig több munkamenet összesítéséből."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Lassú 4G emulálása"

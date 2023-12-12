@@ -639,7 +639,7 @@
     "message": "Folosește formate video pentru conținut animat"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfillurile și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Pentru grupul tău JavaScript, adoptă o strategie modernă de implementare a scriptului, care folosește detectarea funcțiilor module / nomodule, pentru a reduce volumul de cod transferat în browserele moderne și a menține totodată compatibilitatea cu browserele vechi. [Află cum să folosești JavaScript modern](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfillurile și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Pentru grupul tău JavaScript, adoptă o strategie modernă de implementare a scriptului, care folosește detectarea funcțiilor module / nomodule, pentru a reduce volumul de cod transferat în browserele moderne și a menține totodată compatibilitatea cu browserele vechi. [Află cum să folosești JavaScript modern](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Nu folosi o versiune veche de JavaScript în browsere moderne"
@@ -993,7 +993,7 @@
     "message": "Dimensiunea așteptată"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Dimensiunile naturale ale imaginii trebuie să fie proporționale cu dimensiunea afișajului și cu raportul de pixeli, pentru a maximiza claritatea imaginii. [Află cum să adaugi imagini adaptabile](https://web.dev/serve-responsive-images/)."
+    "message": "Dimensiunile naturale ale imaginii trebuie să fie proporționale cu dimensiunea afișajului și cu raportul de pixeli, pentru a maximiza claritatea imaginii. [Află cum să adaugi imagini adaptabile](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Difuzează imagini cu rezoluție mică"
@@ -1158,13 +1158,13 @@
     "message": "Contribuția la CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Aceste elemente DOM contribuie cel mai mult la schimbarea cumulată a aspectului paginii. [Află cum să îmbunătățești CLS](https://web.dev/optimize-cls/)"
+    "message": "Aceste elemente DOM contribuie cel mai mult la schimbarea cumulată a aspectului paginii. [Află cum să îmbunătățești CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Evită schimbările majore ale aspectului"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Imaginile din partea superioară a paginii care se încarcă asincron sunt redate mai târziu în ciclul de viață al paginii, ceea ce poate întârzia redarea Largest Contentful Paint. [Află mai multe despre încărcarea asincronă optimă](https://web.dev/lcp-lazy-loading/)."
+    "message": "Imaginile din partea superioară a paginii care se încarcă asincron sunt redate mai târziu în ciclul de viață al paginii, ceea ce poate întârzia redarea Largest Contentful Paint. [Află mai multe despre încărcarea asincronă optimă](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Imaginea Largest Contentful Paint s-a încărcat asincron"
@@ -1173,7 +1173,7 @@
     "message": "Imaginea Largest Contentful Paint nu s-a încărcat asincron"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Afișează cele mai îndelungate activități din firul principal, ceea ce este util pentru identificarea elementelor care contribuie cel mai mult la întârziere. [Află cum să eviți activitățile îndelungate din firul principal](https://web.dev/long-tasks-devtools/)."
+    "message": "Afișează cele mai îndelungate activități din firul principal, ceea ce este util pentru identificarea elementelor care contribuie cel mai mult la întârziere. [Află cum să eviți activitățile îndelungate din firul principal](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{A fost identificată # activitate îndelungată}few{Au fost identificate # activități îndelungate}other{Au fost identificate # de activități îndelungate}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifestul are o pictogramă care poate fi mascată"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Cumulative Layout Shift măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe despre valoarea Cumulative Layout Shift](https://web.dev/cls/)."
+    "message": "Cumulative Layout Shift măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe despre valoarea Cumulative Layout Shift](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint arată momentul când se redă primul text sau prima imagine. [Află mai multe despre valoarea First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "First Meaningful Paint arată momentul când este vizibil conținutul principal al unei pagini. [Află mai multe despre valoarea First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interacțiunea cu următoarea reprezentare măsoară receptivitatea paginii, adică timpul necesar pentru ca pagina să răspundă în mod vizibil la comanda utilizatorului. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/inp/)."
+    "message": "Interacțiunea cu următoarea reprezentare măsoară receptivitatea paginii, adică timpul necesar pentru ca pagina să răspundă în mod vizibil la comanda utilizatorului. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Time to Interactive este timpul necesar pentru ca pagina să devină complet interactivă. [Află mai multe despre valoarea Time to Interactive](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Latențe ale backendului serverului"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Evenimentul `unload` nu se declanșează într-un mod fiabil și ascultarea lui poate împiedica optimizări de browser cum ar fi memoria cache înainte-înapoi. Folosește evenimente `pagehide` sau `visibilitychange` în loc. [Află mai multe despre funcțiile de procesare a evenimentelor unload](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Evenimentul `unload` nu se declanșează într-un mod fiabil și ascultarea lui poate împiedica optimizări de browser cum ar fi memoria cache înainte-înapoi. Folosește evenimente `pagehide` sau `visibilitychange` în loc. [Află mai multe despre funcțiile de procesare a evenimentelor unload](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Înregistrează un listener `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Buget de performanță"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Preîncarcă fonturile `optional` pentru ca vizitatorii noi să le poată folosi. [Află mai multe despre preîncărcarea fonturilor](https://web.dev/preload-optional-fonts/)."
+    "message": "Preîncarcă fonturile `optional` pentru ca vizitatorii noi să le poată folosi. [Află mai multe despre preîncărcarea fonturilor](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Fonturile cu `font-display: optional` nu sunt preîncărcate"
@@ -1314,7 +1314,7 @@
     "message": "Fonturile cu `font-display: optional` sunt preîncărcate"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Dacă elementul LCP este adăugat dinamic în pagină, preîncarcă imaginea pentru a îmbunătăți LCP. [Află mai multe despre preîncărcarea elementelor LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Dacă elementul LCP este adăugat dinamic în pagină, preîncarcă imaginea pentru a îmbunătăți LCP. [Află mai multe despre preîncărcarea elementelor LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Preîncarcă imaginea Largest Contentful Paint"
@@ -1587,7 +1587,7 @@
     "message": "Buget pentru durată"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Setează lățimea și înălțimea explicite pentru elementele imagine, ca să reduci modificările de aspect și să îmbunătățești CLS. [Află cum să setezi dimensiunile imaginii](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Setează lățimea și înălțimea explicite pentru elementele imagine, ca să reduci modificările de aspect și să îmbunătățești CLS. [Află cum să setezi dimensiunile imaginii](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Elementele imagine nu au `width` și `height` explicite"
@@ -1662,7 +1662,7 @@
     "message": "Are o etichetă `<meta name=\"viewport\">` cu `width` sau `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Aceasta este activitatea de blocare a firului care are loc în timpul măsurării valorii Interacțiunea cu următoarea reprezentare. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/inp/)."
+    "message": "Aceasta este activitatea de blocare a firului care are loc în timpul măsurării valorii Interacțiunea cu următoarea reprezentare. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms petrecute cu evenimentul {interactionType}"
@@ -1704,10 +1704,10 @@
     "message": "Cele mai bune practici"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Aceste verificări evidențiază oportunitățile de a [îmbunătăți accesibilitatea aplicației web](https://developer.chrome.com/docs/lighthouse/accessibility/). Detectarea automată poate detecta doar un subset de probleme și nu garantează accesibilitatea aplicației web. Prin urmare, se recomandă și [testarea manuală](https://web.dev/how-to-review/)."
+    "message": "Aceste verificări evidențiază oportunitățile de a [îmbunătăți accesibilitatea aplicației web](https://developer.chrome.com/docs/lighthouse/accessibility/). Detectarea automată poate detecta doar un subset de probleme și nu garantează accesibilitatea aplicației web. Prin urmare, se recomandă și [testarea manuală](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Aceste elemente se adresează zonelor pe care un instrument de testare automată nu le poate acoperi. Află mai multe din ghidul nostru despre [realizarea unei evaluări a accesibilității](https://web.dev/how-to-review/)."
+    "message": "Aceste elemente se adresează zonelor pe care un instrument de testare automată nu le poate acoperi. Află mai multe din ghidul nostru despre [realizarea unei evaluări a accesibilității](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Accesibilitate"
@@ -1794,10 +1794,10 @@
     "message": "Performanță"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Aceste verificări validează aspectele unei aplicații web progresive. [Află ce înseamnă o aplicație web progresivă bună](https://web.dev/pwa-checklist/)."
+    "message": "Aceste verificări validează aspectele unei aplicații web progresive. [Află ce înseamnă o aplicație web progresivă bună](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Aceste verificări sunt impuse de [Lista de verificare PWA](https://web.dev/pwa-checklist/) de referință, dar nu sunt verificate automat de Lighthouse. Ele nu-ți afectează scorul, dar e important să fie făcute manual."
+    "message": "Aceste verificări sunt impuse de [Lista de verificare PWA](https://web.dev/articles/pwa-checklist) de referință, dar nu sunt verificate automat de Lighthouse. Ele nu-ți afectează scorul, dar e important să fie făcute manual."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Optimizat pentru PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Aceste verificări asigură faptul că pagina urmează recomandările de bază privind optimizarea pentru motoarele de căutare. Există mulți alți factori de care Lighthouse nu ține cont care îți pot afecta poziționarea în rețeaua de căutare, inclusiv performanța în [Detaliile de funcționare de bază pentru web](https://web.dev/learn-core-web-vitals/). [Află mai multe despre Noțiuni de bază despre Căutarea Google](https://support.google.com/webmasters/answer/35769)."
+    "message": "Aceste verificări asigură faptul că pagina urmează recomandările de bază privind optimizarea pentru motoarele de căutare. Există mulți alți factori de care Lighthouse nu ține cont care îți pot afecta poziționarea în rețeaua de căutare, inclusiv performanța în [Detaliile de funcționare de bază pentru web](https://web.dev/explore/vitals). [Află mai multe despre Noțiuni de bază despre Căutarea Google](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Rulează acești validatori suplimentari pe site pentru a căuta alte recomandări SEO."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL furnizată pare să fie nevalidă."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse nu a putut încărca în mod sigur pagina solicitată. Asigură-te că testezi adresa URL corectă și că serverul răspunde corect la toate solicitările. (Cod de stare: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Tipul MIME al paginii este XHTML: Lighthouse nu acceptă în mod explicit acest tip de document"
   },
@@ -3108,22 +3111,22 @@
     "message": "Folosește [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) în NitroPack pentru a reduce dimensiunea fișierelor trimise la browser."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Folosește componenta `nuxt/image` și setează `format=\"webp\"`. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Folosește componenta `nuxt/image` și setează `format=\"webp\"`. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Folosește componenta `nuxt/image` și setează `loading=\"lazy\"` pentru imagini in afara ecranului. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Folosește componenta `nuxt/image` și setează `loading=\"lazy\"` pentru imagini in afara ecranului. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Folosește componenta `nuxt/image` și specifică `preload` pentru imaginea LCP. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Folosește componenta `nuxt/image` și specifică `preload` pentru imaginea LCP. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Folosește componenta `nuxt/image` și specifică explicit `width` și `height`. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Folosește componenta `nuxt/image` și specifică explicit `width` și `height`. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Folosește componenta `nuxt/image` și setează `quality` potrivit. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Folosește componenta `nuxt/image` și setează `quality` potrivit. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Folosește componenta `nuxt/image` și setează `sizes` potrivit. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Folosește componenta `nuxt/image` și setează `sizes` potrivit. [Află mai multe](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Înlocuiește GIF-urile animate cu videoclipuri](https://web.dev/replace-gifs-with-videos/) pentru încărcarea mai rapidă a paginilor web și folosește formate de fișiere moderne, cum ar fi [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) sau [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), pentru a îmbunătăți eficiența comprimării cu până la 30 % față de cea a codecului video actual de ultimă generație, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Încărcarea inițială a paginii"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Instantaneu într-un anumit moment"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Intervalul de timp pentru interacțiunile utilizatorilor"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Limitare personalizată"
   },
@@ -3393,10 +3402,10 @@
     "message": "User Agent (rețea)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "O singură încărcare a paginii"
+    "message": "O sesiune în pagină"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Datele se preiau dintr-o singură încărcare a paginii, spre deosebire de datele de pe teren care rezumă mai multe sesiuni."
+    "message": "Datele se preiau dintr-o singură sesiune în pagină, spre deosebire de datele de pe teren care rezumă mai multe sesiuni."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Limitare 4G lentă"

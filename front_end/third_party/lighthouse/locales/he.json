@@ -639,7 +639,7 @@
     "message": "יש להשתמש בפורמטים של וידאו כדי להציג תוכן אנימציה"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים מדור קודם להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מודרניים. כשפורסים סקריפטים בחבילת JavaScript, מומלץ לעשות זאת בשיטה מודרנית שכוללת זיהוי של תכונות עם או בלי מודולים. שיטה כזו מאפשרת לצמצם את כמות הקוד שנשלחת לדפדפנים מתקדמים, מבלי לוותר על התמיכה בדפדפנים מדור קודם. [איך להשתמש ב-JavaScript בשיטה מודרנית](https://web.dev/publish-modern-javascript/)"
+    "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים מדור קודם להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מודרניים. כשפורסים סקריפטים בחבילת JavaScript, מומלץ לעשות זאת בשיטה מודרנית שכוללת זיהוי של תכונות עם או בלי מודולים. שיטה כזו מאפשרת לצמצם את כמות הקוד שנשלחת לדפדפנים מתקדמים, מבלי לוותר על התמיכה בדפדפנים מדור קודם. [איך להשתמש ב-JavaScript בשיטה מודרנית](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "יש להימנע משימוש ב-JavaScript מדור קודם בדפדפנים מודרניים"
@@ -993,7 +993,7 @@
     "message": "הגודל הצפוי"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "המידות הטבעיות של התמונה צריכות להיות פרופורציונליות לגודל המסך וליחס הפיקסלים כדי שהתמונה תהיה ברורה ככל האפשר. [איך לספק תמונות רספונסיביות](https://web.dev/serve-responsive-images/)?"
+    "message": "המידות הטבעיות של התמונה צריכות להיות פרופורציונליות לגודל המסך וליחס הפיקסלים כדי שהתמונה תהיה ברורה ככל האפשר. [איך לספק תמונות רספונסיביות](https://web.dev/articles/serve-responsive-images)?"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "מציג תמונות עם רזולוציה נמוכה"
@@ -1158,13 +1158,13 @@
     "message": "השפעה על CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "רכיבי DOM האלה הם המרכיבים המשמעותיים ביותר ב-CLS של הדף. [איך לשפר את ה-CLS](https://web.dev/optimize-cls/)"
+    "message": "רכיבי DOM האלה הם המרכיבים המשמעותיים ביותר ב-CLS של הדף. [איך לשפר את ה-CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "יש להימנע משינויים משמעותיים בפריסה"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "תמונות בחלק העליון והקבוע שנטענות באופן מדורג יעברו רינדור בשלב מאוחר יותר במחזור החיים של הדף, לכן עשוי להיות עיכוב ב-Largest Contentful Paint ‏(LCP). [מידע נוסף על טעינה מדורגת אופטימלית](https://web.dev/lcp-lazy-loading/)"
+    "message": "תמונות בחלק העליון והקבוע שנטענות באופן מדורג יעברו רינדור בשלב מאוחר יותר במחזור החיים של הדף, לכן עשוי להיות עיכוב ב-Largest Contentful Paint ‏(LCP). [מידע נוסף על טעינה מדורגת אופטימלית](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "התמונה מסוג Largest Contentful Paint ‏(LCP) נטענה באופן מדורג"
@@ -1173,7 +1173,7 @@
     "message": "התמונה מסוג Largest Contentful Paint ‏(LCP) לא נטענה באופן מדורג"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "הבדיקה מציינת את המשימות הארוכות ביותר ב-thread הראשי. היא עוזרת לזהות את המשימות שמאטות את הקלט במידה הרבה ביותר. [איך להימנע ממשימות שנדרש להן משך זמן ארוך ב-thread הראשי](https://web.dev/long-tasks-devtools/)?"
+    "message": "הבדיקה מציינת את המשימות הארוכות ביותר ב-thread הראשי. היא עוזרת לזהות את המשימות שמאטות את הקלט במידה הרבה ביותר. [איך להימנע ממשימות שנדרש להן משך זמן ארוך ב-thread הראשי](https://web.dev/articles/long-tasks-devtools)?"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{נמצאה משימה ארוכה אחת}one{נמצאו # משימות ארוכות}two{נמצאו # משימות ארוכות}other{נמצאו # משימות ארוכות}}"
@@ -1221,7 +1221,7 @@
     "message": "המניפסט מכיל לפחות סמל אחד שניתן למיסוך"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "המדד Cumulative Layout Shift ‏(CLS) מודד את התנועה של הרכיבים הגלויים בתוך אזור התצוגה. [מידע נוסף על המדד Cumulative Layout Shift ‏(CLS)](https://web.dev/cls/)"
+    "message": "המדד Cumulative Layout Shift ‏(CLS) מודד את התנועה של הרכיבים הגלויים בתוך אזור התצוגה. [מידע נוסף על המדד Cumulative Layout Shift ‏(CLS)](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "המדד 'הצגת תוכן ראשוני (FCP)' מציין את הזמן שבו הטקסט או התמונה הראשונים מוצגים. [מידע נוסף על המדד 'הצגת תוכן ראשוני (FCP)'](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "המדד 'הצגת התוכן העיקרי (FMP)' מציין מתי מוצג התוכן העיקרי של הדף. [מידע נוסף על המדד 'הצגת התוכן העיקרי (FMP)'](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "המדד 'מאינטראקציה ועד הצגת התגובה' מודד את רמת הרספונסיביות של הדף – כמה זמן נדרש עד להצגת תגובה בדף לקלט של משתמש. [מידע נוסף על המדד 'מאינטראקציה ועד הצגת התגובה'](https://web.dev/inp/)"
+    "message": "המדד 'מאינטראקציה ועד הצגת התגובה' מודד את רמת הרספונסיביות של הדף – כמה זמן נדרש עד להצגת תגובה בדף לקלט של משתמש. [מידע נוסף על המדד 'מאינטראקציה ועד הצגת התגובה'](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "ה'זמן עד לפעילות מלאה' הוא משך הזמן שחולף עד שהדף מאפשר אינטראקציה מלאה. [מידע נוסף על הערך 'הזמן עד לפעילות מלאה'](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "זמני אחזור בקצה עורפי של שרת"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "האירוע `unload` לא מופעל בצורה אמינה, והפעלת ממשקי listener כדי לקלוט את האירוע הזה עשויה למנוע את השימוש באופטימיזציות שונות של הדפדפן, כמו האופטימיזציה במסגרת התכונה 'מטמון לדף הקודם/הבא'. יש להשתמש באירועי `pagehide` או `visibilitychange` במקום זאת. [מידע נוסף על ממשקי event listener להסרת הנתונים שנטענו](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "האירוע `unload` לא מופעל בצורה אמינה, והפעלת ממשקי listener כדי לקלוט את האירוע הזה עשויה למנוע את השימוש באופטימיזציות שונות של הדפדפן, כמו האופטימיזציה במסגרת התכונה 'מטמון לדף הקודם/הבא'. יש להשתמש באירועי `pagehide` או `visibilitychange` במקום זאת. [מידע נוסף על ממשקי event listener להסרת הנתונים שנטענו](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "רישום מעבד אירוע של `unload`"
@@ -1305,7 +1305,7 @@
     "message": "תקציב ביצועים"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "כדאי לטעון מראש גופני `optional` כדי שמבקרים לראשונה יוכלו להשתמש בהם. [מידע נוסף על טעינה מראש של גופנים](https://web.dev/preload-optional-fonts/)"
+    "message": "כדאי לטעון מראש גופני `optional` כדי שמבקרים לראשונה יוכלו להשתמש בהם. [מידע נוסף על טעינה מראש של גופנים](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "גופנים עם `font-display: optional` לא נטענו מראש"
@@ -1314,7 +1314,7 @@
     "message": "גופנים עם `font-display: optional` נטענו מראש"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "אם רכיב ה-LCP נוסף באופן דינמי לדף, צריך לטעון מראש את התמונה כדי לשפר את ה-LCP. [מידע נוסף על טעינה מראש של רכיבי LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "אם רכיב ה-LCP נוסף באופן דינמי לדף, צריך לטעון מראש את התמונה כדי לשפר את ה-LCP. [מידע נוסף על טעינה מראש של רכיבי LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "טעינה מראש של תמונת ה-Largest Contentful Paint (‏LCP)"
@@ -1587,7 +1587,7 @@
     "message": "תקציב תזמון"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "כדי להפחית שינויים בפריסה וכדי לשפר את ה-CLS, יש להגדיר רוחב וגובה מפורשים ברכיבי תמונות. [כך מגדירים מידות תמונה](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "כדי להפחית שינויים בפריסה וכדי לשפר את ה-CLS, יש להגדיר רוחב וגובה מפורשים ברכיבי תמונות. [כך מגדירים מידות תמונה](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "יש רכיבי תמונה ללא מאפייני `width` ו-`height` מפורשים"
@@ -1662,7 +1662,7 @@
     "message": "יש תג `<meta name=\"viewport\">` עם `width` או `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "זו המשימה של חסימת thread המתרחשת במהלך המדידה 'מאינטראקציה ועד הצגת התגובה'. [מידע נוסף על המדד 'מאינטראקציה ועד הצגת התגובה'](https://web.dev/inp/)"
+    "message": "זו המשימה של חסימת thread המתרחשת במהלך המדידה 'מאינטראקציה ועד הצגת התגובה'. [מידע נוסף על המדד 'מאינטראקציה ועד הצגת התגובה'](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "עיבוד האירוע '{interactionType}' נמשך {timeInMs, number, milliseconds} אלפיות השנייה"
@@ -1704,10 +1704,10 @@
     "message": "שיטות מומלצות"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "הבדיקות האלה מדגישות הזדמנויות [לשפר את הנגישות של אפליקציית האינטרנט](https://developer.chrome.com/docs/lighthouse/accessibility/). כשמשתמשים בזיהוי אוטומטי, מאתרים רק קבוצת משנה של בעיות, ורמת הנגישות של אפליקציית האינטרנט לא מובטחת. לכן, מומלץ לבצע גם [בדיקה ידנית](https://web.dev/how-to-review/)."
+    "message": "הבדיקות האלה מדגישות הזדמנויות [לשפר את הנגישות של אפליקציית האינטרנט](https://developer.chrome.com/docs/lighthouse/accessibility/). כשמשתמשים בזיהוי אוטומטי, מאתרים רק קבוצת משנה של בעיות, ורמת הנגישות של אפליקציית האינטרנט לא מובטחת. לכן, מומלץ לבצע גם [בדיקה ידנית](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "הפריטים האלה בודקים תחומים שלא ניתן לבדוק באמצעות כלי בדיקה אוטומטיים. מידע נוסף זמין במדריך שלנו שבו מוסבר [איך לערוך בדיקת נגישות](https://web.dev/how-to-review/)."
+    "message": "הפריטים האלה בודקים תחומים שלא ניתן לבדוק באמצעות כלי בדיקה אוטומטיים. מידע נוסף זמין במדריך שלנו שבו מוסבר [איך לערוך בדיקת נגישות](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "נגישות"
@@ -1794,10 +1794,10 @@
     "message": "ביצועים"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "הבדיקות האלה מאמתות את ההיבטים של Progressive Web App. [איך יוצרים אפליקציה מוצלחת מסוג Progressive Web App](https://web.dev/pwa-checklist/)"
+    "message": "הבדיקות האלה מאמתות את ההיבטים של Progressive Web App. [איך יוצרים אפליקציה מוצלחת מסוג Progressive Web App](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "בדיקות אלה נדרשות עבור שורת הבסיס [רשימת משימות של PWA](https://web.dev/pwa-checklist/), אך הן לא נבדקות באופן אוטומטי על ידי Lighthouse. הן לא משפיעות על הניקוד שלך, אך חשוב לאמת אותן באופן ידני."
+    "message": "בדיקות אלה נדרשות עבור שורת הבסיס [רשימת משימות של PWA](https://web.dev/articles/pwa-checklist), אך הן לא נבדקות באופן אוטומטי על ידי Lighthouse. הן לא משפיעות על הניקוד שלך, אך חשוב לאמת אותן באופן ידני."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "מותאם ל-PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "הבדיקות האלה עוזרות לוודא שהתוכן בדף שלך מותאם לעצות הבסיסיות בנוגע לאופטימיזציה למנועי חיפוש. יש הרבה גורמים אחרים שלא משוקללים על ידי Lighthouse בבדיקות האלה, ועשויים להשפיע על דירוג החיפוש, לרבות הביצועים ב[דוח ה-Web Vitals הבסיסיים](https://web.dev/learn-core-web-vitals/). [מידע נוסף על היסודות של חיפוש Google](https://support.google.com/webmasters/answer/35769)"
+    "message": "הבדיקות האלה עוזרות לוודא שהתוכן בדף שלך מותאם לעצות הבסיסיות בנוגע לאופטימיזציה למנועי חיפוש. יש הרבה גורמים אחרים שלא משוקללים על ידי Lighthouse בבדיקות האלה, ועשויים להשפיע על דירוג החיפוש, לרבות הביצועים ב[דוח ה-Web Vitals הבסיסיים](https://web.dev/explore/vitals). [מידע נוסף על היסודות של חיפוש Google](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "אפשר להפעיל באתר את המאמתים הנוספים האלה כדי לבדוק עוד שיטות מומלצות של אופטימיזציה למנועי חיפוש."
@@ -2643,7 +2643,7 @@
     "message": "מערכת Lighthouse לא הצליחה לטעון באופן מהימן את הדף שביקשת. יש לוודא שהבדיקה מתבצעת בכתובת ה-URL הנכונה ושהשרת מגיב באופן תקין לכל הבקשות. (פרטים: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "מערכת Lighthouse לא הצליחה לטעון באופן מהימן את הדף שביקשת. יש לוודא שהבדיקה מתבצעת בכתובת ה-URL הנכונה ושהשרת מגיב באופן תקין לכל הבקשות. (קוד סטטוס: {statusCode})"
+    "message": "מערכת Lighthouse לא הצליחה לטעון באופן מהימן את הדף שביקשת. יש לוודא שהבדיקה מתבצעת בכתובת ה-URL הנכונה ושהשרת מגיב באופן תקין לכל הבקשות. (קוד הסטטוס: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "טעינת הדף ארכה זמן רב מדי. מומלץ ליישם את ההמלצות שבדוח כדי לקצר את זמן הטעינה של הדף, ואז לנסות להריץ שוב את Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "נראה שכתובת ה-URL שסיפקת אינה חוקית."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "מערכת Lighthouse לא הצליחה לטעון באופן מהימן את הדף שביקשת. יש לוודא שהבדיקה מתבצעת בכתובת ה-URL הנכונה ושהשרת מגיב באופן תקין לכל הבקשות. (קוד הסטטוס: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "סוג ה-MIME של הדף הוא XHTML: ב-Lighthouse אין תמיכה מפורשת בסוג המסמך הזה"
@@ -3108,22 +3111,22 @@
     "message": "שימוש בתכונה [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ב-NitroPack כדי להקטין את גודל הקבצים שנשלחים לדפדפן."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את `format=\"webp\"`. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את `format=\"webp\"`. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את `loading=\"lazy\"` עבור תמונות שאינן מופיעות במסך. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את `loading=\"lazy\"` עבור תמונות שאינן מופיעות במסך. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולציין את הרכיב `preload` לתמונות מסוג LCP. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולציין את הרכיב `preload` לתמונות מסוג LCP. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולציין את הרכיב המפורש `width` ואת `height`. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולציין את הרכיב המפורש `width` ואת `height`. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את רכיב `quality` המתאים. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את רכיב `quality` המתאים. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את רכיב `sizes` המתאים. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את רכיב `sizes` המתאים. [מידע נוסף](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[כדאי להחליף אנימציות GIF בסרטונים](https://web.dev/replace-gifs-with-videos/) כדי להאיץ את הטעינה של דפי אינטרנט. מומלץ גם להשתמש בפורמטים מודרניים של קבצים כמו [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) או [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) כדי לייעל את דחיסת הנתונים ביותר מ-30% עם קידוד הווידאו המתקדם ביותר, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "טעינת הדף הראשונית"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "תמונת מצב בנקודת זמן"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "טווח הזמן לאינטראקציות של משתמשים"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "ויסות נתונים בהתאמה אישית"
   },
@@ -3393,10 +3402,10 @@
     "message": "סוכן משתמש (רשת)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "טעינת דף יחיד"
+    "message": "סשן בדף יחיד"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "הנתונים האלה מגיעים מטעינת דף יחיד, בניגוד לנתוני שטח שמסכמים מספר סשנים."
+    "message": "הנתונים האלה מגיעים מסשן בדף יחיד, לעומת נתוני שדות שמסכמים סשנים רבים."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "ויסות נתונים איטי ב-4G"

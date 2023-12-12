@@ -639,7 +639,7 @@
     "message": "ऐनिमेट की गई सामग्री के लिए वीडियो फ़ॉर्मेट का इस्तेमाल करें"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "पॉलीफ़िल और ट्रांसफ़ॉर्म की मदद से, लेगसी ब्राउज़र पर JavaScript की नई सुविधाएं इस्तेमाल की जा सकती हैं. हालांकि, मॉडर्न ब्राउज़र के लिए इनमें से कई सुविधाओं की ज़रूरत नहीं होती. बंडल किए गए JavaScript के लिए, मॉडर्न स्क्रिप्ट डिप्लॉयमेंट रणनीति अपनाएं. इसके लिए, मॉड्यूल/नोमॉड्यूल सुविधा वाले पहचान टूल का इस्तेमाल करें. इससे मॉडर्न ब्राउज़र पर भेजे जाने वाले कोड की संख्या कम करने और लेगसी ब्राउज़र को चालू रखने में मदद मिलती है. [नया JavaScript इस्तेमाल करने का तरीका जानें](https://web.dev/publish-modern-javascript/)"
+    "message": "पॉलीफ़िल और ट्रांसफ़ॉर्म की मदद से, लेगसी ब्राउज़र पर JavaScript की नई सुविधाएं इस्तेमाल की जा सकती हैं. हालांकि, मॉडर्न ब्राउज़र के लिए इनमें से कई सुविधाओं की ज़रूरत नहीं होती. बंडल किए गए JavaScript के लिए, मॉडर्न स्क्रिप्ट डिप्लॉयमेंट रणनीति अपनाएं. इसके लिए, मॉड्यूल/नोमॉड्यूल सुविधा वाले पहचान टूल का इस्तेमाल करें. इससे मॉडर्न ब्राउज़र पर भेजे जाने वाले कोड की संख्या कम करने और लेगसी ब्राउज़र को चालू रखने में मदद मिलती है. [नया JavaScript इस्तेमाल करने का तरीका जानें](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "पुरानी JavaScript को नए ब्राउज़र में खोलने से बचें"
@@ -993,7 +993,7 @@
     "message": "इमेज का अनुमानित साइज़"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "इमेज का नैचुरल डाइमेंशन उसके डिसप्ले साइज़ और पिक्सल के अनुपात में होना चाहिए, ताकि इमेज ज़्यादा से ज़्यादा साफ़ दिख सके. [रिस्पॉन्सिव इमेज देने का तरीका जानें](https://web.dev/serve-responsive-images/)."
+    "message": "इमेज का नैचुरल डाइमेंशन उसके डिसप्ले साइज़ और पिक्सल के अनुपात में होना चाहिए, ताकि इमेज ज़्यादा से ज़्यादा साफ़ दिख सके. [रिस्पॉन्सिव इमेज देने का तरीका जानें](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "पेज पर दिख रही इमेज का रिज़ॉल्यूशन कम है"
@@ -1158,13 +1158,13 @@
     "message": "सीएलएस में योगदान"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "पेज के सीएलएस में सबसे ज़्यादा योगदान ये DOM एलिमेंट देते हैं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/optimize-cls/)"
+    "message": "पेज के सीएलएस में सबसे ज़्यादा योगदान ये DOM एलिमेंट देते हैं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "बड़े लेआउट शिफ़्ट से बचें"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "पेज के ऊपरी हिस्से पर मौजूद जिन इमेज को पेज के लाइफ़साइकल में लेज़ी लोडिंग की मदद से, लोड और रेंडर किया गया है उनसे सबसे बड़े कॉन्टेंटफ़ुल पेंट में ऑडिट करने में देरी हो सकती है. [लेज़ी लोडिंग के बारे में ज़्यादा जानें](https://web.dev/lcp-lazy-loading/)."
+    "message": "पेज के ऊपरी हिस्से पर मौजूद जिन इमेज को पेज के लाइफ़साइकल में लेज़ी लोडिंग की मदद से, लोड और रेंडर किया गया है उनसे सबसे बड़े कॉन्टेंटफ़ुल पेंट में ऑडिट करने में देरी हो सकती है. [लेज़ी लोडिंग के बारे में ज़्यादा जानें](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को लेज़ी तरीके से लोड किया गया है"
@@ -1173,7 +1173,7 @@
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को लेज़ी तरीके से नहीं लोड किया गया है"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "यह मुख्य थ्रेड पर सबसे लंबे टास्क की सूची बनाता है. इससे इनपुट डिले में, सबसे खराब योगदान देने वालों की पहचान करने में मदद मिलती है. [मुख्य थ्रेड के लंबे टास्क से बचने का तरीका जानें](https://web.dev/long-tasks-devtools/)"
+    "message": "यह मुख्य थ्रेड पर सबसे लंबे टास्क की सूची बनाता है. इससे इनपुट डिले में, सबसे खराब योगदान देने वालों की पहचान करने में मदद मिलती है. [मुख्य थ्रेड के लंबे टास्क से बचने का तरीका जानें](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# लंबा टास्क मिला}one{# लंबा टास्क मिला}other{# लंबे टास्क मिले}}"
@@ -1221,7 +1221,7 @@
     "message": "मेनिफ़ेस्ट में ऐसा आइकॉन है जिसके लिए मास्क का इस्तेमाल किया जा सकता है"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "कुल लेआउट शिफ़्ट, व्यूपोर्ट में दिखने वाले एलिमेंट की हलचल बताता है. [कुल लेआउट शिफ़्ट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/cls/)."
+    "message": "कुल लेआउट शिफ़्ट, व्यूपोर्ट में दिखने वाले एलिमेंट की हलचल बताता है. [कुल लेआउट शिफ़्ट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "फ़र्स्ट कॉन्टेंटफ़ुल पेंट से, यह पता चलता है कि आपकी वेबसाइट का जो टेक्स्ट या इमेज किसी उपयोगकर्ता को सबसे पहले दिखा उसे दिखने में कितना समय लगा. [फ़र्स्ट कॉन्टेंटफ़ुल पेंट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "फ़र्स्ट मीनिंगफ़ुल पेंट मेट्रिक इस बात की जानकारी देती है कि किसी पेज का मुख्य कॉन्टेंट कब दिखा. [फ़र्स्ट मीनिंगफ़ुल पेंट से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक, पेज पर रिस्पॉन्स मिलने में लगने वाले समय को मापती है. इससे पता चलता है कि उपयोगकर्ता के इनपुट का जवाब देने में पेज को कितना समय लगता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/inp/)."
+    "message": "इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक, पेज पर रिस्पॉन्स मिलने में लगने वाले समय को मापती है. इससे पता चलता है कि उपयोगकर्ता के इनपुट का जवाब देने में पेज को कितना समय लगता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "इंटरैक्टिव में लगने वाला समय, वह समय है जितनी देर में पेज पूरी तरह से इंटरैक्टिव हो जाता है. [इंटरैक्टिव में लगने वाले समय से जुड़ी मेट्रिक के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "सर्वर बैकएंड के इंतज़ार का समय"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` इवेंट भरोसेमंद नहीं होता और इसे इस्तेमाल करने की वजह से, ब्राउज़र को ऑप्टिमाइज़ करने की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [अनलोड इवेंट लिसनर के बारे में ज़्यादा जानें](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` इवेंट भरोसेमंद नहीं होता और इसे इस्तेमाल करने की वजह से, ब्राउज़र को ऑप्टिमाइज़ करने की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [अनलोड इवेंट लिसनर के बारे में ज़्यादा जानें](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "एक `unload` लिसनर रजिस्टर करता है"
@@ -1305,7 +1305,7 @@
     "message": "परफ़ॉर्मेंस बजट"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि वेबसाइट पर पहली बार आने वाले उनका इस्तेमाल कर सकें. [पहले से फ़ॉन्ट लोड करने के बारे में ज़्यादा जानें](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि वेबसाइट पर पहली बार आने वाले उनका इस्तेमाल कर सकें. [पहले से फ़ॉन्ट लोड करने के बारे में ज़्यादा जानें](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` वाले फ़ॉन्ट पहले से लोड नहीं किए गए हैं"
@@ -1314,7 +1314,7 @@
     "message": "`font-display: optional` वाले फ़ॉन्ट पहले से लोड किए गए हैं"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "अगर पेज में एलसीपी एलिमेंट को डाइनैमिक तरीके से जोड़ा गया है, तो एलसीपी को बेहतर बनाने के लिए इमेज को पहले से लोड कर लेना चाहिए. [एलसीपी एलिमेंट को पहले से लोड करने के बारे में ज़्यादा जानें](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "अगर पेज में एलसीपी एलिमेंट को डाइनैमिक तरीके से जोड़ा गया है, तो एलसीपी को बेहतर बनाने के लिए इमेज को पहले से लोड कर लेना चाहिए. [एलसीपी एलिमेंट को पहले से लोड करने के बारे में ज़्यादा जानें](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "सबसे बड़े कॉन्टेंटफ़ुल पेंट वाली इमेज को पहले से लोड करें"
@@ -1587,7 +1587,7 @@
     "message": "टाइमिंग बजट"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "इमेज एलिमेंट पर, चौड़ाई और ऊंचाई की जानकारी साफ़ तौर पर सेट करें, ताकि लेआउट शिफ़्ट को कम किया जा सके और सीएलएस को बेहतर बनाया जा सके. [इमेज का डाइमेंशन सेट करने का तरीका जानें](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "इमेज एलिमेंट पर, चौड़ाई और ऊंचाई की जानकारी साफ़ तौर पर सेट करें, ताकि लेआउट शिफ़्ट को कम किया जा सके और सीएलएस को बेहतर बनाया जा सके. [इमेज का डाइमेंशन सेट करने का तरीका जानें](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "इमेज एलिमेंट पर, `width` और `height` के बारे में साफ़-साफ़ नहीं बताया गया है"
@@ -1662,7 +1662,7 @@
     "message": "वेब पेज पर `width` या `initial-scale` वाला `<meta name=\"viewport\">` टैग है"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "यह थ्रेड ब्लॉक करने का काम है, जो इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के लिए मेज़रमेंट के दौरान होता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/inp/)."
+    "message": "यह थ्रेड ब्लॉक करने का काम है, जो इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के लिए मेज़रमेंट के दौरान होता है. [इंटरैक्शन टू नेक्स्ट पेंट मेट्रिक के बारे में ज़्यादा जानें](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "'{interactionType}' इवेंट में {timeInMs, number, milliseconds} मिलीसेकंड का समय लगा"
@@ -1704,10 +1704,10 @@
     "message": "सबसे अच्छे तरीके"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "इन जांचों की मदद से, [आपके वेब ऐप्लिकेशन की सुलभता को बेहतर बनाने](https://developer.chrome.com/docs/lighthouse/accessibility/) में मदद मिलती है. अपने-आप पहचान करने की सुविधा, सिर्फ़ कुछ समस्याओं का पता लगाती है और आपके वेब ऐप्लिकेशन की सुलभता की गारंटी नहीं देती. इसलिए, हमारी सलाह है कि आप [मैन्युअल जांच](https://web.dev/how-to-review/) भी करें."
+    "message": "इन जांचों की मदद से, [आपके वेब ऐप्लिकेशन की सुलभता को बेहतर बनाने](https://developer.chrome.com/docs/lighthouse/accessibility/) में मदद मिलती है. अपने-आप पहचान करने की सुविधा, सिर्फ़ कुछ समस्याओं का पता लगाती है और आपके वेब ऐप्लिकेशन की सुलभता की गारंटी नहीं देती. इसलिए, हमारी सलाह है कि आप [मैन्युअल जांच](https://web.dev/articles/how-to-review) भी करें."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "ये आइटम ऐसे मामलों में भी काम करते हैं जहां अपने आप काम करने वाला टेस्टिंग टूल नाकाम रहता है. हमारी गाइड में जाकर [सुलभता समीक्षा करने](https://web.dev/how-to-review/) के बारे में ज़्यादा जानें."
+    "message": "ये आइटम ऐसे मामलों में भी काम करते हैं जहां अपने आप काम करने वाला टेस्टिंग टूल नाकाम रहता है. हमारी गाइड में जाकर [सुलभता समीक्षा करने](https://web.dev/articles/how-to-review) के बारे में ज़्यादा जानें."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "सुलभता"
@@ -1794,10 +1794,10 @@
     "message": "परफ़ॉर्मेंस"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "इन जांचों से, किसी प्रोग्रेसिव वेब ऐप्लिकेशन के पहलुओं की पुष्टि की जाती है. [जानें कि एक अच्छे प्रोग्रेसिव वेब ऐप्लिकेशन के लिए क्या-क्या ज़रूरी है.](https://web.dev/pwa-checklist/)."
+    "message": "इन जांचों से, किसी प्रोग्रेसिव वेब ऐप्लिकेशन के पहलुओं की पुष्टि की जाती है. [जानें कि एक अच्छे प्रोग्रेसिव वेब ऐप्लिकेशन के लिए क्या-क्या ज़रूरी है.](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "इस तरह की जांच, बेसलाइन [PWA चेकलिस्ट](https://web.dev/pwa-checklist/) के लिए ज़रूरी हैं, लेकिन Lighthouse इनकी जांच अपने आप नहीं करता है. वे आपके स्कोर पर असर नहीं डालते हैं, लेकिन इनकी मैन्युअल तरीके से पुष्टि करना ज़रूरी है."
+    "message": "इस तरह की जांच, बेसलाइन [PWA चेकलिस्ट](https://web.dev/articles/pwa-checklist) के लिए ज़रूरी हैं, लेकिन Lighthouse इनकी जांच अपने आप नहीं करता है. वे आपके स्कोर पर असर नहीं डालते हैं, लेकिन इनकी मैन्युअल तरीके से पुष्टि करना ज़रूरी है."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA ऑप्टिमाइज़ किया गया"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "इन जांचों से यह पक्का होता है कि आपका पेज, सर्च इंजन ऑप्टिमाइज़ेशन से जुड़ी बुनियादी सलाह का पालन कर रहा है. ऐसी कई चीज़ें हैं जिनकी वजह से लाइटहाउस आपके पेज की जांच नहीं करता. इससे, खोज नतीजों में आपके पेज की रैंकिंग और [वेबसाइट की परफ़ॉर्मेंस से जुड़ी जानकारी](https://web.dev/learn-core-web-vitals/) की रिपोर्ट पर असर पड़ सकता है. [Google Search Essentials के बारे में ज़्यादा जानें](https://support.google.com/webmasters/answer/35769)."
+    "message": "इन जांचों से यह पक्का होता है कि आपका पेज, सर्च इंजन ऑप्टिमाइज़ेशन से जुड़ी बुनियादी सलाह का पालन कर रहा है. ऐसी कई चीज़ें हैं जिनकी वजह से लाइटहाउस आपके पेज की जांच नहीं करता. इससे, खोज नतीजों में आपके पेज की रैंकिंग और [वेबसाइट की परफ़ॉर्मेंस से जुड़ी जानकारी](https://web.dev/explore/vitals) की रिपोर्ट पर असर पड़ सकता है. [Google Search Essentials के बारे में ज़्यादा जानें](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "SEO के दूसरे सबसे अच्छे तरीके देखने के लिए अपनी साइट पर पुष्टि करने वाले ये और भी टूल चलाएं."
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse आपका अनुरोध किया गया पेज ठीक से लोड नहीं कर सका. पक्का करें कि आप सही यूआरएल को टेस्ट कर रहे हैं और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (जानकारी: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse आपका अनुरोध किया गया पेज ठीक से लोड नहीं कर सका. पक्का करें कि आप सही यूआरएल को टेस्ट कर रहे हैं और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्थिति कोड: {statusCode})"
+    "message": "लाइटहाउस आपके अनुरोध किए गए पेज को ठीक से लोड नहीं कर सका. पक्का करें कि आपने सही यूआरएल का इस्तेमाल किया है और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्टेटस कोड: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "आपके पेज को लोड होने में बहुत ज़्यादा समय लगा. अपने पेज के लोड होने का समय कम करने के लिए, कृपया रिपोर्ट में दिए गए अवसरों का फ़ायदा लें. इसके बाद, Lighthouse को फिर से चलाकर देखें. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "आपका दिया हुआ यूआरएल गलत लगता है."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "लाइटहाउस आपके अनुरोध किए गए पेज को ठीक से लोड नहीं कर सका. पक्का करें कि आपने सही यूआरएल का इस्तेमाल किया है और सर्वर सभी अनुरोधों के लिए ठीक से काम कर रहा है. (स्टेटस कोड: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "पेज MIME टाइप, XHTML है: Lighthouse साफ़ तौर पर, इस तरह के दस्तावेज़ के साथ काम नहीं करता"
@@ -3108,22 +3111,22 @@
     "message": "ब्राउज़र को भेजी जाने वाली फ़ाइलों का साइज़ कम करने के लिए, NitroPack में [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) का इस्तेमाल करें."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `format=\"webp\"` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `format=\"webp\"` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "ऑफ़स्क्रीन इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `loading=\"lazy\"` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "ऑफ़स्क्रीन इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `loading=\"lazy\"` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "एलसीपी इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `preload` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "एलसीपी इमेज के लिए, `nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और `preload` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें. साथ ही, `width` और `height` को साफ़ तौर पर सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें. साथ ही, `width` और `height` को साफ़ तौर पर सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `quality` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `quality` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `sizes` सेट करें. [ज़्यादा जानें](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "`nuxt/image` कॉम्पोनेंट का इस्तेमाल करें और सही `sizes` सेट करें. [ज़्यादा जानें](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "वेब पेजों को तेज़ी से लोड करने के लिए, [ऐनिमेट किए गए GIF की जगह वीडियो का इस्तेमाल करें](https://web.dev/replace-gifs-with-videos/). साथ ही, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) या [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) जैसे मॉडर्न फ़ाइल फ़ॉर्मैट इस्तेमाल करें, ताकि कंप्रेस करने पर क्वालिटी, मौजूदा state-of-the-art वीडियो कोडेक VP9 के मुकाबले 30% से ज़्यादा हो."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "शुरुआती पेज लोड"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "पॉइंट-इन-टाइम स्नैपशॉट"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "उपयोगकर्ता के साथ हुए इंटरैक्शन का टाइमस्पैन"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "कस्टम थ्रॉटलिंग"
   },
@@ -3393,10 +3402,10 @@
     "message": "उपयोगकर्ता एजेंट (नेटवर्क)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "एक पेज लोड"
+    "message": "सिंगल-पेज सेशन"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "यह डेटा, कई सेशन के बारे में जानकारी देने वाले फ़ील्ड डेटा के बजाय, लोड हुए एक पेज से लिया गया है."
+    "message": "यह डेटा, कई सेशन के बारे में जानकारी देने वाले फ़ील्ड डेटा के बजाय, सिंगल-पेज सेशन से लिया गया है."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "धीमी 4G थ्रॉटलिंग"

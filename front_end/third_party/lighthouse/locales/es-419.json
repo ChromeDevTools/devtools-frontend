@@ -639,7 +639,7 @@
     "message": "Usa formatos de video para incluir contenido animado"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "El complemento Polyfill y las transformaciones permiten que los navegadores heredados utilicen nuevas funciones de JavaScript. Sin embargo, la mayoría no es necesaria en los navegadores actualizados. Para tus paquetes de JavaScript, adopta una estrategia moderna de implementación de secuencias de comandos mediante la detección de funciones de módulo/no módulo a fin de reducir la cantidad de código que se envía a los navegadores actualizados, mientras se mantiene la compatibilidad con navegadores heredados. [Más información sobre cómo usar JavaScript actualizado](https://web.dev/publish-modern-javascript/)"
+    "message": "El complemento Polyfill y las transformaciones permiten que los navegadores heredados utilicen nuevas funciones de JavaScript. Sin embargo, la mayoría no es necesaria en los navegadores actualizados. Para tus paquetes de JavaScript, adopta una estrategia moderna de implementación de secuencias de comandos mediante la detección de funciones de módulo/no módulo a fin de reducir la cantidad de código que se envía a los navegadores actualizados, mientras se mantiene la compatibilidad con navegadores heredados. [Más información sobre cómo usar JavaScript actualizado](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Evita entregar instancias heredadas de JavaScript a navegadores modernos"
@@ -993,7 +993,7 @@
     "message": "Tamaño esperado"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Para maximizar la claridad de la imagen, sus dimensiones naturales deben ser proporcionales al tamaño de la pantalla y a la proporción de píxeles. [Obtén información para proporcionar imágenes responsivas](https://web.dev/serve-responsive-images/)."
+    "message": "Para maximizar la claridad de la imagen, sus dimensiones naturales deben ser proporcionales al tamaño de la pantalla y a la proporción de píxeles. [Obtén información para proporcionar imágenes responsivas](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Entrega imágenes con baja resolución"
@@ -1158,13 +1158,13 @@
     "message": "Contribución en CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Estos elementos de DOM contribuyen principalmente con el CLS de la página. [Más información para mejorar CLS](https://web.dev/optimize-cls/)"
+    "message": "Estos elementos de DOM contribuyen principalmente con el CLS de la página. [Más información para mejorar CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "No realices cambios grandes en el diseño"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Las imágenes de la mitad superior de la página que se cargan de forma diferida se renderizan más tarde en el ciclo de vida de la página, lo que puede retrasar el Procesamiento de imagen con contenido más grande. [Obtén más información sobre la carga diferida óptima](https://web.dev/lcp-lazy-loading/)."
+    "message": "Las imágenes de la mitad superior de la página que se cargan de forma diferida se renderizan más tarde en el ciclo de vida de la página, lo que puede retrasar el Procesamiento de imagen con contenido más grande. [Obtén más información sobre la carga diferida óptima](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "La imagen del procesamiento de imagen con contenido más grande se cargó de forma diferida"
@@ -1173,7 +1173,7 @@
     "message": "La imagen del procesamiento de imagen con contenido más grande no se cargó de forma diferida"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Se muestran las tareas más largas en el subproceso principal (permite identificar las tareas que más contribuyen al mayor retraso de entrada). [Más información para evitar tareas largas en el subproceso principal](https://web.dev/long-tasks-devtools/)"
+    "message": "Se muestran las tareas más largas en el subproceso principal (permite identificar las tareas que más contribuyen al mayor retraso de entrada). [Más información para evitar tareas largas en el subproceso principal](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Se encontró # tarea larga}other{Se encontraron # tareas largas}}"
@@ -1221,7 +1221,7 @@
     "message": "El manifiesto tiene un ícono enmascarable"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "El Cambio de diseño acumulado mide el movimiento de los elementos visibles dentro del viewport. [Obtén más información sobre la métrica de Cambio de diseño acumulado](https://web.dev/cls/)."
+    "message": "El Cambio de diseño acumulado mide el movimiento de los elementos visibles dentro del viewport. [Obtén más información sobre la métrica de Cambio de diseño acumulado](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "El primer procesamiento de imagen con contenido indica el momento en el que se visualiza en la pantalla el primer texto o imagen. [Obtén más información sobre la métrica de Primer procesamiento de imagen con contenido](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "La primera pintura significativa mide el momento en que se muestra el contenido principal de la página. [Obtén más información sobre la métrica de Primera pintura significativa](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "La Interacción a la siguiente pintura mide la capacidad de respuesta de la página, es decir, cuánto tarda en responder de manera visible a las entradas del usuario. [Obtén más información sobre la métrica de Interacción a la siguiente pintura](https://web.dev/inp/)."
+    "message": "La Interacción a la siguiente pintura mide la capacidad de respuesta de la página, es decir, cuánto tarda en responder de manera visible a las entradas del usuario. [Obtén más información sobre la métrica de Interacción a la siguiente pintura](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "El tiempo de carga indica cuánto tarda una página en ser totalmente interactiva. [Obtén más información sobre la métrica de tiempo de carga](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Latencias de backend del servidor"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "El evento `unload` no se ejecuta de forma confiable y su escucha puede impedir las optimizaciones del navegador, como la Memoria caché atrás/adelante. En su lugar, usa los eventos `pagehide` o `visibilitychange`. [Más información sobre la descarga de objetos de escucha de eventos](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "El evento `unload` no se ejecuta de forma confiable y su escucha puede impedir las optimizaciones del navegador, como la Memoria caché atrás/adelante. En su lugar, usa los eventos `pagehide` o `visibilitychange`. [Más información sobre la descarga de objetos de escucha de eventos](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un objeto de escucha de `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Estimación de rendimiento"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Precarga fuentes `optional` para que los visitantes nuevos puedan usarlas. [Más información sobre la precarga de fuentes](https://web.dev/preload-optional-fonts/)"
+    "message": "Precarga fuentes `optional` para que los visitantes nuevos puedan usarlas. [Más información sobre la precarga de fuentes](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "No se precargaron las fuentes con `font-display: optional`"
@@ -1314,7 +1314,7 @@
     "message": "Se precargaron las fuentes con `font-display: optional`"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Si se agrega el elemento LCP de forma dinámica a la página, debes precargar la imagen a fin de mejorar LCP. [Obtén más información sobre la precarga de elementos de LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Si se agrega el elemento LCP de forma dinámica a la página, debes precargar la imagen a fin de mejorar LCP. [Obtén más información sobre la precarga de elementos de LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Precarga la imagen del procesamiento de imagen con contenido más grande"
@@ -1587,7 +1587,7 @@
     "message": "Estimación de tiempo"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Establece un atributo explícito de altura y ancho en los elementos de imagen para reducir los cambios de diseño y mejorar la métrica del CLS. [Más información para configurar las dimensiones de las imágenes](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Establece un atributo explícito de altura y ancho en los elementos de imagen para reducir los cambios de diseño y mejorar la métrica del CLS. [Más información para configurar las dimensiones de las imágenes](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Los elementos de imagen no tienen ningún atributo `width` ni `height` explícito"
@@ -1662,7 +1662,7 @@
     "message": "Tiene una etiqueta `<meta name=\"viewport\">` con `width` o `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Este es el trabajo de bloqueo de subprocesos que se produce durante la medición de la interacción a la siguiente pintura. [Obtén más información sobre la métrica de Interacción a la siguiente pintura](https://web.dev/inp/)."
+    "message": "Este es el trabajo de bloqueo de subprocesos que se produce durante la medición de la interacción a la siguiente pintura. [Obtén más información sobre la métrica de Interacción a la siguiente pintura](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Se dedican {timeInMs, number, milliseconds} ms al evento \"{interactionType}\""
@@ -1704,10 +1704,10 @@
     "message": "Prácticas recomendadas"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Estas comprobaciones destacan las oportunidades para [mejorar la accesibilidad de tu app web](https://developer.chrome.com/docs/lighthouse/accessibility/). La detección automática solo puede detectar un subconjunto de problemas y no garantiza la accesibilidad de tu app web, por lo que también se recomienda hacer [pruebas manuales](https://web.dev/how-to-review/)."
+    "message": "Estas comprobaciones destacan las oportunidades para [mejorar la accesibilidad de tu app web](https://developer.chrome.com/docs/lighthouse/accessibility/). La detección automática solo puede detectar un subconjunto de problemas y no garantiza la accesibilidad de tu app web, por lo que también se recomienda hacer [pruebas manuales](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Estos elementos abarcan áreas que las herramientas de prueba automáticas no contemplan. Obtén más información en nuestra guía sobre [cómo revisar los aspectos de accesibilidad](https://web.dev/how-to-review/)."
+    "message": "Estos elementos abarcan áreas que las herramientas de prueba automáticas no contemplan. Obtén más información en nuestra guía sobre [cómo revisar los aspectos de accesibilidad](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Accesibilidad"
@@ -1794,10 +1794,10 @@
     "message": "Rendimiento"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Estas comprobaciones validan los aspectos de una app web progresiva. [Descubre qué es lo que hace buena a una app web progresiva](https://web.dev/pwa-checklist/)."
+    "message": "Estas comprobaciones validan los aspectos de una app web progresiva. [Descubre qué es lo que hace buena a una app web progresiva](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Estas comprobaciones son necesarias según el modelo de referencia [Lista de tareas para AWP](https://web.dev/pwa-checklist/), pero Lighthouse no las realiza automáticamente. Es importante que las verifiques a mano (aunque no afectan a la puntuación)."
+    "message": "Estas comprobaciones son necesarias según el modelo de referencia [Lista de tareas para AWP](https://web.dev/articles/pwa-checklist), pero Lighthouse no las realiza automáticamente. Es importante que las verifiques a mano (aunque no afectan a la puntuación)."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "AWP"
@@ -1809,7 +1809,7 @@
     "message": "Optimizado para PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Estas comprobaciones aseguran que tu página esté siguiendo la sugerencia básica de optimización por motores de búsqueda. Existen muchos factores adicionales que Lighthouse no registra y que pueden afectar su clasificación en la búsqueda, como el rendimiento en las [Métricas web esenciales](https://web.dev/learn-core-web-vitals/). [Obtén más información sobre los conceptos básicos de la Búsqueda de Google](https://support.google.com/webmasters/answer/35769)."
+    "message": "Estas comprobaciones aseguran que tu página esté siguiendo la sugerencia básica de optimización por motores de búsqueda. Existen muchos factores adicionales que Lighthouse no registra y que pueden afectar su clasificación en la búsqueda, como el rendimiento en las [Métricas web esenciales](https://web.dev/explore/vitals). [Obtén más información sobre los conceptos básicos de la Búsqueda de Google](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Ejecuta estos validadores adicionales en tu sitio web para comprobar más prácticas recomendadas de SEO."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Al parecer, la URL que proporcionaste no es válida."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse no pudo cargar correctamente la página que solicitaste. Verifica que estés probando la URL correcta y que el servidor responda adecuadamente a todas las solicitudes. (Código de estado: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "El tipo de MIME de la página es XHTML: Lighthouse no admite explícitamente este tipo de documento"
   },
@@ -3108,22 +3111,22 @@
     "message": "Usa [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) en NitroPack para reducir el tamaño de los archivos que se envían al navegador."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Utiliza el componente `nuxt/image` y establece `format=\"webp\"`. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Utiliza el componente `nuxt/image` y establece `format=\"webp\"`. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Utiliza el componente `nuxt/image` y establece `loading=\"lazy\"` para las imágenes fuera de pantalla. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Utiliza el componente `nuxt/image` y establece `loading=\"lazy\"` para las imágenes fuera de pantalla. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Utiliza el componente `nuxt/image` y especifica `preload` para la imagen LCP. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Utiliza el componente `nuxt/image` y especifica `preload` para la imagen LCP. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Utiliza el componente `nuxt/image` y especifica `width` y `height` explícitos. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Utiliza el componente `nuxt/image` y especifica `width` y `height` explícitos. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Utiliza el componente `nuxt/image` y establece las `quality` correspondientes. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Utiliza el componente `nuxt/image` y establece las `quality` correspondientes. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Utiliza el componente `nuxt/image` y establece las `sizes` correspondientes. [Obtén más información](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Utiliza el componente `nuxt/image` y establece las `sizes` correspondientes. [Obtén más información](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Reemplaza los GIF animados con video](https://web.dev/replace-gifs-with-videos/) para que se cargue la página web más rápido y considera utilizar formatos de archivo modernos, como [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mejorar la eficiencia de la compresión en más de un 30% con respecto al VP9, el códec de video de vanguardia actual."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Carga inicial de la página"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Instantánea de un momento determinado"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Período de interacciones del usuario"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Limitación personalizada"
   },
@@ -3393,10 +3402,10 @@
     "message": "Usuario-agente (red)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Carga de una única página"
+    "message": "Sesión de una sola página"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Estos datos se obtienen de la carga de una única página, a diferencia de los datos de campos que sintetizan la información de muchas sesiones."
+    "message": "Estos datos se obtienen de la sesión de una sola página, a diferencia de los datos de campos que sintetizan la información de muchas sesiones."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Limitación de la red 4G lenta"

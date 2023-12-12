@@ -639,7 +639,7 @@
     "message": "使用影片格式的動畫內容"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能。不過這些功能對於新式瀏覽器而言，有很多都是不必要的。如果是 JavaScript 套件，請採用具備模組/非模組功能偵測機制的新型指令碼部署策略，以減少新式瀏覽器所需要的程式碼，同時保留對舊版瀏覽器的支援。[瞭解如何使用新版 JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能。不過這些功能對於新式瀏覽器而言，有很多都是不必要的。如果是 JavaScript 套件，請採用具備模組/非模組功能偵測機制的新型指令碼部署策略，以減少新式瀏覽器所需要的程式碼，同時保留對舊版瀏覽器的支援。[瞭解如何使用新版 JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "避免將舊版 JavaScript 提供給新型瀏覽器"
@@ -993,7 +993,7 @@
     "message": "預期大小"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "圖片的實際尺寸應與顯示大小和像素比例成比例，才能呈現最清晰的圖片效果。[瞭解如何提供回應式圖片](https://web.dev/serve-responsive-images/)。"
+    "message": "圖片的實際尺寸應與顯示大小和像素比例成比例，才能呈現最清晰的圖片效果。[瞭解如何提供回應式圖片](https://web.dev/articles/serve-responsive-images)。"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "提供的圖片解析度過低"
@@ -1023,7 +1023,7 @@
     "message": "Play 商店應用程式網址與 Play 商店 ID 不符"
   },
   "core/audits/installable-manifest.js | in-incognito": {
-    "message": "網頁透過無痕式視窗載入"
+    "message": "網頁透過無痕視窗載入"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
     "message": "資訊清單「`display`」屬性必須是「`standalone`」、「`fullscreen`」或「`minimal-ui`」其中之一"
@@ -1158,13 +1158,13 @@
     "message": "對 CLS 的影響"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "這些 DOM 元素對於網頁的「累計版面配置位移」(CLS) 影響最大。[瞭解如何改善 CLS](https://web.dev/optimize-cls/)"
+    "message": "這些 DOM 元素對於網頁的「累計版面配置位移」(CLS) 影響最大。[瞭解如何改善 CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "避免大量版面配置轉移"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "不需捲動位置的圖片經過延遲載入後，會在頁面生命週期的較晚階段顯示，這可能會延遲最大內容繪製作業。[進一步瞭解如何讓延遲載入最佳化](https://web.dev/lcp-lazy-loading/)。"
+    "message": "不需捲動位置的圖片經過延遲載入後，會在頁面生命週期的較晚階段顯示，這可能會延遲最大內容繪製作業。[進一步瞭解如何讓延遲載入最佳化](https://web.dev/articles/lcp-lazy-loading)。"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "已延遲載入最大內容繪製圖片"
@@ -1173,7 +1173,7 @@
     "message": "未延遲載入最大內容繪製圖片"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "列出主要執行緒上執行時間最長的工作，這項資訊有助於找出造成輸入延遲的主因。[瞭解如何避免冗長的主執行緒工作](https://web.dev/long-tasks-devtools/)"
+    "message": "列出主要執行緒上執行時間最長的工作，這項資訊有助於找出造成輸入延遲的主因。[瞭解如何避免冗長的主執行緒工作](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{找到 # 項長時間執行的工作}other{找到 # 項長時間執行的工作}}"
@@ -1221,7 +1221,7 @@
     "message": "資訊清單包含可遮蓋的圖示"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "「累計版面配置轉移」指標是用於測量可見元素在可視區域內的移動情形。[進一步瞭解「累計版面配置位移」指標](https://web.dev/cls/)。"
+    "message": "「累計版面配置轉移」指標是用於測量可見元素在可視區域內的移動情形。[進一步瞭解「累計版面配置位移」指標](https://web.dev/articles/cls)。"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "首次顯示內容所需時間是指瀏覽器首次顯示文字或圖片的時間。[進一步瞭解「首次顯示內容所需時間」指標](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)。"
@@ -1230,7 +1230,7 @@
     "message": "畫面首次有效顯示所需時間是指網頁顯示主要內容的時間。[進一步瞭解「畫面首次有效顯示所需時間」指標](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)。"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "「與下一個顯示的內容互動」指標的用途是測量網頁回應，也就是網頁明顯回應使用者輸入內容所需的時間。[進一步瞭解「與下一個顯示的內容互動」指標](https://web.dev/inp/)。"
+    "message": "「與下一個顯示的內容互動」指標的用途是測量網頁回應，也就是網頁明顯回應使用者輸入內容所需的時間。[進一步瞭解「與下一個顯示的內容互動」指標](https://web.dev/articles/inp)。"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "互動準備時間是網頁進入完整互動狀態前花費的時間。[進一步瞭解「互動準備時間」指標](https://developer.chrome.com/docs/lighthouse/performance/interactive/)。"
@@ -1260,7 +1260,7 @@
     "message": "伺服器後端延遲時間"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` 事件無法穩定觸發，監聽該活動可能會妨礙系統進行某些瀏覽器最佳化作業 (例如往返快取)。請改用 `pagehide` 或 `visibilitychange` 事件。[進一步瞭解卸載事件監聽器](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` 事件無法穩定觸發，監聽該活動可能會妨礙系統進行某些瀏覽器最佳化作業 (例如往返快取)。請改用 `pagehide` 或 `visibilitychange` 事件。[進一步瞭解卸載事件監聽器](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "註冊 `unload` 事件監聽器"
@@ -1305,7 +1305,7 @@
     "message": "效能預算"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "請預先載入 `optional` 字型，以便新訪客使用。[進一步瞭解如何預先載入字型](https://web.dev/preload-optional-fonts/)"
+    "message": "請預先載入 `optional` 字型，以便新訪客使用。[進一步瞭解如何預先載入字型](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "並未預先載入使用 `font-display: optional` 的字型"
@@ -1314,7 +1314,7 @@
     "message": "已預先載入使用 `font-display: optional` 的字型"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "如果 LCP 元素是以動態方式新增到網頁，則必須預先載入圖片才能改善 LCP。[進一步瞭解如何預先載入 LCP 元素](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)。"
+    "message": "如果 LCP 元素是以動態方式新增到網頁，則必須預先載入圖片才能改善 LCP。[進一步瞭解如何預先載入 LCP 元素](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)。"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "預先載入最大內容繪製圖片"
@@ -1587,7 +1587,7 @@
     "message": "時間預算"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "請明確設定圖片元素的寬度和高度，以減少版面配置轉移並改善 CLS。[瞭解如何設定圖片尺寸](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "請明確設定圖片元素的寬度和高度，以減少版面配置轉移並改善 CLS。[瞭解如何設定圖片尺寸](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "圖片元素沒有明確的`width`和`height`"
@@ -1662,7 +1662,7 @@
     "message": "具備包含 `width` 或 `initial-scale` 的 `<meta name=\"viewport\">` 標記"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "這是在「與下一個顯示的內容互動」測量期間發生的執行緒封鎖作業。[進一步瞭解「與下一個顯示的內容互動」指標](https://web.dev/inp/)。"
+    "message": "這是在「與下一個顯示的內容互動」測量期間發生的執行緒封鎖作業。[進一步瞭解「與下一個顯示的內容互動」指標](https://web.dev/articles/inp)。"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "事件「{interactionType}」花費了 {timeInMs, number, milliseconds} 毫秒"
@@ -1704,10 +1704,10 @@
     "message": "最佳做法"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "這些檢查可找出[網頁應用程式無障礙設計值得改善之處](https://developer.chrome.com/docs/lighthouse/accessibility/)。自動偵測功能只能偵測出部分問題，而且無法保證網頁應用程式的無障礙程度，因此建議一併使用[手動測試](https://web.dev/how-to-review/)。"
+    "message": "這些檢查可找出[網頁應用程式無障礙設計值得改善之處](https://developer.chrome.com/docs/lighthouse/accessibility/)。自動偵測功能只能偵測出部分問題，而且無法保證網頁應用程式的無障礙程度，因此建議一併使用[手動測試](https://web.dev/articles/how-to-review)。"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "這些稽核項目會檢查自動化測試工具未涵蓋的區域。詳情請參閱[無障礙功能審查的執行指南](https://web.dev/how-to-review/)。"
+    "message": "這些稽核項目會檢查自動化測試工具未涵蓋的區域。詳情請參閱[無障礙功能審查的執行指南](https://web.dev/articles/how-to-review)。"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "無障礙功能"
@@ -1794,10 +1794,10 @@
     "message": "效能"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "這些檢查項目可從各個方面驗證漸進式網頁應用程式。[瞭解如何打造優質的漸進式網頁應用程式](https://web.dev/pwa-checklist/)。"
+    "message": "這些檢查項目可從各個方面驗證漸進式網頁應用程式。[瞭解如何打造優質的漸進式網頁應用程式](https://web.dev/articles/pwa-checklist)。"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "這些是基本 [PWA 檢查清單](https://web.dev/pwa-checklist/)規定的項目，但 Lighthouse 不會自動進行檢查。它們不會影響你的分數，但請務必手動驗證這些項目。"
+    "message": "這些是基本 [PWA 檢查清單](https://web.dev/articles/pwa-checklist)規定的項目，但 Lighthouse 不會自動進行檢查。它們不會影響你的分數，但請務必手動驗證這些項目。"
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA 最佳化"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "這些檢查項目可確保你的網頁採用基本的搜尋引擎最佳化建議。請注意，Lighthouse 這裡未列入評分的其他因素還有很多，這些因素也可能會影響你的網頁搜尋結果排名，包括[網站體驗核心指標](https://web.dev/learn-core-web-vitals/)的成效。[進一步瞭解 Google 搜尋基礎入門](https://support.google.com/webmasters/answer/35769)。"
+    "message": "這些檢查項目可確保你的網頁採用基本的搜尋引擎最佳化建議。請注意，Lighthouse 這裡未列入評分的其他因素還有很多，這些因素也可能會影響你的網頁搜尋結果排名，包括[網站體驗核心指標](https://web.dev/explore/vitals)的成效。[進一步瞭解 Google 搜尋基礎入門](https://support.google.com/webmasters/answer/35769)。"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "在您的網站上執行這些額外的驗證工具，以檢查其他 SEO 最佳做法。"
@@ -1848,7 +1848,7 @@
     "message": "瀏覽器快取清除作業逾時，建議你再次稽核這個網頁。如果問題仍未解決，請回報錯誤。"
   },
   "core/gather/driver/storage.js | warningData": {
-    "message": "{locationCount,plural, =1{下列位置可能有影響載入效能的儲存資料：{locations}。在無痕式視窗中審核這個頁面可避免這些資源影響你的分數。}other{下列位置可能有影響載入效能的儲存資料：{locations}。在無痕式視窗中審核這個頁面可避免這些資源影響你的分數。}}"
+    "message": "{locationCount,plural, =1{下列位置可能有影響載入效能的儲存資料：{locations}。在無痕視窗中審核這個頁面可避免這些資源影響你的分數。}other{下列位置可能有影響載入效能的儲存資料：{locations}。在無痕視窗中審核這個頁面可避免這些資源影響你的分數。}}"
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "原始資料清除作業逾時，建議你再次稽核這個網頁。如果問題仍未解決，請回報錯誤。"
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse 無法穩定載入你要求的網頁。請確認你的測試網址是否正確，以及伺服器是否正確回應所有要求。(詳細資訊：{errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse 無法穩定載入你要求的網頁。請確認你的測試網址是否正確，以及伺服器是否正確回應所有要求。(狀態碼：{statusCode})"
+    "message": "Lighthouse 無法穩定載入要求的網頁。請確認測試網址是否正確，以及伺服器是否正確回應所有要求 (狀態碼：{statusCode})。"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "網頁載入時間過長。請按照報告中的建議做法縮短網頁載入時間，然後嘗試重新執行 Lighthouse。({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "你所提供的網址無效。"
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse 無法穩定載入要求的網頁。請確認測試網址是否正確，以及伺服器是否正確回應所有要求 (狀態碼：{errorCode})。"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "網頁 MIME 類型為 XHTML：Lighthouse 未明確支援這種文件類型"
@@ -3108,22 +3111,22 @@
     "message": "在 NitroPack 中使用「[`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression)」，可減少傳送至瀏覽器的檔案大小。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "請使用 `nuxt/image` 元件並設定 `format=\"webp\"`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#format)。"
+    "message": "請使用 `nuxt/image` 元件並設定 `format=\"webp\"`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#format)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "如要延遲載入畫面外圖片，請使用 `nuxt/image` 元件並設定 `loading=\"lazy\"`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#loading)。"
+    "message": "如要延遲載入畫面外圖片，請使用 `nuxt/image` 元件並設定 `loading=\"lazy\"`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#loading)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "如要延遲載入 LCP 圖片，請使用 `nuxt/image` 元件並指定 `preload`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#preload)。"
+    "message": "如要延遲載入 LCP 圖片，請使用 `nuxt/image` 元件並指定 `preload`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#preload)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "請使用 `nuxt/image` 元件，並明確指定 `width` 和 `height`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#width--height)。"
+    "message": "請使用 `nuxt/image` 元件，並明確指定 `width` 和 `height`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#width-height)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "請使用 `nuxt/image` 元件設定適當的 `quality`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#quality)。"
+    "message": "請使用 `nuxt/image` 元件設定適當的 `quality`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#quality)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "請使用 `nuxt/image` 元件並設定適當的 `sizes`。[瞭解詳情](https://image.nuxtjs.org/components/nuxt-img#sizes)。"
+    "message": "請使用 `nuxt/image` 元件並設定適當的 `sizes`。[瞭解詳情](https://image.nuxt.com/usage/nuxt-img#sizes)。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[用影片取代 GIF 動畫](https://web.dev/replace-gifs-with-videos/)以加快載入網頁，並考慮使用 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) 等新型檔案格式，這樣可讓目前最先進的視訊轉碼器 VP9 的壓縮效率再提高超過 30%。"
@@ -3273,7 +3276,7 @@
     "message": "在「WP Rocket」中使用「[Prefetch DNS Requests](https://docs.wp-rocket.me/article/1302-prefetch-dns-requests)」，即可新增「dns-prefetch」並提高與外部網域的連線速度。此外，「WP Rocket」也會自動將「preconnect」新增到 [Google Fonts 網域](https://docs.wp-rocket.me/article/1312-optimize-google-fonts)和透過「[Enable CDN](https://docs.wp-rocket.me/article/42-using-wp-rocket-with-a-cdn)」功能新增的任何 CNAME。"
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-rel-preload": {
-    "message": "為解決這個字型問題，請在「WP Rocket」中啟用「[Remove Unused CSS](https://docs.wp-rocket.me/article/1529-remove-unused-css)」，系統就會優先預載網站的重要字型。"
+    "message": "為解決這個字型問題，請在「WP Rocket」中啟用「[Remove Unused CSS](https://docs.wp-rocket.me/article/1529-remove-unused-css)」，系統就會優先友善載入網站的重要字型。"
   },
   "report/renderer/report-utils.js | calculatorLink": {
     "message": "查看計算機。"
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初次載入網頁"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "特定時間點數據匯報"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "使用者互動時間範圍"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "自訂節流"
   },
@@ -3393,10 +3402,10 @@
     "message": "使用者代理程式 (網路)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "單一網頁載入"
+    "message": "單頁工作階段"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "這項資料取自單一網頁載入作業，而非匯總多個工作階段的現場資料。"
+    "message": "這項資料取自單頁工作階段，而非匯總多個工作階段的現場資料。"
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "慢速 4G 節流"

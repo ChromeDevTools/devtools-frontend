@@ -639,7 +639,7 @@
     "message": "‏‮Use‬‏ ‏‮video‬‏ ‏‮formats‬‏ ‏‮for‬‏ ‏‮animated‬‏ ‏‮content‬‏"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "‏‮Polyfills‬‏ ‏‮and‬‏ ‏‮transforms‬‏ ‏‮enable‬‏ ‏‮legacy‬‏ ‏‮browsers‬‏ ‏‮to‬‏ ‏‮use‬‏ ‏‮new‬‏ ‏‮JavaScript‬‏ ‏‮features‬‏. ‏‮However‬‏, ‏‮many‬‏ ‏‮aren‬‏'‏‮t‬‏ ‏‮necessary‬‏ ‏‮for‬‏ ‏‮modern‬‏ ‏‮browsers‬‏. ‏‮For‬‏ ‏‮your‬‏ ‏‮bundled‬‏ ‏‮JavaScript‬‏, ‏‮adopt‬‏ ‏‮a‬‏ ‏‮modern‬‏ ‏‮script‬‏ ‏‮deployment‬‏ ‏‮strategy‬‏ ‏‮using‬‏ ‏‮module‬‏/‏‮nomodule‬‏ ‏‮feature‬‏ ‏‮detection‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮amount‬‏ ‏‮of‬‏ ‏‮code‬‏ ‏‮shipped‬‏ ‏‮to‬‏ ‏‮modern‬‏ ‏‮browsers‬‏, ‏‮while‬‏ ‏‮retaining‬‏ ‏‮support‬‏ ‏‮for‬‏ ‏‮legacy‬‏ ‏‮browsers‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮use‬‏ ‏‮modern‬‏ ‏‮JavaScript‬‏](https://web.dev/publish-modern-javascript/)"
+    "message": "‏‮Polyfills‬‏ ‏‮and‬‏ ‏‮transforms‬‏ ‏‮enable‬‏ ‏‮legacy‬‏ ‏‮browsers‬‏ ‏‮to‬‏ ‏‮use‬‏ ‏‮new‬‏ ‏‮JavaScript‬‏ ‏‮features‬‏. ‏‮However‬‏, ‏‮many‬‏ ‏‮aren‬‏'‏‮t‬‏ ‏‮necessary‬‏ ‏‮for‬‏ ‏‮modern‬‏ ‏‮browsers‬‏. ‏‮For‬‏ ‏‮your‬‏ ‏‮bundled‬‏ ‏‮JavaScript‬‏, ‏‮adopt‬‏ ‏‮a‬‏ ‏‮modern‬‏ ‏‮script‬‏ ‏‮deployment‬‏ ‏‮strategy‬‏ ‏‮using‬‏ ‏‮module‬‏/‏‮nomodule‬‏ ‏‮feature‬‏ ‏‮detection‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮amount‬‏ ‏‮of‬‏ ‏‮code‬‏ ‏‮shipped‬‏ ‏‮to‬‏ ‏‮modern‬‏ ‏‮browsers‬‏, ‏‮while‬‏ ‏‮retaining‬‏ ‏‮support‬‏ ‏‮for‬‏ ‏‮legacy‬‏ ‏‮browsers‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮use‬‏ ‏‮modern‬‏ ‏‮JavaScript‬‏](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "‏‮Avoid‬‏ ‏‮serving‬‏ ‏‮legacy‬‏ ‏‮JavaScript‬‏ ‏‮to‬‏ ‏‮modern‬‏ ‏‮browsers‬‏"
@@ -993,7 +993,7 @@
     "message": "‏‮Expected‬‏ ‏‮size‬‏"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "‏‮Image‬‏ ‏‮natural‬‏ ‏‮dimensions‬‏ ‏‮should‬‏ ‏‮be‬‏ ‏‮proportional‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮display‬‏ ‏‮size‬‏ ‏‮and‬‏ ‏‮the‬‏ ‏‮pixel‬‏ ‏‮ratio‬‏ ‏‮to‬‏ ‏‮maximize‬‏ ‏‮image‬‏ ‏‮clarity‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮provide‬‏ ‏‮responsive‬‏ ‏‮images‬‏](https://web.dev/serve-responsive-images/)."
+    "message": "‏‮Image‬‏ ‏‮natural‬‏ ‏‮dimensions‬‏ ‏‮should‬‏ ‏‮be‬‏ ‏‮proportional‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮display‬‏ ‏‮size‬‏ ‏‮and‬‏ ‏‮the‬‏ ‏‮pixel‬‏ ‏‮ratio‬‏ ‏‮to‬‏ ‏‮maximize‬‏ ‏‮image‬‏ ‏‮clarity‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮provide‬‏ ‏‮responsive‬‏ ‏‮images‬‏](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "‏‮Serves‬‏ ‏‮images‬‏ ‏‮with‬‏ ‏‮low‬‏ ‏‮resolution‬‏"
@@ -1158,13 +1158,13 @@
     "message": "‏‮CLS‬‏ ‏‮Contribution‬‏"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "‏‮These‬‏ ‏‮DOM‬‏ ‏‮elements‬‏ ‏‮contribute‬‏ ‏‮most‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮CLS‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮page‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮CLS‬‏](https://web.dev/optimize-cls/)"
+    "message": "‏‮These‬‏ ‏‮DOM‬‏ ‏‮elements‬‏ ‏‮contribute‬‏ ‏‮most‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮CLS‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮page‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮CLS‬‏](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "‏‮Avoid‬‏ ‏‮large‬‏ ‏‮layout‬‏ ‏‮shifts‬‏"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "‏‮Above‬‏-‏‮the‬‏-‏‮fold‬‏ ‏‮images‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮lazily‬‏ ‏‮loaded‬‏ ‏‮render‬‏ ‏‮later‬‏ ‏‮in‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮lifecycle‬‏, ‏‮which‬‏ ‏‮can‬‏ ‏‮delay‬‏ ‏‮the‬‏ ‏‮largest‬‏ ‏‮contentful‬‏ ‏‮paint‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮optimal‬‏ ‏‮lazy‬‏ ‏‮loading‬‏](https://web.dev/lcp-lazy-loading/)."
+    "message": "‏‮Above‬‏-‏‮the‬‏-‏‮fold‬‏ ‏‮images‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮lazily‬‏ ‏‮loaded‬‏ ‏‮render‬‏ ‏‮later‬‏ ‏‮in‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮lifecycle‬‏, ‏‮which‬‏ ‏‮can‬‏ ‏‮delay‬‏ ‏‮the‬‏ ‏‮largest‬‏ ‏‮contentful‬‏ ‏‮paint‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮optimal‬‏ ‏‮lazy‬‏ ‏‮loading‬‏](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "‏‮Largest‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮image‬‏ ‏‮was‬‏ ‏‮lazily‬‏ ‏‮loaded‬‏"
@@ -1173,7 +1173,7 @@
     "message": "‏‮Largest‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮image‬‏ ‏‮was‬‏ ‏‮not‬‏ ‏‮lazily‬‏ ‏‮loaded‬‏"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "‏‮Lists‬‏ ‏‮the‬‏ ‏‮longest‬‏ ‏‮tasks‬‏ ‏‮on‬‏ ‏‮the‬‏ ‏‮main‬‏ ‏‮thread‬‏, ‏‮useful‬‏ ‏‮for‬‏ ‏‮identifying‬‏ ‏‮worst‬‏ ‏‮contributors‬‏ ‏‮to‬‏ ‏‮input‬‏ ‏‮delay‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮avoid‬‏ ‏‮long‬‏ ‏‮main‬‏-‏‮thread‬‏ ‏‮tasks‬‏](https://web.dev/long-tasks-devtools/)"
+    "message": "‏‮Lists‬‏ ‏‮the‬‏ ‏‮longest‬‏ ‏‮tasks‬‏ ‏‮on‬‏ ‏‮the‬‏ ‏‮main‬‏ ‏‮thread‬‏, ‏‮useful‬‏ ‏‮for‬‏ ‏‮identifying‬‏ ‏‮worst‬‏ ‏‮contributors‬‏ ‏‮to‬‏ ‏‮input‬‏ ‏‮delay‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮avoid‬‏ ‏‮long‬‏ ‏‮main‬‏-‏‮thread‬‏ ‏‮tasks‬‏](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# ‏‮long‬‏ ‏‮task‬‏ ‏‮found‬‏}zero{# ‏‮long‬‏ ‏‮tasks‬‏ ‏‮found‬‏}two{# ‏‮long‬‏ ‏‮tasks‬‏ ‏‮found‬‏}few{# ‏‮long‬‏ ‏‮tasks‬‏ ‏‮found‬‏}many{# ‏‮long‬‏ ‏‮tasks‬‏ ‏‮found‬‏}other{# ‏‮long‬‏ ‏‮tasks‬‏ ‏‮found‬‏}}"
@@ -1221,7 +1221,7 @@
     "message": "‏‮Manifest‬‏ ‏‮has‬‏ ‏‮a‬‏ ‏‮maskable‬‏ ‏‮icon‬‏"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "‏‮Cumulative‬‏ ‏‮Layout‬‏ ‏‮Shift‬‏ ‏‮measures‬‏ ‏‮the‬‏ ‏‮movement‬‏ ‏‮of‬‏ ‏‮visible‬‏ ‏‮elements‬‏ ‏‮within‬‏ ‏‮the‬‏ ‏‮viewport‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Cumulative‬‏ ‏‮Layout‬‏ ‏‮Shift‬‏ ‏‮metric‬‏](https://web.dev/cls/)."
+    "message": "‏‮Cumulative‬‏ ‏‮Layout‬‏ ‏‮Shift‬‏ ‏‮measures‬‏ ‏‮the‬‏ ‏‮movement‬‏ ‏‮of‬‏ ‏‮visible‬‏ ‏‮elements‬‏ ‏‮within‬‏ ‏‮the‬‏ ‏‮viewport‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Cumulative‬‏ ‏‮Layout‬‏ ‏‮Shift‬‏ ‏‮metric‬‏](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "‏‮First‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮marks‬‏ ‏‮the‬‏ ‏‮time‬‏ ‏‮at‬‏ ‏‮which‬‏ ‏‮the‬‏ ‏‮first‬‏ ‏‮text‬‏ ‏‮or‬‏ ‏‮image‬‏ ‏‮is‬‏ ‏‮painted‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮First‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "‏‮First‬‏ ‏‮Meaningful‬‏ ‏‮Paint‬‏ ‏‮measures‬‏ ‏‮when‬‏ ‏‮the‬‏ ‏‮primary‬‏ ‏‮content‬‏ ‏‮of‬‏ ‏‮a‬‏ ‏‮page‬‏ ‏‮is‬‏ ‏‮visible‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮First‬‏ ‏‮Meaningful‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮measures‬‏ ‏‮page‬‏ ‏‮responsiveness‬‏, ‏‮how‬‏ ‏‮long‬‏ ‏‮it‬‏ ‏‮takes‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮to‬‏ ‏‮visibly‬‏ ‏‮respond‬‏ ‏‮to‬‏ ‏‮user‬‏ ‏‮input‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://web.dev/inp/)."
+    "message": "‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮measures‬‏ ‏‮page‬‏ ‏‮responsiveness‬‏, ‏‮how‬‏ ‏‮long‬‏ ‏‮it‬‏ ‏‮takes‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮to‬‏ ‏‮visibly‬‏ ‏‮respond‬‏ ‏‮to‬‏ ‏‮user‬‏ ‏‮input‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "‏‮Time‬‏ ‏‮to‬‏ ‏‮Interactive‬‏ ‏‮is‬‏ ‏‮the‬‏ ‏‮amount‬‏ ‏‮of‬‏ ‏‮time‬‏ ‏‮it‬‏ ‏‮takes‬‏ ‏‮for‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮to‬‏ ‏‮become‬‏ ‏‮fully‬‏ ‏‮interactive‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Time‬‏ ‏‮to‬‏ ‏‮Interactive‬‏ ‏‮metric‬‏](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "‏‮Server‬‏ ‏‮Backend‬‏ ‏‮Latencies‬‏"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "‏‮The‬‏ `unload` ‏‮event‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮fire‬‏ ‏‮reliably‬‏ ‏‮and‬‏ ‏‮listening‬‏ ‏‮for‬‏ ‏‮it‬‏ ‏‮can‬‏ ‏‮prevent‬‏ ‏‮browser‬‏ ‏‮optimizations‬‏ ‏‮like‬‏ ‏‮the‬‏ ‏‮Back‬‏-‏‮Forward‬‏ ‏‮Cache‬‏. ‏‮Use‬‏ `pagehide` ‏‮or‬‏ `visibilitychange` ‏‮events‬‏ ‏‮instead‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮unload‬‏ ‏‮event‬‏ ‏‮listeners‬‏](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "‏‮The‬‏ `unload` ‏‮event‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮fire‬‏ ‏‮reliably‬‏ ‏‮and‬‏ ‏‮listening‬‏ ‏‮for‬‏ ‏‮it‬‏ ‏‮can‬‏ ‏‮prevent‬‏ ‏‮browser‬‏ ‏‮optimizations‬‏ ‏‮like‬‏ ‏‮the‬‏ ‏‮Back‬‏-‏‮Forward‬‏ ‏‮Cache‬‏. ‏‮Use‬‏ `pagehide` ‏‮or‬‏ `visibilitychange` ‏‮events‬‏ ‏‮instead‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮unload‬‏ ‏‮event‬‏ ‏‮listeners‬‏](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "‏‮Registers‬‏ ‏‮an‬‏ `unload` ‏‮listener‬‏"
@@ -1305,7 +1305,7 @@
     "message": "‏‮Performance‬‏ ‏‮budget‬‏"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "‏‮Preload‬‏ `optional` ‏‮fonts‬‏ ‏‮so‬‏ ‏‮first‬‏-‏‮time‬‏ ‏‮visitors‬‏ ‏‮may‬‏ ‏‮use‬‏ ‏‮them‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮preloading‬‏ ‏‮fonts‬‏](https://web.dev/preload-optional-fonts/)"
+    "message": "‏‮Preload‬‏ `optional` ‏‮fonts‬‏ ‏‮so‬‏ ‏‮first‬‏-‏‮time‬‏ ‏‮visitors‬‏ ‏‮may‬‏ ‏‮use‬‏ ‏‮them‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮preloading‬‏ ‏‮fonts‬‏](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "‏‮Fonts‬‏ ‏‮with‬‏ `font-display: optional` ‏‮are‬‏ ‏‮not‬‏ ‏‮preloaded‬‏"
@@ -1314,7 +1314,7 @@
     "message": "‏‮Fonts‬‏ ‏‮with‬‏ `font-display: optional` ‏‮are‬‏ ‏‮preloaded‬‏"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "‏‮If‬‏ ‏‮the‬‏ ‏‮LCP‬‏ ‏‮element‬‏ ‏‮is‬‏ ‏‮dynamically‬‏ ‏‮added‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮page‬‏, ‏‮you‬‏ ‏‮should‬‏ ‏‮preload‬‏ ‏‮the‬‏ ‏‮image‬‏ ‏‮in‬‏ ‏‮order‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮LCP‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮preloading‬‏ ‏‮LCP‬‏ ‏‮elements‬‏](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "‏‮If‬‏ ‏‮the‬‏ ‏‮LCP‬‏ ‏‮element‬‏ ‏‮is‬‏ ‏‮dynamically‬‏ ‏‮added‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮page‬‏, ‏‮you‬‏ ‏‮should‬‏ ‏‮preload‬‏ ‏‮the‬‏ ‏‮image‬‏ ‏‮in‬‏ ‏‮order‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮LCP‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮preloading‬‏ ‏‮LCP‬‏ ‏‮elements‬‏](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "‏‮Preload‬‏ ‏‮Largest‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮image‬‏"
@@ -1587,7 +1587,7 @@
     "message": "‏‮Timing‬‏ ‏‮budget‬‏"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "‏‮Set‬‏ ‏‮an‬‏ ‏‮explicit‬‏ ‏‮width‬‏ ‏‮and‬‏ ‏‮height‬‏ ‏‮on‬‏ ‏‮image‬‏ ‏‮elements‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮layout‬‏ ‏‮shifts‬‏ ‏‮and‬‏ ‏‮improve‬‏ ‏‮CLS‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮set‬‏ ‏‮image‬‏ ‏‮dimensions‬‏](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "‏‮Set‬‏ ‏‮an‬‏ ‏‮explicit‬‏ ‏‮width‬‏ ‏‮and‬‏ ‏‮height‬‏ ‏‮on‬‏ ‏‮image‬‏ ‏‮elements‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮layout‬‏ ‏‮shifts‬‏ ‏‮and‬‏ ‏‮improve‬‏ ‏‮CLS‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮set‬‏ ‏‮image‬‏ ‏‮dimensions‬‏](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "‏‮Image‬‏ ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮explicit‬‏ `width` ‏‮and‬‏ `height`"
@@ -1662,7 +1662,7 @@
     "message": "‏‮Has‬‏ ‏‮a‬‏ `<meta name=\"viewport\">` ‏‮tag‬‏ ‏‮with‬‏ `width` ‏‮or‬‏ `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "‏‮This‬‏ ‏‮is‬‏ ‏‮the‬‏ ‏‮thread‬‏-‏‮blocking‬‏ ‏‮work‬‏ ‏‮occurring‬‏ ‏‮during‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮measurement‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://web.dev/inp/)."
+    "message": "‏‮This‬‏ ‏‮is‬‏ ‏‮the‬‏ ‏‮thread‬‏-‏‮blocking‬‏ ‏‮work‬‏ ‏‮occurring‬‏ ‏‮during‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮measurement‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ ‏‮Interaction‬‏ ‏‮to‬‏ ‏‮Next‬‏ ‏‮Paint‬‏ ‏‮metric‬‏](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ‏‮ms‬‏ ‏‮spent‬‏ ‏‮on‬‏ ‏‮event‬‏ '{interactionType}'"
@@ -1704,10 +1704,10 @@
     "message": "‏‮Best‬‏ ‏‮practices‬‏"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮highlight‬‏ ‏‮opportunities‬‏ ‏‮to‬‏ [‏‮improve‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏](https://developer.chrome.com/docs/lighthouse/accessibility/). ‏‮Automatic‬‏ ‏‮detection‬‏ ‏‮can‬‏ ‏‮only‬‏ ‏‮detect‬‏ ‏‮a‬‏ ‏‮subset‬‏ ‏‮of‬‏ ‏‮issues‬‏ ‏‮and‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮guarantee‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏, ‏‮so‬‏ [‏‮manual‬‏ ‏‮testing‬‏](https://web.dev/how-to-review/) ‏‮is‬‏ ‏‮also‬‏ ‏‮encouraged‬‏."
+    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮highlight‬‏ ‏‮opportunities‬‏ ‏‮to‬‏ [‏‮improve‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏](https://developer.chrome.com/docs/lighthouse/accessibility/). ‏‮Automatic‬‏ ‏‮detection‬‏ ‏‮can‬‏ ‏‮only‬‏ ‏‮detect‬‏ ‏‮a‬‏ ‏‮subset‬‏ ‏‮of‬‏ ‏‮issues‬‏ ‏‮and‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮guarantee‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏, ‏‮so‬‏ [‏‮manual‬‏ ‏‮testing‬‏](https://web.dev/articles/how-to-review) ‏‮is‬‏ ‏‮also‬‏ ‏‮encouraged‬‏."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "‏‮These‬‏ ‏‮items‬‏ ‏‮address‬‏ ‏‮areas‬‏ ‏‮which‬‏ ‏‮an‬‏ ‏‮automated‬‏ ‏‮testing‬‏ ‏‮tool‬‏ ‏‮cannot‬‏ ‏‮cover‬‏. ‏‮Learn‬‏ ‏‮more‬‏ ‏‮in‬‏ ‏‮our‬‏ ‏‮guide‬‏ ‏‮on‬‏ [‏‮conducting‬‏ ‏‮an‬‏ ‏‮accessibility‬‏ ‏‮review‬‏](https://web.dev/how-to-review/)."
+    "message": "‏‮These‬‏ ‏‮items‬‏ ‏‮address‬‏ ‏‮areas‬‏ ‏‮which‬‏ ‏‮an‬‏ ‏‮automated‬‏ ‏‮testing‬‏ ‏‮tool‬‏ ‏‮cannot‬‏ ‏‮cover‬‏. ‏‮Learn‬‏ ‏‮more‬‏ ‏‮in‬‏ ‏‮our‬‏ ‏‮guide‬‏ ‏‮on‬‏ [‏‮conducting‬‏ ‏‮an‬‏ ‏‮accessibility‬‏ ‏‮review‬‏](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "‏‮Accessibility‬‏"
@@ -1794,10 +1794,10 @@
     "message": "‏‮Performance‬‏"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮validate‬‏ ‏‮the‬‏ ‏‮aspects‬‏ ‏‮of‬‏ ‏‮a‬‏ ‏‮Progressive‬‏ ‏‮Web‬‏ ‏‮App‬‏. [‏‮Learn‬‏ ‏‮what‬‏ ‏‮makes‬‏ ‏‮a‬‏ ‏‮good‬‏ ‏‮Progressive‬‏ ‏‮Web‬‏ ‏‮App‬‏](https://web.dev/pwa-checklist/)."
+    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮validate‬‏ ‏‮the‬‏ ‏‮aspects‬‏ ‏‮of‬‏ ‏‮a‬‏ ‏‮Progressive‬‏ ‏‮Web‬‏ ‏‮App‬‏. [‏‮Learn‬‏ ‏‮what‬‏ ‏‮makes‬‏ ‏‮a‬‏ ‏‮good‬‏ ‏‮Progressive‬‏ ‏‮Web‬‏ ‏‮App‬‏](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮are‬‏ ‏‮required‬‏ ‏‮by‬‏ ‏‮the‬‏ ‏‮baseline‬‏ [‏‮PWA‬‏ ‏‮Checklist‬‏](https://web.dev/pwa-checklist/) ‏‮but‬‏ ‏‮are‬‏ ‏‮not‬‏ ‏‮automatically‬‏ ‏‮checked‬‏ ‏‮by‬‏ ‏‮Lighthouse‬‏. ‏‮They‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮affect‬‏ ‏‮your‬‏ ‏‮score‬‏ ‏‮but‬‏ ‏‮it‬‏'‏‮s‬‏ ‏‮important‬‏ ‏‮that‬‏ ‏‮you‬‏ ‏‮verify‬‏ ‏‮them‬‏ ‏‮manually‬‏."
+    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮are‬‏ ‏‮required‬‏ ‏‮by‬‏ ‏‮the‬‏ ‏‮baseline‬‏ [‏‮PWA‬‏ ‏‮Checklist‬‏](https://web.dev/articles/pwa-checklist) ‏‮but‬‏ ‏‮are‬‏ ‏‮not‬‏ ‏‮automatically‬‏ ‏‮checked‬‏ ‏‮by‬‏ ‏‮Lighthouse‬‏. ‏‮They‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮affect‬‏ ‏‮your‬‏ ‏‮score‬‏ ‏‮but‬‏ ‏‮it‬‏'‏‮s‬‏ ‏‮important‬‏ ‏‮that‬‏ ‏‮you‬‏ ‏‮verify‬‏ ‏‮them‬‏ ‏‮manually‬‏."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "‏‮PWA‬‏"
@@ -1809,7 +1809,7 @@
     "message": "‏‮PWA‬‏ ‏‮Optimized‬‏"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮ensure‬‏ ‏‮that‬‏ ‏‮your‬‏ ‏‮page‬‏ ‏‮is‬‏ ‏‮following‬‏ ‏‮basic‬‏ ‏‮search‬‏ ‏‮engine‬‏ ‏‮optimization‬‏ ‏‮advice‬‏. ‏‮There‬‏ ‏‮are‬‏ ‏‮many‬‏ ‏‮additional‬‏ ‏‮factors‬‏ ‏‮Lighthouse‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮score‬‏ ‏‮here‬‏ ‏‮that‬‏ ‏‮may‬‏ ‏‮affect‬‏ ‏‮your‬‏ ‏‮search‬‏ ‏‮ranking‬‏, ‏‮including‬‏ ‏‮performance‬‏ ‏‮on‬‏ [‏‮Core‬‏ ‏‮Web‬‏ ‏‮Vitals‬‏](https://web.dev/learn-core-web-vitals/). [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮Google‬‏ ‏‮Search‬‏ ‏‮Essentials‬‏](https://support.google.com/webmasters/answer/35769)."
+    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮ensure‬‏ ‏‮that‬‏ ‏‮your‬‏ ‏‮page‬‏ ‏‮is‬‏ ‏‮following‬‏ ‏‮basic‬‏ ‏‮search‬‏ ‏‮engine‬‏ ‏‮optimization‬‏ ‏‮advice‬‏. ‏‮There‬‏ ‏‮are‬‏ ‏‮many‬‏ ‏‮additional‬‏ ‏‮factors‬‏ ‏‮Lighthouse‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮score‬‏ ‏‮here‬‏ ‏‮that‬‏ ‏‮may‬‏ ‏‮affect‬‏ ‏‮your‬‏ ‏‮search‬‏ ‏‮ranking‬‏, ‏‮including‬‏ ‏‮performance‬‏ ‏‮on‬‏ [‏‮Core‬‏ ‏‮Web‬‏ ‏‮Vitals‬‏](https://web.dev/explore/vitals). [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮Google‬‏ ‏‮Search‬‏ ‏‮Essentials‬‏](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "‏‮Run‬‏ ‏‮these‬‏ ‏‮additional‬‏ ‏‮validators‬‏ ‏‮on‬‏ ‏‮your‬‏ ‏‮site‬‏ ‏‮to‬‏ ‏‮check‬‏ ‏‮additional‬‏ ‏‮SEO‬‏ ‏‮best‬‏ ‏‮practices‬‏."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "‏‮The‬‏ ‏‮URL‬‏ ‏‮you‬‏ ‏‮have‬‏ ‏‮provided‬‏ ‏‮appears‬‏ ‏‮to‬‏ ‏‮be‬‏ ‏‮invalid‬‏."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "‏‮Lighthouse‬‏ ‏‮was‬‏ ‏‮unable‬‏ ‏‮to‬‏ ‏‮reliably‬‏ ‏‮load‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮you‬‏ ‏‮requested‬‏. ‏‮Make‬‏ ‏‮sure‬‏ ‏‮you‬‏ ‏‮are‬‏ ‏‮testing‬‏ ‏‮the‬‏ ‏‮correct‬‏ ‏‮URL‬‏ ‏‮and‬‏ ‏‮that‬‏ ‏‮the‬‏ ‏‮server‬‏ ‏‮is‬‏ ‏‮properly‬‏ ‏‮responding‬‏ ‏‮to‬‏ ‏‮all‬‏ ‏‮requests‬‏. (‏‮Status‬‏ ‏‮code‬‏: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮MIME‬‏ ‏‮type‬‏ ‏‮is‬‏ ‏‮XHTML‬‏: ‏‮Lighthouse‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮explicitly‬‏ ‏‮support‬‏ ‏‮this‬‏ ‏‮document‬‏ ‏‮type‬‏"
   },
@@ -3108,22 +3111,22 @@
     "message": "‏‮Use‬‏ [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ‏‮in‬‏ ‏‮NitroPack‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮size‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮files‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮sent‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮browser‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ `format=\"webp\"`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ `format=\"webp\"`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ `loading=\"lazy\"` ‏‮for‬‏ ‏‮offscreen‬‏ ‏‮images‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ `loading=\"lazy\"` ‏‮for‬‏ ‏‮offscreen‬‏ ‏‮images‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮specify‬‏ `preload` ‏‮for‬‏ ‏‮LCP‬‏ ‏‮image‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮specify‬‏ `preload` ‏‮for‬‏ ‏‮LCP‬‏ ‏‮image‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮specify‬‏ ‏‮explicit‬‏ `width` ‏‮and‬‏ `height`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮specify‬‏ ‏‮explicit‬‏ `width` ‏‮and‬‏ `height`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ ‏‮the‬‏ ‏‮appropriate‬‏ `quality`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ ‏‮the‬‏ ‏‮appropriate‬‏ `quality`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ ‏‮the‬‏ ‏‮appropriate‬‏ `sizes`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ ‏‮the‬‏ ‏‮appropriate‬‏ `sizes`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[‏‮Replace‬‏ ‏‮animated‬‏ ‏‮GIFs‬‏ ‏‮with‬‏ ‏‮video‬‏](https://web.dev/replace-gifs-with-videos/) ‏‮for‬‏ ‏‮faster‬‏ ‏‮web‬‏ ‏‮page‬‏ ‏‮loads‬‏ ‏‮and‬‏ ‏‮consider‬‏ ‏‮using‬‏ ‏‮modern‬‏ ‏‮file‬‏ ‏‮formats‬‏ ‏‮such‬‏ ‏‮as‬‏ [‏‮WebM‬‏](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ‏‮or‬‏ [‏‮AV‬‏1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) ‏‮to‬‏ ‏‮improve‬‏ ‏‮compression‬‏ ‏‮efficiency‬‏ ‏‮by‬‏ ‏‮greater‬‏ ‏‮than‬‏ 30% ‏‮over‬‏ ‏‮the‬‏ ‏‮current‬‏ ‏‮state‬‏-‏‮of‬‏-‏‮the‬‏-‏‮art‬‏ ‏‮video‬‏ ‏‮codec‬‏, ‏‮VP‬‏9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "‏‮Initial‬‏ ‏‮page‬‏ ‏‮load‬‏"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "‏‮Point‬‏-‏‮in‬‏-‏‮time‬‏ ‏‮snapshot‬‏"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "‏‮User‬‏ ‏‮interactions‬‏ ‏‮timespan‬‏"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "‏‮Custom‬‏ ‏‮throttling‬‏"
   },
@@ -3393,10 +3402,10 @@
     "message": "‏‮User‬‏ ‏‮agent‬‏ (‏‮network‬‏)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "‏‮Single‬‏ ‏‮page‬‏ ‏‮load‬‏"
+    "message": "‏‮Single‬‏ ‏‮page‬‏ ‏‮session‬‏"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "‏‮This‬‏ ‏‮data‬‏ ‏‮is‬‏ ‏‮taken‬‏ ‏‮from‬‏ ‏‮a‬‏ ‏‮single‬‏ ‏‮page‬‏ ‏‮load‬‏, ‏‮as‬‏ ‏‮opposed‬‏ ‏‮to‬‏ ‏‮field‬‏ ‏‮data‬‏ ‏‮summarizing‬‏ ‏‮many‬‏ ‏‮sessions‬‏."
+    "message": "‏‮This‬‏ ‏‮data‬‏ ‏‮is‬‏ ‏‮taken‬‏ ‏‮from‬‏ ‏‮a‬‏ ‏‮single‬‏ ‏‮page‬‏ ‏‮session‬‏, ‏‮as‬‏ ‏‮opposed‬‏ ‏‮to‬‏ ‏‮field‬‏ ‏‮data‬‏ ‏‮summarizing‬‏ ‏‮many‬‏ ‏‮sessions‬‏."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "‏‮Slow‬‏ 4‏‮G‬‏ ‏‮throttling‬‏"

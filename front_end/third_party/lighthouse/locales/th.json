@@ -639,7 +639,7 @@
     "message": "ใช้รูปแบบวิดีโอสำหรับเนื้อหาภาพเคลื่อนไหว"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "โพลีฟิลล์และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย สำหรับ JavaScript แบบแพ็กเกจ ให้ใช้กลยุทธ์การทำให้สคริปต์สมัยใหม่ใช้งานได้โดยใช้การตรวจหาฟีเจอร์โมดูล/ไม่มีโมดูลเพื่อลดจำนวนโค้ดที่ส่งไปยังเบราว์เซอร์ที่ทันสมัย ขณะที่ยังรองรับเบราว์เซอร์เดิมอยู่ [ดูวิธีใช้ JavaScript ที่ทันสมัย](https://web.dev/publish-modern-javascript/)"
+    "message": "โพลีฟิลล์และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย สำหรับ JavaScript แบบแพ็กเกจ ให้ใช้กลยุทธ์การทำให้สคริปต์สมัยใหม่ใช้งานได้โดยใช้การตรวจหาฟีเจอร์โมดูล/ไม่มีโมดูลเพื่อลดจำนวนโค้ดที่ส่งไปยังเบราว์เซอร์ที่ทันสมัย ขณะที่ยังรองรับเบราว์เซอร์เดิมอยู่ [ดูวิธีใช้ JavaScript ที่ทันสมัย](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "หลีกเลี่ยงการแสดง JavaScript ในเบราว์เซอร์สมัยใหม่"
@@ -993,7 +993,7 @@
     "message": "ขนาดที่คาดไว้"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "ขนาดตามธรรมชาติของรูปภาพควรได้สัดส่วนกับขนาดการแสดงผลและอัตราส่วนพิกเซลเพื่อเพิ่มความชัดเจนของรูปภาพให้ได้มากที่สุด [ดูวิธีใส่รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์](https://web.dev/serve-responsive-images/)"
+    "message": "ขนาดตามธรรมชาติของรูปภาพควรได้สัดส่วนกับขนาดการแสดงผลและอัตราส่วนพิกเซลเพื่อเพิ่มความชัดเจนของรูปภาพให้ได้มากที่สุด [ดูวิธีใส่รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "แสดงรูปภาพที่มีความละเอียดต่ำ"
@@ -1158,13 +1158,13 @@
     "message": "ปัจจัยที่ทำให้เกิด CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "องค์ประกอบ DOM เหล่านี้มีส่วนอย่างมากที่สุดต่อ CLS ของหน้า [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/optimize-cls/)"
+    "message": "องค์ประกอบ DOM เหล่านี้มีส่วนอย่างมากที่สุดต่อ CLS ของหน้า [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "รูปภาพครึ่งหน้าบนที่โหลดแบบ Lazy Loading จะแสดงผลภายหลังในวงจรของหน้า ซึ่งอาจทำให้ Largest Contentful Paint ล่าช้า [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบ Lazy Loading ที่ดีที่สุด](https://web.dev/lcp-lazy-loading/)"
+    "message": "รูปภาพครึ่งหน้าบนที่โหลดแบบ Lazy Loading จะแสดงผลภายหลังในวงจรของหน้า ซึ่งอาจทำให้ Largest Contentful Paint ล่าช้า [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบ Lazy Loading ที่ดีที่สุด](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "โหลดรูปภาพ Largest Contentful Paint แบบ Lazy Loading แล้ว"
@@ -1173,7 +1173,7 @@
     "message": "ไม่ได้โหลดรูปภาพ Largest Contentful Paint แบบ Lazy Loading"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "ระบุงานที่ใช้เวลานานที่สุดในเทรดหลัก เหมาะสำหรับการระบุปัจจัยที่แย่ที่สุดที่ทำให้อินพุตล่าช้า [ดูวิธีหลีกเลี่ยงงานในเทรดหลักที่ใช้เวลานาน](https://web.dev/long-tasks-devtools/)"
+    "message": "ระบุงานที่ใช้เวลานานที่สุดในเทรดหลัก เหมาะสำหรับการระบุปัจจัยที่แย่ที่สุดที่ทำให้อินพุตล่าช้า [ดูวิธีหลีกเลี่ยงงานในเทรดหลักที่ใช้เวลานาน](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{พบ # งานที่ใช้เวลานาน}other{พบ # งานที่ใช้เวลานาน}}"
@@ -1221,7 +1221,7 @@
     "message": "ไฟล์ Manifest มีไอคอนที่มาสก์ได้"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "การเปลี่ยนเลย์เอาต์สะสมจะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก Cumulative Layout Shift](https://web.dev/cls/)"
+    "message": "การเปลี่ยนเลย์เอาต์สะสมจะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก Cumulative Layout Shift](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint ระบุเวลาที่มีการแสดงผลข้อความหรือรูปภาพครั้งแรก [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "First Meaningful Paint วัดเมื่อเนื้อหาหลักของหน้าเว็บปรากฏ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
+    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "เวลาในการตอบสนองคือระยะเวลาที่หน้าเว็บใช้ในการตอบสนองอย่างสมบูรณ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริกเวลาในการตอบสนอง](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "เวลาในการตอบสนองจากแบ็กเอนด์ของเซิร์ฟเวอร์"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่าง Back-Forward Cache ไม่ทำงาน ใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติมเกี่ยวกับการยกเลิกการโหลด Listener เหตุการณ์](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่าง Back-Forward Cache ไม่ทำงาน ใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติมเกี่ยวกับการยกเลิกการโหลด Listener เหตุการณ์](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "ลงทะเบียน Listener `unload`"
@@ -1305,7 +1305,7 @@
     "message": "งบประมาณประสิทธิภาพ"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "โหลดแบบอักษร `optional` ไว้ล่วงหน้าเพื่อให้ผู้เข้าชมครั้งแรกใช้ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบอักษรล่วงหน้า](https://web.dev/preload-optional-fonts/)"
+    "message": "โหลดแบบอักษร `optional` ไว้ล่วงหน้าเพื่อให้ผู้เข้าชมครั้งแรกใช้ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบอักษรล่วงหน้า](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "ไม่มีการโหลดแบบอักษรที่มีค่า `font-display: optional` ไว้ล่วงหน้า"
@@ -1314,7 +1314,7 @@
     "message": "มีการโหลดแบบอักษรที่มีค่า `font-display: optional` ไว้ล่วงหน้า"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "หากเพิ่มองค์ประกอบ LCP ในหน้าเว็บแบบไดนามิก คุณควรโหลดรูปภาพล่วงหน้าเพื่อปรับปรุง LCP [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดองค์ประกอบ LCP ล่วงหน้า](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "หากเพิ่มองค์ประกอบ LCP ในหน้าเว็บแบบไดนามิก คุณควรโหลดรูปภาพล่วงหน้าเพื่อปรับปรุง LCP [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดองค์ประกอบ LCP ล่วงหน้า](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "โหลดรูปภาพ Largest Contentful Paint ล่วงหน้า"
@@ -1587,7 +1587,7 @@
     "message": "งบประมาณด้านเวลา"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "กำหนดความกว้างและความยาวขององค์ประกอบรูปภาพอย่างชัดเจนเพื่อลดการขยับของเลย์เอาต์และปรับปรุง CLS [ดูวิธีตั้งค่าขนาดรูปภาพ](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "กำหนดความกว้างและความยาวขององค์ประกอบรูปภาพอย่างชัดเจนเพื่อลดการขยับของเลย์เอาต์และปรับปรุง CLS [ดูวิธีตั้งค่าขนาดรูปภาพ](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "องค์ประกอบรูปภาพไม่มี `width` และ `height` ที่ชัดเจน"
@@ -1662,7 +1662,7 @@
     "message": "มีแท็ก `<meta name=\"viewport\">` ที่มี `width` หรือ `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "งานบล็อกเทรดนี้จะเกิดขึ้นในระหว่างการวัดการโต้ตอบกับ Next Paint [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
+    "message": "งานบล็อกเทรดนี้จะเกิดขึ้นในระหว่างการวัดการโต้ตอบกับ Next Paint [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "ใช้ไป {timeInMs, number, milliseconds} มิลลิวินาทีกับเหตุการณ์ \"{interactionType}\""
@@ -1704,10 +1704,10 @@
     "message": "แนวทางปฏิบัติที่ดีที่สุด"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) การตรวจหาอัตโนมัติจะตรวจพบเพียงปัญหาชุดย่อยและไม่รับประกันการช่วยเหลือพิเศษของเว็บแอป เราจึงขอแนะนำให้[ตรวจสอบเอง](https://web.dev/how-to-review/)ด้วยเช่นกัน"
+    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) การตรวจหาอัตโนมัติจะตรวจพบเพียงปัญหาชุดย่อยและไม่รับประกันการช่วยเหลือพิเศษของเว็บแอป เราจึงขอแนะนำให้[ตรวจสอบเอง](https://web.dev/articles/how-to-review)ด้วยเช่นกัน"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/how-to-review/)"
+    "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/articles/how-to-review)"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "การช่วยเหลือพิเศษ"
@@ -1794,10 +1794,10 @@
     "message": "ประสิทธิภาพ"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้จะตรวจสอบลักษณะต่างๆ ของ Progressive Web App [ดูสิ่งที่จะช่วยทำให้เป็น Progressive Web App ที่ดี](https://web.dev/pwa-checklist/)"
+    "message": "การตรวจสอบเหล่านี้จะตรวจสอบลักษณะต่างๆ ของ Progressive Web App [ดูสิ่งที่จะช่วยทำให้เป็น Progressive Web App ที่ดี](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "การตรวจสอบเหล่านี้เป็นสิ่งที่ต้องทำใน[รายการตรวจสอบ PWA](https://web.dev/pwa-checklist/) ซึ่งเป็นเกณฑ์พื้นฐาน แต่ Lighthouse ไม่ได้ทำการตรวจสอบดังกล่าวโดยอัตโนมัติ การตรวจสอบจะไม่ส่งผลต่อคะแนนของคุณ แต่คุณควรตรวจสอบด้วยตนเอง"
+    "message": "การตรวจสอบเหล่านี้เป็นสิ่งที่ต้องทำใน[รายการตรวจสอบ PWA](https://web.dev/articles/pwa-checklist) ซึ่งเป็นเกณฑ์พื้นฐาน แต่ Lighthouse ไม่ได้ทำการตรวจสอบดังกล่าวโดยอัตโนมัติ การตรวจสอบจะไม่ส่งผลต่อคะแนนของคุณ แต่คุณควรตรวจสอบด้วยตนเอง"
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "เพิ่มประสิทธิภาพ PWA แล้ว"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้ช่วยให้มั่นใจว่าหน้าเว็บของคุณทำตามคำแนะนำพื้นฐานในการปรับแต่งเว็บไซต์ให้ติดอันดับบนเครื่องมือค้นหา มีปัจจัยอื่นๆ มากมายที่ Lighthouse ไม่ให้คะแนนไว้ที่นี่ซึ่งอาจส่งผลต่อการจัดอันดับการค้นหา รวมถึงประสิทธิภาพใน [Core Web Vitals](https://web.dev/learn-core-web-vitals/) [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
+    "message": "การตรวจสอบเหล่านี้ช่วยให้มั่นใจว่าหน้าเว็บของคุณทำตามคำแนะนำพื้นฐานในการปรับแต่งเว็บไซต์ให้ติดอันดับบนเครื่องมือค้นหา มีปัจจัยอื่นๆ มากมายที่ Lighthouse ไม่ให้คะแนนไว้ที่นี่ซึ่งอาจส่งผลต่อการจัดอันดับการค้นหา รวมถึงประสิทธิภาพใน [Core Web Vitals](https://web.dev/explore/vitals) [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Google Search Essentials](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "เรียกใช้ตัวตรวจสอบความถูกต้องเพิ่มเติมเหล่านี้ในเว็บไซต์ของคุณเพื่อดูแนวทางปฏิบัติที่ดีที่สุดเพิ่มเติมเกี่ยวกับ SEO"
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "ดูเหมือนว่า URL ที่ระบุจะไม่ถูกต้อง"
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse โหลดหน้าเว็บที่คุณขออย่างน่าเชื่อถือไม่ได้ ตรวจสอบว่าคุณกำลังทดสอบ URL ที่ถูกต้องและเซิร์ฟเวอร์ตอบสนองคำขอทั้งหมดอย่างถูกต้อง (รหัสสถานะ: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "ประเภท MIME ของหน้าเว็บคือ XHTML: Lighthouse ไม่รองรับเอกสารประเภทนี้อย่างชัดเจน"
   },
@@ -3108,22 +3111,22 @@
     "message": "ใช้[`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ใน NitroPack เพื่อลดขนาดของไฟล์ที่ส่งไปยังเบราว์เซอร์"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `loading=\"lazy\"` สำหรับรูปภาพนอกจอภาพ [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `loading=\"lazy\"` สำหรับรูปภาพนอกจอภาพ [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `preload` สำหรับรูปภาพ LCP [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `preload` สำหรับรูปภาพ LCP [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `width` และ `height` ที่ชัดแจ้ง [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และระบุ `width` และ `height` ที่ชัดแจ้ง [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `quality` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `quality` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `sizes` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `sizes` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[นำวิดีโอมาแทนที่ GIF แบบภาพเคลื่อนไหว](https://web.dev/replace-gifs-with-videos/)เพื่อให้หน้าเว็บโหลดเร็วขึ้น และลองใช้รูปแบบไฟล์สมัยใหม่ เช่น [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) หรือ [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) เพื่อปรับปรุงประสิทธิภาพในการบีบอัดมากกว่า 30% เมื่อเทียบกับ VP9 ซึ่งเป็นตัวแปลงรหัสวิดีโอที่ทันสมัยซึ่งใช้อยู่ในปัจจุบัน"
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "การโหลดหน้าเว็บเริ่มต้น"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "ภาพรวมของช่วงเวลา"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "ช่วงเวลาการโต้ตอบของผู้ใช้"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "การควบคุมที่กำหนดเอง"
   },
@@ -3393,10 +3402,10 @@
     "message": "User Agent (เครือข่าย)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "การโหลดหน้าเว็บ 1 ครั้ง"
+    "message": "เซสชันหน้าเว็บเดียว"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "ข้อมูลนี้มาจากการโหลดหน้าเว็บ 1 ครั้ง ซึ่งตรงกันข้ามกับข้อมูลภาคสนามที่สรุปหลายเซสชัน"
+    "message": "ข้อมูลนี้มาจากเซสชันหน้าเว็บเดียว ซึ่งตรงกันข้ามกับข้อมูลภาคสนามที่สรุปหลายเซสชัน"
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "การควบคุม 4G แบบช้า"

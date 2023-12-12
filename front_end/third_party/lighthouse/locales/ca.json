@@ -639,7 +639,7 @@
     "message": "Utilitza formats de vídeo per al contingut animat"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Els polyfills i les transformacions permeten als navegadors heretats fer servir funcions de JavaScript noves. No obstant això, molts no són necessaris per als navegadors moderns. Per al teu JavaScript empaquetat, adopta una estratègia de desenvolupament de scripts moderna utilitzant la detecció de la funció mòdul / no mòdul per reduir la quantitat de codi enviat als navegadors moderns, mantenint al mateix temps la compatibilitat amb els navegadors heretats. [Informació sobre com pots utilitzar el JavaScript modern](https://web.dev/publish-modern-javascript/)"
+    "message": "Els polyfills i les transformacions permeten als navegadors heretats fer servir funcions de JavaScript noves. No obstant això, molts no són necessaris per als navegadors moderns. Per al teu JavaScript empaquetat, adopta una estratègia de desenvolupament de scripts moderna utilitzant la detecció de la funció mòdul / no mòdul per reduir la quantitat de codi enviat als navegadors moderns, mantenint al mateix temps la compatibilitat amb els navegadors heretats. [Informació sobre com pots utilitzar el JavaScript modern](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Evita utilitzar JavaScript heretat als navegadors moderns"
@@ -993,7 +993,7 @@
     "message": "Mida prevista"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Les dimensions naturals de les imatges han de ser proporcionals a la mida de visualització i la relació de píxels per maximitzar la claredat de les imatges. [Obtén informació sobre com pots proporcionar imatges responsives](https://web.dev/serve-responsive-images/)."
+    "message": "Les dimensions naturals de les imatges han de ser proporcionals a la mida de visualització i la relació de píxels per maximitzar la claredat de les imatges. [Obtén informació sobre com pots proporcionar imatges responsives](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Utilitza imatges amb una resolució baixa"
@@ -1158,13 +1158,13 @@
     "message": "Contribució al CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Aquests són els elements de DOM que més contribueixen al CLS de la pàgina. [Informació sobre com es pot millorar el CLS](https://web.dev/optimize-cls/)"
+    "message": "Aquests són els elements de DOM que més contribueixen al CLS de la pàgina. [Informació sobre com es pot millorar el CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Evita els canvis de disseny importants"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Les imatges de la meitat superior de la pàgina que es carreguen lentament es renderitzen més tard al cicle de vida de la pàgina, cosa que pot retardar la renderització de l'element més gran amb contingut. [Obtén més informació sobre la càrrega lenta òptima](https://web.dev/lcp-lazy-loading/)."
+    "message": "Les imatges de la meitat superior de la pàgina que es carreguen lentament es renderitzen més tard al cicle de vida de la pàgina, cosa que pot retardar la renderització de l'element més gran amb contingut. [Obtén més informació sobre la càrrega lenta òptima](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "La imatge de renderització de l'element més gran amb contingut s'ha carregat lentament"
@@ -1173,7 +1173,7 @@
     "message": "La imatge de renderització de l'element més gran amb contingut no s'ha carregat lentament"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Enumera les tasques més llargues del fil principal, cosa que resulta útil per identificar què contribueix més al retard de les interaccions. [Informació sobre com pots evitar les tasques llargues al fil principal](https://web.dev/long-tasks-devtools/)"
+    "message": "Enumera les tasques més llargues del fil principal, cosa que resulta útil per identificar què contribueix més al retard de les interaccions. [Informació sobre com pots evitar les tasques llargues al fil principal](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# tasca llarga trobada}other{# tasques llargues trobades}}"
@@ -1221,7 +1221,7 @@
     "message": "El manifest té una icona adaptativa"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "El canvi de disseny acumulatiu mesura el moviment d'elements visibles a la finestra gràfica. [Obtén més informació sobre la mètrica Canvi de disseny acumulatiu](https://web.dev/cls/)."
+    "message": "El canvi de disseny acumulatiu mesura el moviment d'elements visibles a la finestra gràfica. [Obtén més informació sobre la mètrica Canvi de disseny acumulatiu](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "La mètrica Primera renderització de contingut marca el moment en què es renderitza el primer text o la primera imatge. [Obtén més informació sobre la mètrica Primera renderització de contingut](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "La mètrica Primera renderització significativa mesura el moment en què el contingut principal d'una pàgina és visible. [Obtén més informació sobre la mètrica Primera renderització significativa](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "La mètrica Interacció amb la renderització següent mesura la capacitat de resposta de la pàgina; és a dir, el temps que tarda la pàgina a respondre visiblement a l'entrada de l'usuari. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/inp/)."
+    "message": "La mètrica Interacció amb la renderització següent mesura la capacitat de resposta de la pàgina; és a dir, el temps que tarda la pàgina a respondre visiblement a l'entrada de l'usuari. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "La mètrica Temps fins que és interactiva és el que tarda la pàgina a fer-se completament interactiva. [Obtén més informació sobre la mètrica Temps fins que és interactiva](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Latències dorsals del servidor"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau endavant/enrere. Substitueix-lo pels esdeveniments `pagehide` o `visibilitychange`. [Més informació sobre com es poden baixar els detectors d'esdeveniments](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau endavant/enrere. Substitueix-lo pels esdeveniments `pagehide` o `visibilitychange`. [Més informació sobre com es poden baixar els detectors d'esdeveniments](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un detector de `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Pressupost de rendiment"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Precarrega les fonts `optional` perquè els visitants nous puguin utilitzar-les. [Més informació sobre la precàrrega de fonts](https://web.dev/preload-optional-fonts/)"
+    "message": "Precarrega les fonts `optional` perquè els visitants nous puguin utilitzar-les. [Més informació sobre la precàrrega de fonts](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Les fonts amb `font-display: optional` no estan precarregades"
@@ -1314,7 +1314,7 @@
     "message": "Les fonts amnb `font-display: optional` estan precarregades"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Si l'element LCP s'afegeix dinàmicament a la pàgina, has de precarregar la imatge per poder millorar l'LCP. [Obtén més informació sobre com es poden precarregar els elements LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Si l'element LCP s'afegeix dinàmicament a la pàgina, has de precarregar la imatge per poder millorar l'LCP. [Obtén més informació sobre com es poden precarregar els elements LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Precarrega la imatge de renderització de l'element més gran amb contingut"
@@ -1587,7 +1587,7 @@
     "message": "Pressupost de temps"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Als elements d'imatge, defineix una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Informació sobre com pots definir les dimensions d'imatge](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Als elements d'imatge, defineix una amplada i una alçada explícites per reduir els canvis de disseny i millorar el CLS. [Informació sobre com pots definir les dimensions d'imatge](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Els elements d'imatge no tenen una `width` ni una `height` explícites."
@@ -1662,7 +1662,7 @@
     "message": "Té una etiqueta `<meta name=\"viewport\">` amb l'atribut `width` o `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Aquest és el treball de bloqueig de fils que es produeix durant el mesurament de la interacció amb la renderització següent. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/inp/)."
+    "message": "Aquest és el treball de bloqueig de fils que es produeix durant el mesurament de la interacció amb la renderització següent. [Obtén més informació sobre la mètrica Interacció amb la renderització següent](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "S'han dedicat {timeInMs, number, milliseconds} ms a l'esdeveniment \"{interactionType}\""
@@ -1704,10 +1704,10 @@
     "message": "Pràctiques recomanades"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Aquestes comprovacions destaquen les oportunitats per [millorar l'accessibilitat de l'aplicació web](https://developer.chrome.com/docs/lighthouse/accessibility/). La detecció automàtica només pot detectar un subconjunt de problemes i no garanteix l'accessibilitat de l'aplicació web, de manera que et recomanem que també hi facis [proves manuals](https://web.dev/how-to-review/)."
+    "message": "Aquestes comprovacions destaquen les oportunitats per [millorar l'accessibilitat de l'aplicació web](https://developer.chrome.com/docs/lighthouse/accessibility/). La detecció automàtica només pot detectar un subconjunt de problemes i no garanteix l'accessibilitat de l'aplicació web, de manera que et recomanem que també hi facis [proves manuals](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Aquests elements tracten àrees que les eines de proves automatitzades no poden cobrir. Obtén més informació a la nostra guia sobre [com es duen a terme ressenyes d'accessibilitat](https://web.dev/how-to-review/)."
+    "message": "Aquests elements tracten àrees que les eines de proves automatitzades no poden cobrir. Obtén més informació a la nostra guia sobre [com es duen a terme ressenyes d'accessibilitat](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Accessibilitat"
@@ -1794,10 +1794,10 @@
     "message": "Rendiment"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Aquestes validacions verifiquen els aspectes d'una aplicació web progressiva. [Obtén informació sobre les característiques d'una bona aplicació web progressiva](https://web.dev/pwa-checklist/)."
+    "message": "Aquestes validacions verifiquen els aspectes d'una aplicació web progressiva. [Obtén informació sobre les característiques d'una bona aplicació web progressiva](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "La [llista de comprovació de referència per a aplicacions web progressives](https://web.dev/pwa-checklist/) requereix aquestes validacions, però Lighthouse no les verifica automàticament. Tot i que no afecten la teva puntuació, és important que les verifiquis manualment."
+    "message": "La [llista de comprovació de referència per a aplicacions web progressives](https://web.dev/articles/pwa-checklist) requereix aquestes validacions, però Lighthouse no les verifica automàticament. Tot i que no afecten la teva puntuació, és important que les verifiquis manualment."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Optimitzat per a PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Aquestes comprovacions garanteixen que la pàgina segueixi les recomanacions d'optimització bàsica en cercadors. Hi ha molts factors addicionals que Lighthouse no puntua aquí i que poden afectar la classificació a les cerques, inclòs el rendiment a [Dades vitals web principals](https://web.dev/learn-core-web-vitals/). [Obtén més informació sobre Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Aquestes comprovacions garanteixen que la pàgina segueixi les recomanacions d'optimització bàsica en cercadors. Hi ha molts factors addicionals que Lighthouse no puntua aquí i que poden afectar la classificació a les cerques, inclòs el rendiment a [Dades vitals web principals](https://web.dev/explore/vitals). [Obtén més informació sobre Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Executa aquestes validacions addicionals al lloc web per comprovar les pràctiques addicionals recomanades per a SEO."
@@ -2643,7 +2643,7 @@
     "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis fent la prova de l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Detalls: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis fent la prova de l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {statusCode})"
+    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis provant l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "La pàgina ha tardat massa temps a carregar-se. Segueix les opcions indicades a l'informe per reduir el temps de càrrega de la pàgina i, a continuació, prova d'executar Lighthouse de nou. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Sembla que l'URL que has proporcionat no és vàlid."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse no ha pogut carregar de manera fiable la pàgina que has sol·licitat. Assegura't que estiguis provant l'URL correcte i que el servidor estigui responent correctament a totes les sol·licituds. (Codi d'estat: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "El tipus MIME de la pàgina és XHTML: Lighthouse no admet explícitament aquest tipus de document"
@@ -3108,22 +3111,22 @@
     "message": "Utilitza [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) a NitroPack per reduir la mida dels fitxers que s'envien al navegador."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Utilitza el component `nuxt/image` i estableix `format=\"webp\"`. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Utilitza el component `nuxt/image` i estableix `format=\"webp\"`. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix `loading=\"lazy\"` per a imatges fora de la pantalla. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Utilitza el component `nuxt/image` i estableix `loading=\"lazy\"` per a imatges fora de la pantalla. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Utilitza el component `nuxt/image` i especifica `preload` per a la imatge LCP. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Utilitza el component `nuxt/image` i especifica `preload` per a la imatge LCP. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Utilitza el component `nuxt/image` i especifica `width` i `height` de manera explícita. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Utilitza el component `nuxt/image` i especifica `width` i `height` de manera explícita. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix la `quality` adequada. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Utilitza el component `nuxt/image` i estableix la `quality` adequada. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Utilitza el component `nuxt/image` i estableix les `sizes` adequades. [Obtén més informació](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Utilitza el component `nuxt/image` i estableix les `sizes` adequades. [Obtén més informació](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Suprimeix els GIF animats amb vídeo](https://web.dev/replace-gifs-with-videos/) per carregar les pàgines web més ràpidament i planteja't l'opció d'utilitzar formats de fitxer moderns, com ara [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), per millorar l'eficàcia de compressió en més d'un 30% respecte al còdec de vídeo actual més avançat, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Càrrega de la pàgina inicial"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Instantània puntual"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Període de temps de les interaccions dels usuaris"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Limitació personalitzada"
   },
@@ -3393,10 +3402,10 @@
     "message": "Agent d'usuari (xarxa)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Càrrega de la pàgina única"
+    "message": "Sessió d'una sola pàgina"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Aquestes dades s'han extret d'una única càrrega de la pàgina, a diferència de les dades de camps que resumeixen moltes sessions."
+    "message": "Aquestes dades s'han extret de la sessió d'una sola pàgina, a diferència de les dades de camps que resumeixen moltes sessions."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Limitació 4G lenta"

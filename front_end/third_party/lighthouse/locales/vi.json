@@ -639,7 +639,7 @@
     "message": "Sử dụng các định dạng video cho nội dung động"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Mã Polyfill và Transform cho phép trình duyệt cũ dùng các tính năng mới của JavaScript. Tuy nhiên, nhiều tính năng không cần thiết cho trình duyệt hiện đại. Đối với JavaScript trong gói của bạn, hãy áp dụng chiến lược triển khai tập lệnh hiện đại bằng cách dùng cơ chế phát hiện tính năng theo mô-đun/không theo mô-đun để giảm số lượng mã gửi đến trình duyệt hiện đại trong khi vẫn tiếp tục hỗ trợ cho trình duyệt cũ. [Tìm hiểu cách sử dụng JavaScript hiện đại](https://web.dev/publish-modern-javascript/)"
+    "message": "Mã Polyfill và Transform cho phép trình duyệt cũ dùng các tính năng mới của JavaScript. Tuy nhiên, nhiều tính năng không cần thiết cho trình duyệt hiện đại. Đối với JavaScript trong gói của bạn, hãy áp dụng chiến lược triển khai tập lệnh hiện đại bằng cách dùng cơ chế phát hiện tính năng theo mô-đun/không theo mô-đun để giảm số lượng mã gửi đến trình duyệt hiện đại trong khi vẫn tiếp tục hỗ trợ cho trình duyệt cũ. [Tìm hiểu cách sử dụng JavaScript hiện đại](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Tránh phân phối JavaScript cũ tới các trình duyệt hiện đại"
@@ -993,7 +993,7 @@
     "message": "Kích thước mong muốn"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Kích thước tự nhiên của hình ảnh phải tỷ lệ với kích thước màn hình và tỷ lệ pixel để hình ảnh rõ nét nhất có thể. [Tìm hiểu cách cung cấp hình ảnh thích ứng](https://web.dev/serve-responsive-images/)."
+    "message": "Kích thước tự nhiên của hình ảnh phải tỷ lệ với kích thước màn hình và tỷ lệ pixel để hình ảnh rõ nét nhất có thể. [Tìm hiểu cách cung cấp hình ảnh thích ứng](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Phân phối hình ảnh có độ phân giải thấp"
@@ -1158,13 +1158,13 @@
     "message": "Mức đóng góp vào CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Những thành phần DOM này đóng góp nhiều nhất vào Điểm số tổng hợp về mức thay đổi bố cục (CLS) của trang. [Tìm hiểu cách cải thiện CLS](https://web.dev/optimize-cls/)"
+    "message": "Những thành phần DOM này đóng góp nhiều nhất vào Điểm số tổng hợp về mức thay đổi bố cục (CLS) của trang. [Tìm hiểu cách cải thiện CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Tránh các thay đổi lớn về bố cục"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Hình ảnh trong màn hình đầu tiên được tải từng phần sẽ hiển thị sau trong vòng đời của trang, điều này có thể làm chậm thời gian hiển thị nội dung lớn nhất. [Tìm hiểu thêm về tính năng tải từng phần tối ưu](https://web.dev/lcp-lazy-loading/)."
+    "message": "Hình ảnh trong màn hình đầu tiên được tải từng phần sẽ hiển thị sau trong vòng đời của trang, điều này có thể làm chậm thời gian hiển thị nội dung lớn nhất. [Tìm hiểu thêm về tính năng tải từng phần tối ưu](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Hình ảnh Thời gian hiển thị nội dung lớn nhất đã được tải từng phần"
@@ -1173,7 +1173,7 @@
     "message": "Hình ảnh Thời gian hiển thị nội dung lớn nhất không được tải từng phần"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Liệt kê những việc cần nhiều thời gian thực hiện nhất trong chuỗi chính. Thông tin này khá hữu ích trong việc xác định những thành phần có thời gian phản hồi tương tác chậm nhất. [Tìm hiểu cách tránh những việc cần nhiều thời gian thực hiện trong chuỗi chính](https://web.dev/long-tasks-devtools/)"
+    "message": "Liệt kê những việc cần nhiều thời gian thực hiện nhất trong chuỗi chính. Thông tin này khá hữu ích trong việc xác định những thành phần có thời gian phản hồi tương tác chậm nhất. [Tìm hiểu cách tránh những việc cần nhiều thời gian thực hiện trong chuỗi chính](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Phát hiện thấy # việc cần nhiều thời gian thực hiện}other{Phát hiện thấy # việc cần nhiều thời gian thực hiện}}"
@@ -1221,7 +1221,7 @@
     "message": "Tệp kê khai có một biểu tượng che mờ được"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Điểm số tổng hợp về mức thay đổi bố cục đo lường mức độ dịch chuyển của các phần tử hiển thị trong khung nhìn. [Tìm hiểu thêm về chỉ số Điểm số tổng hợp về mức thay đổi bố cục](https://web.dev/cls/)."
+    "message": "Điểm số tổng hợp về mức thay đổi bố cục đo lường mức độ dịch chuyển của các phần tử hiển thị trong khung nhìn. [Tìm hiểu thêm về chỉ số Điểm số tổng hợp về mức thay đổi bố cục](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Chỉ số Hiển thị nội dung đầu tiên đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh đầu tiên. [Tìm hiểu thêm về chỉ số Hiển thị nội dung đầu tiên](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Chỉ số Hiển thị nội dung đầu tiên đo lường thời điểm hiển thị nội dung chính của trang. [Tìm hiểu thêm về chỉ số Hiển thị nội dung đầu tiên](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Hoạt động tương tác với thời gian hiển thị tiếp theo đo lường khả năng phản hồi của trang, thời gian trang cần để phản hồi hoạt động đầu vào của người dùng một cách rõ ràng. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/inp/)."
+    "message": "Hoạt động tương tác với thời gian hiển thị tiếp theo đo lường khả năng phản hồi của trang, thời gian trang cần để phản hồi hoạt động đầu vào của người dùng một cách rõ ràng. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm về chỉ số Thời điểm tương tác](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Thời gian dưới nền của máy chủ"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Sự kiện `unload` kích hoạt không ổn định và việc làm theo sự kiện này có thể ngăn các hoạt động tối ưu hoá trình duyệt, chẳng hạn như Bộ nhớ đệm cho thao tác tiến/lùi. Hãy chuyển sang dùng sự kiện `pagehide` hoặc `visibilitychange`. [Tìm hiểu thêm về trình nghe sự kiện huỷ tải](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Sự kiện `unload` kích hoạt không ổn định và việc làm theo sự kiện này có thể ngăn các hoạt động tối ưu hoá trình duyệt, chẳng hạn như Bộ nhớ đệm cho thao tác tiến/lùi. Hãy chuyển sang dùng sự kiện `pagehide` hoặc `visibilitychange`. [Tìm hiểu thêm về trình nghe sự kiện huỷ tải](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Đăng ký trình xử lý sự kiện `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Ngân sách hiệu suất"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Tải trước phông chữ có `optional` để khách truy cập lần đầu có thể sử dụng. [Tìm hiểu thêm về cách tải trước phông chữ](https://web.dev/preload-optional-fonts/)"
+    "message": "Tải trước phông chữ có `optional` để khách truy cập lần đầu có thể sử dụng. [Tìm hiểu thêm về cách tải trước phông chữ](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Chưa tải trước phông chữ có `font-display: optional`"
@@ -1314,7 +1314,7 @@
     "message": "Đã tải trước phông chữ có `font-display: optional`"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Nếu phần tử LCP được thêm vào trang qua phương thức động, bạn nên tải trước hình ảnh để cải thiện LCP. [Tìm hiểu thêm về cách tải trước phần tử LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Nếu phần tử LCP được thêm vào trang qua phương thức động, bạn nên tải trước hình ảnh để cải thiện LCP. [Tìm hiểu thêm về cách tải trước phần tử LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Tải trước hình ảnh có Thời gian hiển thị nội dung lớn nhất"
@@ -1587,7 +1587,7 @@
     "message": "Giới hạn về thời gian"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Đặt chiều rộng và chiều cao rõ ràng đối với các phần tử hình ảnh để giảm sự thay đổi về bố cục và cải thiện CLS (Điểm số tổng hợp về mức thay đổi bố cục). [Tìm hiểu cách đặt kích thước hình ảnh](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Đặt chiều rộng và chiều cao rõ ràng đối với các phần tử hình ảnh để giảm sự thay đổi về bố cục và cải thiện CLS (Điểm số tổng hợp về mức thay đổi bố cục). [Tìm hiểu cách đặt kích thước hình ảnh](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Các phần tử hình ảnh không có `width` và `height` rõ ràng"
@@ -1662,7 +1662,7 @@
     "message": "Có thẻ `<meta name=\"viewport\">` có `width` hoặc `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Đây là công việc chặn chuỗi xảy ra trong quá trình đo lường Hoạt động tương tác với thời gian hiển thị tiếp theo. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/inp/)."
+    "message": "Đây là công việc chặn chuỗi xảy ra trong quá trình đo lường Hoạt động tương tác với thời gian hiển thị tiếp theo. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Khoảng thời gian dành cho sự kiện \"{interactionType}\" là {timeInMs, number, milliseconds} mili giây"
@@ -1704,10 +1704,10 @@
     "message": "Những phương pháp hay nhất"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Các hoạt động kiểm tra này giúp xác định cơ hội [cải thiện khả năng hỗ trợ tiếp cận của ứng dụng web](https://developer.chrome.com/docs/lighthouse/accessibility/). Các hoạt động này chỉ có thể tự động phát hiện một phần vấn đề và không đảm bảo khả năng hỗ trợ tiếp cận của ứng dụng web. Vì vậy, bạn nên [kiểm tra cả theo cách thủ công](https://web.dev/how-to-review/)."
+    "message": "Các hoạt động kiểm tra này giúp xác định cơ hội [cải thiện khả năng hỗ trợ tiếp cận của ứng dụng web](https://developer.chrome.com/docs/lighthouse/accessibility/). Các hoạt động này chỉ có thể tự động phát hiện một phần vấn đề và không đảm bảo khả năng hỗ trợ tiếp cận của ứng dụng web. Vì vậy, bạn nên [kiểm tra cả theo cách thủ công](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Các mục này nằm trong vùng không thể sử dụng công cụ kiểm tra tự động. Tìm hiểu thêm trong hướng dẫn của chúng tôi về cách [đánh giá khả năng hỗ trợ tiếp cận](https://web.dev/how-to-review/)."
+    "message": "Các mục này nằm trong vùng không thể sử dụng công cụ kiểm tra tự động. Tìm hiểu thêm trong hướng dẫn của chúng tôi về cách [đánh giá khả năng hỗ trợ tiếp cận](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Hỗ trợ tiếp cận"
@@ -1794,10 +1794,10 @@
     "message": "Hiệu suất"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Những hoạt động kiểm tra này sẽ xác thực các chương trình thành phần của Ứng dụng web tiến bộ. [Tìm hiểu những tiêu chí của Ứng dụng web tiến bộ hiệu quả](https://web.dev/pwa-checklist/)."
+    "message": "Những hoạt động kiểm tra này sẽ xác thực các chương trình thành phần của Ứng dụng web tiến bộ. [Tìm hiểu những tiêu chí của Ứng dụng web tiến bộ hiệu quả](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Đây là những hoạt động kiểm tra được chỉ định trong [Danh sách kiểm tra ứng dụng web tiến bộ (PWA)](https://web.dev/pwa-checklist/) cơ bản, nhưng Lighthouse không tự động kiểm tra các mục này. Các hoạt động kiểm tra này không ảnh hưởng đến điểm số của bạn, nhưng bạn nên xác minh theo cách thủ công."
+    "message": "Đây là những hoạt động kiểm tra được chỉ định trong [Danh sách kiểm tra ứng dụng web tiến bộ (PWA)](https://web.dev/articles/pwa-checklist) cơ bản, nhưng Lighthouse không tự động kiểm tra các mục này. Các hoạt động kiểm tra này không ảnh hưởng đến điểm số của bạn, nhưng bạn nên xác minh theo cách thủ công."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA đã tối ưu hóa"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Các hoạt động kiểm tra này đảm bảo rằng trang của bạn tuân theo lời khuyên cơ bản về cách tối ưu hoá cho công cụ tìm kiếm. Có nhiều yếu tố bổ sung mà Lighthouse không xếp hạng ở đây có thể ảnh hưởng đến thứ hạng của bạn trong kết quả tìm kiếm, kể cả hiệu suất của [Các chỉ số quan trọng về trang web](https://web.dev/learn-core-web-vitals/). [Tìm hiểu thêm Kiến thức thiết yếu về Google Tìm kiếm](https://support.google.com/webmasters/answer/35769)."
+    "message": "Các hoạt động kiểm tra này đảm bảo rằng trang của bạn tuân theo lời khuyên cơ bản về cách tối ưu hoá cho công cụ tìm kiếm. Có nhiều yếu tố bổ sung mà Lighthouse không xếp hạng ở đây có thể ảnh hưởng đến thứ hạng của bạn trong kết quả tìm kiếm, kể cả hiệu suất của [Các chỉ số quan trọng về trang web](https://web.dev/explore/vitals). [Tìm hiểu thêm Kiến thức thiết yếu về Google Tìm kiếm](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Chạy những trình xác thực bổ sung này trên trang web của bạn để xem thêm các phương pháp hay nhất dành cho quy trình Tối ưu hóa cho công cụ tìm kiếm (SEO)."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "URL bạn cung cấp có vẻ không hợp lệ."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse không thể tải trang bạn đã yêu cầu một cách đáng tin cậy. Hãy đảm bảo bạn đang kiểm tra URL chính xác và máy chủ đang phản hồi tất cả các yêu cầu đúng cách. (Mã trạng thái: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Loại MIME của trang là XHTML: Lighthouse không hỗ trợ rõ ràng loại tài liệu này"
   },
@@ -3108,22 +3111,22 @@
     "message": "Sử dụng [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) trong NitroPack để giảm kích thước của các tệp được gửi đến trình duyệt."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `format=\"webp\"`. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `format=\"webp\"`. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `loading=\"lazy\"` cho hình ảnh ngoài màn hình. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `loading=\"lazy\"` cho hình ảnh ngoài màn hình. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Sử dụng thành phần `nuxt/image` và chỉ định `preload` cho hình ảnh LCP. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Sử dụng thành phần `nuxt/image` và chỉ định `preload` cho hình ảnh LCP. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Sử dụng thành phần `nuxt/image` và chỉ định `width` và `height` một cách rõ ràng. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Sử dụng thành phần `nuxt/image` và chỉ định `width` và `height` một cách rõ ràng. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `quality` phù hợp. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `quality` phù hợp. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `sizes` phù hợp. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Sử dụng thành phần `nuxt/image` và thiết lập `sizes` phù hợp. [Tìm hiểu thêm](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Thay thế ảnh GIF động bằng video](https://web.dev/replace-gifs-with-videos/) để tải trang web nhanh hơn, đồng thời cân nhắc sử dụng các định dạng tệp hiện đại như [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) hay [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) để cải thiện hiệu quả nén thêm hơn 30% so với codec video tiên tiến hiện tại là VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Lượt tải trang đầu tiên"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Ảnh chụp nhanh tại một thời điểm cụ thể"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Khoảng thời gian có hoạt động tương tác của người dùng"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Chế độ điều tiết tuỳ chỉnh"
   },
@@ -3393,10 +3402,10 @@
     "message": "Tác nhân người dùng (mạng)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Một lượt tải trang"
+    "message": "Phiên trang đơn"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Dữ liệu này được lấy trong một lượt tải trang, thay vì dữ liệu trường tóm tắt nhiều phiên."
+    "message": "Dữ liệu này được lấy trong một phiên trang đơn, khác với dữ liệu thực địa tóm tắt nhiều phiên."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Chế độ điều tiết mạng 4G chậm"

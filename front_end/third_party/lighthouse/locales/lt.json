@@ -639,7 +639,7 @@
     "message": "Naudokite vaizdo įrašo formatus animuotam turiniui pateikti"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Naudojant kodus ir transformacijas pasenusiose naršyklėse galima naudoti naujas „JavaScript“ funkcijas. Tačiau dauguma jų nereikalingi modernioms naršyklėms. Į grupę įtrauktai „JavaScript“ pritaikykite modernią scenarijaus diegimo strategiją naudodami modulio ir (arba) ne modulio funkcijos aptikimą, kad sumažintumėte į modernias naršykles siunčiamo kodo kiekį, išlaikydami pasenusių naršyklių palaikymą. [Sužinokite, kaip naudoti modernią „JavaScript“](https://web.dev/publish-modern-javascript/)"
+    "message": "Naudojant kodus ir transformacijas pasenusiose naršyklėse galima naudoti naujas „JavaScript“ funkcijas. Tačiau dauguma jų nereikalingi modernioms naršyklėms. Į grupę įtrauktai „JavaScript“ pritaikykite modernią scenarijaus diegimo strategiją naudodami modulio ir (arba) ne modulio funkcijos aptikimą, kad sumažintumėte į modernias naršykles siunčiamo kodo kiekį, išlaikydami pasenusių naršyklių palaikymą. [Sužinokite, kaip naudoti modernią „JavaScript“](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Neteikite pasenusios „JavaScript“ modernioms naršyklėms"
@@ -993,7 +993,7 @@
     "message": "Numatytas dydis"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Kad vaizdas būtų kuo aiškesnis, natūralūs vaizdo aspektai turi būti proporcingi ekrano dydžiui ir taškų koeficientui. [Sužinokite, kaip pateikti interaktyvius vaizdus](https://web.dev/serve-responsive-images/)."
+    "message": "Kad vaizdas būtų kuo aiškesnis, natūralūs vaizdo aspektai turi būti proporcingi ekrano dydžiui ir taškų koeficientui. [Sužinokite, kaip pateikti interaktyvius vaizdus](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Teikiami žemos raiškos vaizdai"
@@ -1158,13 +1158,13 @@
     "message": "Prisideda prie KIP rezultato"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Šie DOM elementai labiausiai prisideda prie puslapio KIP. [Sužinokite, kaip pagerinti KIP](https://web.dev/optimize-cls/)"
+    "message": "Šie DOM elementai labiausiai prisideda prie puslapio KIP. [Sužinokite, kaip pagerinti KIP](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Venkite didelių išdėstymo poslinkių"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Virš matomos ribos esantys vaizdai, kurie įkeliami asinchroniškai, pateikiami puslapio veiklos cikle vėliau, o tai gali lemti didžiausio turiningo žymėjimo delsą. [Sužinokite daugiau apie optimalų asinchroninį įkėlimą](https://web.dev/lcp-lazy-loading/)."
+    "message": "Virš matomos ribos esantys vaizdai, kurie įkeliami asinchroniškai, pateikiami puslapio veiklos cikle vėliau, o tai gali lemti didžiausio turiningo žymėjimo delsą. [Sužinokite daugiau apie optimalų asinchroninį įkėlimą](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Didžiausio turiningo žymėjimo vaizdas įkeltas asinchroniškai"
@@ -1173,7 +1173,7 @@
     "message": "Didžiausio turiningo žymėjimo vaizdas nebuvo įkeltas asinchroniškai"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Sudaromas ilgiausių pagrindinės grupės užduočių sąrašas, naudingas siekiant nustatyti, kas labiausiai prisideda prie įvesties delsos. [Sužinokite, kaip išvengti ilgų pagrindinės grupės užduočių](https://web.dev/long-tasks-devtools/)"
+    "message": "Sudaromas ilgiausių pagrindinės grupės užduočių sąrašas, naudingas siekiant nustatyti, kas labiausiai prisideda prie įvesties delsos. [Sužinokite, kaip išvengti ilgų pagrindinės grupės užduočių](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Rasta # ilga užduotis}one{Rasta # ilga užduotis}few{Rastos # ilgos užduotys}many{Rasta # ilgos užduoties}other{Rasta # ilgų užduočių}}"
@@ -1221,7 +1221,7 @@
     "message": "Pateikta maskuojama aprašo piktograma"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Nustatant kaupiamąjį išdėstymo poslinkį įvertinamas peržiūros srityje matomų elementų judėjimas. [Sužinokite daugiau apie kaupiamojo išdėstymo poslinkio metriką](https://web.dev/cls/)."
+    "message": "Nustatant kaupiamąjį išdėstymo poslinkį įvertinamas peržiūros srityje matomų elementų judėjimas. [Sužinokite daugiau apie kaupiamojo išdėstymo poslinkio metriką](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Pirmas turiningas žymėjimas nurodo laiką, kada pažymimas pirmasis tekstas ar vaizdas. [Sužinokite daugiau apie pirmo turiningo žymėjimo metriką](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Pirmasis reikšmingas parodymas nurodo, kada parodomas pagrindinis puslapio turinys. [Sužinokite daugiau apie pirmojo reikšmingo parodymo metriką](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Laikas nuo sąveikos iki kito žymėjimo įvertina puslapio atsako laiką: kiek laiko praeina, kol matomas puslapio atsakas į naudotojo įvestį. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/inp/)."
+    "message": "Laikas nuo sąveikos iki kito žymėjimo įvertina puslapio atsako laiką: kiek laiko praeina, kol matomas puslapio atsakas į naudotojo įvestį. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Laikas iki sąveikos yra vertė, nurodanti, kiek laiko reikia, kol puslapis tampa visiškai interaktyvus. [Sužinokite daugiau apie laiko iki sąveikos metriką](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Serverio vidinės pusės delsa"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Įvykis „`unload`“ patikimai nesuaktyvinamas ir jį apdorojant gali būti neleidžiama optimizuoti naršyklės, pvz., persiuntimo atgal ir pirmyn talpyklos. Vietoj to naudokite įvykį „`pagehide`“ arba „`visibilitychange`“. [Sužinokite daugiau apie įvykių apdorojimo priemonių iškėlimą](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Įvykis „`unload`“ patikimai nesuaktyvinamas ir jį apdorojant gali būti neleidžiama optimizuoti naršyklės, pvz., persiuntimo atgal ir pirmyn talpyklos. Vietoj to naudokite įvykį „`pagehide`“ arba „`visibilitychange`“. [Sužinokite daugiau apie įvykių apdorojimo priemonių iškėlimą](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Užregistruojama „`unload`“ apdorojimo priemonė"
@@ -1305,7 +1305,7 @@
     "message": "Našumo biudžetas"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Iš anksto įkelkite „`optional`“ šriftus, kad pirmą kartą apsilankantieji galėtų juos naudoti. [Sužinokite daugiau apie išankstinį šriftų įkėlimą](https://web.dev/preload-optional-fonts/)"
+    "message": "Iš anksto įkelkite „`optional`“ šriftus, kad pirmą kartą apsilankantieji galėtų juos naudoti. [Sužinokite daugiau apie išankstinį šriftų įkėlimą](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Šriftai su „`font-display: optional`“ nebuvo iš anksto įkelti"
@@ -1314,7 +1314,7 @@
     "message": "Šriftai su „`font-display: optional`“ buvo iš anksto įkelti"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Jei DTŽ elementas dinamiškai pridedamas puslapyje, turėtumėte iš anksto įkelti vaizdą, kad patobulintumėte DTŽ. [Sužinokite daugiau apie išankstinį DTŽ elementų įkėlimą](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Jei DTŽ elementas dinamiškai pridedamas puslapyje, turėtumėte iš anksto įkelti vaizdą, kad patobulintumėte DTŽ. [Sužinokite daugiau apie išankstinį DTŽ elementų įkėlimą](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Iš anksto įkelkite didžiausio turiningo žymėjimo vaizdą"
@@ -1587,7 +1587,7 @@
     "message": "Laiko biudžetas"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Nustatykite tikslų vaizdo elementų plotį ir aukštį, kad būtų mažiau išdėstymo poslinkių ir pagerinamas KIP. [Sužinokite, kaip nustatyti vaizdo matmenis](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Nustatykite tikslų vaizdo elementų plotį ir aukštį, kad būtų mažiau išdėstymo poslinkių ir pagerinamas KIP. [Sužinokite, kaip nustatyti vaizdo matmenis](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Vaizdo elementų matmenys nėra tikslūs: `width` ir `height`"
@@ -1662,7 +1662,7 @@
     "message": "Yra žyma `<meta name=\"viewport\">` su `width` arba `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Tai yra grupių blokavimas, atliekamas įvertinant laiką nuo sąveikos iki kito žymėjimo. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/inp/)."
+    "message": "Tai yra grupių blokavimas, atliekamas įvertinant laiką nuo sąveikos iki kito žymėjimo. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Įvykis „{interactionType}“ truko {timeInMs, number, milliseconds} ms"
@@ -1704,10 +1704,10 @@
     "message": "Geriausia praktika"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Atlikę šias patikras sužinosite, kaip galite [geriau pritaikyti žiniatinklio programą](https://developer.chrome.com/docs/lighthouse/accessibility/). Naudojant automatinį aptikimą galima aptikti tik dalį problemų ir negarantuojamas žiniatinklio programos pritaikomumas, todėl taip pat rekomenduojama atlikti [neautomatinį bandymą](https://web.dev/how-to-review/)."
+    "message": "Atlikę šias patikras sužinosite, kaip galite [geriau pritaikyti žiniatinklio programą](https://developer.chrome.com/docs/lighthouse/accessibility/). Naudojant automatinį aptikimą galima aptikti tik dalį problemų ir negarantuojamas žiniatinklio programos pritaikomumas, todėl taip pat rekomenduojama atlikti [neautomatinį bandymą](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Šie elementai apima sritis, kurių automatinio bandymo įrankis negali aprėpti. Mūsų vadove sužinokite daugiau apie tai, kaip [atlikti pritaikomumo peržiūrą](https://web.dev/how-to-review/)."
+    "message": "Šie elementai apima sritis, kurių automatinio bandymo įrankis negali aprėpti. Mūsų vadove sužinokite daugiau apie tai, kaip [atlikti pritaikomumo peržiūrą](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Pritaikomumas"
@@ -1794,10 +1794,10 @@
     "message": "Našumas"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Per šias patikras vertinamos laipsniškosios žiniatinklio programos aspekto paprogramės. [Sužinokite, kaip sukurti gerą laipsniškąją žiniatinklio programą](https://web.dev/pwa-checklist/)."
+    "message": "Per šias patikras vertinamos laipsniškosios žiniatinklio programos aspekto paprogramės. [Sužinokite, kaip sukurti gerą laipsniškąją žiniatinklio programą](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Šios patikros būtinos pagal pradinį [LŽP kontrolinį sąrašą](https://web.dev/pwa-checklist/), tačiau „Lighthouse“ jų neatlieka automatiškai. Jos neturi įtakos jūsų rezultatui, tačiau svarbu, kad patvirtintumėte patys."
+    "message": "Šios patikros būtinos pagal pradinį [LŽP kontrolinį sąrašą](https://web.dev/articles/pwa-checklist), tačiau „Lighthouse“ jų neatlieka automatiškai. Jos neturi įtakos jūsų rezultatui, tačiau svarbu, kad patvirtintumėte patys."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "LŽP"
@@ -1809,7 +1809,7 @@
     "message": "Optimizuota PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Šios patikros užtikrina, kad puslapyje laikomasi pagrindinių paieškos variklio optimizavimo rekomendacijų. Yra daugybė veiksnių, į kuriuos „Lighthouse“ neatsižvelgia ir kurie gali turėti įtakos paieškos reitingavimui, įskaitant našumą pagal [svarbiausią žiniatinklio „Vitals“ metriką](https://web.dev/learn-core-web-vitals/). [Sužinokite daugiau apie „Google“ paieškos pagrindus](https://support.google.com/webmasters/answer/35769)."
+    "message": "Šios patikros užtikrina, kad puslapyje laikomasi pagrindinių paieškos variklio optimizavimo rekomendacijų. Yra daugybė veiksnių, į kuriuos „Lighthouse“ neatsižvelgia ir kurie gali turėti įtakos paieškos reitingavimui, įskaitant našumą pagal [svarbiausią žiniatinklio „Vitals“ metriką](https://web.dev/explore/vitals). [Sužinokite daugiau apie „Google“ paieškos pagrindus](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Paleiskite šias papildomas patvirtinimo priemones svetainėje, kad patikrintumėte papildomus PVO geriausios praktikos metodus."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Panašu, kad pateiktas URL netinkamas."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "„Lighthouse“ nepavyko patikimai įkelti puslapio, kurio užklausą pateikėte. Įsitikinkite, kad tikrinate tinkamą URL ir kad serveris tinkamai atsako į visas užklausas. (Būsenos kodas: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Puslapio MIME tipas yra XHTML: „Lighthouse“ tikrai nepalaiko šio dokumento tipo"
   },
@@ -3108,22 +3111,22 @@
     "message": "Naudokite [„`Gzip compression`“](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) „NitroPack“, kad sumažintumėte į naršyklę siunčiamų failų dydį."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`format=\"webp\"`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`format=\"webp\"`“. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`loading=\"lazy\"`“ ne ekraniniams vaizdams. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`loading=\"lazy\"`“ ne ekraniniams vaizdams. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Naudodami komponentą „`nuxt/image`“ nustatykite „`preload`“ DTŽ vaizdui. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Naudodami komponentą „`nuxt/image`“ nustatykite „`preload`“ DTŽ vaizdui. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite aiškius „`width`“ ir „`height`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite aiškius „`width`“ ir „`height`“. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite atitinkamą „`quality`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite atitinkamą „`quality`“. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite atitinkamą „`sizes`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite atitinkamą „`sizes`“. [Sužinokite daugiau](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Pakeiskite animuotus GIF failus vaizdo įrašu](https://web.dev/replace-gifs-with-videos/), taip tinklalapis bus įkeliamas greičiau. Taip pat apsvarstykite galimybę naudoti modernius failų formatus, pvz., [„WebM“](https://web.dev/replace-gifs-with-videos/#create-webm-videos) arba [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), taip pagerinsite glaudinimo efektyvumą daugiau nei 30 proc., palyginti su dabartiniu naujausiu vaizdo kodeku – VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Pirminis puslapio įkėlimas"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Glausta informacija konkrečiu metu"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Naudotojų sąveikų laikotarpis"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Tinkintas duomenų srauto ribojimas"
   },
@@ -3393,10 +3402,10 @@
     "message": "Naudotojo priemonė (tinklas)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Vienas puslapio įkėlimas"
+    "message": "Seansas viename puslapyje"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Šie duomenys gauti išanalizavus vieno puslapio įkėlimą, o lauko duomenys apibendrina daug seansų."
+    "message": "Šie duomenys gauti išanalizavus seansą viename puslapyje, o lauko duomenys apibendrina daug seansų."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Lėto 4G duomenų srauto ribojimas"

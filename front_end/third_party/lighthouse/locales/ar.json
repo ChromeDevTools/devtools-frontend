@@ -639,7 +639,7 @@
     "message": "استخدام تنسيقات الفيديو لمحتوى الصور المتحركة"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "تساعد الرموز البرمجية polyfills وtransforms المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. وبالنسبة إلى حِزم JavaScript، يمكنك استخدام استراتيجية حديثة لنشر النصوص البرمجية باستخدام ميزة الكشف عن الميزات \"module/nomodule\" لتقليل عدد الرموز البرمجية التي يتم نقلها إلى المتصفّحات الحديثة مع استمرار التوافق مع المتصفّحات القديمة. تعرَّف على [كيفية استخدام لغة JavaScript الحديثة](https://web.dev/publish-modern-javascript/)."
+    "message": "تساعد الرموز البرمجية polyfills وtransforms المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. وبالنسبة إلى حِزم JavaScript، يمكنك استخدام استراتيجية حديثة لنشر النصوص البرمجية باستخدام ميزة الكشف عن الميزات \"module/nomodule\" لتقليل عدد الرموز البرمجية التي يتم نقلها إلى المتصفّحات الحديثة مع استمرار التوافق مع المتصفّحات القديمة. تعرَّف على [كيفية استخدام لغة JavaScript الحديثة](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "تجنُّب عرض ميزات JavaScript القديمة في المتصفحات الحديثة"
@@ -993,7 +993,7 @@
     "message": "الحجم المتوقع"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "يجب أن تكون الأبعاد الطبيعية للصورة متناسبة مع حجم العرض ونسبة وحدة البكسل لزيادة وضوح الصورة إلى أقصى حد. تعرَّف على [كيفية تقديم صور سريعة الاستجابة](https://web.dev/serve-responsive-images/)."
+    "message": "يجب أن تكون الأبعاد الطبيعية للصورة متناسبة مع حجم العرض ونسبة وحدة البكسل لزيادة وضوح الصورة إلى أقصى حد. تعرَّف على [كيفية تقديم صور سريعة الاستجابة](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "يتم عرض الصور بدقة منخفضة"
@@ -1158,13 +1158,13 @@
     "message": "المساهمة في متغيّرات التصميم التراكمية (CLS)"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "تساهم عناصر DOM هذه أكثر في متغيّرات التصميم التراكمية (CLS) الخاصة بالصفحة. تعرَّف على [كيفية تحسين CLS](https://web.dev/optimize-cls/)."
+    "message": "تساهم عناصر DOM هذه أكثر في متغيّرات التصميم التراكمية (CLS) الخاصة بالصفحة. تعرَّف على [كيفية تحسين CLS](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "تُعرَض لاحقًا الصور التي تم تحميلها في الجزء المرئي من الصفحة باستخدام طريقة التحميل الكسول، ما يتسبب في تأخير عرض أكبر جزء من المحتوى على الصفحة. [مزيد من المعلومات حول طريقة التحميل الكسول المحسَّنة](https://web.dev/lcp-lazy-loading/)"
+    "message": "تُعرَض لاحقًا الصور التي تم تحميلها في الجزء المرئي من الصفحة باستخدام طريقة التحميل الكسول، ما يتسبب في تأخير عرض أكبر جزء من المحتوى على الصفحة. [مزيد من المعلومات حول طريقة التحميل الكسول المحسَّنة](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة غير مناسبة"
@@ -1173,7 +1173,7 @@
     "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة مناسبة"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "يتم إدراج المهام التي تستغرق وقتًا أطول في سلسلة التعليمات الرئيسية، ما يساعد في تحديد أكثر العوامل التي تسبِّب تأخيرًا في عملية الإدخال. تعرَّف على [كيفية تجنُّب المهام التي تستغرق وقتًا طويلاً والمُدرَجة في سلسلة التعليمات الرئيسية](https://web.dev/long-tasks-devtools/)."
+    "message": "يتم إدراج المهام التي تستغرق وقتًا أطول في سلسلة التعليمات الرئيسية، ما يساعد في تحديد أكثر العوامل التي تسبِّب تأخيرًا في عملية الإدخال. تعرَّف على [كيفية تجنُّب المهام التي تستغرق وقتًا طويلاً والمُدرَجة في سلسلة التعليمات الرئيسية](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{تم العثور على مهمّة طويلة واحدة}zero{تم العثور على # مهمّة طويلة}two{تم العثور على مهمّتَين طويلتَين}few{تم العثور على # مهمّات طويلة}many{تم العثور على # مهمّة طويلة}other{تم العثور على # مهمّة طويلة}}"
@@ -1221,7 +1221,7 @@
     "message": "البيان يحتوي على رمز قابل للإخفاء"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "يحدِّد مقياس \"متغيّرات التصميم التراكمية\" مقدار حركة العناصر المرئية في إطار العرض. [مزيد من المعلومات حول مقياس \"متغيّرات التصميم التراكمية\"](https://web.dev/cls/)"
+    "message": "يحدِّد مقياس \"متغيّرات التصميم التراكمية\" مقدار حركة العناصر المرئية في إطار العرض. [مزيد من المعلومات حول مقياس \"متغيّرات التصميم التراكمية\"](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "يحدِّد مقياس \"سرعة عرض المحتوى على الصفحة\" الوقت الذي يُعرَض فيه أول نص أو صورة من محتوى الصفحة. [مزيد من المعلومات حول مقياس \"سرعة عرض المحتوى على الصفحة\"](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "يوضِّح مقياس \"سرعة عرض أوّل محتوى مفيد على الصفحة\" الوقت الذي تم فيه عرض المحتوى الأساسي لإحدى الصفحات. [مزيد من المعلومات حول مقياس \"سرعة عرض أوّل محتوى مفيد على الصفحة\"](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "يحدِّد مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\" سرعة استجابة الصفحة والمدّة التي تستغرِقها الصفحة للاستجابة بشكل واضح للبيانات التي أدخلها المستخدم. [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/inp/)"
+    "message": "يحدِّد مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\" سرعة استجابة الصفحة والمدّة التي تستغرِقها الصفحة للاستجابة بشكل واضح للبيانات التي أدخلها المستخدم. [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "\"وقت التفاعل\" هو مقدار الوقت المستغرَق حتى تصبح الصفحة تفاعلية بالكامل. [مزيد من المعلومات حول مقياس \"وقت التفاعل\"](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "أوقات الاستجابة لواجهة الخادم الخلفية"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "لا يعمل حدث `unload` بفاعلية ويمكن أن تؤدي معالجته إلى عدم تنفيذ عمليات تحسين المتصفّح، مثل عملية \"التخزين المؤقت للصفحات\". وبدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات حول إلغاء تحميل أدوات معالجة الأحداث](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "لا يعمل حدث `unload` بفاعلية ويمكن أن تؤدي معالجته إلى عدم تنفيذ عمليات تحسين المتصفّح، مثل عملية \"التخزين المؤقت للصفحات\". وبدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات حول إلغاء تحميل أدوات معالجة الأحداث](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "يتم استخدام أدوات معالجة حدث `unload`"
@@ -1305,7 +1305,7 @@
     "message": "ميزانية الأداء"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "يجب تحميل الخطوط `optional` بشكل مسبق حتى يتسنى للزوار الجدد استخدامها. [مزيد من المعلومات عن التحميل المسبَق للخطوط](https://web.dev/preload-optional-fonts/)"
+    "message": "يجب تحميل الخطوط `optional` بشكل مسبق حتى يتسنى للزوار الجدد استخدامها. [مزيد من المعلومات عن التحميل المسبَق للخطوط](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "الخطوط التي استخدمت `font-display: optional` لم يتم تحميلها مُسبَقًا"
@@ -1314,7 +1314,7 @@
     "message": "تم تحميل الخطوط التي استخدمت `font-display: optional` مُسبَقًا"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "في حال إضافة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" (LCP) إلى الصفحة بشكل ديناميكي، يجب تحميل الصورة مسبقًا لتحسين مقياس LCP. [مزيد من المعلومات حول التحميل المسبق لعناصر LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "في حال إضافة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" (LCP) إلى الصفحة بشكل ديناميكي، يجب تحميل الصورة مسبقًا لتحسين مقياس LCP. [مزيد من المعلومات حول التحميل المسبق لعناصر LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "التحميل المُسبَق لصورة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
@@ -1587,7 +1587,7 @@
     "message": "ميزانية قائمة على الوقت"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "يجب ضبط قيَم واضحة للعرض والارتفاع في عناصر الصور للحدّ من متغيّرات التصميم وتحسين متغيّرات التصميم التراكمية (CLS). تعرَّف على [كيفية ضبط أبعاد الصور](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "يجب ضبط قيَم واضحة للعرض والارتفاع في عناصر الصور للحدّ من متغيّرات التصميم وتحسين متغيّرات التصميم التراكمية (CLS). تعرَّف على [كيفية ضبط أبعاد الصور](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "عناصر الصور لا تحتوي على قيَم `width` و`height` محدَّدة"
@@ -1662,7 +1662,7 @@
     "message": "تضمين علامة `<meta name=\"viewport\">` مع `width` أو `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "يشير هذا إلى إجراء حظر سلسلة التعليمات الذي يحدث أثناء قياس \"مدة عرض الاستجابة لتفاعل المستخدم\". [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/inp/)"
+    "message": "يشير هذا إلى إجراء حظر سلسلة التعليمات الذي يحدث أثناء قياس \"مدة عرض الاستجابة لتفاعل المستخدم\". [مزيد من المعلومات حول مقياس \"مدة عرض الاستجابة لتفاعل المستخدم\"](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "تم استغراق {timeInMs, number, milliseconds} ملي ثانية لإكمال الحدث \"{interactionType}\"."
@@ -1704,10 +1704,10 @@
     "message": "أفضل الممارسات"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "تحدّد عمليات التحقّق هذه الفرص المتاحة [لتحسين إمكانية استخدام تطبيق الويب](https://developer.chrome.com/docs/lighthouse/accessibility/). يمكن لميزة الرصد التلقائي رصد مجموعة فرعية من المشاكل فقط ولا تضمن تسهيل استخدام تطبيق الويب، لذلك ننصح أيضًا بإجراء [الاختبار اليدوي](https://web.dev/how-to-review/)."
+    "message": "تحدّد عمليات التحقّق هذه الفرص المتاحة [لتحسين إمكانية استخدام تطبيق الويب](https://developer.chrome.com/docs/lighthouse/accessibility/). يمكن لميزة الرصد التلقائي رصد مجموعة فرعية من المشاكل فقط ولا تضمن تسهيل استخدام تطبيق الويب، لذلك ننصح أيضًا بإجراء [الاختبار اليدوي](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "تعالج هذه العناصر المناطق التي يتعذر على أداة الاختبار المبرمجة تغطيتها. تعرّف على مزيد من المعلومات في دليلنا حول [مراجعة إمكانية الوصول](https://web.dev/how-to-review/)."
+    "message": "تعالج هذه العناصر المناطق التي يتعذر على أداة الاختبار المبرمجة تغطيتها. تعرّف على مزيد من المعلومات في دليلنا حول [مراجعة إمكانية الوصول](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "إمكانية الوصول"
@@ -1794,10 +1794,10 @@
     "message": "الأداء"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "تتحقَّق عمليات التحقُّق هذه من جوانب تطبيق الويب التقدّمي. [تعرَّف على العوامل التي تساهم في إنشاء تطبيق ويب تقدّمي جيد](https://web.dev/pwa-checklist/)."
+    "message": "تتحقَّق عمليات التحقُّق هذه من جوانب تطبيق الويب التقدّمي. [تعرَّف على العوامل التي تساهم في إنشاء تطبيق ويب تقدّمي جيد](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "يُطلب إجراء عمليات التحقّق هذه من خلال المرجع [قائمة التحقق PWA](https://web.dev/pwa-checklist/)، ولكن لم يتم التحقُّق منها تلقائيًا من خلال Lighthouse. لا تؤثر عمليات التحقق هذه في نتيجتك، ولكن من المهم أنك تتحقق منها يدويًا."
+    "message": "يُطلب إجراء عمليات التحقّق هذه من خلال المرجع [قائمة التحقق PWA](https://web.dev/articles/pwa-checklist)، ولكن لم يتم التحقُّق منها تلقائيًا من خلال Lighthouse. لا تؤثر عمليات التحقق هذه في نتيجتك، ولكن من المهم أنك تتحقق منها يدويًا."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "تحسين PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "تضمن عمليات التحقّق هذه اتّباع صفحتك للنصائح الأساسية الخاصة بتحسين محركات البحث. هناك العديد من العوامل الإضافية التي تتسبب في عدم تحقيق أداة Lighthouse لأي نقاط هنا والتي قد تؤثّر في ترتيب نتائج البحث، بما في ذلك الأداء في ما يخص [مؤشرات أداء الويب الأساسية](https://web.dev/learn-core-web-vitals/). [مزيد من المعلومات حول \"أساسيات بحث Google\"](https://support.google.com/webmasters/answer/35769)"
+    "message": "تضمن عمليات التحقّق هذه اتّباع صفحتك للنصائح الأساسية الخاصة بتحسين محركات البحث. هناك العديد من العوامل الإضافية التي تتسبب في عدم تحقيق أداة Lighthouse لأي نقاط هنا والتي قد تؤثّر في ترتيب نتائج البحث، بما في ذلك الأداء في ما يخص [مؤشرات أداء الويب الأساسية](https://web.dev/explore/vitals). [مزيد من المعلومات حول \"أساسيات بحث Google\"](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "تشغيل أدوات التحقُّق الإضافية هذه على موقعك الإلكتروني للتحقُّق من أفضل ممارسات تحسين محركات البحث الإضافية."
@@ -2643,7 +2643,7 @@
     "message": "لم يتمكّن Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأن الخادم يستجيب بشكل صحيح لجميع الطلبات. (التفاصيل: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "لم يتمكّن Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأن الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {statusCode})"
+    "message": "لم تتمكّن أداة Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأنّ الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "استغرق تحميل الصفحة وقتًا طويلاً. يُرجى اتّباع الفرص الواردة في التقرير لتقليل وقت تحميل الصفحة، ثم محاولة إعادة تشغيل Lighthouse. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "يبدو أن عنوان URL الذي قدمته غير صحيح."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "لم تتمكّن أداة Lighthouse من تحميل الصفحة المطلوبة بشكل موثوق. عليك التأكّد من اختبار عنوان URL الصحيح وأنّ الخادم يستجيب بشكل صحيح لجميع الطلبات. (رمز الحالة: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "نوع MIME للصفحة هو XHTML: لا يتوافق وضع Lighthouse مع هذا النوع من المستندات بشكلٍ صريح."
@@ -3108,22 +3111,22 @@
     "message": "يمكنك استخدام [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) في NitroPack لتقليص حجم الملفات التي يتم إرسالها إلى المتصفّح."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `format=\"webp\"`. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `format=\"webp\"`. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `loading=\"lazy\"` لتأجيل تحميل الصور خارج الشاشة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` وضبط `loading=\"lazy\"` لتأجيل تحميل الصور خارج الشاشة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وتحديد `preload` لصورة المقياس LCP. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وتحديد `preload` لصورة المقياس LCP. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "يمكنك استخدام المكوّن `nuxt/image` واختيار `width` و`height` مُحدّدين. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "يمكنك استخدام المكوّن `nuxt/image` واختيار `width` و`height` مُحدّدين. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `quality` المناسبة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `quality` المناسبة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `sizes` المناسبة. [مزيد من المعلومات](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "يمكنك استخدام المكوِّن `nuxt/image` وضبط `sizes` المناسبة. [مزيد من المعلومات](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[يمكنك استخدام الفيديو بدلاً من صور GIF المتحركة](https://web.dev/replace-gifs-with-videos/) لتحميل صفحات الويب بشكل أسرع، بالإضافة إلى استخدام تنسيقات ملفات حديثة، مثل [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) أو [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) لتحسين كفاءة الضغط بنسبة تزيد عن 30% على برنامج ترميز الفيديو المتطوّر الحالي، VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "التحميل الأولي للصفحة"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "نبذة عن نقطة زمنية"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "الفترة الزمنية التي تتضمّن تفاعلات المستخدم"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "تقييد مخصَّص لتحميل الصفحة"
   },
@@ -3393,10 +3402,10 @@
     "message": "وكيل المستخدم (شبكة)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "تحميل صفحة واحدة"
+    "message": "جلسة تتضمّن صفحة واحدة"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "هذه البيانات مأخوذة من صفحة واحدة تم تحميلها، على عكس بيانات الحقول التي تلخِّص العديد من الجلسات."
+    "message": "هذه البيانات مأخوذة من جلسة تتضمّن صفحة واحدة، على عكس بيانات الحقول التي تلخِّص العديد من الجلسات."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "التقييد البطيء لتحميل الصفحة في شبكة الجيل الرابع"

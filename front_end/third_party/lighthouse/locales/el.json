@@ -639,7 +639,7 @@
     "message": "Χρήση μορφών βίντεο για περιεχόμενο κινούμενων εικόνων"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Τα Polyfill και οι μετασχηματισμοί επιτρέπουν στα προγράμματα περιήγησης παλαιού τύπου να χρησιμοποιούν νέες λειτουργίες JavaScript. Ωστόσο, πολλές από αυτές δεν είναι απαραίτητες για σύγχρονα προγράμματα περιήγησης. Για JavaScript σε πακέτο, υιοθετήστε μια σύγχρονη στρατηγική ανάπτυξης σεναρίων χρησιμοποιώντας εντοπισμό λειτουργίας module/nomodule για μείωση του όγκου κώδικα που αποστέλλεται σε σύγχρονα προγράμματα περιήγησης, διατηρώντας την υποστήριξη για προγράμματα περιήγησης παλαιού τύπου. [Μάθετε πώς να χρησιμοποιείτε τη σύγχρονη JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Τα Polyfill και οι μετασχηματισμοί επιτρέπουν στα προγράμματα περιήγησης παλαιού τύπου να χρησιμοποιούν νέες λειτουργίες JavaScript. Ωστόσο, πολλές από αυτές δεν είναι απαραίτητες για σύγχρονα προγράμματα περιήγησης. Για JavaScript σε πακέτο, υιοθετήστε μια σύγχρονη στρατηγική ανάπτυξης σεναρίων χρησιμοποιώντας εντοπισμό λειτουργίας module/nomodule για μείωση του όγκου κώδικα που αποστέλλεται σε σύγχρονα προγράμματα περιήγησης, διατηρώντας την υποστήριξη για προγράμματα περιήγησης παλαιού τύπου. [Μάθετε πώς να χρησιμοποιείτε τη σύγχρονη JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Αποφύγετε την προβολή JavaScript παλαιού τύπου σε σύγχρονα προγράμματα περιήγησης"
@@ -993,7 +993,7 @@
     "message": "Αναμενόμενο μέγεθος"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Για μεγιστοποίηση της ευκρίνειας της εικόνας, οι φυσικές διαστάσεις της πρέπει να αναλογούν στο μέγεθος της οθόνης και τον λόγο διαστάσεων pixel. [Μάθετε πώς μπορείτε να παράσχετε αποκριτικές εικόνες](https://web.dev/serve-responsive-images/)."
+    "message": "Για μεγιστοποίηση της ευκρίνειας της εικόνας, οι φυσικές διαστάσεις της πρέπει να αναλογούν στο μέγεθος της οθόνης και τον λόγο διαστάσεων pixel. [Μάθετε πώς μπορείτε να παράσχετε αποκριτικές εικόνες](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Προβάλλει εικόνες με χαμηλή ανάλυση"
@@ -1158,13 +1158,13 @@
     "message": "Συνεισφορά CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Αυτά είναι τα στοιχεία DOM με τη μεγαλύτερη συνεισφορά στο CLS της σελίδας. [Μάθετε πώς μπορείτε να βελτιώσετε το CLS](https://web.dev/optimize-cls/)"
+    "message": "Αυτά είναι τα στοιχεία DOM με τη μεγαλύτερη συνεισφορά στο CLS της σελίδας. [Μάθετε πώς μπορείτε να βελτιώσετε το CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Αποφύγετε τις μεγάλες μετατοπίσεις διάταξης"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Οι εικόνες στο επάνω μέρος που φορτώνονται αργά αποδίδονται αργότερα στον κύκλο ζωής της σελίδας, κάτι που μπορεί να καθυστερήσει τη μεγαλύτερη σχεδίαση με περιεχόμενο. [Μάθετε περισσότερα σχετικά με τη βέλτιστη αργή φόρτωση](https://web.dev/lcp-lazy-loading/)."
+    "message": "Οι εικόνες στο επάνω μέρος που φορτώνονται αργά αποδίδονται αργότερα στον κύκλο ζωής της σελίδας, κάτι που μπορεί να καθυστερήσει τη μεγαλύτερη σχεδίαση με περιεχόμενο. [Μάθετε περισσότερα σχετικά με τη βέλτιστη αργή φόρτωση](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Η εικόνα μεγαλύτερης σχεδίασης με περιεχόμενο φορτώθηκε αργά"
@@ -1173,7 +1173,7 @@
     "message": "Η εικόνα μεγαλύτερης σχεδίασης με περιεχόμενο δεν φορτώθηκε αργά"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Παραθέτει τις μεγαλύτερες εργασίες στο κύριο νήμα, κάτι που είναι χρήσιμο για τον εντοπισμό των συνεισφερόντων που συμβάλλουν περισσότερο στην καθυστέρηση εισόδου. [Μάθετε πώς μπορείτε να αποφύγετε μεγάλες εργασίες στο κύριο νήμα](https://web.dev/long-tasks-devtools/)"
+    "message": "Παραθέτει τις μεγαλύτερες εργασίες στο κύριο νήμα, κάτι που είναι χρήσιμο για τον εντοπισμό των συνεισφερόντων που συμβάλλουν περισσότερο στην καθυστέρηση εισόδου. [Μάθετε πώς μπορείτε να αποφύγετε μεγάλες εργασίες στο κύριο νήμα](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Βρέθηκε # μεγάλη εργασία}other{Βρέθηκαν # μεγάλες εργασίες}}"
@@ -1221,7 +1221,7 @@
     "message": "Το μανιφέστο διαθέτει εικονίδιο με δυνατότητα μάσκας"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Οι Συνολικές αλλαγές διάταξης μετρούν την κίνηση των ορατών στοιχείων εντός της θύρας προβολής. [Μάθετε περισσότερα σχετικά με τη μέτρηση Συνολικές αλλαγές διάταξης](https://web.dev/cls/)."
+    "message": "Οι Συνολικές αλλαγές διάταξης μετρούν την κίνηση των ορατών στοιχείων εντός της θύρας προβολής. [Μάθετε περισσότερα σχετικά με τη μέτρηση Συνολικές αλλαγές διάταξης](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Η Πρώτη σχεδίαση περιεχομένου (FCP) επισημαίνει πότε σχεδιάζεται το πρώτο κείμενο ή η πρώτη εικόνα. [Μάθετε περισσότερα σχετικά με τη μέτρηση Πρώτη σχεδίαση περιεχομένου (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Η Πρώτη χρήσιμη μορφή υπολογίζει πότε καθίσταται ορατό το κύριο περιεχόμενο μιας σελίδας. [Μάθετε περισσότερα σχετικά με τη μέτρηση Πρώτη χρήσιμη μορφή](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Το Interaction to Next Paint μετρά την ανταπόκριση της σελίδας και τον χρόνο που χρειάζεται η σελίδα για να ανταποκριθεί εμφανώς στην εισαγωγή στοιχείων από τους χρήστες. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Το Interaction to Next Paint μετρά την ανταπόκριση της σελίδας και τον χρόνο που χρειάζεται η σελίδα για να ανταποκριθεί εμφανώς στην εισαγωγή στοιχείων από τους χρήστες. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Ο χρόνος για Αλληλεπίδραση είναι το χρονικό διάστημα που απαιτείται προκειμένου η σελίδα να γίνει πλήρως διαδραστική. [Μάθετε περισσότερα σχετικά με τη μέτρηση Χρόνος για Αλληλεπίδραση](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Λανθάνοντες χρόνοι συστημάτων υποστήριξης διακομιστή"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Το συμβάν `unload` δεν ενεργοποιείται με αξιοπιστία και η ακρόαση για το συμβάν μπορεί να αποτρέψει τις βελτιστοποιήσεις προγράμματος περιήγησης, όπως την κρυφή μνήμη πίσω/εμπρός. Αντ' αυτού, χρησιμοποιήστε το `pagehide` ή το `visibilitychange`. [Μάθετε περισσότερα σχετικά με την κατάργηση φόρτωσης των λειτουργιών αναμονής συμβάντος](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Το συμβάν `unload` δεν ενεργοποιείται με αξιοπιστία και η ακρόαση για το συμβάν μπορεί να αποτρέψει τις βελτιστοποιήσεις προγράμματος περιήγησης, όπως την κρυφή μνήμη πίσω/εμπρός. Αντ' αυτού, χρησιμοποιήστε το `pagehide` ή το `visibilitychange`. [Μάθετε περισσότερα σχετικά με την κατάργηση φόρτωσης των λειτουργιών αναμονής συμβάντος](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Εγγράφει μια λειτουργία αναμονής `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Προϋπολογισμός απόδοσης"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Προφορτώστε γραμματοσειρές `optional` για να μπορούν να τις χρησιμοποιούν οι νέοι επισκέπτες. [Μάθετε περισσότερα σχετικά με την προφόρτωση γραμματοσειρών](https://web.dev/preload-optional-fonts/)"
+    "message": "Προφορτώστε γραμματοσειρές `optional` για να μπορούν να τις χρησιμοποιούν οι νέοι επισκέπτες. [Μάθετε περισσότερα σχετικά με την προφόρτωση γραμματοσειρών](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Δεν γίνεται προφόρτωση των γραμματοσειρών με `font-display: optional`"
@@ -1314,7 +1314,7 @@
     "message": "Έχουν προφορτωθεί γραμματοσειρές με `font-display: optional`"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Αν το στοιχείο LCP προστίθεται δυναμικά στη σελίδα, θα πρέπει να προφορτώσετε την εικόνα ώστε να βελτιωθεί το LCP. [Μάθετε περισσότερα σχετικά με την προφόρτωση στοιχείων LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Αν το στοιχείο LCP προστίθεται δυναμικά στη σελίδα, θα πρέπει να προφορτώσετε την εικόνα ώστε να βελτιωθεί το LCP. [Μάθετε περισσότερα σχετικά με την προφόρτωση στοιχείων LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Προφόρτωση εικόνας Μεγαλύτερης σχεδίασης με περιεχόμενο"
@@ -1587,7 +1587,7 @@
     "message": "Προϋπολογισμός χρονισμού"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Ορίστε ένα αποκλειστικό πλάτος και ύψος στα στοιχεία εικόνας, για να μειώσετε τις μετατοπίσεις διάταξης και να βελτιώσετε το CLS. [Μάθετε πώς μπορείτε να ορίσετε τις διαστάσεις εικόνας](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Ορίστε ένα αποκλειστικό πλάτος και ύψος στα στοιχεία εικόνας, για να μειώσετε τις μετατοπίσεις διάταξης και να βελτιώσετε το CLS. [Μάθετε πώς μπορείτε να ορίσετε τις διαστάσεις εικόνας](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Τα στοιχεία εικόνας δεν έχουν σαφές `width` και `height`"
@@ -1662,7 +1662,7 @@
     "message": "Έχει ετικέτα `<meta name=\"viewport\">` με `width` ή `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Αυτή είναι η εργασία αποκλεισμού νημάτων που πραγματοποιείται κατά τη μέτρηση Interaction to Next Paint. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Αυτή είναι η εργασία αποκλεισμού νημάτων που πραγματοποιείται κατά τη μέτρηση Interaction to Next Paint. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Δαπανήθηκαν {timeInMs, number, milliseconds} ms στο συμβάν {interactionType}."
@@ -1704,10 +1704,10 @@
     "message": "Βέλτιστες πρακτικές"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Αυτοί οι έλεγχοι επισημαίνουν ευκαιρίες για τη [βελτίωση της προσβασιμότητας της εφαρμογής ιστού σας](https://developer.chrome.com/docs/lighthouse/accessibility/). Ο αυτόματος εντοπισμός μπορεί να εντοπίσει μόνο ένα υποσύνολο προβλημάτων και δεν εγγυάται την προσβασιμότητα της εφαρμογής ιστού, επομένως συνίσταται επίσης η [μη αυτόματη δοκιμή](https://web.dev/how-to-review/)."
+    "message": "Αυτοί οι έλεγχοι επισημαίνουν ευκαιρίες για τη [βελτίωση της προσβασιμότητας της εφαρμογής ιστού σας](https://developer.chrome.com/docs/lighthouse/accessibility/). Ο αυτόματος εντοπισμός μπορεί να εντοπίσει μόνο ένα υποσύνολο προβλημάτων και δεν εγγυάται την προσβασιμότητα της εφαρμογής ιστού, επομένως συνίσταται επίσης η [μη αυτόματη δοκιμή](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Αυτά τα στοιχεία σχετίζονται με τομείς τους οποίους δεν μπορεί να καλύψει ένα εργαλείο αυτοματοποιημένων δοκιμών. Μάθετε περισσότερα στον οδηγό μας σχετικά με τη [διεξαγωγή ενός ελέγχου προσβασιμότητας](https://web.dev/how-to-review/)."
+    "message": "Αυτά τα στοιχεία σχετίζονται με τομείς τους οποίους δεν μπορεί να καλύψει ένα εργαλείο αυτοματοποιημένων δοκιμών. Μάθετε περισσότερα στον οδηγό μας σχετικά με τη [διεξαγωγή ενός ελέγχου προσβασιμότητας](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Προσβασιμότητα"
@@ -1794,10 +1794,10 @@
     "message": "Απόδοση"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Αυτοί οι έλεγχοι επαληθεύουν τα στοιχεία μιας προηγμένης εφαρμογή ιστού. [Μάθετε τι κάνει καλή μια Προηγμένη εφαρμογή ιστού](https://web.dev/pwa-checklist/)."
+    "message": "Αυτοί οι έλεγχοι επαληθεύουν τα στοιχεία μιας προηγμένης εφαρμογή ιστού. [Μάθετε τι κάνει καλή μια Προηγμένη εφαρμογή ιστού](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Αυτοί οι έλεγχοι απαιτούνται από τη [Λίστα ελέγχου PWA](https://web.dev/pwa-checklist/) σημείου αναφοράς αλλά δεν ελέγχονται αυτόματα από το Lighthouse. Δεν επηρεάζουν τη βαθμολογία σας αλλά είναι σημαντικό να τους επαληθεύσετε με μη αυτόματο τρόπο."
+    "message": "Αυτοί οι έλεγχοι απαιτούνται από τη [Λίστα ελέγχου PWA](https://web.dev/articles/pwa-checklist) σημείου αναφοράς αλλά δεν ελέγχονται αυτόματα από το Lighthouse. Δεν επηρεάζουν τη βαθμολογία σας αλλά είναι σημαντικό να τους επαληθεύσετε με μη αυτόματο τρόπο."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Με βελτιστοποίηση PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Αυτοί οι έλεγχοι διασφαλίζουν ότι η σελίδα σας ακολουθεί τις βασικές συμβουλές βελτιστοποίησης μηχανών αναζήτησης. Υπάρχουν πολλοί επιπλέον παράγοντες τους οποίους το Lighthouse δεν βαθμολογεί εδώ και οι οποίοι ενδέχεται να επηρεάζουν την κατάταξη στην αναζήτηση, συμπεριλαμβανομένης της απόδοσης στο [Core Web Vitals](https://web.dev/learn-core-web-vitals/). [Μάθετε περισσότερα σχετικά με τα Βασικά στοιχεία της Αναζήτησης Google](https://support.google.com/webmasters/answer/35769)."
+    "message": "Αυτοί οι έλεγχοι διασφαλίζουν ότι η σελίδα σας ακολουθεί τις βασικές συμβουλές βελτιστοποίησης μηχανών αναζήτησης. Υπάρχουν πολλοί επιπλέον παράγοντες τους οποίους το Lighthouse δεν βαθμολογεί εδώ και οι οποίοι ενδέχεται να επηρεάζουν την κατάταξη στην αναζήτηση, συμπεριλαμβανομένης της απόδοσης στο [Core Web Vitals](https://web.dev/explore/vitals). [Μάθετε περισσότερα σχετικά με τα Βασικά στοιχεία της Αναζήτησης Google](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Εκτελέστε αυτά τα πρόσθετα εργαλεία επικύρωσης, για να ελέγξετε περισσότερες βέλτιστες πρακτικές SEO."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Το URL που παρείχατε φαίνεται ότι δεν είναι έγκυρο."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Το Lighthouse δεν μπόρεσε να φορτώσει με αξιοπιστία τη σελίδα που ζητήσατε. Βεβαιωθείτε ότι ελέγχετε το σωστό URL και ότι ο διακομιστής αποκρίνεται σωστά σε όλα τα αιτήματα. (Κωδικός κατάστασης: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Ο τύπος MIME της σελίδας είναι XHTML: Το Lighthouse δεν υποστηρίζει ρητά αυτόν τον τύπο εγγράφου"
   },
@@ -3108,22 +3111,22 @@
     "message": "Χρησιμοποιήστε τη λειτουργία [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) στο NitroPack για να μειώσετε το μέγεθος των αρχείων που αποστέλλονται στο πρόγραμμα περιήγησης."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `format=\"webp\"`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `format=\"webp\"`. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `loading=\"lazy\"` για εικόνες εκτός οθόνης. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `loading=\"lazy\"` για εικόνες εκτός οθόνης. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και καθορίστε το `preload` για την εικόνα LCP. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και καθορίστε το `preload` για την εικόνα LCP. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και καθορίστε ρητά τα `width` και `height`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και καθορίστε ρητά τα `width` και `height`. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το κατάλληλο `quality`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το κατάλληλο `quality`. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το κατάλληλο `sizes`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το κατάλληλο `sizes`. [Μάθετε περισσότερα](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Αντικαταστήστε τις κινούμενες εικόνες GIF με βίντεο](https://web.dev/replace-gifs-with-videos/) για ταχύτερη φόρτωση ιστοσελίδας, ενώ μπορείτε επίσης να χρησιμοποιήσετε σύγχρονες μορφές αρχείων όπως [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ή [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) για τη βελτίωση της απόδοσης συμπίεσης κατά περισσότερο από 30% σε σχέση με τον τρέχοντα υπερσύγχρονο κωδικοποιητή βίντεο, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Αρχική φόρτωση σελίδας"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Σύνοψη συγκεκριμένης χρονικής στιγμής"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Χρονικό διάστημα αλληλεπιδράσεων χρήστη"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Προσαρμοσμένη ρύθμιση ροής δεδομένων"
   },
@@ -3393,10 +3402,10 @@
     "message": "Παράγοντας χρήστη (δίκτυο)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Μία φόρτωση σελίδας"
+    "message": "Περίοδος σύνδεσης σε μία σελίδα"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Αυτά τα δεδομένα λαμβάνονται από μία φόρτωση σελίδας, σε αντίθεση με τα δεδομένα πεδίου που συνοψίζουν πολλές περιόδους λειτουργίας."
+    "message": "Αυτά τα δεδομένα λαμβάνονται από μία περίοδο σύνδεσης σε μία σελίδα, σε αντίθεση με τα δεδομένα πεδίου που συνοψίζουν πολλές περιόδους σύνδεσης."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Ρύθμιση ροής δεδομένων αργού 4G"

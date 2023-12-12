@@ -639,7 +639,7 @@
     "message": "アニメーション コンテンツでの動画フォーマットの使用"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。バンドルされた JavaScript の場合、モジュールあり / モジュールなしの機能検出を使用する最新スクリプトの導入戦略を採用することにより、従来のブラウザに対するサポートを維持しながら、最新ブラウザに送るコード量を減らすことができます。[最新の JavaScript の使用方法の詳細](https://web.dev/publish-modern-javascript/)"
+    "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。バンドルされた JavaScript の場合、モジュールあり / モジュールなしの機能検出を使用する最新スクリプトの導入戦略を採用することにより、従来のブラウザに対するサポートを維持しながら、最新ブラウザに送るコード量を減らすことができます。[最新の JavaScript の使用方法の詳細](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "最新ブラウザに従来の JavaScript を配信しないようにしてください"
@@ -993,7 +993,7 @@
     "message": "適切なサイズ"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "画像をできるだけ鮮明に表示するには、画像の実サイズを、表示するサイズとピクセル比に比例させる必要があります。[レスポンシブな画像の表示方法の詳細](https://web.dev/serve-responsive-images/)"
+    "message": "画像をできるだけ鮮明に表示するには、画像の実サイズを、表示するサイズとピクセル比に比例させる必要があります。[レスポンシブな画像の表示方法の詳細](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "画像が低い解像度で表示されています"
@@ -1158,13 +1158,13 @@
     "message": "CLS への影響"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "ページの CLS への影響が特に大きい DOM 要素です。[CLS を改善する方法について](https://web.dev/optimize-cls/)"
+    "message": "ページの CLS への影響が特に大きい DOM 要素です。[CLS を改善する方法について](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "レイアウトが大きく変わらないようにする"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "スクロールせずに見える範囲にある画像が遅延読み込みによってページのライフサイクルの後半にレンダリングされると、Largest Contentful Paint の遅延につながります。[最適な遅延読み込みの詳細](https://web.dev/lcp-lazy-loading/)"
+    "message": "スクロールせずに見える範囲にある画像が遅延読み込みによってページのライフサイクルの後半にレンダリングされると、Largest Contentful Paint の遅延につながります。[最適な遅延読み込みの詳細](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Largest Contentful Paint の画像が遅延読み込みされています"
@@ -1173,7 +1173,7 @@
     "message": "Largest Contentful Paint の画像は遅延読み込みされていません"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "メインスレッドで長時間実行されているタスクを表示します。入力の遅延に最も影響しているタスクを特定する際に役立ちます。[長いメインスレッド タスクの回避方法の詳細](https://web.dev/long-tasks-devtools/)"
+    "message": "メインスレッドで長時間実行されているタスクを表示します。入力の遅延に最も影響しているタスクを特定する際に役立ちます。[長いメインスレッド タスクの回避方法の詳細](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{長時間実行されているタスクが # 件見つかりました}other{長時間実行されているタスクが # 件見つかりました}}"
@@ -1221,7 +1221,7 @@
     "message": "マニフェストにマスク可能なアイコンが含まれています"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Cumulative Layout Shift はビューポート内の視覚要素がどのくらい移動しているかを測定する指標です。[Cumulative Layout Shift 指標の詳細](https://web.dev/cls/)"
+    "message": "Cumulative Layout Shift はビューポート内の視覚要素がどのくらい移動しているかを測定する指標です。[Cumulative Layout Shift 指標の詳細](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint は、テキストまたは画像が初めてペイントされるまでにかかった時間です。[First Contentful Paint の指標の詳細](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "First Meaningful Paint は、ページの主要なコンテンツが可視化されるまでにかかった時間です。[First Meaningful Paint の指標の詳細](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint は、ページの応答性、ユーザーの入力に対してページが視覚的に応答するまでの時間を測定します。[Interaction to Next Paint 指標の詳細](https://web.dev/inp/)"
+    "message": "Interaction to Next Paint は、ページの応答性、ユーザーの入力に対してページが視覚的に応答するまでの時間を測定します。[Interaction to Next Paint 指標の詳細](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "操作可能になるまでの時間とは、ページが完全に操作可能になるのに要する時間です。[操作可能になるまでの時間の指標についての詳細](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "サーバーのバックエンド待ち時間"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` イベントの発生は安定していないため、これをリッスンするとブラウザの最適化機能（バックフォワード キャッシュなど）が妨げられる可能性があります。代わりに `pagehide` または `visibilitychange` イベントを使用してください。[アンロード イベント リスナーの詳細](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "`unload` イベントの発生は安定していないため、これをリッスンするとブラウザの最適化機能（バックフォワード キャッシュなど）が妨げられる可能性があります。代わりに `pagehide` または `visibilitychange` イベントを使用してください。[アンロード イベント リスナーの詳細](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` リスナーの登録"
@@ -1305,7 +1305,7 @@
     "message": "パフォーマンス予算"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "`optional` のフォントをプリロードすると、初めてのユーザーも使用できます。[フォントのプリロードの詳細](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` のフォントをプリロードすると、初めてのユーザーも使用できます。[フォントのプリロードの詳細](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` を使用するフォントがプリロードされていません"
@@ -1314,7 +1314,7 @@
     "message": "`font-display: optional` を使用するフォントがプリロードされています"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "LCP 要素がページに動的に追加された場合、LCP を改善するため画像をプリロードする必要があります。[LCP 要素のプリロードの詳細](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "LCP 要素がページに動的に追加された場合、LCP を改善するため画像をプリロードする必要があります。[LCP 要素のプリロードの詳細](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Largest Contentful Paint の画像のプリロード"
@@ -1587,7 +1587,7 @@
     "message": "タイミング予算"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "画像要素で幅と高さを明示的に設定すると、レイアウト シフトを減らして、CLS を改善できます。[画像サイズの設定方法の詳細](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "画像要素で幅と高さを明示的に設定すると、レイアウト シフトを減らして、CLS を改善できます。[画像サイズの設定方法の詳細](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "画像要素で `width` と `height` が明示的に指定されていない"
@@ -1662,7 +1662,7 @@
     "message": "`width` または `initial-scale` を指定した `<meta name=\"viewport\">` タグがあります"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "これは、Interaction to Next Paint の測定時に行われるスレッド ブロッキング処理です。[Interaction to Next Paint 指標の詳細](https://web.dev/inp/)"
+    "message": "これは、Interaction to Next Paint の測定時に行われるスレッド ブロッキング処理です。[Interaction to Next Paint 指標の詳細](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "イベント「{interactionType}」に費やした時間（{timeInMs, number, milliseconds} ミリ秒）"
@@ -1704,10 +1704,10 @@
     "message": "おすすめの方法"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "これらのチェックにより、[ウェブアプリのユーザー補助機能の改善点](https://developer.chrome.com/docs/lighthouse/accessibility/)が明確になります。ただし、自動的に検出できる問題は一部に過ぎず、ウェブアプリのユーザー補助機能に問題がないことが保証されたわけではないため、[手動テスト](https://web.dev/how-to-review/)も実施することをおすすめします。"
+    "message": "これらのチェックにより、[ウェブアプリのユーザー補助機能の改善点](https://developer.chrome.com/docs/lighthouse/accessibility/)が明確になります。ただし、自動的に検出できる問題は一部に過ぎず、ウェブアプリのユーザー補助機能に問題がないことが保証されたわけではないため、[手動テスト](https://web.dev/articles/how-to-review)も実施することをおすすめします。"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "ここに、自動テストツールではカバーできない範囲に対処する項目が表示されます。詳しくは、[ユーザー補助機能の審査を実施する](https://web.dev/how-to-review/)方法についてのガイドをご覧ください。"
+    "message": "ここに、自動テストツールではカバーできない範囲に対処する項目が表示されます。詳しくは、[ユーザー補助機能の審査を実施する](https://web.dev/articles/how-to-review)方法についてのガイドをご覧ください。"
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "ユーザー補助"
@@ -1794,10 +1794,10 @@
     "message": "パフォーマンス"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "これらのチェックではプログレッシブ ウェブアプリのさまざまな側面が検証されます。[優れたプログレッシブ ウェブアプリを作成する方法の詳細](https://web.dev/pwa-checklist/)"
+    "message": "これらのチェックではプログレッシブ ウェブアプリのさまざまな側面が検証されます。[優れたプログレッシブ ウェブアプリを作成する方法の詳細](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "これらのチェック項目は基本の [PWA チェックリスト](https://web.dev/pwa-checklist/)で必須とされていますが、Lighthouse では自動的にチェックされません。スコアには影響しませんが、手動で確認することが重要です。"
+    "message": "これらのチェック項目は基本の [PWA チェックリスト](https://web.dev/articles/pwa-checklist)で必須とされていますが、Lighthouse では自動的にチェックされません。スコアには影響しませんが、手動で確認することが重要です。"
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA の最適化"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "これらのチェックを行うことで、ページが検索エンジン最適化の基本的な推奨事項に沿っていることを確認できます。検索ランキングに影響する可能性のある要素には、Lighthouse で考慮されている要素以外に、[ウェブに関する主な指標](https://web.dev/learn-core-web-vitals/)のスコアなどもあります。[Google 検索の基本事項の詳細](https://support.google.com/webmasters/answer/35769)"
+    "message": "これらのチェックを行うことで、ページが検索エンジン最適化の基本的な推奨事項に沿っていることを確認できます。検索ランキングに影響する可能性のある要素には、Lighthouse で考慮されている要素以外に、[ウェブに関する主な指標](https://web.dev/explore/vitals)のスコアなどもあります。[Google 検索の基本事項の詳細](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "サイトでこれらの他の検証ツールを実行し、SEO のその他のおすすめの方法をご確認ください。"
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "指定した URL は無効の可能性があります。"
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "リクエストしたページを Lighthouse で正確に読み込めませんでした。テスト対象の URL が正しいこと、サーバーがすべてのリクエストに適切に応答していることを確認してください。（ステータス コード: {errorCode}）"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "ページの MIME タイプは XHTML です。Lighthouse では、このドキュメント タイプが明示的にはサポートされていません"
   },
@@ -3108,22 +3111,22 @@
     "message": "NitroPack の [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) を使用すると、ブラウザに送信されるファイルのサイズを抑えることができます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` コンポーネントを使用して、`format=\"webp\"` を設定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "`nuxt/image` コンポーネントを使用して、`format=\"webp\"` を設定します。[詳細](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "`nuxt/image` コンポーネントを使用して、画面外の画像の `loading=\"lazy\"` を設定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "`nuxt/image` コンポーネントを使用して、画面外の画像の `loading=\"lazy\"` を設定します。[詳細](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "`nuxt/image` コンポーネントを使用して、LCP 画像の `preload` を指定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "`nuxt/image` コンポーネントを使用して、LCP 画像の `preload` を指定します。[詳細](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` コンポーネントを使用して、`width` と `height` を明示的に指定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "`nuxt/image` コンポーネントを使用して、`width` と `height` を明示的に指定します。[詳細](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` コンポーネントを使用して、適切な `quality` を設定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "`nuxt/image` コンポーネントを使用して、適切な `quality` を設定します。[詳細](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` コンポーネントを使用して、適切な `sizes` を設定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "`nuxt/image` コンポーネントを使用して、適切な `sizes` を設定します。[詳細](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[アニメーション GIF を動画に置き換えて](https://web.dev/replace-gifs-with-videos/)ウェブページの読み込みを速くし、[WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos)、[AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) などの最先端のファイル形式を使用して、圧縮効率を現在の最新の動画コーデック VP9 より 30% 以上改善することをご検討ください。"
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "最初のページ読み込み"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "特定の時点のスナップショット"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "ユーザー インタラクションの期間"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "カスタム スロットリング"
   },
@@ -3393,10 +3402,10 @@
     "message": "ユーザー エージェント（ネットワーク）"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "1 回のページ読み込み"
+    "message": "1 ページのみのセッション"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "このデータは 1 回のページ読み込みで取得されたもので、フィールド データは多数のセッションを要約したものです。"
+    "message": "このデータは 1 回のページ セッションで取得されたもので、フィールド データは多数のセッションを要約したものです。"
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "低速 4G スロットリング"

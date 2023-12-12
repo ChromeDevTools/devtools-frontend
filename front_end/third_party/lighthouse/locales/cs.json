@@ -639,7 +639,7 @@
     "message": "Pro animovaný obsah používejte formáty videa"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Doplňující kódy polyfill a transformace umožňují starším prohlížečům používat nové funkce JavaScriptu. Moderní prohlížeče ale řadu z nich nepotřebují. U svých balíčků JavaScriptu použijte moderní strategii nasazení skriptu pomocí detekce module/nomodule, abyste omezili množství kódu přenášeného do moderních prohlížečů, a přitom zachovali podporu pro starší prohlížeče. [Jak používat moderní JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Doplňující kódy polyfill a transformace umožňují starším prohlížečům používat nové funkce JavaScriptu. Moderní prohlížeče ale řadu z nich nepotřebují. U svých balíčků JavaScriptu použijte moderní strategii nasazení skriptu pomocí detekce module/nomodule, abyste omezili množství kódu přenášeného do moderních prohlížečů, a přitom zachovali podporu pro starší prohlížeče. [Jak používat moderní JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Nepoužívejte v moderních prohlížečích zastaralý JavaScript"
@@ -993,7 +993,7 @@
     "message": "Očekávaná velikost"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Kvůli zajištění maximální ostrosti obrázků by jejich přirozené rozměry měly být úměrné velikosti displeje a poměru pixelů. [Jak poskytovat responzivní obrázky](https://web.dev/serve-responsive-images/)"
+    "message": "Kvůli zajištění maximální ostrosti obrázků by jejich přirozené rozměry měly být úměrné velikosti displeje a poměru pixelů. [Jak poskytovat responzivní obrázky](https://web.dev/articles/serve-responsive-images)"
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Zobrazuje obrázky s nízkým rozlišením"
@@ -1158,13 +1158,13 @@
     "message": "Podíl na CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Tyto prvky DOM nejvíce přispívají ke kumulativní změně rozvržení (CLS) stránky. [Jak zlepšit CLS](https://web.dev/optimize-cls/)"
+    "message": "Tyto prvky DOM nejvíce přispívají ke kumulativní změně rozvržení (CLS) stránky. [Jak zlepšit CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Zajistěte, aby nedocházelo k velkým změnám rozvržení"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Líně načtené obrázky nad okrajem se vykreslí později v životním cyklu stránky, což může zpozdit vykreslení největšího obsahu. [Další informace o optimálním líném načítání](https://web.dev/lcp-lazy-loading/)"
+    "message": "Líně načtené obrázky nad okrajem se vykreslí později v životním cyklu stránky, což může zpozdit vykreslení největšího obsahu. [Další informace o optimálním líném načítání](https://web.dev/articles/lcp-lazy-loading)"
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Obrázek vykreslení největšího obsahu byl líně načten"
@@ -1173,7 +1173,7 @@
     "message": "Obrázek vykreslení největšího obsahu nebyl líně načten"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Vypíše nejdelší úlohy v hlavním podprocesu, což umožňuje zjistit, co nejvíce přispívá k prodlevě vstupu. [Jak se vyhnout dlouhým úlohám v hlavními vláknu](https://web.dev/long-tasks-devtools/)"
+    "message": "Vypíše nejdelší úlohy v hlavním podprocesu, což umožňuje zjistit, co nejvíce přispívá k prodlevě vstupu. [Jak se vyhnout dlouhým úlohám v hlavními vláknu](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Byla nalezena # dlouhá úloha}few{Byly nalezeny # dlouhé úlohy}many{Bylo nalezeno # dlouhé úlohy}other{Bylo nalezeno # dlouhých úloh}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifest má maskovatelnou ikonu"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulativní změna rozvržení měří přesuny viditelných prvků v zobrazované oblasti. [Další informace o metrice Kumulativní změna rozvržení](https://web.dev/cls/)"
+    "message": "Kumulativní změna rozvržení měří přesuny viditelných prvků v zobrazované oblasti. [Další informace o metrice Kumulativní změna rozvržení](https://web.dev/articles/cls)"
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "První vykreslení obsahu je okamžik vykreslení prvního textu nebo obrázku. [Další informace o metrice První vykreslení obsahu (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
@@ -1230,7 +1230,7 @@
     "message": "První smysluplné vykreslení udává, kdy začne být viditelný primární obsah stránky. [Další informace o metrice První smysluplné vykreslení](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
+    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/articles/inp)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Doba do interaktivity udává, jak dlouho trvá, než stránka začne být plně interaktivní. [Další informace o metrice Doba do interaktivity](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1260,7 +1260,7 @@
     "message": "Latence backendu na serveru"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Použijte místo ní událost `pagehide` nebo `visibilitychange`. [Další informace o posluchačích událostí unload](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Použijte místo ní událost `pagehide` nebo `visibilitychange`. [Další informace o posluchačích událostí unload](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registruje posluchač události `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Rozpočet výkonu"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Načítejte písma `optional` předem, aby je mohli používat i návštěvníci, kteří přicházejí poprvé. [Další informace o předběžném načítání písem](https://web.dev/preload-optional-fonts/)"
+    "message": "Načítejte písma `optional` předem, aby je mohli používat i návštěvníci, kteří přicházejí poprvé. [Další informace o předběžném načítání písem](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Písma s atributem `font-display: optional` se nenačítají předem"
@@ -1314,7 +1314,7 @@
     "message": "Písma s atributem `font-display: optional` se načítají předem"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Pokud je na stránce dynamicky přidán prvek LCP, měli byste obrázek načítat předem, abyste dosáhli lepší hodnoty LCP. [Další informace o předběžném načítání prvků LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)"
+    "message": "Pokud je na stránce dynamicky přidán prvek LCP, měli byste obrázek načítat předem, abyste dosáhli lepší hodnoty LCP. [Další informace o předběžném načítání prvků LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)"
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Předběžné načtení obrázku s vykreslením největšího obsahu"
@@ -1587,7 +1587,7 @@
     "message": "Časový rozpočet"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "U obrázkových prvků vždy explicitně určete šířku a výšku, aby se omezilo poskakování při vykreslování a zlepšila se hodnota CLS. [Jak nastavit rozměry obrázků](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "U obrázkových prvků vždy explicitně určete šířku a výšku, aby se omezilo poskakování při vykreslování a zlepšila se hodnota CLS. [Jak nastavit rozměry obrázků](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Obrázkové prvky nemají explicitní označení `width` a `height`"
@@ -1662,7 +1662,7 @@
     "message": "Obsahuje značku `<meta name=\"viewport\">` s atributem `width` nebo `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Toto je činnost blokující vlákno, k níž dochází během měření doby od interakce k dalšímu vykreslení. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
+    "message": "Toto je činnost blokující vlákno, k níž dochází během měření doby od interakce k dalšímu vykreslení. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/articles/inp)"
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Na událost {interactionType} byla vynaložena doba {timeInMs, number, milliseconds} ms"
@@ -1704,10 +1704,10 @@
     "message": "Rady a tipy pro odpovídání na recenze"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Tyto kontroly odhalují příležitosti ke [zlepšení přístupnosti webové aplikace](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatická kontrola dokáže rozpoznat pouze část problémů a nezaručuje, že je ebová aplikace přístupná. Doporučujeme proto provést také [ruční testování](https://web.dev/how-to-review/)."
+    "message": "Tyto kontroly odhalují příležitosti ke [zlepšení přístupnosti webové aplikace](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatická kontrola dokáže rozpoznat pouze část problémů a nezaručuje, že je ebová aplikace přístupná. Doporučujeme proto provést také [ruční testování](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Tyto položky se týkají oblastí, které v současné době automatické testování nedokáže pokrýt. Další informace najdete v průvodci [provedením kontroly přístupnosti](https://web.dev/how-to-review/)."
+    "message": "Tyto položky se týkají oblastí, které v současné době automatické testování nedokáže pokrýt. Další informace najdete v průvodci [provedením kontroly přístupnosti](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Přístupnost"
@@ -1794,10 +1794,10 @@
     "message": "Výkon"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Tyto kontroly prověřují různé aspekty progresivní webové aplikace. [Jak vytvořit dobrou progresivní webovou aplikaci](https://web.dev/pwa-checklist/)"
+    "message": "Tyto kontroly prověřují různé aspekty progresivní webové aplikace. [Jak vytvořit dobrou progresivní webovou aplikaci](https://web.dev/articles/pwa-checklist)"
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Tyto kontroly vyžaduje základní [kontrolní seznam aplikace PWA](https://web.dev/pwa-checklist/), ale nástroj Lighthouse je automaticky neprovádí. Na vaše skóre vliv nemají, ale je důležité, abyste je ověřili ručně."
+    "message": "Tyto kontroly vyžaduje základní [kontrolní seznam aplikace PWA](https://web.dev/articles/pwa-checklist), ale nástroj Lighthouse je automaticky neprovádí. Na vaše skóre vliv nemají, ale je důležité, abyste je ověřili ručně."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Optimalizováno pro PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Tyto kontroly zajišťují, aby vaše stránka dodržovala základní radu ohledně optimalizace pro vyhledávače. Mnoho dalších faktorů, které ovlivňují umístění ve výsledcích vyhledávání, Lighthouse nehodnotí, např. výkon metrik [Core Web Vitals](https://web.dev/learn-core-web-vitals/). [Další informace o základních požadavcích Vyhledávání Google](https://support.google.com/webmasters/answer/35769)"
+    "message": "Tyto kontroly zajišťují, aby vaše stránka dodržovala základní radu ohledně optimalizace pro vyhledávače. Mnoho dalších faktorů, které ovlivňují umístění ve výsledcích vyhledávání, Lighthouse nehodnotí, např. výkon metrik [Core Web Vitals](https://web.dev/explore/vitals). [Další informace o základních požadavcích Vyhledávání Google](https://support.google.com/webmasters/answer/35769)"
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Chcete-li zkontrolovat dodržování dalších doporučených postupů pro SEO, spusťte pro svůj web tyto další validátory."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL, kterou jste poskytli, se zdá být neplatná."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Nástroji Lighthouse se požadovanou stránku nepodařilo spolehlivě načíst. Zkontrolujte, zda testujete správnou adresu URL a zda server správně odpovídá na všechny požadavky. (Stavový kód: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Typ MIME stránky je XHTML: Lighthouse tento typ dokumentu explicitně nepodporuje"
   },
@@ -3108,22 +3111,22 @@
     "message": "Použitím možnosti [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ve službě NitroPack zmenšete velikost souborů odesílaných do prohlížeče."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte `format=\"webp\"`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#format)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte `format=\"webp\"`. [Další informace](https://image.nuxt.com/usage/nuxt-img#format)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Použijte komponentu `nuxt/image` a pro obrázky mimo obrazovku nastavte `loading=\"lazy\"`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#loading)"
+    "message": "Použijte komponentu `nuxt/image` a pro obrázky mimo obrazovku nastavte `loading=\"lazy\"`. [Další informace](https://image.nuxt.com/usage/nuxt-img#loading)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Pro obrázek LCP použijte komponentu `nuxt/image` a nastavte atribut `preload`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#preload)"
+    "message": "Pro obrázek LCP použijte komponentu `nuxt/image` a nastavte atribut `preload`. [Další informace](https://image.nuxt.com/usage/nuxt-img#preload)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Použijte komponentu `nuxt/image` a zadejte explicitně atributy `width` a `height`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "Použijte komponentu `nuxt/image` a zadejte explicitně atributy `width` a `height`. [Další informace](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `quality`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#quality)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `quality`. [Další informace](https://image.nuxt.com/usage/nuxt-img#quality)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `sizes`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#sizes)"
+    "message": "Použijte komponentu `nuxt/image` a nastavte vhodnou hodnotu atributu `sizes`. [Další informace](https://image.nuxt.com/usage/nuxt-img#sizes)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Když animované obrázky GIF nahradí video](https://web.dev/replace-gifs-with-videos/), budou se webové stránky načítat rychleji. Zvažte použití moderních formátů, jako je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) nebo [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), které v porovnání se současným videokodekem VP9 zvýší efektivitu komprese o více než 30 %."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "První načtení stránky"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Přehled stavu v bodu v čase"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Časové rozpětí uživatelských interakcí"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Vlastní omezení"
   },
@@ -3393,10 +3402,10 @@
     "message": "User agent (síť)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Jedno načtení stránky"
+    "message": "Návštěva jedné stránky"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Tato data pocházejí z jednoho načtení stránky – v protikladu k datům z terénu, která sumarizují mnoho relací."
+    "message": "Tato data pocházejí z návštěvy jedné stránky – v protikladu k datům z terénu, která sumarizují mnoho relací."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Pomalé omezení 4G"

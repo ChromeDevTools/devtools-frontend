@@ -18,7 +18,7 @@
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś m̂át̂ćĥ t́ĥéîŕ r̂ól̂éŝ"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ÂŔÎÁ `role`ŝ én̂áb̂ĺê áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś t̂ó k̂ńôẃ t̂h́ê ŕôĺê óf̂ éâćĥ él̂ém̂én̂t́ ôń t̂h́ê ẃêb́ p̂áĝé. Îf́ t̂h́ê `role` v́âĺûéŝ ár̂é m̂íŝśp̂él̂ĺêd́, n̂ót̂ éx̂íŝt́îńĝ ÁR̂ÍÂ `role` v́âĺûéŝ, ór̂ áb̂śt̂ŕâćt̂ ŕôĺêś, t̂h́êń t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê él̂ém̂én̂t́ ŵíl̂ĺ n̂ót̂ b́ê ćôḿm̂ún̂íĉát̂éd̂ t́ô úŝér̂ś ôf́ âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ÁR̂ÍÂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ÂŔÎÁ `role`ŝ én̂áb̂ĺê áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś t̂ó k̂ńôẃ t̂h́ê ŕôĺê óf̂ éâćĥ él̂ém̂én̂t́ ôń t̂h́ê ẃêb́ p̂áĝé. Îf́ t̂h́ê `role` v́âĺûéŝ ár̂é m̂íŝśp̂él̂ĺêd́, n̂ót̂ éx̂íŝt́îńĝ ÁR̂ÍÂ `role` v́âĺûéŝ, ór̂ áb̂śt̂ŕâćt̂ ŕôĺêś, t̂h́êń t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê él̂ém̂én̂t́ ŵíl̂ĺ n̂ót̂ b́ê ćôḿm̂ún̂íĉát̂éd̂ t́ô úŝér̂ś ôf́ âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ÁR̂ÍÂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "V̂ál̂úêś âśŝíĝńêd́ t̂ó `role=\"\"` âŕê ńôt́ v̂ál̂íd̂ ÁR̂ÍÂ ŕôĺêś."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "P̂áĝé d̂íd̂ń't̂ ṕr̂év̂én̂t́ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé r̂éŝt́ôŕât́îón̂"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé ĉán̂ńôt́ b̂é t̂éŝt́êd́ îń ôĺd̂ H́êád̂ĺêśŝ Ćĥŕôḿê (`--chrome-flags=\"--headless=old\"`). T́ô śêé âúd̂ít̂ ŕêśûĺt̂ś, ûśê t́ĥé n̂éŵ H́êád̂ĺêśŝ Ćĥŕôḿê (`--chrome-flags=\"--headless=new\"`) ór̂ śt̂án̂d́âŕd̂ Ćĥŕôḿê."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Ĉh́r̂óm̂é êx́t̂én̂śîón̂ś n̂éĝát̂ív̂él̂ý âf́f̂éĉt́êd́ t̂h́îś p̂áĝé'ŝ ĺôád̂ ṕêŕf̂ór̂ḿâńĉé. T̂ŕŷ áûd́ît́îńĝ t́ĥé p̂áĝé îń îńĉóĝńît́ô ḿôd́ê ór̂ f́r̂óm̂ á Ĉh́r̂óm̂é p̂ŕôf́îĺê ẃît́ĥóût́ êx́t̂én̂śîón̂ś."
   },
@@ -1155,10 +1158,10 @@
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ êĺêḿêńt̂"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "ĈĹŜ Ćôńt̂ŕîb́ût́îón̂"
+    "message": "L̂áŷóût́ ŝh́îf́t̂ ím̂ṕâćt̂"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "T̂h́êśê D́ÔḾ êĺêḿêńt̂ś ĉón̂t́r̂íb̂út̂é m̂óŝt́ t̂ó t̂h́ê ĆL̂Ś ôf́ t̂h́ê ṕâǵê. [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
+    "message": "T̂h́êśê D́ÔḾ êĺêḿêńt̂ś ŵér̂é m̂óŝt́ âf́f̂éĉt́êd́ b̂ý l̂áŷóût́ ŝh́îf́t̂ś. Ŝóm̂é l̂áŷóût́ ŝh́îf́t̂ś m̂áŷ ńôt́ b̂é îńĉĺûd́êd́ îń t̂h́ê ĆL̂Ś m̂ét̂ŕîć v̂ál̂úê d́ûé t̂ó [ŵín̂d́ôẃîńĝ](https://web.dev/articles/cls#what_is_cls). [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
@@ -1531,6 +1534,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Ŝét̂ś â t́ĥém̂é ĉól̂ór̂ f́ôŕ t̂h́ê ád̂d́r̂éŝś b̂ár̂."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Ŝúp̂ṕôŕt̂ f́ôŕ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ ẃîĺl̂ b́ê ŕêḿôv́êd́ îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂h́âśîńĝ óût́ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount, plural,\n    =1 {1 ĉóôḱîé f̂óûńd̂}\n    other {# ćôók̂íêś f̂óûńd̂}\n    }"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Ûśêś t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Âv́ôíd̂ś t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Ĉúŝt́ôḿêŕ Ŝúĉćêśŝ)"
@@ -3362,6 +3377,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Îńît́îál̂ ṕâǵê ĺôád̂"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "P̂óîńt̂-ín̂-t́îḿê śn̂áp̂śĥót̂"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Ûśêŕ îńt̂ér̂áĉt́îón̂ś t̂ím̂éŝṕâń"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Ĉúŝt́ôḿ t̂h́r̂ót̂t́l̂ín̂ǵ"
   },
@@ -3396,10 +3417,10 @@
     "message": "Ûśêŕ âǵêńt̂ (ńêt́ŵór̂ḱ)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Ŝín̂ǵl̂é p̂áĝé l̂óâd́"
+    "message": "Ŝín̂ǵl̂é p̂áĝé ŝéŝśîón̂"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "T̂h́îś d̂át̂á îś t̂ák̂én̂ f́r̂óm̂ á ŝín̂ǵl̂é p̂áĝé l̂óâd́, âś ôṕp̂óŝéd̂ t́ô f́îél̂d́ d̂át̂á ŝúm̂ḿâŕîźîńĝ ḿâńŷ śêśŝíôńŝ."
+    "message": "T̂h́îś d̂át̂á îś t̂ák̂én̂ f́r̂óm̂ á ŝín̂ǵl̂é p̂áĝé ŝéŝśîón̂, áŝ óp̂ṕôśêd́ t̂ó f̂íêĺd̂ d́ât́â śûḿm̂ár̂íẑín̂ǵ m̂án̂ý ŝéŝśîón̂ś."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Ŝĺôẃ 4Ĝ t́ĥŕôt́t̂ĺîńĝ"

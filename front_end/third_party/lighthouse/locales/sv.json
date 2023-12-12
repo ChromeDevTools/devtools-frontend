@@ -639,7 +639,7 @@
     "message": "Använd videoformat för animationer"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Med polyfill-koder och transformeringar går det att använda nya JavaScript-funktioner i äldre webbläsare. Många av dem behövs dock inte för moderna webbläsare. Om du har JavaScript-paket kan du använda en modern strategi för skriptimplementering där registrering av funktioner med eller utan moduler används för att minska mängden kod som skickas till moderna webbläsare, samtidigt som stöd för äldre webbläsare finns kvar. [Läs mer om hur du använder modern JavaScript](https://web.dev/publish-modern-javascript/)"
+    "message": "Med polyfill-koder och transformeringar går det att använda nya JavaScript-funktioner i äldre webbläsare. Många av dem behövs dock inte för moderna webbläsare. Om du har JavaScript-paket kan du använda en modern strategi för skriptimplementering där registrering av funktioner med eller utan moduler används för att minska mängden kod som skickas till moderna webbläsare, samtidigt som stöd för äldre webbläsare finns kvar. [Läs mer om hur du använder modern JavaScript](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Undvik att skicka äldre JavaScript till moderna webbläsare"
@@ -993,7 +993,7 @@
     "message": "Förväntad storlek"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Bildens faktiska mått ska vara proportionella mot skärmstorleken och pixelmåtten för tydligast möjliga bildvisning. [Läs mer om hur du tillhandahåller responsiva bilder](https://web.dev/serve-responsive-images/)."
+    "message": "Bildens faktiska mått ska vara proportionella mot skärmstorleken och pixelmåtten för tydligast möjliga bildvisning. [Läs mer om hur du tillhandahåller responsiva bilder](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Bilder visas med låg upplösning"
@@ -1158,13 +1158,13 @@
     "message": "Bidrag till CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Dessa DOM-element bidrog mest till sidans CLS. [Läs mer om hur du kan förbättra CLS](https://web.dev/optimize-cls/)"
+    "message": "Dessa DOM-element bidrog mest till sidans CLS. [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Undvik större layoutförskjutningar"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Bilder ovanför mitten med uppskjuten inläsning renderas senare än sidans livscykel, vilket kan fördröja den största uppritningen av innehåll. [Läs mer om optimal uppskjuten inläsning](https://web.dev/lcp-lazy-loading/)."
+    "message": "Bilder ovanför mitten med uppskjuten inläsning renderas senare än sidans livscykel, vilket kan fördröja den största uppritningen av innehåll. [Läs mer om optimal uppskjuten inläsning](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Bildinläsningen var uppskjuten vid största uppritningen av innehåll"
@@ -1173,7 +1173,7 @@
     "message": "Bildinläsningen var inte uppskjuten vid största uppritningen av innehåll"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Visar de uppgifter i huvudtråden som har körts under längst tid, vilket kan identifiera de viktigaste flaskhalsarna som fördröjer inmatningen. [Läs om hur du undviker uppgifter i huvudtrådar som har körts under lång tid](https://web.dev/long-tasks-devtools/)"
+    "message": "Visar de uppgifter i huvudtråden som har körts under längst tid, vilket kan identifiera de viktigaste flaskhalsarna som fördröjer inmatningen. [Läs om hur du undviker uppgifter i huvudtrådar som har körts under lång tid](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# uppgift som körts under lång tid hittades}other{# uppgifter som körts under lång tid hittades}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifest har en maskerbar ikon"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kumulativ layoutförskjutning mäter rörelsen hos synliga element inom visningsområdet. [Läs mer om mätvärdet Kumulativ layoutförskjutning](https://web.dev/cls/)."
+    "message": "Kumulativ layoutförskjutning mäter rörelsen hos synliga element inom visningsområdet. [Läs mer om mätvärdet Kumulativ layoutförskjutning](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Första innehållsrenderingen anger när den första texten eller bilden ritades upp. [Läs mer om mätvärdet Första innehållsrenderingen](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Första användbara renderingen anger när sidans primära innehåll blev synligt. [Läs mer om mätvärdet Första användbara renderingen](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaktion till nästa uppritning mäter sidans responsivitet, hur lång tid det tar innan det syns att en sida svarar på indata från användare. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/inp/)."
+    "message": "Interaktion till nästa uppritning mäter sidans responsivitet, hur lång tid det tar innan det syns att en sida svarar på indata från användare. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tid till interaktivt tillstånd är den tid det tar innan sidan är fullständigt interaktiv. [Läs mer om mätvärdet Tid till interaktivt tillstånd](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Serverlatens"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt och att lyssna efter den kan förhindra webbläsaroptimeringar, t.ex. vilocacheminne. Använd händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer om att ta bort händelselyssnare](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt och att lyssna efter den kan förhindra webbläsaroptimeringar, t.ex. vilocacheminne. Använd händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer om att ta bort händelselyssnare](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerar en lyssnare för `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Prestandabudget"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Läs in teckensnitt i förväg med `optional` så att förstagångsbesökare kan använda dem. [Läs mer om att läsa in teckensnitt i förväg](https://web.dev/preload-optional-fonts/)"
+    "message": "Läs in teckensnitt i förväg med `optional` så att förstagångsbesökare kan använda dem. [Läs mer om att läsa in teckensnitt i förväg](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Teckensnitt med `font-display: optional` läses inte in i förväg"
@@ -1314,7 +1314,7 @@
     "message": "Teckensnitt med `font-display: optional` läses in i förväg"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Om LCP-elementet läggs till på sidan dynamiskt bör du läsa in bilden i förväg för att förbättra LCP. [Läs mer om att läsa in LCP-element i förväg](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Om LCP-elementet läggs till på sidan dynamiskt bör du läsa in bilden i förväg för att förbättra LCP. [Läs mer om att läsa in LCP-element i förväg](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Läs in bilden i förväg för största uppritningen av innehåll"
@@ -1587,7 +1587,7 @@
     "message": "Tidsbudget"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Reducera layoutförskjutningarna och förbättra CLS genom att ange explicit bredd och höjd för bildelement. [Läs mer om hur du ställer in bildmått](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Reducera layoutförskjutningarna och förbättra CLS genom att ange explicit bredd och höjd för bildelement. [Läs mer om hur du ställer in bildmått](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Alla bildelement har inte `width` och `height`"
@@ -1662,7 +1662,7 @@
     "message": "Har en `<meta name=\"viewport\">`-tagg med `width` eller `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Det här är det trådblockerande arbetet som sker under mätningen av interaktion till nästa uppritning. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/inp/)."
+    "message": "Det här är det trådblockerande arbetet som sker under mätningen av interaktion till nästa uppritning. [Läs mer om mätvärdet Interakation till nästa uppritning](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Händelsen {interactionType} behandlades i {timeInMs, number, milliseconds} ms"
@@ -1704,10 +1704,10 @@
     "message": "Bästa metoder"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Dessa kontroller visar möjligheter att [förbättra tillgängligheten för webbappen](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk identifiering kan bara identifiera en del av problemen och garanterar inte att webbappen är tillgänglig, så [manuell testning](https://web.dev/how-to-review/) rekommenderas också."
+    "message": "Dessa kontroller visar möjligheter att [förbättra tillgängligheten för webbappen](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk identifiering kan bara identifiera en del av problemen och garanterar inte att webbappen är tillgänglig, så [manuell testning](https://web.dev/articles/how-to-review) rekommenderas också."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Dessa punkter beskriver områden som inte kan testas automatiskt. Läs mer i vår guide om att [granska tillgängligheten](https://web.dev/how-to-review/)."
+    "message": "Dessa punkter beskriver områden som inte kan testas automatiskt. Läs mer i vår guide om att [granska tillgängligheten](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Tillgänglighet"
@@ -1794,10 +1794,10 @@
     "message": "Prestanda"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Med dessa kontroller verifieras att webbplatsen är en progressiv webbapp. [Läs mer om vad som gör en progressiv webbapp bra](https://web.dev/pwa-checklist/)."
+    "message": "Med dessa kontroller verifieras att webbplatsen är en progressiv webbapp. [Läs mer om vad som gör en progressiv webbapp bra](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Dessa kontroller krävs enligt [checklistan för progressiva webbappar](https://web.dev/pwa-checklist/) som används som baslinje, men de kontrolleras inte automatiskt av Lighthouse. De påverkar inte resultatet, men det är viktigt att du verifierar dem manuellt."
+    "message": "Dessa kontroller krävs enligt [checklistan för progressiva webbappar](https://web.dev/articles/pwa-checklist) som används som baslinje, men de kontrolleras inte automatiskt av Lighthouse. De påverkar inte resultatet, men det är viktigt att du verifierar dem manuellt."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Optimerad för progressiv webbapp"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Dessa kontroller ser till att din sida följer de grundläggande råden för sökmotoroptimering. Det finns fler faktorer som Lighthouse inte bedömer här som kan påverka rankningen i sökresultat, däribland prestandan för [Viktiga webbvärden](https://web.dev/learn-core-web-vitals/). [Läs mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Dessa kontroller ser till att din sida följer de grundläggande råden för sökmotoroptimering. Det finns fler faktorer som Lighthouse inte bedömer här som kan påverka rankningen i sökresultat, däribland prestandan för [Viktiga webbvärden](https://web.dev/explore/vitals). [Läs mer om Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kontrollera att fler av de bästa metoderna för sökmotoroptimering följs på din webbplats genom att köra dessa extra valideringar."
@@ -2643,7 +2643,7 @@
     "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt. (Mer information: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt. (Statuskod: {statusCode})"
+    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt på alla begäranden. (Statuskod: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "Det tog för lång tid att läsa in sidan. Minska sidans inläsningstid genom att följa förslagen i rapporten och kör sedan Lighthouse igen. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Den angivna webbadressen verkar vara ogiltig."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Det gick inte att läsa in den begärda sidan i Lighthouse. Kontrollera att du testar rätt webbadress och att servern svarar korrekt på alla begäranden. (Statuskod: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Sidans MIME-typ är XHTML: Lighthouse har inte direkt stöd för den här dokumenttypen"
@@ -3108,22 +3111,22 @@
     "message": "Använd [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack för att minska storleken på filerna som skickas till webbläsaren."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Använd komponenten `nuxt/image` och ange `format=\"webp\"`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Använd komponenten `nuxt/image` och ange `format=\"webp\"`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Använd komponenten `nuxt/image` och ange `loading=\"lazy\"` för bilder som inte visas på skärmen. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Använd komponenten `nuxt/image` och ange `loading=\"lazy\"` för bilder som inte visas på skärmen. [Läs mer](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Använd komponenten `nuxt/image` och ange `preload` för LCP-bilder. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Använd komponenten `nuxt/image` och ange `preload` för LCP-bilder. [Läs mer](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Använd komponenten `nuxt/image` och ange en specifik `width` och `height`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Använd komponenten `nuxt/image` och ange en specifik `width` och `height`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Använd komponenten `nuxt/image` och ange önskad `quality`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Använd komponenten `nuxt/image` och ange önskad `quality`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Använd komponenten `nuxt/image` och ange önskad `sizes`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Använd komponenten `nuxt/image` och ange önskad `sizes`. [Läs mer](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Ersätt animerade GIF-bilder med videor](https://web.dev/replace-gifs-with-videos/) så att webbsidan läses in snabbare. Du kan även använda moderna filformat som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) för att förbättra komprimeringens effektivitet med mer än 30 % jämfört med den nuvarande toppmoderna videokodeken VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Första sidhämtningen"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Översiktsbild vid tidpunkt"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Tidsintervall för användarinteraktioner"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Anpassad begränsning"
   },
@@ -3393,10 +3402,10 @@
     "message": "Användaragent (nätverk)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Enskild sidhämtning"
+    "message": "Enskild sidsession"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Denna data kommer från en enskild sidhämtning, till skillnad från fältdata som sammanfattar flera sessioner."
+    "message": "Denna data kommer från en enskild sidsession, till skillnad från fältdata som sammanfattar många sessioner."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Långsam 4G-begränsning"

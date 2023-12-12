@@ -639,7 +639,7 @@
     "message": "యానిమేటెడ్ కంటెంట్ కోసం వీడియో ఫార్మాట్‌లను ఉపయోగించండి"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా లెగసీ బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. బండిల్ చేయబడిన మీ JavaScript కోసం, లెగసీ బ్రౌజర్‌లకు సపోర్ట్‌ను కొనసాగిస్తూనే, ఆధునిక బ్రౌజర్‌లకు పంపబడే కోడ్ సైజును తగ్గించడానికి మాడ్యూల్/నోమాడ్యూల్ ఫీచర్ గుర్తింపును ఉపయోగించి ఆధునిక స్క్రిప్ట్ అమలు వ్యూహాన్ని అనుసరించండి. [ఆధునిక JavaScriptను ఉపయోగించడం ఎలాగో తెలుసుకోండి](https://web.dev/publish-modern-javascript/)"
+    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా లెగసీ బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. బండిల్ చేయబడిన మీ JavaScript కోసం, లెగసీ బ్రౌజర్‌లకు సపోర్ట్‌ను కొనసాగిస్తూనే, ఆధునిక బ్రౌజర్‌లకు పంపబడే కోడ్ సైజును తగ్గించడానికి మాడ్యూల్/నోమాడ్యూల్ ఫీచర్ గుర్తింపును ఉపయోగించి ఆధునిక స్క్రిప్ట్ అమలు వ్యూహాన్ని అనుసరించండి. [ఆధునిక JavaScriptను ఉపయోగించడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "లెగసీ JavaScriptను మోడ్రన్ బ్రౌజర్‌లకు అందించడం మానివేయండి"
@@ -993,7 +993,7 @@
     "message": "ఆశించిన సైజ్"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "ఇమేజ్ స్పష్టతను వీలైనంతగా పెంచడానికి, ఆ ఇమేజ్ సహజ కొలతలు అనేవి, డిస్‌ప్లే సైజుకు, ఇంకా పిక్సెల్ నిష్పత్తికి ప్రపోర్షనల్‌గా ఉండాలి. [ఫ్లెక్సిబుల్ ఇమేజ్‌లను అందించడం ఎలాగో తెలుసుకోండి](https://web.dev/serve-responsive-images/)."
+    "message": "ఇమేజ్ స్పష్టతను వీలైనంతగా పెంచడానికి, ఆ ఇమేజ్ సహజ కొలతలు అనేవి, డిస్‌ప్లే సైజుకు, ఇంకా పిక్సెల్ నిష్పత్తికి ప్రపోర్షనల్‌గా ఉండాలి. [ఫ్లెక్సిబుల్ ఇమేజ్‌లను అందించడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "తక్కువ రిజల్యూషన్‌తో ఇమేజ్‌లను అందిస్తుంది"
@@ -1158,13 +1158,13 @@
     "message": "CLS కంట్రిబ్యూషన్"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "ఈ పేజీ యొక్క CLSకు ఈ DOM ఎలిమెంట్‌లు అత్యధికంగా కంట్రిబ్యూట్ చేస్తాయి. [CLSని మెరుగుపరచడం ఎలాగో తెలుసుకోండి](https://web.dev/optimize-cls/)"
+    "message": "ఈ పేజీ యొక్క CLSకు ఈ DOM ఎలిమెంట్‌లు అత్యధికంగా కంట్రిబ్యూట్ చేస్తాయి. [CLSని మెరుగుపరచడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "పెద్ద లేఅవుట్ షిఫ్ట్‌లను నివారించండి"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "ప్రాధాన్యతను బట్టి లోడ్ చేయబడిన, ఫోల్డ్‌కు ఎగువున ఉన్న ఇమేజ్‌లు పేజీ లైఫ్ సైకిల్‌లో తర్వాత రెండర్ అవుతాయి, దీని వలన లార్జెస్ట్ కంటెంట్‌ఫుల్ పెయింట్ ఆలస్యం కావచ్చు. [ఉత్తమమైన 'ప్రాధాన్యతను బట్టి లోడింగ్' గురించి మరింత తెలుసుకోండి](https://web.dev/lcp-lazy-loading/)."
+    "message": "ప్రాధాన్యతను బట్టి లోడ్ చేయబడిన, ఫోల్డ్‌కు ఎగువున ఉన్న ఇమేజ్‌లు పేజీ లైఫ్ సైకిల్‌లో తర్వాత రెండర్ అవుతాయి, దీని వలన లార్జెస్ట్ కంటెంట్‌ఫుల్ పెయింట్ ఆలస్యం కావచ్చు. [ఉత్తమమైన 'ప్రాధాన్యతను బట్టి లోడింగ్' గురించి మరింత తెలుసుకోండి](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ ఇమేజ్ ప్రాధాన్యతను బట్టి లోడింగ్ చేయబడింది"
@@ -1173,7 +1173,7 @@
     "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ ఇమేజ్ ప్రాధాన్యతను బట్టి లోడింగ్ చేయబడలేదు"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "ప్రధాన థ్రెడ్‌లో అన్నింటి కంటే సుదీర్ఘవైన టాస్క్‌లను లిస్ట్ చేస్తుంది, ఇది ఇన్‌పుట్ ఆలస్యానికి దారితీసే పనికి రాని కంట్రిబ్యూటర్‌లను గుర్తించడంలో ఉపయోగకరంగా ఉంటుంది. [సుదీర్ఘమైన ప్రధాన థ్రెడ్ టాస్క్‌లను నివారించడం ఎలాగో తెలుసుకోండి](https://web.dev/long-tasks-devtools/)"
+    "message": "ప్రధాన థ్రెడ్‌లో అన్నింటి కంటే సుదీర్ఘవైన టాస్క్‌లను లిస్ట్ చేస్తుంది, ఇది ఇన్‌పుట్ ఆలస్యానికి దారితీసే పనికి రాని కంట్రిబ్యూటర్‌లను గుర్తించడంలో ఉపయోగకరంగా ఉంటుంది. [సుదీర్ఘమైన ప్రధాన థ్రెడ్ టాస్క్‌లను నివారించడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# సుదీర్ఘ టాస్క్ కనుగొనబడింది}other{# సుదీర్ఘ టాస్క్‌లు కనుగొనబడ్డాయి}}"
@@ -1221,7 +1221,7 @@
     "message": "మ్యానిఫెస్ట్‌లో మాస్క్ వేయగల చిహ్నం ఉంది"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "వీక్షణ పోర్ట్‌లో కనిపించే ఎలిమెంట్‌ల కదలికను క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలుస్తుంది. [క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/cls/)."
+    "message": "వీక్షణ పోర్ట్‌లో కనిపించే ఎలిమెంట్‌ల కదలికను క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలుస్తుంది. [క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "ఫస్ట్ కంటెంట్‌ఫుల్ పెయింట్ అనేది, మొదటి టెక్స్ట్ లేదా ఇమేజ్ పెయింట్ చేయబడిన సమయాన్ని గుర్తిస్తుంది. [ఫస్ట్ కంటెంట్‌ఫుల్ పెయింట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "పేజీకి సంబంధించిన ప్రధాన కంటెంట్ ఎప్పుడు కనిపిస్తుంది అనే దాన్ని ఫస్ట్ మీనింగ్‌ఫుల్ పెయింట్ కొలుస్తుంది. [ఫస్ట్ మీనింగ్‌ఫుల్ పెయింట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint పేజీ ప్రతిస్పందనా తీరును కొలుస్తుంది, అంటే యూజర్ ఇన్‌పుట్‌కు ప్రత్యక్షంగా ప్రతిస్పందించడానికి పేజీకి ఎంత సమయం పడుతుందో కొలుస్తుంది. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/inp/)."
+    "message": "Interaction to Next Paint పేజీ ప్రతిస్పందనా తీరును కొలుస్తుంది, అంటే యూజర్ ఇన్‌పుట్‌కు ప్రత్యక్షంగా ప్రతిస్పందించడానికి పేజీకి ఎంత సమయం పడుతుందో కొలుస్తుంది. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "పూర్తిగా ఇంటరాక్టివ్ అవ్వడానికి పేజీకి ఎంత సమయం పడుతుందో, దాన్నే ఇంటరాక్షన్ టైమ్ అని అంటారు. [ఇంటరాక్షన్ టైమ్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "సర్వర్ బ్యాక్ఎండ్ ప్రతిస్పందన సమయాలు"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "ఈ `unload` ఈవెంట్ ఆశించినట్టు పని చేయదు, దాని కోసం వేచి ఉంటే, వెనుకకు-ముందుకు కాష్ లాంటి బ్రౌజర్ ఆప్టిమైజేషన్‌లు నిరోధించబడవచ్చు. అందుకు బదులుగా `pagehide` లేదా `visibilitychange` ఈవెంట్‌లను ఉపయోగించండి. [అన్‌లోడ్ ఈవెంట్ లిజనర్‌ల గురించి మరింత తెలుసుకోండి](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "ఈ `unload` ఈవెంట్ ఆశించినట్టు పని చేయదు, దాని కోసం వేచి ఉంటే, వెనుకకు-ముందుకు కాష్ లాంటి బ్రౌజర్ ఆప్టిమైజేషన్‌లు నిరోధించబడవచ్చు. అందుకు బదులుగా `pagehide` లేదా `visibilitychange` ఈవెంట్‌లను ఉపయోగించండి. [అన్‌లోడ్ ఈవెంట్ లిజనర్‌ల గురించి మరింత తెలుసుకోండి](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` లిజనర్‌గా రిజిస్టర్ చేస్తుంది"
@@ -1305,7 +1305,7 @@
     "message": "పనితీరు బడ్జెట్"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "`optional` ఫాంట్‌లను ప్రీ - లోడ్ చేయండి, తద్వారా మొదటిసారిగా వచ్చే సందర్శకులు వాటిని ఉపయోగించగలరు. [ఫాంట్‌లను ప్రీ - లోడ్ చేయడం గురించి మరింత తెలుసుకోండి](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` ఫాంట్‌లను ప్రీ - లోడ్ చేయండి, తద్వారా మొదటిసారిగా వచ్చే సందర్శకులు వాటిని ఉపయోగించగలరు. [ఫాంట్‌లను ప్రీ - లోడ్ చేయడం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional`తో ఉన్న ఫాంట్‌లు ముందే లోడ్ చేయబడలేదు"
@@ -1314,7 +1314,7 @@
     "message": "`font-display: optional`తో ఉన్న ఫాంట్‌లు ముందే లోడ్ చేయబడ్డాయి"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "ఒకవేళ LCP ఎలిమెంట్, డైనమిక్‌గా పేజీకి జోడించబడితే, LCPని మెరుగుపరచడానికి మీరు ఇమేజ్‌ను ప్రీ - లోడ్ చేయాలి. [LCP ఎలిమెంట్‌లను ప్రీ - లోడ్ చేయడం గురించి మరింత తెలుసుకోండి](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "ఒకవేళ LCP ఎలిమెంట్, డైనమిక్‌గా పేజీకి జోడించబడితే, LCPని మెరుగుపరచడానికి మీరు ఇమేజ్‌ను ప్రీ - లోడ్ చేయాలి. [LCP ఎలిమెంట్‌లను ప్రీ - లోడ్ చేయడం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ ఇమేజ్‌ను ముందే లోడ్ చేయండి"
@@ -1587,7 +1587,7 @@
     "message": "సమయం సంబంధిత బడ్జెట్"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "లేఅవుట్ షిఫ్ట్‌లను తగ్గించడానికి, CLSను మెరుగుపరచడానికి ఇమేజ్ ఎలిమెంట్‌లకు స్పష్టమైన వెడల్పును, ఎత్తును సెట్ చేయండి. [ఇమేజ్ కొలతలను ఎలా సెట్ చేయాలో తెలుసుకోండి](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "లేఅవుట్ షిఫ్ట్‌లను తగ్గించడానికి, CLSను మెరుగుపరచడానికి ఇమేజ్ ఎలిమెంట్‌లకు స్పష్టమైన వెడల్పును, ఎత్తును సెట్ చేయండి. [ఇమేజ్ కొలతలను ఎలా సెట్ చేయాలో తెలుసుకోండి](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "ఇమేజ్ మూలకాలకు తగిన `width`, `height` లేదు"
@@ -1662,7 +1662,7 @@
     "message": "'`width`' లేదా '`initial-scale`'తో '`<meta name=\"viewport\">`' ట్యాగ్‌ను కలిగి ఉంది"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "ఇది Interaction to Next Paint కొలత సమయంలో జరిగే థ్రెడ్-బ్లాకింగ్ పని. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/inp/)."
+    "message": "ఇది Interaction to Next Paint కొలత సమయంలో జరిగే థ్రెడ్-బ్లాకింగ్ పని. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "'{interactionType}' ఈవెంట్‌కు {timeInMs, number, milliseconds} మిల్లీసెకన్ల సమయం పట్టింది"
@@ -1704,10 +1704,10 @@
     "message": "ఉత్తమ అభ్యాసాలు"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "ఈ చెక్‌ల ద్వారా [మీ వెబ్ యాప్ యాక్సెసిబిలిటీని మెరుగుపరిచే](https://developer.chrome.com/docs/lighthouse/accessibility/) అవకాశం లభిస్తుంది. ఆటోమేటిక్ గుర్తింపు అనేది కొన్ని సమస్యలను మాత్రమే గుర్తించగలదు, మీ వెబ్ యాప్ యాక్సెసిబిలిటీకి అది హామీ ఇవ్వదు, కాబట్టి [మాన్యువల్ టెస్టింగ్](https://web.dev/how-to-review/) కూడా చేయమని మా సలహా."
+    "message": "ఈ చెక్‌ల ద్వారా [మీ వెబ్ యాప్ యాక్సెసిబిలిటీని మెరుగుపరిచే](https://developer.chrome.com/docs/lighthouse/accessibility/) అవకాశం లభిస్తుంది. ఆటోమేటిక్ గుర్తింపు అనేది కొన్ని సమస్యలను మాత్రమే గుర్తించగలదు, మీ వెబ్ యాప్ యాక్సెసిబిలిటీకి అది హామీ ఇవ్వదు, కాబట్టి [మాన్యువల్ టెస్టింగ్](https://web.dev/articles/how-to-review) కూడా చేయమని మా సలహా."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "ఆటోమేటెడ్ పరీక్ష సాధనం కవర్ చేయని ప్రాంతాలను ఈ అంశాలు పేర్కొంటాయి. [యాక్సెసిబిలిటీ రివ్యూను నిర్వహించడం](https://web.dev/how-to-review/) గురించి మా గైడ్‌లో మరింత తెలుసుకోండి."
+    "message": "ఆటోమేటెడ్ పరీక్ష సాధనం కవర్ చేయని ప్రాంతాలను ఈ అంశాలు పేర్కొంటాయి. [యాక్సెసిబిలిటీ రివ్యూను నిర్వహించడం](https://web.dev/articles/how-to-review) గురించి మా గైడ్‌లో మరింత తెలుసుకోండి."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "యాక్సెసిబిలిటీ"
@@ -1794,10 +1794,10 @@
     "message": "పనితీరు"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "ఈ చెక్‌ల ద్వారా ప్రోగ్రెసివ్ వెబ్ యాప్ అంశాలు ధృవీకరించబడతాయి. [మంచి ప్రోగ్రెసివ్ వెబ్ యాప్‌ను ఏమి చేస్తుందో తెలుసుకోండి](https://web.dev/pwa-checklist/)."
+    "message": "ఈ చెక్‌ల ద్వారా ప్రోగ్రెసివ్ వెబ్ యాప్ అంశాలు ధృవీకరించబడతాయి. [మంచి ప్రోగ్రెసివ్ వెబ్ యాప్‌ను ఏమి చేస్తుందో తెలుసుకోండి](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "మౌళికమైన [PWA తనిఖీ లిస్ట్‌](https://web.dev/pwa-checklist/) ప్రకారం ఈ తనిఖీలను తప్పనిసరిగా నిర్వహించాలి, కానీ ఇవి Lighthouse ద్వారా ఆటోమేటిక్‌గా తనిఖీ చేయబడవు. ఇవి మీ స్కోర్‌పై ప్రభావం చూపవు, కానీ మీరు వీటిని మాన్యువల్‌గా అయినా ధృవీకరించడం ముఖ్యం."
+    "message": "మౌళికమైన [PWA తనిఖీ లిస్ట్‌](https://web.dev/articles/pwa-checklist) ప్రకారం ఈ తనిఖీలను తప్పనిసరిగా నిర్వహించాలి, కానీ ఇవి Lighthouse ద్వారా ఆటోమేటిక్‌గా తనిఖీ చేయబడవు. ఇవి మీ స్కోర్‌పై ప్రభావం చూపవు, కానీ మీరు వీటిని మాన్యువల్‌గా అయినా ధృవీకరించడం ముఖ్యం."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA ఆప్టిమైజ్ చేసినవి"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "మీ పేజీ ప్రాథమిక సెర్చ్ ఇంజిన్ ఆప్టిమైజేషన్ సలహాను ఫాలో అవుతుందా లేదా అని ఈ తనిఖీలు నిర్ధారిస్తాయి. [ప్రధాన వెబ్ కొలమానాలకు](https://web.dev/learn-core-web-vitals/) సంబంధించిన పనితీరుతో సహా, మీ సెర్చ్ ర్యాంకింగ్‌పై ప్రభావం చూపగల, Lighthouse పరిగణనలోకి తీసుకోని అదనపు అంశాలు చాలా ఉన్నాయి. [Google Search Essentials గురించి మరింత తెలుసుకోండి](https://support.google.com/webmasters/answer/35769)."
+    "message": "మీ పేజీ ప్రాథమిక సెర్చ్ ఇంజిన్ ఆప్టిమైజేషన్ సలహాను ఫాలో అవుతుందా లేదా అని ఈ తనిఖీలు నిర్ధారిస్తాయి. [ప్రధాన వెబ్ కొలమానాలకు](https://web.dev/explore/vitals) సంబంధించిన పనితీరుతో సహా, మీ సెర్చ్ ర్యాంకింగ్‌పై ప్రభావం చూపగల, Lighthouse పరిగణనలోకి తీసుకోని అదనపు అంశాలు చాలా ఉన్నాయి. [Google Search Essentials గురించి మరింత తెలుసుకోండి](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "అదనపు SEO ఉత్తమ అభ్యాసాలను చెక్ చేయడం కోసం మీ సైట్‌లో అదనపు వాలిడేటర్‌లను అమలు చేయండి."
@@ -2643,7 +2643,7 @@
     "message": "మీరు రిక్వెస్ట్ చేసిన పేజీని Lighthouse విశ్వసనీయ రీతిలో లోడ్ చేయలేకపోయింది. మీరు సరైన URLను పరీక్షిస్తున్నారని, సర్వర్ అన్ని రిక్వెస్ట్‌లకు సరిగ్గా ప్రతిస్పందిస్తోందని నిర్ధారించుకోండి. (వివరాలు: {errorDetails})"
   },
   "core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
-    "message": "మీరు రిక్వెస్ట్ చేసిన పేజీని Lighthouse విశ్వసనీయ రీతిలో లోడ్ చేయలేకపోయింది. మీరు సరైన URLను పరీక్షిస్తున్నారని, సర్వర్ అన్ని రిక్వెస్ట్‌లకు సరిగ్గా ప్రతిస్పందిస్తోందని నిర్ధారించుకోండి. (స్థితి కోడ్: {statusCode})"
+    "message": "మీరు రిక్వెస్ట్ చేసిన పేజీని Lighthouse విశ్వసనీయ రీతిలో లోడ్ చేయలేకపోయింది. మీరు సరైన URLను పరీక్షిస్తున్నారని, సర్వర్ అన్ని రిక్వెస్ట్‌లకు సరిగ్గా ప్రతిస్పందిస్తోందని నిర్ధారించుకోండి. (స్టేటస్ కోడ్: {statusCode})"
   },
   "core/lib/lh-error.js | pageLoadTookTooLong": {
     "message": "మీ పేజీ లోడ్ కావడానికి చాలా ఎక్కువ సమయం పట్టింది. మీ పేజీ లోడ్ సమయం తగ్గించడానికి దయచేసి రిపోర్ట్‌లో ఉన్న అవకాశాలను అనుసరించి, ఆపై Lighthouseను తిరిగి అమలు చేయడానికి ప్రయత్నించండి. ({errorCode})"
@@ -2656,6 +2656,9 @@
   },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "మీరు అందించిన URL చెల్లనిదిగా కనిపిస్తోంది."
+  },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "మీరు రిక్వెస్ట్ చేసిన పేజీని Lighthouse విశ్వసనీయ రీతిలో లోడ్ చేయలేకపోయింది. మీరు సరైన URLను పరీక్షిస్తున్నారని, సర్వర్ అన్ని రిక్వెస్ట్‌లకు సరిగ్గా ప్రతిస్పందిస్తోందని నిర్ధారించుకోండి. (స్టేటస్ కోడ్: {errorCode})"
   },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "పేజీ MIME రకం XHTML: ఈ డాక్యుమెంట్ రకాన్ని Lighthouse నేరుగా సపోర్ట్ చేయదు"
@@ -3108,22 +3111,22 @@
     "message": "బ్రౌజర్‌కి పంపే ఫైల్స్ సైజును తగ్గించడానికి NitroPackలో [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `format=\"webp\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `format=\"webp\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "ఆఫ్‌స్క్రీన్ ఇమేజ్‌ల కోసం `nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `loading=\"lazy\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "ఆఫ్‌స్క్రీన్ ఇమేజ్‌ల కోసం `nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `loading=\"lazy\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "LCP ఇమేజ్ కోసం `nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `preload`ను పేర్కొనండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "LCP ఇమేజ్ కోసం `nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `preload`ను పేర్కొనండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, ఖచ్చితమైన `width`, `height`ను పేర్కొనండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, ఖచ్చితమైన `width`, `height`ను పేర్కొనండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, సరైన `quality`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, సరైన `quality`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, సరైన `sizes`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, సరైన `sizes`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "వెబ్ పేజీ మరింత వేగంగా లోడ్ కేవడానికి [యానిమేట్ చేసిన GIFలను వీడియోతో భర్తీ చేయండి](https://web.dev/replace-gifs-with-videos/), అలాగే కుదింపు సామర్థ్యాన్ని ప్రస్తుత స్టేట్-ఆఫ్-ది-ఆర్ట్ వీడియో కోడెక్, VP9 కంటే 30% ఎక్కువగా ఉంటే [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) లేదా [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) లాంటి ఆధునిక ఫైల్ ఫార్మాట్‌లను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "మొదటి పేజీ లోడ్"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "పాయింట్-ఇన్-టైమ్ స్నాప్‌షాట్"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "యూజర్ ఇంటరాక్షన్‌ల కాల వ్యవధి"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "అనుకూల త్రోట్లింగ్"
   },
@@ -3393,10 +3402,10 @@
     "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (నెట్‌వర్క్)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "సింగిల్ పేజీ లోడ్"
+    "message": "సింగిల్ పేజీ సెషన్"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "అనేక సెషన్‌లను కలిగిన ఫీల్డ్ డేటా లాగా కాకుండా, ఈ డేటా సింగిల్ పేజీ లోడ్ నుండి తీసుకోబడింది."
+    "message": "అనేక సెషన్‌లు ఉన్న ఫీల్డ్ డేటా లాగా కాకుండా, ఈ డేటా సింగిల్ పేజీ సెషన్ నుండి తీసుకోబడింది."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "నెమ్మదిగా ఉన్న 4G థ్రోట్లింగ్"

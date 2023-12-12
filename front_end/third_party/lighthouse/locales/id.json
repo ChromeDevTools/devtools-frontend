@@ -639,7 +639,7 @@
     "message": "Gunakan format video untuk konten animasi"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Polyfill dan transformasi memungkinkan browser lama menggunakan fitur JavaScript yang baru. Namun, banyak di antara fitur tersebut yang tidak diperlukan browser modern. Untuk paket JavaScript Anda, terapkan strategi deployment skrip modern menggunakan deteksi fitur modul/nomodule untuk mengurangi jumlah kode yang dikirimkan ke browser modern, sambil terus menyediakan dukungan untuk browser lama. [Pelajari cara menggunakan JavaScript modern](https://web.dev/publish-modern-javascript/)"
+    "message": "Polyfill dan transformasi memungkinkan browser lama menggunakan fitur JavaScript yang baru. Namun, banyak di antara fitur tersebut yang tidak diperlukan browser modern. Untuk paket JavaScript Anda, terapkan strategi deployment skrip modern menggunakan deteksi fitur modul/nomodule untuk mengurangi jumlah kode yang dikirimkan ke browser modern, sambil terus menyediakan dukungan untuk browser lama. [Pelajari cara menggunakan JavaScript modern](https://web.dev/articles/publish-modern-javascript)"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Hindari penayangan JavaScript lama di browser modern"
@@ -993,7 +993,7 @@
     "message": "Ukuran yang diharapkan"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Dimensi alami gambar sebaiknya proporsional dengan ukuran tampilan dan rasio piksel untuk memaksimalkan kejelasan gambar. [Pelajari cara memberikan gambar yang responsif](https://web.dev/serve-responsive-images/)."
+    "message": "Dimensi alami gambar sebaiknya proporsional dengan ukuran tampilan dan rasio piksel untuk memaksimalkan kejelasan gambar. [Pelajari cara memberikan gambar yang responsif](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Menampilkan gambar dengan resolusi rendah"
@@ -1158,13 +1158,13 @@
     "message": "Kontribusi CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Elemen DOM ini paling banyak berkontribusi untuk CLS halaman. [Pelajari cara meningkatkan CLS](https://web.dev/optimize-cls/)"
+    "message": "Elemen DOM ini paling banyak berkontribusi untuk CLS halaman. [Pelajari cara meningkatkan CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Hindari peralihan tata letak berukuran besar"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Gambar paruh atas yang dimuat dengan lambat akan dirender nanti di siklus proses halaman, yang dapat menunda Largest Contentful Paint. [Pelajari pemuatan lambat yang optimal](https://web.dev/lcp-lazy-loading/)."
+    "message": "Gambar paruh atas yang dimuat dengan lambat akan dirender nanti di siklus proses halaman, yang dapat menunda Largest Contentful Paint. [Pelajari pemuatan lambat yang optimal](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Gambar Largest Contentful Paint dimuat dengan lambat"
@@ -1173,7 +1173,7 @@
     "message": "Gambar Largest Contentful Paint tidak dimuat dengan lambat"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Mencantumkan tugas yang berjalan paling lama di thread utama, berguna untuk mengidentifikasi kontributor utama penundaan input. [Pelajari cara menghindari tugas thread utama yang berjalan lama](https://web.dev/long-tasks-devtools/)"
+    "message": "Mencantumkan tugas yang berjalan paling lama di thread utama, berguna untuk mengidentifikasi kontributor utama penundaan input. [Pelajari cara menghindari tugas thread utama yang berjalan lama](https://web.dev/articles/long-tasks-devtools)"
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{# tugas berjalan lama}other{# tugas berjalan lama}}"
@@ -1221,7 +1221,7 @@
     "message": "Manifes memiliki ikon maskable"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Pergeseran Tata Letak Kumulatif (CLS) mengukur perpindahan elemen yang terlihat dalam area pandang. [Pelajari lebih lanjut metrik Pergeseran Tata Letak Kumulatif](https://web.dev/cls/)."
+    "message": "Pergeseran Tata Letak Kumulatif (CLS) mengukur perpindahan elemen yang terlihat dalam area pandang. [Pelajari lebih lanjut metrik Pergeseran Tata Letak Kumulatif](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint menandai waktu saat teks atau gambar pertama di-paint. [Pelajari lebih lanjut metrik First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "First Meaningful Paint mengukur waktu saat konten utama halaman terlihat. [Pelajari lebih lanjut metrik First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint mengukur responsivitas halaman, yaitu waktu yang diperlukan halaman untuk merespons input pengguna secara jelas. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Interaction to Next Paint mengukur responsivitas halaman, yaitu waktu yang diperlukan halaman untuk merespons input pengguna secara jelas. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Waktu untuk Interaktif adalah lamanya waktu yang diperlukan halaman untuk menjadi interaktif sepenuhnya. [Pelajari lebih lanjut metrik Waktu untuk Interaktif](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Latensi Backend Server"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Peristiwa `unload` tidak diaktifkan dengan lancar dan jika diproses dapat mencegah upaya pengoptimalan browser seperti Back-Forward Cache. Sebagai gantinya, gunakan peristiwa `pagehide` atau `visibilitychange`. [Pelajari lebih lanjut cara menghapus muatan pemroses peristiwa](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Peristiwa `unload` tidak diaktifkan dengan lancar dan jika diproses dapat mencegah upaya pengoptimalan browser seperti Back-Forward Cache. Sebagai gantinya, gunakan peristiwa `pagehide` atau `visibilitychange`. [Pelajari lebih lanjut cara menghapus muatan pemroses peristiwa](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Mendaftarkan pemroses `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Anggaran performa"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Pramuat font `optional` agar pengunjung kali pertama dapat menggunakannya. [Pelajari lebih lanjut cara pramuat font](https://web.dev/preload-optional-fonts/)"
+    "message": "Pramuat font `optional` agar pengunjung kali pertama dapat menggunakannya. [Pelajari lebih lanjut cara pramuat font](https://web.dev/articles/preload-optional-fonts)"
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Font dengan `font-display: optional` tidak dipramuat"
@@ -1314,7 +1314,7 @@
     "message": "Font dengan `font-display: optional` telah dipramuat"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Jika elemen LCP ditambahkan secara dinamis ke halaman, Anda harus melakukan pramuat gambar untuk mengoptimalkan waktu LCP. [Pelajari lebih lanjut cara melakukan pramuat elemen LCP](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Jika elemen LCP ditambahkan secara dinamis ke halaman, Anda harus melakukan pramuat gambar untuk mengoptimalkan waktu LCP. [Pelajari lebih lanjut cara melakukan pramuat elemen LCP](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Pramuat gambar Largest Contentful Paint (LCP)"
@@ -1587,7 +1587,7 @@
     "message": "Anggaran waktu"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Setel lebar dan tinggi yang jelas pada elemen gambar untuk mengurangi pergeseran tata letak dan memperbaiki CLS. [Pelajari cara menyetel dimensi gambar](https://web.dev/optimize-cls/#images-without-dimensions)"
+    "message": "Setel lebar dan tinggi yang jelas pada elemen gambar untuk mengurangi pergeseran tata letak dan memperbaiki CLS. [Pelajari cara menyetel dimensi gambar](https://web.dev/articles/optimize-cls#images_without_dimensions)"
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Elemen gambar tidak memiliki `width` dan `height` yang jelas"
@@ -1662,7 +1662,7 @@
     "message": "Memiliki tag `<meta name=\"viewport\">` dengan `width` atau `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Ini merupakan tugas pemblokiran thread yang terjadi selama pengukuran Interaction to Next Paint. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/inp/)."
+    "message": "Ini merupakan tugas pemblokiran thread yang terjadi selama pengukuran Interaction to Next Paint. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} md dihabiskan untuk peristiwa '{interactionType}'"
@@ -1704,10 +1704,10 @@
     "message": "Praktik terbaik"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Pemeriksaan ini menandai peluang untuk [meningkatkan aksesibilitas aplikasi web Anda](https://developer.chrome.com/docs/lighthouse/accessibility/). Deteksi otomatis hanya dapat mendeteksi sebagian masalah dan tidak menjamin aksesibilitas aplikasi web Anda, sehingga [pengujian manual](https://web.dev/how-to-review/) juga dianjurkan."
+    "message": "Pemeriksaan ini menandai peluang untuk [meningkatkan aksesibilitas aplikasi web Anda](https://developer.chrome.com/docs/lighthouse/accessibility/). Deteksi otomatis hanya dapat mendeteksi sebagian masalah dan tidak menjamin aksesibilitas aplikasi web Anda, sehingga [pengujian manual](https://web.dev/articles/how-to-review) juga dianjurkan."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Item berikut ini menangani area yang tidak dapat dicakup oleh fitur pengujian otomatis. Pelajari lebih lanjut dalam panduan kami tentang [menjalankan tinjauan aksesibilitas](https://web.dev/how-to-review/)."
+    "message": "Item berikut ini menangani area yang tidak dapat dicakup oleh fitur pengujian otomatis. Pelajari lebih lanjut dalam panduan kami tentang [menjalankan tinjauan aksesibilitas](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Aksesibilitas"
@@ -1794,10 +1794,10 @@
     "message": "Performa"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Pemeriksaan ini memvalidasi aspek-aspek Progressive Web App. [Pelajari kriteria Progressive Web App yang bagus](https://web.dev/pwa-checklist/)."
+    "message": "Pemeriksaan ini memvalidasi aspek-aspek Progressive Web App. [Pelajari kriteria Progressive Web App yang bagus](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Pemeriksaan ini diperlukan oleh [Checklist PWA](https://web.dev/pwa-checklist/) untuk dasar pengukuran tetapi tidak otomatis diperiksa oleh Lighthouse. Pemeriksaan tersebut tidak memengaruhi skor, tetapi penting karena hal ini berarti Anda memverifikasi situs-situs secara manual."
+    "message": "Pemeriksaan ini diperlukan oleh [Checklist PWA](https://web.dev/articles/pwa-checklist) untuk dasar pengukuran tetapi tidak otomatis diperiksa oleh Lighthouse. Pemeriksaan tersebut tidak memengaruhi skor, tetapi penting karena hal ini berarti Anda memverifikasi situs-situs secara manual."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "PWA yang Dioptimalkan"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Pemeriksaan ini memastikan bahwa halaman Anda mengikuti saran pengoptimalan mesin telusur dasar. Ada banyak faktor tambahan yang tidak diperhitungkan oleh Lighthouse di sini yang mungkin memengaruhi peringkat penelusuran Anda, termasuk performa di [Data Web Inti](https://web.dev/learn-core-web-vitals/). [Pelajari lebih lanjut Google Penelusuran Essentials](https://support.google.com/webmasters/answer/35769)."
+    "message": "Pemeriksaan ini memastikan bahwa halaman Anda mengikuti saran pengoptimalan mesin telusur dasar. Ada banyak faktor tambahan yang tidak diperhitungkan oleh Lighthouse di sini yang mungkin memengaruhi peringkat penelusuran Anda, termasuk performa di [Data Web Inti](https://web.dev/explore/vitals). [Pelajari lebih lanjut Google Penelusuran Essentials](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Jalankan validator tambahan ini di situs Anda untuk memeriksa praktik terbaik SEO lainnya."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "URL yang Anda berikan tampaknya tidak valid."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse tidak dapat memuat halaman yang Anda minta dengan lancar. Pastikan Anda menguji URL yang benar dan server merespons semua permintaan dengan baik. (Kode status: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Jenis MIME halaman adalah XHTML: Lighthouse tidak secara eksplisit mendukung jenis dokumen ini"
   },
@@ -3108,22 +3111,22 @@
     "message": "Gunakan [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) di NitroPack untuk mengurangi ukuran file yang dikirim ke browser."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Gunakan komponen `nuxt/image` dan setel `format=\"webp\"`. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Gunakan komponen `nuxt/image` dan setel `format=\"webp\"`. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Gunakan komponen `nuxt/image` dan setel `loading=\"lazy\"` untuk gambar di bagian halaman yang belum ditampilkan. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Gunakan komponen `nuxt/image` dan setel `loading=\"lazy\"` untuk gambar di bagian halaman yang belum ditampilkan. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Gunakan komponen `nuxt/image` dan tentukan `preload` untuk gambar LCP. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Gunakan komponen `nuxt/image` dan tentukan `preload` untuk gambar LCP. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Gunakan komponen `nuxt/image` dan tentukan `width` dan `height` eksplisit. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+    "message": "Gunakan komponen `nuxt/image` dan tentukan `width` dan `height` eksplisit. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#width-height)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Gunakan komponen `nuxt/image` dan setel `quality` yang sesuai. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Gunakan komponen `nuxt/image` dan setel `quality` yang sesuai. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Gunakan komponen `nuxt/image` dan setel `sizes` yang sesuai. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Gunakan komponen `nuxt/image` dan setel `sizes` yang sesuai. [Pelajari lebih lanjut](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Ganti animasi GIF dengan video](https://web.dev/replace-gifs-with-videos/) untuk pemuatan halaman yang lebih cepat dan sebaiknya gunakan format file modern seperti [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) atau [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) untuk meningkatkan efisiensi kompresi lebih dari 30% dibandingkan codec video tercanggih saat ini, VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Pemuatan halaman awal"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Snapshot waktu tertentu"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Rentang waktu interaksi pengguna"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Throttle kustom"
   },
@@ -3393,10 +3402,10 @@
     "message": "Agen pengguna (jaringan)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "Pemuatan satu halaman"
+    "message": "Sesi satu halaman"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Data ini diambil dari pemuatan satu halaman, tidak seperti data kolom yang merangkum banyak sesi."
+    "message": "Data ini diambil dari sesi satu halaman, tidak seperti data kolom yang merangkum banyak sesi."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Throttle 4G lambat"

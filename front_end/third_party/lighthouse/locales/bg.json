@@ -639,7 +639,7 @@
     "message": "Използвайте видеоформати за анимираното съдържание"
   },
   "core/audits/byte-efficiency/legacy-javascript.js | description": {
-    "message": "Полифиловете и трансформациите дават възможност на старите браузъри да използват нови функции на JavaScript, но в голяма степен не са необходими за съвременните браузъри. За JavaScript пакета си използвайте актуална стратегия за внедряване на скриптове посредством откриване на функции за модулни/немодулни скриптове, за да намалите количеството код, изпращан до новите браузъри, и същевременно да запазите поддръжката за старите такива. [Научете как да използвате съвременен JavaScript](https://web.dev/publish-modern-javascript/)."
+    "message": "Полифиловете и трансформациите дават възможност на старите браузъри да използват нови функции на JavaScript, но в голяма степен не са необходими за съвременните браузъри. За JavaScript пакета си използвайте актуална стратегия за внедряване на скриптове посредством откриване на функции за модулни/немодулни скриптове, за да намалите количеството код, изпращан до новите браузъри, и същевременно да запазите поддръжката за старите такива. [Научете как да използвате съвременен JavaScript](https://web.dev/articles/publish-modern-javascript)."
   },
   "core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Избягвайте показването на остарял JavaScript в съвременни браузъри"
@@ -993,7 +993,7 @@
     "message": "Очакван размер"
   },
   "core/audits/image-size-responsive.js | description": {
-    "message": "Естествените размери на изображенията трябва да са пропорционални на размера на екрана и пикселното съотношение, за да се постигне максимално ясно изобразяване. [Научете как да предоставяте адаптивни изображения](https://web.dev/serve-responsive-images/)."
+    "message": "Естествените размери на изображенията трябва да са пропорционални на размера на екрана и пикселното съотношение, за да се постигне максимално ясно изобразяване. [Научете как да предоставяте адаптивни изображения](https://web.dev/articles/serve-responsive-images)."
   },
   "core/audits/image-size-responsive.js | failureTitle": {
     "message": "Изображенията се показват с ниска разделителна способност"
@@ -1158,13 +1158,13 @@
     "message": "Принос към CLS"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Тези елементи в DOM имат най-голям принос за CLS на страницата. [Научете как да подобрите CLS](https://web.dev/optimize-cls/)"
+    "message": "Тези елементи в DOM имат най-голям принос за CLS на страницата. [Научете как да подобрите CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
     "message": "Избягвайте големи промени в оформлението"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Забавено заредените изображения на видимата на екрана част от страницата се рендерират на по-късен етап от жизнения ѝ цикъл. Това може да доведе до забавяне при изобразяване на най-голямото съдържание (LCP). [Научете повече за оптималното забавяне при зареждане](https://web.dev/lcp-lazy-loading/)."
+    "message": "Забавено заредените изображения на видимата на екрана част от страницата се рендерират на по-късен етап от жизнения ѝ цикъл. Това може да доведе до забавяне при изобразяване на най-голямото съдържание (LCP). [Научете повече за оптималното забавяне при зареждане](https://web.dev/articles/lcp-lazy-loading)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Изображението, рендерирано при изобразяване на най-голямото съдържание (LPC), бе заредено със забавяне"
@@ -1173,7 +1173,7 @@
     "message": "Изображението, рендерирано при изобразяване на най-голямото съдържание (LPC), бе заредено без забавяне"
   },
   "core/audits/long-tasks.js | description": {
-    "message": "Посочва най-продължителните задачи в основната нишка и ви помага да идентифицирате главните причинители на забавяне при взаимодействие. [Научете как да избягвате времеемките задачи в основната нишка](https://web.dev/long-tasks-devtools/)."
+    "message": "Посочва най-продължителните задачи в основната нишка и ви помага да идентифицирате главните причинители на забавяне при взаимодействие. [Научете как да избягвате времеемките задачи в основната нишка](https://web.dev/articles/long-tasks-devtools)."
   },
   "core/audits/long-tasks.js | displayValue": {
     "message": "{itemCount,plural, =1{Бе открита # продължителна задача}other{Бяха открити # продължителни задачи}}"
@@ -1221,7 +1221,7 @@
     "message": "Манифестът съдържа адаптивна икона"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Показателят „Кумулативни структурни промени (CLS)“ измерва движението на видимите елементи в прозоречния изглед. [Научете повече за този показател](https://web.dev/cls/)."
+    "message": "Показателят „Кумулативни структурни промени (CLS)“ измерва движението на видимите елементи в прозоречния изглед. [Научете повече за този показател](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Показателят „Първо изобразяване на съдържание (FCP)“ указва след колко време се изобразява първият текстов или графичен елемент. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
@@ -1230,7 +1230,7 @@
     "message": "Показателят „Първо значимо изобразяване“ измерва времето, за което основното съдържание на страницата става видимо. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interaction-to-next-paint.js | description": {
-    "message": "Показателят „Изобразяване след взаимодействие“ измерва колко време е необходимо на страницата, за да реагира визуално след входящи данни от действие на потребител. [Научете повече за този показател](https://web.dev/inp/)."
+    "message": "Показателят „Изобразяване след взаимодействие“ измерва колко време е необходимо на страницата, за да реагира визуално след входящи данни от действие на потребител. [Научете повече за този показател](https://web.dev/articles/inp)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Времето до интерактивност показва след колко време страницата става напълно интерактивна. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1260,7 +1260,7 @@
     "message": "Забавяния в задния слой на сървъра"
   },
   "core/audits/no-unload-listeners.js | description": {
-    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например Back-Forward Cache. Вместо това използвайте събитията `pagehide` или `visibilitychange`. [Научете повече за приемателите на събития unload](https://web.dev/bfcache/#never-use-the-unload-event)"
+    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например Back-Forward Cache. Вместо това използвайте събитията `pagehide` или `visibilitychange`. [Научете повече за приемателите на събития unload](https://web.dev/articles/bfcache#never_use_the_unload_event)"
   },
   "core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Регистрира приемател за `unload`"
@@ -1305,7 +1305,7 @@
     "message": "Бюджет за ефективността"
   },
   "core/audits/preload-fonts.js | description": {
-    "message": "Заредете предварително шрифтовете със свойство `optional`, за да могат да се ползват от новите посетители. [Научете повече за предварителното зареждане на шрифтове](https://web.dev/preload-optional-fonts/)."
+    "message": "Заредете предварително шрифтовете със свойство `optional`, за да могат да се ползват от новите посетители. [Научете повече за предварителното зареждане на шрифтове](https://web.dev/articles/preload-optional-fonts)."
   },
   "core/audits/preload-fonts.js | failureTitle": {
     "message": "Шрифтовете, които използват собствеността `font-display: optional`, не са заредени предварително"
@@ -1314,7 +1314,7 @@
     "message": "Шрифтовете, които използват собствеността `font-display: optional`, са заредени предварително"
   },
   "core/audits/prioritize-lcp-image.js | description": {
-    "message": "Ако най-големият елемент се добавя динамично към страницата, трябва да заредите предварително изображението, за да подобрите LCP. [Научете повече за предварителното зареждане на най-големите елементи](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
+    "message": "Ако най-големият елемент се добавя динамично към страницата, трябва да заредите предварително изображението, за да подобрите LCP. [Научете повече за предварителното зареждане на най-големите елементи](https://web.dev/articles/optimize-lcp#optimize_when_the_resource_is_discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Предварително зареждане на изображението, рендерирано при изобразяване на най-голямото съдържание (LPC)"
@@ -1587,7 +1587,7 @@
     "message": "Времеви бюджет"
   },
   "core/audits/unsized-images.js | description": {
-    "message": "Задайте изрично широчина и височина за елементите на изображенията, за да намалите промените в оформлението и подобрите CLS. [Научете как да задавате размери за изображенията](https://web.dev/optimize-cls/#images-without-dimensions)."
+    "message": "Задайте изрично широчина и височина за елементите на изображенията, за да намалите промените в оформлението и подобрите CLS. [Научете как да задавате размери за изображенията](https://web.dev/articles/optimize-cls#images_without_dimensions)."
   },
   "core/audits/unsized-images.js | failureTitle": {
     "message": "Елементите на изображенията не са с изрично посочени `width` и `height`"
@@ -1662,7 +1662,7 @@
     "message": "Има маркер `<meta name=\"viewport\">` с атрибут `width` или `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Това са блокиращите нишката операции, извършвани в периода между взаимодействието и следващото изобразяване. [Научете повече за показателя „Изобразяване след взаимодействие“](https://web.dev/inp/)."
+    "message": "Това са блокиращите нишката операции, извършвани в периода между взаимодействието и следващото изобразяване. [Научете повече за показателя „Изобразяване след взаимодействие“](https://web.dev/articles/inp)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "Събитието {interactionType} отне {timeInMs, number, milliseconds} мсек"
@@ -1704,10 +1704,10 @@
     "message": "Най-добри практики"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Тези проверки открояват възможности за [подобряване на достъпността на уеб приложението ви](https://developer.chrome.com/docs/lighthouse/accessibility/). Само определени проблеми могат да бъдат открити автоматично и това не гарантира достъпността на уеб приложението. Затова [ръчното тестване](https://web.dev/how-to-review/) също е препоръчително."
+    "message": "Тези проверки открояват възможности за [подобряване на достъпността на уеб приложението ви](https://developer.chrome.com/docs/lighthouse/accessibility/). Само определени проблеми могат да бъдат открити автоматично и това не гарантира достъпността на уеб приложението. Затова [ръчното тестване](https://web.dev/articles/how-to-review) също е препоръчително."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Тези проверки покриват области, които са извън обхвата на автоматичните инструменти за тестване. Научете повече в ръководството ни за [извършване на преглед на достъпността](https://web.dev/how-to-review/)."
+    "message": "Тези проверки покриват области, които са извън обхвата на автоматичните инструменти за тестване. Научете повече в ръководството ни за [извършване на преглед на достъпността](https://web.dev/articles/how-to-review)."
   },
   "core/config/default-config.js | a11yCategoryTitle": {
     "message": "Достъпност"
@@ -1794,10 +1794,10 @@
     "message": "Ефективност"
   },
   "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Тези проверки са свързани с аспектите на прогресивните уеб приложения. [Научете с какво се отличават добрите такива приложения](https://web.dev/pwa-checklist/)."
+    "message": "Тези проверки са свързани с аспектите на прогресивните уеб приложения. [Научете с какво се отличават добрите такива приложения](https://web.dev/articles/pwa-checklist)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Тези проверки са задължителни според отправния [контролен списък за PWA](https://web.dev/pwa-checklist/), но не се извършват автоматично от Lighthouse. Те не се отразяват на резултата ви, но е важно да ги потвърдите ръчно."
+    "message": "Тези проверки са задължителни според отправния [контролен списък за PWA](https://web.dev/articles/pwa-checklist), но не се извършват автоматично от Lighthouse. Те не се отразяват на резултата ви, но е важно да ги потвърдите ръчно."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1809,7 +1809,7 @@
     "message": "Оптимизиране за PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Тези проверки показват дали страницата ви следва съвета за основно оптимизиране за търсещи машини. Има много допълнителни фактори, които тук не са взети под внимание от Lighthouse. Те може да повлияят на класирането на резултатите от търсенето, включително на ефективността според [основните показатели за мрежата](https://web.dev/learn-core-web-vitals/). [Научете повече за основните елементи на Google Търсене](https://support.google.com/webmasters/answer/35769)."
+    "message": "Тези проверки показват дали страницата ви следва съвета за основно оптимизиране за търсещи машини. Има много допълнителни фактори, които тук не са взети под внимание от Lighthouse. Те може да повлияят на класирането на резултатите от търсенето, включително на ефективността според [основните показатели за мрежата](https://web.dev/explore/vitals). [Научете повече за основните елементи на Google Търсене](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Стартирайте тези допълнителни инструменти на сайта си, за да проверите дали е съобразен с други най-добри практики за SEO."
@@ -2657,6 +2657,9 @@
   "core/lib/lh-error.js | urlInvalid": {
     "message": "Предоставеният от вас URL адрес изглежда невалиден."
   },
+  "core/lib/navigation-error.js | warningStatusCode": {
+    "message": "Lighthouse не успя надеждно да зареди заявената от вас страница. Уверете се, че тествате точния URL адрес и че сървърът отговаря правилно на всички заявки. (Код на състоянието: {errorCode})"
+  },
   "core/lib/navigation-error.js | warningXhtml": {
     "message": "Типът MIME на страницата е XHTML: Lighthouse не поддържа изрично този тип документ"
   },
@@ -3108,22 +3111,22 @@
     "message": "Използвайте функцията [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) в NitroPack, за да намалите размера на файловете, които се изпращат до браузъра."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
-    "message": "Използвайте компонента `nuxt/image` и задайте `format=\"webp\"`. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#format)."
+    "message": "Използвайте компонента `nuxt/image` и задайте `format=\"webp\"`. [Научете повече](https://image.nuxt.com/usage/nuxt-img#format)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
-    "message": "Използвайте компонента `nuxt/image` и задайте `loading=\"lazy\"` за изображенията извън видимата част на екрана. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#loading)."
+    "message": "Използвайте компонента `nuxt/image` и задайте `loading=\"lazy\"` за изображенията извън видимата част на екрана. [Научете повече](https://image.nuxt.com/usage/nuxt-img#loading)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | prioritize-lcp-image": {
-    "message": "Използвайте компонента `nuxt/image` и посочете `preload` за най-голямото изображение (LCP). [Научете повече](https://image.nuxtjs.org/components/nuxt-img#preload)."
+    "message": "Използвайте компонента `nuxt/image` и посочете `preload` за най-голямото изображение (LCP). [Научете повече](https://image.nuxt.com/usage/nuxt-img#preload)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
-    "message": "Използвайте компонента `nuxt/image` и посочете изрична стойност за `width` и `height`. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#width--height)"
+    "message": "Използвайте компонента `nuxt/image` и посочете изрична стойност за `width` и `height`. [Научете повече](https://image.nuxt.com/usage/nuxt-img#width-height)"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
-    "message": "Използвайте компонента `nuxt/image` и задайте подходяща стойност за `quality`. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#quality)."
+    "message": "Използвайте компонента `nuxt/image` и задайте подходяща стойност за `quality`. [Научете повече](https://image.nuxt.com/usage/nuxt-img#quality)."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
-    "message": "Използвайте компонента `nuxt/image` и задайте подходяща стойност за `sizes`. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#sizes)."
+    "message": "Използвайте компонента `nuxt/image` и задайте подходяща стойност за `sizes`. [Научете повече](https://image.nuxt.com/usage/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Заменете анимираните GIF файлове с видеосъдържание](https://web.dev/replace-gifs-with-videos/), за да ускорите зареждането на уеб страницата, и помислете за използването на съвременни файлови формати, като [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) или [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), за да подобрите ефективността при компресиране с повече от 30% спрямо най-модерния понастоящем видеокодек VP9."
@@ -3359,6 +3362,12 @@
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Първоначално зареждане на страницата"
   },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowSnapshot": {
+    "message": "Моментна снимка в даден момент"
+  },
+  "report/renderer/report-utils.js | runtimeAnalysisWindowTimespan": {
+    "message": "Период от време на взаимодействията на потребителите"
+  },
   "report/renderer/report-utils.js | runtimeCustom": {
     "message": "Персонализирано ограничаване на потока на данни"
   },
@@ -3393,10 +3402,10 @@
     "message": "Потребителски агент (мрежа)"
   },
   "report/renderer/report-utils.js | runtimeSingleLoad": {
-    "message": "При едно зареждане на страницата"
+    "message": "Сесия от една страница"
   },
   "report/renderer/report-utils.js | runtimeSingleLoadTooltip": {
-    "message": "Тези данни са генерирани от едно зареждане на страницата за разлика от данните от реалното ползване, които обобщават голям брой сесии."
+    "message": "Тези данни са генерирани от сесия от една страница за разлика от данните от реалното ползване, които обобщават голям брой сесии."
   },
   "report/renderer/report-utils.js | runtimeSlow4g": {
     "message": "Ограничаване до бавна 4G връзка"

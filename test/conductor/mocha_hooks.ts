@@ -132,7 +132,7 @@ export const mochaHooks = {
   // In both modes, run before each test.
   beforeEach: async function(this: Mocha.Suite) {
     // Sets the timeout higher for this hook only.
-    this.timeout(10000);
+    this.timeout(20000);
     await resetPages();
     await unregisterAllServiceWorkers();
 

@@ -64,6 +64,9 @@ export class EntriesFilter {
   // List of entries whose children are modified. This list is used to
   // keep track of entries that should be identified in the UI as modified.
   #modifiedVisibleEntries: Types.TraceEvents.TraceEventData[] = [];
+  // Cache for ancestors of entry that have already been gathered. The ancestors
+  // will never change so we can avoid running the potentially expensive search again.
+  #entryToAncestorsMap: Map<Helpers.TreeHelpers.TraceEntryNode, Types.TraceEvents.TraceEventData[]> = new Map();
 
   constructor(entryToNode: EntryToNodeMap) {
     this.#entryToNode = entryToNode;
@@ -157,7 +160,12 @@ export class EntriesFilter {
   }
 
   #findAllAncestorsOfNode(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEventData[] {
-    const ancestors: Types.TraceEvents.TraceEntry[] = [];
+    const cachedAncestors = this.#entryToAncestorsMap.get(root);
+    if (cachedAncestors) {
+      return cachedAncestors;
+    }
+
+    const ancestors: Types.TraceEvents.TraceEventData[] = [];
 
     // Walk through all the ancestors, starting at the root node.
     const children: Helpers.TreeHelpers.TraceEntryNode[] = [...root.children];
@@ -165,10 +173,17 @@ export class EntriesFilter {
       const childNode = children.shift();
       if (childNode) {
         ancestors.push(childNode.entry);
-        children.push(...childNode.children);
+        const childNodeCachedAncestors = this.#entryToAncestorsMap.get(childNode);
+        // If the ancestors of a child are cached, get them from the cache instead of iterating through them again
+        if (childNodeCachedAncestors) {
+          ancestors.push(...childNodeCachedAncestors);
+        } else {
+          children.push(...childNode.children);
+        }
       }
     }
 
+    this.#entryToAncestorsMap.set(root, ancestors);
     return ancestors;
   }
 

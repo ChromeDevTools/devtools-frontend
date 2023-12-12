@@ -68,15 +68,11 @@ export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTML
 };
 
 export const clickDevicesDropDown = async () => {
-  // TODO(crbug.com/1411196): the dropdown might be clickable but not handling the events properly.
-  await new Promise(resolve => setTimeout(resolve, 100));
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
   await click(DEVICE_LIST_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
 export const clickDevicePostureDropDown = async () => {
-  // TODO(crbug.com/1510432): the dropdown is not showing reliably.
-  await new Promise(resolve => setTimeout(resolve, 300));
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
   await click(DEVICE_POSTURE_DROPDOWN_SELECTOR, {root: toolbar});
 };

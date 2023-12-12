@@ -837,7 +837,6 @@ export class ToolbarMenuButton extends ToolbarButton {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private triggerTimeout?: number;
-  private lastTriggerTime?: number;
   constructor(contextMenuHandler: (arg0: ContextMenu) => void, useSoftMenu?: boolean, jslogContext?: string) {
     super('', 'dots-vertical', undefined, jslogContext);
     this.contextMenuHandler = contextMenuHandler;
@@ -859,11 +858,6 @@ export class ToolbarMenuButton extends ToolbarButton {
   private trigger(event: Event): void {
     delete this.triggerTimeout;
 
-    // Throttling avoids entering a bad state on Macs when rapidly triggering context menus just
-    // after the window gains focus. See crbug.com/655556
-    if (this.lastTriggerTime && Date.now() - this.lastTriggerTime < 300) {
-      return;
-    }
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
       x: this.element.getBoundingClientRect().left,
@@ -871,7 +865,6 @@ export class ToolbarMenuButton extends ToolbarButton {
     });
     this.contextMenuHandler(contextMenu);
     void contextMenu.show();
-    this.lastTriggerTime = Date.now();
   }
 
   override clicked(event: Event): void {

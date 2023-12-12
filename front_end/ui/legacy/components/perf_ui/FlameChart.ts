@@ -786,7 +786,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS);
     });
 
-    contextMenu.headerSection().appendItem('Undo all actions', () => {
+    contextMenu.headerSection().appendItem('Reset children', () => {
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN);
+    });
+
+    contextMenu.headerSection().appendItem('Reset trace', () => {
       dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS);
     });
 

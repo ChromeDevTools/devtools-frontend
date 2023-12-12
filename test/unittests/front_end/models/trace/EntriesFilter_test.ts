@@ -294,4 +294,107 @@ describe('EntriesFilter', function() {
     assert.strictEqual(stack.invisibleEntries().length, 0);
   });
 
+  it('supports resetting all hidden children of a selected entry', async function() {
+    const data = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
+    const mainThread = getMainThread(data.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ======== onclick ============
+     * =========== foo =============
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *
+     * In this test we want to test the user collapsing all descendant foo calls of the first first one,
+     * which should have the effect of keeping the first foo visible, but removing all of its other calls:
+     * ======== onclick ============
+     * =========== foo =============
+     *               ===== foo2 ====                  << all foo except first removed
+     *               ==== foo2 =====
+     *               ==== foo2 =====
+     *
+     * Then, reset children on the second visible foo2.
+     * ======== onclick ============
+     * =========== foo =============
+     *               ===== foo2 ====                  << foo() after this entry still hidden
+     *               ==== foo2 =====                  << all children from this node are visible
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *
+     * This results in a stack where all children of an entry children were reset on (second foo2)
+     * are visible, but the entries hidden above the entry children were reset on stay hidden.
+     **/
+
+    const firstFooCallEntry = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo' &&
+          entry.dur === 233;
+    });
+
+    // Gather the foo() and foo2() calls under and including the first foo entry, by finding all
+    // the calls whose end time is less than or equal to the end time of the first `foo` function.
+    const firstFooCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(firstFooCallEntry).endTime;
+    const fooCalls = mainThread.entries.filter(entry => {
+      const isFooCall = TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo';
+      if (!isFooCall) {
+        return false;
+      }
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+      return endTime <= firstFooCallEndTime;
+    });
+
+    const foo2Calls = mainThread.entries.filter(entry => {
+      const isFoo2Call = TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo2';
+      if (!isFoo2Call) {
+        return false;
+      }
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+      return endTime <= firstFooCallEndTime;
+    });
+
+    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    stack.applyAction(
+        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+
+    // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
+    // but all foo() calls below it in the stack should now be invisible.
+    const allFooExceptFirstInStackAreHidden = fooCalls.every((fooCall, i) => {
+      if (i === 0) {
+        // First foo should not be invisible.
+        return !stack.invisibleEntries().includes(fooCall);
+      }
+      return stack.invisibleEntries().includes(fooCall);
+    });
+    assert.isTrue(
+        allFooExceptFirstInStackAreHidden, 'First foo is invisible or some following foo calls are still visible');
+
+    // All of the foo2 calls that were inbetween foo calls should still be visible.
+    let allFoo2InStackAreVisible = foo2Calls.every(fooCall => {
+      return !stack.invisibleEntries().includes(fooCall);
+    });
+    assert.isTrue(allFoo2InStackAreVisible, 'Some foo2 calls are invisible');
+
+    // Reset all children after second foo2 call
+    assert.strictEqual(foo2Calls.length, 3);
+    stack.applyAction({type: TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entry: foo2Calls[1]});
+
+    // All foo and foo2 calls except the second foo cll should now be visible
+    allFoo2InStackAreVisible = foo2Calls.every(fooCall => {
+      return !stack.invisibleEntries().includes(fooCall);
+    });
+    assert.isTrue(allFoo2InStackAreVisible, 'Some foo2 calls are invisible');
+
+    const allFooExceptSecondInStackAreVisible = fooCalls.every((fooCall, i) => {
+      if (i === 1) {
+        // Second foo should be invisible.
+        return stack.invisibleEntries().includes(fooCall);
+      }
+      return !stack.invisibleEntries().includes(fooCall);
+    });
+    assert.isTrue(
+        allFooExceptSecondInStackAreVisible,
+        'Some foo calls except the second one are invisible or the second one is visible');
+  });
 });

@@ -29,7 +29,7 @@ describe('LoggingState', () => {
       parent: {
         impressionLogged: false,
         config: {ve: 1},
-        veid: -1,
+        veid: 1,
         processed: false,
         context: state.parent?.context as VisualLogging.LoggingState.ContextProvider,
         parent: null,

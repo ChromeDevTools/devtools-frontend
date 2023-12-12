@@ -16,7 +16,11 @@ export interface LoggingState {
 
 const state = new WeakMap<Loggable, LoggingState>();
 
-let nextVeId = 0;
+function nextVeId(): number {
+  const result = new Uint32Array(1);
+  crypto.getRandomValues(result);
+  return result[0];
+}
 
 export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfig, parent?: Loggable): LoggingState {
   if (state.has(loggable)) {
@@ -31,7 +35,7 @@ export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfi
     processed: false,
     config,
     context: resolveContext(config.context),
-    veid: ++nextVeId,
+    veid: nextVeId(),
     parent: parent ? getLoggingState(parent) : null,
   };
   state.set(loggable, loggableState);

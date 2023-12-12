@@ -29,7 +29,7 @@ describe('LoggingEvents', () => {
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
         stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
-        [{id: 0, type: 1, context: 42, parent: -1}, {id: -1, type: 1}]);
+        [{id: 0, type: 1, context: 42, parent: 1}, {id: 1, type: 1}]);
   });
 
   it('calls UI binding to log a click', async () => {

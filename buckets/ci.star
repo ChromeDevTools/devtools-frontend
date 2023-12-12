@@ -55,13 +55,13 @@ generate_ci_configs(
             name = "DevTools Linux",
             recipe_name = "chromium_integration",
             consoles = ["ci", "chromium"],
-            execution_timeout = 2 * time.hour,
+            execution_timeout = 3 * time.hour,
         ),
         builder_descriptor(
             name = "DevTools Linux Fastbuild",
             recipe_name = "chromium_integration",
             consoles = ["ci"],
-            execution_timeout = 2 * time.hour,
+            execution_timeout = 3 * time.hour,
             description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/DevTools%20Linux">
 DevTools Linux</a> but has devtools_skip_typecheck=True.""",

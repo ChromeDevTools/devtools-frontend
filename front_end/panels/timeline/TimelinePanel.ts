@@ -700,14 +700,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   async showHistory(): Promise<void> {
     const recordingData = await this.#historyManager.showHistoryDropDown();
-    if (recordingData && recordingData.legacyModel !== this.performanceModel) {
+    if (recordingData && recordingData.traceParseDataIndex !== this.#traceEngineActiveTraceIndex) {
       this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
   }
 
   navigateHistory(direction: number): boolean {
     const recordingData = this.#historyManager.navigate(direction);
-    if (recordingData && recordingData.legacyModel !== this.performanceModel) {
+    if (recordingData && recordingData.traceParseDataIndex !== this.#traceEngineActiveTraceIndex) {
       this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
     return true;
@@ -1383,6 +1383,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         },
         filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceData),
         traceParsedData: traceData,
+        startTime: this.performanceModel.recordStartTime() ?? null,
       });
     } catch (error) {
       // Try to get the raw events: if we errored during the parsing stage, it

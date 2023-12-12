@@ -40,15 +40,16 @@ new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   },
   filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData1),
   traceParsedData: traceParsedData1,
+  startTime: null,
 });
 
 new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   data: {
     legacyModel: performanceModel2,
-    traceParseDataIndex: 0,
+    traceParseDataIndex: 1,
   },
   filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData2),
   traceParsedData: traceParsedData2,
+  startTime: null,
 });
-await Timeline.TimelineHistoryManager.DropDown.show(
-    [performanceModel1, performanceModel2], performanceModel2, container);
+await Timeline.TimelineHistoryManager.DropDown.show([0, 1], 1, container);

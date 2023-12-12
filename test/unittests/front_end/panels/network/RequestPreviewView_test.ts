@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
@@ -37,5 +38,55 @@ describeWithLocale('RequestPreviewView', () => {
     expect(frame).to.be.not.null;
     expect(frame?.getAttribute('csp')).to.eql('default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
     component.detach();
+  });
+
+  it('does add utf-8 charset to the data URL for the HTML preview for already decoded content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.setContentDataProvider(() => Promise.resolve({
+      error: null,
+      encoded: false,
+      content: '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>',
+    }));
+    request.mimeType = SDK.NetworkRequest.MIME_TYPE.HTML;
+    request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
+
+    assert.strictEqual(request.charset(), 'utf-16');
+
+    const component = renderPreviewView(request);
+    const widget = await component.showPreview();
+    const frame = widget.contentElement.querySelector('iframe');
+    assertNotNullOrUndefined(frame);
+
+    assert.include(frame.src, 'charset=utf-8');
+    assert.notInclude(frame.src, ' base64');
+  });
+
+  it('does add the correct charset to the data URL for the HTML preview for base64 content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.setContentDataProvider(() => Promise.resolve({
+      error: null,
+      encoded: true,
+      // UTF-16 + base64 encoded "<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>".
+      content:
+          '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
+    }));
+    request.mimeType = SDK.NetworkRequest.MIME_TYPE.HTML;
+    request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
+
+    assert.strictEqual(request.charset(), 'utf-16');
+
+    const component = renderPreviewView(request);
+    const widget = await component.showPreview();
+    const frame = widget.contentElement.querySelector('iframe');
+    assertNotNullOrUndefined(frame);
+
+    assert.include(frame.src, 'charset=utf-16');
+    assert.include(frame.src, 'base64');
   });
 });

@@ -88,8 +88,10 @@ export class RequestPreviewView extends RequestResponseView {
       return jsonView;
     }
 
+    // If the content was already decoded by the backend we use UTF-8.
+    const charset = contentData.encoded ? this.request.charset() : 'utf-8';
     const dataURL = TextUtils.ContentProvider.contentAsDataURL(
-        contentData.content, this.request.mimeType, contentData.encoded, this.request.charset());
+        contentData.content, this.request.mimeType, contentData.encoded, charset);
     return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 

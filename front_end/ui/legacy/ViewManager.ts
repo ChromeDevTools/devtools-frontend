@@ -120,7 +120,6 @@ export class PreRegisteredView implements View {
     }
 
     const widget = await this.widgetPromise;
-    this.widgetPromise = null;
     await widget.ownerViewDisposed();
   }
 

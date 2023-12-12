@@ -61,7 +61,17 @@ describeWithEnvironment('CSSRuleValidator', async () => {
     },
     {
       description:
-          'Test `place-content`, Validation does not pass when the element is not flex containers or grid containers',
+          'Test `align-content`, validation does not pass when the element is not flex containers or grid containers',
+      computedStyles: new Map<string, string>([
+        ['align-content', 'center'],
+        ['display', 'block'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
+      hintExpected: true,
+    },
+    {
+      description:
+          'Test `place-content`, validation does not pass when the element is not flex containers or grid containers',
       computedStyles: new Map<string, string>([
         ['display', 'block'],
         ['place-content', 'center'],

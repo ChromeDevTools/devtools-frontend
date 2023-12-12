@@ -27,6 +27,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   private tracingManager: TraceEngine.TracingManager.TracingManager|null;
   private performanceModel: PerformanceModel;
   #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+  #recordingStartTime: number|null = null;
   private readonly client: Client;
   private readonly tracingModel: TraceEngine.Legacy.TracingModel;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -125,6 +126,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     }
 
     this.performanceModel.setRecordStartTime(Date.now());
+    this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {
       await this.waitForTracingToStop(false);
@@ -193,7 +195,8 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.tracingModel.tracingComplete();
     await this.client.loadingComplete(
-        this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
+        this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
+        this.#recordingStartTime);
     this.client.loadingCompleteForTest();
   }
 
@@ -214,8 +217,8 @@ export interface Client {
   loadingComplete(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
-      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
-      isCpuProfile: boolean): Promise<void>;
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null, isCpuProfile: boolean,
+      recordingStartTime: number|null): Promise<void>;
   loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {

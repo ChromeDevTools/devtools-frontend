@@ -1003,7 +1003,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
               /* no collectedEvents */[],
               /* tracingModel= */ null,
               /* exclusiveFilter= */ null,
-              /* isCpuProfile= */ false);
+              /* isCpuProfile= */ false,
+              /* recordingStartTime= */ null);
         });
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.recordingFailed));
@@ -1316,8 +1317,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async loadingComplete(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
-      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
-      isCpuProfile: boolean): Promise<void> {
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null, isCpuProfile: boolean,
+      recordingStartTime: number|null): Promise<void> {
     this.#traceEngineModel.resetProcessor();
     SourceMapsResolver.clearResolvedNodeNames();
 
@@ -1346,8 +1347,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // Calling setTracingModel now and setModel so much later, leads to several problems due to addEventListener order being unexpected
         // TODO(paulirish): Resolve this, or just wait for the death of tracingModel. :)
         this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
-        this.#executeNewTraceEngine(
-            collectedEvents, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
+        this.#executeNewTraceEngine(collectedEvents, recordingIsFresh, isCpuProfile, recordingStartTime),
       ]);
 
       // This code path is only executed when a new trace is recorded/imported,
@@ -1424,9 +1424,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   async #executeNewTraceEngine(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[], isFreshRecording: boolean, isCpuProfile: boolean,
-      recordStartTime?: number): Promise<void> {
+      recordStartTime: number|null): Promise<void> {
     const shouldGatherMetadata = isFreshRecording && !isCpuProfile;
-    const metadata = shouldGatherMetadata ? await TraceEngine.Extras.Metadata.forNewRecording(recordStartTime) : {};
+    const metadata =
+        shouldGatherMetadata ? await TraceEngine.Extras.Metadata.forNewRecording(recordStartTime ?? undefined) : {};
     metadata.dataOrigin =
         isCpuProfile ? TraceEngine.Types.File.DataOrigin.CPUProfile : TraceEngine.Types.File.DataOrigin.TraceEvents;
 

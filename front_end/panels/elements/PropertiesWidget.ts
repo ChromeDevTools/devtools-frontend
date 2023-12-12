@@ -76,8 +76,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let propertiesWidgetInstance: PropertiesWidget;
-
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private node: SDK.DOMModel.DOMNode|null;
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
@@ -127,17 +125,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     });
 
     this.update();
-  }
-
-  static instance(opts?: {
-    forceNew: boolean,
-    throttlingTimeout: number,
-  }): PropertiesWidget {
-    if (!propertiesWidgetInstance || opts?.forceNew) {
-      propertiesWidgetInstance = new PropertiesWidget(opts?.throttlingTimeout);
-    }
-
-    return propertiesWidgetInstance;
   }
 
   private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {

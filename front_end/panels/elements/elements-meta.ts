@@ -240,7 +240,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Elements = await loadElementsModule();
-    return Elements.PropertiesWidget.PropertiesWidget.instance();
+    return new Elements.PropertiesWidget.PropertiesWidget();
   },
 });
 

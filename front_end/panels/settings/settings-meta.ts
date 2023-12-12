@@ -73,7 +73,7 @@ UI.ViewManager.registerViewExtension({
   order: 0,
   async loadView() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.GenericSettingsTab.instance();
+    return new Settings.SettingsScreen.GenericSettingsTab();
   },
 });
 
@@ -86,7 +86,7 @@ UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.ALL,
   async loadView() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.ExperimentsSettingsTab.instance();
+    return new Settings.SettingsScreen.ExperimentsSettingsTab();
   },
 });
 

@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Elements from '../../../../../front_end/panels/elements/elements.js';
 import * as ObjectUI from '../../../../../front_end/ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import type * as Common from '../../../../../front_end/core/common/common.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
@@ -46,7 +45,7 @@ describeWithMockConnection('PropertiesWidget', () => {
     } as unknown as SDK.RemoteObject.RemoteObject);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-    view = Elements.PropertiesWidget.PropertiesWidget.instance({forceNew: true, throttlingTimeout: 0});
+    view = new Elements.PropertiesWidget.PropertiesWidget(0);
     view.markAsRoot();
     view.show(document.body);
     await new Promise<void>(resolve => setTimeout(resolve, 0));

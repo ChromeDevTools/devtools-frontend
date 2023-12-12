@@ -268,8 +268,6 @@ abstract class SettingsTab extends UI.Widget.VBox {
   abstract highlightObject(_object: Object): void;
 }
 
-let genericSettingsTabInstance: GenericSettingsTab;
-
 export class GenericSettingsTab extends SettingsTab {
   private readonly syncSection: PanelComponents.SyncSection.SyncSection = new PanelComponents.SyncSection.SyncSection();
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
@@ -330,15 +328,6 @@ export class GenericSettingsTab extends SettingsTab {
     }
   }
 
-  static instance(opts = {forceNew: null}): GenericSettingsTab {
-    const {forceNew} = opts;
-    if (!genericSettingsTabInstance || forceNew) {
-      genericSettingsTabInstance = new GenericSettingsTab();
-    }
-
-    return genericSettingsTabInstance;
-  }
-
   static isSettingVisible(setting: Common.Settings.SettingRegistration): boolean {
     const titleMac = setting.titleMac && setting.titleMac();
     const defaultTitle = setting.title && setting.title();
@@ -347,8 +336,14 @@ export class GenericSettingsTab extends SettingsTab {
   }
 
   override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(GenericSettingsTab, this);
     super.wasShown();
     this.updateSyncSection();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(GenericSettingsTab, null);
   }
 
   private updateSyncSection(): void {
@@ -407,8 +402,6 @@ export class GenericSettingsTab extends SettingsTab {
   }
 }
 
-let experimentsSettingsTabInstance: ExperimentsSettingsTab;
-
 export class ExperimentsSettingsTab extends SettingsTab {
   #experimentsSection: HTMLElement|undefined;
   #unstableExperimentsSection: HTMLElement|undefined;
@@ -466,15 +459,6 @@ export class ExperimentsSettingsTab extends SettingsTab {
       const warning = this.#experimentsSection.createChild('span');
       warning.textContent = i18nString(UIStrings.noResults);
     }
-  }
-
-  static instance(opts = {forceNew: null}): ExperimentsSettingsTab {
-    const {forceNew} = opts;
-    if (!experimentsSettingsTabInstance || forceNew) {
-      experimentsSettingsTabInstance = new ExperimentsSettingsTab();
-    }
-
-    return experimentsSettingsTabInstance;
   }
 
   private createExperimentsWarningSubsection(warningMessage: string): Element {
@@ -548,6 +532,16 @@ export class ExperimentsSettingsTab extends SettingsTab {
     this.#inputElement.value = filterText;
     this.#inputElement.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
   }
+
+  override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(ExperimentsSettingsTab, this);
+    super.wasShown();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(ExperimentsSettingsTab, null);
+  }
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
@@ -569,10 +563,14 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 }
 export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment|Common.Settings.Setting<unknown>> {
   async reveal(object: Root.Runtime.Experiment|Common.Settings.Setting<unknown>): Promise<void> {
+    const context = UI.Context.Context.instance();
     if (object instanceof Root.Runtime.Experiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
       await SettingsScreen.showSettingsScreen({name: 'experiments'});
-      ExperimentsSettingsTab.instance().highlightObject(object);
+      const experimentsSettingsTab = context.flavor(ExperimentsSettingsTab);
+      if (experimentsSettingsTab !== null) {
+        experimentsSettingsTab.highlightObject(object);
+      }
       return;
     }
 
@@ -583,7 +581,10 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
       if (settingRegistration.settingName === object.name) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         await SettingsScreen.showSettingsScreen();
-        GenericSettingsTab.instance().highlightObject(object);
+        const genericSettingsTab = context.flavor(GenericSettingsTab);
+        if (genericSettingsTab !== null) {
+          genericSettingsTab.highlightObject(object);
+        }
         return;
       }
     }

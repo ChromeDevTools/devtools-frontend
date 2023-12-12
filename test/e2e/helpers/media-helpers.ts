@@ -11,15 +11,39 @@ export async function playMediaFile(media: string) {
   // Need to click play manually - autoplay policy prevents it otherwise.
   await target.evaluate(() => new Promise<void>(resolve => {
                           const videoElement = document.getElementsByName('media')[0] as HTMLVideoElement;
-                          videoElement.addEventListener('play', () => {
+
+                          // Only resolve the promise when the video has finished
+                          // the entirety of it's playback.
+                          videoElement.addEventListener('ended', () => {
                             resolve();
                           }, {once: true});
-                          // Just in case autoplay started before we could attach an event listener.
-                          if (!videoElement.paused || videoElement.readyState > 2) {
+
+                          // If the element is in the error state, then consider
+                          // it to be finished.
+                          if (videoElement.error) {
                             resolve();
-                          } else {
-                            void videoElement.play();
                           }
+
+                          // If the video is _already_ in an ended state and time
+                          // is greater than 0, then autoplay allowed playback and
+                          // the playback has already finished. We can just resolve
+                          // in this case.
+                          if (videoElement.ended && videoElement.currentTime > 0) {
+                            resolve();
+                            return;
+                          }
+
+                          // If we aren't ended or errord, and the time is still 0,
+                          // then autoplay requires us to play the video manually.
+                          if (!videoElement.ended && videoElement.currentTime === 0) {
+                            void videoElement.play();
+                            return;
+                          }
+
+                          // If the player has entered the ended state with t=0,
+                          // this is an error, and the test should fail. If the player
+                          // has not ended yet, then the event listener above should
+                          // resolve the promise shortly.
                         }));
 }
 

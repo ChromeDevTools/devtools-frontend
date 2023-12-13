@@ -46,10 +46,10 @@ import type * as TextEditor from '../../ui/components/text_editor/text_editor.js
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as SourceComponents from './components/components.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
+import * as SourceComponents from './components/components.js';
 import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
@@ -361,7 +361,7 @@ export class DebuggerPlugin extends Plugin {
     });
   }
 
-  #openEditDialogForLine(line: CodeMirror.Line): void {
+  #openEditDialogForLine(line: CodeMirror.Line, isLogpoint?: boolean): void {
     if (this.muted) {
       return;
     }
@@ -369,7 +369,10 @@ export class DebuggerPlugin extends Plugin {
       this.activeBreakpointDialog.finishEditing(false, '');
     }
     const breakpoint = this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
-    this.editBreakpointCondition({line, breakpoint, location: null, isLogpoint: breakpoint?.isLogpoint()});
+    if (isLogpoint === undefined && breakpoint !== null) {
+      isLogpoint = breakpoint.isLogpoint();
+    }
+    this.editBreakpointCondition({line, breakpoint, location: null, isLogpoint});
   }
 
   override editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
@@ -1594,11 +1597,8 @@ export class DebuggerPlugin extends Plugin {
       return false;
     }
     if (event.metaKey || event.ctrlKey) {
-      if (event.shiftKey) {
-        return false;
-      }
       Host.userMetrics.breakpointEditDialogRevealedFrom(Host.UserMetrics.BreakpointEditDialogRevealedFrom.MouseClick);
-      this.#openEditDialogForLine(line);
+      this.#openEditDialogForLine(line, event.shiftKey);
       return true;
     }
 

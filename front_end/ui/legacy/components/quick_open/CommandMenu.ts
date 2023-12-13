@@ -335,7 +335,7 @@ export class CommandMenuProvider extends Provider {
     }
     const index = Platform.StringUtilities.hashCode(command.category) % MaterialPaletteColors.length;
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
-    tagElement.style.color = 'var(--sys-color-cdt-base-container)';
+    tagElement.style.color = '#fff';
     tagElement.textContent = command.category;
   }
 

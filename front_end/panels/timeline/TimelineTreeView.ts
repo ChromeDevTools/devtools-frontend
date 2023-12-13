@@ -13,6 +13,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {ActiveFilters} from './ActiveFilters.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {type TimelineSelection} from './TimelineSelection.js';
@@ -298,11 +299,11 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return [this.taskFilter, this.textFilterInternal, ...(this.modelInternal ? this.modelInternal.filters() : [])];
+    return [this.taskFilter, this.textFilterInternal, ...(ActiveFilters.instance().activeFilters())];
   }
 
   filtersWithoutTextFilter(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return [this.taskFilter, ...(this.modelInternal ? this.modelInternal.filters() : [])];
+    return [this.taskFilter, ...(ActiveFilters.instance().activeFilters())];
   }
 
   textFilter(): TimelineRegExp {

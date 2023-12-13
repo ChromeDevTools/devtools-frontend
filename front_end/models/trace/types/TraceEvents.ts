@@ -597,7 +597,7 @@ export interface TraceEventUpdateCounters extends TraceEventInstant {
 export type TraceEventRendererEvent = TraceEventInstant|TraceEventComplete;
 
 export interface TraceEventTracingStartedInBrowser extends TraceEventInstant {
-  name: 'TracingStartedInBrowser';
+  name: KnownEventName.TracingStartedInBrowser;
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
       frameTreeNodeId: number,
@@ -1366,7 +1366,7 @@ export function isProcessName(
 export function isTraceEventTracingStartedInBrowser(
     traceEventData: TraceEventData,
     ): traceEventData is TraceEventTracingStartedInBrowser {
-  return traceEventData.name === 'TracingStartedInBrowser';
+  return traceEventData.name === KnownEventName.TracingStartedInBrowser;
 }
 
 export function isTraceEventFrameCommittedInBrowser(
@@ -2061,6 +2061,7 @@ export const enum KnownEventName {
   EmbedderCallback = 'EmbedderCallback',
   SetLayerTreeId = 'SetLayerTreeId',
   TracingStartedInPage = 'TracingStartedInPage',
+  TracingStartedInBrowser = 'TracingStartedInBrowser',
   TracingSessionIdForWorker = 'TracingSessionIdForWorker',
   LazyPixelRef = 'LazyPixelRef',
   LayerTreeHostImplSnapshot = 'cc::LayerTreeHostImpl',

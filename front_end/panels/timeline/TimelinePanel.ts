@@ -48,6 +48,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
+import {ActiveFilters} from './ActiveFilters.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {PerformanceModel} from './PerformanceModel.js';
@@ -1091,25 +1092,40 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.setModel(null);
   }
 
-  private applyFilters(
-      model: PerformanceModel,
+  #applyActiveFilters(
+      traceIsGeneric: boolean,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): void {
-    if (model.timelineModel().isGenericTrace() || Root.Runtime.experiments.isEnabled('timelineShowAllEvents')) {
+    if (traceIsGeneric || Root.Runtime.experiments.isEnabled('timelineShowAllEvents')) {
       return;
     }
-    model.setFilters(exclusiveFilter ? [exclusiveFilter] : [TimelineUIUtils.visibleEventsFilter()]);
+
+    const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [
+      TimelineUIUtils.visibleEventsFilter(),
+    ];
+
+    ActiveFilters.instance().setFilters(newActiveFilters);
+  }
+
+  applyFilters(
+      _perfModel: PerformanceModel|null,
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): void {
+    // TODO: this method is maintained purely for a set of layout tests that
+    // use it. Once these tests have been replaced or migrated into DevTools
+    // unit tests, we can remove this applyFilters() method.
+    // http/tests/devtools/a11y-axe-core/performance/performance-pane-a11y-test.js
+    // http/tests/devtools/a11y-axe-core/performance/performance_event_log_a11y_test.js
+    // http/tests/devtools/tracing/category-filter.js
+    // http/tests/devtools/tracing/timeline-js/timeline-open-function-call.js
+    // http/tests/devtools/tracing/timeline-misc/timeline-filtering-self-time.js
+    // http/tests/devtools/tracing/timeline-misc/timeline-filtering.js
+    // http/tests/devtools/tracing/timeline-misc/timeline-range-stats.js
+    this.#applyActiveFilters(false, exclusiveFilter);
   }
 
   setModel(
       model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
       traceEngineIndex: number = -1): void {
     this.performanceModel = model;
-    if (model) {
-      this.searchableViewInternal.showWidget();
-      this.applyFilters(model, exclusiveFilter);
-    } else {
-      this.searchableViewInternal.hideWidget();
-    }
     this.#traceEngineActiveTraceIndex = traceEngineIndex;
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
@@ -1122,6 +1138,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
           traceParsedData.Meta.traceBounds,
       );
+      this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
+    }
+    if (model) {
+      this.searchableViewInternal.showWidget();
+    } else {
+      this.searchableViewInternal.hideWidget();
     }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
     this.flameChart.setSelection(null);
@@ -1563,7 +1585,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (TraceEngine.Legacy.TracingModel.isTopLevelEvent(event) && endTime < time) {
         break;
       }
-      if (this.performanceModel && this.performanceModel.isVisible(event) && endTime >= time) {
+      if (ActiveFilters.instance().isVisible(event) && endTime >= time) {
         this.select(TimelineSelection.fromTraceEvent(event));
         return;
       }

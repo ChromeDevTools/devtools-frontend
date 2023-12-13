@@ -65,6 +65,20 @@ const eventPhasesOfInterestForTraceBounds = new Set([
 ]);
 
 let handlerState = HandlerState.UNINITIALIZED;
+// Tracks if the trace is a generic trace, which here means that it did not come from athe DevTools Performance Panel recording.
+// We assume a trace is generic, and mark it as not generic if we see any of:
+// - TracingStartedInPage
+// - TracingStartedInBrowser
+// - TracingSessionIdForWorker
+// These are all events which indicate this is a Chrome browser trace.
+let traceIsGeneric = true;
+const CHROME_WEB_TRACE_EVENTS = new Set([
+  Types.TraceEvents.KnownEventName.TracingStartedInPage,
+  Types.TraceEvents.KnownEventName.TracingSessionIdForWorker,
+  Types.TraceEvents.KnownEventName.TracingStartedInBrowser,
+
+]);
+
 export function reset(): void {
   navigationsByFrameId.clear();
   navigationsByNavigationId.clear();
@@ -84,6 +98,8 @@ export function reset(): void {
   traceBounds.max = Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
   traceBounds.range = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
   traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
+
+  traceIsGeneric = true;
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -131,6 +147,10 @@ function updateRendererProcessByFrame(
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Meta Handler is not initialized');
+  }
+
+  if (traceIsGeneric && CHROME_WEB_TRACE_EVENTS.has(event.name as Types.TraceEvents.KnownEventName)) {
+    traceIsGeneric = false;
   }
 
   // If there is a timestamp (which meta events do not have), and the event does
@@ -322,6 +342,7 @@ export async function finalize(): Promise<void> {
 }
 
 export type MetaHandlerData = {
+  traceIsGeneric: boolean,
   traceBounds: Types.Timing.TraceWindowMicroSeconds,
   browserProcessId: Types.TraceEvents.ProcessID,
   browserThreadId: Types.TraceEvents.ThreadID,
@@ -389,5 +410,6 @@ export function data(): MetaHandlerData {
     topLevelRendererIds: new Set(topLevelRendererIds),
     frameByProcessId: new Map(framesByProcessId),
     mainFrameNavigations: [...mainFrameNavigations],
+    traceIsGeneric,
   };
 }

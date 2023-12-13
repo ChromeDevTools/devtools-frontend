@@ -1579,6 +1579,7 @@ grd_files_debug_sources = [
   "front_end/panels/sources/sourcesView.css.js",
   "front_end/panels/sources/threadsSidebarPane.css.js",
   "front_end/panels/sources/watchExpressionsSidebarPane.css.js",
+  "front_end/panels/timeline/ActiveFilters.js",
   "front_end/panels/timeline/AnimationsTrackAppender.js",
   "front_end/panels/timeline/AppenderUtils.js",
   "front_end/panels/timeline/BenchmarkEvents.js",

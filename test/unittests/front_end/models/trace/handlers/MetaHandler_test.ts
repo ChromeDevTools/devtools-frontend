@@ -535,4 +535,22 @@ describe('MetaHandler', function() {
       }
     });
   });
+
+  it('marks a generic trace as generic', async function() {
+    const events = await TraceLoader.rawEvents(this, 'generic-about-tracing.json.gz');
+    for (const event of events) {
+      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+    assert.isTrue(TraceModel.Handlers.ModelHandlers.Meta.data().traceIsGeneric);
+  });
+
+  it('marks a web trace as being not generic', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
+    for (const event of events) {
+      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+    assert.isFalse(TraceModel.Handlers.ModelHandlers.Meta.data().traceIsGeneric);
+  });
 });

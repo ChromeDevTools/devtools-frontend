@@ -39,6 +39,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
+import {ActiveFilters} from './ActiveFilters.js';
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
 import {type TimelineCategory} from './EventUICategory.js';
@@ -699,7 +700,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         if (TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase)) {
           continue;
         }
-        if (!this.legacyPerformanceModel.isVisible(event)) {
+        if (!ActiveFilters.instance().isVisible(event)) {
           continue;
         }
       }
@@ -777,7 +778,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let group: PerfUI.FlameChart.Group|null = null;
     for (let i = 0; i < events.length; ++i) {
       const asyncEvent = events[i];
-      if (!this.legacyPerformanceModel || !this.legacyPerformanceModel.isVisible(asyncEvent)) {
+      if (!this.legacyPerformanceModel || !ActiveFilters.instance().isVisible(asyncEvent)) {
         continue;
       }
       if (!group && title) {

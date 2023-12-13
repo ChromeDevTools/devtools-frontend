@@ -7,25 +7,11 @@ import type * as TraceEngine from '../../models/trace/trace.js';
 
 export class PerformanceModel {
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
-  private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
 
   constructor() {
     this.tracingModelInternal = null;
-    this.filtersInternal = [];
     this.timelineModelInternal = new TimelineModel.TimelineModel.TimelineModelImpl();
-  }
-
-  setFilters(filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[]): void {
-    this.filtersInternal = filters;
-  }
-
-  filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return this.filtersInternal;
-  }
-
-  isVisible(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    return this.filtersInternal.every(f => f.accept(event));
   }
 
   async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false): Promise<void> {

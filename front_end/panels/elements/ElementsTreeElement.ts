@@ -708,7 +708,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }, {jslogContext: 'focus'});
   }
 
-  populateScrollIntoView(contextMenu: UI.ContextMenu.ContextMenu): void {
+  populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+    if (this.childCount() !== 0) {
+      this.populateExpandRecursively(contextMenu);
+    }
+
+    this.populateScrollIntoView(contextMenu);
+  }
+
+  private populateExpandRecursively(contextMenu: UI.ContextMenu.ContextMenu): void {
+    contextMenu.viewSection().appendItem(
+        i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this),
+        {jslogContext: 'expandRecursively'});
+  }
+
+  private populateScrollIntoView(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.scrollIntoView), () => this.nodeInternal.scrollIntoView(),
         {jslogContext: 'scrollIntoView'});
@@ -797,9 +811,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           i18nString(UIStrings.deleteElement), this.remove.bind(this), {jslogContext: 'deleteElement'});
     }
 
-    contextMenu.viewSection().appendItem(
-        i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this),
-        {jslogContext: 'expandRecursively'});
+    this.populateExpandRecursively(contextMenu);
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), {jslogContext: 'collapseChildren'});
     const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();

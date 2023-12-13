@@ -391,6 +391,13 @@ export const assertGutterDecorationForDomNodeExists = async () => {
 
 export const getStyleRuleSelector = (selector: string) => `[aria-label="${selector}, css selector"]`;
 
+export const waitForExactStyleRule = async (expectedSelector: string) => {
+  await waitForFunction(async () => {
+    const rules = await getDisplayedStyleRules();
+    return rules.find(rule => rule.selectorText === expectedSelector);
+  });
+};
+
 export const waitForStyleRule = async (expectedSelector: string) => {
   await waitForFunction(async () => {
     const rules = await getDisplayedStyleRules();

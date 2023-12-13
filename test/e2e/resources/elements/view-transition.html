@@ -1,0 +1,41 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  #next {
+    display: none;
+  }
+
+  ::view-transition-old(root) {
+    animation-duration: 10s;
+  }
+</style>
+<div id="first">Initial state</div>
+<div id="next">Next state</div>
+<script>
+    const first = document.querySelector('#first');
+    const next = document.querySelector('#next');
+    const start = document.querySelector('#start');
+
+    async function startFirstViewTransition() {
+      const vt = document.startViewTransition(() => {
+        first.style.display = "none";
+        next.style.display = "block";
+      });
+
+      await vt.ready;
+    }
+
+    async function startNextViewTransition() {
+      const vt = document.startViewTransition(() => {
+        first.style.display = "block";
+        next.style.display = "none";
+      });
+
+      await vt.ready;
+    }
+</script>

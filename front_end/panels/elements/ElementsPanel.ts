@@ -211,6 +211,13 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private notFirstInspectElement?: boolean;
   sidebarPaneView?: UI.View.TabbedViewLocation;
   private stylesViewToReveal?: UI.View.SimpleView;
+  private nodeInsertedTaskRunner = {
+    queue: Promise.resolve(),
+    run(task: () => Promise<void>):
+        void {
+          this.queue = this.queue.then(task);
+        },
+  };
 
   private cssStyleTrackerByCSSModel: Map<SDK.CSSModel.CSSModel, SDK.CSSModel.CSSPropertyTracker>;
 
@@ -378,10 +385,39 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       treeOutline.focus();
     }
     domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
+    domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
+  }
+
+  private handleNodeInserted(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    // Queue the task for the case when all the view transitions are added
+    // around the same time. Otherwise there is a race condition on
+    // accessing `cssText` of inspector stylesheet causing some rules
+    // to be not added.
+    this.nodeInsertedTaskRunner.run(async () => {
+      const node = event.data;
+      if (!node.isViewTransitionPseudoNode()) {
+        return;
+      }
+
+      const cssModel = node.domModel().cssModel();
+      const styleSheetHeader = await cssModel.requestViaInspectorStylesheet(node);
+      if (!styleSheetHeader) {
+        return;
+      }
+
+      const cssText = await cssModel.getStyleSheetText(styleSheetHeader.id);
+      // Do not add a rule for the view transition pseudo if there already is a rule for it.
+      if (cssText?.includes(`${node.simpleSelector()} {`)) {
+        return;
+      }
+
+      await cssModel.setStyleSheetText(styleSheetHeader.id, `${cssText}\n${node.simpleSelector()} {}`, false);
+    });
   }
 
   modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
     const treeOutline = ElementsTreeOutline.forDOMModel(domModel);
     if (!treeOutline) {
       return;

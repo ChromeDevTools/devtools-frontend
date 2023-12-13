@@ -64,5 +64,6 @@ copy_to_gen("elements") {
     "stylesheets-with-various-sources.html",
     "switch-panels-while-editing-as-html.html",
     "target.html",
+    "view-transition.html",
   ]
 }

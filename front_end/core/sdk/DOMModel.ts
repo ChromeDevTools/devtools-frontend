@@ -238,6 +238,20 @@ export class DOMNode {
     return this.#nodeNameInternal === 'AUDIO' || this.#nodeNameInternal === 'VIDEO';
   }
 
+  isViewTransitionPseudoNode(): boolean {
+    if (!this.#pseudoTypeInternal) {
+      return false;
+    }
+
+    return [
+      Protocol.DOM.PseudoType.ViewTransition,
+      Protocol.DOM.PseudoType.ViewTransitionGroup,
+      Protocol.DOM.PseudoType.ViewTransitionImagePair,
+      Protocol.DOM.PseudoType.ViewTransitionOld,
+      Protocol.DOM.PseudoType.ViewTransitionNew,
+    ].includes(this.#pseudoTypeInternal);
+  }
+
   creationStackTrace(): Promise<Protocol.Runtime.StackTrace|null> {
     if (this.#creationStackTraceInternal) {
       return this.#creationStackTraceInternal;

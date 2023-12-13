@@ -938,7 +938,7 @@ export class ElementsTreeOutline extends
     } else if (commentNode) {
       treeElement.populateNodeContextMenu(contextMenu);
     } else if (isPseudoElement) {
-      treeElement.populateScrollIntoView(contextMenu);
+      treeElement.populatePseudoElementContextMenu(contextMenu);
     }
 
     contextMenu.viewSection().appendItem(i18nString(UIStrings.adornerSettings), () => {

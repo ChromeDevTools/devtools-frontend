@@ -10,6 +10,7 @@ import {
   buildPropertyDefinitionText,
   buildPropertyName,
   buildPropertyValue,
+  isBlockContainer,
   isFlexContainer,
   isGridContainer,
   isInlineElement,
@@ -150,7 +151,24 @@ export class AlignContentValidator extends CSSRuleValidator {
     if (!computedStyles) {
       return;
     }
-    if (!isFlexContainer(computedStyles)) {
+    const isFlex = isFlexContainer(computedStyles);
+    if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles)) {
+      const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+      const affectedPropertyDeclarationCode = buildPropertyName('align-content');
+
+      return new Hint(
+          i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+            'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
+            'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
+          }),
+          i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+            PROPERTY_NAME: buildPropertyName('display'),
+            PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
+          }),
+      );
+    }
+
+    if (!isFlex) {
       return;
     }
     if (computedStyles.get('flex-wrap') !== 'nowrap') {
@@ -366,7 +384,6 @@ export class FlexGridValidator extends CSSRuleValidator {
   constructor() {
     super([
       'justify-content',
-      'align-content',
       'place-content',  // Shorthand	<'align-content'> <'justify-content'>?
       'align-items',
     ]);

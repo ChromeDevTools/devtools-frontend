@@ -33,6 +33,33 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       hintExpected: false,
     },
     {
+      description: 'Test `align-content`, validation passes when the element is a grid container',
+      computedStyles: new Map<string, string>([
+        ['align-content', 'center'],
+        ['display', 'grid'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
+      hintExpected: false,
+    },
+    {
+      description: 'Test `align-content`, validation passes when the element is a block container',
+      computedStyles: new Map<string, string>([
+        ['align-content', 'center'],
+        ['display', 'block'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
+      hintExpected: false,
+    },
+    {
+      description: 'Test `align-content`, validation does not pass when the element is a math container',
+      computedStyles: new Map<string, string>([
+        ['align-content', 'center'],
+        ['display', 'block math'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
+      hintExpected: true,
+    },
+    {
       description: 'Test `justify-content`, validation passes when the element is flex containers',
       computedStyles: new Map<string, string>([
         ['display', 'flex'],
@@ -61,9 +88,9 @@ describeWithEnvironment('CSSRuleValidator', async () => {
     },
     {
       description:
-          'Test `align-content`, validation does not pass when the element is not flex containers or grid containers',
+          'Test `align-items`, validation does not pass when the element is not flex containers or grid containers',
       computedStyles: new Map<string, string>([
-        ['align-content', 'center'],
+        ['align-items', 'center'],
         ['display', 'block'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),

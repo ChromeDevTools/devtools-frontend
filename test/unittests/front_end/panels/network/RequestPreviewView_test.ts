@@ -31,7 +31,7 @@ describeWithLocale('RequestPreviewView', () => {
         'http://devtools-frontend.test/content' as Platform.DevToolsPath.UrlString,
         '' as Platform.DevToolsPath.UrlString, null, null, null);
     request.setContentDataProvider(contentData);
-    request.mimeType = SDK.NetworkRequest.MIME_TYPE.HTML;
+    request.mimeType = SDK.NetworkRequest.MimeType.HTML;
     const component = renderPreviewView(request);
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
@@ -50,7 +50,7 @@ describeWithLocale('RequestPreviewView', () => {
       encoded: false,
       content: '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>',
     }));
-    request.mimeType = SDK.NetworkRequest.MIME_TYPE.HTML;
+    request.mimeType = SDK.NetworkRequest.MimeType.HTML;
     request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
 
     assert.strictEqual(request.charset(), 'utf-16');
@@ -76,7 +76,7 @@ describeWithLocale('RequestPreviewView', () => {
       content:
           '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
     }));
-    request.mimeType = SDK.NetworkRequest.MIME_TYPE.HTML;
+    request.mimeType = SDK.NetworkRequest.MimeType.HTML;
     request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
 
     assert.strictEqual(request.charset(), 'utf-16');

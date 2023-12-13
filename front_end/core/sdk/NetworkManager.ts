@@ -48,7 +48,6 @@ import {
   Events as NetworkRequestEvents,
   type ExtraRequestInfo,
   type ExtraResponseInfo,
-  type MIME_TYPE,
   type NameValue,
   NetworkRequest,
   type WebBundleInfo,
@@ -468,7 +467,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (response.url && networkRequest.url() !== response.url) {
       networkRequest.setUrl(response.url as Platform.DevToolsPath.UrlString);
     }
-    networkRequest.mimeType = (response.mimeType as MIME_TYPE);
+    networkRequest.mimeType = response.mimeType;
     if (!networkRequest.statusCode || networkRequest.wasIntercepted()) {
       networkRequest.statusCode = response.status;
     }

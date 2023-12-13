@@ -197,9 +197,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkRequest.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum, @typescript-eslint/naming-convention
-export enum MIME_TYPE {
+export const enum MimeType {
   HTML = 'text/html',
   XML = 'text/xml',
   PLAIN = 'text/plain',
@@ -288,7 +286,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #failedInternal!: boolean;
   #canceledInternal!: boolean;
   #preservedInternal!: boolean;
-  #mimeTypeInternal!: MIME_TYPE;
+  #mimeTypeInternal!: string;
   #parsedURLInternal!: Common.ParsedURL.ParsedURL;
   #nameInternal!: string|undefined;
   #pathInternal!: string|undefined;
@@ -782,11 +780,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
-  get mimeType(): MIME_TYPE {
+  get mimeType(): string {
     return this.#mimeTypeInternal;
   }
 
-  set mimeType(x: MIME_TYPE) {
+  set mimeType(x: string) {
     this.#mimeTypeInternal = x;
   }
 

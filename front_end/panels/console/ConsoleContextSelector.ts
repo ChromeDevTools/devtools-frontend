@@ -7,7 +7,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consoleContextSelectorStyles from './consoleContextSelector.css.js';
 
@@ -36,13 +35,11 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
 
   constructor() {
     this.items = new UI.ListModel.ListModel();
-    this.dropDown = new UI.SoftDropDown.SoftDropDown(this.items, this);
+    this.dropDown = new UI.SoftDropDown.SoftDropDown(this.items, this, 'javascript-context');
     this.dropDown.setRowHeight(36);
     this.toolbarItemInternal = new UI.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItemInternal.setEnabled(false);
     this.toolbarItemInternal.setTitle(i18nString(UIStrings.javascriptContextNotSelected));
-    this.toolbarItemInternal.element.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('javascript-context')}`);
     this.items.addEventListener(
         UI.ListModel.Events.ItemsReplaced, () => this.toolbarItemInternal.setEnabled(Boolean(this.items.length)));
 

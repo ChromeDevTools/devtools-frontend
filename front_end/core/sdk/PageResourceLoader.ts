@@ -279,7 +279,6 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
         }
       }
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
-      console.warn('Fallback triggered', url, initiator);
     } else {
       const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol :
                                                          Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride;

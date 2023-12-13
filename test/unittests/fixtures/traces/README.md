@@ -148,3 +148,7 @@ Contains a `setTimeout` triggered by a prior `setTimeout`, so there is a larger 
 ### multiple-navigations-same-id
 
 Contains a trace with two identical navigation events with matching IDs. See crbug.com/1503982 for the context and comments in MetaHandler.ts for the fix. This trace is included to avoid a regression.
+
+### web-dev-initial-url
+
+This is a trace where we loaded web.dev/inp, but the initial URL reported by the TraceStartedInBrowser event states google.com (the previous page). In this situation the MetaHandler would produce google.com as the mainFrameURL which is incorrect. This trace was used to write a test to ensure in this instance if we can we try to calculate the actual domain by looking at the first navigation.

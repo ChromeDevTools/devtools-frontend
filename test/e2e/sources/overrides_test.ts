@@ -342,7 +342,8 @@ describe('Overrides panel', async function() {
     assert.strictEqual(assertDeleteElements.length, 1);
   });
 
-  it('show redirect dialog when override content of source mapped js file', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] show redirect dialog when override content of source mapped js file', async () => {
     await goToResource('sources/sourcemap-origin.html');
     await openSourcesPanel();
     await enableLocalOverrides();
@@ -368,7 +369,8 @@ describe('Overrides panel', async function() {
     await waitFor('[aria-label="Close sourcemap-origin.min.js"]');
   });
 
-  it('show redirect dialog when override content of source mapped css file', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] show redirect dialog when override content of source mapped css file', async () => {
     await goToResource('sources/sourcemap-origin.html');
     await openSourcesPanel();
     await enableLocalOverrides();

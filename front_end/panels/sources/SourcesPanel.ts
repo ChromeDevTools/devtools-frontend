@@ -543,13 +543,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
   revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): void {
     for (const navigator of registeredNavigatorViews) {
       const navigatorView = navigator.navigatorView();
-      const viewId = navigator.viewId;
-      if (viewId && navigatorView.acceptProject(uiSourceCode.project())) {
+      if (navigatorView.acceptProject(uiSourceCode.project())) {
         navigatorView.revealUISourceCode(uiSourceCode, true);
-        if (skipReveal) {
-          this.navigatorTabbedLocation.tabbedPane().selectTab(viewId);
-        } else {
-          void UI.ViewManager.ViewManager.instance().showView(viewId);
+        if (!skipReveal) {
+          void UI.ViewManager.ViewManager.instance().showView(navigator.viewId);
         }
       }
     }

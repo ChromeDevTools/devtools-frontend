@@ -131,6 +131,12 @@ export async function createNewRecording(recordingName: string) {
   await frontend.keyboard.press('Enter');
 }
 
+export async function getSelectedNavigatorTabTitle() {
+  const root = await waitFor('.navigator-tabbed-pane');
+  const pane = await waitFor('.tabbed-pane-header-tab[aria-selected="true"]', root);
+  return await pane.evaluate(node => node.textContent);
+}
+
 export async function openSnippetsSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
 

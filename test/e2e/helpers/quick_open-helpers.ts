@@ -65,6 +65,13 @@ export const openFileWithQuickOpen = async (filename: string, filePosition = 0) 
   await firstItem.click();
 };
 
+export async function runCommandWithQuickOpen(command: string): Promise<void> {
+  const {frontend} = getBrowserAndPages();
+  await openCommandMenu();
+  await frontend.keyboard.type(command);
+  await frontend.keyboard.press('Enter');
+}
+
 export const openGoToLineQuickOpen = async () => {
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.down('Control');

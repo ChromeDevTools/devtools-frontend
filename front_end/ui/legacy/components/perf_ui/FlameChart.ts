@@ -70,6 +70,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const HIDDEN_ANCESTOR_ARROW = 'data:image/jpg;base64,' +
+    'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABYSURBVHgB7c6xDYBACAVQIM5BWOUmM47iJK5CGATEhMKYK7TyinsV+YEfAKb/YS9k5pWI5J65u5rZ9txdegV5vEfEkaNUpJm11x9cJFUJIGLTBF9JgWlwJyvOFrGul+FpAAAAAElFTkSuQmCC';
 
 export class FlameChartDelegate {
   windowChanged(_startTime: number, _endTime: number, _animate: boolean): void {
@@ -1433,6 +1435,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           context.lineTo(barX + barWidth, barY + triangleSize);
           context.fill();
           context.restore();
+        } else if (decoration.type === 'HIDDEN_ANCESTORS_ARROW') {
+          const barX = this.timeToPositionClipped(entryStartTime);
+          const barLevel = entryLevels[entryIndex];
+          const barHeight = this.#eventBarHeight(timelineData, entryIndex);
+          const barY = this.levelToOffset(barLevel);
+          const barWidth = this.#eventBarWidth(timelineData, entryIndex);
+          context.save();
+          context.beginPath();
+          context.rect(barX, barY, barWidth, barHeight);
+          const arrowSize = barHeight;
+          if (barWidth > arrowSize * 2) {
+            const image = new Image();
+            image.src = HIDDEN_ANCESTOR_ARROW;
+            context.drawImage(image, barX + barWidth - arrowSize, barY, arrowSize, arrowSize);
+          }
+          context.restore();
         }
       }
     }
@@ -2673,6 +2691,8 @@ export type FlameChartDecoration = {
 }|{
   type: 'WARNING_TRIANGLE',
   customEndTime?: TraceEngine.Types.Timing.MicroSeconds,
+}|{
+  type: 'HIDDEN_ANCESTORS_ARROW',
 };
 
 // We have to ensure we draw the decorations in a particular order; warning
@@ -2680,6 +2700,7 @@ export type FlameChartDecoration = {
 const decorationDrawOrder: Record<FlameChartDecoration['type'], number> = {
   CANDY: 1,
   WARNING_TRIANGLE: 2,
+  HIDDEN_ANCESTORS_ARROW: 3,
 };
 
 export function sortDecorationsForRenderingOrder(decorations: FlameChartDecoration[]): void {

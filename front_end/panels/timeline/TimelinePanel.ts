@@ -1383,7 +1383,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         },
         filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceData),
         traceParsedData: traceData,
-        startTime: this.performanceModel.recordStartTime() ?? null,
+        startTime: recordingStartTime ?? null,
       });
     } catch (error) {
       // Try to get the raw events: if we errored during the parsing stage, it

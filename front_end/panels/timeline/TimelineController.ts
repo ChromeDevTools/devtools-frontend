@@ -67,7 +67,6 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     // primaryPageTarget, as that is the one we have to invoke tracing against.
     this.tracingManager = rootTarget.model(TraceEngine.TracingManager.TracingManager);
     this.performanceModel = new PerformanceModel();
-    this.performanceModel.setMainTarget(rootTarget);
     this.client = client;
     this.tracingModel = new TraceEngine.Legacy.TracingModel();
   }
@@ -125,7 +124,6 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
     }
 
-    this.performanceModel.setRecordStartTime(Date.now());
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {

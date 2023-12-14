@@ -55,6 +55,7 @@ devtools_module("elements") {
     "PlatformFontsWidget.ts",
     "PropertiesWidget.ts",
     "PropertyNameCategories.ts",
+    "PropertyParser.ts",
     "StyleEditorWidget.ts",
     "StylePropertiesSection.ts",
     "StylePropertyHighlighter.ts",

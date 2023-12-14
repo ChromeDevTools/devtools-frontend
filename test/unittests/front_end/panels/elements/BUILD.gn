@@ -17,6 +17,7 @@ ts_library("elements") {
     "InspectElementModeController_test.ts",
     "PlatformFontsWidget_test.ts",
     "PropertiesWidget_test.ts",
+    "PropertyParser_test.ts",
     "StylePropertiesSection_test.ts",
     "StylePropertyHighlighter_test.ts",
     "StylePropertyTreeElement_test.ts",

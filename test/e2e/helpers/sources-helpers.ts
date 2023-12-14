@@ -654,7 +654,7 @@ export async function clickOnContextMenu(selector: string, label: string) {
 
 export async function inspectMemory(variableName: string) {
   await clickOnContextMenu(
-      `[data-object-property-name-for-test="${variableName}"]`, 'Reveal in Memory Inspector panel');
+      `[data-object-property-name-for-test="${variableName}"]`, 'Reveal in Memory inspector panel');
 }
 
 export async function typeIntoSourcesAndSave(text: string) {

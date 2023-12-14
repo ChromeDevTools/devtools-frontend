@@ -14,30 +14,30 @@ import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
 
 const UIStrings = {
   /**
-   *@description Label for the capture button in the CSS Overview Panel
+   *@description Label for the capture button in the CSS overview panel
    */
   captureOverview: 'Capture overview',
   /**
-   *@description Header for the summary of CSS Overview
+   *@description Header for the summary of CSS overview
    */
   identifyCSSImprovements: 'Identify potential CSS improvements',
   /**
-   *@description First point of the summarized features of CSS Overview
+   *@description First point of the summarized features of CSS overview
    */
   capturePageCSSOverview: 'Capture an overview of your page’s CSS',
   /**
-   *@description Second point of the summarized features of CSS Overview
+   *@description Second point of the summarized features of CSS overview
    */
   identifyCSSImprovementsWithExampleIssues:
       'Identify potential CSS improvements (e.g. low contrast issues, unused declarations, color or font mismatches)',
   /**
-   *@description Third point of the summarized features of CSS Overview
+   *@description Third point of the summarized features of CSS overview
    */
   locateAffectedElements: 'Locate the affected elements in the Elements panel',
   /**
-   *@description Title of the link to the quick start video and documentation to CSS Overview panel
+   *@description Title of the link to the quick start video and documentation to CSS overview panel
    */
-  quickStartWithCSSOverview: 'Quick start: get started with the new CSS Overview panel',
+  quickStartWithCSSOverview: 'Quick start: get started with the new CSS overview panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/components/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

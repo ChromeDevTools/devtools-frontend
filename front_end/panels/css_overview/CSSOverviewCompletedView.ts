@@ -28,15 +28,15 @@ import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
   /**
-   *@description Label for the summary in the CSS Overview report
+   *@description Label for the summary in the CSS overview report
    */
   overviewSummary: 'Overview summary',
   /**
-   *@description Title of colors subsection in the CSS Overview Panel
+   *@description Title of colors subsection in the CSS overview panel
    */
   colors: 'Colors',
   /**
-   *@description Title of font info subsection in the CSS Overview Panel
+   *@description Title of font info subsection in the CSS overview panel
    */
   fontInfo: 'Font info',
   /**
@@ -44,7 +44,7 @@ const UIStrings = {
    */
   unusedDeclarations: 'Unused declarations',
   /**
-   *@description Label for the number of media queries in the CSS Overview report
+   *@description Label for the number of media queries in the CSS overview report
    */
   mediaQueries: 'Media queries',
   /**
@@ -52,58 +52,58 @@ const UIStrings = {
    */
   elements: 'Elements',
   /**
-   *@description Label for the number of External stylesheets in the CSS Overview report
+   *@description Label for the number of External stylesheets in the CSS overview report
    */
   externalStylesheets: 'External stylesheets',
   /**
-   *@description Label for the number of inline style elements in the CSS Overview report
+   *@description Label for the number of inline style elements in the CSS overview report
    */
   inlineStyleElements: 'Inline style elements',
   /**
-   *@description Label for the number of style rules in CSS Overview report
+   *@description Label for the number of style rules in CSS overview report
    */
   styleRules: 'Style rules',
   /**
-   *@description Label for the number of type selectors in the CSS Overview report
+   *@description Label for the number of type selectors in the CSS overview report
    */
   typeSelectors: 'Type selectors',
   /**
-   *@description Label for the number of ID selectors in the CSS Overview report
+   *@description Label for the number of ID selectors in the CSS overview report
    */
   idSelectors: 'ID selectors',
   /**
-   *@description Label for the number of class selectors in the CSS Overview report
+   *@description Label for the number of class selectors in the CSS overview report
    */
   classSelectors: 'Class selectors',
   /**
-   *@description Label for the number of universal selectors in the CSS Overview report
+   *@description Label for the number of universal selectors in the CSS overview report
    */
   universalSelectors: 'Universal selectors',
   /**
-   *@description Label for the number of Attribute selectors in the CSS Overview report
+   *@description Label for the number of Attribute selectors in the CSS overview report
    */
   attributeSelectors: 'Attribute selectors',
   /**
-   *@description Label for the number of non-simple selectors in the CSS Overview report
+   *@description Label for the number of non-simple selectors in the CSS overview report
    */
   nonsimpleSelectors: 'Non-simple selectors',
   /**
-   *@description Label for unique background colors in the CSS Overview Panel
+   *@description Label for unique background colors in the CSS overview panel
    *@example {32} PH1
    */
   backgroundColorsS: 'Background colors: {PH1}',
   /**
-   *@description Label for unique text colors in the CSS Overview Panel
+   *@description Label for unique text colors in the CSS overview panel
    *@example {32} PH1
    */
   textColorsS: 'Text colors: {PH1}',
   /**
-   *@description Label for unique fill colors in the CSS Overview Panel
+   *@description Label for unique fill colors in the CSS overview panel
    *@example {32} PH1
    */
   fillColorsS: 'Fill colors: {PH1}',
   /**
-   *@description Label for unique border colors in the CSS Overview Panel
+   *@description Label for unique border colors in the CSS overview panel
    *@example {32} PH1
    */
   borderColorsS: 'Border colors: {PH1}',
@@ -120,7 +120,7 @@ const UIStrings = {
    */
   thereAreNoMediaQueries: 'There are no media queries.',
   /**
-   *@description Title of the Drawer for contrast issues in the CSS Overview Panel
+   *@description Title of the Drawer for contrast issues in the CSS overview panel
    */
   contrastIssues: 'Contrast issues',
   /**
@@ -128,12 +128,12 @@ const UIStrings = {
    */
   nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}}',
   /**
-   *@description Section header for contrast issues in the CSS Overview Panel
+   *@description Section header for contrast issues in the CSS overview panel
    *@example {1} PH1
    */
   contrastIssuesS: 'Contrast issues: {PH1}',
   /**
-   *@description Title of the button for a contrast issue in the CSS Overview Panel
+   *@description Title of the button for a contrast issue in the CSS overview panel
    *@example {#333333} PH1
    *@example {#333333} PH2
    *@example {2} PH3
@@ -152,7 +152,7 @@ const UIStrings = {
    */
   apca: 'APCA',
   /**
-   *@description Label for the column in the element list in the CSS Overview report
+   *@description Label for the column in the element list in the CSS overview report
    */
   element: 'Element',
   /**
@@ -168,11 +168,11 @@ const UIStrings = {
    */
   contrastRatio: 'Contrast ratio',
   /**
-   *@description Accessible title of a table in the CSS Overview Elements.
+   *@description Accessible title of a table in the CSS overview elements.
    */
-  cssOverviewElements: 'CSS Overview Elements',
+  cssOverviewElements: 'CSS overview elements',
   /**
-   *@description Title of the button to show the element in the CSS Overview panel
+   *@description Title of the button to show the element in the CSS overview panel
    */
   showElement: 'Show element',
 };
@@ -654,7 +654,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     let view = this.#viewMap.get(id);
     if (!view) {
       if (!this.#domModel || !this.#cssModel) {
-        throw new Error('Unable to initialize CSS Overview, missing models');
+        throw new Error('Unable to initialize CSS overview, missing models');
       }
       view = new ElementDetailsView(this.#controller, this.#domModel, this.#cssModel, this.#linkifier);
       void view.populateNodes(payload.nodes);

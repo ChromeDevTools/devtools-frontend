@@ -11,11 +11,11 @@ const UIStrings = {
   /**
    * @description Title for developer resources panel
    */
-  developerResources: 'Developer Resources',
+  developerResources: 'Developer resources',
   /**
    * @description Command for showing the developer resources panel
    */
-  showDeveloperResources: 'Show Developer Resources',
+  showDeveloperResources: 'Show Developer resources',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/developer_resources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

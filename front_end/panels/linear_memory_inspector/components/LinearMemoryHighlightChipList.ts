@@ -14,12 +14,12 @@ import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 const UIStrings = {
   /**
    *@description Tooltip text that appears when hovering over an inspected variable's button in the Linear Memory Highlight Chip List.
-  Clicking the button changes the displayed slice of computer memory in the Linear Memory Inspector to contain the inspected variable's bytes.
+  Clicking the button changes the displayed slice of computer memory in the Linear Memory inspector to contain the inspected variable's bytes.
    */
   jumpToAddress: 'Jump to this memory',
   /**
    *@description Tooltip text that appears when hovering over an inspected variable's delete button in the Linear Memory Highlight Chip List.
-   Clicking the delete button stops highlighting the variable's memory in the Linear Memory Inspector.
+   Clicking the delete button stops highlighting the variable's memory in the Linear Memory inspector.
    'Memory' is a slice of bytes in the computer memory.
    */
   deleteHighlight: 'Stop highlighting this memory',

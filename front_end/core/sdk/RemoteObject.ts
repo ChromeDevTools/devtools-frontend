@@ -306,8 +306,8 @@ export class RemoteObject {
   }
 
   /**
-   * Checks whether this object can be inspected with the Linear Memory Inspector.
-   * @returns `true` if this object can be inspected with the Linear Memory Inspector.
+   * Checks whether this object can be inspected with the Linear memory inspector.
+   * @returns `true` if this object can be inspected with the Linear memory inspector.
    */
   isLinearMemoryInspectable(): boolean {
     return false;

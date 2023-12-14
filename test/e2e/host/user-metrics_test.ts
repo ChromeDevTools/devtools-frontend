@@ -407,7 +407,7 @@ describe('User Metrics', () => {
   });
 });
 
-describe('User Metrics for CSS Overview', () => {
+describe('User metrics for CSS overview', () => {
   it('dispatch events when capture overview button hit', async () => {
     await goToResource('css_overview/default.html');
     await navigateToCssOverviewTab();

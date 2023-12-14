@@ -126,9 +126,9 @@ const UIStrings = {
   /**
    * @description A tooltip text that shows when hovering over a button next to value objects,
    * which are based on bytes and can be shown in a hexadecimal viewer.
-   * Clicking on the button will display that object in the memory inspector panel.
+   * Clicking on the button will display that object in the Memory inspector panel.
    */
-  revealInMemoryInpector: 'Reveal in Memory Inspector panel',
+  revealInMemoryInpector: 'Reveal in Memory inspector panel',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -14,14 +14,14 @@ const OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR = 'div[data-id="summary"]';
 const COLORS_SIDEBAR_ITEM_SELECTOR = 'div[data-id="colors"]';
 const FONT_INFO_SIDEBAR_ITEM_SELECTOR = 'div[data-id="font-info"]';
 
-describe('CSS Overview experiment', async () => {
+describe('CSS overview experiment', async () => {
   it('can display low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToCssOverviewTab();
     await startCaptureCSSOverview();
     await waitFor(CONTRAST_BUTTON_SELECTOR);
     const contrastButtons = await $$(CONTRAST_BUTTON_SELECTOR);
-    assert.strictEqual(2, contrastButtons.length, 'Wrong number of contrast issues found in CSS Overview');
+    assert.strictEqual(2, contrastButtons.length, 'Wrong number of contrast issues found in CSS overview');
     const firstIssue = contrastButtons[0];
     await firstIssue.click();
     const gridContainer = await waitFor(CONTRAST_ISSUE_IN_GRID_SELECTOR);

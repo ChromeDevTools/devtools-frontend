@@ -11,13 +11,13 @@ import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.js';
 
 const UIStrings = {
   /**
-   *@description Label for the 'Clear overview' button in the CSS Overview report
+   *@description Label for the 'Clear overview' button in the CSS overview report
    */
   clearOverview: 'Clear overview',
   /**
-   * @description Accessible label for the CSS Overview panel sidebar
+   * @description Accessible label for the CSS overview panel sidebar
    */
-  cssOverviewPanelSidebar: 'CSS Overview panel sidebar',
+  cssOverviewPanelSidebar: 'CSS overview panel sidebar',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -34,9 +34,9 @@ const UIStrings = {
    */
   error: 'Error',
   /**
-   *@description Title for the developer resources tab
+   *@description Title for the Developer resources tab
    */
-  developerResources: 'Developer Resources',
+  developerResources: 'Developer resources',
   /**
    *@description Text for a context menu entry
    */

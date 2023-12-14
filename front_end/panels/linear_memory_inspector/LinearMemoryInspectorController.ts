@@ -22,7 +22,7 @@ const UIStrings = {
   /**
    *@description A context menu item in the Scope View of the Sources Panel
    */
-  revealInMemoryInspectorPanel: 'Reveal in Memory Inspector panel',
+  revealInMemoryInspectorPanel: 'Reveal in Memory inspector panel',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);

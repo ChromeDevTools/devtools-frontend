@@ -45,7 +45,7 @@ describe('LinearMemoryInspector', () => {
     assert.equal(stoppedText, 'Paused on breakpoint');
 
     const localVariable = await waitFor('[data-object-property-name-for-test="d"]');
-    const memIcon = await waitFor('[title="Reveal in Memory Inspector panel"]', localVariable);
+    const memIcon = await waitFor('[title="Reveal in Memory inspector panel"]', localVariable);
     await clickElement(memIcon);
 
     const byteHighlights = await waitForMany('.byte-cell.highlight-area', 8);

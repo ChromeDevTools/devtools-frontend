@@ -36,13 +36,13 @@ const UIStrings = {
    */
   directiveC: 'Directive',
   /**
-   *@description Label for the column in the element list in the CSS Overview report
+   *@description Label for the column in the element list in the CSS overview report
    */
   element: 'Element',
   /**
    *@description Header for the source location column
    */
-  sourceLocation: 'Source Location',
+  sourceLocation: 'Source location',
   /**
    *@description Text for the status of something
    */

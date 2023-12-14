@@ -53,7 +53,7 @@ import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
-   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
+   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear memory inspector
    *@example {0x00000000} PH1
    *@example {0x00400000} PH2
    */

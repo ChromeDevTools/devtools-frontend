@@ -13,8 +13,8 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Sources from './sources.js';
 import type * as SourcesComponents from './components/components.js';
+import type * as Sources from './sources.js';
 
 const UIStrings = {
   /**
@@ -397,6 +397,10 @@ const UIStrings = {
    * comes to a halt.
    */
   enableAutoFocusOnDebuggerPaused: 'Focus Sources panel when triggering a breakpoint',
+  /**
+   *@description Title of an action to reveal the active file in the navigator sidebar of the Sources panel
+   */
+  revealActiveFileInSidebar: 'Reveal active file in navigator sidebar',
   /**
    * @description Text for command of toggling navigator sidebar in Sources panel
    */
@@ -1349,6 +1353,19 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Alt+PageDown',
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.reveal-in-navigator-sidebar',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: i18nLazyString(UIStrings.revealActiveFileInSidebar),
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return new Sources.SourcesPanel.ActionDelegate();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
 });
 
 UI.ActionRegistration.registerActionExtension({

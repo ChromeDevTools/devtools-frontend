@@ -9,7 +9,6 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {openFileWithQuickOpen, runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   clickOnContextMenu,
-  getSelectedNavigatorTabTitle,
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
@@ -60,49 +59,77 @@ describe('The Sources panel', async () => {
         assert.strictEqual(selectedTreeItemText, 'minified-errors.html');
       });
 
-      it('which reveals the correct file when using the "Reveal in sidebar" context menu option', async () => {
-        // Navigate without opening a file, switch to 'Snippets' view.
-        await openFileInSourcesPanel('navigation/index.html');
+      it('which reveals the correct file via the "Reveal in navigator sidebar" context menu option (in the code editor)',
+         async () => {
+           // Navigate and wait for 'index.html' to load, switch to 'Snippets' view.
+           await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
+           await waitFor('.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]');
+           await openSnippetsSubPane();
+
+           // Manually reveal the file in the sidebar.
+           await clickOnContextMenu('[aria-label="Code editor"]', 'Reveal in navigator sidebar');
+
+           // Wait for the file to be selected in the 'Page' tree.
+           await waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
+         });
+
+      it('which reveals the correct file via the "Reveal in navigator sidebar" context menu option (in the tab header)',
+         async () => {
+           // Navigate and wait for 'index.html' to load, switch to 'Snippets' view.
+           await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
+           await waitFor('.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]');
+           await openSnippetsSubPane();
+
+           // Manually reveal the file in the sidebar.
+           await clickOnContextMenu(
+               '.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]',
+               'Reveal in navigator sidebar',
+           );
+
+           // Wait for the file to be selected in the 'Page' tree.
+           await waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
+         });
+
+      it('which reveals the correct file via the "Reveal active file in navigator sidebar" command', async () => {
+        // Navigate and wait for 'index.html' to load, switch to 'Snippets' view.
+        await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
+        await waitFor('.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]');
         await openSnippetsSubPane();
 
-        // Open file via the command menu.
-        await openFileWithQuickOpen('index.html');
         // Manually reveal the file in the sidebar.
-        await clickOnContextMenu(
-            '.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]',
-            'Reveal in sidebar',
-        );
+        await runCommandWithQuickOpen('Reveal active file in navigator sidebar');
 
         // Wait for the file to be selected in the 'Page' tree.
         await waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
       });
     });
 
-    it('which does not automatically switch to the Page tab when opening a document', async () => {
-      // Navigate without opening a file, switch to 'Snippets' view.
+    it('which does not automatically reveal when opening a file', async () => {
+      // Navigate without opening a file, close the navigator view.
+      const {frontend} = getBrowserAndPages();
       await openFileInSourcesPanel('navigation/index.html');
-      await openSnippetsSubPane();
+      await toggleNavigatorSidebar(frontend);
 
       // Open file via the command menu.
       await openFileWithQuickOpen('index.html');
       // Wait for the file to appear in a 'Sources' panel tab.
       await waitFor('.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]');
 
-      // Check that we're still in 'Snippets' view.
-      assert.strictEqual(await getSelectedNavigatorTabTitle(), 'Snippets');
+      // Check that the navigator view is still hidden.
+      await waitForNone('.navigator-tabbed-pane');
     });
 
     it('which can be toggled via Ctrl+Shift+Y shortcut keyboard shortcut', async () => {
+      // Open 'Sources' panel and make sure that the navigator view is not collapsed in initial state.
       const {frontend} = getBrowserAndPages();
       await openSourcesPanel();
-      // Make sure that the navigator sidebar is not collapsed in initial state
       await waitFor('.navigator-tabbed-pane');
 
-      // Collapse navigator sidebar
+      // Collapse navigator view.
       await toggleNavigatorSidebar(frontend);
       await waitForNone('.navigator-tabbed-pane');
 
-      // Expand navigator sidebar
+      // Expand navigator view.
       await toggleNavigatorSidebar(frontend);
       await waitFor('.navigator-tabbed-pane');
     });

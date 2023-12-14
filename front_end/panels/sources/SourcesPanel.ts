@@ -124,7 +124,7 @@ const UIStrings = {
   /**
    *@description A context menu item in the Sources Panel of the Sources panel
    */
-  revealInSidebar: 'Reveal in sidebar',
+  revealInSidebar: 'Reveal in navigator sidebar',
   /**
    *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
    * When clicked, the execution is resumed until it reaches the line specified by the right-click that
@@ -539,8 +539,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
       const navigatorView = await view.widget();
       if (navigatorView instanceof NavigatorView && navigatorView.acceptProject(uiSourceCode.project())) {
         navigatorView.revealUISourceCode(uiSourceCode, true);
+        this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
         if (!skipReveal) {
-          await viewManager.revealView(view);
+          this.editorView.showBoth(true);
+          navigatorView.focus();
         }
         break;
       }
@@ -888,7 +890,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
           Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
               uiSourceCode))) {
       contextMenu.revealSection().appendItem(
-          i18nString(UIStrings.revealInSidebar), this.handleContextMenuReveal.bind(this, uiSourceCode));
+          i18nString(UIStrings.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
+            jslogContext: 'sources.reveal-in-navigator-sidebar',
+          });
     }
     // Ignore list only works for JavaScript debugging.
     if (uiSourceCode.contentType().hasScripts() &&
@@ -926,11 +930,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
-  }
-
-  private handleContextMenuReveal(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    this.editorView.showBoth();
-    void this.revealInNavigator(uiSourceCode);
   }
 
   private appendRemoteObjectItems(contextMenu: UI.ContextMenu.ContextMenu, remoteObject: SDK.RemoteObject.RemoteObject):
@@ -1338,6 +1337,14 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
             void consoleModel.evaluateCommandInConsole(executionContext, message, text, /* useCommandLineAPI */ true);
           }
         }
+        return true;
+      }
+      case 'sources.reveal-in-navigator-sidebar': {
+        const uiSourceCode = panel.sourcesView().currentUISourceCode();
+        if (uiSourceCode === null) {
+          return false;
+        }
+        void panel.revealInNavigator(uiSourceCode);
         return true;
       }
       case 'sources.toggle-navigator-sidebar': {

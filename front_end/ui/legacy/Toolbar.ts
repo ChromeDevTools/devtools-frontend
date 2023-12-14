@@ -707,7 +707,6 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
       this.prompt.setTitle(tooltip);
     }
     this.prompt.setPlaceholder(placeholder, accessiblePlaceholder);
-    this.prompt.setJsLog(`${VisualLogging.textField().track({keydown: true})}`);
     this.prompt.addEventListener(TextPromptEvents.TextChanged, this.onChangeCallback.bind(this));
 
     if (growFactor) {

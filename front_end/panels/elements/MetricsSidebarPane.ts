@@ -59,7 +59,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.inlineStyle = null;
     this.highlightMode = '';
     this.boxElements = [];
-    this.contentElement.setAttribute('jslog', `${VisualLogging.stylesMetricsPane()}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('styles-metrics')}`);
   }
 
   override doUpdate(): Promise<void> {

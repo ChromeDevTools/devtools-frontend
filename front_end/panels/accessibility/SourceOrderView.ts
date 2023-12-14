@@ -45,7 +45,7 @@ export class SourceOrderPane extends AccessibilitySubPane {
   constructor() {
     super(i18nString(UIStrings.sourceOrderViewer));
 
-    this.element.setAttribute('jslog', `${VisualLogging.accessibilitySourceOrder()}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('source-order')}`);
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noSourceOrderInformation));
     this.warning = this.createInfo(i18nString(UIStrings.thereMayBeADelayInDisplaying));
     this.warning.id = 'source-order-warning';

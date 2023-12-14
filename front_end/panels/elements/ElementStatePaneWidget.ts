@@ -33,7 +33,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     super(true);
 
     this.contentElement.className = 'styles-element-state-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.elementStatesPane()}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('element-states')}`);
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.forceElementState));
     const table = document.createElement('table');
     table.classList.add('source-code');

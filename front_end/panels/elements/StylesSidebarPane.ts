@@ -293,7 +293,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.hasMatchedStyles = false;
 
     this.contentElement.classList.add('styles-pane');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.stylesPane()}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('styles')}`);
 
     this.sectionBlocks = [];
     this.idleCallbackManager = null;

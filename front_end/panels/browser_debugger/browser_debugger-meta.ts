@@ -215,7 +215,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.ContentScriptsNavigatorView.instance();
+    return new Sources.SourcesNavigator.ContentScriptsNavigatorView();
   },
 });
 

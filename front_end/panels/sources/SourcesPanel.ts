@@ -46,14 +46,7 @@ import * as Snippets from '../snippets/snippets.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
-import {type NavigatorView} from './NavigatorView.js';
-import {
-  ContentScriptsNavigatorView,
-  FilesNavigatorView,
-  NetworkNavigatorView,
-  OverridesNavigatorView,
-  SnippetsNavigatorView,
-} from './SourcesNavigator.js';
+import {NavigatorView} from './NavigatorView.js';
 import sourcesPanelStyles from './sourcesPanel.css.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
@@ -540,14 +533,16 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.showUISourceCode(uiSourceCode, {lineNumber, columnNumber}, omitFocus);
   }
 
-  revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): void {
-    for (const navigator of registeredNavigatorViews) {
-      const navigatorView = navigator.navigatorView();
-      if (navigatorView.acceptProject(uiSourceCode.project())) {
+  async revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): Promise<void> {
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    for (const view of viewManager.viewsForLocation(UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW)) {
+      const navigatorView = await view.widget();
+      if (navigatorView instanceof NavigatorView && navigatorView.acceptProject(uiSourceCode.project())) {
         navigatorView.revealUISourceCode(uiSourceCode, true);
         if (!skipReveal) {
-          void UI.ViewManager.ViewManager.instance().showView(navigator.viewId);
+          await viewManager.revealView(view);
         }
+        break;
       }
     }
   }
@@ -710,7 +705,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const uiSourceCode = event.data;
     if (this.editorView.mainWidget() &&
         Common.Settings.Settings.instance().moduleSetting('autoRevealInNavigator').get()) {
-      this.revealInNavigator(uiSourceCode, true);
+      void this.revealInNavigator(uiSourceCode, true);
     }
   }
 
@@ -935,7 +930,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private handleContextMenuReveal(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.editorView.showBoth();
-    this.revealInNavigator(uiSourceCode);
+    void this.revealInNavigator(uiSourceCode);
   }
 
   private appendRemoteObjectItems(contextMenu: UI.ContextMenu.ContextMenu, remoteObject: SDK.RemoteObject.RemoteObject):
@@ -1397,37 +1392,4 @@ export class WrapperView extends UI.Widget.VBox {
   showViewInWrapper(): void {
     this.view.show(this.element);
   }
-}
-
-const registeredNavigatorViews: NavigatorViewRegistration[] = [
-  {
-    viewId: 'navigator-network',
-    navigatorView: NetworkNavigatorView.instance,
-    experiment: undefined,
-  },
-  {
-    viewId: 'navigator-files',
-    navigatorView: FilesNavigatorView.instance,
-    experiment: undefined,
-  },
-  {
-    viewId: 'navigator-snippets',
-    navigatorView: SnippetsNavigatorView.instance,
-    experiment: undefined,
-  },
-  {
-    viewId: 'navigator-overrides',
-    navigatorView: OverridesNavigatorView.instance,
-    experiment: undefined,
-  },
-  {
-    viewId: 'navigator-contentScripts',
-    navigatorView: ContentScriptsNavigatorView.instance,
-    experiment: undefined,
-  },
-];
-export interface NavigatorViewRegistration {
-  navigatorView: () => NavigatorView;
-  viewId: string;
-  experiment?: string;
 }

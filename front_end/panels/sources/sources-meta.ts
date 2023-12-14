@@ -461,7 +461,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.FilesNavigatorView.instance();
+    return new Sources.SourcesNavigator.FilesNavigatorView();
   },
 });
 
@@ -474,7 +474,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.SnippetsNavigatorView.instance();
+    return new Sources.SourcesNavigator.SnippetsNavigatorView();
   },
 });
 

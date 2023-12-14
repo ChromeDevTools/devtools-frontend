@@ -39,6 +39,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import navigatorTreeStyles from './navigatorTree.css.js';
@@ -195,7 +196,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private groupByFolder?: any;
-  constructor(enableAuthoredGrouping?: boolean) {
+  constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
     super(true);
 
     this.placeholder = null;
@@ -203,6 +204,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context(jslogContext)}`);
     this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
 

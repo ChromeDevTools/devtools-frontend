@@ -37,7 +37,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
@@ -103,14 +102,13 @@ let networkNavigatorViewInstance: NetworkNavigatorView;
 
 export class NetworkNavigatorView extends NavigatorView {
   private constructor() {
-    super(true);
+    super('navigator-network', true);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this);
 
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-network')}`);
   }
 
   override wasShown(): void {
@@ -173,11 +171,9 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 }
 
-let filesNavigatorViewInstance: FilesNavigatorView;
-
 export class FilesNavigatorView extends NavigatorView {
-  private constructor() {
-    super();
+  constructor() {
+    super('navigator-files');
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
@@ -191,14 +187,6 @@ export class FilesNavigatorView extends NavigatorView {
         this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
       }
     });
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-files')}`);
-  }
-
-  static instance(): FilesNavigatorView {
-    if (!filesNavigatorViewInstance) {
-      filesNavigatorViewInstance = new FilesNavigatorView();
-    }
-    return filesNavigatorViewInstance;
   }
 
   override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
@@ -224,7 +212,7 @@ let overridesNavigatorViewInstance: OverridesNavigatorView;
 export class OverridesNavigatorView extends NavigatorView {
   private readonly toolbar: UI.Toolbar.Toolbar;
   private constructor() {
-    super();
+    super('navigator-overrides');
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
@@ -235,7 +223,6 @@ export class OverridesNavigatorView extends NavigatorView {
     this.toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
 
     this.contentElement.insertBefore(this.toolbar.element, this.contentElement.firstChild);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-overrides')}`);
 
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.ProjectChanged, this.updateProjectAndUI, this);
@@ -317,29 +304,15 @@ export class OverridesNavigatorView extends NavigatorView {
   }
 }
 
-let contentScriptsNavigatorViewInstance: ContentScriptsNavigatorView;
-
 export class ContentScriptsNavigatorView extends NavigatorView {
-  private constructor() {
-    super();
+  constructor() {
+    super('navigator-contentScripts');
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
   <div>${i18nString(UIStrings.explainContentScripts)}</div><br />
   ${UI.XLink.XLink.create('https://developer.chrome.com/extensions/content_scripts', i18nString(UIStrings.learnMore))}
   `);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-contentScripts')}`);
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ContentScriptsNavigatorView {
-    const {forceNew} = opts;
-    if (!contentScriptsNavigatorViewInstance || forceNew) {
-      contentScriptsNavigatorViewInstance = new ContentScriptsNavigatorView();
-    }
-
-    return contentScriptsNavigatorViewInstance;
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
@@ -347,11 +320,9 @@ export class ContentScriptsNavigatorView extends NavigatorView {
   }
 }
 
-let snippetsNavigatorViewInstance: SnippetsNavigatorView;
-
 export class SnippetsNavigatorView extends NavigatorView {
   constructor() {
-    super();
+    super('navigator-snippets');
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`
@@ -367,15 +338,7 @@ export class SnippetsNavigatorView extends NavigatorView {
           Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString);
     });
     toolbar.appendToolbarItem(newButton);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-snippets')}`);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
-  }
-
-  static instance(): SnippetsNavigatorView {
-    if (!snippetsNavigatorViewInstance) {
-      snippetsNavigatorViewInstance = new SnippetsNavigatorView();
-    }
-    return snippetsNavigatorViewInstance;
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {

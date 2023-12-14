@@ -255,7 +255,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
       if (uiSourceCode) {
         Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
-        Sources.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
+        void Sources.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
       }
     };
 

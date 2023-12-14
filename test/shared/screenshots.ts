@@ -77,6 +77,11 @@ export const assertElementScreenshotUnchanged = async (
   if (!element) {
     assert.fail(`Given element for test ${fileName} was not found.`);
   }
+  // Only assert screenshots on Linux. We don't observe platform-specific differences enough to justify
+  // the costs of asserting 3 platforms per screenshot.
+  if (platform !== 'linux') {
+    return;
+  }
   return assertScreenshotUnchangedWithRetries(element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
 };
 

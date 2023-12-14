@@ -4,6 +4,7 @@
 
 import {click, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,
   waitForAdorners,
@@ -11,7 +12,6 @@ import {
   waitForSelectedTreeElementSelectorWhichIncludesText,
 } from '../helpers/elements-helpers.js';
 import {expandIssue, navigateToIssuesTab, revealNodeInElementsPanel} from '../helpers/issues-helpers.js';
-import {clickOnContextMenu} from '../helpers/sources-helpers.js';
 
 // TODO: Add a second node reveal test, where am issue is produced by an OOPIF
 
@@ -30,7 +30,7 @@ describe('The Issues tab', async () => {
 describe('The Elements panel', async () => {
   it('has a context menu link from an iframe to the corresponding frame details view', async () => {
     await goToResource('application/main-frame.html');
-    await clickOnContextMenu('[aria-label="</iframe>"]', 'Show iframe details');
+    await openSoftContextMenuAndClickOnItem('[aria-label="</iframe>"]', 'Show iframe details');
 
     await step('Frame details report with correct title is shown', async () => {
       await waitForFunction(async () => {

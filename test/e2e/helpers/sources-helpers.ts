@@ -33,6 +33,8 @@ import {
   waitForVisible,
 } from '../../shared/helper.js';
 
+import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
+
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
@@ -627,16 +629,8 @@ export async function openNestedWorkerFile(selectors: NestedFileSelector) {
   await click(selectors.fileSelector);
 }
 
-export async function clickOnContextMenu(selector: string, label: string) {
-  // Find the selected node, right click.
-  await click(selector, {clickOptions: {button: 'right'}});
-
-  // Wait for the context menu option, and click it.
-  await click(`.soft-context-menu > [aria-label="${label}"]`);
-}
-
 export async function inspectMemory(variableName: string) {
-  await clickOnContextMenu(
+  await openSoftContextMenuAndClickOnItem(
       `[data-object-property-name-for-test="${variableName}"]`, 'Reveal in Memory inspector panel');
 }
 

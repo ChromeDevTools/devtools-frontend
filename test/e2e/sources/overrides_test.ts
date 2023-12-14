@@ -15,6 +15,7 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   openNetworkTab,
   selectRequestByName,
@@ -25,7 +26,6 @@ import {
   typeIntoQuickOpen,
 } from '../helpers/quick_open-helpers.js';
 import {
-  clickOnContextMenu,
   ENABLE_OVERRIDES_SELECTOR,
   enableLocalOverrides,
   openSourcesPanel,
@@ -45,11 +45,11 @@ describe('Overrides panel', async function() {
     await goToResource('empty.html');
     await openSourcesPanel();
     await enableLocalOverrides();
-    await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await waitFor('[aria-label="NewFile, file"]');
     await typeText('foo\n');
 
-    await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+    await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await waitFor('[aria-label="NewFile, file"]');
     await typeText('bar\n');
     await waitFor('[aria-label="bar, file"]');
@@ -221,7 +221,7 @@ describe('Overrides panel', async function() {
     await step('shows indicator after enabling override in Overrides tab', async () => {
       await click('aria/Sources');
       await click('aria/Select folder for overrides');
-      await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+      await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
       await waitFor('[aria-label="NewFile, file"]');
 
       await openNetworkTab();
@@ -252,7 +252,7 @@ describe('Overrides panel', async function() {
     await step('when overrides setting is enabled', async () => {
       // Set up & enable overrides in the Sources panel
       await click('aria/Select folder for overrides');
-      await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+      await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
 
       await openNetworkTab();
       await selectRequestByName('coffees.json', {button: 'right'});

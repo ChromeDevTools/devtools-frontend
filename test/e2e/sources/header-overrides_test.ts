@@ -16,6 +16,7 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   getTextFromHeadersRow,
   navigateToNetworkTab,
@@ -23,7 +24,6 @@ import {
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
 import {
-  clickOnContextMenu,
   enableLocalOverrides,
   openOverridesSubPane,
   openSourcesPanel,
@@ -39,7 +39,7 @@ const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response Headers"]';
 const HEADER_ROW_SELECTOR = '.row';
 
 async function createHeaderOverride() {
-  await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+  await openSoftContextMenuAndClickOnItem(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
   await waitFor('.being-edited');
   await typeText('.headers\n');
   await click('.add-block');

@@ -6,9 +6,9 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {openFileWithQuickOpen, runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
-  clickOnContextMenu,
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
@@ -22,7 +22,7 @@ describe('The Sources panel', async () => {
       it('which offers a context menu option "Search in all files" for top frames', async () => {
         await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
 
-        await clickOnContextMenu('[aria-label="top, frame"]', 'Search in all files');
+        await openSoftContextMenuAndClickOnItem('[aria-label="top, frame"]', 'Search in all files');
 
         const element = await waitFor('[aria-label="Search Query"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
@@ -32,7 +32,8 @@ describe('The Sources panel', async () => {
       it('which offers a context menu option "Search in folder" for folders', async () => {
         await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
 
-        await clickOnContextMenu('[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder');
+        await openSoftContextMenuAndClickOnItem(
+            '[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder');
 
         const element = await waitFor('[aria-label="Search Query"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
@@ -75,7 +76,7 @@ describe('The Sources panel', async () => {
            await openSnippetsSubPane();
 
            // Manually reveal the file in the sidebar.
-           await clickOnContextMenu('[aria-label="Code editor"]', 'Reveal in navigator sidebar');
+           await openSoftContextMenuAndClickOnItem('[aria-label="Code editor"]', 'Reveal in navigator sidebar');
 
            // Wait for the file to be selected in the 'Page' tree.
            await waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
@@ -89,7 +90,7 @@ describe('The Sources panel', async () => {
            await openSnippetsSubPane();
 
            // Manually reveal the file in the sidebar.
-           await clickOnContextMenu(
+           await openSoftContextMenuAndClickOnItem(
                '.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]',
                'Reveal in navigator sidebar',
            );

@@ -19,13 +19,23 @@ import {
 describe('The Sources panel', async () => {
   describe('contains a Navigator view', () => {
     describe('with a Page tab', () => {
+      it('which offers a context menu option "Search in all files" for top frames', async () => {
+        await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
+
+        await clickOnContextMenu('[aria-label="top, frame"]', 'Search in all files');
+
+        const element = await waitFor('[aria-label="Search Query"]');
+        const value = await element.evaluate(input => (input as HTMLInputElement).value);
+        assert.strictEqual(value, '');
+      });
+
       it('which offers a context menu option "Search in folder" for folders', async () => {
         await openSourceCodeEditorForFile('index.html', 'navigation/index.html');
 
         await clickOnContextMenu('[aria-label="test/e2e/resources/sources/navigation, nw-folder"]', 'Search in folder');
+
         const element = await waitFor('[aria-label="Search Query"]');
         const value = await element.evaluate(input => (input as HTMLInputElement).value);
-
         assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
       });
 

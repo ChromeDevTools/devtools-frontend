@@ -207,9 +207,7 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   toggle(queryCandidate: string, searchImmediately?: boolean): void {
-    if (queryCandidate) {
-      this.search.value = queryCandidate;
-    }
+    this.search.value = queryCandidate;
     if (this.isShowing()) {
       this.focus();
     } else {

@@ -8,32 +8,16 @@ import * as Search from '../search/search.js';
 
 import {SourcesSearchScope} from './SourcesSearchScope.js';
 
-let searchSourcesViewInstance: SearchSourcesView;
+export class SearchSources {
+  readonly query: string;
+  constructor(query: string) {
+    this.query = query;
+  }
+}
 
 export class SearchSourcesView extends Search.SearchView.SearchView {
-  private constructor() {
+  constructor() {
     super('sources', new Common.Throttler.Throttler(/* timeoutMs */ 200));
-  }
-
-  static instance(): SearchSourcesView {
-    if (!searchSourcesViewInstance) {
-      searchSourcesViewInstance = new SearchSourcesView();
-    }
-    return searchSourcesViewInstance;
-  }
-
-  static async openSearch(query: string, searchImmediately?: boolean): Promise<UI.Widget.Widget> {
-    const view = UI.ViewManager.ViewManager.instance().view('sources.search-sources-tab');
-    // Deliberately use target location name so that it could be changed
-    // based on the setting later.
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const location = (await UI.ViewManager.ViewManager.instance().resolveLocation('drawer-view') as any);
-    location.appendView(view);
-    await UI.ViewManager.ViewManager.instance().revealView(view);
-    const widget = (await view.widget() as Search.SearchView.SearchView);
-    widget.toggle(query, Boolean(searchImmediately));
-    return widget;
   }
 
   override createScope(): Search.SearchScope.SearchScope {
@@ -42,18 +26,26 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    void this.showSearch();
-    return true;
-  }
-
-  private showSearch(): Promise<UI.Widget.Widget> {
-    const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
-    let queryCandidate = '';
-    if (selection && selection.rangeCount) {
-      queryCandidate = selection.toString().replace(/\r?\n.*/, '');
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    switch (actionId) {
+      case 'sources.search': {
+        const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
+        const query = selection ? selection.toString().replace(/\r?\n.*/, '') : '';
+        void Common.Revealer.reveal(new SearchSources(query));
+        return true;
+      }
     }
+    return false;
+  }
+}
 
-    return SearchSourcesView.openSearch(queryCandidate);
+export class Revealer implements Common.Revealer.Revealer<SearchSources> {
+  async reveal({query}: SearchSources, omitFocus?: boolean|undefined): Promise<void> {
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    await viewManager.showView('sources.search-sources-tab', true, omitFocus);
+    const searchSourcesView = viewManager.materializedWidget('sources.search-sources-tab');
+    if (searchSourcesView instanceof SearchSourcesView) {
+      searchSourcesView.toggle(query);
+    }
   }
 }

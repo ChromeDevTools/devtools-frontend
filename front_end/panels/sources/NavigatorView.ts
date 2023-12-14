@@ -44,7 +44,7 @@ import * as Snippets from '../snippets/snippets.js';
 
 import navigatorTreeStyles from './navigatorTree.css.js';
 import navigatorViewStyles from './navigatorView.css.js';
-import {SearchSourcesView} from './SearchSourcesView.js';
+import {SearchSources} from './SearchSourcesView.js';
 
 const UIStrings = {
   /**
@@ -266,18 +266,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     return order;
   }
 
-  static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path?: Platform.DevToolsPath.EncodedPathString):
-      void {
-    let searchLabel = i18nString(UIStrings.searchInFolder);
-    if (!path || !path.trim()) {
-      path = '*' as Platform.DevToolsPath.EncodedPathString;
-      searchLabel = i18nString(UIStrings.searchInAllFiles);
-    }
-    contextMenu.viewSection().appendItem(searchLabel, () => {
-      if (path) {
-        void SearchSourcesView.openSearch(`file:${path.trim()}`);
-      }
-    });
+  static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void {
+    const searchLabel = path ? i18nString(UIStrings.searchInFolder) : i18nString(UIStrings.searchInAllFiles);
+    const searchSources = new SearchSources(path && `file:${path}`);
+    contextMenu.viewSection().appendItem(searchLabel, () => Common.Revealer.reveal(searchSources));
   }
 
   private static treeElementsCompare(

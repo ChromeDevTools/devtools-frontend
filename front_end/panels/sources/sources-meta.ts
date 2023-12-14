@@ -491,7 +491,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SearchSourcesView.SearchSourcesView.instance();
+    return new Sources.SearchSourcesView.SearchSourcesView();
   },
 });
 
@@ -1860,6 +1860,17 @@ Common.Revealer.registerRevealer({
   async loadRevealer() {
     const Sources = await loadSourcesModule();
     return new Sources.DebuggerPlugin.BreakpointLocationRevealer();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SearchSourcesView.SearchSources]);
+  },
+  destination: undefined,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return new Sources.SearchSourcesView.Revealer();
   },
 });
 

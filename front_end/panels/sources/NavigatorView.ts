@@ -182,20 +182,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private readonly frameNodes: Map<SDK.ResourceTreeModel.ResourceTreeFrame, NavigatorGroupTreeNode>;
   private authoredNode?: NavigatorGroupTreeNode;
   private deployedNode?: NavigatorGroupTreeNode;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private navigatorGroupByFolderSetting: Common.Settings.Setting<any>;
+  private navigatorGroupByFolderSetting: Common.Settings.Setting<boolean>;
   private navigatorGroupByAuthoredExperiment?: string;
   private workspaceInternal!: Workspace.Workspace.WorkspaceImpl;
-  private lastSelectedUISourceCode?: Workspace.UISourceCode.UISourceCode;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private groupByDomain?: any;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private groupByFolder?: any;
+  private groupByDomain?: boolean;
+  private groupByFolder?: boolean;
   constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
     super(true);
 
@@ -815,14 +808,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       }
       this.scriptsTree.selectedTreeElement.deselect();
     }
-    this.lastSelectedUISourceCode = uiSourceCode;
     // TODO(dgozman): figure out revealing multiple.
     node.reveal(select);
     return node;
   }
 
   sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
-    this.lastSelectedUISourceCode = uiSourceCode;
     void Common.Revealer.reveal(uiSourceCode, !focusSource);
   }
 

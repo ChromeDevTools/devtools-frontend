@@ -219,8 +219,6 @@ export class DebuggerPlugin extends Plugin {
   // content is edited and later saved, these are used as a source of
   // truth for re-creating the breakpoints.
   private breakpoints: BreakpointDescription[] = [];
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private continueToLocations: {from: number, to: number, async: boolean, click: () => void}[]|null = null;
   private readonly liveLocationPool: Bindings.LiveLocation.LiveLocationPool;
   // When the editor content is changed by the user, this becomes

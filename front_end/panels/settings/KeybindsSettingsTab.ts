@@ -87,7 +87,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.section().context('keybinds')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('keybinds')}`);
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);

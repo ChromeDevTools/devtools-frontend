@@ -27,6 +27,7 @@ import {
   emulateUserKeyboardNavigation,
   focusCurrentlyFocusableCell,
   getAllRows,
+  getBodyRowByAriaIndex,
   getCellByIndexes,
   getFocusableCell,
   getHeaderCellForColumnId,
@@ -605,6 +606,25 @@ describe('DataGrid', () => {
       focusableCell.focus();
       const cellFocusedEvent = await bodyCellFocusedEvent;
       assert.deepEqual(cellFocusedEvent.data, {cell: rows[0].cells[0], row: rows[0]});
+    });
+
+    it('when the user hovers over a row', async () => {
+      const component = renderDataGrid({rows, columns});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+
+      const rowHoveredEvent = getEventPromise<DataGrid.DataGridEvents.RowMouseEnterEvent>(component, 'rowmouseenter');
+      const rowLeaveEvent = getEventPromise<DataGrid.DataGridEvents.RowMouseLeaveEvent>(component, 'rowmouseleave');
+
+      const row = getBodyRowByAriaIndex(component.shadowRoot, 1);
+      row.dispatchEvent(new MouseEvent('mouseenter'));
+
+      const hoverEvent = await rowHoveredEvent;
+      assert.deepEqual(hoverEvent.data, {row: rows[0]});
+
+      row.dispatchEvent(new MouseEvent('mouseleave'));
+      const leaveEvent = await rowLeaveEvent;
+      assert.deepEqual(leaveEvent.data, {row: rows[0]});
     });
   });
 

@@ -60,8 +60,6 @@ describe('The Sources panel', async () => {
 
         // Open another file via the command menu.
         await openFileWithQuickOpen('minified-errors.js');
-        // Wait for the file to appear in a 'Sources' panel tab.
-        await waitFor('.tabbed-pane-header-tab[aria-label="minified-errors.js"][aria-selected="true"]');
 
         // Check that the selected item in the tree is still minified-errors.html.
         const selectedTreeItem = await waitFor('.navigator-file-tree-item[aria-selected="true"]');
@@ -122,8 +120,6 @@ describe('The Sources panel', async () => {
 
       // Open file via the command menu.
       await openFileWithQuickOpen('index.html');
-      // Wait for the file to appear in a 'Sources' panel tab.
-      await waitFor('.tabbed-pane-header-tab[aria-label="index.html"][aria-selected="true"]');
 
       // Check that the navigator view is still hidden.
       await waitForNone('.navigator-tabbed-pane');

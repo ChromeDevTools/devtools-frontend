@@ -4,6 +4,8 @@
 
 import {$$, click, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
 
+import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
+
 export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
 const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item-wrapper';
 const QUICK_OPEN_ITEM_TITLE_SELECTOR = '.filtered-list-widget-title';
@@ -58,11 +60,17 @@ export async function readQuickOpenResults(): Promise<string[]> {
   return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
 }
 
-export const openFileWithQuickOpen = async (filename: string, filePosition = 0) => {
-  await openFileQuickOpen();
-  await typeIntoQuickOpen(filename);
-  const firstItem = await getMenuItemAtPosition(filePosition);
-  await firstItem.click();
+export const openFileWithQuickOpen = async (sourceFile: string, filePosition = 0) => {
+  await waitForSourceFiles(
+      SourceFileEvents.SourceFileLoaded,
+      files => files.some(f => f.endsWith(sourceFile)),
+      async () => {
+        await openFileQuickOpen();
+        await typeIntoQuickOpen(sourceFile);
+        const firstItem = await getMenuItemAtPosition(filePosition);
+        await firstItem.click();
+      },
+  );
 };
 
 export async function runCommandWithQuickOpen(command: string): Promise<void> {

@@ -108,7 +108,6 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    await waitFor('.cookies-table .data-grid-data-grid-node');
     await click('.cookies-table .data-grid-data-grid-node');
 
     await selectCookieByName('urlencoded');

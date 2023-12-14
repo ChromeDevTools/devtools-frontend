@@ -150,10 +150,8 @@ export async function getHelpText() {
 
 export async function openStorageView() {
   await click('#tab-resources');
-  const STORAGE_SELECTOR = '[aria-label="Storage"]';
   await waitFor('.storage-group-list-item');
-  await waitFor(STORAGE_SELECTOR);
-  await click(STORAGE_SELECTOR);
+  await click('[aria-label="Storage"]');
 }
 
 export async function clearSiteData() {

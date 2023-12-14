@@ -56,7 +56,6 @@ const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
-    await waitFor(LAYOUT_PANE_TAB_SELECTOR);
     await click(LAYOUT_PANE_TAB_SELECTOR);
 
     const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
@@ -107,7 +106,6 @@ export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) 
 
 export const toggleElementCheckboxInLayoutPane = async () => {
   await step('Click element checkbox in Layout pane', async () => {
-    await waitFor(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
     await click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
   });
 };
@@ -210,8 +208,7 @@ export const clickTreeElementWithPartialText = async (text: string) => {
 
 export const clickNthChildOfSelectedElementNode = async (childIndex: number) => {
   assert(childIndex > 0, 'CSS :nth-child() selector indices are 1-based.');
-  const element = await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li:nth-child(${childIndex})`);
-  await element.click();
+  await click(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li:nth-child(${childIndex})`);
 };
 
 export const focusElementsTree = async () => {
@@ -297,7 +294,6 @@ export const expandSelectedNodeRecursively = async () => {
   await click(SELECTED_TREE_ELEMENT_SELECTOR, {clickOptions: {button: 'right'}});
 
   // Wait for the 'expand recursively' option, and click it.
-  await waitFor(EXPAND_RECURSIVELY);
   await click(EXPAND_RECURSIVELY);
 };
 

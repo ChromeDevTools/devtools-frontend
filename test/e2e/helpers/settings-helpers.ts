@@ -44,7 +44,6 @@ export const openSettingsTab = async (tabTitle: string) => {
   await click(gearIconSelector);
 
   // Click on the Settings tab and wait for the panel to appear.
-  await waitFor(settingsMenuSelector);
   await click(settingsMenuSelector);
   await waitFor(panelSelector);
 };

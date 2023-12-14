@@ -513,7 +513,6 @@ describe('User Metrics for Issue Panel', () => {
 
   it('dispatch events when a link to an element is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
-    await waitFor('.issue');
     await click('.issue');
 
     await waitFor('.element-reveal-icon');
@@ -544,7 +543,6 @@ describe('User Metrics for Issue Panel', () => {
     const {browser} = getBrowserAndPages();
 
     await goToResource('elements/element-reveal-inline-issue.html');
-    await waitFor('.issue');
     await click('.issue');
 
     await waitFor('.link-list x-link');

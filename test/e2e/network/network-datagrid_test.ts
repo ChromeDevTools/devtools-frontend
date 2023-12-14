@@ -158,8 +158,6 @@ describe('The Network Tab', async function() {
 
     // Open the HTML file that was loaded
     await click('td.name-column');
-    // Wait for the detailed network information pane to show up
-    await waitFor('[aria-label="Response"]');
     // Open the raw response HTML
     await click('[aria-label="Response"]');
     // Disable pretty printing

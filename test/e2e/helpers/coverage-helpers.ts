@@ -21,7 +21,6 @@ export async function navigateToCoverageTestSite() {
 }
 
 export async function startInstrumentingCoverage() {
-  await waitFor(START_INSTRUMENTING_BUTTON);
   await click(START_INSTRUMENTING_BUTTON);
   await waitForNone('.coverage-results .landing-page');
 }

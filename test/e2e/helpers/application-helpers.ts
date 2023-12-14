@@ -84,7 +84,6 @@ export async function clearStorageItemsFilter() {
 }
 
 export async function clearStorageItems() {
-  await waitFor('#storage-items-delete-all');
   await click('#storage-items-delete-all');
 }
 
@@ -104,7 +103,6 @@ export async function selectStorageItemAtIndex(index: number) {
 }
 
 export async function deleteSelectedStorageItem() {
-  await waitFor('[aria-label="Delete Selected"]');
   await click('[aria-label="Delete Selected"]');
 }
 

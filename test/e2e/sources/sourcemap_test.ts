@@ -224,7 +224,6 @@ describe('The Sources Tab', async function() {
       await clickOnContextMenu('.cm-line', 'Add source map…');
 
       // Enter the source map URL into the appropriate input box.
-      await waitFor('.add-source-map');
       await click('.add-source-map');
       await typeText('sourcemap-minified.map');
       await frontend.keyboard.press('Enter');

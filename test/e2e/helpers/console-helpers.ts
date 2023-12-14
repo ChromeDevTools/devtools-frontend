@@ -203,7 +203,6 @@ export async function getStructuredConsoleMessages() {
 }
 
 export async function focusConsolePrompt() {
-  await waitFor(CONSOLE_PROMPT_SELECTOR);
   await click(CONSOLE_PROMPT_SELECTOR);
   await waitFor('[aria-label="Console prompt"]');
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
@@ -293,27 +292,21 @@ export async function waitForConsoleInfoMessageAndClickOnLink() {
 
 export async function navigateToIssuesPanelViaInfoBar() {
   // Navigate to Issues panel
-  await waitFor('#console-issues-counter');
   await click('#console-issues-counter');
   await waitFor('.issues-pane');
 }
 
 export async function turnOffHistoryAutocomplete() {
   await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
   await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
 }
 
 export async function toggleShowCorsErrors() {
-  await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(SHOW_CORS_ERRORS_SELECTOR);
-  await click(SHOW_CORS_ERRORS_SELECTOR);
-  await click(CONSOLE_SETTINGS_SELECTOR);
+  await toggleConsoleSetting(SHOW_CORS_ERRORS_SELECTOR);
 }
 
 export async function toggleConsoleSetting(settingSelector: string) {
   await click(CONSOLE_SETTINGS_SELECTOR);
-  await waitFor(settingSelector);
   await click(settingSelector);
   await click(CONSOLE_SETTINGS_SELECTOR);
 }

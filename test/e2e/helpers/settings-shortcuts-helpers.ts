@@ -82,7 +82,6 @@ export const editShortcutListItem = async (shortcutText: string) => {
   const listItemElement = await getShortcutListItemElement(shortcutText) as ElementHandle;
 
   await clickElement(listItemElement);
-  await waitFor(EDIT_BUTTON_SELECTOR, listItemElement);
   await click(EDIT_BUTTON_SELECTOR, {root: listItemElement});
 
   await waitFor(RESET_BUTTON_SELECTOR);

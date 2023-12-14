@@ -110,12 +110,7 @@ export async function openFileInSourcesPanel(testInput: string) {
 
 export async function openRecorderSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
-
-  await waitFor('[aria-label="More tabs"]', root);
   await click('[aria-label="More tabs"]', {root});
-
-  await waitFor('[aria-label="Recordings"]');
-
   await click('[aria-label="Recordings"]');
   await waitFor('[aria-label="Add recording"]');
 }
@@ -133,12 +128,7 @@ export async function createNewRecording(recordingName: string) {
 
 export async function openSnippetsSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
-
-  await waitFor('[aria-label="More tabs"]', root);
   await click('[aria-label="More tabs"]', {root});
-
-  await waitFor('[aria-label="Snippets"]');
-
   await click('[aria-label="Snippets"]');
   await waitFor('[aria-label="New snippet"]');
 }
@@ -170,12 +160,7 @@ export async function createNewSnippet(snippetName: string, content?: string) {
 
 export async function openOverridesSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
-
-  await waitFor('[aria-label="More tabs"]', root);
   await click('[aria-label="More tabs"]', {root});
-
-  await waitFor('[aria-label="Overrides"]');
-
   await click('[aria-label="Overrides"]');
   await waitFor('[aria-label="Overrides panel"]');
 }
@@ -647,9 +632,7 @@ export async function clickOnContextMenu(selector: string, label: string) {
   await click(selector, {clickOptions: {button: 'right'}});
 
   // Wait for the context menu option, and click it.
-  const labelSelector = `.soft-context-menu > [aria-label="${label}"]`;
-  await waitFor(labelSelector);
-  await click(labelSelector);
+  await click(`.soft-context-menu > [aria-label="${label}"]`);
 }
 
 export async function inspectMemory(variableName: string) {
@@ -674,9 +657,7 @@ export async function getValuesForScope(scope: string, expandCount: number, wait
   const scopeSelector = `[aria-label="${scope}"]`;
   await waitFor(scopeSelector);
   for (let i = 0; i < expandCount; i++) {
-    const unexpandedSelector = `${scopeSelector} + ol li[aria-expanded=false]`;
-    await waitFor(unexpandedSelector);
-    await click(unexpandedSelector);
+    await click(`${scopeSelector} + ol li[aria-expanded=false]`);
   }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
   const valueSelectorElements = await waitForFunction(async () => {

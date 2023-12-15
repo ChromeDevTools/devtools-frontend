@@ -17,6 +17,7 @@ import {
   preFileSetup,
   resetPages,
   unregisterAllServiceWorkers,
+  watchForHang,
 } from './hooks.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
@@ -133,8 +134,8 @@ export const mochaHooks = {
   beforeEach: async function(this: Mocha.Suite) {
     // Sets the timeout higher for this hook only.
     this.timeout(20000);
-    await resetPages();
-    await unregisterAllServiceWorkers();
+    await watchForHang(resetPages);
+    await watchForHang(unregisterAllServiceWorkers);
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.

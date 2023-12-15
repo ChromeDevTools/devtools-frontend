@@ -250,11 +250,6 @@ const UIStrings = {
   savingD: 'Saving… {PH1}%',
   /**
    *@description Text in Heap Snapshot View of a profiler tool
-   *@example {1,021} PH1
-   */
-  sKb: '{PH1} kB',
-  /**
-   *@description Text in Heap Snapshot View of a profiler tool
    */
   heapMemoryUsage: 'Heap memory usage',
   /**
@@ -1810,7 +1805,11 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   }
 
   static valueFormatter(value: number): string {
-    return i18nString(UIStrings.sKb, {PH1: Platform.NumberUtilities.withThousandsSeparator(Math.round(value / 1000))});
+    const formatter = new Intl.NumberFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale, {
+      style: 'unit',
+      unit: 'kilobyte',
+    });
+    return formatter.format(Math.round(value / 1000));
   }
 
   setTotalAndRecords(total: number, records: PerfUI.PieChart.Slice[]): void {

@@ -41,9 +41,9 @@ const mockTreeItem = {
       availableCSSVariables(): string[] {
         return ['--rgb-color', '--wide-gamut-color'];
       },
-      computeCSSVariable(_: unknown, completion: string): string |
+      computeCSSVariable(_: unknown, completion: string): {value: string, declaration: null} |
           undefined {
-            return CSS_VARIABLES_FOR_TEST[completion];
+            return {value: CSS_VARIABLES_FOR_TEST[completion], declaration: null};
           },
     };
   },

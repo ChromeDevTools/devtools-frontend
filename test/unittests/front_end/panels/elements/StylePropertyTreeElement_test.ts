@@ -44,12 +44,14 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       if (!mockVariableMap[param]) {
         return {
           computedValue: null,
+          declaration: null,
           fromFallback: true,
         };
       }
 
       return {
         computedValue: mockVariableMap[param],
+        declaration: null,
         fromFallback: false,
       };
     });
@@ -420,6 +422,40 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
   });
 
   describe('custom-properties', () => {
+    it('linkifies var functions to declarations', async () => {
+      const cssCustomPropertyUse = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'prop', 'var(--prop)', true, false, true, false, '', undefined);
+      const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, '--prop', 'value', true, false, true, false, '', undefined);
+      mockMatchedStyles.computeCSSVariable.callsFake(
+          (_, name) => name === '--prop' ?
+              {value: 'computedvalue', declaration: cssCustomPropertyDef, fromFallback: false} :
+              null);
+      const renderValueSpy =
+          sinon.spy(ElementsModule.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesPane: stylesSidebarPane,
+        matchedStyles: mockMatchedStyles,
+        property: cssCustomPropertyUse,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: true,
+      });
+
+      stylePropertyTreeElement.updateTitle();
+
+      const varSwatch =
+          renderValueSpy.returnValues.find(value => value.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
+                  ?.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
+          undefined;
+      assertNotNullOrUndefined(varSwatch);
+      const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
+      varSwatch.link?.linkElement?.dispatchEvent(new MouseEvent('mousedown'));
+      assert.isTrue(revealPropertySpy.calledWith(cssCustomPropertyDef));
+      await new Promise(r => setTimeout(r));
+    });
+
     it('linkifies property definition to registrations', async () => {
       const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
           mockCssStyleDeclaration, 0, '--prop', 'value', true, false, true, false, '', undefined);
@@ -440,7 +476,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
       const registration = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSRegisteredProperty);
       mockMatchedStyles.getRegisteredProperty.callsFake(name => name === '--prop' ? registration : undefined);
-      mockMatchedStyles.computeCSSVariable.returns('computedvalue');
+      mockMatchedStyles.computeCSSVariable.returns({value: 'computedvalue', declaration: null});
       const popoverContents = addElementPopoverHook.args[0][1]();
       assert.isTrue(popoverContents instanceof ElementsComponents.CSSVariableValueView.CSSVariableValueView);
       const {details} = popoverContents as ElementsComponents.CSSVariableValueView.CSSVariableValueView;
@@ -455,7 +491,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
     it('linkifies var functions to initial-value registrations', async () => {
       const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
           mockCssStyleDeclaration, 0, 'prop', 'var(--prop)', true, false, true, false, '', undefined);
-      mockMatchedStyles.computeCSSVariable.returns('computedvalue');
+      mockMatchedStyles.computeCSSVariable.returns({value: 'computedvalue', declaration: null});
       const renderValueSpy =
           sinon.spy(ElementsModule.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({

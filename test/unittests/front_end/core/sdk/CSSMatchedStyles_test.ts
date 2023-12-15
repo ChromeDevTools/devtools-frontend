@@ -2,12 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
+
+function ruleMatch(selector: string, cssProperties: Protocol.CSS.CSSProperty[]): Protocol.CSS.RuleMatch {
+  return {
+    rule: {
+      selectorList: {selectors: [{text: selector}], text: selector},
+      origin: Protocol.CSS.StyleSheetOrigin.Regular,
+      style: {
+        cssProperties,
+        shorthandEntries: [],
+      },
+    },
+    matchingSelectors: [0],
+  };
+}
 
 describe('CSSMatchedStyles', () => {
   describe('parseCSSVariableNameAndFallback', () => {
@@ -96,12 +111,10 @@ describe('CSSMatchedStyles', () => {
         node,
         inlinePayload: null,
         attributesPayload: null,
-        matchedPayload: [{
-          rule: {
-            selectorList: {selectors: [{text: 'div'}], text: 'div'},
-            origin: Protocol.CSS.StyleSheetOrigin.Regular,
-            style: {
-              cssProperties: [
+        matchedPayload: [
+          ruleMatch(
+              'div',
+              [
                 {name: '--foo', value: 'active-foo'},
                 {name: '--baz', value: 'active-baz !important', important: true},
                 {name: '--baz', value: 'passive-baz'},
@@ -110,12 +123,8 @@ describe('CSSMatchedStyles', () => {
                 {name: '--theme', value: 'var(--dark)'},
                 {name: '--shadow', value: '1px var(--theme)'},
                 {name: '--width', value: '1px'},
-              ],
-              shorthandEntries: [],
-            },
-          },
-          matchingSelectors: [0],
-        }],
+              ]),
+        ],
         pseudoPayload: [],
         inheritedPayload: [],
         inheritedPseudoPayload: [],
@@ -127,22 +136,94 @@ describe('CSSMatchedStyles', () => {
         fontPaletteValuesRule: undefined,
       });
 
-      const val = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text);
+      const val = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text)?.value;
       assert.strictEqual(val, value);
     };
 
     it('should correctly compute the value of an expression that uses a variable', async () => {
       await testCssValueEquals('--foo', 'active-foo');
       await testCssValueEquals('--baz', 'active-baz !important');
-      await testCssValueEquals('--does-not-exist', null);
+      await testCssValueEquals('--does-not-exist', undefined);
       await testCssValueEquals('--dark', 'darkgrey');
       await testCssValueEquals('--light', 'lightgrey');
       await testCssValueEquals('--theme', 'darkgrey');
       await testCssValueEquals('--shadow', '1px darkgrey');
       await testCssValueEquals('--width', '1px');
-      await testCssValueEquals('--cycle-a', null);
-      await testCssValueEquals('--cycle-b', null);
-      await testCssValueEquals('--cycle-c', null);
+      await testCssValueEquals('--cycle-a', undefined);
+      await testCssValueEquals('--cycle-b', undefined);
+      await testCssValueEquals('--cycle-c', undefined);
+    });
+
+    it('correctly resolves the declaration', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      node.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.parentNode.id = 2 as Protocol.DOM.NodeId;
+      node.parentNode.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.parentNode.parentNode.id = 3 as Protocol.DOM.NodeId;
+      node.parentNode.parentNode.parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.parentNode.parentNode.parentNode.id = 4 as Protocol.DOM.NodeId;
+
+      const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
+        cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
+        node,
+        inlinePayload: null,
+        attributesPayload: null,
+        matchedPayload: [ruleMatch('div', [{name: '--foo', value: 'foo1'}])],  // styleFoo1
+        pseudoPayload: [],
+        inheritedPayload: [
+          {
+            matchedCSSRules: [ruleMatch('div', [{name: '--bar', value: 'bar'}, {name: '--foo', value: 'foo2'}])],
+          },                                                                        // styleFoo2
+          {matchedCSSRules: [ruleMatch('div', [{name: '--baz', value: 'baz'}])]},   // styleBaz
+          {matchedCSSRules: [ruleMatch('div', [{name: '--foo', value: 'foo3'}])]},  // styleFoo3
+        ],
+        inheritedPseudoPayload: [],
+        animationsPayload: [],
+        parentLayoutNodeId: undefined,
+        positionFallbackRules: [],
+        propertyRules: [{
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          style: {
+            cssProperties: [
+              {name: 'syntax', value: '*'},
+              {name: 'inherits', value: 'true'},
+              {name: 'initial-value', value: 'bar0'},
+            ],
+            shorthandEntries: [],
+          },
+          propertyName: {text: '--bar'},
+        }],
+        cssPropertyRegistrations: [],
+        fontPaletteValuesRule: undefined,
+      });
+
+      // Compute the variable value as it is visible to `startingCascade` and compare with the expectation
+      const testComputedVariableValueEquals =
+          (name: string, startingCascade: SDK.CSSStyleDeclaration.CSSStyleDeclaration, expectedValue: string,
+           expectedDeclaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty) => {
+            const result = matchedStyles.computeCSSVariable(startingCascade, name);
+            Platform.assertNotNullOrUndefined(result);
+            assert.strictEqual(result.value, expectedValue);
+            Platform.assertNotNullOrUndefined(result.declaration);
+            assert.strictEqual(result.declaration, expectedDeclaration);
+          };
+
+      const styles = matchedStyles.nodeStyles();
+      const styleFoo1 = styles.find(style => style.allProperties().find(p => p.value === 'foo1'));
+      const styleFoo2 = styles.find(style => style.allProperties().find(p => p.value === 'foo2'));
+      const styleFoo3 = styles.find(style => style.allProperties().find(p => p.value === 'foo3'));
+      const styleBaz = styles.find(style => style.allProperties().find(p => p.value === 'baz'));
+      Platform.assertNotNullOrUndefined(styleFoo1);
+      Platform.assertNotNullOrUndefined(styleFoo2);
+      Platform.assertNotNullOrUndefined(styleFoo3);
+      Platform.assertNotNullOrUndefined(styleBaz);
+
+      testComputedVariableValueEquals('--foo', styleFoo1, 'foo1', styleFoo1.leadingProperties()[0]);
+      testComputedVariableValueEquals('--bar', styleFoo1, 'bar', styleFoo2.leadingProperties()[0]);
+      testComputedVariableValueEquals('--foo', styleFoo2, 'foo2', styleFoo2.leadingProperties()[1]);
+      testComputedVariableValueEquals('--bar', styleFoo3, 'bar0', matchedStyles.registeredProperties()[0]);
+      testComputedVariableValueEquals('--foo', styleBaz, 'foo3', styleFoo3.leadingProperties()[0]);
     });
   });
 
@@ -156,21 +237,13 @@ describe('CSSMatchedStyles', () => {
         node,
         inlinePayload: null,
         attributesPayload: null,
-        matchedPayload: [{
-          rule: {
-            selectorList: {selectors: [{text: 'div'}], text: 'div'},
-            origin: Protocol.CSS.StyleSheetOrigin.Regular,
-            style: {
-              cssProperties: [
-                {name: '--width', value: '1px'},
-                {name: '--dark', value: 'darkgrey'},
-                {name: '--theme', value: 'var(--dark)'},
-              ],
-              shorthandEntries: [],
-            },
-          },
-          matchingSelectors: [0],
-        }],
+        matchedPayload: [ruleMatch(
+            'div',
+            [
+              {name: '--width', value: '1px'},
+              {name: '--dark', value: 'darkgrey'},
+              {name: '--theme', value: 'var(--dark)'},
+            ])],
         pseudoPayload: [],
         inheritedPayload: [],
         inheritedPseudoPayload: [],
@@ -239,17 +312,9 @@ describeWithMockConnection('NodeCascade', () => {
       node,
       inlinePayload: null,
       attributesPayload: null,
-      matchedPayload: [{
-        matchingSelectors: [0],
-        rule: {
-          selectorList: {selectors: [{text: 'div'}], text: 'div'},
-          origin: Protocol.CSS.StyleSheetOrigin.Regular,
-          style: {
-            cssProperties: [],
-            shorthandEntries: [],
-          },
-        },
-      }],
+      matchedPayload: [
+        ruleMatch('div', []),
+      ],
       pseudoPayload: [],
       inheritedPayload: [{matchedCSSRules}],
       inheritedPseudoPayload: [],

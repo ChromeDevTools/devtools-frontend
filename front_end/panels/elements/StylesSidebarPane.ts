@@ -2147,12 +2147,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         const computedValue =
             this.treeElement.matchedStyles().computeCSSVariable(this.treeElement.property.ownerStyle, completion);
         if (computedValue) {
-          const color = Common.Color.parse(computedValue);
+          const color = Common.Color.parse(computedValue.value);
           if (color) {
             result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;
           } else {
-            result.subtitleRenderer = computedValueSubtitleRenderer.bind(null, computedValue);
+            result.subtitleRenderer = computedValueSubtitleRenderer.bind(null, computedValue.value);
           }
         }
       }

@@ -162,11 +162,11 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       if (!value) {
         continue;
       }
-      const color = Common.Color.parse(value);
+      const color = Common.Color.parse(value.value);
       if (!color) {
         continue;
       }
-      colors.push(value);
+      colors.push(value.value);
       colorNames.push(cssVariable);
     }
     return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors: colors, colorNames: colorNames};

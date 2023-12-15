@@ -27,13 +27,18 @@ export class StylePropertyHighlighter {
       }
     }
 
-    const {treeElement, section} = this.findTreeElementAndSection(treeElement => treeElement.property === cssProperty);
+    const section =
+        this.styleSidebarPane.allSections().find(section => section.style().leadingProperties().includes(cssProperty));
+    if (!section) {
+      return;
+    }
+    section.showAllItems();
+
+    const treeElement = this.findTreeElementFromSection(treeElement => treeElement.property === cssProperty, section);
     if (treeElement) {
       treeElement.parent && treeElement.parent.expand();
       this.scrollAndHighlightTreeElement(treeElement);
-      if (section) {
-        section.element.focus();
-      }
+      section.element.focus();
     }
   }
 

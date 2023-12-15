@@ -542,6 +542,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return document.createTextNode(parenthesesBalancedText);
     }
 
+    const {declaration} = this.matchedStylesInternal.computeCSSVariable(this.style, variableName) ?? {};
     const {computedValue, fromFallback} = computedSingleValue;
     let fallbackHtml: Node|null = null;
     if (fromFallback && fallback?.startsWith('var(')) {
@@ -557,7 +558,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       variableName,
       fromFallback,
       fallbackHtml,
-      onLinkActivate: this.handleVarDefinitionActivate.bind(this),
+      onLinkActivate: name => this.handleVarDefinitionActivate(declaration ?? name),
     };
 
     if (varSwatch.link?.linkElement) {
@@ -579,11 +580,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.processColor(computedValue, varSwatch);
   }
 
-  private handleVarDefinitionActivate(variableName: string): void {
+  private handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
+                                      SDK.CSSMatchedStyles.CSSRegisteredProperty): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
-    this.parentPaneInternal.jumpToProperty(variableName) ||
-        this.parentPaneInternal.jumpToProperty('initial-value', variableName, REGISTERED_PROPERTY_SECTION_NAME);
+    if (variable instanceof SDK.CSSProperty.CSSProperty) {
+      this.parentPaneInternal.revealProperty(variable);
+    } else if (variable instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
+      this.parentPaneInternal.jumpToProperty(
+          'initial-value', variable.propertyName(), REGISTERED_PROPERTY_SECTION_NAME);
+    } else {
+      this.parentPaneInternal.jumpToProperty(variable) ||
+          this.parentPaneInternal.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+    }
   }
 
   private async addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
@@ -1016,7 +1025,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.parentPaneInternal.addPopover(
           this.nameElement,
           () => this.#getVariablePopoverContents(
-              this.property.name, this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)));
+              this.property.name,
+              this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null));
     }
     this.valueElement = (propertyRenderer.renderValue() as HTMLElement);
     if (!this.treeOutline) {

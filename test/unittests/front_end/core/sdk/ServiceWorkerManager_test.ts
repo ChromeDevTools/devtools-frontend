@@ -20,7 +20,7 @@ describe('ServiceWorkerVersion', () => {
     scriptResponseTime: 12345,
     controlledClients: ['client1', 'client2'],
     targetId: 'target1',
-    routerRules: '[{"condition":{"requestMethod":"POST"}, "source":["fetch","network"]}]',
+    routerRules: '[{"condition":{"requestMethod":"POST"},"source":["fetch","network"],"id":1}]',
   } as Protocol.ServiceWorker.ServiceWorkerVersion;
 
   function makeVersion(
@@ -34,7 +34,7 @@ describe('ServiceWorkerVersion', () => {
     const version = makeVersion(REGISTRATION_PAYLOAD, VERSION_PAYLOAD);
 
     const expectedRouterRules =
-        [{condition: '{"requestMethod":"POST"}', source: '["fetch","network"]'} as
+        [{condition: '{"requestMethod":"POST"}', source: '["fetch","network"]', id: 1} as
          SDK.ServiceWorkerManager.ServiceWorkerRouterRule];
 
     assert.strictEqual(version.id, VERSION_PAYLOAD.versionId);

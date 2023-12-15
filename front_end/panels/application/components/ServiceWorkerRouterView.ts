@@ -37,10 +37,10 @@ export class ServiceWorkerRouterView extends LegacyWrapper.LegacyWrapper.Wrappab
     // clang-format on
   }
 
-  #renderRouterRule(rule: SDK.ServiceWorkerManager.ServiceWorkerRouterRule, idx: number): LitHtml.TemplateResult {
+  #renderRouterRule(rule: SDK.ServiceWorkerManager.ServiceWorkerRouterRule): LitHtml.TemplateResult {
     return html`
       <li class="router-rule">
-        <div class="rule-id">Rule ${idx + 1}</div>
+        <div class="rule-id">Rule ${rule.id}</div>
         <ul class="item">
           <li class="condition">
             <div class="rule-type">Condition</div>

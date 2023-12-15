@@ -54,10 +54,12 @@ describeWithMockConnection('ServiceWorkersView', () => {
         {
           condition: {urlPattern: '/foo/bar'},
           source: ['network'],
+          id: 1,
         },
         {
           condition: {urlPattern: '/baz'},
           source: ['fetch-event'],
+          id: 2,
         },
       ];
       let serviceWorkersManager: SDK.ServiceWorkerManager.ServiceWorkerManager|null;

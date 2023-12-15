@@ -28,10 +28,12 @@ describeWithLocale('ServiceWorkerRouterView', () => {
     {
       condition: JSON.stringify({urlPattern: '/foo/bar'}),
       source: ['network'].toString(),
+      id: 1,
     },
     {
       condition: JSON.stringify({urlPattern: '/baz'}),
       source: ['fetch-event'].toString(),
+      id: 2,
     },
   ];
 

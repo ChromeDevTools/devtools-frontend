@@ -87,6 +87,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-scope')}`);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    this.treeOutline.hideOverflow();
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =

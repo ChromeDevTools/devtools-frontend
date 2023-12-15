@@ -639,7 +639,6 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
     this.editable = !(options && options.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');
-    this.hideOverflow();
   }
 }
 

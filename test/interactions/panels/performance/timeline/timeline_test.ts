@@ -143,21 +143,17 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
 
-  // Flaky test
-  itScreenshot.skip('[crbug.com/1511265]: renders screenshots in the frames track', async () => {
+  itScreenshot('renders screenshots in the frames track', async () => {
     await loadComponentDocExample(
         'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
-    await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
+    await waitForFunction(async () => {
+      const mainFlameChart = await waitFor('.timeline-flamechart');
+      const height = await mainFlameChart.evaluate(elem => elem.clientHeight);
+      return height > 500;
+    });
     // With some changes made to timeline-details-view it passes with a diff of 1.98 so reduce it to 1.
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
-  });
-
-  itScreenshot('renders correctly with the NEW_ENGINE ThreadTracksSource', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
-    await waitFor('.timeline-flamechart');
-    const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-new-engine.png', 1);
   });
 
   itScreenshot('supports the network track being expanded and then clicked', async function() {

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
@@ -170,5 +172,23 @@ describe('Performance panel', function() {
     await frontend.mouse.click(104, 144);
     await timeout(100);  // cannot await for DOM as this is a purely canvas change.
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png', 1);
+  });
+
+  it('renders the window range bounds correctly when loading multiple profiles', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?cpuprofile=basic');
+    let timingTitleHandle = await waitFor('.timeline-details-chip-title');
+    let timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
+    assert.isTrue(timingTitle.includes('0 – 2.38'));
+    const {frontend} = getBrowserAndPages();
+
+    // load another profile and ensure the time range is updated correctly.
+    await frontend.evaluate(`(async () => {
+      await loadFromFile('node-fibonacci-website.cpuprofile.gz');
+    })()`);
+    await waitForFunction(async () => {
+      timingTitleHandle = await waitFor('.timeline-details-chip-title');
+      timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
+      return timingTitle.includes('0 – 2.66');
+    });
   });
 });

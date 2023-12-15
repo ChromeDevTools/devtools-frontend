@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
-import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
+import * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as TraceBounds from '../../../../front_end/services/trace_bounds/trace_bounds.js';
@@ -167,7 +167,16 @@ export class TraceLoader {
       return fromCache;
     }
     // Load the contents of the file and get the array of all the events.
-    const fileContents = await TraceLoader.fixtureContents(context, name);
+    let fileContents = await TraceLoader.fixtureContents(context, name);
+    if (name.endsWith('.cpuprofile.gz')) {
+      const rawEvents = await TraceLoader.rawCPUProfile(context, name);
+      fileContents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+                         rawEvents,
+                         1,
+                         true,
+                         ) as unknown as TraceEngine.Types.TraceEvents.TraceEventData[];
+    }
+
     const events = 'traceEvents' in fileContents ? fileContents.traceEvents : fileContents;
 
     // Execute the new trace engine

@@ -43,8 +43,9 @@ describe('Main thread by new engine', () => {
   });
 });
 
-describe('Rasterizer', () => {
+describe('Rasterizer', function() {
   preloadForCodeCoverage('performance_panel/track_example.html');
+
   itScreenshot('correctly renders the Raster track', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=Raster&windowStart=1020034891.352&windowEnd=1020035181.509';
@@ -54,8 +55,10 @@ describe('Rasterizer', () => {
   });
 });
 
-// Flaky
-describe.skip('[crbug.com/1502494] Workers', () => {
+describe('Workers', function() {
+  // TODO(crbug.com/1472155): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
   preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the Worker track', async () => {
     const urlForTest =

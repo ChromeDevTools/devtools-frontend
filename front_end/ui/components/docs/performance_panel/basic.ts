@@ -119,11 +119,17 @@ if (traceFileName) {
 }
 
 if (fileName) {
-  const file = new URL(`../../../../../test/unittests/fixtures/traces/${fileName}`, import.meta.url);
+  await loadFromFile(fileName);
+}
+
+async function loadFromFile(fileNameWithExtension: string) {
+  const file = new URL(`../../../../../test/unittests/fixtures/traces/${fileNameWithExtension}`, import.meta.url);
   const response = await fetch(file);
   const asBlob = await response.blob();
-  const asFile = new File([asBlob], `${fileName}`, {
+  const asFile = new File([asBlob], `${fileNameWithExtension}`, {
     type: 'application/gzip',
   });
-  void timeline.loadFromFile(asFile);
+  await timeline.loadFromFile(asFile);
 }
+// @ts-expect-error
+window.loadFromFile = loadFromFile;

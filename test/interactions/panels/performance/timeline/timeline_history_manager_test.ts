@@ -7,8 +7,10 @@ import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
-// Flaky
-describe.skip('[crbug.com/1501755] Timeline History Manager tracks', function() {
+describe('Timeline History Manager tracks', function() {
+  // TODO(crbug.com/1472155): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
   preloadForCodeCoverage('performance_panel/timeline_history_manager.html');
   itScreenshot('renders all the tracks correctly expanded', async () => {
     await loadComponentDocExample('performance_panel/timeline_history_manager.html');

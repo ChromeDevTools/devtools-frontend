@@ -73,7 +73,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
-  private selectedGroupName: string|null = null;
+  #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -219,10 +219,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group|null): void {
-    if (flameChart !== this.mainFlameChart || this.selectedGroupName === group?.name) {
+    if (flameChart !== this.mainFlameChart || this.#selectedGroupName === group?.name) {
       return;
     }
-    this.selectedGroupName = group?.name || null;
+    this.#selectedGroupName = group?.name || null;
     this.#selectedEvents = group ? this.mainDataProvider.groupTreeEvents(group) : null;
     this.#updateDetailViews();
   }
@@ -233,6 +233,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (model === this.model) {
       return;
     }
+    this.#selectedGroupName = null;
     this.#traceEngineData = newTraceEngineData;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;

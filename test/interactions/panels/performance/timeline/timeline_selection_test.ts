@@ -12,7 +12,9 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 
 describe('FlameChart', function() {
   preloadForCodeCoverage('performance_panel/basic.html');
-
+  // TODO(crbug.com/1472155): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
   async function getCoordinatesForEntryWithTitleAndTs(
       title: string, tsMicroSecs: number): Promise<{x: number, y: number}> {
     const perfPanel = await waitFor('.vbox.panel.timeline');
@@ -39,8 +41,7 @@ describe('FlameChart', function() {
     }, title, tsMicroSecs);
   }
 
-  // Flaky
-  it.skip('[crbug.com/1502530] shows the details of an entry when selected on the timeline', async () => {
+  it('shows the details of an entry when selected on the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=simple-js-program');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();

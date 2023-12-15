@@ -18,6 +18,7 @@ ts_library("sdk") {
     "CSSStyleSheetHeader_test.ts",
     "ChildTargetManager_test.ts",
     "ConsoleModel_test.ts",
+    "ContentData_test.ts",
     "CookieModel_test.ts",
     "CookieParser_test.ts",
     "Cookie_test.ts",

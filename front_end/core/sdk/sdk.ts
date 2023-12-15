@@ -17,6 +17,7 @@ import * as ChildTargetManager from './ChildTargetManager.js';
 import * as CompilerSourceMappingContentProvider from './CompilerSourceMappingContentProvider.js';
 import * as Connections from './Connections.js';
 import * as ConsoleModel from './ConsoleModel.js';
+import * as ContentData from './ContentData.js';
 import * as Cookie from './Cookie.js';
 import * as CookieModel from './CookieModel.js';
 import * as CookieParser from './CookieParser.js';
@@ -90,6 +91,7 @@ export {
   CompilerSourceMappingContentProvider,
   Connections,
   ConsoleModel,
+  ContentData,
   Cookie,
   CookieModel,
   CookieParser,

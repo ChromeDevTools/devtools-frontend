@@ -57,8 +57,8 @@ Root.Runtime.experiments.register(
   'jsProfilerTemporarilyEnable',
   'Enable JavaScript Profiler temporarily',
    /* unstable= */ false,
-   /* documentation */ 'https://developer.chrome.com/blog/js-profiler-deprecation/',
-   /* feedback */ 'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548'
+   /* documentation */ 'https://goo.gle/js-profiler-deprecation',
+   /* feedback */ 'https://crbug.com/1354548'
 );
 ```
 

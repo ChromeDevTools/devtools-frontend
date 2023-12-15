@@ -1272,14 +1272,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (isNode) {
       const previewSection = new PanelFeedback.PanelFeedback.PanelFeedback();
       previewSection.data = {
-        feedbackUrl: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548' as Platform.DevToolsPath.UrlString,
-        quickStartUrl: 'https://developer.chrome.com/blog/js-profiler-deprecation/' as Platform.DevToolsPath.UrlString,
+        feedbackUrl: 'https://crbug.com/1354548' as Platform.DevToolsPath.UrlString,
+        quickStartUrl: 'https://goo.gle/js-profiler-deprecation' as Platform.DevToolsPath.UrlString,
         quickStartLinkText: i18nString(UIStrings.learnmore),
       };
       centered.appendChild(previewSection);
       const feedbackButton = new PanelFeedback.FeedbackButton.FeedbackButton();
       feedbackButton.data = {
-        feedbackUrl: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548' as Platform.DevToolsPath.UrlString,
+        feedbackUrl: 'https://crbug.com/1354548' as Platform.DevToolsPath.UrlString,
       };
       centered.appendChild(feedbackButton);
     }

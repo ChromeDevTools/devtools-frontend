@@ -95,8 +95,8 @@ describeWithMockConnection('NetworkLogView', () => {
       return {rootNode, filterBar, networkLogView};
     }
 
-    it('can create curl command parameters when some headers do not have value', async () => {
-      const request = createNetworkRequest('https://www.example.com/file.html' as Platform.DevToolsPath.UrlString, {
+    it('generates a valid curl command when some headers don\'t have values', async () => {
+      const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
         requestHeaders: [
           {name: 'header-with-value', value: 'some value'},
           {name: 'no-value-header', value: ''},
@@ -104,8 +104,36 @@ describeWithMockConnection('NetworkLogView', () => {
       });
       const actual = await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix');
       const expected =
-          'curl \'https://www.example.com/file.html\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\'';
+          'curl \'http://localhost\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\'';
       assert.strictEqual(actual, expected);
+    });
+
+    it('generates a valid curl command when header values contain double quotes', async () => {
+      const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+        requestHeaders: [{name: 'cookie', value: 'eva="Sg4="'}],
+      });
+      assert.strictEqual(
+          await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+          'curl \'http://localhost\' -H \'cookie: eva=\"Sg4=\"\'',
+      );
+      assert.strictEqual(
+          await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+          'curl "http://localhost" -H ^"cookie: eva=^\\^"Sg4=^\\^"^"',
+      );
+    });
+
+    it('generates a valid curl command when header values contain percentages', async () => {
+      const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+        requestHeaders: [{name: 'cookie', value: 'eva=%22Sg4%3D%22'}],
+      });
+      assert.strictEqual(
+          await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+          'curl \'http://localhost\' -H \'cookie: eva=%22Sg4%3D%22\'',
+      );
+      assert.strictEqual(
+          await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+          'curl "http://localhost" -H ^"cookie: eva=^%^22Sg4^%^3D^%^22^"',
+      );
     });
 
     function createNetworkLogView(filterBar?: UI.FilterBar.FilterBar): Network.NetworkLogView.NetworkLogView {

@@ -32,9 +32,13 @@ if (!window.HOT_STYLE_SHEETS_WEB_SOCKET) {
   });
   ws.addEventListener('message', (message) => {
     const parsedData = JSON.parse(message.data);
-    const styleSheet = window.HOT_STYLE_SHEETS[parsedData.file];
-    if (styleSheet) {
-      styleSheet.replace(parsedData.content);
+    if (parsedData.event === 'css-change') {
+      const styleSheet = window.HOT_STYLE_SHEETS[parsedData.file];
+      if (styleSheet) {
+        styleSheet.replace(parsedData.content);
+      }
+    } else if (parsedData.event === 'log-warn') {
+      console.warn(parsedData.message);
     }
   });
   window.HOT_STYLE_SHEETS_WEB_SOCKET = ws;

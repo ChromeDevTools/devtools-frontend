@@ -40,6 +40,7 @@ let lastConnectionId = 0;
 // Extract the target if it's provided.
 const target = extractArgument('--target') || 'Default';
 const PORT = 8080;
+const TARGET_GEN_DIR = path.join('out', target, 'gen');
 
 // Make sure that the target has
 // - `is_debug = true`
@@ -99,20 +100,34 @@ const startWebSocketServerForCssChanges = () => {
   });
 };
 
-const runGenerateCssFiles = ({fileName}) => {
+const runGenerateCssFiles = ({fileName, isLegacy}) => {
   const scriptArgs = [
     /* buildTimestamp */ Date.now(),
     /* isDebugString */ 'true',
-    /* isLegacyString */ 'false',
+    /* isLegacyString */ isLegacy ? 'true' : 'false',
     /* targetName */ target,
     /* srcDir */ '',
-    /* targetGenDir */ path.join('out', target, 'gen'),
+    /* targetGenDir */ TARGET_GEN_DIR,
     /* files */ relativeFileName(fileName),
     /* hotReloadEnabledString */ 'true'
   ];
 
   childProcess.spawnSync(
       'vpython', [NODE_PATH, '--output', GENERATE_CSS_JS_FILES_PATH, ...scriptArgs], {cwd, env, stdio: 'inherit'});
+};
+
+const isLegacyCss = absoluteFilePath => {
+  if (!absoluteFilePath.endsWith('.css')) {
+    return false;
+  }
+
+  const relativePath = path.relative(cwd, absoluteFilePath);
+  const possibleLegacyCssPath = path.join(TARGET_GEN_DIR, `${relativePath}.legacy.js`);
+  return fs.existsSync(possibleLegacyCssPath);
+};
+
+const notifyWebSocketConections = message => {
+  Object.values(connections).forEach(connection => connection.ws.send(message));
 };
 
 const onFileChange = async fileName => {
@@ -122,13 +137,19 @@ const onFileChange = async fileName => {
 
   if (fileName.endsWith('.css')) {
     console.log(`${currentTimeString()} - ${relativeFileName(fileName)} changed, notifying frontend`);
+    const isLegacy = isLegacyCss(fileName);
     const content = fs.readFileSync(fileName, {encoding: 'utf8', flag: 'r'});
+    runGenerateCssFiles({fileName: relativeFileName(fileName), isLegacy});
 
-    runGenerateCssFiles({fileName: relativeFileName(fileName)});
-
-    Object.values(connections).forEach(connection => {
-      connection.ws.send(JSON.stringify({file: fileName, content}));
-    });
+    if (isLegacy) {
+      notifyWebSocketConections(JSON.stringify({
+        event: 'log-warn',
+        message: `a legacy css file \x1B[1m${
+            path.relative(cwd, fileName)}\x1B[m is updated, you need to refresh the page to see changes.`
+      }));
+    } else {
+      notifyWebSocketConections(JSON.stringify({event: 'css-change', file: fileName, content}));
+    }
     return;
   }
 
@@ -137,8 +158,15 @@ const onFileChange = async fileName => {
 
     const jsFileName = `${fileName.substring(0, fileName.length - 3)}.js`;
     const outFile = path.resolve('out', target, 'gen', relativeFileName(jsFileName));
-    childProcess.spawnSync(
+    const res = childProcess.spawnSync(
         ESBUILD_PATH, [fileName, `--outfile=${outFile}`, '--sourcemap'], {cwd, env, stdio: 'inherit'});
+
+    if (res && res.status === 1) {
+      notifyWebSocketConections(JSON.stringify({
+        event: 'log-warn',
+        message: `TS compilation failed for \x1B[1m${path.relative(cwd, fileName)}\x1B[m, check your terminal.`
+      }));
+    }
     return;
   }
 
@@ -152,6 +180,6 @@ childProcess.spawnSync('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: '
 
 // Watch the front_end and test folder and build on any change.
 console.log(`Watching for changes in ${frontEndDir} and ${testsDir}`);
-chokidar.watch(frontEndDir).on('change', onFileChange);
-chokidar.watch(testsDir).on('change', onFileChange);
+chokidar.watch(frontEndDir, {usePolling: false, useFsEvents: true}).on('change', onFileChange);
+chokidar.watch(testsDir, {usePolling: false, useFsEvents: true}).on('change', onFileChange);
 startWebSocketServerForCssChanges();

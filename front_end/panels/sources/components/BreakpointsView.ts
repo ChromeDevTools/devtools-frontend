@@ -646,9 +646,9 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       const currentTarget = event.currentTarget as HTMLElement;
       await this.#setSelected(currentTarget);
-      const inputs = currentTarget.getElementsByTagName('input');
-      if (inputs.length === 1) {
-        inputs[0].checked = !inputs[0].checked;
+      const input = currentTarget.querySelector<HTMLInputElement>('input');
+      if (input) {
+        input.click();
       }
       event.consume();
     }

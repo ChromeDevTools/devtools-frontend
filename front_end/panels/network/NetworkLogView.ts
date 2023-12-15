@@ -2375,7 +2375,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
     }
     command = command.concat(data);
-    command.push('--compressed');
 
     if (request.securityState() === Protocol.Security.SecurityState.Insecure) {
       command.push('--insecure');

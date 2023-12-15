@@ -104,7 +104,7 @@ describeWithMockConnection('NetworkLogView', () => {
       });
       const actual = await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix');
       const expected =
-          'curl \'https://www.example.com/file.html\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\' \\\n  --compressed';
+          'curl \'https://www.example.com/file.html\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\'';
       assert.strictEqual(actual, expected);
     });
 

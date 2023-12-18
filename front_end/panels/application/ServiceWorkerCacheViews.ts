@@ -406,8 +406,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     request.endTime = entry.responseTime;
 
     let header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
-    const contentType = header ? header.value : SDK.NetworkRequest.MimeType.PLAIN;
-    request.mimeType = contentType as SDK.NetworkRequest.MimeType;
+    const contentType = header ? header.value : SDK.MimeType.MimeType.PLAIN;
+    request.mimeType = contentType as SDK.MimeType.MimeType;
 
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
     request.resourceSize = (header && Number(header.value)) || 0;

@@ -180,7 +180,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.WsFrames, i18nString(UIStrings.messages), frameView,
           i18nString(UIStrings.websocketMessages));
-    } else if (request.mimeType === SDK.NetworkRequest.MimeType.EVENTSTREAM) {
+    } else if (request.mimeType === SDK.MimeType.MimeType.EVENTSTREAM) {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.EventSource, i18nString(UIStrings.eventstream),
           new EventSourceMessagesView(request));

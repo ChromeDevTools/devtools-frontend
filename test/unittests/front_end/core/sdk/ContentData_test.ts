@@ -8,7 +8,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 describe('ContentData', () => {
   const {ContentData} = SDK.ContentData;
   type ContentDataOrError = SDK.ContentData.ContentDataOrError;
-  const {MimeType} = SDK.NetworkRequest;
+  const {MimeType} = SDK.MimeType;
   const {resourceTypes} = Common.ResourceType;
 
   it('throws an error when trying to encode text content into base64', () => {

@@ -38,12 +38,13 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
+import {ContentData as ContentDataClass} from './ContentData.js';
 import {Attributes, type Cookie} from './Cookie.js';
 import {CookieParser} from './CookieParser.js';
-import {NetworkManager, Events as NetworkManagerEvents} from './NetworkManager.js';
-import {Type} from './Target.js';
+import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
+import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {ServerTiming} from './ServerTiming.js';
+import {Type} from './Target.js';
 
 // clang-format off
 const UIStrings = {
@@ -1316,7 +1317,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (this.#contentDataProvider) {
       this.#contentDataInternal = this.#contentDataProvider();
     } else {
-      this.#contentDataInternal = NetworkManager.requestContentData(this);
+      this.#contentDataInternal =
+          NetworkManager.requestContentData(this).then(data => ContentDataClass.asLegacyContentData(data));
     }
     return this.#contentDataInternal;
   }

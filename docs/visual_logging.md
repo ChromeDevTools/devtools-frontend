@@ -1,7 +1,7 @@
 # Visual logging
 
 The goal of this project is to improve the logging of user interactions in
-DevTools. The current UMA logging is unreliable and inconsistent. This can lead
+DevTools. The current UMA logging is unreliable and inconsistent. This can lead to
 incorrect conclusions about how users are interacting with the product.
 
 We want to be able to understand how users are interacting with DevTools so that
@@ -90,7 +90,7 @@ The `context()` method sets the context for the visual logging element. The cont
 can be a string or a number. If a string is given, it is be first considered
 to refer to a context provider (see below). If no context provider is registered
 with this name, SHA-1 hash is computed and the first 32 bits
-(little endian) is logged. Number is be logged as is.
+(little endian) is logged. Number will be logged as is.
 
 The `parent()` method sets the custom parent provider for the visual logging element
 (see below). If not invoked, the parent visual element is taken from a DOM tree structure.

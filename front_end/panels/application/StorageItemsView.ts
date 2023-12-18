@@ -6,6 +6,8 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
 import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
@@ -51,6 +53,8 @@ export class StorageItemsView extends UI.Widget.VBox {
       this.refreshItems();
       UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus));
     });
+    this.refreshButton.element.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('storage-items-view.refresh')}`);
 
     this.mainToolbar = new UI.Toolbar.Toolbar('top-resources-toolbar', this.element);
 
@@ -60,7 +64,11 @@ export class StorageItemsView extends UI.Widget.VBox {
     const toolbarSeparator = new UI.Toolbar.ToolbarSeparator();
     this.deleteAllButton = this.addButton(i18nString(UIStrings.clearAll), 'clear', this.deleteAllItems);
     this.deleteSelectedButton = this.addButton(i18nString(UIStrings.deleteSelected), 'cross', this.deleteSelectedItem);
+    this.deleteSelectedButton.element.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('storage-items-view.delete-selected')}`);
     this.deleteAllButton.element.id = 'storage-items-delete-all';
+    this.deleteAllButton.element.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('storage-items-view.clear-all')}`);
 
     const toolbarItems =
         [this.refreshButton, this.filterItem, toolbarSeparator, this.deleteAllButton, this.deleteSelectedButton];

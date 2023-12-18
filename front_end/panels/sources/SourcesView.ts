@@ -371,7 +371,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   private createSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    let sourceFrame;
     let sourceView;
     const contentType = uiSourceCode.contentType();
 
@@ -382,18 +381,14 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
       sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
     } else {
-      sourceFrame = new UISourceCodeFrame(uiSourceCode);
-    }
-
-    if (sourceFrame) {
-      this.historyManager.trackSourceFrameCursorJumps(sourceFrame);
+      sourceView = new UISourceCodeFrame(uiSourceCode);
+      this.historyManager.trackSourceFrameCursorJumps(sourceView);
     }
 
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
 
-    const widget = (sourceFrame || sourceView as UI.Widget.Widget);
-    this.sourceViewByUISourceCode.set(uiSourceCode, widget);
-    return widget;
+    this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
+    return sourceView;
   }
 
   #sourceViewTypeForWidget(widget: UI.Widget.Widget): SourceViewType {

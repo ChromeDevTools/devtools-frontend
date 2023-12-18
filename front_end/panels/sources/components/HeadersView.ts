@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as Host from '../../../core/host/host.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import HeadersViewStyles from './HeadersView.css.js';
 
@@ -62,6 +63,7 @@ export class HeadersView extends UI.View.SimpleView {
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super(i18n.i18n.lockedString('HeadersView'));
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('headers-view')}`);
     this.#uiSourceCode = uiSourceCode;
     this.#uiSourceCode.addEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
@@ -367,11 +369,17 @@ export class HeadersViewComponent extends HTMLElement {
           )}
         `,
       )}
-      <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.SECONDARY} class="add-block">
+      <${Buttons.Button.Button.litTagName}
+          .variant=${Buttons.Button.Variant.SECONDARY}
+          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.add-override-rule')}
+          class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
       </${Buttons.Button.Button.litTagName}>
       <div class="learn-more-row">
-        <x-link href="https://goo.gle/devtools-override" class="link">${i18nString(UIStrings.learnMore)}</x-link>
+        <x-link
+            href="https://goo.gle/devtools-override"
+            class="link"
+            jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>${i18nString(UIStrings.learnMore)}</x-link>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -405,6 +413,7 @@ export class HeadersViewComponent extends HTMLElement {
         .iconWidth=${'14px'}
         .iconHeight=${'14px'}
         .variant=${Buttons.Button.Variant.ROUND}
+        .jslog=${VisualLogging.action().track({click: true}).context('headers-view.remove-apply-to-section')}
         class="remove-block inline-button"
       ></${Buttons.Button.Button.litTagName}>
       </div>
@@ -427,6 +436,7 @@ export class HeadersViewComponent extends HTMLElement {
           .iconWidth=${'20px'}
           .iconHeight=${'20px'}
           .variant=${Buttons.Button.Variant.ROUND}
+          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.add-header')}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
@@ -437,6 +447,7 @@ export class HeadersViewComponent extends HTMLElement {
           .iconHeight=${'14px'}
           .variant=${Buttons.Button.Variant.ROUND}
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
+          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.remove-header')}
           class="remove-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
       </div>

@@ -17,6 +17,7 @@ devtools_module("suggestion_input") {
   deps = [
     "../../../ui/components/code_highlighter:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 
   visibility =

@@ -688,7 +688,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
   constructor(
       placeholder: string, accessiblePlaceholder?: string, growFactor?: number, shrinkFactor?: number, tooltip?: string,
       completions?: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestion[]>),
-      dynamicCompletions?: boolean) {
+      dynamicCompletions?: boolean, jslogContext?: string) {
     const element = document.createElement('div');
     element.classList.add('toolbar-input');
     super(element);
@@ -699,10 +699,15 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     internalPromptElement.addEventListener('blur', () => this.element.classList.remove('focused'));
 
     this.prompt = new TextPrompt();
+    this.prompt.jslogContext = jslogContext;
     this.proxyElement = this.prompt.attach(internalPromptElement);
     this.proxyElement.classList.add('toolbar-prompt-proxy');
     this.proxyElement.addEventListener('keydown', (event: Event) => this.onKeydownCallback(event as KeyboardEvent));
-    this.prompt.initialize(completions || ((): Promise<never[]> => Promise.resolve([])), ' ', dynamicCompletions);
+    this.prompt.initialize(
+        completions || ((): Promise<never[]> => Promise.resolve([])),
+        ' ',
+        dynamicCompletions,
+    );
     if (tooltip) {
       this.prompt.setTitle(tooltip);
     }

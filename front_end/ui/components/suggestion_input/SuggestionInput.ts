@@ -6,6 +6,7 @@ import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_h
 // eslint-disable-next-line rulesdir/es_modules_import
 import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import contentEditableStyles from './suggestionInput.css.js';
 
@@ -257,6 +258,7 @@ export class SuggestionInput extends LitElement {
   @property({type: Boolean}) declare disabled: boolean;
   @property() declare strikethrough: boolean;
   @property() declare mimeType: string;
+  @property() declare jslogContext?: string;
 
   constructor() {
     super();
@@ -334,6 +336,10 @@ export class SuggestionInput extends LitElement {
   }
 
   protected override render(): LitHtml.TemplateResult {
+    let jslog = VisualLogging.textField().track({keydown: true});
+    if (this.jslogContext) {
+      jslog = jslog.context(this.jslogContext);
+    }
     // clang-format off
     return html`<devtools-editable-content
         ?disabled=${this.disabled}
@@ -350,6 +356,7 @@ export class SuggestionInput extends LitElement {
         inputmode="text"
         placeholder=${this.placeholder}
         spellcheck="false"
+        jslog=${jslog}
       ></devtools-editable-content>
       <devtools-suggestion-box
         @suggestioninit=${this.#handleSuggestionInitEvent}

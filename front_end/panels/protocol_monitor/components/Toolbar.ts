@@ -5,6 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import toolbarStyles from './toolbar.css.js';
 
@@ -73,6 +74,7 @@ export class Toolbar extends LitElement {
           .iconUrl=${copyIconUrl}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${this.#handleCopy}
+          jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.copy-command')}
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .size=${Buttons.Button.Size.SMALL}
@@ -80,6 +82,7 @@ export class Toolbar extends LitElement {
           .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
           @click=${this.#handleSend}
+          jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.send-command')}
         ></${Buttons.Button.Button.litTagName}>
       </div>
     `;

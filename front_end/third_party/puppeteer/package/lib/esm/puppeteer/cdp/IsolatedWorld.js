@@ -63,7 +63,7 @@ import { addPageBinding, debugError, withSourcePuppeteerURLIfNone, } from '../co
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { Mutex } from '../util/Mutex.js';
-import { createCdpHandle } from './ExecutionContext.js';
+import { ExecutionContext, createCdpHandle } from './ExecutionContext.js';
 /**
  * @internal
  */
@@ -121,7 +121,10 @@ export class IsolatedWorld extends Realm {
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        const context = await this.#executionContext();
+        let context = this.#context.value();
+        if (!context || !(context instanceof ExecutionContext)) {
+            context = await this.#executionContext();
+        }
         return await context.evaluate(pageFunction, ...args);
     }
     // If multiple waitFor are set up asynchronously, we need to wait for the

@@ -21,7 +21,7 @@ import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import { disposeSymbol } from '../util/disposable.js';
 import type { Binding } from './Binding.js';
-import { type ExecutionContext } from './ExecutionContext.js';
+import { ExecutionContext } from './ExecutionContext.js';
 import type { CdpFrame } from './Frame.js';
 import type { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import type { WebWorker } from './WebWorker.js';

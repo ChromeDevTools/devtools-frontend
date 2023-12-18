@@ -101,7 +101,7 @@ import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { debugError, importFSPromises, isNumber, isString, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { guarded } from '../util/decorators.js';
-import { asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
+import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
 /**
  * @internal
@@ -894,71 +894,116 @@ let Page = (() => {
             }
         }
         async screenshot(userOptions = {}) {
-            await this.bringToFront();
-            // TODO: use structuredClone after Node 16 support is dropped.
-            const options = {
-                ...userOptions,
-                clip: userOptions.clip
-                    ? {
-                        ...userOptions.clip,
+            const env_2 = { stack: [], error: void 0, hasError: false };
+            try {
+                await this.bringToFront();
+                // TODO: use structuredClone after Node 16 support is dropped.
+                const options = {
+                    ...userOptions,
+                    clip: userOptions.clip
+                        ? {
+                            ...userOptions.clip,
+                        }
+                        : undefined,
+                };
+                if (options.type === undefined && options.path !== undefined) {
+                    const filePath = options.path;
+                    // Note we cannot use Node.js here due to browser compatability.
+                    const extension = filePath
+                        .slice(filePath.lastIndexOf('.') + 1)
+                        .toLowerCase();
+                    switch (extension) {
+                        case 'png':
+                            options.type = 'png';
+                            break;
+                        case 'jpeg':
+                        case 'jpg':
+                            options.type = 'jpeg';
+                            break;
+                        case 'webp':
+                            options.type = 'webp';
+                            break;
                     }
-                    : undefined,
-            };
-            if (options.type === undefined && options.path !== undefined) {
-                const filePath = options.path;
-                // Note we cannot use Node.js here due to browser compatability.
-                const extension = filePath
-                    .slice(filePath.lastIndexOf('.') + 1)
-                    .toLowerCase();
-                switch (extension) {
-                    case 'png':
-                        options.type = 'png';
-                        break;
-                    case 'jpeg':
-                    case 'jpg':
-                        options.type = 'jpeg';
-                        break;
-                    case 'webp':
-                        options.type = 'webp';
-                        break;
                 }
-            }
-            if (options.quality !== undefined) {
-                if (options.quality < 0 && options.quality > 100) {
-                    throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
+                if (options.quality !== undefined) {
+                    if (options.quality < 0 && options.quality > 100) {
+                        throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
+                    }
+                    if (options.type === undefined ||
+                        !['jpeg', 'webp'].includes(options.type)) {
+                        throw new Error(`${options.type ?? 'png'} screenshots do not support 'quality'.`);
+                    }
                 }
-                if (options.type === undefined ||
-                    !['jpeg', 'webp'].includes(options.type)) {
-                    throw new Error(`${options.type ?? 'png'} screenshots do not support 'quality'.`);
-                }
-            }
-            if (options.clip) {
-                if (options.clip.width <= 0) {
-                    throw new Error("'width' in 'clip' must be positive.");
-                }
-                if (options.clip.height <= 0) {
-                    throw new Error("'height' in 'clip' must be positive.");
-                }
-            }
-            setDefaultScreenshotOptions(options);
-            options.clip =
-                options.clip && roundRectangle(normalizeRectangle(options.clip));
-            if (options.fullPage) {
                 if (options.clip) {
-                    throw new Error("'clip' and 'fullPage' are exclusive");
+                    if (options.clip.width <= 0) {
+                        throw new Error("'width' in 'clip' must be positive.");
+                    }
+                    if (options.clip.height <= 0) {
+                        throw new Error("'height' in 'clip' must be positive.");
+                    }
                 }
+                setDefaultScreenshotOptions(options);
+                const stack = __addDisposableResource(env_2, new AsyncDisposableStack(), true);
+                if (options.clip) {
+                    if (options.fullPage) {
+                        throw new Error("'clip' and 'fullPage' are mutually exclusive");
+                    }
+                    options.clip = roundRectangle(normalizeRectangle(options.clip));
+                }
+                else {
+                    if (options.fullPage) {
+                        // If `captureBeyondViewport` is `false`, then we set the viewport to
+                        // capture the full page. Note this may be affected by on-page CSS and
+                        // JavaScript.
+                        if (!options.captureBeyondViewport) {
+                            const scrollDimensions = await this.mainFrame()
+                                .isolatedRealm()
+                                .evaluate(() => {
+                                const element = document.documentElement;
+                                return {
+                                    width: element.scrollWidth,
+                                    height: element.scrollHeight,
+                                };
+                            });
+                            const viewport = this.viewport();
+                            await this.setViewport({
+                                ...viewport,
+                                ...scrollDimensions,
+                            });
+                            stack.defer(async () => {
+                                if (viewport) {
+                                    await this.setViewport(viewport).catch(debugError);
+                                }
+                                else {
+                                    await this.setViewport({
+                                        width: 0,
+                                        height: 0,
+                                    }).catch(debugError);
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        options.captureBeyondViewport = false;
+                    }
+                }
+                const data = await this._screenshot(options);
+                if (options.encoding === 'base64') {
+                    return data;
+                }
+                const buffer = Buffer.from(data, 'base64');
+                await this._maybeWriteBufferToFile(options.path, buffer);
+                return buffer;
             }
-            else if (!options.clip &&
-                userOptions.captureBeyondViewport === undefined) {
-                options.captureBeyondViewport = false;
+            catch (e_2) {
+                env_2.error = e_2;
+                env_2.hasError = true;
             }
-            const data = await this._screenshot(options);
-            if (options.encoding === 'base64') {
-                return data;
+            finally {
+                const result_1 = __disposeResources(env_2);
+                if (result_1)
+                    await result_1;
             }
-            const buffer = Buffer.from(data, 'base64');
-            await this._maybeWriteBufferToFile(options.path, buffer);
-            return buffer;
         }
         /**
          * @internal

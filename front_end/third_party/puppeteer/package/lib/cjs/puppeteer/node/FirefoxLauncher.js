@@ -35,6 +35,23 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'firefox');
     }
+    static getPreferences(extraPrefsFirefox, protocol) {
+        return {
+            ...extraPrefsFirefox,
+            ...(protocol === 'webDriverBiDi'
+                ? {}
+                : {
+                    // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
+                    'fission.bfcacheInParent': false,
+                }),
+            // Force all web content to use a single content process. TODO: remove
+            // this once Firefox supports mouse event dispatch from the main frame
+            // context. Once this happens, webContentIsolationStrategy should only
+            // be set for CDP. See
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1773393
+            'fission.webContentIsolationStrategy': 0,
+        };
+    }
     /**
      * @internal
      */
@@ -83,21 +100,7 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
         }
         await (0, browsers_1.createProfile)(browsers_1.Browser.FIREFOX, {
             path: userDataDir,
-            preferences: {
-                ...extraPrefsFirefox,
-                ...(options.protocol === 'cdp'
-                    ? {
-                        // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
-                        'fission.bfcacheInParent': false,
-                    }
-                    : {}),
-                // Force all web content to use a single content process. TODO: remove
-                // this once Firefox supports mouse event dispatch from the main frame
-                // context. Once this happens, webContentIsolationStrategy should only
-                // be set for CDP. See
-                // https://bugzilla.mozilla.org/show_bug.cgi?id=1773393
-                'fission.webContentIsolationStrategy': 0,
-            },
+            preferences: FirefoxLauncher.getPreferences(extraPrefsFirefox, options.protocol),
         });
         let firefoxExecutable;
         if (this.puppeteer._isPuppeteerCore || executablePath) {

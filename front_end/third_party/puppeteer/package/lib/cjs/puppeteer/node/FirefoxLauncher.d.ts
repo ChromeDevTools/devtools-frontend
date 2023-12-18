@@ -21,6 +21,7 @@ import type { PuppeteerNode } from './PuppeteerNode.js';
  */
 export declare class FirefoxLauncher extends ProductLauncher {
     constructor(puppeteer: PuppeteerNode);
+    static getPreferences(extraPrefsFirefox?: Record<string, unknown>, protocol?: 'cdp' | 'webDriverBiDi'): Record<string, unknown>;
     /**
      * @internal
      */

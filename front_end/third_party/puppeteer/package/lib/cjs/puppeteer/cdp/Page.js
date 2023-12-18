@@ -796,10 +796,7 @@ class CdpPage extends Page_js_1.Page {
                 format: type,
                 ...(optimizeForSpeed ? { optimizeForSpeed } : {}),
                 ...(quality !== undefined ? { quality: Math.round(quality) } : {}),
-                clip: clip && {
-                    ...clip,
-                    scale: clip.scale ?? 1,
-                },
+                ...(clip ? { clip: { ...clip, scale: clip.scale ?? 1 } } : {}),
                 ...(!fromSurface ? { fromSurface } : {}),
                 captureBeyondViewport,
             });

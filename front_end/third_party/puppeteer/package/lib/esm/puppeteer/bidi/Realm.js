@@ -102,9 +102,11 @@ export class BidiRealm extends EventEmitter {
                 : `${functionDeclaration}\n${sourceUrlComment}\n`;
             responsePromise = this.connection.send('script.callFunction', {
                 functionDeclaration,
-                arguments: await Promise.all(args.map(arg => {
-                    return BidiSerializer.serialize(sandbox, arg);
-                })),
+                arguments: args.length
+                    ? await Promise.all(args.map(arg => {
+                        return BidiSerializer.serialize(sandbox, arg);
+                    }))
+                    : [],
                 target: this.target,
                 resultOwnership,
                 awaitPromise: true,

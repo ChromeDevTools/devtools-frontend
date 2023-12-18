@@ -124,7 +124,10 @@ class IsolatedWorld extends Realm_js_1.Realm {
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
-        const context = await this.#executionContext();
+        let context = this.#context.value();
+        if (!context || !(context instanceof ExecutionContext_js_1.ExecutionContext)) {
+            context = await this.#executionContext();
+        }
         return await context.evaluate(pageFunction, ...args);
     }
     // If multiple waitFor are set up asynchronously, we need to wait for the

@@ -32,26 +32,28 @@ describe('View transition pseudo styles on inspector stylesheet', async () => {
        await waitForExactStyleRule('::view-transition-old(root)');
      });
 
-  it('should not add view transition pseudo styles if inspector stylesheet already has view transition pseudo styles',
-     async () => {
-       const {frontend, target} = getBrowserAndPages();
-       await goToResourceAndWaitForStyleSection('elements/view-transition.html');
+  // Flaking on multiple bots on CQ.
+  it.skip(
+      '[crbug.com/1512610] should not add view transition pseudo styles if inspector stylesheet already has view transition pseudo styles',
+      async () => {
+        const {frontend, target} = getBrowserAndPages();
+        await goToResourceAndWaitForStyleSection('elements/view-transition.html');
 
-       await target.bringToFront();
-       await target.evaluate('startFirstViewTransition()');
+        await target.bringToFront();
+        await target.evaluate('startFirstViewTransition()');
 
-       await frontend.bringToFront();
-       await waitForAndClickTreeElementWithPartialText('::view-transition');
-       await waitForExactStyleRule('::view-transition');
+        await frontend.bringToFront();
+        await waitForAndClickTreeElementWithPartialText('::view-transition');
+        await waitForExactStyleRule('::view-transition');
 
-       await target.bringToFront();
-       await target.evaluate('startNextViewTransition()');
+        await target.bringToFront();
+        await target.evaluate('startNextViewTransition()');
 
-       await frontend.bringToFront();
-       await waitForAndClickTreeElementWithPartialText('::view-transition');
-       await waitForExactStyleRule('::view-transition');
+        await frontend.bringToFront();
+        await waitForAndClickTreeElementWithPartialText('::view-transition');
+        await waitForExactStyleRule('::view-transition');
 
-       const displayedRules = await getDisplayedStyleRules();
-       assert.strictEqual(displayedRules.filter(rule => rule.selectorText === '::view-transition').length, 1);
-     });
+        const displayedRules = await getDisplayedStyleRules();
+        assert.strictEqual(displayedRules.filter(rule => rule.selectorText === '::view-transition').length, 1);
+      });
 });

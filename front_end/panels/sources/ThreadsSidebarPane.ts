@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 
@@ -29,6 +30,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-threads')}`);
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);

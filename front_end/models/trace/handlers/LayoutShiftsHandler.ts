@@ -46,7 +46,7 @@ interface LayoutShifts {
   prePaintEvents: Types.TraceEvents.TraceEventPrePaint[];
   layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
   scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[];
-  styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[];
+  styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[];
   scoreRecords: ScoreRecord[];
   backendNodeIds: Protocol.DOM.BackendNodeId[];
 }
@@ -72,7 +72,7 @@ const layoutShiftEvents: Types.TraceEvents.TraceEventLayoutShift[] = [];
 // layout shifts to the resizing of unsized elements.
 const layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTracking[] = [];
 const scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[] = [];
-const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[] = [];
+const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
@@ -138,7 +138,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (Types.TraceEvents.isTraceEventScheduleStyleInvalidationTracking(event)) {
     scheduleStyleInvalidationEvents.push(event);
   }
-  if (Types.TraceEvents.isTraceEventStyleRecalcInvalidation(event)) {
+  if (Types.TraceEvents.isTraceEventStyleRecalcInvalidationTracking(event)) {
     styleRecalcInvalidationEvents.push(event);
   }
   if (Types.TraceEvents.isTraceEventPrePaint(event)) {

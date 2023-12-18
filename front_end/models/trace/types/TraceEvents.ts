@@ -98,7 +98,8 @@ export interface TraceEventArgsData {
 export interface TraceEventCallFrame {
   codeType?: string;
   functionName: string;
-  scriptId: number;
+  // Trace events are inconsistent here sadly :(
+  scriptId: number|string;
   columnNumber: number;
   lineNumber: number;
   url: string;
@@ -895,8 +896,8 @@ export const enum StyleRecalcInvalidationReason {
   ANIMATION = 'Animation',
 }
 
-export interface TraceEventStyleRecalcInvalidation extends TraceEventInstant {
-  name: 'StyleRecalcInvalidationTracking';
+export interface TraceEventStyleRecalcInvalidationTracking extends TraceEventInstant {
+  name: KnownEventName.StyleRecalcInvalidationTracking;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       frame: string,
@@ -908,6 +909,29 @@ export interface TraceEventStyleRecalcInvalidation extends TraceEventInstant {
     },
   };
 }
+export function isTraceEventStyleRecalcInvalidationTracking(event: TraceEventData):
+    event is TraceEventStyleRecalcInvalidationTracking {
+  return event.name === KnownEventName.StyleRecalcInvalidationTracking;
+}
+export interface TraceEventStyleInvalidatorInvalidationTracking extends TraceEventInstant {
+  name: KnownEventName.StyleInvalidatorInvalidationTracking;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      frame: string,
+      nodeId: Protocol.DOM.BackendNodeId,
+      reason: string,
+      invalidationList: Array<{classes?: string[], id: string}>,
+      subtree: boolean,
+      nodeName?: string,
+      extraData?: string,
+    },
+  };
+}
+export function isTraceEventStyleInvalidatorInvalidationTracking(event: TraceEventData):
+    event is TraceEventStyleInvalidatorInvalidationTracking {
+  return event.name === KnownEventName.StyleInvalidatorInvalidationTracking;
+}
+
 export interface TraceEventScheduleStyleRecalculation extends TraceEventInstant {
   name: KnownEventName.ScheduleStyleRecalculation;
   args: TraceEventArgs&{
@@ -1227,12 +1251,24 @@ export function isTraceEventActivateLayerTree(event: TraceEventData): event is T
   return event.name === KnownEventName.ActivateLayerTree;
 }
 
+export interface SyntheticInvalidation {
+  name: 'SyntheticInvalidation';
+  nodeName?: string;
+  rawEvent: TraceEventScheduleStyleInvalidationTracking|TraceEventStyleRecalcInvalidationTracking|
+      TraceEventStyleInvalidatorInvalidationTracking|TraceEventLayoutInvalidationTracking;
+  nodeId: Protocol.DOM.BackendNodeId;
+  frame: string;
+  reason?: string;
+  stackTrace?: TraceEventCallFrame[];
+}
+
 export interface TraceEventUpdateLayoutTree extends TraceEventComplete {
   name: KnownEventName.UpdateLayoutTree;
   args: TraceEventArgs&{
     elementCount: number,
     beginData?: {
       frame: string,
+      stackTrace?: TraceEventCallFrame[],
     },
   };
 }
@@ -1403,11 +1439,6 @@ export function isTraceEventLayoutInvalidationTracking(
     traceEventData: TraceEventData,
     ): traceEventData is TraceEventLayoutInvalidationTracking {
   return traceEventData.name === KnownEventName.LayoutInvalidationTracking;
-}
-
-export function isTraceEventStyleRecalcInvalidation(traceEventData: TraceEventData):
-    traceEventData is TraceEventStyleRecalcInvalidation {
-  return traceEventData.name === 'StyleRecalcInvalidationTracking';
 }
 
 export function isTraceEventFirstContentfulPaint(traceEventData: TraceEventData):

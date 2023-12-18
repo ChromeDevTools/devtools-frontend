@@ -943,6 +943,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/handlers/FramesHandler.js",
   "front_end/models/trace/handlers/GPUHandler.js",
   "front_end/models/trace/handlers/InitiatorsHandler.js",
+  "front_end/models/trace/handlers/InvalidationsHandler.js",
   "front_end/models/trace/handlers/LargestImagePaintHandler.js",
   "front_end/models/trace/handlers/LargestTextPaintHandler.js",
   "front_end/models/trace/handlers/LayerTreeHandler.js",

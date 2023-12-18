@@ -13,6 +13,7 @@ devtools_module("handlers") {
     "FramesHandler.ts",
     "GPUHandler.ts",
     "InitiatorsHandler.ts",
+    "InvalidationsHandler.ts",
     "LargestImagePaintHandler.ts",
     "LargestTextPaintHandler.ts",
     "LayerTreeHandler.ts",

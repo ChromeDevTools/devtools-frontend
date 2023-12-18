@@ -12,6 +12,7 @@ ts_library("handlers") {
     "FramesHandler_test.ts",
     "GPUHandler_test.ts",
     "InitiatorsHandler_test.ts",
+    "InvalidationsHandler_test.ts",
     "LargestImagePaintHandler_test.ts",
     "LargestTextPaintHandler_test.ts",
     "LayerTreeHandler_test.ts",

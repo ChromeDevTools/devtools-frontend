@@ -407,7 +407,6 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
     toolbar.makeWrappable(true);
-    const rightToolbar = new UI.Toolbar.Toolbar('', this.consoleToolbarContainer);
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar),
         i18nString(UIStrings.consoleSidebarShown), i18nString(UIStrings.consoleSidebarHidden), 'console-sidebar'));
@@ -437,9 +436,9 @@ export class ConsoleView extends UI.Widget.VBox implements
       displayMode: IssueCounter.IssueCounter.DisplayMode.OmitEmpty,
     };
     toolbar.appendToolbarItem(issuesToolbarItem);
-    rightToolbar.appendSeparator();
-    rightToolbar.appendToolbarItem(this.filterStatusText);
-    rightToolbar.appendToolbarItem(this.showSettingsPaneButton);
+    toolbar.appendSeparator();
+    toolbar.appendToolbarItem(this.filterStatusText);
+    toolbar.appendToolbarItem(this.showSettingsPaneButton);
 
     const monitoringXHREnabledSetting = Common.Settings.Settings.instance().moduleSetting('monitoringXHREnabled');
     this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled');

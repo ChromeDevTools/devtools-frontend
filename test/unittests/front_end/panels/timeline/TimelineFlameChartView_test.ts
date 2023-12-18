@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import * as PerfUI from '../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
@@ -86,5 +87,52 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     flameChartView.setModel(performanceModel, traceParsedData);
 
     assert.isFalse(flameChartView.isNetworkTrackShownForTests());
+  });
+
+  it('Adds Hidden Ancestors Arrow as a decoration when TreeModified event is dispatched on a node', async function() {
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setModel(performanceModel, traceParsedData);
+
+    // Find the main track to later collapse entries of
+    const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+      return group.name === 'Main — http://localhost:8080/';
+    });
+    if (!mainTrack) {
+      throw new Error('Could not find main track');
+    }
+
+    // Find the first node that has children to collapse and is visible in the timeline
+    const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+    const firstNodeWithChildren = nodeOfGroup?.find(node => {
+      const childrenAmount =
+          traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)?.children.length;
+      if (!childrenAmount) {
+        return false;
+      }
+      return childrenAmount > 0 && node.cat === 'devtools.timeline';
+    });
+    const node =
+        traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+    if (!node) {
+      throw new Error('Could not find a visible node with children');
+    }
+
+    // Dispatch a TreeModified event that should apply COLLAPSE_FUNCTION action to the node.
+    // This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
+    flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
+      group: mainTrack,
+      node: node?.id,
+      action: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION,
+    });
+
+    const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
+    assert.deepEqual(decorationsForEntry, [
+      {
+        type: 'HIDDEN_ANCESTORS_ARROW',
+      },
+    ]);
   });
 });

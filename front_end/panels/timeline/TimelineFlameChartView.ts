@@ -190,6 +190,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return this.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
   }
 
+  getMainDataProvider(): TimelineFlameChartDataProvider {
+    return this.mainDataProvider;
+  }
+
   updateColorMapper(): void {
     if (!this.model) {
       return;

@@ -193,6 +193,8 @@ export class ThrottlingManager {
   createOfflineToolbarCheckbox(): UI.Toolbar.ToolbarCheckbox {
     const checkbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.offline), i18nString(UIStrings.forceDisconnectedFromNetwork), forceOffline.bind(this));
+    checkbox.element.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({click: true}).context('disconnect-from-network')}`);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(SDK.NetworkManager.MultitargetNetworkManager.instance().isOffline());

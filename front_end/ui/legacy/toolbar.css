@@ -250,11 +250,11 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active) {
-  background-color: var(--sys-color-primary-bright);
+  background-color: var(--sys-color-primary);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover {
-  background-color: var(--sys-color-primary-bright);
+  background-color: var(--sys-color-primary);
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
@@ -294,11 +294,11 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-  background-color: var(--sys-color-primary-bright);
+  background-color: var(--sys-color-primary);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--sys-color-primary-bright);
+  --icon-color: var(--sys-color-primary);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {

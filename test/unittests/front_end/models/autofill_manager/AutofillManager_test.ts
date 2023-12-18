@@ -16,32 +16,38 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 describeWithMockConnection('AutofillManager', () => {
   let target: SDK.Target.Target;
   let model: SDK.AutofillModel.AutofillModel;
+  let autofillManager: AutofillManager.AutofillManager.AutofillManager;
+  let showViewStub: sinon.SinonStub;
 
   beforeEach(() => {
     target = createTarget();
     const maybeModel = target.model(SDK.AutofillModel.AutofillModel);
     assertNotNullOrUndefined(maybeModel);
     model = maybeModel;
+    showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+    autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
   });
 
-  it('re-emits autofill events from autofill model', async () => {
-    const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
-    const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
-    const dispatchedAutofillEvents: SDK.AutofillModel.AddressFormFilledEvent[] = [];
-    autofillManager.addEventListener(
-        AutofillManager.AutofillManager.Events.AddressFormFilled, event => dispatchedAutofillEvents.push(event.data));
+  afterEach(() => {
+    showViewStub.restore();
+  });
 
-    const addressFormFilledEvent = {
-      addressUi: {
-        addressFields: [
-          {
-            fields: [
-              {name: 'NAME_FULL', value: 'Crocodile Dundee'},
-            ],
-          },
-        ],
-      },
-      filledFields: [
+  describe('emits AddressFormFilled events', () => {
+    const assertAutofillManagerEvent = async (
+        inEvent: Protocol.Autofill.AddressFormFilledEvent,
+        outEvent: AutofillManager.AutofillManager.AddressFormFilledEvent) => {
+      const dispatchedAutofillEvents: AutofillManager.AutofillManager.AddressFormFilledEvent[] = [];
+      autofillManager.addEventListener(
+          AutofillManager.AutofillManager.Events.AddressFormFilled, event => dispatchedAutofillEvents.push(event.data));
+      model.dispatchEventToListeners(
+          SDK.AutofillModel.Events.AddressFormFilled, {autofillModel: model, event: inEvent});
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+      assert.deepStrictEqual(dispatchedAutofillEvents, [outEvent]);
+    };
+
+    it('with a single match', async () => {
+      const filledFields = [
         {
           htmlType: 'text',
           id: 'input1',
@@ -50,14 +56,98 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
         },
-      ],
-    };
-    model.dispatchEventToListeners(
-        SDK.AutofillModel.Events.AddressFormFilled, {autofillModel: model, event: addressFormFilledEvent});
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
-    assert.strictEqual(dispatchedAutofillEvents.length, 1);
-    assert.deepStrictEqual(dispatchedAutofillEvents[0].event, addressFormFilledEvent);
-    showViewStub.restore();
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'NAME_FULL', value: 'Crocodile Dundee'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: 'Crocodile Dundee',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 9, filledFieldIndex: 0}],
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
+
+    it('with multiple matches', async () => {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Crocodile',
+          autofillType: 'First name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+        {
+          htmlType: 'text',
+          id: 'input2',
+          name: '',
+          value: 'Dundee',
+          autofillType: 'Last name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'NAME_FULL', value: 'Crocodile Dundee'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: 'Crocodile Dundee',
+        filledFields,
+        matches: [
+          {startIndex: 0, endIndex: 9, filledFieldIndex: 0},
+          {startIndex: 10, endIndex: 16, filledFieldIndex: 1},
+        ],
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
+
+    it('with new line characters and commas', async () => {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Outback Road 1, Melbourne',
+          autofillType: 'Street address',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'ADDRESS_HOME_STREET_ADDRESS', value: 'Outback Road 1\nMelbourne'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: 'Outback Road 1\nMelbourne',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 24, filledFieldIndex: 0}],
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
   });
 });

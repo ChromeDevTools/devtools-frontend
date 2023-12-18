@@ -70,16 +70,18 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   static readonly litTagName = LitHtml.literal`devtools-autofill-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
-  #addressUi: Protocol.Autofill.AddressUI = {addressFields: []};
-  #filledFields: Protocol.Autofill.FilledField[] = [];
   #autoOpenViewSetting?: Common.Settings.Setting<boolean>;
+  #address: string = '';
+  #filledFields: Protocol.Autofill.FilledField[] = [];
+  #matches: AutofillManager.AutofillManager.Match[] = [];
+  #highlightedMatches: AutofillManager.AutofillManager.Match[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles];
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const formFilledEvent = autofillManager.getLastFilledAddressForm();
     if (formFilledEvent) {
-      ({addressUi: this.#addressUi, filledFields: this.#filledFields} = formFilledEvent.event);
+      ({address: this.#address, filledFields: this.#filledFields, matches: this.#matches} = formFilledEvent);
     }
     autofillManager.addEventListener(
         AutofillManager.AutofillManager.Events.AddressFormFilled, this.#onAddressFormFilled, this);
@@ -93,14 +95,17 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   }
 
   #onPrimaryPageChanged(): void {
-    this.#addressUi = {addressFields: []};
+    this.#address = '';
     this.#filledFields = [];
+    this.#matches = [];
+    this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #onAddressFormFilled(
       {data}: Common.EventTarget.EventTargetEvent<AutofillManager.AutofillManager.AddressFormFilledEvent>): void {
-    ({addressUi: this.#addressUi, filledFields: this.#filledFields} = data.event);
+    ({address: this.#address, filledFields: this.#filledFields, matches: this.#matches} = data);
+    this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -109,7 +114,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       throw new Error('AutofillView render was not scheduled');
     }
 
-    if (!this.#addressUi.addressFields.length && !this.#filledFields.length) {
+    if (!this.#address && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
@@ -138,7 +143,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
               <span>${i18nString(UIStrings.autoShow)}</span>
             </label>
           </div>
-          ${this.#renderAddressUi()}
+          ${this.#renderAddress()}
         </div>
         ${this.#renderFilledFields()}
       </div>
@@ -151,21 +156,63 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     this.#autoOpenViewSetting?.set(checked);
   }
 
-  #renderAddressUi(): LitHtml.LitTemplate {
-    if (!this.#addressUi.addressFields.length) {
+  #renderAddress(): LitHtml.LitTemplate {
+    if (!this.#address) {
       return LitHtml.nothing;
     }
+
+    const createSpan = (startIndex: number, endIndex: number): LitHtml.TemplateResult => {
+      const textContentLines = this.#address.substring(startIndex, endIndex).split('\n');
+      const templateLines =
+          textContentLines.map((line, i) => i === textContentLines.length - 1 ? line : LitHtml.html`${line}<br>`);
+
+      const spanClasses = LitHtml.Directives.classMap({
+        'matches-filled-field':
+            this.#matches.filter(match => match.startIndex <= startIndex && match.endIndex > startIndex).length > 0,
+        highlighted:
+            this.#highlightedMatches.filter(match => match.startIndex <= startIndex && match.endIndex > startIndex)
+                .length > 0,
+      });
+
+      return LitHtml.html`
+        <span
+          class=${spanClasses}
+          @mouseenter=${(): void => this.#onSpanMouseEnter(startIndex)}
+          @mouseleave=${this.#onSpanMouseLeave}
+        >${templateLines}</span>`;
+    };
+
+    // Split the address string into multiple spans. Each span is connected to
+    // 0 or more matches. This allows highlighting the corresponding grid rows
+    // when hovering over a span. And vice versa finding the corresponding
+    // spans to highlight when hovering over a grid line.
+    const spans: LitHtml.TemplateResult[] = [];
+    const matchIndices = new Set<number>([0, this.#address.length]);
+    for (const match of this.#matches) {
+      matchIndices.add(match.startIndex);
+      matchIndices.add(match.endIndex);
+    }
+    const sortedMatchIndices = Array.from(matchIndices).sort((a, b) => a - b);
+    for (let i = 0; i < sortedMatchIndices.length - 1; i++) {
+      spans.push(createSpan(sortedMatchIndices[i], sortedMatchIndices[i + 1]));
+    }
+
     return LitHtml.html`
       <div class="address">
-        ${this.#addressUi.addressFields.map(fields => this.#renderAddressRow(fields))}
+        ${spans}
       </div>
     `;
   }
 
-  #renderAddressRow(fields: Protocol.Autofill.AddressFields): LitHtml.TemplateResult {
-    return LitHtml.html`
-      <div>${fields.fields.map(field => field.value).join(' ')}</div>
-    `;
+  #onSpanMouseEnter(startIndex: number): void {
+    this.#highlightedMatches =
+        this.#matches.filter(match => match.startIndex <= startIndex && match.endIndex > startIndex);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  #onSpanMouseLeave(): void {
+    this.#highlightedMatches = [];
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #renderFilledFields(): LitHtml.LitTemplate {
@@ -199,6 +246,13 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
           visible: true,
           sortable: true,
         },
+        {
+          id: 'filledFieldIndex',
+          title: 'filledFieldIndex',
+          widthWeighting: 50,
+          hideable: true,
+          visible: false,
+        },
       ],
       rows: this.#buildReportRows(),
       striped: true,
@@ -208,19 +262,38 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // clang-format off
     return LitHtml.html`
       <div class="grid-wrapper">
-        <${DataGrid.DataGridController.DataGridController.litTagName} class="filled-fields-grid" .data=${
-          gridData as DataGrid.DataGridController.DataGridControllerData}>
+        <${DataGrid.DataGridController.DataGridController.litTagName}
+          @rowmouseenter=${this.#onGridRowMouseEnter}
+          @rowmouseleave=${this.#onGridRowMouseLeave}
+          class="filled-fields-grid"
+          .data=${gridData as DataGrid.DataGridController.DataGridControllerData}
+        >
         </${DataGrid.DataGridController.DataGridController.litTagName}>
       </div>
     `;
     // clang-format on
   }
 
+  #onGridRowMouseEnter(event: DataGrid.DataGridEvents.RowMouseEnterEvent): void {
+    const rowIndex = event.data.row.cells[3].value;
+    if (typeof rowIndex === 'number') {
+      this.#highlightedMatches = this.#matches.filter(match => match.filledFieldIndex === rowIndex);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    }
+  }
+
+  #onGridRowMouseLeave(): void {
+    this.#highlightedMatches = [];
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
+    const highlightedGridRows = new Set(this.#highlightedMatches.map(match => match.filledFieldIndex));
+
     return this.#filledFields.map(
-        field => {
+        (field, index) => {
           const fieldName = field.name || `#${field.id}`;
-          return {
+          const row: DataGrid.DataGridUtils.Row = {
             cells: [
               {columnId: 'name', value: `${fieldName} (${field.htmlType})`},
               {
@@ -229,8 +302,13 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
                 renderer: () => this.#autofillTypeRenderer(field.autofillType, field.fillingStrategy),
               },
               {columnId: 'value', value: `"${field.value}"`},
+              {columnId: 'filledFieldIndex', value: index},
             ],
           };
+          if (highlightedGridRows.has(index)) {
+            row.styles = {'background-color': 'var(--sys-color-state-hover-on-subtle)'};
+          }
+          return row;
         },
     );
   }

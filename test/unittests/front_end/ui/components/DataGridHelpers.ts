@@ -82,11 +82,15 @@ export const assertSelectedRowIs = (shadowRoot: ShadowRoot, row: number) => {
   assert.strictEqual(selectedRow.getAttribute('aria-rowindex'), String(row), 'The row index was not as expected.');
 };
 
+export const getDataGrid = (gridComponent: HTMLElement) => {
+  const controller = getElementWithinComponent(
+      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
+  return getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+};
+
 export const assertGridContents =
     (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): DataGrid.DataGrid.DataGrid => {
-      const controller = getElementWithinComponent(
-          gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-      const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+      const grid = getDataGrid(gridComponent);
       assertShadowRoot(grid.shadowRoot);
 
       const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {

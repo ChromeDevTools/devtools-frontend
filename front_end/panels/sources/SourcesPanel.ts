@@ -168,7 +168,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStr
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const primitiveRemoteObjectTypes = new Set(['number', 'boolean', 'bigint', 'undefined']);
 let sourcesPanelInstance: SourcesPanel;
-let wrapperViewInstance: WrapperView;
 
 export class SourcesPanel extends UI.Panel.Panel implements
     UI.ContextMenu.Provider<Workspace.UISourceCode.UISourceCode|Workspace.UISourceCode.UILocation|
@@ -328,7 +327,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     panel.sourcesViewInternal.leftToolbar().removeToolbarItems();
     panel.sourcesViewInternal.rightToolbar().removeToolbarItems();
     panel.sourcesViewInternal.bottomToolbar().removeToolbarItems();
-    const isInWrapper = WrapperView.isShowing() && !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
+    const isInWrapper = UI.Context.Context.instance().flavor(QuickSourceView) &&
+        !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
     if (panel.splitWidget.isVertical() || isInWrapper) {
       panel.splitWidget.uninstallResizer(panel.sourcesViewInternal.toolbarContainerElement());
     } else {
@@ -391,8 +391,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     UI.Context.Context.instance().setFlavor(SourcesPanel, this);
     this.registerCSSFiles([sourcesPanelStyles]);
     super.wasShown();
-    const wrapper = WrapperView.instance();
-    if (wrapper && wrapper.isShowing()) {
+    if (UI.Context.Context.instance().flavor(QuickSourceView)) {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
@@ -402,8 +401,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().setFlavor(SourcesPanel, null);
-    if (WrapperView.isShowing()) {
-      WrapperView.instance().showViewInWrapper();
+    const wrapperView = UI.Context.Context.instance().flavor(QuickSourceView);
+    if (wrapperView) {
+      wrapperView.showViewInWrapper();
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
@@ -418,7 +418,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   ensureSourcesViewVisible(): boolean {
-    if (WrapperView.isShowing()) {
+    if (UI.Context.Context.instance().flavor(QuickSourceView)) {
       return true;
     }
     if (!UI.InspectorView.InspectorView.instance().canSelectPanel('sources')) {
@@ -511,8 +511,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition,
       omitFocus?: boolean): void {
     if (omitFocus) {
-      const wrapperShowing = WrapperView.isShowing();
-      if (!this.isShowing() && !wrapperShowing) {
+      if (!this.isShowing() && !UI.Context.Context.instance().flavor(QuickSourceView)) {
         return;
       }
     } else {
@@ -522,7 +521,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   private showEditor(): void {
-    if (WrapperView.isShowing()) {
+    if (UI.Context.Context.instance().flavor(QuickSourceView)) {
       return;
     }
     void this.setAsCurrentPanel();
@@ -1360,7 +1359,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
-export class WrapperView extends UI.Widget.VBox {
+export class QuickSourceView extends UI.Widget.VBox {
   private readonly view: SourcesView;
   constructor() {
     super();
@@ -1368,19 +1367,9 @@ export class WrapperView extends UI.Widget.VBox {
     this.view = SourcesPanel.instance().sourcesView();
   }
 
-  static instance(): WrapperView {
-    if (!wrapperViewInstance) {
-      wrapperViewInstance = new WrapperView();
-    }
-
-    return wrapperViewInstance;
-  }
-
-  static isShowing(): boolean {
-    return Boolean(wrapperViewInstance) && wrapperViewInstance.isShowing();
-  }
-
   override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(QuickSourceView, this);
+    super.wasShown();
     if (!SourcesPanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
@@ -1394,6 +1383,8 @@ export class WrapperView extends UI.Widget.VBox {
     queueMicrotask(() => {
       SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
     });
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(QuickSourceView, null);
   }
 
   showViewInWrapper(): void {

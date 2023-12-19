@@ -163,7 +163,8 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     const learnMoreLink = categoryName === 'Web SQL' ?
         'https://developer.chrome.com/blog/deprecating-web-sql/' as Platform.DevToolsPath.UrlString :
         Platform.DevToolsPath.EmptyUrlString;
-    this.categoryView.setWarning(categoryWarning, learnMoreLink);
+    this.categoryView.setWarning(
+        categoryWarning, learnMoreLink, categoryName === 'Web SQL' ? 'deprecation-warning' : undefined);
     this.showView(this.categoryView);
   }
 

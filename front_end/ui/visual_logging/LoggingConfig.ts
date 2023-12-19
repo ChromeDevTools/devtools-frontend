@@ -51,7 +51,7 @@ enum VisualElements {
   /* 28 used to be EventListenersPane, but free to grab now */
   Action = 29,
   FilterDropdown = 30,
-  /* 31 used to be AddColor, but free to grab now */
+  InfoBar = 31,
   BezierCurveEditor = 32,
   BezierEditor = 33,
   BezierPresetCategory = 34,

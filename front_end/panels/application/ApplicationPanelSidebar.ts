@@ -1835,9 +1835,9 @@ export class StorageCategoryView extends UI.Widget.VBox {
     }
   }
 
-  setWarning(message: string|null, learnMoreLink: Platform.DevToolsPath.UrlString): void {
+  setWarning(message: string|null, learnMoreLink: Platform.DevToolsPath.UrlString, jsLogContext?: string): void {
     if (message && !this.warningBar) {
-      this.warningBar = this.emptyWidget.appendWarning(message, learnMoreLink);
+      this.warningBar = this.emptyWidget.appendWarning(message, learnMoreLink, jsLogContext);
     }
     if (!message && this.warningBar) {
       this.warningBar.element.classList.add('hidden');

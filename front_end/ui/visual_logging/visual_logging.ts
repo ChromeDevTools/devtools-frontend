@@ -46,6 +46,7 @@ export const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'D
 export const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
 export const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 export const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
+export const infoBar = LoggingConfig.makeConfigStringBuilder.bind(null, 'InfoBar');
 export const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'FlexboxOverlays');
 export const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
 export const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');

@@ -92,17 +92,18 @@
   user-select: none;
   -webkit-mask-image: var(--image-file-triangle-right);
   height: 14px;
+  width: 14px;
   content: "\A0\A0";
   color: transparent;
   text-shadow: none;
   margin-left: -3px;
-  margin-top: -1px;
   background-color: var(--icon-default);
   transition: transform 200ms;
 }
 
 .elements-disclosure li.parent.expanded::before {
   transform: rotate(90deg);
+  margin-top: -2px;
 }
 
 .elements-disclosure li .selection {

@@ -211,7 +211,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this.currentWorkersView.element.setAttribute('jslog', `${VisualLogging.section().context('this-origin')}`);
 
     this.toolbar = this.currentWorkersView.createToolbar();
-    this.toolbar.makeWrappable(true /* growVertically */);
 
     this.sections = new Map();
 

@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
@@ -329,6 +330,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const allowPasting = await SelfXssWarningDialog.show();
     if (allowPasting) {
       this.selfXssWarningDisabledSetting.set(true);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInDialog);
     }
   }
 
@@ -1117,6 +1119,7 @@ export class SelfXssWarningDialog {
         resolve(false);
       });
       dialog.show();
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningDialogShown);
     });
     dialog.hide();
     return result;

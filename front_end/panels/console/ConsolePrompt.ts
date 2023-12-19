@@ -296,6 +296,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     Common.Console.Console.instance().warn(
         i18nString(UIStrings.selfXssWarning, {PH1: i18nString(UIStrings.allowPasting)}));
     this.#selfXssWarningShown = true;
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
   }
 
   private async handleEnter(forceEvaluate?: boolean): Promise<void> {
@@ -309,6 +310,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           .createSetting('disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced)
           .set(true);
       this.#selfXssWarningShown = false;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInConsole);
       return;
     }
 

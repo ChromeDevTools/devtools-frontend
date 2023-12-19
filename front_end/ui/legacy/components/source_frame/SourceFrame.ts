@@ -424,7 +424,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.options.lineNumbers === false) {
       return [];
     }
-    let formatNumber = null;
+    let formatNumber = undefined;
     if (this.wasmDisassemblyInternal) {
       const disassembly = this.wasmDisassemblyInternal;
       const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
@@ -435,13 +435,16 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         return `0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
       };
     } else if (this.prettyInternal) {
-      formatNumber = (lineNumber: number): string => {
-        const line = this.prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
-        if (lineNumber === 1) {
-          return String(line);
+      formatNumber = (lineNumber: number, state: CodeMirror.EditorState): string => {
+        // @codemirror/view passes a high number here to estimate the
+        // maximum width to allocate for the line number gutter.
+        if (lineNumber < 2 || lineNumber > state.doc.lines) {
+          return String(lineNumber);
         }
-        if (line !== this.prettyToRawLocation(lineNumber - 2, 0)[0] + 1) {
-          return String(line);
+        const [currLine] = this.prettyToRawLocation(lineNumber - 1);
+        const [prevLine] = this.prettyToRawLocation(lineNumber - 2);
+        if (currLine !== prevLine) {
+          return String(currLine + 1);
         }
         return '-';
       };

@@ -406,13 +406,19 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     request.endTime = entry.responseTime;
 
     let header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
-    const contentType = header ? header.value : SDK.MimeType.MimeType.PLAIN;
-    request.mimeType = contentType as SDK.MimeType.MimeType;
+    let mimeType: string = SDK.MimeType.MimeType.PLAIN;
+    if (header) {
+      const result = SDK.MimeType.parseContentType(header.value);
+      if (result.mimeType) {
+        mimeType = result.mimeType;
+      }
+    }
+    request.mimeType = mimeType;
 
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
     request.resourceSize = (header && Number(header.value)) || 0;
 
-    let resourceType = Common.ResourceType.ResourceType.fromMimeType(contentType);
+    let resourceType = Common.ResourceType.ResourceType.fromMimeType(mimeType);
     if (!resourceType) {
       resourceType =
           Common.ResourceType.ResourceType.fromURL(entry.requestURL) || Common.ResourceType.resourceTypes.Other;
@@ -422,14 +428,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return request;
   }
 
-  private async requestContent(request: SDK.NetworkRequest.NetworkRequest): Promise<SDK.NetworkRequest.ContentData> {
-    const isText = request.resourceType().isTextType();
-    const contentData: SDK.NetworkRequest.ContentData = {error: null, content: null, encoded: !isText};
+  private async requestContent(request: SDK.NetworkRequest.NetworkRequest):
+      Promise<SDK.ContentData.ContentDataOrError> {
     const response = await this.cache.requestCachedResponse(request.url(), request.requestHeaders());
-    if (response) {
-      contentData.content = isText ? window.atob(response.body) : response.body;
+    if (!response) {
+      return {error: 'No cached response found'};
     }
-    return contentData;
+    return new SDK.ContentData.ContentData(
+        response.body, /* isBase64=*/ true, request.resourceType(), request.mimeType, request.charset() ?? undefined);
   }
 
   private updatedForTest(): void {

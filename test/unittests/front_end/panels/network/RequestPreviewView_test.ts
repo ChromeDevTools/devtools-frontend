@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
@@ -10,9 +11,9 @@ import * as Network from '../../../../../front_end/panels/network/network.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
-async function contentData(): Promise<SDK.NetworkRequest.ContentData> {
+async function contentData(): Promise<SDK.ContentData.ContentData> {
   const content = '<style> p { color: red; }</style><link rel="stylesheet" ref="http://devtools-frontend.test/style">';
-  return {error: null, content, encoded: false};
+  return new SDK.ContentData.ContentData(content, false, Common.ResourceType.resourceTypes.Stylesheet, 'text/css');
 }
 
 function renderPreviewView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestPreviewView.RequestPreviewView {
@@ -45,11 +46,10 @@ describeWithLocale('RequestPreviewView', () => {
         'requestId' as Protocol.Network.RequestId,
         'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
         '' as Platform.DevToolsPath.UrlString, null, null, null);
-    request.setContentDataProvider(() => Promise.resolve({
-      error: null,
-      encoded: false,
-      content: '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>',
-    }));
+    request.setContentDataProvider(
+        () => Promise.resolve(new SDK.ContentData.ContentData(
+            '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>', false, Common.ResourceType.resourceTypes.Document,
+            'text/html', 'utf-16')));
     request.mimeType = SDK.MimeType.MimeType.HTML;
     request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
 
@@ -69,13 +69,11 @@ describeWithLocale('RequestPreviewView', () => {
         'requestId' as Protocol.Network.RequestId,
         'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
         '' as Platform.DevToolsPath.UrlString, null, null, null);
-    request.setContentDataProvider(() => Promise.resolve({
-      error: null,
-      encoded: true,
-      // UTF-16 + base64 encoded "<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>".
-      content:
-          '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
-    }));
+    // UTF-16 + base64 encoded "<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>".
+    request.setContentDataProvider(
+        () => Promise.resolve(new SDK.ContentData.ContentData(
+            '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
+            true, Common.ResourceType.resourceTypes.Document, 'text/html', 'utf-16')));
     request.mimeType = SDK.MimeType.MimeType.HTML;
     request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
 

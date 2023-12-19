@@ -38,7 +38,7 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {ContentData as ContentDataClass} from './ContentData.js';
+import {ContentData as ContentDataClass, type ContentDataOrError} from './ContentData.js';
 import {Attributes, type Cookie} from './Cookie.js';
 import {CookieParser} from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
@@ -300,7 +300,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #serverTimingsInternal?: ServerTiming[]|null;
   #queryStringInternal?: string|null;
   #parsedQueryParameters?: NameValue[];
-  #contentDataProvider?: (() => Promise<ContentData>);
+  #contentDataProvider?: (() => Promise<ContentDataOrError>);
   #isSameSiteInternal: boolean|null;
   #wasIntercepted: boolean;
   #associatedData = new Map<string, object>();
@@ -1303,7 +1303,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       return this.#contentDataInternal;
     }
     if (this.#contentDataProvider) {
-      this.#contentDataInternal = this.#contentDataProvider();
+      this.#contentDataInternal = this.#contentDataProvider().then(data => ContentDataClass.asLegacyContentData(data));
     } else {
       this.#contentDataInternal =
           NetworkManager.requestContentData(this).then(data => ContentDataClass.asLegacyContentData(data));
@@ -1311,7 +1311,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#contentDataInternal;
   }
 
-  setContentDataProvider(dataProvider: () => Promise<ContentData>): void {
+  setContentDataProvider(dataProvider: () => Promise<ContentDataOrError>): void {
     console.assert(!this.#contentDataInternal, 'contentData can only be set once.');
     this.#contentDataProvider = dataProvider;
   }

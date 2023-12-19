@@ -108,12 +108,12 @@ export class Importer {
     }
 
     const contentText = entry.response.content.text;
-    const contentData = {
-      error: null,
-      content: contentText ? contentText : null,
-      encoded: entry.response.content.encoding === 'base64',
-    };
-    request.setContentDataProvider(async () => contentData);
+    const isBase64 = entry.response.content.encoding === 'base64';
+    const {mimeType, charset} = SDK.MimeType.parseContentType(entry.response.content.mimeType);
+
+    request.setContentDataProvider(
+        async () => new SDK.ContentData.ContentData(
+            contentText ?? '', isBase64, request.resourceType(), mimeType ?? '', charset ?? undefined));
 
     // Timing data.
     Importer.setupTiming(request, issueTime, entry.time, entry.timings);

@@ -14,6 +14,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #address: string = '';
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: Match[] = [];
+  #autofillModel: SDK.AutofillModel.AutofillModel|null = null;
 
   private constructor() {
     super();
@@ -37,18 +38,28 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (this.#autoOpenViewSetting.get()) {
       await UI.ViewManager.ViewManager.instance().showView('autofill-view');
     }
+    this.#autofillModel = data.autofillModel;
     this.#processAddressFormFilledData(data.event);
     if (this.#address) {
-      this.dispatchEventToListeners(
-          Events.AddressFormFilled, {address: this.#address, filledFields: this.#filledFields, matches: this.#matches});
+      this.dispatchEventToListeners(Events.AddressFormFilled, {
+        address: this.#address,
+        filledFields: this.#filledFields,
+        matches: this.#matches,
+        autofillModel: this.#autofillModel,
+      });
     }
   }
 
   getLastFilledAddressForm(): AddressFormFilledEvent|null {
-    if (!this.#address) {
+    if (!this.#address || !this.#autofillModel) {
       return null;
     }
-    return {address: this.#address, filledFields: this.#filledFields, matches: this.#matches};
+    return {
+      address: this.#address,
+      filledFields: this.#filledFields,
+      matches: this.#matches,
+      autofillModel: this.#autofillModel,
+    };
   }
 
   #processAddressFormFilledData({addressUi, filledFields}: Protocol.Autofill.AddressFormFilledEvent): void {
@@ -95,6 +106,7 @@ export interface AddressFormFilledEvent {
   address: string;
   filledFields: Protocol.Autofill.FilledField[];
   matches: Match[];
+  autofillModel: SDK.AutofillModel.AutofillModel;
 }
 
 export type EventTypes = {

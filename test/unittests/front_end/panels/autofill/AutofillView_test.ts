@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as AutofillManager from '../../../../../front_end/models/autofill_manager/autofill_manager.js';
@@ -10,7 +11,7 @@ import * as Autofill from '../../../../../front_end/panels/autofill/autofill.js'
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../ui/components/DataGridHelpers.js';
 
@@ -91,6 +92,7 @@ describeWithMockConnection('AutofillView', () => {
   let showViewStub: sinon.SinonStub;
 
   beforeEach(() => {
+    Root.Runtime.experiments.register('APCA', '');
     target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const maybeAutofillModel = target.model(SDK.AutofillModel.AutofillModel);
@@ -156,6 +158,7 @@ describeWithMockConnection('AutofillView', () => {
     const view = await renderAutofillView();
     assertShadowRoot(view.shadowRoot);
     assertViewShowsEventData(view);
+    await coordinator.done();
   });
 
   it('auto-open can be turned off/on', async () => {
@@ -212,12 +215,19 @@ describeWithMockConnection('AutofillView', () => {
     assert.strictEqual(firstGridRow.getAttribute('style'), null);
   });
 
-  it('highlights corresponding address span when hovering over grid row', async () => {
+  it('highlights corresponding address span and DOM node when hovering over grid row', async () => {
+    stubNoopSettings();
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
     assertShadowRoot(view.shadowRoot);
     assertViewShowsEventData(view);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    const overlayModel = domModel?.overlayModel();
+    assertNotNullOrUndefined(overlayModel);
+    const overlaySpy = sinon.spy(overlayModel, 'highlightInOverlay');
+    const hideOverlaySpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
 
     const addressSpans = view.shadowRoot.querySelectorAll('.address span');
     const zipCodeSpan = addressSpans[4];
@@ -226,13 +236,18 @@ describeWithMockConnection('AutofillView', () => {
     const grid = getDataGrid(view);
     assertShadowRoot(grid.shadowRoot);
     const fourthGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 4);
-
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
     await coordinator.done({waitForWork: true});
     assert.isTrue(zipCodeSpan.classList.contains('highlighted'));
+    assert.isTrue(overlaySpy.calledOnce);
+    const deferredNode =
+        (overlaySpy.getCall(0).args[0] as unknown as SDK.OverlayModel.HighlightDeferredNode).deferredNode;
+    assert.strictEqual(deferredNode.backendNodeId(), 4);
+    assert.isTrue(hideOverlaySpy.notCalled);
 
     fourthGridRow.dispatchEvent(new MouseEvent('mouseleave'));
     await coordinator.done({waitForWork: true});
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
+    assert.isTrue(hideOverlaySpy.calledOnce);
   });
 });

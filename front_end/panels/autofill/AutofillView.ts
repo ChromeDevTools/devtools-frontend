@@ -75,13 +75,19 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: AutofillManager.AutofillManager.Match[] = [];
   #highlightedMatches: AutofillManager.AutofillManager.Match[] = [];
+  #autofillModel: SDK.AutofillModel.AutofillModel|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles];
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const formFilledEvent = autofillManager.getLastFilledAddressForm();
     if (formFilledEvent) {
-      ({address: this.#address, filledFields: this.#filledFields, matches: this.#matches} = formFilledEvent);
+      ({
+        address: this.#address,
+        filledFields: this.#filledFields,
+        matches: this.#matches,
+        autofillModel: this.#autofillModel,
+      } = formFilledEvent);
     }
     autofillManager.addEventListener(
         AutofillManager.AutofillManager.Events.AddressFormFilled, this.#onAddressFormFilled, this);
@@ -99,12 +105,18 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     this.#filledFields = [];
     this.#matches = [];
     this.#highlightedMatches = [];
+    this.#autofillModel = null;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #onAddressFormFilled(
       {data}: Common.EventTarget.EventTargetEvent<AutofillManager.AutofillManager.AddressFormFilledEvent>): void {
-    ({address: this.#address, filledFields: this.#filledFields, matches: this.#matches} = data);
+    ({
+      address: this.#address,
+      filledFields: this.#filledFields,
+      matches: this.#matches,
+      autofillModel: this.#autofillModel,
+    } = data);
     this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
@@ -276,15 +288,30 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
   #onGridRowMouseEnter(event: DataGrid.DataGridEvents.RowMouseEnterEvent): void {
     const rowIndex = event.data.row.cells[3].value;
-    if (typeof rowIndex === 'number') {
-      this.#highlightedMatches = this.#matches.filter(match => match.filledFieldIndex === rowIndex);
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    if (typeof rowIndex !== 'number') {
+      return;
+    }
+    this.#highlightedMatches = this.#matches.filter(match => match.filledFieldIndex === rowIndex);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+
+    const backendNodeId = this.#filledFields[rowIndex].fieldId;
+    if (!this.#autofillModel) {
+      return;
+    }
+    const domModel = this.#autofillModel.target().model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      return;
+    }
+    const deferredNode = new SDK.DOMModel.DeferredDOMNode(this.#autofillModel.target(), backendNodeId);
+    if (deferredNode) {
+      domModel.overlayModel().highlightInOverlay({deferredNode}, 'all');
     }
   }
 
   #onGridRowMouseLeave(): void {
     this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {

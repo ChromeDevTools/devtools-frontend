@@ -4,17 +4,17 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import trustTokensViewStyles from './trustTokensView.css.js';
 import trustTokensViewDeleteButtonStyles from './trustTokensViewDeleteButton.css.js';
-
-import type * as Protocol from '../../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -79,7 +79,8 @@ class TrustTokensDeleteButton extends HTMLElement {
       <span class="button-container">
         <button class="delete-button"
           title=${i18nString(UIStrings.deleteTrustTokens, {PH1: this.#issuer as string})}
-          @click=${(): void => this.#deleteClickHandler(this.#issuer as string)}>
+          @click=${(): void => this.#deleteClickHandler(this.#issuer as string)}
+          jslog=${VisualLogging.action().track({click: true}).context('delete-all')}>
           <${IconButton.Icon.Icon.litTagName} .data=${
         {iconName: 'bin', color: 'var(--icon-default)', width: '14px', height: '14px'} as
         IconButton.Icon.IconWithName}>

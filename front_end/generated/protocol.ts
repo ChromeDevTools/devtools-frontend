@@ -1437,6 +1437,10 @@ export namespace Autofill {
      * The filling strategy
      */
     fillingStrategy: FillingStrategy;
+    /**
+     * The form field's DOM node
+     */
+    fieldId: DOM.BackendNodeId;
   }
 
   export interface TriggerRequest {

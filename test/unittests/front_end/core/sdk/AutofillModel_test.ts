@@ -62,6 +62,7 @@ describeWithMockConnection('AutofillModel', () => {
           value: 'Crocodile',
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
         },
       ],
     };

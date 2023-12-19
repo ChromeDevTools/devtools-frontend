@@ -55,6 +55,7 @@ describeWithMockConnection('AutofillManager', () => {
           value: 'Crocodile',
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
         },
       ];
       const inEvent = {
@@ -86,6 +87,7 @@ describeWithMockConnection('AutofillManager', () => {
           value: 'Crocodile',
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
         },
         {
           htmlType: 'text',
@@ -94,6 +96,7 @@ describeWithMockConnection('AutofillManager', () => {
           value: 'Dundee',
           autofillType: 'Last name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 2 as Protocol.DOM.BackendNodeId,
         },
       ];
       const inEvent = {
@@ -128,6 +131,7 @@ describeWithMockConnection('AutofillManager', () => {
           value: 'Outback Road 1, Melbourne',
           autofillType: 'Street address',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
         },
       ];
       const inEvent = {

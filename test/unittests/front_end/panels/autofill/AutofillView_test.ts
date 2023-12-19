@@ -53,6 +53,7 @@ const addressFormFilledEvent = {
       value: 'Crocodile',
       autofillType: 'First name',
       fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+      fieldId: 1 as Protocol.DOM.BackendNodeId,
     },
     {
       htmlType: 'text',
@@ -61,6 +62,7 @@ const addressFormFilledEvent = {
       value: 'Dundee',
       autofillType: 'Last name',
       fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+      fieldId: 2 as Protocol.DOM.BackendNodeId,
     },
     {
       htmlType: 'text',
@@ -69,6 +71,7 @@ const addressFormFilledEvent = {
       value: 'Australia',
       autofillType: 'Country',
       fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+      fieldId: 3 as Protocol.DOM.BackendNodeId,
     },
     {
       htmlType: 'text',
@@ -77,6 +80,7 @@ const addressFormFilledEvent = {
       value: '12345',
       autofillType: 'Zip code',
       fillingStrategy: Protocol.Autofill.FillingStrategy.AutocompleteAttribute,
+      fieldId: 4 as Protocol.DOM.BackendNodeId,
     },
   ],
 };

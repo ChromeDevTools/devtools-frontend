@@ -2183,6 +2183,11 @@
                             "name": "fillingStrategy",
                             "description": "The filling strategy",
                             "$ref": "FillingStrategy"
+                        },
+                        {
+                            "name": "fieldId",
+                            "description": "The form field's DOM node",
+                            "$ref": "DOM.BackendNodeId"
                         }
                     ]
                 }

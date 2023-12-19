@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as UI from '../../legacy/legacy.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 // eslint-disable-next-line rulesdir/check_component_naming
 export abstract class WrappableComponent<T extends UI.Widget.Widget = UI.Widget.Widget> extends HTMLElement {
@@ -24,7 +25,7 @@ export type LegacyWrapper<T extends UI.Widget.Widget, Component extends Wrappabl
 
 export function
 legacyWrapper<T extends Constructor<UI.Widget.Widget>, Component extends WrappableComponent<InstanceType<T>>>(
-    base: T, component: Component): LegacyWrapper<InstanceType<T>, Component> {
+    base: T, component: Component, jsLogContext?: string): LegacyWrapper<InstanceType<T>, Component> {
   return new class extends base {
     #component: Component;
 
@@ -35,6 +36,9 @@ legacyWrapper<T extends Constructor<UI.Widget.Widget>, Component extends Wrappab
       this.#component.wrapper = this as InstanceType<T>;
       void this.#component.render();
       this.contentElement.appendChild(this.#component);
+      if (jsLogContext) {
+        this.element.setAttribute('jslog', `${VisualLogging.pane().context(jsLogContext)}`);
+      }
     }
 
     override wasShown(): void {

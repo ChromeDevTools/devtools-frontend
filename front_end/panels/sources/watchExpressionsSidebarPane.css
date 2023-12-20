@@ -53,17 +53,16 @@
 
 .watch-expression {
   position: relative;
-  flex: auto;
   min-height: 20px;
 }
 
 .watch-expression .name {
   color: var(--sys-color-purple);
-  flex: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  flex-shrink: 2;
+  flex-shrink: 1000000;
+  min-height: 2em;
 }
 
 .watch-expression-error {
@@ -71,7 +70,8 @@
 }
 
 .watch-expressions-separator {
-  flex: none;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .watch-expression .value {

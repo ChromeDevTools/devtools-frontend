@@ -42,6 +42,7 @@ import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import requestPayloadTreeStyles from './requestPayloadTree.css.js';
 import requestPayloadViewStyles from './requestPayloadView.css.js';
@@ -124,6 +125,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-payload-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('payload')}`);
 
     this.request = request;
     this.decodeRequestParameters = true;
@@ -139,9 +141,10 @@ export class RequestPayloadView extends UI.Widget.VBox {
     root.makeDense();
     this.element.appendChild(root.element);
 
-    this.queryStringCategory = new Category(root, 'queryString', '');
-    this.formDataCategory = new Category(root, 'formData', '');
-    this.requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
+    this.queryStringCategory = new Category(root, 'queryString', '', 'query-string');
+    this.formDataCategory = new Category(root, 'formData', '', 'form-data');
+    this.requestPayloadCategory =
+        new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload), 'request-payload');
   }
 
   override wasShown(): void {
@@ -256,6 +259,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     const showMoreButton = document.createElement('button');
     showMoreButton.classList.add('request-payload-show-more-button');
     showMoreButton.textContent = i18nString(UIStrings.showMore);
+    showMoreButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('show-more')}`);
 
     function showMore(): void {
       showMoreButton.remove();
@@ -384,6 +388,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     const toggleTitle =
         this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncodedL) : i18nString(UIStrings.viewDecodedL);
     const toggleButton = this.createToggleButton(toggleTitle);
+    toggleButton.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context('decode-encode')}`);
     toggleButton.addEventListener('click', toggleURLDecoding.bind(this), false);
     listItemElement.appendChild(toggleButton);
 
@@ -479,6 +484,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private createViewSourceToggle(viewSource: boolean, handler: (arg0: Event) => void): Element {
     const viewSourceToggleTitle = viewSource ? i18nString(UIStrings.viewParsedL) : i18nString(UIStrings.viewSourceL);
     const viewSourceToggleButton = this.createToggleButton(viewSourceToggleTitle);
+    viewSourceToggleButton.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({click: true}).context('source-parse')}`);
     viewSourceToggleButton.addEventListener('click', handler, false);
     return viewSourceToggleButton;
   }
@@ -506,13 +513,16 @@ export class Category extends UI.TreeOutline.TreeElement {
   private readonly expandedSetting: Common.Settings.Setting<boolean>;
   override expanded: boolean;
 
-  constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
+  constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string, jslogContext?: string) {
     super(title || '', true);
     this.toggleOnClick = true;
     this.hidden = true;
     this.expandedSetting =
         Common.Settings.Settings.instance().createSetting('request-info-' + name + '-category-expanded', true);
     this.expanded = this.expandedSetting.get();
+    if (jslogContext) {
+      this.listItemElement.setAttribute('jslog', `${VisualLogging.section().context(jslogContext)}`);
+    }
     root.appendChild(this);
   }
 

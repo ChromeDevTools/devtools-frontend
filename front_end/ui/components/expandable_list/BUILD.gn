@@ -16,6 +16,7 @@ devtools_module("expandable_list") {
   deps = [
     "../../../ui/components/helpers:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

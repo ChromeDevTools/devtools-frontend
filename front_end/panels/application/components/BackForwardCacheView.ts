@@ -18,6 +18,7 @@ import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
@@ -185,7 +186,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       LitHtml.render(LitHtml.html`
         <${ReportView.ReportView.Report.litTagName} .data=${
             {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
-        }>
+        } jslog=${VisualLogging.pane().context('back-forward-cache')}>
+
           ${this.#renderMainFrameInformation()}
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
@@ -289,7 +291,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
           .disabled=${isTestRunning || isTestingForbidden}
           .spinner=${isTestRunning}
           .variant=${Buttons.Button.Variant.PRIMARY}
-          @click=${this.#navigateAwayAndBack}>
+          @click=${this.#navigateAwayAndBack}
+          jslog=${VisualLogging.action().track({click: true}).context('back-forward-cache.run-test')}>
           ${isTestRunning ? LitHtml.html`
             ${i18nString(UIStrings.runningTest)}`:`
             ${i18nString(UIStrings.runTest)}
@@ -301,7 +304,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       ${this.#maybeRenderExplanations(frame.backForwardCacheDetails.explanations,
           frame.backForwardCacheDetails.explanationsTree)}
       <${ReportView.ReportView.ReportSection.litTagName}>
-        <x-link href="https://web.dev/bfcache/" class="link">
+        <x-link href="https://web.dev/bfcache/" class="link"
+        jslog=${VisualLogging.action().track({click: true}).context('learn-more.eligibility')}>
           ${i18nString(UIStrings.learnMore)}
         </x-link>
       </${ReportView.ReportView.ReportSection.litTagName}>
@@ -355,7 +359,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
 
     // clang-format off
     return LitHtml.html`
-      <div class="report-line">
+      <div class="report-line"
+      jslog=${VisualLogging.section().context('frames')}>
         <div class="report-key">
           ${i18nString(UIStrings.framesTitle)}
         </div>
@@ -565,12 +570,14 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       return LitHtml.nothing;
     }
     const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
-    rows.push(...frames.map(url => LitHtml.html`<div class="text-ellipsis" title=${url}>${url}</div>`));
+    rows.push(...frames.map(url => LitHtml.html`<div class="text-ellipsis" title=${url}
+    jslog=${VisualLogging.treeItem()}>${url}</div>`));
     return LitHtml.html`
-      <div class="details-list">
+      <div class="details-list"
+      jslog=${VisualLogging.tree().context('frames-per-issue')}>
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
-        {rows} as
-        ExpandableList.ExpandableList.ExpandableListData}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
+        {rows} as ExpandableList.ExpandableList.ExpandableListData}
+        jslog=${VisualLogging.treeItem()}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
       </div>
     `;
   }
@@ -579,7 +586,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     if (explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInMainFrame ||
         explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInSubFrame) {
       return LitHtml.html`
-        <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link">
+        <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
+        jslog=${VisualLogging.action().track({click: true}).context('learn-more.never-use-unload')}>
           ${i18nString(UIStrings.neverUseUnload)}
         </x-link>`;
     }

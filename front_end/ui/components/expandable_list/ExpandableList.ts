@@ -4,6 +4,8 @@
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
+
 import expandableListStyles from './expandableList.css.js';
 
 export interface ExpandableListData {
@@ -45,7 +47,8 @@ export class ExpandableList extends HTMLElement {
           ${this.#rows.length > 1 ?
             LitHtml.html`
               <button @click=${(): void => this.#onArrowClick()} class="arrow-icon-button">
-                <span class="arrow-icon ${this.#expanded ? 'expanded' : ''}"></span>
+                <span class="arrow-icon ${this.#expanded ? 'expanded' : ''}"
+                jslog=${VisualLogging.treeItemExpand().track({click: true})}></span>
               </button>
             `
           : LitHtml.nothing}

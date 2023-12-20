@@ -35,6 +35,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -55,6 +56,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('response')}`);
     this.request = request;
     this.contentViewPromise = null;
   }

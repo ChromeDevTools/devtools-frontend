@@ -35,6 +35,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import requestCookiesViewStyles from './requestCookiesView.css.js';
 
@@ -113,6 +114,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     super();
 
     this.element.classList.add('request-cookies-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('cookies')}`);
 
     this.request = request;
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(

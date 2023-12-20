@@ -29,6 +29,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
 import webSocketFrameViewStyles from './webSocketFrameView.css.js';
@@ -163,6 +164,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     super();
 
     this.element.classList.add('websocket-frame-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('web-socket-messages')}`);
     this.request = request;
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');

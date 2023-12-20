@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 
 const UIStrings = {
   /**
@@ -46,6 +48,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     super();
 
     this.element.classList.add('event-source-messages-view');
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('event-stream')}`);
     this.request = request;
 
     const columns = ([

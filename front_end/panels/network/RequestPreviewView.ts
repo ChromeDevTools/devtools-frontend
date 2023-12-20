@@ -31,14 +31,15 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {WebBundleInfoView} from './components/WebBundleInfoView.js';
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
-import {WebBundleInfoView} from './components/WebBundleInfoView.js';
 
 const UIStrings = {
   /**
@@ -55,6 +56,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(request);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('preview')}`);
   }
 
   override async showPreview(): Promise<UI.Widget.Widget> {

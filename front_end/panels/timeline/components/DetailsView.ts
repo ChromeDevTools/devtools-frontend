@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -143,4 +144,82 @@ export function buildRowsForWebSocketEvent(
   }
 
   return rows;
+}
+
+/**
+ * This method does not output any content but instead takes a list of
+ * invalidations and groups them, doing some processing of the data to collect
+ * invalidations grouped by the reason/cause.
+ * It also returns all BackendNodeIds that are related to these invalidations
+ * so that they can be fetched via CDP.
+ * It is exported only for testing purposes.
+ **/
+export function generateInvalidationsList(
+    invalidations: TraceEngine.Types.TraceEvents.SyntheticInvalidation[],
+    ): {
+  groupedByReason: Record<string, TraceEngine.Types.TraceEvents.SyntheticInvalidation[]>,
+  backendNodeIds: Set<Protocol.DOM.BackendNodeId>,
+} {
+  const groupedByReason: Record<string, TraceEngine.Types.TraceEvents.SyntheticInvalidation[]> = {};
+
+  const backendNodeIds: Set<Protocol.DOM.BackendNodeId> = new Set();
+  for (const invalidation of invalidations) {
+    backendNodeIds.add(invalidation.nodeId);
+
+    let reason = invalidation.reason || 'unknown';
+
+    // ScheduleStyle events do not always have a reason, but if they tell us
+    // via their data what changed, we can update the reason that we show to
+    // the user.
+    if (reason === 'unknown' &&
+        TraceEngine.Types.TraceEvents.isTraceEventScheduleStyleInvalidationTracking(invalidation.rawEvent) &&
+        invalidation.rawEvent.args.data.invalidatedSelectorId) {
+      switch (invalidation.rawEvent.args.data.invalidatedSelectorId) {
+        case 'attribute':
+          reason = 'Attribute';
+          if (invalidation.rawEvent.args.data.changedAttribute) {
+            reason += ` (${invalidation.rawEvent.args.data.changedAttribute})`;
+          }
+          break;
+        case 'class':
+          reason = 'Class';
+          if (invalidation.rawEvent.args.data.changedClass) {
+            reason += ` (${invalidation.rawEvent.args.data.changedClass})`;
+          }
+          break;
+        case 'id':
+          reason = 'Id';
+          if (invalidation.rawEvent.args.data.changedId) {
+            reason += ` (${invalidation.rawEvent.args.data.changedId})`;
+          }
+          break;
+      }
+    }
+
+    if (reason === 'PseudoClass' &&
+        TraceEngine.Types.TraceEvents.isTraceEventStyleRecalcInvalidationTracking(invalidation.rawEvent) &&
+        invalidation.rawEvent.args.data.extraData) {
+      // This will append the `:focus` onto the reason.
+      reason += invalidation.rawEvent.args.data.extraData;
+    }
+
+    if (reason === 'Attribute' &&
+        TraceEngine.Types.TraceEvents.isTraceEventStyleRecalcInvalidationTracking(invalidation.rawEvent) &&
+        invalidation.rawEvent.args.data.extraData) {
+      // Append the attribute that changed.
+      reason += ` (${invalidation.rawEvent.args.data.extraData})`;
+    }
+
+    if (reason === 'StyleInvalidator') {
+      // These events give us some extra metadata but are not in isolation that
+      // useful and end up duplicating information from other tracking events,
+      // so we do not include these in the UI.
+      continue;
+    }
+
+    const existing = groupedByReason[reason] || [];
+    existing.push(invalidation);
+    groupedByReason[reason] = existing;
+  }
+  return {groupedByReason, backendNodeIds};
 }

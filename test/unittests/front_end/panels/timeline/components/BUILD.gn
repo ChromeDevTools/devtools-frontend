@@ -9,6 +9,7 @@ ts_library("components") {
   sources = [
     "BreadcrumbsUI_test.ts",
     "InteractionBreakdown_test.ts",
+    "Invalidations_test.ts",
   ]
 
   deps = [

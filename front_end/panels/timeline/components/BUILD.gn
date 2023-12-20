@@ -23,6 +23,7 @@ devtools_module("components") {
 
   deps = [
     "../../../core/i18n:bundle",
+    "../../../generated",
     "../../../models/trace:bundle",
     "../../../models/trace:bundle",
     "../../../ui/components/helpers:bundle",

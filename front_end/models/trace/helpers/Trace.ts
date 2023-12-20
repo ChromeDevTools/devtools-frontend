@@ -7,6 +7,20 @@ import * as Platform from '../../../core/platform/platform.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
+export function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|
+    null {
+  if (Types.TraceEvents.isTraceEventSyntheticInvalidation(event)) {
+    return event.stackTrace || null;
+  }
+  if (event.args?.data?.stackTrace) {
+    return event.args.data.stackTrace;
+  }
+  if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
+    return event.args.beginData?.stackTrace || null;
+  }
+  return null;
+}
+
 export function extractOriginFromTrace(firstNavigationURL: string): string|null {
   const url = Common.ParsedURL.ParsedURL.fromString(firstNavigationURL);
   if (url) {

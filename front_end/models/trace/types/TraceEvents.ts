@@ -882,6 +882,8 @@ export interface TraceEventScheduleStyleInvalidationTracking extends TraceEventI
       invalidatedSelectorId?: string,
       reason?: LayoutInvalidationReason,
       changedClass?: string,
+      changedAttribute?: string,
+      changedId?: string,
       nodeName?: string,
       stackTrace?: TraceEventCallFrame[],
     },
@@ -1251,7 +1253,7 @@ export function isTraceEventActivateLayerTree(event: TraceEventData): event is T
   return event.name === KnownEventName.ActivateLayerTree;
 }
 
-export interface SyntheticInvalidation {
+export interface SyntheticInvalidation extends TraceEventInstant {
   name: 'SyntheticInvalidation';
   nodeName?: string;
   rawEvent: TraceEventScheduleStyleInvalidationTracking|TraceEventStyleRecalcInvalidationTracking|
@@ -1260,6 +1262,10 @@ export interface SyntheticInvalidation {
   frame: string;
   reason?: string;
   stackTrace?: TraceEventCallFrame[];
+}
+
+export function isTraceEventSyntheticInvalidation(event: TraceEventData): event is SyntheticInvalidation {
+  return event.name === 'SyntheticInvalidation';
 }
 
 export interface TraceEventUpdateLayoutTree extends TraceEventComplete {

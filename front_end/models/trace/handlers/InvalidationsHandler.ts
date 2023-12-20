@@ -46,6 +46,7 @@ function addInvalidationToEvent(
   const existingInvalidations = invalidationsForEvent.get(event) || [];
 
   const syntheticInvalidation: Types.TraceEvents.SyntheticInvalidation = {
+    ...invalidation,
     name: 'SyntheticInvalidation',
     frame: invalidation.args.data.frame,
     nodeId: invalidation.args.data.nodeId,

@@ -407,46 +407,30 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (this.traceEngineData) {
       this.compatibilityTracksAppender = this.compatibilityTracksAppenderInstance();
-    }
-    if (this.legacyTimelineModel.isGenericTrace()) {
-      this.processGenericTrace();
-    } else {
-      this.processInspectorTrace();
+      if (this.traceEngineData.Meta.traceIsGeneric) {
+        this.#processGenericTrace();
+      } else {
+        this.processInspectorTrace();
+      }
     }
 
     return this.timelineDataInternal;
   }
 
-  private processGenericTrace(): void {
-    const processGroupStyle = this.buildGroupStyle({shareHeaderLine: false});
-    const threadGroupStyle = this.buildGroupStyle({padding: 2, nestingLevel: 1, shareHeaderLine: false});
-    const eventEntryType = EntryType.Event;
-    const tracksByProcess =
-        new Platform.MapUtilities.Multimap<TraceEngine.Legacy.Process, TimelineModel.TimelineModel.Track>();
-    if (!this.legacyTimelineModel) {
+  #processGenericTrace(): void {
+    if (!this.compatibilityTracksAppender) {
       return;
     }
-    for (const track of this.legacyTimelineModel.tracks()) {
-      if (track.thread !== null) {
-        tracksByProcess.set(track.thread.process(), track);
-      } else {
-        // The Timings track can reach this point, so we should probably do something more useful.
-        console.error('Failed to process track');
-      }
-    }
-    for (const process of tracksByProcess.keysArray()) {
-      if (tracksByProcess.size > 1) {
-        const name = `${process.name()} ${process.id()}`;
-        this.appendHeader(name, processGroupStyle, false /* selectable */);
-      }
-      for (const track of tracksByProcess.get(process)) {
-        const group = this.appendSyncEvents(
-            track, track.events, track.name, threadGroupStyle, eventEntryType, true /* selectable */);
-        if (this.timelineDataInternal &&
-            (!this.timelineDataInternal.selectedGroup ||
-             track.name === TimelineModel.TimelineModel.TimelineModelImpl.BrowserMainThreadName)) {
-          this.timelineDataInternal.selectedGroup = group;
-        }
+
+    const appendersByProcess = this.compatibilityTracksAppender.allThreadAppendersByProcess();
+
+    for (const [pid, threadAppenders] of appendersByProcess) {
+      const processGroupStyle = this.buildGroupStyle({shareHeaderLine: false});
+      const processName = this.traceEngineData?.Meta.processNames.get(pid)?.args.name || 'Process';
+      this.appendHeader(`${processName} (${pid})`, processGroupStyle, true, false);
+      for (const appender of threadAppenders) {
+        appender.setHeaderNestingLevel(1);
+        this.currentLevel = appender.appendTrackAtLevel(this.currentLevel);
       }
     }
   }

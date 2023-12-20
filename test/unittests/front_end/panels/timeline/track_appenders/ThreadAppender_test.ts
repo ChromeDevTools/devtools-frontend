@@ -155,6 +155,25 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
 
+  it('adds thread IDs onto tracks when the trace is generic', async () => {
+    const {flameChartData} = await renderThreadAppendersFromTrace(this, 'generic-about-tracing.json.gz');
+    // This trace has a lot of tracks, so just test one.
+    assert.isTrue(flameChartData.groups.map(g => g.name)
+                      .includes('CrBrowserMain (1213787)' as Platform.UIString.LocalizedString));
+  });
+
+  it('assigns the right color for events when the trace is generic', async () => {
+    const {threadAppenders, traceParsedData} =
+        await renderThreadAppendersFromTrace(this, 'generic-about-tracing.json.gz');
+    const event = traceParsedData.Renderer.allTraceEntries.find(entry => {
+      return entry.name === 'ThreadControllerImpl::RunTask';
+    });
+    if (!event) {
+      throw new Error('Could not find event.');
+    }
+    assert.strictEqual(threadAppenders[0].colorForEvent(event), 'hsl(278, 40%, 70%)');
+  });
+
   it('assigns correct names to worker threads', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'two-workers.json.gz');
     const expectedTrackNames = [
@@ -441,6 +460,9 @@ describeWithEnvironment('ThreadAppender', function() {
         Workers: workersData,
         Warnings: warningsData,
         AuctionWorklets: {worklets: new Map()},
+        Meta: {
+          traceIsGeneric: false,
+        },
       } as TraceModel.Handlers.Types.TraceParseData;
 
       // Add the script to ignore list and then append the flamechart data

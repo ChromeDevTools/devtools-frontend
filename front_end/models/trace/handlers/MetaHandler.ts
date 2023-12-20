@@ -26,6 +26,8 @@ let gpuProcessId: Types.TraceEvents.ProcessID = Types.TraceEvents.ProcessID(-1);
 let gpuThreadId: Types.TraceEvents.ThreadID = Types.TraceEvents.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
 
+const processNames: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventProcessName> = new Map();
+
 const topLevelRendererIds = new Set<Types.TraceEvents.ProcessID>();
 const traceBounds: Types.Timing.TraceWindowMicroSeconds = {
   min: Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY),
@@ -83,6 +85,7 @@ const CHROME_WEB_TRACE_EVENTS = new Set([
 export function reset(): void {
   navigationsByFrameId.clear();
   navigationsByNavigationId.clear();
+  processNames.clear();
   mainFrameNavigations.length = 0;
 
   browserProcessId = Types.TraceEvents.ProcessID(-1);
@@ -152,6 +155,10 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 
   if (traceIsGeneric && CHROME_WEB_TRACE_EVENTS.has(event.name as Types.TraceEvents.KnownEventName)) {
     traceIsGeneric = false;
+  }
+
+  if (Types.TraceEvents.isProcessName(event)) {
+    processNames.set(event.pid, event);
   }
 
   // If there is a timestamp (which meta events do not have), and the event does
@@ -368,6 +375,7 @@ export type MetaHandlerData = {
   traceIsGeneric: boolean,
   traceBounds: Types.Timing.TraceWindowMicroSeconds,
   browserProcessId: Types.TraceEvents.ProcessID,
+  processNames: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventProcessName>,
   browserThreadId: Types.TraceEvents.ThreadID,
   gpuProcessId: Types.TraceEvents.ProcessID,
   gpuThreadId?: Types.TraceEvents.ThreadID,
@@ -421,6 +429,7 @@ export function data(): MetaHandlerData {
     traceBounds: {...traceBounds},
     browserProcessId,
     browserThreadId,
+    processNames: new Map(processNames),
     gpuProcessId,
     gpuThreadId: gpuThreadId === Types.TraceEvents.ThreadID(-1) ? undefined : gpuThreadId,
     viewportRect: viewportRect || undefined,

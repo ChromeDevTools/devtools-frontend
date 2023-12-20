@@ -576,4 +576,22 @@ describe('MetaHandler', function() {
     const data = TraceModel.Handlers.ModelHandlers.Meta.data();
     assert.strictEqual(data.mainFrameURL, 'https://web.dev/articles/inp');
   });
+
+  it('returns a list of processes and process_name events', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev-initial-url.json.gz');
+    for (const event of events) {
+      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const pidsToNames = Array.from(data.processNames.entries(), ([pid, event]) => {
+      return [pid, event.args.name];
+    });
+    assert.deepEqual(pidsToNames, [
+      [TraceModel.Types.TraceEvents.ProcessID(37605), 'Browser'],
+      [TraceModel.Types.TraceEvents.ProcessID(48544), 'Renderer'],
+      [TraceModel.Types.TraceEvents.ProcessID(37613), 'GPU Process'],
+      [TraceModel.Types.TraceEvents.ProcessID(48531), 'Renderer'],
+    ]);
+  });
 });

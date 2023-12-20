@@ -487,6 +487,38 @@ describeWithMockConnection('TimelineUIUtils', function() {
       ]);
     });
 
+    it('renders all event data for a generic trace', async function() {
+      const data = await TraceLoader.allModels(this, 'generic-about-tracing.json.gz');
+      const event = data.traceParsedData.Renderer.allTraceEntries.find(entry => {
+        return entry.name === 'ThreadControllerImpl::RunTask';
+      });
+      if (!event) {
+        throw new Error('Could not find event.');
+      }
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          event,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(rowData, [
+        {
+          title: 'chrome_task_annotator',
+          value: '{"delay_policy":"PRECISE","task_delay_us":7159}',
+        },
+        {
+          title: 'src_file',
+          value: '"cc/scheduler/scheduler.cc"',
+        },
+        {
+          title: 'src_func',
+          value: '"ScheduleBeginImplFrameDeadline"',
+        },
+      ]);
+    });
+
     it('renders invalidations correctly', async function() {
       const data = await TraceLoader.allModels(this, 'style-invalidation-change-attribute.json.gz');
 

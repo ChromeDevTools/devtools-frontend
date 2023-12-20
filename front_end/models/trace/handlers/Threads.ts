@@ -59,13 +59,13 @@ export function threadsInRenderer(
   if (rendererData.processes.size) {
     for (const [pid, process] of rendererData.processes) {
       for (const [tid, thread] of process.threads) {
-        const threadType = getThreadTypeForRendererThread(auctionWorkletsData, pid, thread);
         if (!thread.tree) {
           // Drop threads where we could not create the tree; this indicates
           // unexpected data and we won't be able to support all the UI
           // filtering we need.
           continue;
         }
+        const threadType = getThreadTypeForRendererThread(auctionWorkletsData, pid, thread);
         foundThreads.push({
           name: thread.name,
           pid,

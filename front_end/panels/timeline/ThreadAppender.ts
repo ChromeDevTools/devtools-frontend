@@ -164,6 +164,7 @@ export class ThreadAppender implements TrackAppender {
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
   #entriesFilter?: TraceEngine.EntriesFilter.EntriesFilter;
   #url: string = '';
+  #headerNestingLevel: number|null = null;
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
@@ -248,6 +249,9 @@ export class ThreadAppender implements TrackAppender {
     return this.#appendTreeAtLevel(trackStartLevel);
   }
 
+  setHeaderNestingLevel(level: number): void {
+    this.#headerNestingLevel = level;
+  }
   /**
    * Track header is appended only if there are events visible on it.
    * Otherwise we don't append any track. So, instead of preemptively
@@ -287,6 +291,9 @@ export class ThreadAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number): void {
     const trackIsCollapsible = this.#entries.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
+    if (this.#headerNestingLevel !== null) {
+      style.nestingLevel = this.#headerNestingLevel;
+    }
     const group = buildTrackHeader(
         currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded, /* track= */ null,
         /* showStackContextMenu= */ true);
@@ -348,7 +355,11 @@ export class ThreadAppender implements TrackAppender {
       default:
         return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
-    return threadTypeLabel || this.#threadDefaultName;
+    let suffix = '';
+    if (this.#traceParsedData.Meta.traceIsGeneric) {
+      suffix = suffix + ` (${this.threadId()})`;
+    }
+    return (threadTypeLabel || this.#threadDefaultName) + suffix;
   }
 
   getUrl(): string {
@@ -544,6 +555,10 @@ export class ThreadAppender implements TrackAppender {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+    if (this.#traceParsedData.Meta.traceIsGeneric) {
+      return event.name ? `hsl(${Platform.StringUtilities.hashCode(event.name) % 300 + 30}, 40%, 70%)` : '#ccc';
+    }
+
     if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
         return getCategoryStyles().Idle.getComputedColorValue();

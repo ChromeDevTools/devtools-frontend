@@ -198,6 +198,13 @@ export class CompatibilityTracksAppender {
           // from about:blank are treated with the lowest priority,
           // since there's a chance they have only noise from the
           // navigation to about:blank done on record and reload.
+          if (!appender.getUrl()) {
+            // We expect each appender to have a URL as we filter out empty URL
+            // processes, but in the event that we do not have a URL (can
+            // happen for a generic trace), return 2, to ensure these are put
+            // below any that do have value URLs.
+            return 2;
+          }
           const asUrl = new URL(appender.getUrl());
           if (asUrl.protocol === 'about:') {
             return 2;
@@ -222,6 +229,15 @@ export class CompatibilityTracksAppender {
     const processedAuctionWorkletsIds = new Set<TraceEngine.Types.TraceEvents.ProcessID>();
 
     for (const {pid, tid, name, type} of threads) {
+      if (this.#traceParsedData.Meta.traceIsGeneric) {
+        // If the trace is generic, we just push all of the threads with no
+        // effort to differentiate them, hence overriding the thread type to be
+        // OTHER for all threads.
+        this.#threadAppenders.push(new ThreadAppender(
+            this, this.#traceParsedData, pid, tid, name, TraceEngine.Handlers.Threads.ThreadType.OTHER));
+        continue;
+      }
+
       const maybeWorklet = this.#traceParsedData.AuctionWorklets.worklets.get(pid);
       if (processedAuctionWorkletsIds.has(pid)) {
         // Keep track of this process to ensure we only add the following
@@ -516,6 +532,10 @@ export class CompatibilityTracksAppender {
   }
 
   entryIsVisibleInTimeline(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    if (this.#traceParsedData.Meta.traceIsGeneric) {
+      return true;
+    }
+
     if (TraceEngine.Types.TraceEvents.isTraceEventUpdateCounters(entry)) {
       // These events are not "visible" on the timeline because they are instant events with 0 duration.
       // However, the Memory view (CountersGraph in the codebase) relies on
@@ -542,6 +562,20 @@ export class CompatibilityTracksAppender {
    */
   allVisibleTrackAppenders(): TrackAppender[] {
     return this.#allTrackAppenders.filter(track => this.#visibleTrackNames.has(track.appenderName));
+  }
+
+  allThreadAppendersByProcess(): Map<TraceEngine.Types.TraceEvents.ProcessID, ThreadAppender[]> {
+    const appenders = this.allVisibleTrackAppenders();
+    const result = new Map<TraceEngine.Types.TraceEvents.ProcessID, ThreadAppender[]>();
+    for (const appender of appenders) {
+      if (!(appender instanceof ThreadAppender)) {
+        continue;
+      }
+      const existing = result.get(appender.processId()) ?? [];
+      existing.push(appender);
+      result.set(appender.processId(), existing);
+    }
+    return result;
   }
 
   /**

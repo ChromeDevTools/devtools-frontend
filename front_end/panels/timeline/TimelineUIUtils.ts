@@ -1859,7 +1859,7 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(i18nString(UIStrings.selfTime), i18n.TimeUtilities.millisToString(selfTime, true));
     }
 
-    if (model.isGenericTrace()) {
+    if (traceParseData?.Meta.traceIsGeneric) {
       for (const key in event.args) {
         try {
           contentHelper.appendTextRow(key, JSON.stringify(event.args[key]));

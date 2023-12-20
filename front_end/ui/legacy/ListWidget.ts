@@ -284,8 +284,16 @@ export class Editor<T> {
         'keydown', onKeyDown.bind(null, Platform.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
 
     this.contentElementInternal = this.element.createChild('div', 'editor-content');
-    this.contentElementInternal.addEventListener(
-        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this.commitClicked.bind(this)), false);
+    this.contentElementInternal.addEventListener('keydown', onKeyDown.bind(null, event => {
+      if (event.key !== 'Enter') {
+        return false;
+      }
+      if (event.target instanceof HTMLSelectElement) {
+        // 'Enter' on <select> is supposed to open the drop down, so don't swallow that here.
+        return false;
+      }
+      return true;
+    }, this.commitClicked.bind(this)), false);
 
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this.commitButton = createTextButton('', this.commitClicked.bind(this), '', true /* primary */);

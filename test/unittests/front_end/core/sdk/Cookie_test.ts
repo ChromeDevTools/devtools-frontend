@@ -12,7 +12,7 @@ describe('Cookie', () => {
   it('can be instantiated without issues', () => {
     const cookie = new SDK.Cookie.Cookie('name', 'value');
 
-    assert.strictEqual(cookie.key(), '- name -');
+    assert.strictEqual(cookie.key(), '- name - -');
     assert.strictEqual(cookie.name(), 'name');
     assert.strictEqual(cookie.value(), 'value');
 
@@ -28,6 +28,7 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 0);
     assert.strictEqual(cookie.url(), null);
+    assert.strictEqual(cookie.partitionKey(), undefined);
     assert.strictEqual(cookie.getCookieLine(), null);
   });
 
@@ -48,9 +49,11 @@ describe('Cookie', () => {
       priority: Protocol.Network.CookiePriority.High,
       sourcePort: 443,
       sourceScheme: Protocol.Network.CookieSourceScheme.Secure,
+      partitionKey: 'https://a.com',
+      partitionKeyOpaque: false,
     });
 
-    assert.strictEqual(cookie.key(), '.example.com name /test');
+    assert.strictEqual(cookie.key(), '.example.com name /test https://a.com');
     assert.strictEqual(cookie.name(), 'name');
     assert.strictEqual(cookie.value(), 'value');
 
@@ -68,6 +71,8 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 443);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
+    assert.strictEqual(cookie.partitionKey(), 'https://a.com');
+    assert.strictEqual(cookie.partitionKeyOpaque(), false);
   });
 
   // The jsdoc states that the fields are required, not optional
@@ -88,7 +93,7 @@ describe('Cookie', () => {
       sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
     });
 
-    assert.strictEqual(cookie.key(), '.example.com name /test');
+    assert.strictEqual(cookie.key(), '.example.com name /test -');
     assert.strictEqual(cookie.name(), 'name');
     assert.strictEqual(cookie.value(), 'value');
 
@@ -126,7 +131,7 @@ describe('Cookie', () => {
       sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
     });
 
-    assert.strictEqual(cookie.key(), '.example.com name /test');
+    assert.strictEqual(cookie.key(), '.example.com name /test -');
     assert.strictEqual(cookie.name(), 'name');
     assert.strictEqual(cookie.value(), 'value');
 

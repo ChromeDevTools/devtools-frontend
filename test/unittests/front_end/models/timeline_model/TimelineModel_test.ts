@@ -5,7 +5,6 @@
 const {assert} = chai;
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
@@ -624,123 +623,6 @@ describeWithEnvironment('TimelineModel', function() {
         'processName': 'Renderer',
       },
     ]);
-  });
-
-  describe('style invalidations', function() {
-    /**
-     * This helper function is very confusing without context. It is designed
-     * to work on a trace generated from
-     * https://github.com/ChromeDevTools/performance-stories/tree/main/style-invalidations.
-     * Those examples are triggered by the user clicking on a button to initiate
-     * certain invalidations that we want to test. However, the act of clicking on
-     * the button also triggers an invalidation which we do not necessarily want to
-     * include in our results. So, instead we look for the invalidations triggered
-     * by the test function that was invoked when we clicked the button. Therefore,
-     * this function looks through the trace for all UpdateLayoutTree events, and
-     * looks for one where the function in the stack trace matches what's expected.
-     * We then return all invalidations for that main event.
-     **/
-    async function invalidationsFromTestFunction(
-        timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
-        testFunctionName: string): Promise<TimelineModel.TimelineModel.InvalidationTrackingEvent[]> {
-      let mainTrack: TimelineModel.TimelineModel.Track|null = null;
-      for (const track of timelineModel.tracks()) {
-        if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
-          mainTrack = track;
-        }
-      }
-      assertNotNullOrUndefined(mainTrack);
-      const rootLayoutUpdateEvent = mainTrack.events.find(event => {
-        return event.name === TimelineModel.TimelineModel.RecordType.UpdateLayoutTree &&
-            event.args.beginData?.stackTrace?.[0].functionName === testFunctionName;
-      });
-      assertNotNullOrUndefined(rootLayoutUpdateEvent);
-      const invalidationsForEvent =
-          TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(rootLayoutUpdateEvent);
-      assertNotNullOrUndefined(invalidationsForEvent);
-      return invalidationsForEvent;
-    }
-
-    function invalidationToBasicObject(invalidation: TimelineModel.TimelineModel.InvalidationTrackingEvent) {
-      return {
-        reason: invalidation.cause.reason,
-        nodeName: invalidation.nodeName,
-      };
-    }
-
-    it('detects the correct invalidations for a class name being changed', async function() {
-      const {timelineModel} = await TraceLoader.allModels(this, 'invalidate-style-class-name-change.json.gz');
-      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeClassNameAndDisplay');
-      // In this trace there are three nodes impacted by the class name change:
-      // the two test divs, and the button, which gains the :active pseudo
-      // class
-      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
-        {
-          reason: 'PseudoClass',
-          nodeName: 'BUTTON id=\'changeClassNameAndDisplay\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementOne\' class=\'red\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementTwo\' class=\'red\'',
-        },
-      ]);
-    });
-
-    it('detects the correct invalidations for an attribute being changed', async function() {
-      const {timelineModel} = await TraceLoader.allModels(this, 'style-invalidation-change-attribute.json.gz');
-      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeAttributeAndDisplay');
-      // In this trace there are three nodes impacted by the attribute change:
-      // the two test divs, and the button, which gains the :active pseudo
-      // class when clicked.
-      // However, the two test divs have two invalidations each: one for the attribute, and one for having a pending invalidation list
-      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
-        {
-          reason: 'PseudoClass',
-          nodeName: 'BUTTON id=\'changeAttributeAndDisplay\'',
-        },
-        {
-          reason: 'Attribute',
-          nodeName: 'DIV id=\'testElementFour\'',
-        },
-        {
-          reason: 'Attribute',
-          nodeName: 'DIV id=\'testElementFive\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementFour\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementFive\'',
-        },
-      ]);
-    });
-    it('detects the correct invalidations for an ID being changed', async function() {
-      const {timelineModel} = await TraceLoader.allModels(this, 'style-invalidation-change-id.json.gz');
-      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeIdAndDisplay');
-      // In this trace there are three nodes impacted by the ID change:
-      // the two test divs, and the button, which gains the :active pseudo
-      // class
-      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
-        {
-          reason: 'PseudoClass',
-          nodeName: 'BUTTON id=\'changeIdAndDisplay\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementFour\'',
-        },
-        {
-          reason: 'Element has pending invalidation list',
-          nodeName: 'DIV id=\'testElementFive\'',
-        },
-      ]);
-    });
   });
 });
 

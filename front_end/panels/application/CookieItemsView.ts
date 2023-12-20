@@ -175,7 +175,7 @@ export class CookieItemsView extends StorageItemsView {
     super(i18nString(UIStrings.cookies), 'cookiesPanel');
 
     this.element.classList.add('storage-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('cookies')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('cookies-data')}`);
 
     this.model = model;
     this.cookieDomain = cookieDomain;

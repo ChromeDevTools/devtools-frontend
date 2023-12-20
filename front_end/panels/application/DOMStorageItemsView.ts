@@ -142,7 +142,7 @@ export class DOMStorageItemsView extends StorageItemsView {
   setStorage(domStorage: DOMStorage): void {
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
-    const storageKind = domStorage.isLocalStorage ? 'local-storage' : 'session-storage';
+    const storageKind = domStorage.isLocalStorage ? 'local-storage-data' : 'session-storage-data';
     this.element.setAttribute('jslog', `${VisualLogging.pane().context(storageKind)}`);
     if (domStorage.storageKey) {
       this.setStorageKey(domStorage.storageKey);

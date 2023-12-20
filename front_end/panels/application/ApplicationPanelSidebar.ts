@@ -1485,7 +1485,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     }
     if (!this.view) {
       this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.Widget.VBox, new IDBDatabaseView(this.model, this.database), 'indexeddb');
+          UI.Widget.VBox, new IDBDatabaseView(this.model, this.database), 'indexeddb-data');
     }
 
     this.showView(this.view);

@@ -785,23 +785,6 @@ export class TimelineModelImpl {
         break;
       }
 
-      case RecordType.DisplayItemListSnapshot:
-      case RecordType.PictureSnapshot: {
-        // If we get a snapshot, we try to find the last Paint event for the
-        // current layer, and store the snapshot as the relevant picture for
-        // that event, thus creating a relationship between the snapshot and
-        // the last Paint event for the current timestamp.
-        const layerUpdateEvent = this.findAncestorEvent(RecordType.UpdateLayer);
-        if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this.mainFrameLayerTreeId) {
-          break;
-        }
-        const paintEvent = this.lastPaintForLayer[layerUpdateEvent.args['layerId']];
-        if (paintEvent) {
-          EventOnTimelineData.forEvent(paintEvent).picture = (event as TraceEngine.Legacy.ObjectSnapshot);
-        }
-        break;
-      }
-
       case RecordType.ScrollLayer: {
         timelineData.backendNodeIds.push(eventData['nodeId']);
         break;
@@ -1709,14 +1692,12 @@ export class EventOnTimelineData {
   url: Platform.DevToolsPath.UrlString|null;
   backendNodeIds: Protocol.DOM.BackendNodeId[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
-  picture: TraceEngine.Legacy.ObjectSnapshot|null;
   frameId: Protocol.Page.FrameId|null;
 
   constructor() {
     this.url = null;
     this.backendNodeIds = [];
     this.stackTrace = null;
-    this.picture = null;
     this.frameId = null;
   }
 

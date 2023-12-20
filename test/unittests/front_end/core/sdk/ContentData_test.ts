@@ -46,6 +46,12 @@ describe('ContentData', () => {
         'data:text/html;charset=utf-16;base64,//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA');
   });
 
+  it('does not include charset for already decoded text in the data URL', () => {
+    const textWithCharsetContent =
+        new ContentData('a simple text', false, resourceTypes.Document, MimeType.HTML, 'utf-16');
+    assert.strictEqual(textWithCharsetContent.asDataUrl(), 'data:text/html,a simple text');
+  });
+
   it('converts to DeferredContent', () => {
     const textContent = new ContentData('a simple text', false, resourceTypes.Document, MimeType.HTML);
     const deferredTextContent = textContent.asDeferedContent();

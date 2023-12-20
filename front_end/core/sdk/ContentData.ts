@@ -86,7 +86,7 @@ export class ContentData {
       return TextUtils.ContentProvider.contentAsDataURL(
           this.#contentAsBase64, this.mimeType ?? '', true, this.#charset ?? null);
     }
-    return TextUtils.ContentProvider.contentAsDataURL(this.text, this.mimeType ?? '', false, this.#charset ?? null);
+    return TextUtils.ContentProvider.contentAsDataURL(this.text, this.mimeType ?? '', false);
   }
 
   /**

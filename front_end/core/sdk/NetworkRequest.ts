@@ -318,6 +318,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #wasIntercepted: boolean;
   #associatedData = new Map<string, object>();
   #hasOverriddenContent: boolean;
+  #hasThirdPartyCookiePhaseoutIssue: boolean;
 
   constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -401,6 +402,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.#wasIntercepted = false;
     this.#hasOverriddenContent = false;
+    this.#hasThirdPartyCookiePhaseoutIssue = false;
   }
 
   static create(
@@ -1511,6 +1513,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#clientSecurityStateInternal = extraRequestInfo.clientSecurityState;
     this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
     this.#siteHasCookieInOtherPartition = extraRequestInfo.siteHasCookieInOtherPartition ?? false;
+
+    for (const item of this.#blockedRequestCookiesInternal) {
+      if (item.blockedReasons.includes(Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout)) {
+        this.#hasThirdPartyCookiePhaseoutIssue = true;
+        break;
+      }
+    }
   }
 
   hasExtraRequestInfo(): boolean {
@@ -1587,6 +1596,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
           networkManager.dispatchEventToListeners(
               NetworkManagerEvents.MessageGenerated,
               {message: message, requestId: this.#requestIdInternal, warning: true});
+        }
+
+        if (blockedCookie.blockedReasons.includes(Protocol.Network.SetCookieBlockedReason.ThirdPartyPhaseout)) {
+          this.#hasThirdPartyCookiePhaseoutIssue = true;
         }
       }
     }
@@ -1669,6 +1682,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   deleteAssociatedData(key: string): void {
     this.#associatedData.delete(key);
+  }
+
+  hasThirdPartyCookiePhaseoutIssue(): boolean {
+    return this.#hasThirdPartyCookiePhaseoutIssue;
   }
 }
 

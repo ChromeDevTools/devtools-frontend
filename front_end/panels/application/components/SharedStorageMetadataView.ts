@@ -7,6 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
 import sharedStorageMetadataViewResetBudgetButtonStyles from './sharedStorageMetadataViewResetBudgetButton.css.js';
@@ -73,7 +74,8 @@ class SharedStorageResetBudgetButton extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <button class="reset-budget-button"
         title=${i18nString(UIStrings.resetBudget)}
-        @click=${(): void => this.#resetBudgetHandler()}>
+        @click=${(): void => this.#resetBudgetHandler()}
+        jslog=${VisualLogging.action().track({click: true}).context('reset-entropy-budget')}>
       <${IconButton.Icon.Icon.litTagName} .data=${
       {iconName: 'undo', color: 'var(--icon-default)', width: '16px', height: '16px'} as
       IconButton.Icon.IconWithName}>

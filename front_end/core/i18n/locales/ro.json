@@ -11,9 +11,6 @@
   "core/common/ResourceType.ts | document": {
     "message": "Document"
   },
-  "core/common/ResourceType.ts | documents": {
-    "message": "Documente"
-  },
   "core/common/ResourceType.ts | eventsource": {
     "message": "Sursa evenimentului"
   },
@@ -23,17 +20,14 @@
   "core/common/ResourceType.ts | font": {
     "message": "Font"
   },
-  "core/common/ResourceType.ts | fonts": {
-    "message": "Fonturi"
-  },
   "core/common/ResourceType.ts | image": {
     "message": "Imagine"
   },
-  "core/common/ResourceType.ts | images": {
-    "message": "Imagini"
-  },
   "core/common/ResourceType.ts | img": {
     "message": "Imagine"
+  },
+  "core/common/ResourceType.ts | javascript": {
+    "message": "JavaScript"
   },
   "core/common/ResourceType.ts | js": {
     "message": "JS"
@@ -56,17 +50,11 @@
   "core/common/ResourceType.ts | script": {
     "message": "Script"
   },
-  "core/common/ResourceType.ts | scripts": {
-    "message": "Scripturi"
-  },
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "Foaie de stil"
-  },
-  "core/common/ResourceType.ts | stylesheets": {
-    "message": "Foi de stil"
   },
   "core/common/ResourceType.ts | texttrack": {
     "message": "TextTrack"
@@ -82,9 +70,6 @@
   },
   "core/common/ResourceType.ts | websocket": {
     "message": "Cadru WebSocket"
-  },
-  "core/common/ResourceType.ts | websockets": {
-    "message": "Cadre WebSocket"
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
@@ -106,6 +91,9 @@
   },
   "core/common/Revealer.ts | issuesView": {
     "message": "Afișarea Probleme"
+  },
+  "core/common/Revealer.ts | memoryInspectorPanel": {
+    "message": "Panoul Inspector de memorie"
   },
   "core/common/Revealer.ts | networkPanel": {
     "message": "Panou de rețea"
@@ -380,6 +368,9 @@
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Schema acestei conexiuni nu este permisă pentru stocarea cookie-urilor."
   },
+  "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
+    "message": "Acest cookie a fost blocat deoarece cookie-urile terță parte au fost retrase. Află mai multe din fila Probleme."
+  },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "Antetul Set-Cookie nu a specificat un atribut SameSite, a fost setat în mod prestabilit la SameSite=Lax\" și a fost blocat deoarece provenea dintr-un răspuns pe mai multe site-uri, care nu era răspunsul la o navigare la nivel superior. Acest răspuns este considerat de pe mai multe site-uri deoarece adresa URL are altă schemă decât site-ul actual."
   },
@@ -400,6 +391,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
     "message": "Încercarea de a seta un cookie printr-un antet Set-Cookie a fost blocată, deoarece cookie-ul era prea mare. Dimensiunea combinată a numelui și valorii trebuie să aibă cel mult 4096 de caractere."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
+    "message": "Setarea acestui cookie a fost blocată deoarece cookie-urile terță parte au fost retrase. Află mai multe din fila Probleme."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Încercarea de a seta un cookie printr-un antet Set-Cookie a fost blocată ca urmare a preferințelor utilizatorului."
@@ -1139,9 +1133,6 @@
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Relaxarea politicii pentru aceeași origine prin setarea document.domain este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet Origin-Agent-Cluster: ?0 împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
   },
-  "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Antetul Expect-CT este învechit și va fi eliminat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() și watchPosition() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
@@ -1255,6 +1246,9 @@
   },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Apelarea speechSynthesis.speak() fără activarea utilizatorului este învechită și va fi eliminată."
+  },
+  "generated/Deprecation.ts | UnloadHandler": {
+    "message": "Funcțiile de procesare a evenimentelor unload sunt învechite și vor fi eliminate."
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensiile trebuie să aibă blocarea accesului de la mai multe surse activată pentru a folosi în continuare SharedArrayBuffer. Consultă https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
@@ -2139,13 +2133,13 @@
     "message": "{PH1} {PH2} nu este specificat în manifest; se folosește {PH3}. Ca să specifici un cod de aplicație care corespunde identității actuale, setează câmpul {PH4} la {PH5} {PH6}."
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Nu încurajăm declararea unei pictograme cu purpose: \"any maskable\". Este posibil să pară incorect pe unele platforme deoarece există prea multe sau prea puține chenare interioare."
+    "message": "Nu încurajăm declararea unei pictograme cu atributul purpose setat la any maskable. Poate să apară incorect pe unele platforme deoarece există prea multe sau prea puține chenare interioare."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Culoarea fundalului"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
-    "message": "ID de aplicație calculată"
+    "message": "Codul calculat al aplicației"
   },
   "panels/application/AppManifestView.ts | copiedToClipboard": {
     "message": "Codul sugerat {PH1} a fost copiat în clipboard"
@@ -2160,7 +2154,7 @@
     "message": "Nu s-a putut descărca o pictogramă necesară din manifest"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "Personalizează API-ul Window Controls Overlay pentru bara de titlu din PWA."
+    "message": "Personalizează API-ul Window Controls Overlay pentru bara de titlu din PWA"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Culoare de fundal închisă"
@@ -2229,13 +2223,13 @@
     "message": "Manifestul specifică prefer_related_applications: adevărat"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifestul start_URL nu este valid"
+    "message": "Manifestul start_url nu este valid"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Nume"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
-    "message": "Dorești ajutor? Citește {PH1}."
+    "message": "Ai nevoie de ajutor? Citește {PH1}."
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Adresa URL a notei noi"
@@ -2244,10 +2238,10 @@
     "message": "Nu s-a indicat niciun cod din Magazinul Play"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Interfața de utilizare mai complexă pentru instalarea PWA nu va fi disponibilă pe computer. Adaugă cel puțin o captură de ecran cu parametrul form_factor setat la wide."
+    "message": "Interfața de utilizare mai complexă pentru instalarea PWA nu va fi disponibilă pe computer. Adaugă cel puțin o captură de ecran cu atributul form_factor setat la wide."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Interfața de utilizare mai complexă pentru instalarea PWA nu va fi disponibilă pe mobil. Adaugă cel puțin o captură de ecran pentru care form_factor nu este setat sau este setat la o altă valoare decât wide."
+    "message": "Interfața de utilizare mai complexă pentru instalarea PWA nu va fi disponibilă pe mobil. Adaugă cel puțin o captură de ecran pentru care atributul form_factor nu este setat sau este setat la o altă valoare decât wide."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Nicio pictogramă adăugată nu întrunește următoarele cerințe: minimum {PH1} pixeli, pătrată, în format PNG, SVG sau WebP, cu atributul scop nesetat sau setat la any."
@@ -2322,13 +2316,16 @@
     "message": "Captură de ecran"
   },
   "panels/application/AppManifestView.ts | screenshotPixelSize": {
-    "message": "Captura de ecran {url} ar trebui să specifice o dimensiune în pixeli [width]x[height] în loc de \"any\" ca primă dimenisune."
+    "message": "Captura de ecran {url} ar trebui să specifice o dimensiune în pixeli [width]x[height] în loc de any ca primă dimenisune."
   },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Captura de ecran #{PH1}"
   },
   "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
-    "message": "Toate capturile de ecran cu același form_factor trebuie să aibă același raport de dimensiuni ca prima captură de ecran cu acel form_factor. Unele capturi de ecran se vor ignora."
+    "message": "Toate capturile de ecran cu același atribut form_factor trebuie să aibă același raport de dimensiuni ca prima captură de ecran cu atributul form_factor respectiv. Unele capturi de ecran vor fi ignorate."
+  },
+  "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
+    "message": "Simulează activarea API-ului Window Controls Overlay"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Nume scurt"
@@ -2337,7 +2334,7 @@
     "message": "Comanda rapidă {PH1}"
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
-    "message": "Comanda rapidă #{PH1} trebuie să includă o pictogramă de 96 x 96 pixeli"
+    "message": "Comanda rapidă nr. {PH1} trebuie să includă o pictogramă de 96×96 pixeli"
   },
   "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
     "message": "Numărul maxim de comenzi rapide depinde de platformă. Este posibil ca unele comenzi rapide să nu fie disponibile."
@@ -2759,6 +2756,15 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Da"
   },
+  "panels/application/PreloadingTreeElement.ts | rules": {
+    "message": "Reguli"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculations": {
+    "message": "Speculații"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
+    "message": "Încărcări speculative"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Dă clic pe orice raport pentru a afișa conținutul"
   },
@@ -2866,6 +2872,9 @@
   },
   "panels/application/ServiceWorkersView.ts | receivedS": {
     "message": "S-a primit la {PH1}"
+  },
+  "panels/application/ServiceWorkersView.ts | routers": {
+    "message": "Routere"
   },
   "panels/application/ServiceWorkersView.ts | sActivatedAndIsS": {
     "message": "#{PH1} activat și {PH2}"
@@ -3481,6 +3490,9 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Aceste motive nu sunt utile; stocarea în memoria cache a fost împiedicată de ceva din afara controlului direct al paginii."
+  },
+  "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
+    "message": "{n,plural, =1{# fișier}few{# fișiere}other{# de fișiere}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
     "message": "{n,plural, =1{# cadru}few{# cadre}other{# de cadre}}"
@@ -4127,8 +4139,23 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Stare"
   },
-  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
-    "message": "Preluarea anticipată a fost eliminată pentru o preluare anticipată mai recentă deoarece este activat parametrul |kPrefetchNewLimits|"
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
+    "message": "Valoarea din panoul de navigare pentru activare"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
+    "message": "Numele antetului"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
+    "message": "Valoarea din panoul de navigare inițial"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
+    "message": "(lipsește)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
+    "message": "Preluarea anticipată a fost eliminată deoarece nicio regulă pentru speculații din pagina de inițiere nu mai declanșează o preluare anticipată pentru această adresă URL."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
+    "message": "Preluarea anticipată a fost eliminată deoarece pagina de inițiere are prea multe preluări anticipate în desfășurare, iar aceasta a fost una dintre cele mai vechi."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Preluarea anticipată a fost redirecționată, dar redirecționarea nu este eligibilă pentru preluare anticipată."
@@ -4382,6 +4409,27 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "Stare"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
+    "message": "Eroare"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailureWithCount": {
+    "message": "{n,plural, =1{# eroare}few{# erori}other{# de erori}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeInProgressWithCount": {
+    "message": "{n,plural, =1{# în desfășurare}few{# în desfășurare}other{# în desfășurare}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNoSpeculativeLoads": {
+    "message": "Nu există încărcări speculative"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNotTriggeredWithCount": {
+    "message": "{n,plural, =1{# nu s-a declanșat}few{# nu s-au declanșat}other{# nu s-au declanșat}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccess": {
+    "message": "Succes"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccessWithCount": {
+    "message": "{n,plural, =1{# reușită}few{# reușite}other{# reușite}}"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
     "message": "Adresa URL actuală"
   },
@@ -4393,6 +4441,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "Află mai multe: încărcarea speculativă pe developer.chrome.com"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
+    "message": "Anteturile solicitărilor HTTP nu corespund"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Pagina de inițiere nu a încercat să încarce speculativ adresa URL a acestei pagini."
@@ -4411,6 +4462,51 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Pagina a fost redată anticipat."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculationsInitiatedByThisPage": {
+    "message": "Speculații inițiate de această pagină"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculativeLoadingStatusForThisPage": {
+    "message": "Starea încărcării speculative pentru această pagină"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllRules": {
+    "message": "Vezi toate regulile pentru speculații"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllSpeculations": {
+    "message": "Vezi toate speculațiile"
+  },
+  "panels/autofill/AutofillView.ts | attr": {
+    "message": "atr"
+  },
+  "panels/autofill/AutofillView.ts | autoShow": {
+    "message": "Deschide automat fila la completarea automată"
+  },
+  "panels/autofill/AutofillView.ts | autocompleteAttribute": {
+    "message": "Atribut pentru completare automată"
+  },
+  "panels/autofill/AutofillView.ts | formField": {
+    "message": "Câmpul formularului"
+  },
+  "panels/autofill/AutofillView.ts | heur": {
+    "message": "eur"
+  },
+  "panels/autofill/AutofillView.ts | inferredByHeuristics": {
+    "message": "Dedusă prin metode euristice"
+  },
+  "panels/autofill/AutofillView.ts | noDataAvailable": {
+    "message": "Nu s-a detectat niciun eveniment de completare automată"
+  },
+  "panels/autofill/AutofillView.ts | predictedAutofillValue": {
+    "message": "Valoarea estimată pentru completarea automată"
+  },
+  "panels/autofill/AutofillView.ts | value": {
+    "message": "Valoare"
+  },
+  "panels/autofill/autofill-meta.ts | autofill": {
+    "message": "Completare automată"
+  },
+  "panels/autofill/autofill-meta.ts | showAutofill": {
+    "message": "Afișează Completare automată"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
     "message": "Animație"
@@ -4637,14 +4733,8 @@
   "panels/changes/ChangesView.ts | copy": {
     "message": "Copiază"
   },
-  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
-    "message": "Copiază toate modificările din fișierul actual"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Fără modificări"
-  },
-  "panels/changes/ChangesView.ts | revertAllChangesToCurrentFile": {
-    "message": "Anulează toate modificările fișierului curent"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ștergere (-)}few{# ștergeri (-)}other{# de ștergeri (-)}}"
@@ -4654,6 +4744,12 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Modificări"
+  },
+  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copiază toate modificările din fișierul actual"
+  },
+  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
+    "message": "Anulează toate modificările fișierului curent"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Afișează modificările"
@@ -4681,6 +4777,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Elimină toate expresiile"
+  },
+  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
+    "message": "Elimină expresia goală"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Elimină expresia"
@@ -4889,6 +4988,15 @@
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<excepție>"
   },
+  "panels/console/ConsoleViewMessage.ts | explainThisError": {
+    "message": "Explică această eroare"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
+    "message": "Explică acest mesaj"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
+    "message": "Explică acest avertisment"
+  },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Funcția a fost remediată din funcția limitată."
   },
@@ -5021,6 +5129,9 @@
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Afișează marcajele temporale"
   },
+  "panels/console/console-meta.ts | toggleConsole": {
+    "message": "Activează / dezactivează consola"
+  },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
     "message": "Tratează evaluarea ca pe activarea utilizatorilor"
   },
@@ -5102,9 +5213,6 @@
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Alege nivelul de detaliere a acoperirii: la nivel de funcție necesită costuri mici, la nivel de grup necesită costuri semnificative."
   },
-  "panels/coverage/CoverageView.ts | clearAll": {
-    "message": "Șterge tot"
-  },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
     "message": "Dă clic pe butonul de înregistrare {PH1} pentru a începe înregistrarea acoperirii."
   },
@@ -5116,9 +5224,6 @@
   },
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
-  },
-  "panels/coverage/CoverageView.ts | export": {
-    "message": "Exportă..."
   },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Filtrează acoperirea în funcție de tip"
@@ -5147,14 +5252,17 @@
   "panels/coverage/CoverageView.ts | urlFilter": {
     "message": "Filtru URL"
   },
+  "panels/coverage/coverage-meta.ts | clearCoverage": {
+    "message": "Șterge datele despre acoperire"
+  },
   "panels/coverage/coverage-meta.ts | coverage": {
     "message": "Acoperire"
   },
+  "panels/coverage/coverage-meta.ts | exportCoverage": {
+    "message": "Exportă datele despre acoperire"
+  },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Acoperire instrument"
-  },
-  "panels/coverage/coverage-meta.ts | reloadPage": {
-    "message": "Reîncarcă pagina"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Afișează Acoperirea"
@@ -5636,9 +5744,6 @@
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Pasiv"
   },
-  "panels/elements/EventListenersWidget.ts | refresh": {
-    "message": "Actualizează"
-  },
   "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "Potrivește funcțiile de procesare a evenimentelor asociate cu cadrul"
   },
@@ -5663,11 +5768,20 @@
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifă)}few{(# glife)}other{(# de glife)}}"
   },
+  "panels/elements/PlatformFontsWidget.ts | familyName": {
+    "message": "Nume de familie"
+  },
+  "panels/elements/PlatformFontsWidget.ts | fontOrigin": {
+    "message": "Originea fontului"
+  },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "Fișier local"
   },
   "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "Resursă pentru rețea"
+  },
+  "panels/elements/PlatformFontsWidget.ts | postScriptName": {
+    "message": "Numele PostScript"
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Fonturi redate"
@@ -5778,7 +5892,7 @@
     "message": "Dă clic pentru a afișa stratul într-o structură arbore din straturi"
   },
   "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "S-au copiat în clipboard"
+    "message": "S-a copiat în clipboard"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Copiază modificările CSS"
@@ -5815,9 +5929,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Strat"
-  },
-  "panels/elements/StylesSidebarPane.ts | newStyleRule": {
-    "message": "Regulă de stil nouă"
   },
   "panels/elements/StylesSidebarPane.ts | noMatchingSelectorOrStyle": {
     "message": "Niciun selector sau stil nu corespunde"
@@ -5863,6 +5974,9 @@
   },
   "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
     "message": "Vezi proprietatea înregistrată"
+  },
+  "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
+    "message": "Nu s-a definit {PH1}"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Cale de navigare spre structura arbore DOM"
@@ -5945,11 +6059,17 @@
   "panels/elements/elements-meta.ts | layout": {
     "message": "Aspect"
   },
+  "panels/elements/elements-meta.ts | newStyleRule": {
+    "message": "Regulă de stil nouă"
+  },
   "panels/elements/elements-meta.ts | properties": {
     "message": "Proprietăți"
   },
   "panels/elements/elements-meta.ts | redo": {
     "message": "Repetă"
+  },
+  "panels/elements/elements-meta.ts | refreshEventListeners": {
+    "message": "Actualizează funcțiile de procesare a evenimentelor"
   },
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
     "message": "Afișează nodul DOM la plasarea cursorului peste acesta"
@@ -6019,6 +6139,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Raportul de pixeli al dispozitivului"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | devicePosture": {
+    "message": "Poziția dispozitivului"
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Tip de dispozitiv"
@@ -6176,8 +6299,95 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Comută dacă funcția de procesare a evenimentelor este pasivă sau blochează"
   },
-  "panels/explain/explain-meta.ts | explainConsoleMessage": {
-    "message": "✨ Explică mesajul de pe consolă"
+  "panels/explain/components/ConsoleInsight.ts | additionalFeedback": {
+    "message": "Trimite feedback suplimentar (opțional)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | close": {
+    "message": "Închide"
+  },
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Închide statisticile"
+  },
+  "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
+    "message": "Mesaj de pe consolă"
+  },
+  "panels/explain/components/ConsoleInsight.ts | dogfood": {
+    "message": "Versiune dogfood"
+  },
+  "panels/explain/components/ConsoleInsight.ts | error": {
+    "message": "A apărut o eroare…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | generating": {
+    "message": "Se generează…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inaccurate": {
+    "message": "Incorect"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inappropriate": {
+    "message": "Neadecvat"
+  },
+  "panels/explain/components/ConsoleInsight.ts | insight": {
+    "message": "Statistici"
+  },
+  "panels/explain/components/ConsoleInsight.ts | irrelevant": {
+    "message": "Irelevant"
+  },
+  "panels/explain/components/ConsoleInsight.ts | networkRequest": {
+    "message": "Solicitare din rețea"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notHelpful": {
+    "message": "Nu este util"
+  },
+  "panels/explain/components/ConsoleInsight.ts | other": {
+    "message": "Altele"
+  },
+  "panels/explain/components/ConsoleInsight.ts | reason": {
+    "message": "De ce ai ales această evaluare? (opțional)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refine": {
+    "message": "Oferă context pentru a personaliza statisticile"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineButtonHint": {
+    "message": "Dă clic pe acest buton pentru a trimite următoarele date la modelul AI care rulează pe serverele Google, astfel încât să poată genera un răspuns mai corect și mai relevant:"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineInfo": {
+    "message": "Află cum funcționează personalizarea statisticilor"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refining": {
+    "message": "Se personalizează statisticile…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | relatedCode": {
+    "message": "Cod asociat"
+  },
+  "panels/explain/components/ConsoleInsight.ts | searchAnswers": {
+    "message": "Răspunsuri din Căutarea Google"
+  },
+  "panels/explain/components/ConsoleInsight.ts | sources": {
+    "message": "Surse"
+  },
+  "panels/explain/components/ConsoleInsight.ts | stackTrace": {
+    "message": "Urmărirea stivei"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submit": {
+    "message": "Trimite"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
+    "message": "Trimite feedback"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbDown": {
+    "message": "Nu îmi place"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbUp": {
+    "message": "Îmi place"
+  },
+  "panels/explain/explain-meta.ts | explainThisError": {
+    "message": "Explică această eroare"
+  },
+  "panels/explain/explain-meta.ts | explainThisMessage": {
+    "message": "Explică acest mesaj"
+  },
+  "panels/explain/explain-meta.ts | explainThisWarning": {
+    "message": "Explică acest avertisment"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resursă blocată"
@@ -6358,12 +6568,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Origine suspectă"
-  },
-  "panels/issues/CSPViolationsView.ts | filter": {
-    "message": "Filtrează"
-  },
-  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
-    "message": "Meniu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Valoare de antet Access-Control-Allow-Credentials"
@@ -6563,14 +6767,8 @@
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ascunde problemele"
   },
-  "panels/issues/issues-meta.ts | cspViolations": {
-    "message": "Încălcări CSP"
-  },
   "panels/issues/issues-meta.ts | issues": {
     "message": "Probleme"
-  },
-  "panels/issues/issues-meta.ts | showCspViolations": {
-    "message": "Afișează Încălcările CSP"
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Afișează Problemele"
@@ -7046,6 +7244,75 @@
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Afișează Lighthouse"
   },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Nu s-a putut deschide inspectorul de memorie liniară: nu s-a putut localiza memoria temporară."
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | revealInMemoryInspectorPanel": {
+    "message": "Afișează în panoul Inspector de memorie"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
+    "message": "Nicio inspecție deschisă"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Nu mai evidenția această memorie"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Accesează această memorie"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
+    "message": "Adresa trebuie să fie un număr între {PH1} și {PH2}"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | enterAddress": {
+    "message": "Introdu o adresă"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goBackInAddressHistory": {
+    "message": "Revino la istoricul adreselor"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
+    "message": "Mergi înainte în istoricul adreselor"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | nextPage": {
+    "message": "Pagina următoare"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | previousPage": {
+    "message": "Pagina anterioară"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | refresh": {
+    "message": "Actualizează"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | changeEndianness": {
+    "message": "Schimbă Endianness"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
+    "message": "Comută setările tipului de valoare"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | addressOutOfRange": {
+    "message": "Adresa nu se află în intervalul de memorie"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | changeValueTypeMode": {
+    "message": "Schimbă modul"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Accesează adresa"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | signedValue": {
+    "message": "Valoare: Signed"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | unsignedValue": {
+    "message": "Valoare: Unsigned"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts | notApplicable": {
+    "message": "Nu este cazul"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Altele"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
+    "message": "Inspector de memorie"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
+    "message": "Afișează Inspectorul de memorie"
+  },
   "panels/media/EventDisplayTable.ts | eventDisplay": {
     "message": "Afișarea evenimentelor"
   },
@@ -7245,16 +7512,19 @@
     "message": "Presetări"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "Setul de anteturi Content-Encodingacceptate a fost modificat de DevTools. Vezi panoul Condiții de rețea."
+    "message": "Setul de anteturi Content-Encoding acceptate a fost modificat de DevTools. Consultă panoul Condiții de rețea."
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
+    "message": "Memoria cache a browserului este dezactivată"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Limitarea rețelei este activată"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "Este posibil ca solicitările să fie blocate"
+    "message": "Este posibil ca solicitările să fie blocate. Consultă panoul Blocarea solicitărilor din rețea."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "Solicitările pot fi modificate la nivel local"
+    "message": "Solicitările pot fi modificate la nivel local. Consultă panoul Surse."
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Personalizat"
@@ -7448,9 +7718,6 @@
   "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
     "message": "Datele de intrare pentru șablon trebuie completate."
   },
-  "panels/network/BlockedURLsPane.ts | removeAllPatterns": {
-    "message": "Elimină toate modelele"
-  },
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Model de text pentru blocarea solicitărilor corespunzătoare; folosește * pentru metacaracter"
   },
@@ -7565,6 +7832,9 @@
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
     "message": "Chrome nu a folosit o versiune HTTP alternativă deoarece nu erau disponibile informații despre protocolul alternativ când a fost emisă solicitarea, dar răspunsul conținea un antet Alt-Svc."
   },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
+    "message": "Corespunde cu ServiceWorker router nr. {PH1}, dimensiunea resursei: {PH2}"
+  },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memoria cache)"
   },
@@ -7631,7 +7901,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Difuzat din memoria cache pentru preluare anticipată, dimensiunea resursei: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
+  "panels/network/NetworkDataGridNode.ts | servedFromServiceWorkerResource": {
     "message": "Difuzată din ServiceWorker, dimensiunea resursei: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
@@ -7640,7 +7910,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
     "message": "Difuzat din web bundle, dimensiunea resursei: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | serviceworker": {
+  "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
@@ -7663,6 +7933,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Difuzată din web bundle"
+  },
+  "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
+    "message": "Acest răspuns conține anteturi care au fost modificate de DevTools"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookie-uri"
@@ -7699,6 +7972,9 @@
   },
   "panels/network/NetworkItemView.ts | response": {
     "message": "Răspuns"
+  },
+  "panels/network/NetworkItemView.ts | responseIsOverridden": {
+    "message": "Acest răspuns a fost modificat de DevTools"
   },
   "panels/network/NetworkItemView.ts | responsePreview": {
     "message": "Previzualizarea răspunsului"
@@ -7906,6 +8182,9 @@
   },
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Salvează tot ca HAR cu conținut"
+  },
+  "panels/network/NetworkLogView.ts | showOnly": {
+    "message": "Afișează numai {PH1}"
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Afișează numai / ascunde solicitările"
@@ -8143,105 +8422,6 @@
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Această solicitare nu conține cookie-uri."
-  },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs active."
-  },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "client experiment variation IDs active care declanșează comportamentul la nivel de server."
-  },
-  "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Alege această opțiune dacă resursa și documentul sunt difuzate de același site."
-  },
-  "panels/network/RequestHeadersView.ts | copyValue": {
-    "message": "Copiază valoarea"
-  },
-  "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "Decodate:"
-  },
-  "panels/network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(din memoria cache a discului)"
-  },
-  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(din memoria cache)"
-  },
-  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(din memoria cache de preluare anticipată)"
-  },
-  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(de la service worker)"
-  },
-  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(din schimbul cu semnătură)"
-  },
-  "panels/network/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(din web bundle)"
-  },
-  "panels/network/RequestHeadersView.ts | general": {
-    "message": "General"
-  },
-  "panels/network/RequestHeadersView.ts | learnMore": {
-    "message": "Află mai multe"
-  },
-  "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Află mai multe din fila Probleme"
-  },
-  "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Alege această opțiune numai dacă un site arbitrar care include această resursă nu prezintă un risc de securitate."
-  },
-  "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Sunt disponibile numai anteturi provizorii, deoarece această solicitare nu a fost trimisă în rețea, ci a fost difuzată dintr-o memorie cache locală, care nu stochează anteturile de solicitare inițiale. Dezactivează memoria cache pentru a vedea anteturile de solicitare complete."
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Sunt afișate anteturile provizorii"
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "Se afișează anteturile provizorii. Dezactivează memoria cache pentru a vedea anteturile complete."
-  },
-  "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Politica privind persoanele care recomandă"
-  },
-  "panels/network/RequestHeadersView.ts | remoteAddress": {
-    "message": "Adresă la distanță"
-  },
-  "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Anteturile solicitărilor"
-  },
-  "panels/network/RequestHeadersView.ts | requestMethod": {
-    "message": "Metoda de solicitare"
-  },
-  "panels/network/RequestHeadersView.ts | requestUrl": {
-    "message": "Solicită o adresă URL"
-  },
-  "panels/network/RequestHeadersView.ts | responseHeaders": {
-    "message": "Anteturi de răspuns"
-  },
-  "panels/network/RequestHeadersView.ts | showMore": {
-    "message": "Afișează mai mult"
-  },
-  "panels/network/RequestHeadersView.ts | statusCode": {
-    "message": "Cod de stare"
-  },
-  "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Încărcarea documentului a fost blocată într-o fereastră pop-up deschisă de un iframe în mediu de testare securizat, deoarece documentul specifică o politică privind instrumentele de deschidere cu origini multiple."
-  },
-  "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Pentru a încorpora acest cadru în document, trebuie ca răspunsul să activeze politica privind elementele de încorporare cu origini multiple, indicând următorul antet de răspuns:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Pentru a folosi această resursă din altă origine, serverul trebuie să indice o politică privind resursele cu origini multiple în anteturile de răspuns:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Pentru a folosi această resursă din altă origine, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Pentru a folosi această resursă din alt site, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "Afișează datele analizate"
-  },
-  "panels/network/RequestHeadersView.ts | viewSource": {
-    "message": "Vezi sursa"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Stivă de apel pentru solicitări"
@@ -8604,7 +8784,7 @@
     "message": "Se afișează anteturile provizorii."
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Se afișează anteturile provizorii. Dezactivează memoria cache pentru a vedea anteturile complete."
+    "message": "Sunt afișate anteturile provizorii. Dezactivează memoria cache pentru a vedea anteturile complete."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(din memoria cache a discului)"
@@ -8631,13 +8811,13 @@
     "message": "Brute"
   },
   "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Politica privind persoanele care recomandă"
+    "message": "Politica privind adresele URL sursă"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
     "message": "Adresă la distanță"
   },
   "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "Anteturile solicitărilor"
+    "message": "Anteturi de cerere"
   },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "Metoda de solicitare"
@@ -8738,6 +8918,9 @@
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Resurse grupate"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
+    "message": "Adaugă un model de blocare pentru solicitările din rețea"
+  },
   "panels/network/network-meta.ts | clear": {
     "message": "Șterge jurnalul de rețea"
   },
@@ -8788,6 +8971,9 @@
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Jurnalul de rețea al înregistrării"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
+    "message": "Elimină toate modelele de blocare pentru solicitările din rețea"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "tip de resursă"
@@ -9164,9 +9350,6 @@
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Rețineri"
   },
-  "panels/profiler/HeapSnapshotView.ts | sKb": {
-    "message": "{PH1} kB"
-  },
   "panels/profiler/HeapSnapshotView.ts | savingD": {
     "message": "Se salvează… {PH1} %"
   },
@@ -9359,20 +9542,8 @@
   "panels/profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "Fă un instantaneu"
   },
-  "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
-    "message": "Șterge"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
-    "message": "Salvează. Apasă pe Enter pentru a salva fișierul"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | load": {
-    "message": "Încarcă…"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | save": {
-    "message": "Salvează"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
-    "message": "Salvează…"
+  "panels/profiler/ProfileSidebarTreeElement.ts | profileOptions": {
+    "message": "Opțiuni pentru profil"
   },
   "panels/profiler/ProfileView.ts | chart": {
     "message": "Grafic"
@@ -9434,26 +9605,14 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nu se poate încărca profilul în timp ce un alt profil este înregistrat."
   },
-  "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
-    "message": "Șterge toate profilurile"
-  },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "În versiunea următoare, acest panou va fi retras. Folosește panoul Performanță pentru a înregistra profiluri CPU JavaScript."
-  },
-  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
-    "message": "Activează temporar acest panou"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Feedback"
   },
   "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
     "message": "Accesează panoul Performanță"
-  },
-  "panels/profiler/ProfilesPanel.ts | learnMore": {
-    "message": "Află mai multe"
-  },
-  "panels/profiler/ProfilesPanel.ts | load": {
-    "message": "Încarcă…"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Profilurile nu s-au încărcat: {PH1}."
@@ -9464,11 +9623,23 @@
   "panels/profiler/ProfilesPanel.ts | runD": {
     "message": "Rulează {PH1}"
   },
+  "panels/profiler/profiler-meta.ts | clearAllProfiles": {
+    "message": "Șterge toate profilurile"
+  },
+  "panels/profiler/profiler-meta.ts | deleteProfile": {
+    "message": "Șterge profilul"
+  },
   "panels/profiler/profiler-meta.ts | liveHeapProfile": {
     "message": "Profil de memorie heap live"
   },
+  "panels/profiler/profiler-meta.ts | loadProfile": {
+    "message": "Încarcă profilul…"
+  },
   "panels/profiler/profiler-meta.ts | memory": {
     "message": "Memorie"
+  },
+  "panels/profiler/profiler-meta.ts | saveProfile": {
+    "message": "Salvează profilul…"
   },
   "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
     "message": "Afișează Profilul de memorie heap live"
@@ -9610,6 +9781,12 @@
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Importă înregistrarea"
+  },
+  "panels/recorder/RecorderController.ts | noRecordings": {
+    "message": "Nicio înregistrare"
+  },
+  "panels/recorder/RecorderController.ts | numberOfRecordings": {
+    "message": "înregistrare / înregistrări"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Redă din nou înregistrarea"
@@ -11321,9 +11498,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | returnValue": {
     "message": "Returnează o valoare"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "Afișează în panoul Inspector de memorie"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -11438,8 +11612,8 @@
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "Afișează instrumentul de navigare"
   },
-  "panels/sources/SourcesPanel.ts | storeSAsGlobalVariable": {
-    "message": "Stochează {PH1} ca variabilă globală"
+  "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
+    "message": "Stochează ca variabilă globală"
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Încheie apelul JavaScript actual"
@@ -11451,13 +11625,13 @@
     "message": "Execută comanda"
   },
   "panels/sources/SourcesView.ts | selectFolder": {
-    "message": "selectează dosarul"
+    "message": "Selectează dosarul"
   },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "Acțiuni de afișare a surselor"
   },
   "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
-    "message": "Pentru a sincroniza editările în spațiul de lucru, plasează un dosar cu sursele aici sau:"
+    "message": "Pentru a sincroniza editările în spațiul de lucru, plasează un dosar cu sursele aici sau"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Sigur vrei să închizi fișierul nesalvat {PH1}?"
@@ -12260,6 +12434,12 @@
   "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
     "message": "Worklet pentru vânzători: {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | threadPool": {
+    "message": "Colecție de fire"
+  },
+  "panels/timeline/ThreadAppender.ts | threadPoolThreadS": {
+    "message": "Workerul {PH1} asociat cu colecția de fire"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Firul {PH1}"
   },
@@ -12276,7 +12456,7 @@
     "message": "Worker: {PH1} — {PH2}"
   },
   "panels/timeline/ThreadAppender.ts | workletService": {
-    "message": "Serviciu de worklet pentru licitație"
+    "message": "Serviciu worklet pentru licitații"
   },
   "panels/timeline/ThreadAppender.ts | workletServiceS": {
     "message": "Serviciu de worklet pentru licitație: {PH1}"
@@ -12455,6 +12635,9 @@
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "Dezactivează eșantionarea JavaScript, reduce costurile când rulează pe dispozitive mobile"
   },
+  "panels/timeline/TimelinePanel.ts | downloadAfterError": {
+    "message": "Descarcă evenimentele brute de urmărire"
+  },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Plasează fișierul sau adresa URL pentru cronologie aici"
   },
@@ -12575,8 +12758,11 @@
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ascunde stiva care consumă cele mai multe resurse"
   },
-  "panels/timeline/TimelineTreeView.ts | javascript": {
-    "message": "JavaScript"
+  "panels/timeline/TimelineTreeView.ts | matchCase": {
+    "message": "Potrivirea majusculelor și a minusculelor"
+  },
+  "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
+    "message": "Caută o potrivire pentru întregul cuvânt"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Nu există grupări"
@@ -12610,6 +12796,9 @@
   },
   "panels/timeline/TimelineTreeView.ts | unattributed": {
     "message": "[neatribuit]"
+  },
+  "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
+    "message": "Folosește o expresie regulată"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[Executarea V8]"
@@ -12800,9 +12989,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | emptyPlaceholderColon": {
-    "message": ": {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Date codificate"
   },
@@ -12851,9 +13037,6 @@
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "First Paint"
   },
-  "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
-    "message": "Rearanjare activată forțat"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Cadru"
   },
@@ -12881,17 +13064,11 @@
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "S-au introdus recent date"
   },
-  "panels/timeline/TimelineUIUtils.ts | handlerTookS": {
-    "message": "Handlerul a fost folosit timp de {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | hitTest": {
     "message": "Testarea accesării"
   },
   "panels/timeline/TimelineUIUtils.ts | idle": {
     "message": "Inactiv"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idleCallbackExecutionExtended": {
-    "message": "Executarea apelării inverse inactive s-a prelungit dincolo de termenul limită cu {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "S-a solicitat apelarea inversă inactivă"
@@ -12910,6 +13087,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Inițiator"
+  },
+  "panels/timeline/TimelineUIUtils.ts | inputDelay": {
+    "message": "Întârziere la introducere"
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalează temporizatorul"
@@ -12944,9 +13124,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Root pentru strat"
   },
-  "panels/timeline/TimelineUIUtils.ts | layerTree": {
-    "message": "Structura arbore din straturi"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerize": {
     "message": "Stratificare"
   },
@@ -12977,9 +13154,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Locație"
   },
-  "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "Activitate îndelungată"
-  },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Major GC"
   },
@@ -12987,9 +13161,6 @@
     "message": "Mesaj"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
-    "message": "Tip MIME"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mimeTypeCaps": {
     "message": "Tip MIME"
   },
   "panels/timeline/TimelineUIUtils.ts | minorGc": {
@@ -13021,9 +13192,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Noduri care necesită un aspect"
-  },
-  "panels/timeline/TimelineUIUtils.ts | notOptimized": {
-    "message": "Neoptimizat"
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Încărcare eveniment"
@@ -13073,11 +13241,17 @@
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Pre-desenare"
   },
+  "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
+    "message": "Întârzierea prezentării"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Previzualizează"
   },
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Prioritar"
+  },
+  "panels/timeline/TimelineUIUtils.ts | processingTime": {
+    "message": "Durată de procesare"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Mărimea memoriei cache obținută"
@@ -13106,9 +13280,6 @@
   "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
     "message": "Primește un dialog de confirmare WebSocket"
   },
-  "panels/timeline/TimelineUIUtils.ts | recurringHandlerTookS": {
-    "message": "Handlerul recurent a fost folosit timp de {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Nod conex"
   },
@@ -13133,9 +13304,6 @@
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Metoda de solicitare"
   },
-  "panels/timeline/TimelineUIUtils.ts | resource": {
-    "message": "Resursa"
-  },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Afișează"
   },
@@ -13154,9 +13322,6 @@
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} (la {PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | sBytes": {
-    "message": "{n,plural, =1{# byte}few{# byți}other{# de byți}}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
     "message": "{PH1} poate duce la experiențe de utilizare neplăcute. Recent, {PH2}."
   },
@@ -13168,9 +13333,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sForS": {
     "message": "{PH1} pentru {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} este probabil un element bottleneck pentru performanță."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} din {PH2}"
@@ -13198,9 +13360,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sTookS": {
-    "message": "{PH1} a durat {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Programează recalcularea stilului"
@@ -13232,9 +13391,6 @@
   "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
     "message": "Trimite un dialog de confirmare WebSocket"
   },
-  "panels/timeline/TimelineUIUtils.ts | show": {
-    "message": "Afișează"
-  },
   "panels/timeline/TimelineUIUtils.ts | sign": {
     "message": "Semnează"
   },
@@ -13252,9 +13408,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | state": {
     "message": "Stare"
-  },
-  "panels/timeline/TimelineUIUtils.ts | statusCode": {
-    "message": "Cod de stare"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Redat în streaming"
@@ -13337,9 +13490,6 @@
   "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
     "message": "Memoria cache pentru modulul Wasm este nevalidă"
   },
-  "panels/timeline/TimelineUIUtils.ts | websocketProtocol": {
-    "message": "Protocolul WebSocket"
-  },
   "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
     "message": "Va trimite solicitarea"
   },
@@ -13383,7 +13533,10 @@
     "message": "Rearanjare activată forțat"
   },
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
-    "message": "Executarea apelării inverse inactive s-a prelungit dincolo de termenul limită cu {PH1}"
+    "message": "Executarea apelării inverse inactive a fost prelungită dincolo de termenul limită cu {PH1}"
+  },
+  "panels/timeline/components/DetailsView.ts | longInteractionINP": {
+    "message": "Interacțiune de durată"
   },
   "panels/timeline/components/DetailsView.ts | longTask": {
     "message": "Activitate îndelungată"
@@ -13391,8 +13544,23 @@
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} este probabil un element bottleneck pentru performanță."
   },
+  "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} indică o adaptabilitate scăzută a paginii."
+  },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} a durat {PH2}."
+  },
+  "panels/timeline/components/DetailsView.ts | websocketProtocol": {
+    "message": "Protocolul WebSocket"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
+    "message": "Întârziere la introducere"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
+    "message": "Întârzierea prezentării"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
+    "message": "Durată de procesare"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Ascunde cadrul chrome în afișarea Straturi"
@@ -13652,74 +13820,11 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemă indisponibilă în acest moment"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Nu mai evidenția această memorie"
+  "ui/components/markdown_view/CodeBlock.ts | copied": {
+    "message": "S-a copiat în clipboard"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Accesează această memorie"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
-    "message": "Adresa trebuie să fie un număr între {PH1} și {PH2}"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Nu s-a putut deschide inspectorul de memorie liniară: nu s-a putut localiza memoria temporară."
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
-    "message": "Nicio inspecție deschisă"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
-    "message": "Introdu o adresă"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
-    "message": "Revino la istoricul adreselor"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
-    "message": "Mergi înainte în istoricul adreselor"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
-    "message": "Pagina următoare"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
-    "message": "Pagina anterioară"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
-    "message": "Actualizează"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Schimbă Endianness"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
-    "message": "Comută setările tipului de valoare"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
-    "message": "Adresa nu se află în intervalul de memorie"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
-    "message": "Schimbă modul"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
-    "message": "Accesează adresa"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Valoare: Signed"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Valoare: Unsigned"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
-    "message": "Nu este cazul"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
-    "message": "Altele"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
-    "message": "Inspector de memorie"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
-    "message": "Afișează Inspectorul de memorie"
-  },
-  "ui/components/markdown_view/MarkdownView.ts | copy": {
-    "message": "Copiază"
+  "ui/components/markdown_view/CodeBlock.ts | copy": {
+    "message": "Copiază codul"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"
@@ -13772,6 +13877,9 @@
   "ui/legacy/ActionRegistration.ts | background_services": {
     "message": "Servicii în fundal"
   },
+  "ui/legacy/ActionRegistration.ts | changes": {
+    "message": "Modificări"
+  },
   "ui/legacy/ActionRegistration.ts | console": {
     "message": "Consolă"
   },
@@ -13810,6 +13918,9 @@
   },
   "ui/legacy/ActionRegistration.ts | performance": {
     "message": "Performanță"
+  },
+  "ui/legacy/ActionRegistration.ts | recorder": {
+    "message": "Recorder"
   },
   "ui/legacy/ActionRegistration.ts | rendering": {
     "message": "Se redă"

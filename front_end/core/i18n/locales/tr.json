@@ -11,9 +11,6 @@
   "core/common/ResourceType.ts | document": {
     "message": "Doküman"
   },
-  "core/common/ResourceType.ts | documents": {
-    "message": "Dokümanlar"
-  },
   "core/common/ResourceType.ts | eventsource": {
     "message": "Etkinlik Kaynağı"
   },
@@ -23,17 +20,14 @@
   "core/common/ResourceType.ts | font": {
     "message": "Yazı tipi"
   },
-  "core/common/ResourceType.ts | fonts": {
-    "message": "Yazı tipleri"
-  },
   "core/common/ResourceType.ts | image": {
     "message": "Resim"
   },
-  "core/common/ResourceType.ts | images": {
-    "message": "Görseller"
-  },
   "core/common/ResourceType.ts | img": {
     "message": "img"
+  },
+  "core/common/ResourceType.ts | javascript": {
+    "message": "JavaScript"
   },
   "core/common/ResourceType.ts | js": {
     "message": "JS"
@@ -56,17 +50,11 @@
   "core/common/ResourceType.ts | script": {
     "message": "Komut dosyası"
   },
-  "core/common/ResourceType.ts | scripts": {
-    "message": "Komut dosyaları"
-  },
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "Stil Sayfası"
-  },
-  "core/common/ResourceType.ts | stylesheets": {
-    "message": "Stil sayfası"
   },
   "core/common/ResourceType.ts | texttrack": {
     "message": "TextTrack"
@@ -82,9 +70,6 @@
   },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
-  },
-  "core/common/ResourceType.ts | websockets": {
-    "message": "Websocket'ler"
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
@@ -106,6 +91,9 @@
   },
   "core/common/Revealer.ts | issuesView": {
     "message": "Sorun görünümü"
+  },
+  "core/common/Revealer.ts | memoryInspectorPanel": {
+    "message": "Bellek Denetleyici paneli"
   },
   "core/common/Revealer.ts | networkPanel": {
     "message": "Ağ paneli"
@@ -380,6 +368,9 @@
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Bu bağlantının şemasına çerez saklama izni verilmez."
   },
+  "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
+    "message": "Bu çerez, üçüncü taraf çerezlerinin kullanımdan kaldırılması nedeniyle engellendi. Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz."
+  },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "Bu Set-Cookie üstbilgisi, \"SameSite\" özelliği belirtmedi, varsayılan olarak \"SameSite=Lax\"\" değerine ayarlandı ve üst düzey gezinme harici siteler arası bir yanıttan geldiği için engellendi. URL şeması mevcut siteninkinden farklı olduğu için bu yanıt, siteler arası olarak kabul edildi."
   },
@@ -400,6 +391,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
     "message": "Set-Cookie başlığı ile çerez ayarlama girişimi, çerez çok büyük olduğu için engellendi. Ad ile değerin boyutu birlikte en fazla 4.096 karakter olabilir."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
+    "message": "Bu çerezin ayarlanması, üçüncü taraf çerezlerinin kullanımdan kaldırılması nedeniyle engellendi. Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Set-Cookie üstbilgisi aracılığıyla çerez ayarlama girişimi, kullanıcı tercihleri nedeniyle engellendi."
@@ -1139,9 +1133,6 @@
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ayarlayarak aynı kaynak politikasını esnetme işlevi kullanımdan kaldırılmış olup varsayılan olarak devre dışı olacaktır. Bu özelliği kullanmayı sürdürmek için lütfen doküman ve çerçevelere yönelik HTTP yanıtıyla birlikte Origin-Agent-Cluster: ?0 üstbilgisi göndererek kaynak anahtarlı aracı kümelerini devre dışı bırakın. Ayrıntılı bilgi için https://developer.chrome.com/blog/immutable-document-domain/ sayfasına bakın."
   },
-  "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT seçeneği artık kullanılmıyor olup kaldırılacaktır. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ve watchPosition() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
   },
@@ -1255,6 +1246,9 @@
   },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Kullanıcı etkinliği olmadan speechSynthesis.speak() çağırma işlevi artık kullanılmıyor olup kaldırılacaktır."
+  },
+  "generated/Deprecation.ts | UnloadHandler": {
+    "message": "Kaldırma etkinliği işleyicileri desteği sonlandırılmıştır ve kaldırılacaktır."
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Uzantıların SharedArrayBuffer kullanmayı sürdürmek için kökler arası erişimi kapatmaları gerekir. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ adresini ziyaret edin."
@@ -2139,7 +2133,7 @@
     "message": "Manifest dosyasında {PH1} {PH2} belirtilmemiş, onun yerine {PH3} kullanılmış. Mevcut kimlikle eşleşen bir Uygulama Kimliği belirtmek için {PH4} alanını {PH5} {PH6} olarak ayarlayın."
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "\"purpose: \"any maskable\"\" ile bir simge tanımlanması önerilmez. Çok fazla veya çok az dolgu nedeniyle bazı platformlarda yanlış görünebilir."
+    "message": "\"any maskable\" öğesine ait \"purpose\" ile simge tanımlanması önerilmez. Çok fazla veya çok az dolgu nedeniyle bazı platformlarda yanlış görünebilir."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Arka plan rengi"
@@ -2160,7 +2154,7 @@
     "message": "Gereken bir simge manifest'ten indirilemedi"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "Progresif web uygulamanızın başlık çubuğunun pencere denetimi yer paylaşımını özelleştirin."
+    "message": "Progresif web uygulamanızın başlık çubuğunun pencere denetimi yer paylaşımını özelleştirin"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Koyu arka plan rengi"
@@ -2223,19 +2217,19 @@
     "message": "Manifest dosyası bir \"name\" veya \"short_name\" alanı içermiyor"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest dosyası uygun bir simge içermiyor. En az {PH1} piksel değerinde bir PNG, SVG veya WebP biçimi gerekli olup sizes özelliği ayarlanmalıdır. Ayrıca purpose özelliği ayarlanacaksa any ifadesini içermelidir."
+    "message": "Manifest dosyası uygun bir simge içermiyor. En az {PH1} piksel değerinde bir PNG, SVG veya WebP biçimi gerekli olup \"sizes\" özelliği ayarlanmalıdır. Ayrıca \"purpose\" özelliği ayarlanacaksa any ifadesini içermelidir."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest dosyasında \"prefer_related_applications: doğru\" olarak belirtilmiş"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "\"start_URL\" manifest'i geçerli değil"
+    "message": "\"start_url\" manifest'i geçerli değil"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Ad"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
-    "message": "Yardıma mı ihtiyacınız var? {PH1} okundu."
+    "message": "Yardıma mı ihtiyacınız var? {PH1} sayfasını okuyun."
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yeni not URL'si"
@@ -2244,10 +2238,10 @@
     "message": "Play Store kimliği sağlanmadı"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Daha zengin PWA yükleme kullanıcı arayüzü, masaüstü cihazlarda kullanılamayacak. Lütfen \"form_factor\" öğesinin \"wide\" değerine ayarlandığı en az bir ekran görüntüsü ekleyin."
+    "message": "Daha zengin PWA yükleme kullanıcı arayüzü, masaüstü cihazlarda kullanılamayacak. Lütfen form_factor öğesinin wide değerine ayarlandığı en az 1 ekran görüntüsü ekleyin."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Daha zengin PWA yükleme kullanıcı arayüzü, mobil cihazlarda kullanılamayacak. Lütfen \"form_factor\" öğesinin ayarlanmadığı veya \"wide\" dışındaki bir değere ayarlandığı en az bir ekran görüntüsü ekleyin."
+    "message": "Daha zengin PWA yükleme kullanıcı arayüzü, mobil cihazlarda kullanılamayacak. Lütfen form_factor öğesinin ayarlanmadığı veya wide dışında bir değere ayarlandığı en az 1 ekran görüntüsü ekleyin."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Sağlananlar arasında PNG, SVG veya WebP biçiminde, en az {PH1} piksel ölçüsünde bir kare şeklinde, amaç özelliği ayarlanmamış veya any olarak ayarlanmış bir simge yok."
@@ -2322,13 +2316,16 @@
     "message": "Ekran görüntüsü"
   },
   "panels/application/AppManifestView.ts | screenshotPixelSize": {
-    "message": "{url} ekran görüntüsü, ilk boyut olarak \"any\" yerine [width]x[height] piksel boyutunu belirtmelidir."
+    "message": "{url} ekran görüntüsü, ilk boyut olarak any yerine [width]x[height] piksel boyutunu belirtmelidir."
   },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Ekran görüntüsü #{PH1}"
   },
   "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
-    "message": "Aynı \"form_factor\" öğesine sahip tüm ekran görüntüleri, söz konusu \"form_factor\" öğesini içeren ilk ekran görüntüsüyle aynı en boy oranına sahip olmalıdır. Bazı ekran görüntüleri yoksayılır."
+    "message": "Aynı form_factor öğesine sahip tüm ekran görüntüleri, söz konusu form_factor öğesini içeren ilk ekran görüntüsüyle aynı en boy oranına sahip olmalıdır. Bazı ekran görüntüleri yoksayılır."
+  },
+  "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
+    "message": "Pencere denetimi yer paylaşımını şurada  emüle et:"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Kısa ad"
@@ -2337,7 +2334,7 @@
     "message": "Kısayol #{PH1}"
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
-    "message": "{PH1} numaralı kısayol 96x96 piksel boyutunda bir simge içermelidir"
+    "message": "{PH1} numaralı kısayol 96×96 piksel boyutunda bir simge içermelidir"
   },
   "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
     "message": "Maksimum kısayol sayısı platforma bağlıdır. Bazı kısayollar kullanılamayabilir."
@@ -2355,7 +2352,7 @@
     "message": "Play Store uygulama URL'si ve Play Store kimliği eşleşmiyor"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
-    "message": "Belirtilen uygulama platformu, Android üzerinde desteklenmiyor"
+    "message": "Belirtilen uygulama platformu, Android'de desteklenmiyor"
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Tema rengi"
@@ -2759,6 +2756,15 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Evet"
   },
+  "panels/application/PreloadingTreeElement.ts | rules": {
+    "message": "Kurallar"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculations": {
+    "message": "Tahminler"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
+    "message": "Tahmine dayalı yüklemeler"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Gövdesini görüntülemek istediğiniz raporu tıklayın"
   },
@@ -2866,6 +2872,9 @@
   },
   "panels/application/ServiceWorkersView.ts | receivedS": {
     "message": "Alma zamanı: {PH1}"
+  },
+  "panels/application/ServiceWorkersView.ts | routers": {
+    "message": "Yönlendiriciler"
   },
   "panels/application/ServiceWorkersView.ts | sActivatedAndIsS": {
     "message": "#{PH1} etkinleştirildi ve {PH2}"
@@ -3481,6 +3490,9 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Bu nedenlerle ilgili işlem yapılamaz. Yani önbelleğe alma, doğrudan sayfanın kontrolünde olmayan bir nedenden ötürü engellenmiştir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
+    "message": "{n,plural, =1{# dosya}other{# dosya}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
     "message": "{n,plural, =1{# çerçeve}other{# çerçeve}}"
@@ -4127,8 +4139,23 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Durum"
   },
-  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
-    "message": "Önceden getirme, |kPrefetchNewLimits| etkinleştirildiğinden daha yeni bir önceden getirme işlemi için silindi."
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
+    "message": "Etkinleştirme gezinmesindeki değer"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
+    "message": "Başlık adı"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
+    "message": "İlk gezinmedeki değer"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
+    "message": "(eksik)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
+    "message": "Başlangıç sayfasındaki hiçbir tahmin kuralı artık bu URL için önceden getirme işlemini tetiklemediğinden önceden getirme işlemi silindi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
+    "message": "Başlangıç sayfasında devam eden çok fazla önceden getirme işlemi olduğu ve bu, en eskilerinden biri olduğu için önceden getirme işlemi silindi."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Önceden getirme işlemi yönlendirildi ancak yönlendirme URL'si önceden getirmeye uygun değil."
@@ -4382,6 +4409,27 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "Durum"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
+    "message": "Başarısız"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailureWithCount": {
+    "message": "{n,plural, =1{# hata}other{# hata}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeInProgressWithCount": {
+    "message": "{n,plural, =1{# işleniyor}other{# işleniyor}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNoSpeculativeLoads": {
+    "message": "Tahmine dayalı içerik yok"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNotTriggeredWithCount": {
+    "message": "{n,plural, =1{# tetiklenmedi}other{# tetiklenmedi}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccess": {
+    "message": "Başarılı"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccessWithCount": {
+    "message": "{n,plural, =1{# başarılı}other{# başarılı}}"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
     "message": "Geçerli URL"
   },
@@ -4393,6 +4441,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "Tahmine dayalı yükleme hakkında daha fazla bilgiyi developer.chrome.com adresinde bulabilirsiniz"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
+    "message": "Uyumsuz HTTP isteği başlıkları"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Başlangıç sayfası, bu sayfanın URL'sini tahmine dayalı olarak yüklemeye çalışmadı."
@@ -4411,6 +4462,51 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Bu sayfa başarıyla önceden işlendi."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculationsInitiatedByThisPage": {
+    "message": "Bu sayfa tarafından yapılan tahminler"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculativeLoadingStatusForThisPage": {
+    "message": "Bu sayfanın tahmine dayalı içerik durumu"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllRules": {
+    "message": "Tüm tahmin kurallarını görüntüle"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllSpeculations": {
+    "message": "Tüm tahminleri görüntüle"
+  },
+  "panels/autofill/AutofillView.ts | attr": {
+    "message": "özlk"
+  },
+  "panels/autofill/AutofillView.ts | autoShow": {
+    "message": "Otomatik doldurmada sekmeyi otomatik olarak aç"
+  },
+  "panels/autofill/AutofillView.ts | autocompleteAttribute": {
+    "message": "Otomatik tamamlama özelliği"
+  },
+  "panels/autofill/AutofillView.ts | formField": {
+    "message": "Form alanı"
+  },
+  "panels/autofill/AutofillView.ts | heur": {
+    "message": "bulş"
+  },
+  "panels/autofill/AutofillView.ts | inferredByHeuristics": {
+    "message": "Buluşsal yöntemlerle tahmin edildi"
+  },
+  "panels/autofill/AutofillView.ts | noDataAvailable": {
+    "message": "Otomatik doldurma etkinliği algılanmadı"
+  },
+  "panels/autofill/AutofillView.ts | predictedAutofillValue": {
+    "message": "Tahmini otomatik doldurma değeri"
+  },
+  "panels/autofill/AutofillView.ts | value": {
+    "message": "Değer"
+  },
+  "panels/autofill/autofill-meta.ts | autofill": {
+    "message": "Otomatik doldurma"
+  },
+  "panels/autofill/autofill-meta.ts | showAutofill": {
+    "message": "Otomatik doldurma bölmesini göster"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
     "message": "Animasyon"
@@ -4637,14 +4733,8 @@
   "panels/changes/ChangesView.ts | copy": {
     "message": "Kopyala"
   },
-  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
-    "message": "Mevcut dosyadaki tüm değişiklikleri kopyala"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Değişiklik yok"
-  },
-  "panels/changes/ChangesView.ts | revertAllChangesToCurrentFile": {
-    "message": "Tüm değişiklikleri mevcut dosyaya döndür"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# silme (-)}other{#silme (-)}}"
@@ -4653,7 +4743,13 @@
     "message": "{n,plural, =1{# ekleme (+)}other{# ekleme (+)}}"
   },
   "panels/changes/changes-meta.ts | changes": {
-    "message": "Şu oranda değişiyor"
+    "message": "Değişiklikler"
+  },
+  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
+    "message": "Mevcut dosyadaki tüm değişiklikleri kopyala"
+  },
+  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
+    "message": "Tüm değişiklikleri mevcut dosyaya döndür"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Değişiklikleri Göster"
@@ -4681,6 +4777,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Tüm ifadeleri kaldır"
+  },
+  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
+    "message": "Boş ifadeyi kaldır"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "İfadeyi kaldır"
@@ -4889,6 +4988,15 @@
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<istisna>"
   },
+  "panels/console/ConsoleViewMessage.ts | explainThisError": {
+    "message": "Bu hatayı açıkla"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
+    "message": "Bu mesajı açıkla"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
+    "message": "Bu uyarıyı açıkla"
+  },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "İşlem, bağlı işlemden çözümlendi."
   },
@@ -5021,6 +5129,9 @@
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Zaman damgalarını göster"
   },
+  "panels/console/console-meta.ts | toggleConsole": {
+    "message": "Konsolu aç/kapat"
+  },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
     "message": "Değerlendirme, kullanıcı etkinleştirmesi olarak kabul edilsin"
   },
@@ -5102,9 +5213,6 @@
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Kapsam ayrıntı düzeyini seçin: İşlev düzeyinde oluşan yük az, blok düzeyinde oluşan yük belirgin olur."
   },
-  "panels/coverage/CoverageView.ts | clearAll": {
-    "message": "Tümünü temizle"
-  },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
     "message": "Görüntü yakalamayı başlatmak için kayıt düğmesini {PH1} tıklayın."
   },
@@ -5116,9 +5224,6 @@
   },
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
-  },
-  "panels/coverage/CoverageView.ts | export": {
-    "message": "Dışa aktar..."
   },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Kapsamı türe göre filtrele"
@@ -5147,14 +5252,17 @@
   "panels/coverage/CoverageView.ts | urlFilter": {
     "message": "URL filtresi"
   },
+  "panels/coverage/coverage-meta.ts | clearCoverage": {
+    "message": "Kapsamı temizle"
+  },
   "panels/coverage/coverage-meta.ts | coverage": {
     "message": "Kapsam"
   },
+  "panels/coverage/coverage-meta.ts | exportCoverage": {
+    "message": "Kapsamı dışa aktar"
+  },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Araç kapsamı"
-  },
-  "panels/coverage/coverage-meta.ts | reloadPage": {
-    "message": "Sayfayı yeniden yükle"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Kapsamı Göster"
@@ -5636,9 +5744,6 @@
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Etkin değil"
   },
-  "panels/elements/EventListenersWidget.ts | refresh": {
-    "message": "Yenile"
-  },
   "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "Bu çerçeveyle sınırlandırılmış etkinlik işleyicileri çözümle"
   },
@@ -5663,11 +5768,20 @@
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glif)}other{(# glif)}}"
   },
+  "panels/elements/PlatformFontsWidget.ts | familyName": {
+    "message": "Soyadı"
+  },
+  "panels/elements/PlatformFontsWidget.ts | fontOrigin": {
+    "message": "Yazı tipi kaynağı"
+  },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "Yerel dosya"
   },
   "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "Ağ kaynağı"
+  },
+  "panels/elements/PlatformFontsWidget.ts | postScriptName": {
+    "message": "PostScript adı"
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Oluşturulan Yazı Tipleri"
@@ -5816,9 +5930,6 @@
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Katman"
   },
-  "panels/elements/StylesSidebarPane.ts | newStyleRule": {
-    "message": "Yeni Stil Kuralı"
-  },
   "panels/elements/StylesSidebarPane.ts | noMatchingSelectorOrStyle": {
     "message": "Eşleşen seçici veya stil yok"
   },
@@ -5863,6 +5974,9 @@
   },
   "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
     "message": "Kayıtlı özelliği göster"
+  },
+  "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
+    "message": "{PH1} tanımlı değil."
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ağacı içerik haritaları"
@@ -5945,11 +6059,17 @@
   "panels/elements/elements-meta.ts | layout": {
     "message": "Düzen"
   },
+  "panels/elements/elements-meta.ts | newStyleRule": {
+    "message": "Yeni Stil Kuralı"
+  },
   "panels/elements/elements-meta.ts | properties": {
     "message": "Özellikler"
   },
   "panels/elements/elements-meta.ts | redo": {
     "message": "Yeniden yap"
+  },
+  "panels/elements/elements-meta.ts | refreshEventListeners": {
+    "message": "Etkinlik işleyicileri yenile"
   },
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
     "message": "Üzerine gelindiğinde DOM düğümünü göster"
@@ -6019,6 +6139,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Cihaz piksel oranı"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | devicePosture": {
+    "message": "Cihazın duruşu"
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Cihaz türü"
@@ -6176,8 +6299,95 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Etkinlik işleyicinin durumunu pasif veya engelliyor olarak değiştir"
   },
-  "panels/explain/explain-meta.ts | explainConsoleMessage": {
-    "message": "✨ Konsol mesajını açıklayın"
+  "panels/explain/components/ConsoleInsight.ts | additionalFeedback": {
+    "message": "Ayrıntılı geri bildirim paylaşın (isteğe bağlı)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | close": {
+    "message": "Kapat"
+  },
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Analizi kapat"
+  },
+  "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
+    "message": "Konsol mesajı"
+  },
+  "panels/explain/components/ConsoleInsight.ts | dogfood": {
+    "message": "Test sürümü"
+  },
+  "panels/explain/components/ConsoleInsight.ts | error": {
+    "message": "Bir hata oluştu…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | generating": {
+    "message": "Oluşturuluyor…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inaccurate": {
+    "message": "Hatalı"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inappropriate": {
+    "message": "Uygunsuz"
+  },
+  "panels/explain/components/ConsoleInsight.ts | insight": {
+    "message": "Analiz"
+  },
+  "panels/explain/components/ConsoleInsight.ts | irrelevant": {
+    "message": "Alakasız"
+  },
+  "panels/explain/components/ConsoleInsight.ts | networkRequest": {
+    "message": "Ağ isteği"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notHelpful": {
+    "message": "Yararlı değil"
+  },
+  "panels/explain/components/ConsoleInsight.ts | other": {
+    "message": "Diğer"
+  },
+  "panels/explain/components/ConsoleInsight.ts | reason": {
+    "message": "Neden bu puanı seçtiniz? (isteğe bağlı)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refine": {
+    "message": "Analizi kişiselleştirmek için bağlam bilgisi ver"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineButtonHint": {
+    "message": "Google'ın sunucularında çalışan yapay zeka modeline aşağıdaki verileri göndererek daha doğru ve alakalı bir yanıt oluşturmasını sağlamak için bu düğmeyi tıklayın:"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineInfo": {
+    "message": "Analiz kişiselleştirmenin işleyiş şekli hakkında bilgi"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refining": {
+    "message": "Analiz kişiselleştiriliyor…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | relatedCode": {
+    "message": "İlgili kod"
+  },
+  "panels/explain/components/ConsoleInsight.ts | searchAnswers": {
+    "message": "Google Arama yanıtları"
+  },
+  "panels/explain/components/ConsoleInsight.ts | sources": {
+    "message": "Kaynaklar"
+  },
+  "panels/explain/components/ConsoleInsight.ts | stackTrace": {
+    "message": "Yığın izleme"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submit": {
+    "message": "Gönder"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
+    "message": "Geri bildirim gönder"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbDown": {
+    "message": "Beğenme"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbUp": {
+    "message": "Beğen"
+  },
+  "panels/explain/explain-meta.ts | explainThisError": {
+    "message": "Bu hatayı açıkla"
+  },
+  "panels/explain/explain-meta.ts | explainThisMessage": {
+    "message": "Bu mesajı açıkla"
+  },
+  "panels/explain/explain-meta.ts | explainThisWarning": {
+    "message": "Bu uyarıyı açıkla"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Engellenen Kaynak"
@@ -6358,12 +6568,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Güvenilmez kaynak"
-  },
-  "panels/issues/CSPViolationsView.ts | filter": {
-    "message": "Filtre"
-  },
-  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
-    "message": "Menü"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Üstbilgi Değeri"
@@ -6563,14 +6767,8 @@
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Sorunları gizle"
   },
-  "panels/issues/issues-meta.ts | cspViolations": {
-    "message": "İGP İhlalleri"
-  },
   "panels/issues/issues-meta.ts | issues": {
     "message": "Sorunlar"
-  },
-  "panels/issues/issues-meta.ts | showCspViolations": {
-    "message": "İGP İhlallerini Göster"
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Sorunları Göster"
@@ -7046,6 +7244,75 @@
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse sekmesini göster"
   },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Doğrusal bellek denetleyici açılamadı: arabellek bulunamadı."
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | revealInMemoryInspectorPanel": {
+    "message": "Bellek Denetleyicisi panelinde göster"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
+    "message": "Açık inceleme yok"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Bu belleği vurgulamayı durdur"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Bu belleğe atla"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
+    "message": "Adres {PH1} ile {PH2} arasında bir sayı olmalıdır"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | enterAddress": {
+    "message": "Adres girin"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goBackInAddressHistory": {
+    "message": "Adres geçmişinde geri git"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
+    "message": "Adres geçmişinde ileri git"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | nextPage": {
+    "message": "Sonraki sayfa"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | previousPage": {
+    "message": "Önceki sayfa"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | refresh": {
+    "message": "Yenile"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | changeEndianness": {
+    "message": "Endianness ayarını değiştir"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
+    "message": "Değer türü ayarlarını değiştir"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | addressOutOfRange": {
+    "message": "Adres, bellek aralığının dışında"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | changeValueTypeMode": {
+    "message": "Modu değiştir"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Adrese atla"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | signedValue": {
+    "message": "Signed değer"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | unsignedValue": {
+    "message": "Unsigned değer"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts | notApplicable": {
+    "message": "Yok"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Diğer"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
+    "message": "Bellek Denetleyici"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
+    "message": "Bellek Denetleyicisini Göster"
+  },
   "panels/media/EventDisplayTable.ts | eventDisplay": {
     "message": "Etkinlik ekranı"
   },
@@ -7245,16 +7512,19 @@
     "message": "Hazır Ayarlar"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "Kabul edilen Content-Encoding üst bilgileri, Geliştirici Araçları tarafından değiştirildi. Ağ Koşulları paneline bakın."
+    "message": "Kabul edilen Content-Encoding başlıkları, Geliştirici Araçları tarafından değiştirildi (Ağ koşulları paneline bakın)"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
+    "message": "Tarayıcı önbelleği devre dışı bırakıldı"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Ağ sınırlama etkin"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "İstekler engellenmiş olabilir"
+    "message": "İstekler engellenmiş olabilir (Ağ isteğini engelleme paneline bakın)"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "İstekler yerel olarak geçersiz kılınabilir"
+    "message": "İstekler yerel olarak geçersiz kılınmış olabilir (Kaynaklar paneline bakın)"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Özel"
@@ -7448,9 +7718,6 @@
   "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
     "message": "Kalıp girişi boş bırakılamaz."
   },
-  "panels/network/BlockedURLsPane.ts | removeAllPatterns": {
-    "message": "Tüm kalıpları kaldır"
-  },
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Eşleşen istekleri engellemek için metin şablonu; joker karakter olarak * kullanın"
   },
@@ -7565,6 +7832,9 @@
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
     "message": "İstek gönderildiğinde alternatif protokol bilgisi olmamasına rağmen yanıtta \"Alt-Svc\" başlığı yer aldığından Chrome alternatif bir HTTP sürümü kullanmadı."
   },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
+    "message": "{PH1} numaralı ServiceWorker router ile eşleşti, kaynak boyutu: {PH2}"
+  },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(önbellek)"
   },
@@ -7631,7 +7901,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Önceden getirme önbelleğinden sunuldu, kaynak boyutu: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
+  "panels/network/NetworkDataGridNode.ts | servedFromServiceWorkerResource": {
     "message": "ServiceWorker öğesinden yayınlandı, kaynak boyutu: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
@@ -7640,7 +7910,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
     "message": "Web Bundle'dan sunuldu, kaynak boyutu: {PH1}"
   },
-  "panels/network/NetworkDataGridNode.ts | serviceworker": {
+  "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
@@ -7663,6 +7933,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Web Bundle'dan yayınlandı"
+  },
+  "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
+    "message": "Bu yanıt, Geliştirici Araçları tarafından geçersiz kılınan başlıklar içeriyor"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Çerezler"
@@ -7699,6 +7972,9 @@
   },
   "panels/network/NetworkItemView.ts | response": {
     "message": "Yanıt"
+  },
+  "panels/network/NetworkItemView.ts | responseIsOverridden": {
+    "message": "Bu yanıt, Geliştirici Araçları tarafından geçersiz kılındı"
   },
   "panels/network/NetworkItemView.ts | responsePreview": {
     "message": "Yanıt önizleme"
@@ -7906,6 +8182,9 @@
   },
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Tümünü içerik ile HAR olarak kopyala"
+  },
+  "panels/network/NetworkLogView.ts | showOnly": {
+    "message": "Sadece şunu göster: {PH1}"
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Yalnızca istekleri göster/gizle"
@@ -8143,105 +8422,6 @@
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Bu istek çerez içermiyor."
-  },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs etkin."
-  },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Sunucu tarafı davranışlarını tetikleyen aktif client experiment variation IDs."
-  },
-  "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Hem kaynak hem de doküman aynı siteden yayınlanıyorsa bu seçeneği belirleyin."
-  },
-  "panels/network/RequestHeadersView.ts | copyValue": {
-    "message": "Değeri kopyala"
-  },
-  "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "Kod çözüldü:"
-  },
-  "panels/network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(disk önbelleğinden)"
-  },
-  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(önbellekten)"
-  },
-  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(önceden getirilen önbellekten)"
-  },
-  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(service worker öğesinden)"
-  },
-  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(imzalı takastan)"
-  },
-  "panels/network/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(Web Bundle'dan)"
-  },
-  "panels/network/RequestHeadersView.ts | general": {
-    "message": "Genel"
-  },
-  "panels/network/RequestHeadersView.ts | learnMore": {
-    "message": "Daha fazla bilgi"
-  },
-  "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz"
-  },
-  "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Yalnızca, bu kaynağı içeren rastgele bir web sitesi bir güvenlik riski oluşturmuyorsa bu seçeneği belirleyin."
-  },
-  "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Bu istek ağ üzerinden gönderilmek yerine orijinal istek başlıklarını depolamayan yerel bir önbellekten sunulduğu için yalnızca hazır başlıklar kullanılabilir. Bütün istek başlıklarını görmek için önbelleği devre dışı bırakın."
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Geçici başlıklar gösteriliyor"
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "Hazır başlıklar gösteriliyor. Bütün başlıkları görmek için önbelleği devre dışı bırakın."
-  },
-  "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Yönlendirme Politikası"
-  },
-  "panels/network/RequestHeadersView.ts | remoteAddress": {
-    "message": "Uzak Adres"
-  },
-  "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "İstek Üst Bilgileri"
-  },
-  "panels/network/RequestHeadersView.ts | requestMethod": {
-    "message": "İstek Yöntemi"
-  },
-  "panels/network/RequestHeadersView.ts | requestUrl": {
-    "message": "URL iste"
-  },
-  "panels/network/RequestHeadersView.ts | responseHeaders": {
-    "message": "Yanıt Üst Bilgileri"
-  },
-  "panels/network/RequestHeadersView.ts | showMore": {
-    "message": "Diğerlerini göster"
-  },
-  "panels/network/RequestHeadersView.ts | statusCode": {
-    "message": "Durum Kodu"
-  },
-  "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Bu doküman, çapraz kaynak açıcı politikası belirttiği için dokümanın, korumalı alana alınmış bir iframe'in açtığı pop-up'ta yüklenmesi engellendi."
-  },
-  "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Bu çerçeveyi dokümanınıza yerleştirmek için yanıtın aşağıdaki yanıt üst bilgisini belirleyerek çapraz kaynak yerleştirme politikasını etkinleştirmesi gerekir:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Bu kaynağı başka bir merkezden kullanabilmek için sunucu tarafından yanıt üst bilgilerinde merkezler arası kaynak politikası belirtmesi gerekir:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Sunucu, bu kaynağı başka bir merkezden kullanabilmek için merkezler arası kaynak politikası yanıt başlığını gevşetebilir:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Sunucu, bu kaynağı başka bir siteden kullanabilmek için merkezler arası kaynak politikası başlığını gevşetebilir."
-  },
-  "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "Ayrıştırılmış olarak göster"
-  },
-  "panels/network/RequestHeadersView.ts | viewSource": {
-    "message": "Kaynağı göster"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "İstek çağrı yığını"
@@ -8616,10 +8796,10 @@
     "message": "(önceden getirilen önbellekten)"
   },
   "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(service worker öğesinden)"
+    "message": "(service worker alan adından)"
   },
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(imzalı takastan)"
+    "message": "(imzalanmış takastan)"
   },
   "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
     "message": "(Web Bundle'dan)"
@@ -8738,6 +8918,9 @@
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Paket kaynak"
   },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
+    "message": "Ağ isteği engelleme kalıbı ekle"
+  },
   "panels/network/network-meta.ts | clear": {
     "message": "Ağ günlüğünü temizle"
   },
@@ -8788,6 +8971,9 @@
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Ağ günlüğünü kaydet"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
+    "message": "Tüm ağ isteği engelleme kalıplarını kaldır"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "kaynak türü"
@@ -9164,9 +9350,6 @@
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Tutucular"
   },
-  "panels/profiler/HeapSnapshotView.ts | sKb": {
-    "message": "{PH1} kB"
-  },
   "panels/profiler/HeapSnapshotView.ts | savingD": {
     "message": "Kaydediliyor… %{PH1}"
   },
@@ -9359,20 +9542,8 @@
   "panels/profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "Anlık görüntü al"
   },
-  "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
-    "message": "Sil"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
-    "message": "Kaydet. Dosyayı kaydetmek için Enter tuşuna basın"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | load": {
-    "message": "Yükle…"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | save": {
-    "message": "Kaydet"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
-    "message": "Kaydet…"
+  "panels/profiler/ProfileSidebarTreeElement.ts | profileOptions": {
+    "message": "Profil seçenekleri"
   },
   "panels/profiler/ProfileView.ts | chart": {
     "message": "Grafik"
@@ -9434,26 +9605,14 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Başka bir profil kaydedilirken profil yüklenemez."
   },
-  "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
-    "message": "Tüm profilleri temizle"
-  },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "Bu panelin desteği önümüzdeki sürümde sonlandırılacaktır. JavaScript CPU profillerini kaydetmek için performans panelini kullanın."
-  },
-  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
-    "message": "Bu paneli geçici olarak etkinleştir"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Geri bildirim"
   },
   "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
     "message": "Performans paneline git"
-  },
-  "panels/profiler/ProfilesPanel.ts | learnMore": {
-    "message": "Daha fazla bilgi"
-  },
-  "panels/profiler/ProfilesPanel.ts | load": {
-    "message": "Yükle…"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Profil yükleme başarısız: {PH1}."
@@ -9464,11 +9623,23 @@
   "panels/profiler/ProfilesPanel.ts | runD": {
     "message": "Çalıştır {PH1}"
   },
+  "panels/profiler/profiler-meta.ts | clearAllProfiles": {
+    "message": "Tüm profilleri temizle"
+  },
+  "panels/profiler/profiler-meta.ts | deleteProfile": {
+    "message": "Profili sil"
+  },
   "panels/profiler/profiler-meta.ts | liveHeapProfile": {
     "message": "Canlı Yığın Profili"
   },
+  "panels/profiler/profiler-meta.ts | loadProfile": {
+    "message": "Profil yükle…"
+  },
   "panels/profiler/profiler-meta.ts | memory": {
     "message": "Bellek"
+  },
+  "panels/profiler/profiler-meta.ts | saveProfile": {
+    "message": "Profili kaydet…"
   },
   "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
     "message": "Canlı Yığın Profilini Göster"
@@ -9610,6 +9781,12 @@
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Kaydı içe aktar"
+  },
+  "panels/recorder/RecorderController.ts | noRecordings": {
+    "message": "Kayıt yok"
+  },
+  "panels/recorder/RecorderController.ts | numberOfRecordings": {
+    "message": "kayıt"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Kaydı tekrar oynat"
@@ -11321,9 +11498,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | returnValue": {
     "message": "Döndürülen değer"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "Bellek Denetleyicisi panelinde göster"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -11438,8 +11612,8 @@
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "Gezinme panelini gizle"
   },
-  "panels/sources/SourcesPanel.ts | storeSAsGlobalVariable": {
-    "message": "{PH1} öğesini genel değişken olarak sakla"
+  "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
+    "message": "Genel değişken olarak sakla"
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Mevcut JavaScript çağrısını sonlandır"
@@ -11451,7 +11625,7 @@
     "message": "Komutu çalıştır"
   },
   "panels/sources/SourcesView.ts | selectFolder": {
-    "message": "klasör seç"
+    "message": "Klasör seç"
   },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "Kaynak İşlemlerini Görüntüle"
@@ -12260,6 +12434,12 @@
   "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
     "message": "Satıcı İş Akışı — {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | threadPool": {
+    "message": "İş Parçacığı Havuzu"
+  },
+  "panels/timeline/ThreadAppender.ts | threadPoolThreadS": {
+    "message": "İş Parçacığı Havuzu Çalışanı {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
   },
@@ -12455,6 +12635,9 @@
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "JavaScript örneklemeyi devre dışı bırakır, mobil cihaz bağlamında yürütülürken performans yükünü azaltır"
   },
+  "panels/timeline/TimelinePanel.ts | downloadAfterError": {
+    "message": "İşlenmemiş izleme etkinliklerini indirin"
+  },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Zaman çizelgesi dosyasını veya URL'sini buraya bırakın"
   },
@@ -12575,8 +12758,11 @@
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "En Ağır yığın kenar çubuğunu gizle"
   },
-  "panels/timeline/TimelineTreeView.ts | javascript": {
-    "message": "JavaScript"
+  "panels/timeline/TimelineTreeView.ts | matchCase": {
+    "message": "Büyük/Küçük Harf Eşleştir"
+  },
+  "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
+    "message": "Tüm kelimeyi eşleştir"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Gruplandırma Yok"
@@ -12610,6 +12796,9 @@
   },
   "panels/timeline/TimelineTreeView.ts | unattributed": {
     "message": "[ilişkilendirilmemiş]"
+  },
+  "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
+    "message": "Normal İfade kullan"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[V8 Çalışma süresi]"
@@ -12800,9 +12989,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | emptyPlaceholderColon": {
-    "message": ": {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Kodlanmış Veriler"
   },
@@ -12851,9 +13037,6 @@
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "İlk Boyama"
   },
-  "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
-    "message": "Zorunlu yeniden düzenleme"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Çerçeve"
   },
@@ -12881,17 +13064,11 @@
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Yakın zamanda giriş var"
   },
-  "panels/timeline/TimelineUIUtils.ts | handlerTookS": {
-    "message": "İşleyici {PH1} sürdü"
-  },
   "panels/timeline/TimelineUIUtils.ts | hitTest": {
     "message": "Çarpışma Testi"
   },
   "panels/timeline/TimelineUIUtils.ts | idle": {
     "message": "Boşta"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idleCallbackExecutionExtended": {
-    "message": "Boşta geri çağırma yürütmesi {PH1} tarafından süre bitiminin sonrasına uzatıldı"
   },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Boşta Geri Çağırma İstendi"
@@ -12910,6 +13087,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Başlatan"
+  },
+  "panels/timeline/TimelineUIUtils.ts | inputDelay": {
+    "message": "Giriş gecikmesi"
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Zamanlayıcı yükle"
@@ -12944,9 +13124,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Katman Kökü"
   },
-  "panels/timeline/TimelineUIUtils.ts | layerTree": {
-    "message": "Katman ağacı"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerize": {
     "message": "Katmanlaştırma"
   },
@@ -12977,9 +13154,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Yer"
   },
-  "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "Uzun görev"
-  },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Büyük GC"
   },
@@ -12988,9 +13162,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "Mime Türü"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mimeTypeCaps": {
-    "message": "MIME Türü"
   },
   "panels/timeline/TimelineUIUtils.ts | minorGc": {
     "message": "Küçük GC"
@@ -13021,9 +13192,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Düzen Gerektiren Düğümler"
-  },
-  "panels/timeline/TimelineUIUtils.ts | notOptimized": {
-    "message": "Optimize edilmedi"
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Onload Etkinliği"
@@ -13073,11 +13241,17 @@
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Ön Boyama"
   },
+  "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
+    "message": "Yanıt sunumu gecikmesi"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Önizle"
   },
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Öncelik"
+  },
+  "panels/timeline/TimelineUIUtils.ts | processingTime": {
+    "message": "İşlem süresi"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Üretilen Önbellek Boyutu"
@@ -13106,9 +13280,6 @@
   "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
     "message": "WebSocket El Sıkışması al"
   },
-  "panels/timeline/TimelineUIUtils.ts | recurringHandlerTookS": {
-    "message": "Yinelenen işleyici {PH1} sürdü"
-  },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "İlişkili Düğüm"
   },
@@ -13133,9 +13304,6 @@
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "İstek Yöntemi"
   },
-  "panels/timeline/TimelineUIUtils.ts | resource": {
-    "message": "Kaynak"
-  },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Göster"
   },
@@ -13154,9 +13322,6 @@
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} ({PH2} hızda)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sBytes": {
-    "message": "{n,plural, =1{# Bayt}other{# Bayt}}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
     "message": "{PH1}, zayıf kullanıcı deneyimlerine yol açabilir. Yakın zamanda {PH2}."
   },
@@ -13168,9 +13333,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sForS": {
     "message": "{PH2} süreyle {PH1}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1}, olası bir performans sorunu."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
@@ -13198,9 +13360,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sTookS": {
-    "message": "{PH1} {PH2} sürdü."
   },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Stil Yeniden Hesaplama Planlaması"
@@ -13232,9 +13391,6 @@
   "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
     "message": "WebSocket El Sıkışması gönder"
   },
-  "panels/timeline/TimelineUIUtils.ts | show": {
-    "message": "Göster"
-  },
   "panels/timeline/TimelineUIUtils.ts | sign": {
     "message": "İmzalama"
   },
@@ -13252,9 +13408,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | state": {
     "message": "Durum"
-  },
-  "panels/timeline/TimelineUIUtils.ts | statusCode": {
-    "message": "Durum Kodu"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Akış olarak yayınlandı"
@@ -13337,9 +13490,6 @@
   "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
     "message": "Wasm Modül Önbelleği Geçersiz"
   },
-  "panels/timeline/TimelineUIUtils.ts | websocketProtocol": {
-    "message": "WebSocket Protokolü"
-  },
   "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
     "message": "İstek Gönderir"
   },
@@ -13385,14 +13535,32 @@
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
     "message": "Boşta geri çağırma yürütmesi {PH1} tarafından süre bitiminin sonrasına uzatıldı"
   },
+  "panels/timeline/components/DetailsView.ts | longInteractionINP": {
+    "message": "Uzun etkileşim"
+  },
   "panels/timeline/components/DetailsView.ts | longTask": {
     "message": "Uzun görev"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}, olası bir performans sorunu."
   },
+  "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}, sayfada duyarlılığın zayıf olduğunu gösteriyor."
+  },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} {PH2} sürdü."
+  },
+  "panels/timeline/components/DetailsView.ts | websocketProtocol": {
+    "message": "WebSocket Protokolü"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
+    "message": "Giriş gecikmesi"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
+    "message": "Yanıt sunumu gecikmesi"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
+    "message": "İşlem süresi"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Katman görünümünde chrome çerçevesini gizle"
@@ -13652,74 +13820,11 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Sorun şu anda kullanılamıyor"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Bu belleği vurgulamayı durdur"
+  "ui/components/markdown_view/CodeBlock.ts | copied": {
+    "message": "Panoya kopyalandı"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Bu belleğe atla"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
-    "message": "Adres {PH1} ile {PH2} arasında bir sayı olmalıdır"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Doğrusal bellek denetleyici açılamadı: arabellek bulunamadı."
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
-    "message": "Açık inceleme yok"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
-    "message": "Adres girin"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
-    "message": "Adres geçmişinde geri git"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
-    "message": "Adres geçmişinde ileri git"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
-    "message": "Sonraki sayfa"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
-    "message": "Önceki sayfa"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
-    "message": "Yenile"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Endianness ayarını değiştir"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
-    "message": "Değer türü ayarlarını değiştir"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
-    "message": "Adres, bellek aralığının dışında"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
-    "message": "Modu değiştir"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
-    "message": "Adrese atla"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Signed değer"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Unsigned değer"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
-    "message": "Yok"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
-    "message": "Diğer"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
-    "message": "Bellek Denetleyici"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
-    "message": "Bellek Denetleyicisini Göster"
-  },
-  "ui/components/markdown_view/MarkdownView.ts | copy": {
-    "message": "Kopyala"
+  "ui/components/markdown_view/CodeBlock.ts | copy": {
+    "message": "Kodu kopyala"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Geri bildirim"
@@ -13772,6 +13877,9 @@
   "ui/legacy/ActionRegistration.ts | background_services": {
     "message": "Arka Plan Hizmetleri"
   },
+  "ui/legacy/ActionRegistration.ts | changes": {
+    "message": "Değişiklikler"
+  },
   "ui/legacy/ActionRegistration.ts | console": {
     "message": "Konsol"
   },
@@ -13810,6 +13918,9 @@
   },
   "ui/legacy/ActionRegistration.ts | performance": {
     "message": "Performans"
+  },
+  "ui/legacy/ActionRegistration.ts | recorder": {
+    "message": "Kaydedici"
   },
   "ui/legacy/ActionRegistration.ts | rendering": {
     "message": "Oluşturma"
@@ -14619,7 +14730,7 @@
     "message": "Kaynak"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Tür  ''{PH1}''"
+    "message": "Tür ''{PH1}''"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Bul"

@@ -11,9 +11,6 @@
   "core/common/ResourceType.ts | document": {
     "message": "Dokumentua"
   },
-  "core/common/ResourceType.ts | documents": {
-    "message": "Dokumentuak"
-  },
   "core/common/ResourceType.ts | eventsource": {
     "message": "EventSource"
   },
@@ -23,17 +20,14 @@
   "core/common/ResourceType.ts | font": {
     "message": "Letra"
   },
-  "core/common/ResourceType.ts | fonts": {
-    "message": "Letrak"
-  },
   "core/common/ResourceType.ts | image": {
     "message": "Irudia"
   },
-  "core/common/ResourceType.ts | images": {
-    "message": "Irudiak"
-  },
   "core/common/ResourceType.ts | img": {
     "message": "img"
+  },
+  "core/common/ResourceType.ts | javascript": {
+    "message": "JavaScript"
   },
   "core/common/ResourceType.ts | js": {
     "message": "JS"
@@ -56,17 +50,11 @@
   "core/common/ResourceType.ts | script": {
     "message": "Scripta"
   },
-  "core/common/ResourceType.ts | scripts": {
-    "message": "Scriptak"
-  },
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "Estilo-orria"
-  },
-  "core/common/ResourceType.ts | stylesheets": {
-    "message": "Estilo-orriak"
   },
   "core/common/ResourceType.ts | texttrack": {
     "message": "TextTrack"
@@ -82,9 +70,6 @@
   },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
-  },
-  "core/common/ResourceType.ts | websockets": {
-    "message": "WebSockets"
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
@@ -106,6 +91,9 @@
   },
   "core/common/Revealer.ts | issuesView": {
     "message": "Arazoen ikuspegia"
+  },
+  "core/common/Revealer.ts | memoryInspectorPanel": {
+    "message": "Memoria-ikuskatzailearen panela"
   },
   "core/common/Revealer.ts | networkPanel": {
     "message": "Sare-panela"
@@ -380,6 +368,9 @@
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Konexio honen eskemak ez du cookieak gordetzeko baimenik."
   },
+  "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
+    "message": "Cookie hau blokeatu da, hirugarrenen cookieak pixkanaka kentzen ari direlako. Lortu informazio gehiago arazoen fitxan."
+  },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "Set-Cookie goiburuak ez zuen \"SameSite\" atributurik zehaztu; SameSite=Lax\" baliora leheneratu zen eta blokeatu egin zen webgunearteko erantzun batetik zetorrelako, eta hori ez da goi-mailako nabigazioari dagokion erantzuna. Webgunearteko erantzun gisa hartzen da, URLaren eta webgune honen eskemak desberdinak baitira."
   },
@@ -400,6 +391,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
     "message": "Blokeatu egin da cookie bat Set-Cookie goiburu baten bidez ezartzeko saiakera, cookiea handiegia delako. Izena eta balioa gehituta, 4.096 karaktere ere erabil daitezke."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
+    "message": "Cookie hau ezartzeko aukera blokeatu da, hirugarrenen cookieak pixkanaka kentzen ari direlako. Lortu informazio gehiago arazoen fitxan."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Cookie bat Set-Cookie goiburu baten bidez ezartzeko saiakera blokeatu egin da erabiltzailearen hobespenak direla eta."
@@ -1139,9 +1133,6 @@
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ezartzearen ondorioz jatorri bereko gidalerroa erlaxatzeko aukera zaharkituta dago eta desgaitu egingo da modu lehenetsian. Eginbidea erabiltzen jarraitzeko, aukeratu jatorrian oinarritutako agente multzoak ez erabiltzea HTTP erantzunarekin batera Origin-Agent-Cluster: ?0 goiburu bat bidalita dokumenturako eta markorako. Xehetasun gehiago ikusteko, joan https://developer.chrome.com/blog/immutable-document-domain/ helbidera."
   },
-  "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT goiburua zaharkituta dago, eta kendu egingo da. Chrome-k ziurtagiri-gardentasuna eskatzen die publikoki fidagarritzat hartzen diren ziurtagiri guztiei (2018ko apirilaren 30a ezkero jaulkitakoak)."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() eta watchPosition() metodoek jada ez dute funtzionatzen jatorri ez-seguruetan. Eginbidea erabiltzeko, aplikazioa jatorri seguru batera eramatea gomendatzen dugu (adibidez, HTTPSra). Xehetasun gehiago ikusteko, joan https://goo.gle/chrome-insecure-origins helbidera."
   },
@@ -1255,6 +1246,9 @@
   },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Erabiltzailearen aktibaziorik gabe speechSynthesis.speak() metodoari deitzeko aukera zaharkituta dago eta kendu egingo da."
+  },
+  "generated/Deprecation.ts | UnloadHandler": {
+    "message": "Deskargatze-gertaeren hautemaileak zaharkituta daude eta kendu egingo dira."
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer erabiltzen jarraitzeko, jatorri anitzeko isolamenduaren aukera gaitu behar dute luzapenek. Joan https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ helbidera."
@@ -2139,13 +2133,13 @@
     "message": "{PH1} {PH2} ez dago zehaztuta manifestuan; {PH3} erabiltzen da haren ordez. Une honetako identitatearekin bat datorren aplikazio-identifikatzaile bat zehazteko, ezarri {PH4} eremua {PH5} {PH6} gisa."
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Ez da gomendagarria ikonoak purpose: \"any maskable\" erabilita aitortzea. Baliteke plataforma batzuetan itxura okerra izatea, betegarri gehiegi edo gutxiegi edukitzeagatik."
+    "message": "Ez da gomendagarria ikonoak \"any maskable\" \"purpose\" erabilita aitortzea. Baliteke plataforma batzuetan itxura okerra izatea, betegarri gehiegi edo gutxiegi edukitzeagatik."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Atzeko planoaren kolorea"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
-    "message": "Kalkulatutako aplikazio IDa"
+    "message": "Kalkulatutako aplikazio-identifikatzailea"
   },
   "panels/application/AppManifestView.ts | copiedToClipboard": {
     "message": "Kopiatu da iradokitako IDa ({PH1}) arbelean"
@@ -2160,7 +2154,7 @@
     "message": "Ezin izan da deskargatu beharrezko ikono bat manifestutik"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "Pertsonalizatu zure PWA-ren izenaren barrari dagozkion leihoak kontrolatzeko aukeren gainjartzea."
+    "message": "Pertsonalizatu zure PWAren izenaren barrari dagozkion leihoak kontrolatzeko aukeren gainjartzea"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Atzeko plano ilunaren kolorea"
@@ -2223,13 +2217,13 @@
     "message": "Manifestuak ez dauka \"name\" edo\"'short_name\" izeneko eremurik"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifestuak ez du ikono egokirik; gutxienez {PH1} px dituen PNG, SVG edo WebP formatuko ikono bat behar da, sizes atributua ezarri behar da eta, purpose atributua ezarriz gero, any eduki behar du."
+    "message": "Manifestuak ez du ikono egokirik; gutxienez {PH1} px dituen PNG, SVG edo WebP formatuko ikono bat behar da, \"sizes\" atributua ezarri behar da eta, \"purpose\" atributua ezarriz gero, \"any\" eduki behar du."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifestuaren arabera, prefer_related_applications egiazkoa da"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "start_URL manifestuak ez du balio"
+    "message": "start_url manifestuak ez du balio"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Izena"
@@ -2244,10 +2238,10 @@
     "message": "Ez da eman Play Store-ko IDrik"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "PWA instalatzeko erabiltzaile-interfaze aberastua ez da egongo erabilgarri ordenagailuetan. Gehitu gutxienez pantaila-argazki bat \"form_factor\" \"wide\" balioarekin ezarrita daukana."
+    "message": "PWA instalatzeko erabiltzaile-interfaze aberastua ez da egongo erabilgarri ordenagailuetan. Gehitu gutxienez pantaila-argazki bat form_factor wide balioarekin ezarrita daukana."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "PWA instalatzeko erabiltzaile-interfaze aberastua ez da egongo erabilgarri mugikorretan. Gehitu gutxienez pantaila-argazki bat \"form_factor\" ezarri gabe edo \"wide\" ez den balio batekin ezarrita daukana."
+    "message": "PWA instalatzeko erabiltzaile-interfaze aberastua ez da egongo erabilgarri mugikorretan. Gehitu gutxienez pantaila-argazki bat form_factor ezarri gabe edo wide ez den balio batekin ezarrita daukana."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Emandako ikono batek ere ez ditu gutxienez {PH1} pixel karratu PNG, SVG edo WebP formatuan, helburu-atributua ezarri gabe edo any gisa duena."
@@ -2322,13 +2316,16 @@
     "message": "Pantaila-argazkia"
   },
   "panels/application/AppManifestView.ts | screenshotPixelSize": {
-    "message": "{url} pantaila-argazkiaren pixel-tamainaren lehenengo aukerak [width]x[height] izan beharko luke, eta ez \"any\"."
+    "message": "{url} pantaila-argazkiaren pixel-tamainaren lehenengo aukerak [width]x[height] izan beharko luke, eta ez any."
   },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "{PH1}. pantaila-argazkia"
   },
   "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
-    "message": "\"form_factor\" bera daukaten pantaila-argazki guztiek \"form_factor\" hori daukan lehen pantaila-argazkiaren aspektu-erlazio berdina izan behar dute. Ez ikusi egingo zaie pantaila-argazki batzuei."
+    "message": "form_factor bera daukaten pantaila-argazki guztiek form_factor hori daukan lehen pantaila-argazkiaren aspektu-erlazio berdina izan behar dute. Ez ikusi egingo zaie pantaila-argazki batzuei."
+  },
+  "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
+    "message": "Emulatu leihoak kontrolatzeko aukera gainjarriak hemen:"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Izen laburra"
@@ -2355,7 +2352,7 @@
     "message": "Play Store aplikazioko URLa eta Play Store-ko IDa ez datoz bat"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
-    "message": "Zehaztutako aplikazio-plataforma ez da onartzen Android sisteman"
+    "message": "Zehaztutako aplikazio-plataforma ez da bateragarria Android-ekin"
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Gaiaren kolorea"
@@ -2759,6 +2756,15 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Bai"
   },
+  "panels/application/PreloadingTreeElement.ts | rules": {
+    "message": "Arauak"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculations": {
+    "message": "Espekulazioak"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
+    "message": "Karga espekulatiboak"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Sakatu edozein txosten haren gorputza ikusteko"
   },
@@ -2866,6 +2872,9 @@
   },
   "panels/application/ServiceWorkersView.ts | receivedS": {
     "message": "Jasotze-data: {PH1}"
+  },
+  "panels/application/ServiceWorkersView.ts | routers": {
+    "message": "Bideratzaileak"
   },
   "panels/application/ServiceWorkersView.ts | sActivatedAndIsS": {
     "message": "{PH1}.a aktibatuta dago eta {PH2} dago"
@@ -3481,6 +3490,9 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Arrazoi hauek gauzatu ezin diren ekintzak dira; hau da, orriaren zuzeneko kontroletik kanpo gertatutako zerbaitek eragotzi du orria cachean gordetzea."
+  },
+  "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
+    "message": "{n,plural, =1{# fitxategi}other{# fitxategi}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
     "message": "{n,plural, =1{# marko}other{# marko}}"
@@ -4127,8 +4139,23 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Egoera"
   },
-  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
-    "message": "Aurretiko eskuratzea baztertu, eta berriago batekin ordeztu da, |kPrefetchNewLimits| gaituta dagoelako"
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | activationNavigationValue": {
+    "message": "Aktibazio-nabigazioko balioa"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | headerName": {
+    "message": "Goiburu-izena"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | initialNavigationValue": {
+    "message": "Hasierako nabigazioko balioa"
+  },
+  "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
+    "message": "(falta da)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
+    "message": "Aurretiko eskuratzea baztertu da, hasi duen orriko espekulazio-arau batek ere ez duelako abiarazten URL horren aurretiko eskuratzerik."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
+    "message": "Aurretiko eskuratzea baztertu da, abiarazi duen orriak aurretiko eskuratze gehiegi abian dituelako, eta hau zaharrenetako bat delako."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Aurretiko eskuratzea birbideratu egin da, baina birbideratze URLak ez ditu betetzen aurrez eskuratzeko baldintzak."
@@ -4382,6 +4409,27 @@
   "panels/application/preloading/components/RuleSetGrid.ts | status": {
     "message": "Egoera"
   },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailure": {
+    "message": "Hutsegitea"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeFailureWithCount": {
+    "message": "{n,plural, =1{# hutsegite}other{# hutsegite}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeInProgressWithCount": {
+    "message": "{n,plural, =1{# abian}other{# abian}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNoSpeculativeLoads": {
+    "message": "Ez dago kargatze espekulatiborik"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeNotTriggeredWithCount": {
+    "message": "{n,plural, =1{# abiarazi gabe}other{# abiarazi gabe}}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccess": {
+    "message": "Gauzatu da kargatze espekulatiboa"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | badgeSuccessWithCount": {
+    "message": "{n,plural, =1{# ongi}other{# ongi}}"
+  },
   "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
     "message": "Oraingo URLa"
   },
@@ -4393,6 +4441,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
     "message": "Lortu karga espekulatiboei buruzko informazio gehiago developer.chrome.com helbidean"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | mismatchedHeadersDetail": {
+    "message": "Bat ez datozen HTTP eskaeren goiburuak"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Prozesua abiarazi duen orria ez da saiatu orri honen URLa modu espekulatiboan kargatzen."
@@ -4411,6 +4462,51 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Errendatu da aurrez orria."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculationsInitiatedByThisPage": {
+    "message": "Orri honek abiarazitako espekulazioak"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | speculativeLoadingStatusForThisPage": {
+    "message": "Orri honetarako kargatze espekulatiboaren egoera"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllRules": {
+    "message": "Ikusi espekulazio-arau guztiak"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | viewAllSpeculations": {
+    "message": "Ikusi espekulazio guztiak"
+  },
+  "panels/autofill/AutofillView.ts | attr": {
+    "message": "atr."
+  },
+  "panels/autofill/AutofillView.ts | autoShow": {
+    "message": "Betetze automatikoa erabiltzean, ireki fitxa automatikoki"
+  },
+  "panels/autofill/AutofillView.ts | autocompleteAttribute": {
+    "message": "Osatu atributua automatikoki"
+  },
+  "panels/autofill/AutofillView.ts | formField": {
+    "message": "Inprimakiaren eremua"
+  },
+  "panels/autofill/AutofillView.ts | heur": {
+    "message": "heur."
+  },
+  "panels/autofill/AutofillView.ts | inferredByHeuristics": {
+    "message": "Heuristika bidez ondorioztatua"
+  },
+  "panels/autofill/AutofillView.ts | noDataAvailable": {
+    "message": "Ez da hauteman betetze automatikoko gertaerarik"
+  },
+  "panels/autofill/AutofillView.ts | predictedAutofillValue": {
+    "message": "Betetze automatikoaren aurreikusitako balioa"
+  },
+  "panels/autofill/AutofillView.ts | value": {
+    "message": "Balioa"
+  },
+  "panels/autofill/autofill-meta.ts | autofill": {
+    "message": "Betetze automatikoa"
+  },
+  "panels/autofill/autofill-meta.ts | showAutofill": {
+    "message": "Erakutsi betetze automatikoa"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
     "message": "Animazioa"
@@ -4637,14 +4733,8 @@
   "panels/changes/ChangesView.ts | copy": {
     "message": "Kopiatu"
   },
-  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopiatu oraingo fitxategian egindako aldaketa guztiak"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ez dago aldaketarik"
-  },
-  "panels/changes/ChangesView.ts | revertAllChangesToCurrentFile": {
-    "message": "Leheneratu aldaketa guztiak fitxategi honetan"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ezabatze (-)}other{# ezabatze (-)}}"
@@ -4654,6 +4744,12 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Aldaketak"
+  },
+  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopiatu oraingo fitxategian egindako aldaketa guztiak"
+  },
+  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
+    "message": "Leheneratu aldaketa guztiak fitxategi honetan"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Erakutsi aldaketak"
@@ -4681,6 +4777,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Kendu adierazpen guztiak"
+  },
+  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
+    "message": "Kendu adierazpen hutsa"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Kendu adierazpena"
@@ -4889,6 +4988,15 @@
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<salbuespena>"
   },
+  "panels/console/ConsoleViewMessage.ts | explainThisError": {
+    "message": "Azaldu errore hau"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
+    "message": "Azaldu mezu hau"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
+    "message": "Azaldu abisu hau"
+  },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Funtzioa lotutako funtzio batetik askatu da."
   },
@@ -5021,6 +5129,9 @@
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Erakutsi denbora-zigiluak"
   },
+  "panels/console/console-meta.ts | toggleConsole": {
+    "message": "Aktibatu/Desaktibatu kontsola"
+  },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
     "message": "Tratatu ebaluazioa erabiltzailearen aktibazio gisa"
   },
@@ -5102,9 +5213,6 @@
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Aukeratu estalduraren xehetasun-maila: funtzioaren arabera aukeratuz gero, gainkarga txikia izango da; blokearen arabera aukeratuz gero, berriz, handia."
   },
-  "panels/coverage/CoverageView.ts | clearAll": {
-    "message": "Garbitu guztiak"
-  },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
     "message": "Sakatu grabatzeko botoia {PH1} exekuzioa grabatzen hasteko."
   },
@@ -5116,9 +5224,6 @@
   },
   "panels/coverage/CoverageView.ts | css": {
     "message": "CSS"
-  },
-  "panels/coverage/CoverageView.ts | export": {
-    "message": "Esportatu…"
   },
   "panels/coverage/CoverageView.ts | filterCoverageByType": {
     "message": "Iragazkien estaldura, motaren arabera"
@@ -5147,14 +5252,17 @@
   "panels/coverage/CoverageView.ts | urlFilter": {
     "message": "URLaren iragazkia"
   },
+  "panels/coverage/coverage-meta.ts | clearCoverage": {
+    "message": "Garbitu estaldura"
+  },
   "panels/coverage/coverage-meta.ts | coverage": {
     "message": "Estaldura"
   },
+  "panels/coverage/coverage-meta.ts | exportCoverage": {
+    "message": "Esportatu estaldura"
+  },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Aktibatu estaldura"
-  },
-  "panels/coverage/coverage-meta.ts | reloadPage": {
-    "message": "Kargatu berriro orria"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Erakutsi estaldura"
@@ -5636,9 +5744,6 @@
   "panels/elements/EventListenersWidget.ts | passive": {
     "message": "Modu pasiboa"
   },
-  "panels/elements/EventListenersWidget.ts | refresh": {
-    "message": "Freskatu"
-  },
   "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "Ebatzi esparruarekin lotutako gertaeren hautemaileak"
   },
@@ -5663,11 +5768,20 @@
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifo)}other{(# glifo)}}"
   },
+  "panels/elements/PlatformFontsWidget.ts | familyName": {
+    "message": "Abizena"
+  },
+  "panels/elements/PlatformFontsWidget.ts | fontOrigin": {
+    "message": "Letraren jatorria"
+  },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "Fitxategi lokala"
   },
   "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "Sareko baliabidea"
+  },
+  "panels/elements/PlatformFontsWidget.ts | postScriptName": {
+    "message": "PostScript-aren izena"
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Errendatutako letrak"
@@ -5816,9 +5930,6 @@
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Geruza"
   },
-  "panels/elements/StylesSidebarPane.ts | newStyleRule": {
-    "message": "Estilo-erregela berria"
-  },
   "panels/elements/StylesSidebarPane.ts | noMatchingSelectorOrStyle": {
     "message": "Ez dago bat datorren hautatzaile edo estilorik"
   },
@@ -5863,6 +5974,9 @@
   },
   "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
     "message": "Ikusi erregistratutako propietatea"
+  },
+  "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
+    "message": "{PH1} ez dago zehaztuta"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOMaren zuhaitz moduko nabigazio-bidea"
@@ -5945,11 +6059,17 @@
   "panels/elements/elements-meta.ts | layout": {
     "message": "Diseinua"
   },
+  "panels/elements/elements-meta.ts | newStyleRule": {
+    "message": "Estilo-erregela berria"
+  },
   "panels/elements/elements-meta.ts | properties": {
     "message": "Propietateak"
   },
   "panels/elements/elements-meta.ts | redo": {
     "message": "Berregin"
+  },
+  "panels/elements/elements-meta.ts | refreshEventListeners": {
+    "message": "Freskatu gertaeren hautemaileak"
   },
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
     "message": "Bistaratu DOM nodoa gainetik pasatzean"
@@ -6019,6 +6139,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Gailuaren pixel-erlazioa"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | devicePosture": {
+    "message": "Gailuaren posizioa"
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Gailu mota"
@@ -6176,8 +6299,95 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Ezarri gertaeren hautemailea pasibo edo blokeatzaile gisa"
   },
-  "panels/explain/explain-meta.ts | explainConsoleMessage": {
-    "message": "✨ Azaldu kontsolako mezua"
+  "panels/explain/components/ConsoleInsight.ts | additionalFeedback": {
+    "message": "Bidali ohar gehiago (aukerakoa)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | close": {
+    "message": "Itxi"
+  },
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Itxi estatistika"
+  },
+  "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
+    "message": "Kontsolako mezua"
+  },
+  "panels/explain/components/ConsoleInsight.ts | dogfood": {
+    "message": "Probako bertsioa"
+  },
+  "panels/explain/components/ConsoleInsight.ts | error": {
+    "message": "Arazoren bat izan da…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | generating": {
+    "message": "Sortzen…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inaccurate": {
+    "message": "Ez da zuzena"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inappropriate": {
+    "message": "Desegokia da"
+  },
+  "panels/explain/components/ConsoleInsight.ts | insight": {
+    "message": "Estatistikak"
+  },
+  "panels/explain/components/ConsoleInsight.ts | irrelevant": {
+    "message": "Ez du zerikusirik"
+  },
+  "panels/explain/components/ConsoleInsight.ts | networkRequest": {
+    "message": "Sareko eskaera"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notHelpful": {
+    "message": "Ez da lagungarria"
+  },
+  "panels/explain/components/ConsoleInsight.ts | other": {
+    "message": "Beste bat"
+  },
+  "panels/explain/components/ConsoleInsight.ts | reason": {
+    "message": "Zergatik aukeratu duzu balorazio hori? (aukerakoa)"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refine": {
+    "message": "Eman testuingurua estatistika pertsonalizatzeko"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineButtonHint": {
+    "message": "Sakatu botoi hau Google-ren zerbitzarietan exekutatzen ari den AAren eredura datu hauek bidaltzeko, erantzun zuzenago eta egokiago bat sor dezan:"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refineInfo": {
+    "message": "Ikusi nola funtzionatzen duen estatistiken pertsonalizazioak"
+  },
+  "panels/explain/components/ConsoleInsight.ts | refining": {
+    "message": "Estatistika pertsonalizatzen…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | relatedCode": {
+    "message": "Erlazionatutako kodea"
+  },
+  "panels/explain/components/ConsoleInsight.ts | searchAnswers": {
+    "message": "Google Bilaketa zerbitzuko erantzunak"
+  },
+  "panels/explain/components/ConsoleInsight.ts | sources": {
+    "message": "Iturburuak"
+  },
+  "panels/explain/components/ConsoleInsight.ts | stackTrace": {
+    "message": "Pilaren arrastoa"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submit": {
+    "message": "Bidali"
+  },
+  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
+    "message": "Bidali oharrak"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbDown": {
+    "message": "Ez zait gustatu"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbUp": {
+    "message": "Gustatu zait"
+  },
+  "panels/explain/explain-meta.ts | explainThisError": {
+    "message": "Azaldu errore hau"
+  },
+  "panels/explain/explain-meta.ts | explainThisMessage": {
+    "message": "Azaldu mezu hau"
+  },
+  "panels/explain/explain-meta.ts | explainThisWarning": {
+    "message": "Azaldu abisu hau"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokeatutako baliabidea"
@@ -6358,12 +6568,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Jatorria ez da fidagarria"
-  },
-  "panels/issues/CSPViolationsView.ts | filter": {
-    "message": "Iragazi"
-  },
-  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
-    "message": "Menua"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials goiburuaren balioa"
@@ -6563,14 +6767,8 @@
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ezkutatu arazoak"
   },
-  "panels/issues/issues-meta.ts | cspViolations": {
-    "message": "CSParen urratzeak"
-  },
   "panels/issues/issues-meta.ts | issues": {
     "message": "Arazoak"
-  },
-  "panels/issues/issues-meta.ts | showCspViolations": {
-    "message": "Erakutsi CSParen urratzeak"
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Erakutsi arazoak"
@@ -6897,7 +7095,7 @@
     "message": "Garbitu guztiak"
   },
   "panels/lighthouse/LighthousePanel.ts | dropLighthouseJsonHere": {
-    "message": "Jaregin Lighthouse-eko JSON-eko elementua hemen"
+    "message": "Jaregin Lighthouse-eko JSONa hemen"
   },
   "panels/lighthouse/LighthousePanel.ts | lighthouseSettings": {
     "message": "Lighthouse zerbitzuaren ezarpenak"
@@ -7045,6 +7243,75 @@
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Erakutsi Lighthouse"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Ezin izan da ireki lerroetako memoria-ikuskatzailea: ez du aurkitu bufferra."
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | revealInMemoryInspectorPanel": {
+    "message": "Bistaratu memoria-ikuskatzailea panelean"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
+    "message": "Ez dago ikuskatze irekirik"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Utzi memoria nabarmentzeari"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Joan memoria zati honetara"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
+    "message": "Helbideak {PH1} eta {PH2} arteko zenbaki bat izan behar du"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | enterAddress": {
+    "message": "Idatzi helbidea"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goBackInAddressHistory": {
+    "message": "Egin atzera helbideen historian"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
+    "message": "Egin aurrera helbideen historian"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | nextPage": {
+    "message": "Hurrengo orria"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | previousPage": {
+    "message": "Aurreko orria"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | refresh": {
+    "message": "Freskatu"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | changeEndianness": {
+    "message": "Aldatu Endianness"
+  },
+  "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
+    "message": "Ireki edo itxi balio motaren ezarpenak"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | addressOutOfRange": {
+    "message": "Helbidea memoria-barrutitik kanpo dago"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | changeValueTypeMode": {
+    "message": "Aldatu modua"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | jumpToPointer": {
+    "message": "Joan helbidera"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | signedValue": {
+    "message": "Balio Signed"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts | unsignedValue": {
+    "message": "Balio Unsigned"
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts | notApplicable": {
+    "message": "E.a."
+  },
+  "panels/linear_memory_inspector/components/ValueInterpreterSettings.ts | otherGroup": {
+    "message": "Beste bat"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
+    "message": "Memoria-ikuskatzailea"
+  },
+  "panels/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
+    "message": "Erakutsi memoria-ikuskatzailea"
   },
   "panels/media/EventDisplayTable.ts | eventDisplay": {
     "message": "Gertaeren bistaratzea"
@@ -7245,16 +7512,19 @@
     "message": "Aurrezarpenak"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "DevTools-ek aldatu egin du onartutako Content-Encoding goiburuen multzoa. Ikusi Sarearen baldintzak panela."
+    "message": "Garatzaileentzako tresnek aldatu egin dute onartutako Content-Encoding goiburuen multzoa. Ikusi sarearen baldintzen panela"
+  },
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
+    "message": "Arakatzailearen cachea desgaituta dago"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Sarea moteltzeko aukera gaituta dago"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "Baliteke eskaerak blokeatzea"
+    "message": "Baliteke eskaerak blokeatuta egotea. Ikusi sareko eskaerak blokeatzeko panela"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "Baliteke gailuan eskaerak ordeztea"
+    "message": "Baliteke eskaerak lokalki ordezkatzea. Ikusi iturburuen panela"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Pertsonalizatua"
@@ -7448,9 +7718,6 @@
   "panels/network/BlockedURLsPane.ts | patternInputCannotBeEmpty": {
     "message": "Eredu-sarrerak ezin du hutsik egon."
   },
-  "panels/network/BlockedURLsPane.ts | removeAllPatterns": {
-    "message": "Kendu eredu guztiak"
-  },
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Bat datozen eskaerak blokeatzeko testu-eredua. \"*\" erabil dezakezu komodin gisa."
   },
@@ -7565,6 +7832,9 @@
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
     "message": "Chrome-k ez du erabili HTTP protokoloaren ordezko bertsiorik, ordezko protokoloei buruzko informaziorik ez zegoelako eskaera bidaltzean, baina Alt-Svc goiburu bat zegoen erantzunean."
   },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
+    "message": "Honekin bat etorrarazi da: ServiceWorker router#{PH1}. Baliabidearen tamaina: {PH2}."
+  },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memoria-cachea)"
   },
@@ -7631,7 +7901,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Aurretik eskuratu beharreko cachetik dator. Baliabidearen tamaina: {PH1}."
   },
-  "panels/network/NetworkDataGridNode.ts | servedFromServiceworkerResource": {
+  "panels/network/NetworkDataGridNode.ts | servedFromServiceWorkerResource": {
     "message": "Hemendik dator: ServiceWorker. Baliabidearen tamaina: {PH1}."
   },
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
@@ -7640,7 +7910,7 @@
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
     "message": "Web sortatik eskainia. Baliabidearen tamaina: {PH1}."
   },
-  "panels/network/NetworkDataGridNode.ts | serviceworker": {
+  "panels/network/NetworkDataGridNode.ts | serviceWorker": {
     "message": "(ServiceWorker)"
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
@@ -7663,6 +7933,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Web sortatik dator"
+  },
+  "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
+    "message": "Garatzaileentzako tresnek ordezkatzen dituzten goiburuak dauzka erantzun honek"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookieak"
@@ -7699,6 +7972,9 @@
   },
   "panels/network/NetworkItemView.ts | response": {
     "message": "Erantzuna"
+  },
+  "panels/network/NetworkItemView.ts | responseIsOverridden": {
+    "message": "Garatzaileentzako tresnek erantzun hau ordezkatu dute"
   },
   "panels/network/NetworkItemView.ts | responsePreview": {
     "message": "Erantzunaren aurrebista"
@@ -7842,7 +8118,7 @@
     "message": "Erakutsi blokeatutako eskaerak soilik"
   },
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
-    "message": "Erakutsi soilik erantzun-cookieak blokeatuta dauzkaten eskaerak"
+    "message": "Erakutsi erantzun-cookieak blokeatuta dauzkaten eskaerak soilik"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Erakutsi orriaren jatorrikoak ez diren jatorrietako eskaerak soilik"
@@ -7906,6 +8182,9 @@
   },
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Gorde guztia HAR edukidun gisa"
+  },
+  "panels/network/NetworkLogView.ts | showOnly": {
+    "message": "Erakutsi {PH1} soilik"
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Erakutsi soilik / Ezkutatu eskaerak"
@@ -8144,105 +8423,6 @@
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Eskaerak ez du cookierik."
   },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs aktiboak."
-  },
-  "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Zerbitzariaren portaera abiarazten duten client experiment variation IDs aktiboak."
-  },
-  "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Aukeratu hau baliabidea eta dokumentua webgune beretik badatoz."
-  },
-  "panels/network/RequestHeadersView.ts | copyValue": {
-    "message": "Kopiatu balioa"
-  },
-  "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "Deskodetutakoak:"
-  },
-  "panels/network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(iturburua: disko-cachea)"
-  },
-  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(iturburua: memoria-cachea)"
-  },
-  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(iturburua: aurretik eskuratu beharreko cachea)"
-  },
-  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(iturburua: service worker)"
-  },
-  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(iturburua: Signed Exchange)"
-  },
-  "panels/network/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(iturburua: web sorta)"
-  },
-  "panels/network/RequestHeadersView.ts | general": {
-    "message": "Orokorra"
-  },
-  "panels/network/RequestHeadersView.ts | learnMore": {
-    "message": "Lortu informazio gehiago"
-  },
-  "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Lortu informazio gehiago arazoen fitxan"
-  },
-  "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Baliabide hau duen webgune arbitrario batek segurtasun-arriskurik suposatzen ez duenean soilik aukeratu beharko zenuke hau."
-  },
-  "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Aldi baterako goiburuak soilik daude erabilgarri eskaera ez delako bidali sarearen bidez, cache lokaletik baizik, eta hark ez dituelako gordetzen jatorrizko eskaeraren goiburuak. Eskaeraren goiburu osoak ikusteko, desgaitu cachea."
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Aldi baterako goiburuak daude ikusgai"
-  },
-  "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "Aldi baterako goiburuak daude ikusgai. Goiburu osoak ikusteko, desgaitu cachea."
-  },
-  "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Erreferentzia-emailearen gidalerroa"
-  },
-  "panels/network/RequestHeadersView.ts | remoteAddress": {
-    "message": "Urruneko helbidea"
-  },
-  "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Eskaeren goiburuak"
-  },
-  "panels/network/RequestHeadersView.ts | requestMethod": {
-    "message": "Eskaera-metodoa"
-  },
-  "panels/network/RequestHeadersView.ts | requestUrl": {
-    "message": "Eskatu URLa"
-  },
-  "panels/network/RequestHeadersView.ts | responseHeaders": {
-    "message": "Erantzun-goiburuak"
-  },
-  "panels/network/RequestHeadersView.ts | showMore": {
-    "message": "Erakutsi gehiago"
-  },
-  "panels/network/RequestHeadersView.ts | statusCode": {
-    "message": "Egoera-kodea"
-  },
-  "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Isolatutako iframe batek irekitako leiho gainerakorretan dokumentua kargatzeko aukera blokeatu da, dokumentuan beste jatorri bateko irekitze-gidalerro bat zehaztu delako."
-  },
-  "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Marko hau dokumentuan kapsulatzeko, jatorri anitzeko kapsulatzeari buruzko gidalerroak gaitu behar ditu erantzunak, erantzun-goiburu hau zehaztuta:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburuak zehaztu behar ditu:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
-  },
-  "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Baliabide hau beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "Ikusi analizatutakoak"
-  },
-  "panels/network/RequestHeadersView.ts | viewSource": {
-    "message": "Ikusi iturburukoak"
-  },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Eskaeren dei-pilatzea"
   },
@@ -8280,13 +8460,13 @@
     "message": "ikusi deskodetuta"
   },
   "panels/network/RequestPayloadView.ts | viewParsed": {
-    "message": "Ikusi analizatutakoak"
+    "message": "Ikusi analizatuta"
   },
   "panels/network/RequestPayloadView.ts | viewParsedL": {
     "message": "ikusi analizatutakoak"
   },
   "panels/network/RequestPayloadView.ts | viewSource": {
-    "message": "Ikusi iturburukoak"
+    "message": "Ikusi iturburua"
   },
   "panels/network/RequestPayloadView.ts | viewSourceL": {
     "message": "ikusi iturburua"
@@ -8607,31 +8787,31 @@
     "message": "Aldi baterako goiburuak daude ikusgai. Goiburu osoak ikusteko, desgaitu cachea."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(iturburua: disko-cachea)"
+    "message": "(disko-cachetik)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(iturburua: memoria-cachea)"
+    "message": "(memoriaren cachetik)"
   },
   "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(iturburua: aurretik eskuratu beharreko cachea)"
+    "message": "(aurretik eskuratu beharreko cachetik)"
   },
   "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(iturburua: service worker)"
+    "message": "(jatorria: service worker)"
   },
   "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(iturburua: Signed Exchange)"
+    "message": "(signed-exchange teknologiatik)"
   },
   "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
-    "message": "(iturburua: web sorta)"
+    "message": "(web sortatik)"
   },
   "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "Orokorrak"
+    "message": "Orokorra"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Gordinak"
   },
   "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Erreferentzia-emailearen gidalerroa"
+    "message": "Erreferentzia-emailearen gidalerroak"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
     "message": "Urruneko helbidea"
@@ -8718,25 +8898,28 @@
     "message": "Aukeratu hau baliabidea eta dokumentua webgune beretik badatoz."
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
-    "message": "Baliabidea duen webgune arbitrario batek segurtasun-arriskurik ez duenean soilik aukeratu beharko zenuke hau."
+    "message": "Baliabide hau duen webgune arbitrario batek segurtasun-arriskurik suposatzen ez duenean soilik aukeratu beharko zenuke hau."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
     "message": "Isolatutako iframe batek irekitako leiho gainerakorretan dokumentua kargatzeko aukera blokeatu da, dokumentuan beste jatorri bateko irekitze-gidalerro bat zehaztu delako."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Markoa dokumentuan kapsulatzeko, jatorri anitzeko kapsulatzaileari buruzko gidalerroak gaitu behar ditu erantzunak, erantzun-goiburu hau zehaztuta:"
+    "message": "Marko hau dokumentuan kapsulatzeko, jatorri anitzeko kapsulatzeari buruzko gidalerroak gaitu behar ditu erantzunak, erantzun-goiburu hau zehaztuta:"
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
-    "message": "Baliabidea beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerro bat zehaztu behar du erantzun-goiburuetan:"
+    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburuak zehaztu behar ditu:"
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Baliabidea beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroaren erantzun-goiburua erlaxa dezake:"
+    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Baliabidea beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroaren erantzun-goiburua erlaxa dezake:"
+    "message": "Baliabide hau beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Baliabide multzokatua"
+  },
+  "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
+    "message": "Gehitu sareko eskaerak blokeatzeko eredua"
   },
   "panels/network/network-meta.ts | clear": {
     "message": "Garbitu sarearen erregistroa"
@@ -8788,6 +8971,9 @@
   },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Sortu sarearen erregistroa"
+  },
+  "panels/network/network-meta.ts | removeAllNetworkRequestBlockingPatterns": {
+    "message": "Kendu sareko eskaerak blokeatzeko eredu guztiak"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "baliabide mota"
@@ -9164,9 +9350,6 @@
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Atxikitzaileak"
   },
-  "panels/profiler/HeapSnapshotView.ts | sKb": {
-    "message": "{PH1} kB"
-  },
   "panels/profiler/HeapSnapshotView.ts | savingD": {
     "message": "Gordetzen… % {PH1}"
   },
@@ -9359,20 +9542,8 @@
   "panels/profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "Atera argazki bat"
   },
-  "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
-    "message": "Ezabatu"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
-    "message": "Gorde. Fitxategia gordetzeko, sakatu Sartu."
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | load": {
-    "message": "Kargatu…"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | save": {
-    "message": "Gorde"
-  },
-  "panels/profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
-    "message": "Gorde…"
+  "panels/profiler/ProfileSidebarTreeElement.ts | profileOptions": {
+    "message": "Profilaren aukerak"
   },
   "panels/profiler/ProfileView.ts | chart": {
     "message": "Diagrama"
@@ -9434,26 +9605,14 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Ezin da kargatu profila beste profil bat erregistratzen ari den bitartean."
   },
-  "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
-    "message": "Garbitu profil guztiak"
-  },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "Panel hau zaharkituta geratuko da datorren bertsioan. Erabili errendimenduaren panela JavaScript-eko PUZaren profilak grabatzeko."
-  },
-  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
-    "message": "Gaitu panela aldi baterako"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Iritzia"
   },
   "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
     "message": "Joan errendimenduaren panelera"
-  },
-  "panels/profiler/ProfilesPanel.ts | learnMore": {
-    "message": "Lortu informazio gehiago"
-  },
-  "panels/profiler/ProfilesPanel.ts | load": {
-    "message": "Kargatu…"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Ezin izan da kargatu profila: {PH1}."
@@ -9464,11 +9623,23 @@
   "panels/profiler/ProfilesPanel.ts | runD": {
     "message": "Exekutatu {PH1}"
   },
+  "panels/profiler/profiler-meta.ts | clearAllProfiles": {
+    "message": "Garbitu profil guztiak"
+  },
+  "panels/profiler/profiler-meta.ts | deleteProfile": {
+    "message": "Ezabatu profila"
+  },
   "panels/profiler/profiler-meta.ts | liveHeapProfile": {
     "message": "Memoriaren esleipen aktiboaren profila"
   },
+  "panels/profiler/profiler-meta.ts | loadProfile": {
+    "message": "Kargatu profila…"
+  },
   "panels/profiler/profiler-meta.ts | memory": {
     "message": "Memoria"
+  },
+  "panels/profiler/profiler-meta.ts | saveProfile": {
+    "message": "Gorde profila…"
   },
   "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
     "message": "Erakutsi denbora errealeko emaitzak ematen dituen memoriaren esleipen-profila"
@@ -9610,6 +9781,12 @@
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Inportatu grabaketa"
+  },
+  "panels/recorder/RecorderController.ts | noRecordings": {
+    "message": "Ez dago grabaketarik"
+  },
+  "panels/recorder/RecorderController.ts | numberOfRecordings": {
+    "message": "grabaketa"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Erreproduzitu grabaketa berriro"
@@ -11321,9 +11498,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | returnValue": {
     "message": "Eman beharreko balioa"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "Bistaratu memoria-ikuskatzailea panelean"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ktrl + Sartu"
   },
@@ -11438,8 +11612,8 @@
   "panels/sources/SourcesPanel.ts | showNavigator": {
     "message": "Erakutsi nabigatzailea"
   },
-  "panels/sources/SourcesPanel.ts | storeSAsGlobalVariable": {
-    "message": "Gorde {PH1} aldagai orokor gisa"
+  "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
+    "message": "Gorde aldagai orokor gisa"
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Eten une honetako JavaScript-eko deia"
@@ -11451,13 +11625,13 @@
     "message": "Exekutatu agindua"
   },
   "panels/sources/SourcesView.ts | selectFolder": {
-    "message": "hautatu karpeta"
+    "message": "Hautatu karpeta bat"
   },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "Iturburuko ikuspegiko ekintzak"
   },
   "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
-    "message": "Aldaketak lan-eremuarekin sinkronizatzeko, jaregin iturburuak dauzkan karpeta bat hemen edo:"
+    "message": "Aldaketak lan-eremuarekin sinkronizatzeko, jaregin iturburuak dauzkan karpeta bat hemen edo"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Ziur gorde gabeko {PH1} fitxategia itxi nahi duzula?"
@@ -12260,6 +12434,12 @@
   "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
     "message": "Saltzailearen worklet-a: {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | threadPool": {
+    "message": "Thread pool"
+  },
+  "panels/timeline/ThreadAppender.ts | threadPoolThreadS": {
+    "message": "Thread pool-eko langilea: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "{PH1} haria"
   },
@@ -12393,10 +12573,10 @@
     "message": "Gaizki eratutako PUZaren profil-formatua"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
-    "message": "Gaizki eratutako kronologia-datuak: {PH1}"
+    "message": "Kronologian gaizki eratutako datuak: {PH1}"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "Gaizki eratutako kronologia-datuak: JSON formatu ezezaguna"
+    "message": "Kronologian gaizki eratutako datuak: JSON formatu ezezaguna"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
     "message": "Gaizki eratutako kronologia-datuak, JSONeko giltzen oreka okerra"
@@ -12454,6 +12634,9 @@
   },
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "JavaScript-eko laginak desgaitzen ditu, eta murriztu egiten du gainkarga gailu mugikorren kontra exekutatzean"
+  },
+  "panels/timeline/TimelinePanel.ts | downloadAfterError": {
+    "message": "Deskargatu formaturik gabeko arrasto-gertaerak"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Jaregin hemen kronologia-fitxategia edo URLa"
@@ -12575,8 +12758,11 @@
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ezkutatu sortarik astunena"
   },
-  "panels/timeline/TimelineTreeView.ts | javascript": {
-    "message": "JavaScript"
+  "panels/timeline/TimelineTreeView.ts | matchCase": {
+    "message": "Izan kontuan maiuskulak eta minuskulak"
+  },
+  "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
+    "message": "Bat etorrarazi hitz osoa"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Taldekatzerik ez"
@@ -12610,6 +12796,9 @@
   },
   "panels/timeline/TimelineTreeView.ts | unattributed": {
     "message": "[egilerik gabea]"
+  },
+  "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
+    "message": "Erabili adierazpen erregularra"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[V8 exekuzio-denbora]"
@@ -12800,9 +12989,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | emptyPlaceholderColon": {
-    "message": ": {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Kodetutako datuak"
   },
@@ -12851,9 +13037,6 @@
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Lehen errendatzea"
   },
-  "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
-    "message": "Edukiaren doikuntza dinamiko behartua"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Markoa"
   },
@@ -12881,17 +13064,11 @@
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Datuak duela gutxi sartu dira"
   },
-  "panels/timeline/TimelineUIUtils.ts | handlerTookS": {
-    "message": "Kudeatzaileak {PH1} behar izan ditu"
-  },
   "panels/timeline/TimelineUIUtils.ts | hitTest": {
     "message": "Posizionamendu-proba"
   },
   "panels/timeline/TimelineUIUtils.ts | idle": {
     "message": "Inaktibo"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idleCallbackExecutionExtended": {
-    "message": "Dei bidezko erantzun inaktiboa exekutatzeko denborak muga gainditu du ({PH1})"
   },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Dei bidezko erantzun inaktiboa eskatu da"
@@ -12910,6 +13087,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Abiarazlea"
+  },
+  "panels/timeline/TimelineUIUtils.ts | inputDelay": {
+    "message": "Sarreraren atzerapena"
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalatu tenporizadorea"
@@ -12944,9 +13124,6 @@
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Geruzaren erroa"
   },
-  "panels/timeline/TimelineUIUtils.ts | layerTree": {
-    "message": "Geruza-zuhaitza"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerize": {
     "message": "Geruzak kalkulatzea"
   },
@@ -12977,9 +13154,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Kokapena"
   },
-  "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "Zeregin luzea"
-  },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Hondar-memoriaren bilketa nagusia"
   },
@@ -12987,9 +13161,6 @@
     "message": "Mezua"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
-    "message": "MIME mota"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mimeTypeCaps": {
     "message": "MIME mota"
   },
   "panels/timeline/TimelineUIUtils.ts | minorGc": {
@@ -13021,9 +13192,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Diseinua behar duten nodoak"
-  },
-  "panels/timeline/TimelineUIUtils.ts | notOptimized": {
-    "message": "Optimizatu gabe"
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Kargatzeko gertaera"
@@ -13073,11 +13241,17 @@
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Errendatze aurreko urratsa"
   },
+  "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
+    "message": "Aurkezpenaren atzerapena"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Aurrebista"
   },
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Lehentasuna"
+  },
+  "panels/timeline/TimelineUIUtils.ts | processingTime": {
+    "message": "Prozesatzeko denbora"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Sortutako cachearen tamaina"
@@ -13106,9 +13280,6 @@
   "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
     "message": "Jaso WebSocket-en konexio-hitzarmena"
   },
-  "panels/timeline/TimelineUIUtils.ts | recurringHandlerTookS": {
-    "message": "{PH1} behar izan ditu kudeatzaile errepikariak"
-  },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Erlazionatutako nodoa"
   },
@@ -13133,9 +13304,6 @@
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Eskaera-metodoa"
   },
-  "panels/timeline/TimelineUIUtils.ts | resource": {
-    "message": "Baliabidea"
-  },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Erakutsi"
   },
@@ -13154,9 +13322,6 @@
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} ({PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | sBytes": {
-    "message": "{n,plural, =1{# byte}other{# byte}}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
     "message": "{PH1} elementuaren eraginez, erabiltzeko modua kaxkarra izan daiteke. Duela gutxi {PH2} egin da."
   },
@@ -13168,9 +13333,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sForS": {
     "message": "{PH1} ({PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} errendimenduaren buxadura bat da ziurrenik."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
@@ -13198,9 +13360,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sTookS": {
-    "message": "{PH2} behar izan dira {PH1} egiteko."
   },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Programatu estiloa berriro kalkulatzeko prozesua"
@@ -13232,9 +13391,6 @@
   "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
     "message": "Bidali WebSocket-eko konexio-hitzarmena"
   },
-  "panels/timeline/TimelineUIUtils.ts | show": {
-    "message": "Erakutsi"
-  },
   "panels/timeline/TimelineUIUtils.ts | sign": {
     "message": "Sinatu"
   },
@@ -13252,9 +13408,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | state": {
     "message": "Egoera"
-  },
-  "panels/timeline/TimelineUIUtils.ts | statusCode": {
-    "message": "Egoera-kodea"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Zuzenean igorria"
@@ -13337,9 +13490,6 @@
   "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
     "message": "WASM moduluaren cachea baliogabea da"
   },
-  "panels/timeline/TimelineUIUtils.ts | websocketProtocol": {
-    "message": "WebSocket protokoloa"
-  },
   "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
     "message": "Eskaera bidaliko da"
   },
@@ -13380,10 +13530,13 @@
     "message": "Sistema"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
-    "message": "Edukiaren doikuntza dinamiko behartua"
+    "message": "Behartutako doitzea"
   },
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
     "message": "Dei bidezko erantzun inaktiboa exekutatzeko denborak muga gainditu du ({PH1})"
+  },
+  "panels/timeline/components/DetailsView.ts | longInteractionINP": {
+    "message": "Interakzio luzea"
   },
   "panels/timeline/components/DetailsView.ts | longTask": {
     "message": "Zeregin luzea"
@@ -13391,8 +13544,23 @@
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} errendimenduaren buxadura bat da ziurrenik."
   },
+  "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}: orriaren moldagarritasuna kaskarra dela esan nahi du."
+  },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH2} behar izan dira {PH1} egiteko."
+  },
+  "panels/timeline/components/DetailsView.ts | websocketProtocol": {
+    "message": "WebSocket protokoloa"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
+    "message": "Sarreraren atzerapena"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
+    "message": "Aurkezpenaren atzerapena"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
+    "message": "Prozesatzeko denbora"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Ezkutatu chrome markoa geruzen ikuspegian"
@@ -13652,74 +13820,11 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Arazoa ez dago erabilgarri une honetan"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Utzi memoria nabarmentzeari"
+  "ui/components/markdown_view/CodeBlock.ts | copied": {
+    "message": "Kopiatu da arbelean"
   },
-  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Joan memoria zati honetara"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
-    "message": "Helbideak {PH1} eta {PH2} arteko zenbaki bat izan behar du"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Ezin izan da ireki lerroetako memoria-ikuskatzailea: ez du aurkitu bufferra."
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
-    "message": "Ez dago ikuskatze irekirik"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
-    "message": "Idatzi helbidea"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
-    "message": "Egin atzera helbideen historian"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
-    "message": "Egin aurrera helbideen historian"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
-    "message": "Hurrengo orria"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
-    "message": "Aurreko orria"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
-    "message": "Freskatu"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Aldatu Endianness"
-  },
-  "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
-    "message": "Ireki edo itxi balio motaren ezarpenak"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | addressOutOfRange": {
-    "message": "Helbidea memoria-barrutitik kanpo dago"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | changeValueTypeMode": {
-    "message": "Aldatu modua"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | jumpToPointer": {
-    "message": "Joan helbidera"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Balio Signed"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Balio Unsigned"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
-    "message": "E.a."
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
-    "message": "Beste bat"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
-    "message": "Memoria-ikuskatzailea"
-  },
-  "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
-    "message": "Erakutsi memoria-ikuskatzailea"
-  },
-  "ui/components/markdown_view/MarkdownView.ts | copy": {
-    "message": "Kopiatu"
+  "ui/components/markdown_view/CodeBlock.ts | copy": {
+    "message": "Kopiatu kodea"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Iritzia"
@@ -13772,6 +13877,9 @@
   "ui/legacy/ActionRegistration.ts | background_services": {
     "message": "Atzeko planoko zerbitzuak"
   },
+  "ui/legacy/ActionRegistration.ts | changes": {
+    "message": "Aldaketak"
+  },
   "ui/legacy/ActionRegistration.ts | console": {
     "message": "Kontsola"
   },
@@ -13810,6 +13918,9 @@
   },
   "ui/legacy/ActionRegistration.ts | performance": {
     "message": "Errendimendua"
+  },
+  "ui/legacy/ActionRegistration.ts | recorder": {
+    "message": "Grabagailua"
   },
   "ui/legacy/ActionRegistration.ts | rendering": {
     "message": "Errendatzea"
@@ -14361,7 +14472,7 @@
     "message": "Unitateak"
   },
   "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
-    "message": "\"{PH1}\" ez dago zehaztuta"
+    "message": "{PH1} ez dago zehaztuta"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Erakutsi JavaScript-eko objektu gisa"
@@ -14619,7 +14730,7 @@
     "message": "Iturburua"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Idatzi  ''{PH1}''"
+    "message": "Idatzi \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Bilatu"

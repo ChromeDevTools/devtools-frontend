@@ -300,6 +300,11 @@ const UIStrings = {
    *@example {Low} PH2
    */
   initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
+  /**
+   *@description Tooltip to explain why the request has warning icon
+   */
+  thirdPartyPhaseout:
+      'Cookies for this request are blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1158,6 +1163,17 @@ export class NetworkRequestNode extends NetworkNode {
         color: 'var(--icon-error)',
       };
       iconElement = this.createIconElement(iconData, type.title());
+      iconElement.classList.add('icon');
+
+      return iconElement;
+    }
+
+    if (request.hasThirdPartyCookiePhaseoutIssue()) {
+      const iconData = {
+        iconName: 'warning-filled',
+        color: 'var(--icon-warning)',
+      };
+      iconElement = this.createIconElement(iconData, i18nString(UIStrings.thirdPartyPhaseout));
       iconElement.classList.add('icon');
 
       return iconElement;

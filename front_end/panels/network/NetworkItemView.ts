@@ -110,6 +110,10 @@ const UIStrings = {
    */
   requestAndResponseTimeline: 'Request and response timeline',
   /**
+   *@description Tooltip to explain the warning icon of the Cookies panel
+   */
+  thirdPartyPhaseout: 'Cookies blocked due to third-party cookie phaseout.',
+  /**
    *@description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
    */
   trustTokens: 'Private state tokens',
@@ -276,6 +280,12 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.Cookies, i18nString(UIStrings.cookies), this.cookiesView,
           i18nString(UIStrings.requestAndResponseCookies));
+    }
+    if (this.requestInternal.hasThirdPartyCookiePhaseoutIssue()) {
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+      icon.title = i18nString(UIStrings.thirdPartyPhaseout);
+      this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.Cookies, icon);
     }
   }
 

@@ -46,7 +46,7 @@ describe('The Console Tab', async () => {
     assert.deepEqual(messages, [
       '{}',
       'ƒ Object() { [native code] }',
-      '{constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ,\xA0…}',
+      '{__defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ, __lookupSetter__: ƒ,\xA0…}',
       '{foo: \'foo\'}',
       '{bar: \'bar\'}',
       '[\'test\']',

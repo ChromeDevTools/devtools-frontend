@@ -884,8 +884,10 @@ export class ToolbarSettingToggle extends ToolbarToggle {
   private readonly setting: Common.Settings.Setting<boolean>;
   private willAnnounceState: boolean;
 
-  constructor(setting: Common.Settings.Setting<boolean>, glyph: string, title: string, toggledGlyph?: string) {
-    super(title, glyph, toggledGlyph);
+  constructor(
+      setting: Common.Settings.Setting<boolean>, glyph: string, title: string, toggledGlyph?: string,
+      jslogContext?: string) {
+    super(title, glyph, toggledGlyph, jslogContext);
     this.defaultTitle = title;
     this.setting = setting;
     this.settingChanged();

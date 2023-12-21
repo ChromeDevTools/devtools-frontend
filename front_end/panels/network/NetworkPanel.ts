@@ -45,6 +45,7 @@ import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
@@ -213,6 +214,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
     this.panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
     this.panelToolbar.makeWrappable(true);
+    this.panelToolbar.element.setAttribute('jslog', `${VisualLogging.section().context('network-toolbar')}`);
     this.rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
 
     this.filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
@@ -385,7 +387,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   private setupToolbarButtons(splitWidget: UI.SplitWidget.SplitWidget): void {
-    const searchToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.search), 'search');
+    const searchToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.search), 'search', undefined, 'search');
     function updateSidebarToggle(): void {
       const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
       searchToggle.setToggled(isSidebarShowing);
@@ -424,8 +426,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
       width: '20px',
       height: '20px',
     };
-    const networkConditionsButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon);
+    const networkConditionsButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon, undefined, 'network-conditions');
     networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void UI.ViewManager.ViewManager.instance().showView('network.config');
     }, this);
@@ -434,7 +436,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.networkSettings), 'gear-filled'));
+        this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.networkSettings), 'gear-filled',
+        'network-settings'));
 
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this.settingsPane.element);
     settingsToolbarLeft.makeVertical();
@@ -455,11 +458,13 @@ export class NetworkPanel extends UI.Panel.Panel implements
         i18nString(UIStrings.captureScreenshots)));
 
     this.panelToolbar.appendSeparator();
-    const importHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'import');
+    const importHarButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'import', undefined, 'import-har');
     importHarButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, () => this.fileSelectorElement.click(), this);
     this.panelToolbar.appendToolbarItem(importHarButton);
-    const exportHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'download');
+    const exportHarButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'download', undefined, 'export-har');
     exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.networkLogView.exportAll();
     }, this);

@@ -533,7 +533,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     filterBar.addFilter(this.textFilterUI);
 
     this.invertFilterUI = new UI.FilterBar.CheckboxFilterUI(
-        'invert-filter', i18nString(UIStrings.invertFilter), true, this.networkInvertFilterSetting);
+        'invert-filter', i18nString(UIStrings.invertFilter), true, this.networkInvertFilterSetting, 'invert-filter');
     this.invertFilterUI.addEventListener(
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
@@ -2629,10 +2629,11 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
   }
 
   private addRequestType(contextMenu: UI.ContextMenu.ContextMenu, name: string, label: string): void {
+    const jslogContext = name.toLowerCase().replace(/\s/g, '-');
     contextMenu.defaultSection().appendCheckboxItem(label, () => {
       this.setting.get()[name] = !this.setting.get()[name];
       this.toggleTypeFilter(name);
-    }, this.setting.get()[name]);
+    }, this.setting.get()[name], undefined, undefined, undefined, jslogContext);
   }
 
   private toggleTypeFilter(typeName: string): void {
@@ -2842,28 +2843,30 @@ export class MoreFiltersDropDownUI extends
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hideDataUrls),
         () => this.networkHideDataURLSetting.set(!this.networkHideDataURLSetting.get()),
-        this.networkHideDataURLSetting.get(), undefined, undefined, i18nString(UIStrings.hidesDataAndBlobUrls));
+        this.networkHideDataURLSetting.get(), undefined, undefined, i18nString(UIStrings.hidesDataAndBlobUrls),
+        'hide-data-urls');
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.chromeExtensions),
         () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()),
-        this.networkHideChromeExtensionsSetting.get(), undefined, undefined, i18nString(UIStrings.hideChromeExtension));
+        this.networkHideChromeExtensionsSetting.get(), undefined, undefined, i18nString(UIStrings.hideChromeExtension),
+        'hide-extension-urls');
     this.contextMenu.defaultSection().appendSeparator();
 
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hasBlockedCookies),
         () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()),
         this.networkShowBlockedCookiesOnlySetting.get(), undefined, undefined,
-        i18nString(UIStrings.onlyShowRequestsWithBlockedCookies));
+        i18nString(UIStrings.onlyShowRequestsWithBlockedCookies), 'only-blocked-response-cookies');
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.blockedRequests),
         () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()),
         this.networkOnlyBlockedRequestsSetting.get(), undefined, undefined,
-        i18nString(UIStrings.onlyShowBlockedRequests));
+        i18nString(UIStrings.onlyShowBlockedRequests), 'only-blocked-requests');
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.thirdParty),
         () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()),
-        this.networkOnlyThirdPartySetting.get(), undefined, undefined,
-        i18nString(UIStrings.onlyShowThirdPartyRequests));
+        this.networkOnlyThirdPartySetting.get(), undefined, undefined, i18nString(UIStrings.onlyShowThirdPartyRequests),
+        'only-3rd-party-requests');
 
     void this.contextMenu.show();
   }

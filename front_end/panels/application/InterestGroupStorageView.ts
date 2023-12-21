@@ -7,6 +7,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
 import interestGroupStorageViewStyles from './interestGroupStorageView.css.js';
@@ -44,6 +45,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
 
   constructor(detailsGetter: InterestGroupDetailsGetter) {
     super(/* isVertical */ false, /* secondIsSidebar: */ true);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('interest-groups')}`);
     this.detailsGetter = detailsGetter;
 
     const topPanel = new UI.Widget.VBox();

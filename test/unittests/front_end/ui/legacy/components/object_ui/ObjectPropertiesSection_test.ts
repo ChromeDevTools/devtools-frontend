@@ -4,7 +4,6 @@
 
 const {assert} = chai;
 
-import * as Root from '../../../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as ObjectUI from '../../../../../../../front_end/ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
@@ -16,207 +15,164 @@ import {someMutations} from '../../../../helpers/MutationHelpers.js';
 import {describeWithRealConnection, getExecutionContext} from '../../../../helpers/RealConnection.js';
 import {TestRevealer} from '../../../../helpers/RevealerHelpers.js';
 
-describeWithRealConnection('ObjectPropertiesSection', () => {
-  async function setupTreeOutline(
-      code: string, accessorPropertiesOnly: boolean, generatePreview: boolean, nonIndexedPropertiesOnly?: boolean) {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const target = targetManager.rootTarget();
-    assertNotNullOrUndefined(target);
-    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    assertNotNullOrUndefined(runtimeModel);
-    const executionContext = await getExecutionContext(runtimeModel);
-    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
-
-    const {result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        code, false /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
-    if (!(result && 'object' in result && result.object)) {
-      throw new Error('Cannot evaluate test object');
+describe('ObjectPropertiesSection', () => {
+  describeWithRealConnection('ObjectPropertiesSection', () => {
+    async function evaluateAndGetProperties(code: string, accessorPropertiesOnly = false, generatePreview = false):
+        Promise<{object: SDK.RemoteObject.RemoteObject, properties: SDK.RemoteObject.RemoteObjectProperty[]}> {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const target = targetManager.rootTarget();
+      assertNotNullOrUndefined(target);
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assertNotNullOrUndefined(runtimeModel);
+      const executionContext = await getExecutionContext(runtimeModel);
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+      const {result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
+          code, false /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
+      if (!(result && 'object' in result && result.object)) {
+        throw new Error('Cannot evaluate test object');
+      }
+      const {object} = result;
+      const {properties} = await object.getAllProperties(accessorPropertiesOnly, generatePreview);
+      assertNotNullOrUndefined(properties);
+      return {object, properties};
     }
-    const {properties} =
-        await result.object.getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly);
 
-    assertNotNullOrUndefined(properties);
-    const treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        treeOutline.rootElement(), properties, null, true /* skipProto */, false /* skipGettersAndSetters */,
-        result.object);
+    async function setupTreeOutline(code: string, accessorPropertiesOnly: boolean, generatePreview: boolean) {
+      const {object, properties} = await evaluateAndGetProperties(code, accessorPropertiesOnly, generatePreview);
+      const treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
+      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
+          treeOutline.rootElement(), properties, null, true /* skipProto */, false /* skipGettersAndSetters */, object);
+      return treeOutline;
+    }
 
-    return treeOutline;
-  }
-
-  it('can reveal private accessor values', async () => {
-    const VALUE = '42';
-    const treeOutline = await setupTreeOutline(
-        `(() => {
+    it('can reveal private accessor values', async () => {
+      const VALUE = '42';
+      const treeOutline = await setupTreeOutline(
+          `(() => {
            class A {
              get #bar() { return ${VALUE}; }
            };
            return new A();
          })()`,
-        true, false);
+          true, false);
 
-    const propertiesSection =
-        treeOutline.rootElement().firstChild() as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
+      const propertiesSection =
+          treeOutline.rootElement().firstChild() as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
 
-    propertiesSection.update();
+      propertiesSection.update();
 
-    const calculateValueButton =
-        propertiesSection.valueElement.querySelector('.object-value-calculate-value-button') as HTMLElement;
-    assertNotNullOrUndefined(calculateValueButton);
-    const mutations = someMutations(propertiesSection.listItemElement);
-    calculateValueButton.click();
-    await mutations;
+      const calculateValueButton =
+          propertiesSection.valueElement.querySelector('.object-value-calculate-value-button') as HTMLElement;
+      assertNotNullOrUndefined(calculateValueButton);
+      const mutations = someMutations(propertiesSection.listItemElement);
+      calculateValueButton.click();
+      await mutations;
 
-    assert.strictEqual(VALUE, propertiesSection.valueElement.innerHTML);
+      assert.strictEqual(VALUE, propertiesSection.valueElement.innerHTML);
+    });
+
+    describe('assignWebIDLMetadata', () => {
+      async function checkImportProperties(code: string, important: string[], notImportant: string[] = []) {
+        const {object, properties} = await evaluateAndGetProperties(code);
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.assignWebIDLMetadata(object, properties);
+        const expected = new Set<string>(important);
+        const notExpected = new Set<string>(notImportant);
+        for (const property of properties) {
+          if (property.webIdl?.applicable) {
+            expected.delete(property.name);
+            notExpected.delete(property.name);
+          }
+        }
+
+        assert.strictEqual(
+            expected.size, 0, `Not all expected properties were found (${[...expected].join(', ')} is missing)`);
+        assert.strictEqual(notExpected.size, notImportant.length, 'Unexpected properties were found');
+      }
+
+      it('marks important DOM properties for checkbox inputs', async () => {
+        await checkImportProperties(
+            `(() => {
+             const input = document.createElement('input');
+             input.type = 'checkbox';
+             return input;
+           })()`,
+            [
+              'checked',
+              'required',
+              'type',
+              'value',
+            ],
+            [
+              'accept',
+              'files',
+              'multiple',
+            ],
+        );
+      });
+
+      it('marks important DOM properties for file inputs', async () => {
+        await checkImportProperties(
+            `(() => {
+             const input = document.createElement('input');
+             input.type = 'file';
+             return input;
+           })()`,
+            [
+              'accept',
+              'files',
+              'multiple',
+              'required',
+              'type',
+            ],
+            [
+              'checked',
+            ],
+        );
+      });
+
+      it('marks important DOM properties for anchors', async () => {
+        await checkImportProperties(
+            `(() => {
+             const a = document.createElement('a');
+             a.href = 'https://www.google.com:1234/foo/bar/baz?hello=world#what';
+             const code = document.createElement('code');
+             code.innerHTML = 'hello world';
+             a.append(code);
+             return a;
+           })()`,
+            [
+              // https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element
+              'text',
+              // https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils
+              'href',
+              'origin',
+              'protocol',
+              'hostname',
+              'port',
+              'pathname',
+              'search',
+              'hash',
+            ],
+        );
+      });
+
+      it('marks important DOM properties for the window object', async () => {
+        await checkImportProperties(
+            'window',
+            [
+              'customElements',
+              'document',
+              'frames',
+              'history',
+              'location',
+              'navigator',
+            ],
+        );
+      });
+    });
   });
 
-  // Flaky / Blocking tree
-  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for checkbox inputs', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
-    const treeOutline = await setupTreeOutline(
-        `(() => {
-           const input = document.createElement('input');
-           input.type = 'checkbox';
-           return input;
-         })()`,
-        false, false);
-
-    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
-    const expected = new Set<string>([
-      'checked: false',
-      'required: false',
-      'type: "checkbox"',
-      'value: "on"',
-    ]);
-    const notExpected = new Set<string>([
-      'accept: ""',
-      'files: FileList',
-      'multiple: false',
-    ]);
-
-    for (const element of webidlProperties) {
-      const textContent = element.querySelector('.name-and-value')?.textContent;
-      if (textContent && expected.has(textContent)) {
-        expected.delete(textContent);
-      }
-      if (textContent && notExpected.has(textContent)) {
-        notExpected.delete(textContent);
-      }
-    }
-
-    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
-    assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
-  });
-
-  // Flaky / Blocking tree
-  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for file inputs', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
-    const treeOutline = await setupTreeOutline(
-        `(() => {
-           const input = document.createElement('input');
-           input.type = 'file';
-           return input;
-         })()`,
-        false, false);
-
-    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
-    const notExpected = new Set<string>([
-      'checked: false',
-      'type: "checkbox"',
-      'value: "on"',
-    ]);
-    const expected = new Set<string>([
-      'accept: ""',
-      'files: FileList',
-      'multiple: false',
-      'required: false',
-    ]);
-
-    for (const element of webidlProperties) {
-      const textContent = element.querySelector('.name-and-value')?.textContent;
-      if (textContent && expected.has(textContent)) {
-        expected.delete(textContent);
-      }
-      if (textContent && notExpected.has(textContent)) {
-        notExpected.delete(textContent);
-      }
-    }
-
-    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
-    assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
-  });
-
-  // Flaky / Blocking tree
-  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for anchors', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
-    const treeOutline = await setupTreeOutline(
-        `(() => {
-           const a = document.createElement('a');
-           a.href = 'https://www.google.com:1234/foo/bar/baz?hello=world#what';
-           const code = document.createElement('code');
-           code.innerHTML = 'hello world';
-           a.append(code);
-           return a;
-         })()`,
-        false, false);
-
-    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
-    const expected = new Set<string>([
-      // https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element
-      'text: "hello world"',
-      // https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils
-      'href: "https://www.google.com:1234/foo/bar/baz?hello=world#what"',
-      'origin: "https://www.google.com:1234"',
-      'protocol: "https:"',
-      'hostname: "www.google.com"',
-      'port: "1234"',
-      'pathname: "/foo/bar/baz"',
-      'search: "?hello=world"',
-      'hash: "#what"',
-    ]);
-
-    for (const element of webidlProperties) {
-      const textContent = element.querySelector('.name-and-value')?.textContent;
-      if (textContent && expected.has(textContent)) {
-        expected.delete(textContent);
-      }
-    }
-
-    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
-  });
-
-  // Flaky
-  it.skip('[crbug.com/1408761] visually distinguishes important DOM properties for the window object', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
-    const treeOutline = await setupTreeOutline(
-        `(() => {
-           return window;
-         })()`,
-        false, false);
-
-    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
-    const expected = new Set<string>([
-      'customElements: CustomElementRegistry',
-      'document: document',
-      'frames: Window',
-      'history: History',
-      'location: Location',
-      'navigator: Navigator',
-    ]);
-
-    for (const element of webidlProperties) {
-      const textContent = element.querySelector('.name-and-value')?.textContent;
-      if (textContent && expected.has(textContent)) {
-        expected.delete(textContent);
-      }
-    }
-
-    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
-  });
-});
-
-describeWithEnvironment('ObjectPropertiesSection', () => {
-  describe('ObjectPropertiesSection', () => {
+  describeWithEnvironment('ObjectPropertiesSection', () => {
     describe('appendMemoryIcon', () => {
       it('appends a memory icon for inspectable object types', () => {
         const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);

@@ -238,6 +238,29 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         property.webIdl = {info: webIdlProperty};
       }
     }
+
+    const names = ObjectPropertiesSection.getPropertyValuesByNames(properties);
+    const parentRules = value.webIdl.info.rules;
+    if (parentRules) {
+      for (const {when: name, is: expected} of parentRules) {
+        if (names.get(name)?.value === expected) {
+          value.webIdl.state.set(name, expected);
+        }
+      }
+    }
+
+    for (const property of properties) {
+      if (property.webIdl) {
+        const parentState = value.webIdl.state;
+        const propertyRules = property.webIdl.info.rules;
+        if (!parentRules && !propertyRules) {
+          property.webIdl.applicable = true;
+        } else {
+          property.webIdl.applicable =
+              !propertyRules || propertyRules?.some(rule => parentState.get(rule.when) === rule.is);
+        }
+      }
+    }
   }
 
   static getPropertyValuesByNames(properties: SDK.RemoteObject.RemoteObjectProperty[]):
@@ -796,31 +819,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       skipGettersAndSetters: boolean, value: SDK.RemoteObject.RemoteObject|null,
       linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null): void {
     ObjectPropertiesSection.assignWebIDLMetadata(value, properties);
-    const names = ObjectPropertiesSection.getPropertyValuesByNames(properties);
-
-    if (value?.webIdl) {
-      const parentRules = value.webIdl.info.rules;
-      if (parentRules) {
-        for (const {when: name, is: expected} of parentRules) {
-          if (names.get(name)?.value === expected) {
-            value.webIdl.state.set(name, expected);
-          }
-        }
-      }
-
-      for (const property of properties) {
-        if (property.webIdl) {
-          const parentState = value.webIdl.state;
-          const propertyRules = property.webIdl.info.rules;
-          if (!parentRules && !propertyRules) {
-            property.webIdl.applicable = true;
-          } else {
-            property.webIdl.applicable =
-                !propertyRules || propertyRules?.some(rule => parentState.get(rule.when) === rule.is);
-          }
-        }
-      }
-    }
 
     properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];

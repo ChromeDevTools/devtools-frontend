@@ -12,6 +12,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import bounceTrackingMitigationsViewStyles from './bounceTrackingMitigationsView.css.js';
 
@@ -90,7 +91,8 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     LitHtml.render(LitHtml.html`
       <${ReportView.ReportView.Report.litTagName} .data=${
           {reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)} as ReportView.ReportView.ReportData
-      }>
+      }
+      jslog=${VisualLogging.pane().context('bounce-tracking-mitigations')}>
         ${await this.#renderMainFrameInformation()}
       </${ReportView.ReportView.Report.litTagName}>
     `, this.#shadow, {host: this});
@@ -127,7 +129,8 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
       <${ReportView.ReportView.ReportSectionDivider.litTagName}>
       </${ReportView.ReportView.ReportSectionDivider.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
-        <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link">
+        <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
+        jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
           ${i18nString(UIStrings.learnMore)}
         </x-link>
       </${ReportView.ReportView.ReportSection.litTagName}>
@@ -145,7 +148,8 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
         .disabled=${isMitigationRunning}
         .spinner=${isMitigationRunning}
         .variant=${Buttons.Button.Variant.PRIMARY}
-        @click=${this.#runMitigations}>
+        @click=${this.#runMitigations}
+        jslog=${VisualLogging.action().track({click: true}).context('force-run')}>
         ${isMitigationRunning ? LitHtml.html`
           ${i18nString(UIStrings.runningMitigations)}`:`
           ${i18nString(UIStrings.forceRun)}

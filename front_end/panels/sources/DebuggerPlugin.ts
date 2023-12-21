@@ -730,7 +730,7 @@ export class DebuggerPlugin extends Plugin {
         //     example is hovering over {Math.random()} which would result in a different value
         //     each time the user hovers over it.
         const throwOnSideEffect = Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps') &&
-            highlightRange.containsCallExpression;
+            highlightRange.containsSideEffects;
         const result = await selectedCallFrame.evaluate({
           expression: resolvedText || evaluationText,
           objectGroup: 'popover',
@@ -2224,7 +2224,7 @@ export function getVariableValuesByLine(
 export function computePopoverHighlightRange(state: CodeMirror.EditorState, mimeType: string, cursorPos: number): {
   from: number,
   to: number,
-  containsCallExpression: boolean,
+  containsSideEffects: boolean,
 }|null {
   const {main} = state.selection;
   if (!main.empty) {
@@ -2232,7 +2232,7 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
       return null;
     }
     // If the user goes through the trouble of manually selecting an expression, we'll allow side-effects.
-    return {from: main.from, to: main.to, containsCallExpression: false};
+    return {from: main.from, to: main.to, containsSideEffects: false};
   }
 
   const tree = CodeMirror.ensureSyntaxTree(state, cursorPos, 5 * 1000);
@@ -2266,7 +2266,7 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
           }
         }
       }
-      return {from: node.from, to: node.to, containsCallExpression: false};
+      return {from: node.from, to: node.to, containsSideEffects: false};
     }
 
     case 'text/html':
@@ -2286,7 +2286,7 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
       if (!current) {
         return null;
       }
-      return {from: current.from, to: current.to, containsCallExpression: nodeContainsCallExpression(current)};
+      return {from: current.from, to: current.to, containsSideEffects: containsSideEffects(state.doc, current)};
     }
 
     default: {
@@ -2295,18 +2295,34 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
       if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to))) {
         return null;
       }
-      return {from: node.from, to: node.to, containsCallExpression: false};
+      return {from: node.from, to: node.to, containsSideEffects: false};
     }
   }
 }
 
-function nodeContainsCallExpression(node: CodeMirror.SyntaxNode): boolean {
-  let containsCallExpression = false;
-  node.cursor().iterate(node => {
-    containsCallExpression ||= node.name === 'CallExpression';
-    return !containsCallExpression;  // No need to recurse into children if we are alraedy done.
+function containsSideEffects(doc: CodeMirror.Text, root: CodeMirror.SyntaxNode): boolean {
+  let containsSideEffects = false;
+  root.toTree().iterate({
+    enter(node: CodeMirror.SyntaxNode): boolean {
+      switch (node.name) {
+        case 'AssignmentExpression':
+        case 'CallExpression': {
+          containsSideEffects = true;
+          return false;
+        }
+        case 'ArithOp': {
+          const op = doc.sliceString(node.from, node.to);
+          if (op === '++' || op === '--') {
+            containsSideEffects = true;
+            return false;
+          }
+          break;
+        }
+      }
+      return true;
+    },
   });
-  return containsCallExpression;
+  return containsSideEffects;
 }
 
 // Evaluated expression mark for pop-over

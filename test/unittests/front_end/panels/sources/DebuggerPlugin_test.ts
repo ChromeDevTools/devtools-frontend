@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
@@ -10,8 +11,6 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../../../front_end/ui/components/text_editor/text_editor.js';
-
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {MockProtocolBackend, parseScopeChain} from '../../helpers/MockScopeChain.js';
@@ -523,38 +522,150 @@ describe('DebuggerPlugin', () => {
     });
 
     describe('in JavaScript files', () => {
+      const extensions = [CodeMirror.javascript.javascript()];
+
       it('correctly returns highlight range for member assignments', () => {
         const doc = 'obj.foo = 42;';
-        const extensions = [CodeMirror.javascript.javascript()];
         const state = CodeMirror.EditorState.create({doc, extensions});
+
         assert.deepInclude(computePopoverHighlightRange(state, 'text/javascript', 0), {from: 0, to: 3});
         assert.deepInclude(computePopoverHighlightRange(state, 'text/javascript', 4), {from: 0, to: 7});
       });
 
       it('correctly returns highlight range for member assignments involving `this`', () => {
         const doc = 'this.x = bar;';
-        const extensions = [CodeMirror.javascript.javascript()];
         const state = CodeMirror.EditorState.create({doc, extensions});
+
         assert.deepInclude(computePopoverHighlightRange(state, 'text/javascript', 0), {from: 0, to: 4});
         assert.deepInclude(computePopoverHighlightRange(state, 'text/javascript', 5), {from: 0, to: 6});
       });
 
-      it('correctly reports function calls as containing a call expression', () => {
+      it('correctly reports function calls as potentially side-effecting', () => {
         const doc = 'getRandomCoffee().name';
-        const extensions = [CodeMirror.javascript.javascript()];
         const state = CodeMirror.EditorState.create({doc, extensions});
 
-        assert.isFalse(computePopoverHighlightRange(state, 'text/javascript', 0)?.containsCallExpression);
-        assert.isTrue(computePopoverHighlightRange(state, 'text/javascript', 20)?.containsCallExpression);
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('getRandomCoffee')),
+            {containsSideEffects: false},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.lastIndexOf('.')),
+            {containsSideEffects: true},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('name')),
+            {containsSideEffects: true},
+        );
       });
 
-      it('correctly reports method calls as containing a call expression', () => {
+      it('correctly reports method calls as potentially side-effecting', () => {
         const doc = 'utils.getRandomCoffee().name';
-        const extensions = [CodeMirror.javascript.javascript()];
         const state = CodeMirror.EditorState.create({doc, extensions});
 
-        assert.isFalse(computePopoverHighlightRange(state, 'text/javascript', 0)?.containsCallExpression);
-        assert.isTrue(computePopoverHighlightRange(state, 'text/javascript', 25)?.containsCallExpression);
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('utils')),
+            {containsSideEffects: false},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('getRandomCoffee')),
+            {containsSideEffects: false},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.lastIndexOf('.')),
+            {containsSideEffects: true},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('name')),
+            {containsSideEffects: true},
+        );
+      });
+
+      it('correctly reports function calls in property accesses as potentially side-effecting', () => {
+        const doc = 'bar[foo()]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('bar')),
+            {containsSideEffects: false, from: 0, to: 'bar'.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+      });
+
+      it('correct reports postfix increments in property accesses as potentially side-effecting', () => {
+        const doc = 'a[i++]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+      });
+
+      it('correct reports postfix decrements in property accesses as potentially side-effecting', () => {
+        const doc = 'a[i--]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+      });
+
+      it('correct reports prefix increments in property accesses as potentially side-effecting', () => {
+        const doc = 'array[++index]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+      });
+
+      it('correct reports prefix decrements in property accesses as potentially side-effecting', () => {
+        const doc = 'array[--index]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+      });
+
+      it('correct reports assignment expressions in property accesses as potentially side-effecting', () => {
+        const doc = 'array[index *= 5]';
+        const state = CodeMirror.EditorState.create({doc, extensions});
+
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf('[')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
+        assert.deepInclude(
+            computePopoverHighlightRange(state, 'text/javascript', doc.indexOf(']')),
+            {containsSideEffects: true, from: 0, to: doc.length},
+        );
       });
     });
 

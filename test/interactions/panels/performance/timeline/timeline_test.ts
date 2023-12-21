@@ -90,7 +90,8 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
 
-  itScreenshot('renders screenshots in the frames track', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1511265]: renders screenshots in the frames track', async () => {
     await loadComponentDocExample(
         'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
     const panel = await waitFor('body');

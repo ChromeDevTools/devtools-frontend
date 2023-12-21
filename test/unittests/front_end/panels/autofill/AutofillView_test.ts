@@ -189,6 +189,8 @@ describeWithMockConnection('AutofillView', () => {
   });
 
   it('highlights corresponding grid row when hovering over address span', async () => {
+    const monospaceStyles = 'font-family:var(--monospace-font-family);font-size:var(--monospace-font-size);';
+
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
@@ -202,17 +204,21 @@ describeWithMockConnection('AutofillView', () => {
     const grid = getDataGrid(view);
     assertShadowRoot(grid.shadowRoot);
     const firstGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 1);
-    assert.strictEqual(firstGridRow.getAttribute('style'), null);
+    let styles = firstGridRow.getAttribute('style') || '';
+    assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
 
     crocodileSpan.dispatchEvent(new MouseEvent('mouseenter'));
     await coordinator.done({waitForWork: true});
     assert.isTrue(crocodileSpan.classList.contains('highlighted'));
-    assert.strictEqual(firstGridRow.getAttribute('style'), 'background-color:var(--sys-color-state-hover-on-subtle);');
+    styles = firstGridRow.getAttribute('style') || '';
+    assert.strictEqual(
+        styles.replace(/\s/g, ''), monospaceStyles + 'background-color:var(--sys-color-state-hover-on-subtle);');
 
     crocodileSpan.dispatchEvent(new MouseEvent('mouseleave'));
     await coordinator.done({waitForWork: true});
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
-    assert.strictEqual(firstGridRow.getAttribute('style'), null);
+    styles = firstGridRow.getAttribute('style') || '';
+    assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
   });
 
   it('highlights corresponding address span and DOM node when hovering over grid row', async () => {

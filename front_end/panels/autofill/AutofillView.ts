@@ -320,7 +320,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     return this.#filledFields.map(
         (field, index) => {
           const fieldName = field.name || `#${field.id}`;
-          const row: DataGrid.DataGridUtils.Row = {
+          return {
             cells: [
               {columnId: 'name', value: `${fieldName} (${field.htmlType})`},
               {
@@ -331,11 +331,12 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
               {columnId: 'value', value: `"${field.value}"`},
               {columnId: 'filledFieldIndex', value: index},
             ],
+            styles: {
+              'font-family': 'var(--monospace-font-family)',
+              'font-size': 'var(--monospace-font-size)',
+              ...(highlightedGridRows.has(index) && {'background-color': 'var(--sys-color-state-hover-on-subtle)'}),
+            },
           };
-          if (highlightedGridRows.has(index)) {
-            row.styles = {'background-color': 'var(--sys-color-state-hover-on-subtle)'};
-          }
-          return row;
         },
     );
   }

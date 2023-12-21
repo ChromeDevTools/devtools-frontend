@@ -15,6 +15,7 @@ import * as Coordinator from '../../../../ui/components/render_coordinator/rende
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
 import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
@@ -180,7 +181,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
           ReportView.ReportView.ReportSectionDivider.litTagName}>
 
         <${ReportView.ReportView.ReportSection.litTagName}>
-          ${UI.XLink.XLink.create('https://developer.chrome.com/blog/prerender-pages/', i18nString(UIStrings.learnMore), 'link')}
+          ${UI.XLink.XLink.create('https://developer.chrome.com/blog/prerender-pages/', i18nString(UIStrings.learnMore), 'link', undefined, 'learn-more')}
         </${ReportView.ReportView.ReportSection.litTagName}>
       </${ReportView.ReportView.Report.litTagName}>
     `;
@@ -315,12 +316,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.currentURL)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
-        ${UI.XLink.XLink.create(this.#data.pageURL, undefined, 'link')}
+        ${UI.XLink.XLink.create(this.#data.pageURL, undefined, 'link', undefined, 'current-url')}
       </${ReportView.ReportView.ReportSection.litTagName}>
 
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.preloadedURLs)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${ReportView.ReportView.ReportSection.litTagName}>
+      <${ReportView.ReportView.ReportSection.litTagName}
+      jslog=${VisualLogging.section().context('preloaded-urls')}>
         <${MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}
           .data=${data as MismatchedPreloadingGrid.MismatchedPreloadingGridData}></${
           MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}>
@@ -404,11 +406,13 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
           </div>
 
           <div class="reveal-links">
-            <button class="link devtools-link" @click=${revealRuleSetView}>
+            <button class="link devtools-link" @click=${revealRuleSetView}
+            jslog=${VisualLogging.action().track({click: true}).context('view-all-rules')}>
               ${i18nString(UIStrings.viewAllRules)}
             </button>
            ・
-            <button class="link devtools-link" @click=${revealAttemptViewWithFilter}>
+            <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
+            jslog=${VisualLogging.action().track({click: true}).context('view-all-speculations')}>
              ${i18nString(UIStrings.viewAllSpeculations)}
             </button>
           </div>

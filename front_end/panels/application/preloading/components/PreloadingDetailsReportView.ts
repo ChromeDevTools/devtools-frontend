@@ -17,6 +17,7 @@ import * as ReportView from '../../../../ui/components/report_view/report_view.j
 import * as RequestLinkIcon from '../../../../ui/components/request_link_icon/request_link_icon.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
@@ -163,7 +164,8 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: 'Speculative Loading Attempt'} as ReportView.ReportView.ReportData}>
+        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: 'Speculative Loading Attempt'} as ReportView.ReportView.ReportData}
+        jslog=${VisualLogging.section().context('preloading-details')}>
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsDetailedInformation)}</${
             ReportView.ReportView.ReportSectionHeader.litTagName}>
 
@@ -267,6 +269,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
             .size=${Buttons.Button.Size.SMALL}
             .variant=${Buttons.Button.Variant.SECONDARY}
             .disabled=${disabled}
+            jslog=${VisualLogging.action().track({click: true}).context('inspect-prerendered-page')}
           >
             ${i18nString(UIStrings.buttonInspect)}
           </${Buttons.Button.Button.litTagName}>
@@ -353,6 +356,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
               color: 'var(--sys-color-primary)',
               'text-decoration': 'underline',
             })}
+            jslog=${VisualLogging.action().track({click: true}).context('reveal-rule-set')}
           >
             ${location}
           </button>

@@ -2,24 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as Platform from '../../../core/platform/platform.js';
 import type * as Common from '../../../core/common/common.js';
-import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as Protocol from '../../../generated/protocol.js';
+import * as Platform from '../../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
+import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
+import * as SplitView from '../../../ui/components/split_view/split_view.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
-
-// eslint-disable-next-line rulesdir/es_modules_import
-import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import preloadingViewStyles from './preloadingView.css.js';
 
 const UIStrings = {
@@ -210,7 +209,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.ruleSetGrid}
           </div>
-          <div slot="sidebar" class="overflow-auto" style="height: 100%">
+          <div slot="sidebar" class="overflow-auto" style="height: 100%"
+          jslog=${VisualLogging.section().context('rule-set-details')}>
             ${this.ruleSetDetails}
           </div>
         </${SplitView.SplitView.SplitView.litTagName}>`,
@@ -301,6 +301,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('preloading-speculations')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -447,6 +448,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('speculative-loads')}`);
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -525,6 +527,8 @@ class PreloadingRuleSetSelector implements
     this.toolbarItem = new UI.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItem.setTitle(i18nString(UIStrings.filterFilterByRuleSet));
     this.toolbarItem.element.classList.add('toolbar-has-dropdown');
+    this.toolbarItem.element.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('filter-by-rule-set')}`);
 
     // Initializes `listModel` and `dropDown` using data of the model.
     this.onModelUpdated();

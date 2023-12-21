@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
@@ -11,15 +12,14 @@ import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import * as NetworkForward from '../../../network/forward/forward.js';
-import type * as Platform from '../../../../core/platform/platform.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-
+import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
+import * as NetworkForward from '../../../network/forward/forward.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
-import ruleSetGridStyles from './ruleSetGrid.css.js';
 import * as PreloadingString from './PreloadingString.js';
+import ruleSetGridStyles from './ruleSetGrid.css.js';
 
 const UIStrings = {
   /**
@@ -108,7 +108,8 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <div class="ruleset-container">
+      <div class="ruleset-container"
+      jslog=${VisualLogging.pane().context('preloading-rules')}>
         <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
             reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
         </${DataGrid.DataGridController.DataGridController.litTagName}>
@@ -179,6 +180,7 @@ function ruleSetRenderer(
           'padding-inline-start': '0',
           'padding-inline-end': '0',
         })}
+        jslog=${VisualLogging.action().track({click: true}).context('reveal-in-elements-panel')}
       >
         <${IconButton.Icon.Icon.litTagName}
           .data=${{
@@ -286,7 +288,7 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
           'padding-inline-start': '0',
           'padding-inline-end': '0',
         })}
-      >
+        jslog=${VisualLogging.action().track({click: true}).context('reveal-preloads')}>
         ${preloadsStatusSummary}
       </button>
     `;

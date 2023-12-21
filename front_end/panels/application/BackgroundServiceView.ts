@@ -12,6 +12,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type BackgroundServiceModel, Events} from './BackgroundServiceModel.js';
 import backgroundServiceViewStyles from './backgroundServiceView.css.js';
@@ -169,6 +170,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     super(true);
 
     this.serviceName = serviceName;
+    const kebabName = serviceName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context(kebabName)}`);
 
     this.model = model;
     this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
@@ -231,13 +234,15 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.recordButton = (UI.Toolbar.Toolbar.createActionButton(this.recordAction) as UI.Toolbar.ToolbarToggle);
     this.toolbar.appendToolbarItem(this.recordButton);
 
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
+    const clearButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'background-service.clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.clearEvents());
     this.toolbar.appendToolbarItem(clearButton);
 
     this.toolbar.appendSeparator();
 
-    this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveEvents), 'download');
+    this.saveButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.saveEvents), 'download', undefined, 'background-service.save-events');
     this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.saveToFile();
     });
@@ -248,12 +253,12 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     this.originCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.showEventsFromOtherDomains), i18nString(UIStrings.showEventsFromOtherDomains),
-        () => this.refreshView());
+        () => this.refreshView(), 'show-events-from-other-domains');
     this.toolbar.appendToolbarItem(this.originCheckbox);
 
     this.storageKeyCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.showEventsForOtherStorageKeys), i18nString(UIStrings.showEventsForOtherStorageKeys),
-        () => this.refreshView());
+        () => this.refreshView(), 'show-events-from-other-partitions');
     this.toolbar.appendToolbarItem(this.storageKeyCheckbox);
   }
 
@@ -438,7 +443,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
         break;
     }
 
-    return UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore));
+    const link = UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore));
+    link.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+
+    return link;
   }
 
   private showPreview(dataNode: EventDataNode|null): void {
@@ -525,6 +533,7 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode<EventData> {
   createPreview(): UI.Widget.VBox {
     const preview = new UI.Widget.VBox();
     preview.element.classList.add('background-service-metadata');
+    preview.element.setAttribute('jslog', `${VisualLogging.section().context('metadata')}`);
 
     for (const entry of this.eventMetadata) {
       const div = document.createElement('div');

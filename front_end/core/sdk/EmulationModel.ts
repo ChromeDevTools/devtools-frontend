@@ -214,9 +214,17 @@ export class EmulationModel extends SDKModel<void> {
   }
 
   async emulateLocation(location: Location|null): Promise<void> {
-    if (!location || location.error) {
+    if (!location) {
       await Promise.all([
         this.#emulationAgent.invoke_clearGeolocationOverride(),
+        this.#emulationAgent.invoke_setTimezoneOverride({timezoneId: ''}),
+        this.#emulationAgent.invoke_setLocaleOverride({locale: ''}),
+        this.#emulationAgent.invoke_setUserAgentOverride(
+            {userAgent: MultitargetNetworkManager.instance().currentUserAgent()}),
+      ]);
+    } else if (location.unavailable) {
+      await Promise.all([
+        this.#emulationAgent.invoke_setGeolocationOverride({}),
         this.#emulationAgent.invoke_setTimezoneOverride({timezoneId: ''}),
         this.#emulationAgent.invoke_setLocaleOverride({locale: ''}),
         this.#emulationAgent.invoke_setUserAgentOverride(
@@ -416,21 +424,21 @@ export class Location {
   longitude: number;
   timezoneId: string;
   locale: string;
-  error: boolean;
+  unavailable: boolean;
 
-  constructor(latitude: number, longitude: number, timezoneId: string, locale: string, error: boolean) {
+  constructor(latitude: number, longitude: number, timezoneId: string, locale: string, unavailable: boolean) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.timezoneId = timezoneId;
     this.locale = locale;
-    this.error = error;
+    this.unavailable = unavailable;
   }
 
   static parseSetting(value: string): Location {
     if (value) {
-      const [position, timezoneId, locale, error] = value.split(':');
+      const [position, timezoneId, locale, unavailable] = value.split(':');
       const [latitude, longitude] = position.split('@');
-      return new Location(parseFloat(latitude), parseFloat(longitude), timezoneId, locale, Boolean(error));
+      return new Location(parseFloat(latitude), parseFloat(longitude), timezoneId, locale, Boolean(unavailable));
     }
     return new Location(0, 0, '', '', false);
   }
@@ -500,7 +508,7 @@ export class Location {
   }
 
   toSetting(): string {
-    return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.locale}:${this.error || ''}`;
+    return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.locale}:${this.unavailable || ''}`;
   }
 
   static defaultGeoMockAccuracy = 150;

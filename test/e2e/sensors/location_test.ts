@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, getTestServerPort, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -31,5 +31,27 @@ describe('Location emulation on Sensors panel', () => {
       'Location unavailable',
     ].join('');
     assert.deepEqual(actual, expected);
+  });
+
+  it('unavailable location', async () => {
+    const {browser, target} = getBrowserAndPages();
+    await goToResource('sensors/geolocation.html');
+    // Grant geolocation permissions.
+    await browser.defaultBrowserContext().overridePermissions(
+        `https://localhost:${getTestServerPort()}`, ['geolocation']);
+    await target.bringToFront();
+
+    // Select "Unavailable location" and test the geolocation API.
+    const select = await waitFor('.geo-fields select');
+    await select.select('unavailable');
+    const unavailableResult = await target.evaluate('testGeolocationAPI()');
+    assert.strictEqual(unavailableResult, 'fail');
+
+    // Select "Other" and test the geolocation API.
+    await select.select('custom');
+    const customResult = await target.evaluate('testGeolocationAPI()');
+    assert.strictEqual(customResult, 'success');
+
+    await select.select('noOverride');
   });
 });

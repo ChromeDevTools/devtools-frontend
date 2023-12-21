@@ -206,8 +206,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const learnMoreRow = quota.appendRow();
     const learnMore = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses',
-        i18nString(UIStrings.learnMore));
-    learnMore.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+        i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
     this.pieChart = new PerfUI.PieChart.PieChart();

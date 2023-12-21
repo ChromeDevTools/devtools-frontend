@@ -493,11 +493,10 @@ export class ExperimentsSettingsTab extends SettingsTab {
     p.appendChild(label);
 
     if (experiment.docLink) {
-      const link = UI.XLink.XLink.create(experiment.docLink);
+      const link = UI.XLink.XLink.create(
+          experiment.docLink, undefined, undefined, undefined, `${experiment.name}:documentation`);
       link.textContent = '';
       link.setAttribute('aria-label', i18nString(UIStrings.learnMore));
-      link.setAttribute(
-          'jslog', `${VisualLogging.link().track({click: true}).context(`${experiment.name}:documentation`)}`);
 
       const linkIcon = new IconButton.Icon.Icon();
       linkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
@@ -508,10 +507,10 @@ export class ExperimentsSettingsTab extends SettingsTab {
     }
 
     if (experiment.feedbackLink) {
-      const link = UI.XLink.XLink.create(experiment.feedbackLink);
+      const link = UI.XLink.XLink.create(
+          experiment.feedbackLink, undefined, undefined, undefined, `${experiment.name}:feedback`);
       link.textContent = i18nString(UIStrings.sendFeedback);
       link.classList.add('feedback-link');
-      link.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context(`${experiment.name}:feedback`)}`);
 
       p.appendChild(link);
     }

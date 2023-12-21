@@ -443,10 +443,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
         break;
     }
 
-    const link = UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore));
-    link.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
-
-    return link;
+    return UI.XLink.XLink.create(url, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
   }
 
   private showPreview(dataNode: EventDataNode|null): void {

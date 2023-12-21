@@ -784,7 +784,8 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     fragment.createChild('div').textContent = i18nString(UIStrings.cantDisplayLayers);
     fragment.createChild('div').textContent = i18nString(UIStrings.webglSupportIsDisabledInYour);
     fragment.appendChild(i18n.i18n.getFormatLocalizedString(
-        str_, UIStrings.checkSForPossibleReasons, {PH1: UI.XLink.XLink.create('about:gpu')}));
+        str_, UIStrings.checkSForPossibleReasons,
+        {PH1: UI.XLink.XLink.create('about:gpu', undefined, undefined, undefined, 'about-gpu')}));
     return fragment;
   }
 

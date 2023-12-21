@@ -708,9 +708,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       helpIcon.setAttribute('jslog', `${VisualLogging.action().track({hover: true}).context('help')}`);
       appIdField.appendChild(helpIcon);
 
-      const learnMoreLink =
-          UI.XLink.XLink.create('https://developer.chrome.com/blog/pwa-manifest-id/', i18nString(UIStrings.learnMore));
-      learnMoreLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+      const learnMoreLink = UI.XLink.XLink.create(
+          'https://developer.chrome.com/blog/pwa-manifest-id/', i18nString(UIStrings.learnMore), undefined, undefined,
+          'learn-more');
       appIdField.appendChild(learnMoreLink);
 
       if (!stringProperty('id')) {
@@ -843,9 +843,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.iconsSection.setIconMasked(setIconMaskedCheckbox.checkboxElement.checked);
     });
     this.iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
-    const documentationLink =
-        UI.XLink.XLink.create('https://web.dev/maskable-icon/', i18nString(UIStrings.documentationOnMaskableIcons));
-    documentationLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+    const documentationLink = UI.XLink.XLink.create(
+        'https://web.dev/maskable-icon/', i18nString(UIStrings.documentationOnMaskableIcons), undefined, undefined,
+        'learn-more');
     this.iconsSection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, {PH1: documentationLink}));
 
@@ -991,9 +991,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const hasWco = displayOverride.includes('window-controls-overlay');
 
     const displayOverrideLink = UI.XLink.XLink.create(
-        'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override', 'display-override');
-    displayOverrideLink.setAttribute(
-        'jslog', `${VisualLogging.link().track({click: true}).context('display-override')}`);
+        'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override', 'display-override', undefined,
+        undefined, 'display-override');
     const displayOverrideText = document.createElement('code');
     displayOverrideText.appendChild(displayOverrideLink);
 
@@ -1030,9 +1029,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     const wcoDocumentationLink = UI.XLink.XLink.create(
         'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay',
-        i18nString(UIStrings.customizePwaTitleBar));
-    wcoDocumentationLink.setAttribute(
-        'jslog', `${VisualLogging.link().track({click: true}).context('customize-pwa-tittle-bar')}`);
+        i18nString(UIStrings.customizePwaTitleBar), undefined, undefined, 'customize-pwa-tittle-bar');
     this.windowControlsSection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
 

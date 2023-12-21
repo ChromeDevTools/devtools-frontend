@@ -846,7 +846,7 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
         return html`<strong>${this.renderText(token)}</strong>`;
       case 'link':
       case 'image':
-        return LitHtml.html`${UI.XLink.XLink.create(token.href, token.text)}`;
+        return LitHtml.html`${UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'token')}`;
     }
     return super.templateForToken(token);
   }

@@ -520,8 +520,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #createNewAuthenticatorSection(): void {
     const learnMoreLink = UI.XLink.XLink.create(
-        'https://developers.google.com/web/updates/2018/05/webauthn', i18nString(UIStrings.learnMore));
-    learnMoreLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+        'https://developers.google.com/web/updates/2018/05/webauthn', i18nString(UIStrings.learnMore), undefined,
+        undefined, 'learn-more');
     this.#learnMoreView = this.contentElement.createChild('div', 'learn-more');
     this.#learnMoreView.appendChild(UI.Fragment.html`
   <div>

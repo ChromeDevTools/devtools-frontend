@@ -1740,7 +1740,9 @@ export class TimelineUIUtils {
         break;
     }
 
-    return UI.Fragment.html`<div>${UI.XLink.XLink.create(link, i18nString(UIStrings.learnMore))} about ${name}.</div>`;
+    return UI.Fragment.html`<div>${
+        UI.XLink.XLink.create(
+            link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')} about ${name}.</div>`;
   }
 
   static buildConsumeCacheDetails(
@@ -2178,9 +2180,11 @@ export class TimelineUIUtils {
         const layoutShift = event as TraceEngine.Types.TraceEvents.SyntheticLayoutShift;
         const layoutShiftEventData = layoutShift.args.data;
         const warning = document.createElement('span');
-        const clsLink = UI.XLink.XLink.create('https://web.dev/cls/', i18nString(UIStrings.cumulativeLayoutShifts));
-        const evolvedClsLink =
-            UI.XLink.XLink.create('https://web.dev/evolving-cls/', i18nString(UIStrings.evolvedClsLink));
+        const clsLink = UI.XLink.XLink.create(
+            'https://web.dev/cls/', i18nString(UIStrings.cumulativeLayoutShifts), undefined, undefined,
+            'cumulative-layout-shifts');
+        const evolvedClsLink = UI.XLink.XLink.create(
+            'https://web.dev/evolving-cls/', i18nString(UIStrings.evolvedClsLink), undefined, undefined, 'evolved-cls');
 
         warning.appendChild(
             i18n.i18n.getFormatLocalizedString(str_, UIStrings.sCLSInformation, {PH1: clsLink, PH2: evolvedClsLink}));

@@ -65,8 +65,7 @@ export class EmptyWidget extends VBox {
   }
 
   appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
-    const learnMoreLink = XLink.create(link, i18nString(UIStrings.learnMore));
-    learnMoreLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+    const learnMoreLink = XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
     return this.contentElement.appendChild(learnMoreLink) as HTMLElement;
   }
 

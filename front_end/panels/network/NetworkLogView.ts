@@ -1054,7 +1054,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     hintText.createChild('br');
     hintText.appendChild(UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/network/?utm_source=devtools&utm_campaign=2019Q1',
-        i18nString(UIStrings.learnMore)));
+        i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more'));
 
     this.setHidden(true);
   }

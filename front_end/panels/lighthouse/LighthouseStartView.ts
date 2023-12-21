@@ -85,8 +85,8 @@ export class StartView extends UI.Widget.Widget {
     labelEl.textContent = label;
 
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       labelEl.append(link);
     }
     parentElement.appendChild(labelEl);
@@ -109,8 +109,8 @@ export class StartView extends UI.Widget.Widget {
         runtimeSetting.setting as Common.Settings.Setting<boolean>, runtimeSetting.description());
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       link.style.margin = '5px';
       control.element.appendChild(link);
     }
@@ -133,8 +133,8 @@ export class StartView extends UI.Widget.Widget {
     control.setTitle(runtimeSetting.description());
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link =
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      const link = UI.XLink.XLink.create(
+          runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
       link.style.margin = '5px';
       control.element.appendChild(link);
     }

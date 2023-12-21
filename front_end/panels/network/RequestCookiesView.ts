@@ -149,7 +149,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this.siteHasCookieInOtherPartition.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
           PH1: UI.XLink.XLink.create(
-              'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore)),
+              'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore), undefined,
+              undefined, 'learn-more'),
         }));
 
     this.responseCookiesTitle = this.element.createChild('div', 'request-cookies-title');

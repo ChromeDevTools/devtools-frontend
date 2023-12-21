@@ -14,7 +14,6 @@ import * as Input from '../../../ui/components/input/input.js';
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import protocolHandlersViewStyles from './protocolHandlersView.css.js';
 
@@ -108,8 +107,8 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 
   #renderStatusMessage(): LitHtml.TemplateResult {
-    const manifestInTextLink = UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest));
-    manifestInTextLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('manifest')}`);
+    const manifestInTextLink =
+        UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
     const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
     const iconData: IconButton.Icon.IconData = this.#protocolHandlers.length > 0 ?
         {iconName: 'check-circle', color: 'var(--icon-checkmark-green)', width: '16px', height: '16px'} :
@@ -172,9 +171,8 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 
   #render(): void {
-    const protocolDocLink =
-        UI.XLink.XLink.create(PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations));
-    protocolDocLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
+    const protocolDocLink = UI.XLink.XLink.create(
+        PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations), undefined, undefined, 'learn-more');
     // clang-format off
     LitHtml.render(LitHtml.html`
       ${this.#renderStatusMessage()}

@@ -9,8 +9,9 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {NetworkRequestNode, type NetworkNode} from './NetworkDataGridNode.js';
+import {type NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';
 import {type NetworkLogView} from './NetworkLogView.js';
 import {NetworkManageCustomHeadersView} from './NetworkManageCustomHeadersView.js';
 import {
@@ -415,6 +416,8 @@ export class NetworkLogViewColumns {
   private createWaterfallHeader(): void {
     this.waterfallHeaderElement =
         (this.waterfallColumn.contentElement.createChild('div', 'network-waterfall-header') as HTMLElement);
+    this.waterfallHeaderElement.setAttribute(
+        'jslog', `${VisualLogging.tableHeader().track({click: true}).context('waterfall')}`);
     this.waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener(
         'contextmenu', event => this.innerHeaderContextMenu(new UI.ContextMenu.ContextMenu(event)));

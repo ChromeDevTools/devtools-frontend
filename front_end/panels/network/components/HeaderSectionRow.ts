@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
-import type * as Protocol from '../../../generated/protocol.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Host from '../../../core/host/host.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
+import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {EditableSpan, type EditableSpanData} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
@@ -252,6 +252,7 @@ export class HeaderSectionRow extends HTMLElement {
           @click=${(): void => {
             this.dispatchEvent(new EnableHeaderEditingEvent());
           }}
+          jslog=${VisualLogging.action().track({click: true}).context('enable-header-overrides')}
           class="enable-editing inline-button"
         ></${Buttons.Button.Button.litTagName}>
       ` : LitHtml.nothing}
@@ -275,6 +276,7 @@ export class HeaderSectionRow extends HTMLElement {
         .iconHeight=${'13px'}
         class="remove-header inline-button"
         @click=${this.#onRemoveOverrideClick}
+        jslog=${VisualLogging.action().track({click: true}).context('remove-header-override')}
       ></${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on

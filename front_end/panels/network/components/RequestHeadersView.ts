@@ -17,16 +17,16 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../../sources/sources.js';
 
-import {type RequestHeaderSectionData, RequestHeaderSection} from './RequestHeaderSection.js';
-import {
-  type ResponseHeaderSectionData,
-  ResponseHeaderSection,
-  RESPONSE_HEADER_SECTION_DATA_KEY,
-} from './ResponseHeaderSection.js';
-
+import {RequestHeaderSection, type RequestHeaderSectionData} from './RequestHeaderSection.js';
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
+import {
+  RESPONSE_HEADER_SECTION_DATA_KEY,
+  ResponseHeaderSection,
+  type ResponseHeaderSectionData,
+} from './ResponseHeaderSection.js';
 
 const RAW_HEADER_CUTOFF = 3000;
 const {render, html} = LitHtml;
@@ -118,6 +118,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.#request = request;
+    this.setAttribute('jslog', `${VisualLogging.pane().context('headers')}`);
   }
 
   override wasShown(): void {
@@ -262,7 +263,11 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <x-link href="https://goo.gle/devtools-override" class="link devtools-link">
+      <x-link
+          href="https://goo.gle/devtools-override"
+          class="link devtools-link"
+          jslog=${VisualLogging.link().track({click: true}).context('devtools-override')}
+      >
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
             iconName: 'help',
             color: 'var(--icon-link)',
@@ -271,7 +276,12 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           } as IconButton.Icon.IconData}>
         </${IconButton.Icon.Icon.litTagName}
       ></x-link>
-      <x-link @click=${revealHeadersFile} class="link devtools-link" title=${UIStrings.revealHeaderOverrides}>
+      <x-link
+          @click=${revealHeadersFile}
+          class="link devtools-link"
+          title=${UIStrings.revealHeaderOverrides}
+          jslog=${VisualLogging.link().track({click: true}).context('reveal-header-overrides')}
+      >
         ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
       </x-link>
     `;
@@ -355,6 +365,8 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       }
     };
 
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
       <div class="row raw-headers-row" on-render=${ComponentHelpers.Directives.nodeRenderedCallback(addContextMenuListener)}>
         <div class="raw-headers">${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}</div>
@@ -363,10 +375,12 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
             .size=${Buttons.Button.Size.SMALL}
             .variant=${Buttons.Button.Variant.SECONDARY}
             @click=${showMore}
+            jslog=${VisualLogging.action().track({click: true}).context('raw-headers-show-more')}
           >${i18nString(UIStrings.showMore)}</${Buttons.Button.Button.litTagName}>
         ` : LitHtml.nothing}
       </div>
     `;
+    // clang-format on
   }
 
   #renderGeneralSection(): LitHtml.LitTemplate {
@@ -502,7 +516,12 @@ export class Category extends HTMLElement {
             </div>
             <div class="hide-when-closed">
               ${this.#checked !== undefined ? html`
-                <label><input type="checkbox" .checked=${this.#checked} @change=${this.#onCheckboxToggle} />${i18nString(UIStrings.raw)}</label>
+                <label><input
+                    type="checkbox"
+                    .checked=${this.#checked}
+                    @change=${this.#onCheckboxToggle}
+                    jslog=${VisualLogging.toggle().track({change: true}).context('raw-headers')}
+                />${i18nString(UIStrings.raw)}</label>
               ` : LitHtml.nothing}
             </div>
             <div class="hide-when-closed">${this.#additionalContent}</div>

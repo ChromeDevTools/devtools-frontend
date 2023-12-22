@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import editableSpanStyles from './EditableSpan.css.js';
 
@@ -93,7 +94,13 @@ export class EditableSpan extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    render(html`<span contenteditable="true" class="editable" tabindex="0" .innerText=${this.#value}></span>`, this.#shadow, {host: this});
+    render(html`<span
+        contenteditable="true"
+        class="editable"
+        tabindex="0"
+        .innerText=${this.#value}
+        jslog=${VisualLogging.textField().track({keydown: true}).context('header-editor')}
+    </span>`, this.#shadow, {host: this});
     // clang-format on
   }
 

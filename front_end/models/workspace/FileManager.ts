@@ -61,6 +61,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return fileManagerInstance;
   }
 
+  // close() *must* be called, for the InspectorFrontendHostStub case, to complete the saving.
   save(url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean):
       Promise<SaveCallbackParam|null> {
     // Remove this url from the saved URLs while it is being saved.

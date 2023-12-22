@@ -46,7 +46,8 @@ export class LighthouseReportRenderer {
       const ext = blob.type.match('json') ? '.json' : '.html';
       const basename = `${sanitizedDomain}-${timestamp}${ext}` as Platform.DevToolsPath.RawPathString;
       const text = await blob.text();
-      void Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
+      await Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
+      Workspace.FileManager.FileManager.instance().close(basename);
     }
 
     async function onPrintOverride(rootEl: HTMLElement): Promise<void> {

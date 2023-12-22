@@ -69,6 +69,7 @@ devtools_module("timeline") {
     "../../models/source_map_scopes:bundle",
     "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
+    "../../models/workspace:bundle",
     "../../panels/coverage:bundle",
     "../../panels/layer_viewer:bundle",
     "../../panels/mobile_throttling:bundle",

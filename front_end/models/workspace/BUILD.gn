@@ -51,6 +51,7 @@ devtools_entrypoint("bundle") {
     "../../panels/search/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
+    "../../panels/timeline/*",
     "../bindings/*",
     "../breakpoints/*",
     "../extensions/*",

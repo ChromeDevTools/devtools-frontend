@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -251,24 +252,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
-
-// TypeScript will presumably get these types at some stage, and when it
-// does these temporary types should be removed.
-// TODO: Remove types when available in TypeScript.
-declare global {
-  interface FileSystemWritableFileStream extends WritableStream {
-    write(data: unknown): Promise<void>;
-    close(): Promise<void>;
-  }
-
-  interface FileSystemHandle {
-    createWritable(): Promise<FileSystemWritableFileStream>;
-  }
-
-  interface Window {
-    showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
-  }
-}
 
 export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
@@ -657,11 +640,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     try {
-      const handler = await window.showSaveFilePicker({
-        suggestedName: fileName,
-      });
-      const encoder = new TextEncoder();
-
       // TODO(crbug.com/1456818): Extract this logic and add more tests.
       let traceAsString;
       if (metadata?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPUProfile) {
@@ -684,10 +662,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
         traceAsString = Array.from(formattedTraceIter).join('');
       }
-      const buffer = encoder.encode(traceAsString);
-      const writable = await handler.createWritable();
-      await writable.write(buffer);
-      await writable.close();
+      if (!traceAsString) {
+        throw new Error('Trace content empty');
+      }
+      await Workspace.FileManager.FileManager.instance().save(fileName, traceAsString, true /* forceSaveAs */);
+      Workspace.FileManager.FileManager.instance().close(fileName);
     } catch (error) {
       console.error(error.stack);
       if (error.name === 'AbortError') {
@@ -1744,16 +1723,10 @@ export class StatusPane extends UI.Widget.VBox {
     }
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
     const fileName = `Trace-Load-Error-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
-    const handler = await window.showSaveFilePicker({
-      suggestedName: fileName,
-    });
     const formattedTraceIter = traceJsonGenerator(this.#rawEvents, {});
     const traceAsString = Array.from(formattedTraceIter).join('');
-    const encoder = new TextEncoder();
-    const buffer = encoder.encode(traceAsString);
-    const writable = await handler.createWritable();
-    await writable.write(buffer);
-    await writable.close();
+    await Workspace.FileManager.FileManager.instance().save(fileName, traceAsString, true /* forceSaveAs */);
+    Workspace.FileManager.FileManager.instance().close(fileName);
   }
 
   enableDownloadOfEvents(rawEvents: TraceEngine.Types.TraceEvents.TraceEventData[]): void {

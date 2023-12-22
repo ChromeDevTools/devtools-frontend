@@ -378,7 +378,7 @@ export class SnippetsNavigatorView extends NavigatorView {
   private async handleSaveAs(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     uiSourceCode.commitWorkingCopy();
     const {content} = await uiSourceCode.requestContent();
-    void Workspace.FileManager.FileManager.instance().save(
+    await Workspace.FileManager.FileManager.instance().save(
         this.addJSExtension(uiSourceCode.url()), content || '', true);
     Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
   }

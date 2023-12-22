@@ -68,7 +68,7 @@ export class ContextMenuProvider implements
         decodedContent = window.atob(decodedContent);
       }
       const url = contentProvider.contentURL();
-      void Workspace.FileManager.FileManager.instance().save(url, decodedContent, true);
+      await Workspace.FileManager.FileManager.instance().save(url, decodedContent, true);
       Workspace.FileManager.FileManager.instance().close(url);
     }
 

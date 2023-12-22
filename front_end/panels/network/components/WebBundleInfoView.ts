@@ -11,6 +11,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
@@ -39,6 +40,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
 
     this.#webBundleInfo = webBundleInfo;
     this.#webBundleName = request.parsedURL.lastPathComponent;
+    this.setAttribute('jslog', `${VisualLogging.pane().context('webbundle')}`);
   }
 
   connectedCallback(): void {
@@ -76,7 +78,8 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
           .data=${{color: 'var(--icon-default)', iconName: 'bundle', width: '20px'} as IconButton.Icon.IconData}>
         </${IconButton.Icon.Icon.litTagName}>
         <span>${this.#webBundleName}</span>
-        <x-link href="https://web.dev/web-bundles/#explaining-web-bundles">
+        <x-link href="https://web.dev/web-bundles/#explaining-web-bundles"
+          jslog=${VisualLogging.link().track({click: true}).context('webbundle-explainer')}>
           <${IconButton.Icon.Icon.litTagName} class="icon"
             .data=${{color: 'var(--icon-default)', iconName: 'help', width: '16px'} as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}>

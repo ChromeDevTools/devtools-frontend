@@ -35,9 +35,9 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
-import {Log, type EntryDTO} from './Log.js';
+import {type EntryDTO, Log} from './Log.js';
 
 const UIStrings = {
   /**
@@ -104,8 +104,9 @@ export class Writer {
       return false;
     }
 
-    function contentLoaded(entry: EntryDTO, contentData: SDK.NetworkRequest.ContentData): void {
+    function contentLoaded(entry: EntryDTO, contentDataOrError: SDK.ContentData.ContentDataOrError): void {
       progress.incrementWorked();
+      const contentData = SDK.ContentData.ContentData.asLegacyContentData(contentDataOrError);
       let encoded: true|boolean = contentData.encoded;
       if (contentData.content !== null) {
         let content: string = contentData.content;

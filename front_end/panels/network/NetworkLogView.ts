@@ -856,11 +856,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private static async copyResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const contentData = await request.contentData();
-    let content: (string|null)|string = contentData.content || '';
-    if (!request.contentType().isTextType()) {
-      content = TextUtils.ContentProvider.contentAsDataURL(content, request.mimeType, contentData.encoded);
-    } else if (contentData.encoded && content) {
-      content = window.atob(content);
+    let content: string;
+    if (SDK.ContentData.ContentData.isError(contentData)) {
+      content = '';
+    } else if (!contentData.resourceType.isTextType()) {
+      content = contentData.asDataUrl() ?? '';
+    } else {
+      content = contentData.text;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content);
   }

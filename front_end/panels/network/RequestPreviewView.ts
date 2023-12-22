@@ -29,8 +29,7 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -73,7 +72,7 @@ export class RequestPreviewView extends RequestResponseView {
 
   private async htmlPreview(): Promise<UI.Widget.Widget|null> {
     const contentData = await this.request.contentData();
-    if (contentData.error) {
+    if (SDK.ContentData.ContentData.isError(contentData)) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }
 
@@ -82,18 +81,13 @@ export class RequestPreviewView extends RequestResponseView {
       return null;
     }
 
-    const content = contentData.encoded ? window.atob((contentData.content as string)) : contentData.content as string;
-
     // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
-    const jsonView = await SourceFrame.JSONView.JSONView.createView(content);
+    const jsonView = await SourceFrame.JSONView.JSONView.createView(contentData.text);
     if (jsonView) {
       return jsonView;
     }
 
-    // If the content was already decoded by the backend we use UTF-8.
-    const charset = contentData.encoded ? this.request.charset() : 'utf-8';
-    const dataURL = TextUtils.ContentProvider.contentAsDataURL(
-        contentData.content, this.request.mimeType, contentData.encoded, charset);
+    const dataURL = contentData.asDataUrl();
     return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 

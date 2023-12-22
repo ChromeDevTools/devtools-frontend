@@ -31,7 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -89,7 +89,7 @@ export class RequestResponseView extends UI.Widget.VBox {
       return sourceView;
     }
 
-    const contentData = await request.contentData();
+    const contentData = SDK.ContentData.ContentData.asLegacyContentData(await request.contentData());
     if (!RequestResponseView.hasTextContent(request, contentData)) {
       requestToSourceView.delete(request);
       return null;
@@ -131,7 +131,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   async createPreview(): Promise<UI.Widget.Widget> {
-    const contentData = await this.request.contentData();
+    const contentData = SDK.ContentData.ContentData.asLegacyContentData(await this.request.contentData());
     const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
     if ((!contentData.content || !sourceView) && !contentData.error) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));

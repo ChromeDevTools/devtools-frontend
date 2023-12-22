@@ -232,7 +232,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #webBundleInfoInternal: WebBundleInfo|null;
   #webBundleInnerRequestInfoInternal: WebBundleInnerRequestInfo|null;
   #resourceTypeInternal: Common.ResourceType.ResourceType;
-  #contentDataInternal: Promise<ContentData>|null;
+  #contentDataInternal: Promise<ContentDataOrError>|null;
   readonly #framesInternal: WebSocketFrame[];
   readonly #eventSourceMessagesInternal: EventSourceMessage[];
   #responseHeaderValues: {
@@ -1301,15 +1301,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return values.join(', ');
   }
 
-  contentData(): Promise<ContentData> {
+  contentData(): Promise<ContentDataOrError> {
     if (this.#contentDataInternal) {
       return this.#contentDataInternal;
     }
     if (this.#contentDataProvider) {
-      this.#contentDataInternal = this.#contentDataProvider().then(data => ContentDataClass.asLegacyContentData(data));
+      this.#contentDataInternal = this.#contentDataProvider();
     } else {
-      this.#contentDataInternal =
-          NetworkManager.requestContentData(this).then(data => ContentDataClass.asLegacyContentData(data));
+      this.#contentDataInternal = NetworkManager.requestContentData(this);
     }
     return this.#contentDataInternal;
   }
@@ -1328,12 +1327,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    const {content, error, encoded} = await this.contentData();
-    return {
-      content,
-      error,
-      isEncoded: encoded,
-    } as TextUtils.ContentProvider.DeferredContent;
+    return ContentDataClass.asDeferredContent(await this.contentData());
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
@@ -1343,14 +1337,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
 
     const contentData = await this.contentData();
-    let content: string|(string | null) = contentData.content;
-    if (!content) {
+    if (ContentDataClass.isError(contentData) || !contentData.resourceType.isTextType()) {
       return [];
     }
-    if (contentData.encoded) {
-      content = window.atob(content);
-    }
-    return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performSearchInContent(contentData.text, query, caseSensitive, isRegex);
   }
 
   isHttpFamily(): boolean {
@@ -1406,8 +1396,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
-    const {content, encoded} = await this.contentData();
-    let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this.#mimeTypeInternal, encoded);
+    const contentData = await this.contentData();
+    if (ContentDataClass.isError(contentData)) {
+      return;
+    }
+    let imageSrc = contentData.asDataUrl();
     if (imageSrc === null && !this.#failedInternal) {
       const cacheControl = this.responseHeaderValue('cache-control') || '';
       if (!cacheControl.includes('no-cache')) {

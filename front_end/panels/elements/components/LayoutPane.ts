@@ -189,7 +189,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     if (!layoutPaneWrapperInstance) {
       layoutPaneWrapperInstance = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new LayoutPane());
     }
-
+    layoutPaneWrapperInstance.element.style.minWidth = 'min-content';
     return layoutPaneWrapperInstance.getComponent();
   }
 

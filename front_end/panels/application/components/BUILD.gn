@@ -15,6 +15,7 @@ generate_css("css_files") {
     "frameDetailsReportView.css",
     "interestGroupAccessGrid.css",
     "originTrialTokenRows.css",
+    "originTrialTreeView.css",
     "permissionsPolicySection.css",
     "protocolHandlersView.css",
     "reportingApiGrid.css",

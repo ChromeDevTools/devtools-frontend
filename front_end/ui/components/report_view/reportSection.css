@@ -6,6 +6,7 @@
 
 :host {
   grid-column-start: span 2;
+  min-width: min-content;
 }
 
 .section {

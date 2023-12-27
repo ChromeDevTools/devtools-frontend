@@ -1355,7 +1355,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   SidebarPaneAdded = 'SidebarPaneAdded',
-  TraceProviderAdded = 'TraceProviderAdded',
 }
 
 export type EventTypes = {

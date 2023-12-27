@@ -28,8 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Platform from '../../core/platform/platform.js';
 import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
+import type * as Platform from '../../core/platform/platform.js';
 import type * as HAR from '../har/har.js';
 
 /* eslint-disable @typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
@@ -50,8 +50,6 @@ export namespace PrivateAPI {
     NetworkRequestFinished = 'network-request-finished',
     OpenResource = 'open-resource',
     PanelSearch = 'panel-search-',
-    RecordingStarted = 'trace-recording-started-',
-    RecordingStopped = 'trace-recording-stopped-',
     ResourceAdded = 'resource-added',
     ResourceContentCommitted = 'resource-content-committed',
     ViewShown = 'view-shown-',
@@ -61,9 +59,7 @@ export namespace PrivateAPI {
 
   export const enum Commands {
     AddRequestHeaders = 'addRequestHeaders',
-    AddTraceProvider = 'addTraceProvider',
     ApplyStyleSheet = 'applyStyleSheet',
-    CompleteTraceSession = 'completeTra.eSession',
     CreatePanel = 'createPanel',
     CreateSidebarPane = 'createSidebarPane',
     CreateToolbarButton = 'createToolbarButton',
@@ -176,8 +172,6 @@ export namespace PrivateAPI {
   };
   type UpdateButtonRequest =
       {command: Commands.UpdateButton, id: string, icon?: string, tooltip?: string, disabled?: boolean};
-  type CompleteTraceSessionRequest =
-      {command: Commands.CompleteTraceSession, id: string, url: Platform.DevToolsPath.UrlString, timeOffset: number};
   type CreateSidebarPaneRequest = {command: Commands.CreateSidebarPane, id: string, panel: string, title: string};
   type SetSidebarHeightRequest = {command: Commands.SetSidebarHeight, id: string, height: string};
   type SetSidebarContentRequest = {
@@ -209,8 +203,6 @@ export namespace PrivateAPI {
   type GetResourceContentRequest = {command: Commands.GetResourceContent, url: string};
   type SetResourceContentRequest =
       {command: Commands.SetResourceContent, url: string, content: string, commit: boolean};
-  type AddTraceProviderRequest =
-      {command: Commands.AddTraceProvider, id: string, categoryName: string, categoryTooltip: string};
   type ForwardKeyboardEventRequest = {
     command: Commands.ForwardKeyboardEvent,
     entries: Array<KeyboardEventInit&{eventType: string}>,
@@ -238,11 +230,11 @@ export namespace PrivateAPI {
   export type ServerRequests = ShowRecorderViewRequest|CreateRecorderViewRequest|RegisterRecorderExtensionPluginRequest|
       RegisterLanguageExtensionPluginRequest|SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|
       ApplyStyleSheetRequest|CreatePanelRequest|ShowPanelRequest|CreateToolbarButtonRequest|UpdateButtonRequest|
-      CompleteTraceSessionRequest|CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|
-      SetSidebarPageRequest|OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|
-      ReloadRequest|EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|
-      SetResourceContentRequest|AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|
-      GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|GetWasmOpRequest;
+      CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|
+      OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
+      EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
+      ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|
+      GetWasmGlobalRequest|GetWasmOpRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -345,7 +337,6 @@ namespace APIImpl {
   export interface InspectorExtensionAPI {
     languageServices: PublicAPI.Chrome.DevTools.LanguageExtensions;
     recorder: PublicAPI.Chrome.DevTools.RecorderExtensions;
-    timeline: Timeline;
     network: PublicAPI.Chrome.DevTools.Network;
     panels: PublicAPI.Chrome.DevTools.Panels;
     inspectedWindow: PublicAPI.Chrome.DevTools.InspectedWindow;
@@ -431,21 +422,6 @@ namespace APIImpl {
 
   export interface Button extends PublicAPI.Chrome.DevTools.Button {
     _id: string;
-  }
-
-  export interface TraceSession {
-    _id: string;
-
-    complete(url?: string, timeOffset?: number): void;
-  }
-
-  export interface TraceProvider {
-    onRecordingStarted: EventSink<(session: TraceSession) => unknown>;
-    onRecordingStopped: EventSink<() => unknown>;
-  }
-
-  export interface Timeline {
-    addTraceProvider(categoryName: string, categoryTooltip: string): TraceProvider;
   }
 
   export type ResourceData = {url: string, type: string};
@@ -540,7 +516,6 @@ self.injectedExtensionAPI = function(
     this.inspectedWindow = new (Constructor(InspectedWindow))();
     this.panels = new (Constructor(Panels))();
     this.network = new (Constructor(Network))();
-    this.timeline = new (Constructor(Timeline))();
     this.languageServices = new (Constructor(LanguageServicesAPI))();
     this.recorder = new (Constructor(RecorderServicesAPI))();
     defineDeprecatedProperty(this, 'webInspector', 'resources', 'network');
@@ -996,7 +971,6 @@ self.injectedExtensionAPI = function(
   const PanelWithSidebarClass = declareInterfaceClass(PanelWithSidebarImpl);
   const Request = declareInterfaceClass(RequestImpl);
   const Resource = declareInterfaceClass(ResourceImpl);
-  const TraceSession = declareInterfaceClass(TraceSessionImpl);
 
   class ElementsPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {
@@ -1124,53 +1098,6 @@ self.injectedExtensionAPI = function(
       });
     },
   };
-
-  function Timeline(this: APIImpl.Timeline): void {
-  }
-
-  (Timeline.prototype as Pick<APIImpl.Timeline, 'addTraceProvider'>) = {
-    addTraceProvider: function(this: APIImpl.Timeline, categoryName: string, categoryTooltip: string):
-                          APIImpl.TraceProvider {
-                            const id = 'extension-trace-provider-' + extensionServer.nextObjectId();
-                            extensionServer.sendRequest({
-                              command: PrivateAPI.Commands.AddTraceProvider,
-                              id: id,
-                              categoryName: categoryName,
-                              categoryTooltip: categoryTooltip,
-                            });
-
-                            return new (Constructor(TraceProvider))(id);
-                          },
-  };
-
-  function TraceSessionImpl(this: APIImpl.TraceSession, id: string): void {
-    this._id = id;
-  }
-
-  (TraceSessionImpl.prototype as Pick<APIImpl.TraceSession, 'complete'>) = {
-    complete: function(this: APIImpl.TraceSession, url?: Platform.DevToolsPath.UrlString, timeOffset?: number): void {
-      extensionServer.sendRequest({
-        command: PrivateAPI.Commands.CompleteTraceSession,
-        id: this._id,
-        url: url || Platform.DevToolsPath.EmptyUrlString,
-        timeOffset: timeOffset || 0,
-      });
-    },
-  };
-
-  function TraceProvider(this: APIImpl.TraceProvider, id: string): void {
-    function dispatchRecordingStarted(
-        this: APIImpl.EventSink<APIImpl.Callable>, message: {arguments: unknown[]}): void {
-      const sessionId = message.arguments[0] as string;
-
-      this._fire(new (Constructor(TraceSession))(sessionId));
-    }
-
-    this.onRecordingStarted =
-        new (Constructor(EventSink))(PrivateAPI.Events.RecordingStarted + id, dispatchRecordingStarted);
-
-    this.onRecordingStopped = new (Constructor(EventSink))(PrivateAPI.Events.RecordingStopped + id);
-  }
 
   function canAccessResource(resource: APIImpl.ResourceData): boolean {
     try {

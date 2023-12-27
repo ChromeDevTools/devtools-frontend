@@ -12,7 +12,7 @@ describe('Timeline History Manager tracks', function() {
   // prevent timeout bump.
   this.timeout(20_000);
   preloadForCodeCoverage('performance_panel/timeline_history_manager.html');
-  itScreenshot('renders all the tracks correctly expanded', async () => {
+  itScreenshot('renders minimap for parsed profiles in the HistoryManager', async () => {
     await loadComponentDocExample('performance_panel/timeline_history_manager.html');
     const dropDown = await waitFor('.drop-down');
     await assertElementScreenshotUnchanged(dropDown, 'performance/history_dropdown.png', 1);

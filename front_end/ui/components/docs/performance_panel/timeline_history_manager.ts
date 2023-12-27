@@ -23,15 +23,13 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
+// Adding the recording right after the profile is parsed is needed as
+// the recording relies on the trace bounds initialized in
+// |TraceLoader.allModels|
+
 // By default we run both engines in the dev server, but this can be overridden by passing the parameter.
 const {performanceModel: performanceModel1, traceParsedData: traceParsedData1} =
     await TraceLoader.TraceLoader.allModels(null, 'multiple-navigations.json.gz');
-const {performanceModel: performanceModel2, traceParsedData: traceParsedData2} =
-    await TraceLoader.TraceLoader.allModels(null, 'web-dev.json.gz');
-const container = document.querySelector('.container');
-if (!container) {
-  throw new Error('could not find container');
-}
 
 new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   data: {
@@ -42,6 +40,13 @@ new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   traceParsedData: traceParsedData1,
   startTime: null,
 });
+
+const {performanceModel: performanceModel2, traceParsedData: traceParsedData2} =
+    await TraceLoader.TraceLoader.allModels(null, 'web-dev.json.gz');
+const container = document.querySelector('.container');
+if (!container) {
+  throw new Error('could not find container');
+}
 
 new Timeline.TimelineHistoryManager.TimelineHistoryManager().addRecording({
   data: {

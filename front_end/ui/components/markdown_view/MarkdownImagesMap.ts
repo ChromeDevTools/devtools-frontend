@@ -22,7 +22,7 @@ export interface ImageData {
  * [
  *   'feedbackIcon',
  *   {
- *     src: 'Images/review.svg',
+ *     src: 'review',
  *     isIcon: true,
  *     width: '20px',
  *     height: '20px',

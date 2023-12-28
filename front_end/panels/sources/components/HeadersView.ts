@@ -51,9 +51,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const plusIconUrl = new URL('../../../Images/plus.svg', import.meta.url).toString();
-const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
-
 const DEFAULT_HEADER_VALUE = 'header value';
 const getDefaultHeaderName = (i: number): string => `header-name-${i}`;
 
@@ -409,7 +406,7 @@ export class HeadersViewComponent extends HTMLElement {
         <${Buttons.Button.Button.litTagName}
         title=${i18nString(UIStrings.removeBlock)}
         .size=${Buttons.Button.Size.SMALL}
-        .iconUrl=${trashIconUrl}
+        .iconName=${'bin'}
         .iconWidth=${'14px'}
         .iconHeight=${'14px'}
         .variant=${Buttons.Button.Variant.ROUND}
@@ -432,7 +429,7 @@ export class HeadersViewComponent extends HTMLElement {
         <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.addHeader)}
           .size=${Buttons.Button.Size.SMALL}
-          .iconUrl=${plusIconUrl}
+          .iconName=${'plus'}
           .iconWidth=${'20px'}
           .iconHeight=${'20px'}
           .variant=${Buttons.Button.Variant.ROUND}
@@ -442,7 +439,7 @@ export class HeadersViewComponent extends HTMLElement {
         <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.removeHeader)}
           .size=${Buttons.Button.Size.SMALL}
-          .iconUrl=${trashIconUrl}
+          .iconName=${'bin'}
           .iconWidth=${'14px'}
           .iconHeight=${'14px'}
           .variant=${Buttons.Button.Variant.ROUND}

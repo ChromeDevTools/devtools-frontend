@@ -38,9 +38,9 @@ iconName2.textContent = 'issue-exclamation-filled';
 row2.appendChild(iconName2);
 
 const otherIcon = new IconButton.Icon.Icon();
-const otherPath = '../../../../Images/src/issue-exclamation-filled.svg';
+const otherName = 'issue-exclamation-filled';
 otherIcon.data = {
-  iconPath: otherPath,
+  iconName: otherName,
   width: '20px',
   height: '20px',
   color: 'var(--icon-link)',

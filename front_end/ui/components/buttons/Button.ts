@@ -36,7 +36,6 @@ export const enum Size {
 type ButtonType = 'button'|'submit'|'reset';
 
 interface ButtonState {
-  iconUrl?: string;
   variant?: Variant;
   size?: Size;
   disabled: boolean;
@@ -53,7 +52,6 @@ interface ButtonState {
 
 interface CommonButtonData {
   variant: Variant;
-  iconUrl?: string;
   iconName?: string;
   size?: Size;
   disabled?: boolean;
@@ -68,9 +66,6 @@ interface CommonButtonData {
 }
 
 export type ButtonData = CommonButtonData&(|{
-  variant: Variant.PRIMARY_TOOLBAR | Variant.TOOLBAR | Variant.ROUND,
-  iconUrl: string,
-}|{
   variant: Variant.PRIMARY_TOOLBAR | Variant.TOOLBAR | Variant.ROUND,
   iconName: string,
 }|{
@@ -105,7 +100,6 @@ export class Button extends HTMLElement {
    */
   set data(data: ButtonData) {
     this.#props.variant = data.variant;
-    this.#props.iconUrl = data.iconUrl;
     this.#props.iconName = data.iconName;
     this.#props.size = Size.MEDIUM;
 
@@ -129,11 +123,6 @@ export class Button extends HTMLElement {
     this.#setDisabledProperty(data.disabled || false);
     this.#props.title = data.title;
     this.#props.jslogContext = data.jslogContext;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set iconUrl(iconUrl: string|undefined) {
-    this.#props.iconUrl = iconUrl;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -248,7 +237,7 @@ export class Button extends HTMLElement {
       throw new Error('Button requires a variant to be defined');
     }
     if (this.#isToolbarVariant()) {
-      if (!this.#props.iconUrl && !this.#props.iconName) {
+      if (!this.#props.iconName) {
         throw new Error('Toolbar button requires an icon');
       }
       if (!this.#isEmpty) {
@@ -256,17 +245,14 @@ export class Button extends HTMLElement {
       }
     }
     if (this.#props.variant === Variant.ROUND) {
-      if (!this.#props.iconUrl && !this.#props.iconName) {
+      if (!this.#props.iconName) {
         throw new Error('Round button requires an icon');
       }
       if (!this.#isEmpty) {
         throw new Error('Round button does not accept children');
       }
     }
-    if (this.#props.iconName && this.#props.iconUrl) {
-      throw new Error('Both iconName and iconUrl are provided.');
-    }
-    const hasIcon = Boolean(this.#props.iconUrl) || Boolean(this.#props.iconName);
+    const hasIcon = Boolean(this.#props.iconName);
     const classes = {
       primary: this.#props.variant === Variant.PRIMARY,
       tonal: this.#props.variant === Variant.TONAL,
@@ -295,7 +281,6 @@ export class Button extends HTMLElement {
         <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
           ${hasIcon ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
             .data=${{
-              iconPath: this.#props.iconUrl,
               iconName: this.#props.iconName,
               color: 'var(--sys-color-cdt-base-container)',
               width: this.#props.iconWidth || undefined,

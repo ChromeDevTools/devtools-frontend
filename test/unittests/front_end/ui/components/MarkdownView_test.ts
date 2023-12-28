@@ -23,7 +23,11 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;
 }
 
-describeWithEnvironment('MarkdownView', async () => {
+describeWithEnvironment('MarkdownView', () => {
+  afterEach(() => {
+    MarkdownView.MarkdownImagesMap.markdownImages.clear();
+  });
+
   describe('renderToken', async () => {
     const renderer = new MarkdownView.MarkdownView.MarkdownLitRenderer();
 

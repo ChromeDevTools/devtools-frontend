@@ -47,12 +47,6 @@ export class ClosedEvent extends Event {
   }
 }
 
-const extensionIcon = new URL(
-                          '../images/extension_icon.svg',
-                          import.meta.url,
-                          )
-                          .toString();
-
 export class ExtensionView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-recorder-extension-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -98,7 +92,7 @@ export class ExtensionView extends HTMLElement {
                 title=${i18nString(UIStrings.extension)}
                 .data=${
                   {
-                    iconPath: extensionIcon,
+                    iconName: 'extension',
                     color: 'var(--sys-color-secondary)',
                   } as IconButton.Icon.IconData
                 }>

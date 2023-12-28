@@ -110,6 +110,7 @@ devtools_svg_sources = [
   "exclamation.svg",
   "experiment-check.svg",
   "experiment.svg",
+  "extension.svg",
   "eye.svg",
   "file-document.svg",
   "file-fetch-xhr.svg",

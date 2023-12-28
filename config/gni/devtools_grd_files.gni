@@ -107,6 +107,7 @@ grd_files_release_sources = [
   "front_end/Images/exclamation.svg",
   "front_end/Images/experiment-check.svg",
   "front_end/Images/experiment.svg",
+  "front_end/Images/extension.svg",
   "front_end/Images/eye.svg",
   "front_end/Images/file-document.svg",
   "front_end/Images/file-fetch-xhr.svg",

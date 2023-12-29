@@ -112,6 +112,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private entryInfo: HTMLElement;
   private readonly markerHighlighElement: HTMLElement;
   readonly highlightElement: HTMLElement;
+  readonly revealAncestorsArrowHighlightElement: HTMLElement;
   private readonly selectedElement: HTMLElement;
   private rulerEnabled: boolean;
   private barHeight: number;
@@ -201,6 +202,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
     this.highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
+    this.revealAncestorsArrowHighlightElement =
+        this.viewportElement.createChild('div', 'reveal-ancestors-arrow-highlight-element');
     this.selectedElement = this.viewportElement.createChild('div', 'flame-chart-selected-element');
     this.canvas.addEventListener('focus', () => {
       this.dispatchEventToListeners(Events.CanvasFocused);
@@ -418,6 +421,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private updateHighlight(): void {
     const entryIndex = this.coordinatesToEntryIndex(this.lastMouseOffsetX, this.lastMouseOffsetY);
+    // Each time the entry highlight is updated, we need to check if the mouse is hovering over a
+    // button that indicates hidden child elements and if so, update the button highlight
+    this.updateHiddenChildrenArrowHighlighPosition(entryIndex);
     if (entryIndex === -1) {
       this.hideHighlight();
       const group = this.coordinatesToGroupIndex(this.lastMouseOffsetX, this.lastMouseOffsetY, false /* headerOnly */);
@@ -1132,9 +1138,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   /**
    * Given an entry's index and an X coordinate of a mouse click, returns
-   * whether the button to reveal hidden children of an antry was clicked
+   * whether the mouse is hovering over the arrow button that reveals hidden children
    */
-  isRevealChildrenArrowClicked(x: number, index: number): boolean {
+  isMouseOverRevealChildrenArrow(x: number, index: number): boolean {
     const timelineData = this.timelineData();
     if (!timelineData) {
       return false;
@@ -2518,9 +2524,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   setSelectedEntry(entryIndex: number): void {
-    // Check if the button that resets entries' children is clicked even if the entry clicked
-    // is not selected to avoid needing to double clicking to reveal children
-    if (this.isRevealChildrenArrowClicked(this.lastMouseOffsetX, entryIndex)) {
+    // If the entry has HIDDEN_ANCESTORS_ARROW decoration, check if the button that
+    // resets children of the entry is clicked. We need to check it even if the entry
+    // clicked is not selected to avoid needing to double click
+    if (this.entryHasDecoration(entryIndex, 'HIDDEN_ANCESTORS_ARROW') &&
+        this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
       this.#dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entryIndex);
     }
     if (this.selectedEntryIndex === entryIndex) {
@@ -2534,7 +2542,25 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
   }
 
-  private updateElementPosition(element: Element, entryIndex: number): void {
+  private entryHasDecoration(entryIndex: number, decorationType: string): boolean {
+    const timelineData = this.timelineData();
+    if (!timelineData) {
+      return false;
+    }
+
+    const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
+    if (decorationsForEvent && decorationsForEvent.length >= 1) {
+      return decorationsForEvent.some(decoration => decoration.type === decorationType);
+    }
+
+    return false;
+  }
+
+  /**
+   * Update position of an Element. By default, the element is treated as a full entry and it's dimentions are set to the full entry width/length/height.
+   * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
+   */
+  private updateElementPosition(element: Element, entryIndex: number, isDecoration?: boolean): void {
     const elementMinWidthPx = 2;
     element.classList.add('hidden');
     if (entryIndex === -1) {
@@ -2572,12 +2598,35 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const barY = this.levelToOffset(entryLevel) - this.chartViewport.scrollOffset();
     const barHeight = this.levelHeight(entryLevel);
     const style = (element as HTMLElement).style;
-    style.left = barX + 'px';
-    style.top = barY + 'px';
-    style.width = barWidth + 'px';
-    style.height = barHeight - 1 + 'px';
+    if (isDecoration) {
+      style.top = barY + 'px';
+      style.width = barHeight + 'px';
+      style.height = barHeight + 'px';
+      style.left = barX + barWidth - barHeight + 'px';
+    } else {
+      style.top = barY + 'px';
+      style.width = barWidth + 'px';
+      style.height = barHeight - 1 + 'px';
+      style.left = barX + 'px';
+    }
     element.classList.toggle('hidden', !visible);
     this.viewportElement.appendChild(element);
+  }
+
+  // Updates the highlight of an Arrow button that is shown on an entry if it has hidden child entries
+  private updateHiddenChildrenArrowHighlighPosition(entryIndex: number): void {
+    this.revealAncestorsArrowHighlightElement.classList.add('hidden');
+    /**
+     * No need to update the hidden ancestors arrow highlight if
+     * 1. No entry is highlighted
+     * 2. Entry highlighed does not have a decoration
+     * 3. Mouse is not hovering over the arrow button
+     */
+    if (entryIndex === -1 || !this.entryHasDecoration(entryIndex, 'HIDDEN_ANCESTORS_ARROW') ||
+        !this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
+      return;
+    }
+    this.updateElementPosition(this.revealAncestorsArrowHighlightElement, entryIndex, true);
   }
 
   private timeToPositionClipped(time: number): number {

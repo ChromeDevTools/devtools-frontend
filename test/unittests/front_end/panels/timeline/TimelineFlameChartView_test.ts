@@ -135,4 +135,71 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       },
     ]);
   });
+
+  it('Removes Hidden Ancestors Arrow as a decoration when Reset Children event is dispatched on a node',
+     async function() {
+       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
+       const mockViewDelegate = new MockViewDelegate();
+
+       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+       flameChartView.setModel(performanceModel, traceParsedData);
+
+       // Find the main track to later collapse entries of
+       let mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+         return group.name === 'Main — http://localhost:8080/';
+       });
+       if (!mainTrack) {
+         throw new Error('Could not find main track');
+       }
+
+       // Find the first node that has children to collapse and is visible in the timeline
+       const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+       const firstNodeWithChildren = nodeOfGroup?.find(node => {
+         const childrenAmount =
+             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)
+                 ?.children.length;
+         if (!childrenAmount) {
+           return false;
+         }
+         return childrenAmount > 0 && node.cat === 'devtools.timeline';
+       });
+       const node =
+           traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+       if (!node) {
+         throw new Error('Could not find a visible node with children');
+       }
+
+       // Dispatch a TreeModified event that should apply COLLAPSE_FUNCTION action to the node.
+       // This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
+       flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
+         group: mainTrack,
+         node: node?.id,
+         action: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION,
+       });
+
+       let decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
+       assert.deepEqual(decorationsForEntry, [
+         {
+           type: 'HIDDEN_ANCESTORS_ARROW',
+         },
+       ]);
+
+       mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+         return group.name === 'Main — http://localhost:8080/';
+       });
+       if (!mainTrack) {
+         throw new Error('Could not find main track');
+       }
+       // Dispatch a TreeModified event that should apply RESET_CHILDREN action to the node.
+       // This action will eveal all of the hidden children of the passed node and remove HIDDEN_ANCESTORS_ARROW decoration from it.
+       flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
+         group: mainTrack,
+         node: node?.id,
+         action: TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN,
+       });
+
+       // No decorations should exist on the node
+       decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
+       assert.isUndefined(decorationsForEntry);
+     });
 });

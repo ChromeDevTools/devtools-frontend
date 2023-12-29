@@ -14,13 +14,13 @@ const {assert} = chai;
 describeWithEnvironment('FlameChart', () => {
   it('sorts decorations, putting candy striping before warning triangles', async () => {
     const decorations: PerfUI.FlameChart.FlameChartDecoration[] = [
-      {type: 'WARNING_TRIANGLE'},
-      {type: 'CANDY', startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
     ];
     PerfUI.FlameChart.sortDecorationsForRenderingOrder(decorations);
     assert.deepEqual(decorations, [
-      {type: 'CANDY', startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
-      {type: 'WARNING_TRIANGLE'},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
     ]);
   });
 

@@ -113,12 +113,12 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
     assert.deepEqual(decorationsForEntry, [
       {
-        type: 'CANDY',
+        type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
         startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000),
         endAtTime: longInteraction.processingEnd,
       },
       {
-        type: 'WARNING_TRIANGLE',
+        type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
         customEndTime: longInteraction.processingEnd,
       },
     ]);

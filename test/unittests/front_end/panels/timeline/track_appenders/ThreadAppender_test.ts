@@ -336,9 +336,13 @@ describeWithEnvironment('ThreadAppender', function() {
     }
     const entryIndex = entryData.indexOf(longTask);
     const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
-    assert.deepEqual(
-        decorationsForEntry,
-        [{type: 'WARNING_TRIANGLE'}, {type: 'CANDY', 'startAtTime': TraceModel.Types.Timing.MicroSeconds(50_000)}]);
+    assert.deepEqual(decorationsForEntry, [
+      {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+      {
+        type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+        'startAtTime': TraceModel.Types.Timing.MicroSeconds(50_000),
+      },
+    ]);
   });
 
   it('does not candy-stripe tasks below the long task threshold', async function() {

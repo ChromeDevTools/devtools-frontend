@@ -81,15 +81,15 @@ function renderExample2() {
         entryDecorations: [
           [
             {
-              type: 'CANDY',
+              type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
               startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
             },
-            {type: 'WARNING_TRIANGLE'},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
           ],
-          [{type: 'WARNING_TRIANGLE'}],
+          [{type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE}],
           [
             {
-              type: 'CANDY',
+              type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
               startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
             },
           ],

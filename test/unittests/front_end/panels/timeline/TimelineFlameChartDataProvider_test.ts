@@ -9,6 +9,7 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import * as PerfUi from '../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
@@ -61,10 +62,10 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     Object.entries(entryDecorations).forEach(([index, decorationsForEvent]) => {
       const entryTitle = dataProvider.entryTitle(parseInt(index, 10)) ?? '';
       for (const decoration of decorationsForEvent) {
-        if (decoration.type === 'CANDY') {
+        if (decoration.type === PerfUi.FlameChart.FlameChartDecorationType.CANDY) {
           stripingTitles.push(entryTitle);
         }
-        if (decoration.type === 'WARNING_TRIANGLE') {
+        if (decoration.type === PerfUi.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE) {
           triangleTitles.push(entryTitle);
         }
       }

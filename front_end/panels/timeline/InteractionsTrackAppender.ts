@@ -4,6 +4,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
@@ -109,7 +110,7 @@ export class InteractionsTrackAppender implements TrackAppender {
         this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] || [];
     decorationsForEvent.push(
         {
-          type: 'CANDY',
+          type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
           startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
           // Interaction events have whiskers, so we do not want to candy stripe
           // the entire duration. The box represents processing time, so we only
@@ -117,7 +118,7 @@ export class InteractionsTrackAppender implements TrackAppender {
           endAtTime: entry.processingEnd,
         },
         {
-          type: 'WARNING_TRIANGLE',
+          type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
           customEndTime: entry.processingEnd,
         });
     this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] = decorationsForEvent;

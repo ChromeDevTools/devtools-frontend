@@ -131,7 +131,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
     assert.deepEqual(decorationsForEntry, [
       {
-        type: 'HIDDEN_ANCESTORS_ARROW',
+        type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
       },
     ]);
   });
@@ -180,7 +180,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        let decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
        assert.deepEqual(decorationsForEntry, [
          {
-           type: 'HIDDEN_ANCESTORS_ARROW',
+           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
          },
        ]);
 

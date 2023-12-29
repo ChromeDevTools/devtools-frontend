@@ -512,18 +512,19 @@ export class ThreadAppender implements TrackAppender {
       entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number, childrenCollapsed?: boolean): void {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
     if (childrenCollapsed) {
-      addDecorationToEvent(flameChartData, index, {type: 'HIDDEN_ANCESTORS_ARROW'});
+      addDecorationToEvent(
+          flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW});
     }
     const warnings = this.#traceParsedData.Warnings.perEvent.get(entry);
     if (!warnings) {
       return;
     }
-    addDecorationToEvent(flameChartData, index, {type: 'WARNING_TRIANGLE'});
+    addDecorationToEvent(flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE});
     if (!warnings.includes('LONG_TASK')) {
       return;
     }
     addDecorationToEvent(flameChartData, index, {
-      type: 'CANDY',
+      type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
       startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
     });
   }

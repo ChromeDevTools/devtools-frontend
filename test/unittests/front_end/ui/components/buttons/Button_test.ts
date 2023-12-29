@@ -11,7 +11,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
 describe('Button', async () => {
-  const iconName = 'file-image';
+  const iconUrl = new URL('../../../../../../front_end/Images/file-image.svg', import.meta.url).toString();
 
   async function renderButton(
       data: Buttons.Button.ButtonData = {
@@ -84,7 +84,7 @@ describe('Button', async () => {
   it('toolbar button can be clicked', async () => {
     await testClick({
       variant: Buttons.Button.Variant.TOOLBAR,
-      iconName,
+      iconUrl,
     });
   });
 
@@ -92,7 +92,7 @@ describe('Button', async () => {
     await testClick(
         {
           variant: Buttons.Button.Variant.TOOLBAR,
-          iconName,
+          iconUrl,
           disabled: true,
         },
         0);
@@ -122,7 +122,7 @@ describe('Button', async () => {
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconName,
+          iconUrl,
         },
         'text');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -134,7 +134,7 @@ describe('Button', async () => {
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconName,
+          iconUrl,
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -157,7 +157,7 @@ describe('Button', async () => {
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconName,
+          iconUrl,
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -165,12 +165,12 @@ describe('Button', async () => {
   });
 
   it('sets icon size for round icon button according to passed parameters', async () => {
-    const iconName = 'document';
+    const iconUrl = new URL('../../../../../../front_end/Images/document.svg', import.meta.url).toString();
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.ROUND,
           size: Buttons.Button.Size.SMALL,
-          iconName,
+          iconUrl,
           iconWidth: '15px',
           iconHeight: '16px',
         },

@@ -45,7 +45,7 @@ export class MarkdownImage extends HTMLElement {
     const {src, color, width = '100%', height = '100%'} = this.#imageData;
     return LitHtml.html`
       <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconName: src, color, width, height} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
+        {iconPath: src, color, width, height} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
     `;
   }
 

@@ -12,7 +12,7 @@ await FrontendHelpers.initializeGlobalVars();
 
 // Register images in the markdown image map.
 MarkdownView.MarkdownImagesMap.markdownImages.set('lighthouse-icon', {
-  src: 'lighthouse_logo',
+  src: '../../Images/lighthouse_logo.svg',
   width: '16px',
   height: '16px',
   isIcon: true,
@@ -44,7 +44,7 @@ console.log('test')
 
 \`\`\`js
 MarkdownView.MarkdownImagesMap.markdownImages.set('lighthouse-icon', {
-  src: 'lighthouse_logo',
+  src: '../../Images/lighthouse_logo.svg',
   width: '16px',
   height: '16px',
   isIcon: true,

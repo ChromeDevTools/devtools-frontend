@@ -13,9 +13,9 @@ const {assert} = chai;
 
 describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
-  before(() => {
+  before(async () => {
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
-      src: 'review',
+      src: new URL('../../../../../front_end/Images/review.svg', import.meta.url).toString(),
       width: '20px',
       height: '20px',
       isIcon: true,
@@ -27,11 +27,6 @@ describe('MarkdownImage', () => {
       isIcon: false,
     });
   });
-
-  after(() => {
-    MarkdownView.MarkdownImagesMap.markdownImages.clear();
-  });
-
   it('renders icon correctly', async () => {
     const component = new MarkdownView.MarkdownImage.MarkdownImage();
     component.data = {key: 'test-icon', title: 'Test icon'};
@@ -44,7 +39,6 @@ describe('MarkdownImage', () => {
     assert.strictEqual(boundingClient.width, 20);
     assert.strictEqual(boundingClient.height, 20);
   });
-
   it('renders image correctly', () => {
     const component = new MarkdownView.MarkdownImage.MarkdownImage();
     const markdownImageTitle = 'Test image';

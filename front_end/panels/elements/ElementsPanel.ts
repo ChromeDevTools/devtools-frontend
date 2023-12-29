@@ -165,7 +165,7 @@ const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => 
   button.data = {
     active: isActive,
     variant: Buttons.Button.Variant.TOOLBAR,
-    iconName: 'person',
+    iconUrl: new URL('../../Images/person.svg', import.meta.url).toString(),
     title,
   };
   button.tabIndex = 0;

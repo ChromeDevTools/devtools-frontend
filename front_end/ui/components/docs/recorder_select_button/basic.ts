@@ -11,42 +11,39 @@ await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const container = document.getElementById('container');
+const throttlingIconUrl = new URL('../../../../panels/recorder/images/throttling_icon.svg', import.meta.url).toString();
+const playIconUrl = new URL('../../../../images/play_icon.svg', import.meta.url).toString();
 
 const items = [
   {
     value: 'performance',
     label: (): string => 'Performance panel',
-    buttonIconName: 'throttling_icon',
+    buttonIconUrl: throttlingIconUrl,
   },
   {
     value: 'performance_insights',
     label: (): string => 'Performance insights panel',
-    buttonIconName: 'throttling_icon',
+    buttonIconUrl: throttlingIconUrl,
   },
 ];
 
 const replayItems = [
   {
     value: 'normal',
-    buttonIconName: 'play',
+    buttonIconUrl: playIconUrl,
     buttonLabel: (): string => 'Replay',
     label: (): string => 'Normal (Default)',
   },
-  {
-    value: 'slow',
-    buttonIconName: 'play',
-    buttonLabel: (): string => 'Slow replay',
-    label: (): string => 'Slow',
-  },
+  {value: 'slow', buttonIconUrl: playIconUrl, buttonLabel: (): string => 'Slow replay', label: (): string => 'Slow'},
   {
     value: 'very_slow',
-    buttonIconName: 'play',
+    buttonIconUrl: playIconUrl,
     buttonLabel: (): string => 'Very slow replay',
     label: (): string => 'Very slow',
   },
   {
     value: 'extremely_slow',
-    buttonIconName: 'play',
+    buttonIconUrl: playIconUrl,
     buttonLabel: (): string => 'Extremely slow replay',
     label: (): string => 'Extremely slow',
   },

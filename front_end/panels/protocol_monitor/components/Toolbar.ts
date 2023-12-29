@@ -35,6 +35,9 @@ declare global {
   }
 }
 
+const copyIconUrl = new URL('../../../Images/copy.svg', import.meta.url).toString();
+const sendIconUrl = new URL('../../../Images/send.svg', import.meta.url).toString();
+
 export class CopyCommandEvent extends Event {
   static readonly eventName = 'copycommand';
   constructor() {
@@ -68,7 +71,7 @@ export class Toolbar extends LitElement {
           <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.copyCommand)}
           .size=${Buttons.Button.Size.SMALL}
-          .iconName="copy"
+          .iconUrl=${copyIconUrl}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${this.#handleCopy}
           jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.copy-command')}
@@ -76,7 +79,7 @@ export class Toolbar extends LitElement {
         <${Buttons.Button.Button.litTagName}
           .size=${Buttons.Button.Size.SMALL}
           title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
-          .iconName="send"
+          .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
           @click=${this.#handleSend}
           jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.send-command')}

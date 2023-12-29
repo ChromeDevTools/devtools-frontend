@@ -5,8 +5,14 @@
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
-
 import iconStyles from './icon.css.js';
+
+export interface IconWithPath {
+  iconPath: string;
+  color: string;
+  width?: string;
+  height?: string;
+}
 
 export interface IconWithName {
   iconName: string;
@@ -15,7 +21,7 @@ export interface IconWithName {
   height?: string;
 }
 
-export type IconData = IconWithName;
+export type IconData = IconWithPath|IconWithName;
 
 const isString = (value: string|undefined): value is string => value !== undefined;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -25,10 +31,11 @@ export class Icon extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #iconName: Readonly<string> = '';
+  #iconPath: Readonly<string> = '';
   #color: Readonly<string> = 'var(--icon-default)';
   #width: Readonly<string> = '100%';
   #height: Readonly<string> = '100%';
+  #iconName?: Readonly<string>;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [iconStyles];
@@ -36,24 +43,40 @@ export class Icon extends HTMLElement {
 
   set data(data: IconData) {
     const {width, height} = data;
-    this.#iconName = data.iconName;
     this.#color = data.color;
     this.#width = isString(width) ? width : (isString(height) ? height : this.#width);
     this.#height = isString(height) ? height : (isString(width) ? width : this.#height);
+    if ('iconPath' in data && data.iconPath) {
+      this.#iconPath = data.iconPath;
+    } else if ('iconName' in data && data.iconName) {
+      this.#iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
+      this.#iconName = data.iconName;
+    } else {
+      throw new Error('Misconfigured iconName or iconPath.');
+    }
     this.#render();
   }
 
   get data(): IconData {
-    return {
-      iconName: this.#iconName,
+    const commonData = {
       color: this.#color,
       width: this.#width,
       height: this.#height,
     };
+    if (this.#iconName) {
+      return {
+        ...commonData,
+        iconName: this.#iconName,
+      };
+    }
+    return {
+      ...commonData,
+      iconPath: this.#iconPath,
+    };
   }
 
   #getStyles(): {[key: string]: string} {
-    const iconPath = new URL(`../../../Images/${this.#iconName}.svg`, import.meta.url).toString();
+    const iconPath = this.#iconPath;
     const width = this.#width;
     const height = this.#height;
     const color = this.#color;

@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
-import * as Host from '../../core/host/host.js';
 
 const UIStrings = {
   /**
@@ -27,7 +28,7 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.bounceTrackingMitigations), false);
-    const icon = UI.Icon.Icon.create('database', 'resource-tree-item');
+    const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
   }
 

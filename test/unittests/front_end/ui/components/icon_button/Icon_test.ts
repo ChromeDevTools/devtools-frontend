@@ -81,4 +81,18 @@ describe('Icon', () => {
       });
     });
   });
+
+  describe('create', () => {
+    const {create} = IconButton.Icon;
+
+    it('constructs a new Icon with the given `name`', () => {
+      const icon = create('bin');
+      assert.strictEqual(icon.name, 'bin');
+    });
+
+    it('constructs a new Icon with the given `className`', () => {
+      const icon = create('select-element', 'my-awesome-class');
+      assert.isTrue(icon.classList.contains('my-awesome-class'));
+    });
+  });
 });

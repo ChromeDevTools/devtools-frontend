@@ -48,11 +48,6 @@
   top: 0;
 }
 
-.tree-outline {
-  --override-folder-tree-item-color: var(--icon-default);
-  --override-file-tree-item-color: var(--icon-default);
-}
-
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
 .navigator-fs-folder-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection) {
   filter: grayscale(50%);
@@ -72,22 +67,22 @@
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.navigator-fs-folder-tree-item .icons-container {
-  --override-folder-tree-item-color: var(--icon-folder-workspace);
+.navigator-fs-folder-tree-item devtools-icon {
+  color: var(--icon-folder-workspace);
 }
 
-.navigator-fs-tree-item .icons-container {
-  --override-file-tree-item-color: var(--icon-file-authored);
+.navigator-fs-tree-item devtools-icon {
+  color: var(--icon-file-authored);
 }
 
-.navigator-nw-folder-tree-item .icons-container {
-  --override-folder-tree-item-color: var(--icon-folder-deployed);
+.navigator-nw-folder-tree-item devtools-icon {
+  color: var(--icon-folder-deployed);
 }
 
-.navigator-sm-script-tree-item .icons-container,
-.navigator-script-tree-item .icons-container,
-.navigator-snippet-tree-item .icons-container {
-  --override-file-tree-item-color: var(--icon-file-script);
+.navigator-sm-script-tree-item devtools-icon,
+.navigator-script-tree-item devtools-icon,
+.navigator-snippet-tree-item devtools-icon {
+  color: var(--icon-file-script);
 }
 
 .navigator-file-tree-item devtools-icon.dot::before {
@@ -109,18 +104,18 @@
   outline-color: var(--icon-gap-focus-selected);
 }
 
-.navigator-sm-stylesheet-tree-item .icons-container,
-.navigator-stylesheet-tree-item .icons-container {
-  --override-file-tree-item-color: var(--icon-file-styles);
+.navigator-sm-stylesheet-tree-item devtools-icon,
+.navigator-stylesheet-tree-item devtools-icon {
+  color: var(--icon-file-styles);
 }
 
-.navigator-image-tree-item .icons-container,
-.navigator-font-tree-item .icons-container {
-  --override-file-tree-item-color: var(--icon-file-image);
+.navigator-image-tree-item devtools-icon,
+.navigator-font-tree-item devtools-icon {
+  color: var(--icon-file-image);
 }
 
-.navigator-nw-folder-tree-item.is-from-source-map .icons-container {
-  --override-folder-tree-item-color: var(--icon-folder-authored);
+.navigator-nw-folder-tree-item.is-from-source-map devtools-icon {
+  color: var(--icon-folder-authored);
 }
 
 .tree-outline:not(:has(.navigator-deployed-tree-item)) .navigator-sm-folder-tree-item .tree-element-title,
@@ -130,7 +125,7 @@
 }
 
 @media (forced-colors: active) {
-  .tree-outline li .leading-icons [is="ui-icon"].icon-mask {
+  .tree-outline li .leading-icons devtools-icon {
     background: ButtonText;
   }
 
@@ -140,7 +135,7 @@
   }
 
   .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before,
-  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) [is="ui-icon"].icon-mask {
+  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) devtools-icon {
     background-color: HighlightText;
   }
 

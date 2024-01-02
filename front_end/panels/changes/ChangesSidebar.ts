@@ -129,8 +129,7 @@ export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
       iconName = 'snippet';
     }
-    const defaultIcon = new IconButton.Icon.Icon();
-    defaultIcon.name = iconName;
+    const defaultIcon = IconButton.Icon.create(iconName);
     this.setLeadingIcons([defaultIcon]);
 
     this.eventListeners = [

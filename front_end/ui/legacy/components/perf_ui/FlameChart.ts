@@ -1866,10 +1866,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       let text = this.dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this.#font;
+        const hasArrowDecoration = this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW);
+        // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration, also substract the width of the decoration.
+        // The decoration is square, therefore it's width is equal to this.barHeight
+        const maxBarWidth = (hasArrowDecoration) ? barWidth - textPadding - this.barHeight : barWidth - 2 * textPadding;
         text = UI.UIUtils.trimTextMiddle(
             context,
             text,
-            barWidth - 2 * textPadding,  // Set the max width to be the width of the bar plus some padding
+            maxBarWidth,
         );
       }
       const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);

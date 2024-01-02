@@ -287,22 +287,24 @@ export class Button extends HTMLElement {
       disabled: Boolean(this.#props.disabled),
       'spinner-component': true,
     };
+    const iconStyles = Object.create(null);
+    if (this.#props.iconWidth) {
+      iconStyles['width'] = this.#props.iconWidth;
+    }
+    if (this.#props.iconHeight) {
+      iconStyles['height'] = this.#props.iconHeight;
+    }
     const jslog =
         this.#props.jslogContext && VisualLogging.action().track({click: true}).context(this.#props.jslogContext);
     // clang-format off
     LitHtml.render(
       LitHtml.html`
         <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
-          ${hasIcon ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
-            .data=${{
-              iconPath: this.#props.iconUrl,
-              iconName: this.#props.iconName,
-              color: 'var(--sys-color-cdt-base-container)',
-              width: this.#props.iconWidth || undefined,
-              height: this.#props.iconHeight || undefined,
-            } as IconButton.Icon.IconData}
-          >
-          </${IconButton.Icon.Icon.litTagName}>` : ''}
+          ${hasIcon
+            ? LitHtml.html`
+                <${IconButton.Icon.Icon.litTagName} name=${this.#props.iconName || this.#props.iconUrl} style=${LitHtml.Directives.styleMap(iconStyles)}>
+                </${IconButton.Icon.Icon.litTagName}>`
+            : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.#onSlotChange}></slot>
         </button>

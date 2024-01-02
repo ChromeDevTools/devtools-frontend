@@ -91,6 +91,7 @@ group("front_end") {
     "ui/components/diff_view",
     "ui/components/helpers",
     "ui/components/highlighting",
+    "ui/components/icon_button",
     "ui/components/issue_counter",
     "ui/components/render_coordinator",
     "ui/components/request_link_icon",

@@ -25,6 +25,7 @@ devtools_module("issue_counter") {
     "../../../core/i18n:bundle",
     "../../../models/issues_manager:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
   ]

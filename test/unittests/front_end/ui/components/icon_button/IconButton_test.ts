@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 
-import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 

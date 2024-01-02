@@ -125,12 +125,9 @@ describeWithMockConnection('TrustTokensView', () => {
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const deleteCell = getCellByIndexes(dataGridShadowRoot, {column: 2, row: 1});
-    const deleteButtonComponent = deleteCell.querySelector('devtools-trust-tokens-delete-button');
+    const deleteButtonComponent = deleteCell.querySelector('devtools-button');
     assertElement(deleteButtonComponent, HTMLElement);
-    assertShadowRoot(deleteButtonComponent.shadowRoot);
-    const deleteButton = deleteButtonComponent.shadowRoot.querySelector('button');
-    assertElement(deleteButton, HTMLButtonElement);
-    dispatchClickEvent(deleteButton);
+    dispatchClickEvent(deleteButtonComponent);
 
     assert.isTrue(clearTrustTokens.calledOnceWith({issuerOrigin: 'bar.org'}));
   });

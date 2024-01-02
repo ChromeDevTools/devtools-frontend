@@ -121,36 +121,6 @@ devtools-recording-list-view {
   outline: -webkit-focus-ring-color auto 1px;
 }
 
-.continue-button {
-  border: none;
-  background-color: transparent;
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
-}
-
-.continue-button devtools-icon {
-  width: 24px;
-  height: 24px;
-
-  --icon-color: var(--sys-color-primary);
-}
-
-.continue-button:hover,
-.continue-button:focus-visible {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.continue-button:disabled {
-  background: var(--sys-color-cdt-base-container);
-  color: var(--sys-color-state-disabled);
-  cursor: not-allowed;
-}
-
-.continue-button:disabled devtools-icon {
-  --icon-color: var(--icon-disabled);
-}
-
 devtools-shortcut-dialog {
   padding-right: 6px;
 }

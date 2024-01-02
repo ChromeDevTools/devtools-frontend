@@ -142,8 +142,13 @@ summary:hover button {
   display: flex;
 }
 
-button:hover devtools-icon {
-  --icon-color: var(--icon-default-hover);
+devtools-icon {
+  width: 16px;
+  height: 16px;
+
+  button:hover & {
+    color: var(--icon-default-hover);
+  }
 }
 
 .type-indicator {
@@ -201,8 +206,14 @@ button:hover devtools-icon {
   margin-right: 6px;
 }
 
-summary:hover .file-icon {
-  display: none;
+devtools-icon[name="file-script"] {
+  color: var(--icon-file-script);
+  width: 18px;
+  height: 18px;
+
+  summary:hover & {
+    display: none;
+  }
 }
 
 .group-checkbox {

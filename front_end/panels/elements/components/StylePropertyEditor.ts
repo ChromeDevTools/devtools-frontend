@@ -137,13 +137,15 @@ export class StylePropertyEditor extends HTMLElement {
     });
     const values = {propertyName, propertyValue};
     const title = selected ? i18nString(UIStrings.deselectButton, values) : i18nString(UIStrings.selectButton, values);
-    return html`<button title=${title} class=${classes}
-        jslog=${VisualLogging.item().track({click: true}).context(query)}
-        @click=${(): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
-       <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${
-        {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '20px', height: '20px'} as
-        IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
-    </button>`;
+    return html`
+      <button title=${title}
+              class=${classes}
+              jslog=${VisualLogging.item().track({click: true}).context(query)}
+              @click=${(): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
+        <${IconButton.Icon.Icon.litTagName} style=${transform} name=${iconInfo.iconName}>
+        </${IconButton.Icon.Icon.litTagName}>
+      </button>
+    `;
   }
 
   #onButtonClick(propertyName: string, propertyValue: string, selected: boolean): void {

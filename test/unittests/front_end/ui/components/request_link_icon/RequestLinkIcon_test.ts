@@ -2,19 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
-import type * as Logs from '../../../../../../front_end/models/logs/logs.js';
-import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
-import * as RequestLinkIcon from '../../../../../../front_end/ui/components/request_link_icon/request_link_icon.js';
-import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
+import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import type * as Logs from '../../../../../../front_end/models/logs/logs.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
+import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as RequestLinkIcon from '../../../../../../front_end/ui/components/request_link_icon/request_link_icon.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -34,36 +33,18 @@ const renderRequestLinkIcon = async(data: RequestLinkIcon.RequestLinkIcon.Reques
 
 export const extractElements = (shadowRoot: ShadowRoot): {
   icon: IconButton.Icon.Icon,
-  container: HTMLSpanElement,
-  label?: HTMLSpanElement,
+  button: HTMLButtonElement,
+  label: HTMLSpanElement|null,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
   assertElement(icon, IconButton.Icon.Icon);
-  const container = shadowRoot.querySelector('span');
-  assertNotNullOrUndefined(container);
-  const label = shadowRoot.querySelector('span > span');
+  const button = shadowRoot.querySelector('button');
+  assertElement(button, HTMLButtonElement);
+  const label = shadowRoot.querySelector('button > span');
   if (label !== null) {
     assertElement(label, HTMLSpanElement);
-    return {
-      icon,
-      container,
-      label,
-    };
   }
-  return {icon, container};
-};
-
-export const extractData = (shadowRoot: ShadowRoot): {
-  iconData: IconButton.Icon.IconData,
-  label: string|null,
-  containerClasses: string[],
-} => {
-  const {icon, container, label} = extractElements(shadowRoot);
-  return {
-    iconData: icon.data,
-    label: label ? label.textContent : null,
-    containerClasses: Array.from(container.classList),
-  };
+  return {icon, button, label};
 };
 
 interface MockRequestResolverEntry {
@@ -143,9 +124,9 @@ describeWithEnvironment('RequestLinkIcon', () => {
         requestResolver: failingRequestResolver as unknown as Logs.RequestResolver.RequestResolver,
       });
 
-      const {iconData, label} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'arrow-up-down-circle');
-      assert.strictEqual(iconData.color, 'var(--icon-no-request)');
+      const {button, icon, label} = extractElements(shadowRoot);
+      assert.isFalse(button.classList.contains('link'));
+      assert.strictEqual(icon.name, 'arrow-up-down-circle');
       assert.isNull(label, 'Didn\'t expect a label');
     });
 
@@ -154,9 +135,9 @@ describeWithEnvironment('RequestLinkIcon', () => {
         request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
       });
 
-      const {iconData, label} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'arrow-up-down-circle');
-      assert.strictEqual(iconData.color, 'var(--icon-link)');
+      const {button, icon, label} = extractElements(shadowRoot);
+      assert.isTrue(button.classList.contains('link'));
+      assert.strictEqual(icon.name, 'arrow-up-down-circle');
       assert.isNull(label, 'Didn\'t expect a label');
     });
 
@@ -166,8 +147,8 @@ describeWithEnvironment('RequestLinkIcon', () => {
         displayURL: true,
       });
 
-      const {label} = extractData(shadowRoot);
-      assert.strictEqual(label, 'baz');
+      const {label} = extractElements(shadowRoot);
+      assert.strictEqual(label?.textContent, 'baz');
     });
 
     it('renders the request label correctly with a trailing slash', async () => {
@@ -176,8 +157,8 @@ describeWithEnvironment('RequestLinkIcon', () => {
         displayURL: true,
       });
 
-      const {label} = extractData(shadowRoot);
-      assert.strictEqual(label, 'baz/');
+      const {label} = extractElements(shadowRoot);
+      assert.strictEqual(label?.textContent, 'baz/');
     });
 
     it('renders the request label correctly without a request', async () => {
@@ -187,8 +168,8 @@ describeWithEnvironment('RequestLinkIcon', () => {
         displayURL: true,
       });
 
-      const {label} = extractData(shadowRoot);
-      assert.strictEqual(label, 'gamma');
+      const {label} = extractElements(shadowRoot);
+      assert.strictEqual(label?.textContent, 'gamma');
     });
 
     it('renders alternative text for URL', async () => {
@@ -199,27 +180,8 @@ describeWithEnvironment('RequestLinkIcon', () => {
         urlToDisplay: 'https://alpha.beta/gamma',
       });
 
-      const {label} = extractData(shadowRoot);
-      assert.strictEqual(label, 'https://alpha.beta/gamma');
-    });
-
-    it('the style reacts to the presence of a request', async () => {
-      const {shadowRoot} = await renderRequestLinkIcon({
-        request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
-      });
-
-      const {containerClasses} = extractData(shadowRoot);
-      assert.include(containerClasses, 'link');
-    });
-
-    it('the style reacts to the absence of a request', async () => {
-      const {shadowRoot} = await renderRequestLinkIcon({
-        affectedRequest: {requestId: requestId1, url: 'https://alpha.beta/gamma'},
-        requestResolver: failingRequestResolver as unknown as Logs.RequestResolver.RequestResolver,
-      });
-
-      const {containerClasses} = extractData(shadowRoot);
-      assert.notInclude(containerClasses, 'link');
+      const {label} = extractElements(shadowRoot);
+      assert.strictEqual(label?.textContent, 'https://alpha.beta/gamma');
     });
   });
 
@@ -237,15 +199,12 @@ describeWithEnvironment('RequestLinkIcon', () => {
         requestResolver: resolver as unknown as Logs.RequestResolver.RequestResolver,
       });
 
-      const {containerClasses: containerClassesBefore} = extractData(shadowRoot);
-      assert.notInclude(containerClassesBefore, 'link');
+      assert.isFalse(extractElements(shadowRoot).button.classList.contains('link'));
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
-
       await coordinator.done({waitForWork: true});
 
-      const {containerClasses: containerClassesAfter} = extractData(shadowRoot);
-      assert.include(containerClassesAfter, 'link');
+      assert.isTrue(extractElements(shadowRoot).button.classList.contains('link'));
     });
 
     it('to set the label correctly', async () => {
@@ -256,34 +215,12 @@ describeWithEnvironment('RequestLinkIcon', () => {
         displayURL: true,
       });
 
-      const {label: labelBefore} = extractData(shadowRoot);
-      assert.strictEqual(labelBefore, 'gamma');
+      assert.strictEqual(extractElements(shadowRoot).label?.textContent, 'gamma');
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
-
       await coordinator.done({waitForWork: true});
 
-      const {label: labelAfter} = extractData(shadowRoot);
-      assert.strictEqual(labelAfter, 'baz');
-    });
-
-    it('to set icon color correctly', async () => {
-      const resolver = new MockRequestResolver();
-      const {shadowRoot} = await renderRequestLinkIcon({
-        affectedRequest: {requestId: requestId1, url: 'https://alpha.beta/gamma'},
-        requestResolver: resolver as unknown as Logs.RequestResolver.RequestResolver,
-        displayURL: true,
-      });
-
-      const {iconData: iconDataBefore} = extractData(shadowRoot);
-      assert.strictEqual(iconDataBefore.color, 'var(--icon-no-request)');
-
-      resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
-
-      await coordinator.done({waitForWork: true});
-
-      const {iconData: iconDataAfter} = extractData(shadowRoot);
-      assert.strictEqual(iconDataAfter.color, 'var(--icon-link)');
+      assert.strictEqual(extractElements(shadowRoot).label?.textContent, 'baz');
     });
 
     it('handles multiple data assignments', async () => {
@@ -294,8 +231,7 @@ describeWithEnvironment('RequestLinkIcon', () => {
         displayURL: true,
       });
 
-      const {label: labelBefore} = extractData(shadowRoot);
-      assert.strictEqual(labelBefore, 'gamma');
+      assert.strictEqual(extractElements(shadowRoot).label?.textContent, 'gamma');
 
       const mockRequest2 = {
         url() {
@@ -313,11 +249,10 @@ describeWithEnvironment('RequestLinkIcon', () => {
       };
 
       resolver.resolve(mockRequest2 as unknown as SDK.NetworkRequest.NetworkRequest);
-
       await coordinator.done({waitForWork: true});
 
-      const {label: labelAfter} = extractData(shadowRoot);
-      assert.strictEqual(labelAfter, 'baz');
+      assert.strictEqual(extractElements(shadowRoot).label?.textContent, 'baz');
+
       resolver.clear();
     });
   });
@@ -349,7 +284,7 @@ describeWithEnvironment('RequestLinkIcon', () => {
       UI.ViewManager.maybeRemoveViewExtension('network');
     });
 
-    it('if the icon is clicked', async () => {
+    it('if the button is clicked', async () => {
       const revealOverride = sinon.fake(Common.Revealer.reveal);
       const {shadowRoot} = await renderRequestLinkIcon({
         request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
@@ -357,45 +292,13 @@ describeWithEnvironment('RequestLinkIcon', () => {
         revealOverride,
       });
 
-      const {icon} = extractElements(shadowRoot);
+      const {button} = extractElements(shadowRoot);
 
-      icon.click();
+      button.click();
 
       assert.isTrue(revealOverride.called);
       assert.isTrue(revealOverride.calledOnceWith(
           sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent})));
-    });
-
-    it('if the container is clicked', async () => {
-      const revealOverride = sinon.fake(Common.Revealer.reveal);
-      const {shadowRoot} = await renderRequestLinkIcon({
-        request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
-        displayURL: true,
-        revealOverride,
-      });
-
-      const {container} = extractElements(shadowRoot);
-
-      container.click();
-
-      assert.isTrue(revealOverride.called);
-      assert.isTrue(revealOverride.calledOnceWith(
-          sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent})));
-    });
-
-    it('if the label is clicked', async () => {
-      const revealOverride = sinon.fake(Common.Revealer.reveal);
-      const {shadowRoot} = await renderRequestLinkIcon({
-        request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
-        displayURL: true,
-        revealOverride,
-      });
-
-      const {label} = extractElements(shadowRoot);
-
-      label?.click();
-
-      assert.isTrue(revealOverride.called);
     });
   });
 });

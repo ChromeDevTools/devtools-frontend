@@ -15,7 +15,6 @@ ts_library("components") {
     "DataGrid_test.ts",
     "Dialog_test.ts",
     "ExpandableList_test.ts",
-    "IconButton_test.ts",
     "Linkifier_test.ts",
     "MarkdownImage_test.ts",
     "MarkdownLink_test.ts",

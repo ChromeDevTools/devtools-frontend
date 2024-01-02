@@ -16,7 +16,6 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Menus from '../../ui/components/menus/menus.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
@@ -1329,22 +1328,19 @@ export class RecorderController extends LitElement {
               }
             ></${Buttons.Button.Button.litTagName}>
             <div class="separator"></div>
-            <button class="continue-button"
-              .disabled=${
-                !this.recordingPlayer ||
-                !this.#replayState.isPausedOnBreakpoint
+            <${Buttons.Button.Button.litTagName}
+              @click=${(): void => this.recordingPlayer?.continue()}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.PRIMARY_TOOLBAR,
+                  iconName: 'resume',
+                  disabled:
+                    !this.recordingPlayer ||
+                    !this.#replayState.isPausedOnBreakpoint,
+                  title: i18nString(UIStrings.continueReplay),
+                } as Buttons.Button.ButtonData
               }
-              title=${i18nString(UIStrings.continueReplay)}
-              @click=${(): void => this.recordingPlayer?.continue()}>
-                <${IconButton.Icon.Icon.litTagName}
-                  .data=${
-                    {
-                      iconName: 'resume',
-                      color: 'var(--icon-color)',
-                    } as IconButton.Icon.IconData
-                  }
-                ></${IconButton.Icon.Icon.litTagName}>
-            </button>
+            ></${Buttons.Button.Button.litTagName}>
             <${Buttons.Button.Button.litTagName}
               @click=${(): void => this.recordingPlayer?.stepOver()}
               .data=${

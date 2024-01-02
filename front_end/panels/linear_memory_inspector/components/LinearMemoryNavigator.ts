@@ -185,10 +185,7 @@ export class LinearMemoryNavigator extends HTMLElement {
         jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
-        <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconName: data.icon, color: 'var(--icon-default)', width: '20px', height: '20px'} as
-        IconButton.Icon.IconWithName}>
-        </${IconButton.Icon.Icon.litTagName}>
+        <${IconButton.Icon.Icon.litTagName} name=${data.icon}></${IconButton.Icon.Icon.litTagName}>
       </button>`;
   }
 }

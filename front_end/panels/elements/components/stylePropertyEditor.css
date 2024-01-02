@@ -69,13 +69,13 @@
 }
 
 .button devtools-icon {
-  --icon-color: var(--icon-default);
+  color: var(--icon-default);
 }
 
 .button:hover devtools-icon {
-  --icon-color: var(--icon-default-hover);
+  color: var(--icon-default-hover);
 }
 
 .button.selected devtools-icon {
-  --icon-color: var(--icon-toggled);
+  color: var(--icon-toggled);
 }

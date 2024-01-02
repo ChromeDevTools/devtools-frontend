@@ -594,8 +594,4 @@ devtools-console-insight {
   .console-message-wrapper.console-error-level:focus:last-of-type {
     --override-error-text-color: HighlightText;
   }
-
-  .console-message-anchor .resource-links {
-    --icon-color: ButtonText;
-  }
 }

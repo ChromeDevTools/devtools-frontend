@@ -3,15 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
+import * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
 import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
-
-import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
 
 const {assert} = chai;
 
@@ -31,24 +29,13 @@ const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIcon
 
 export const extractElements = (shadowRoot: ShadowRoot): {
   icon: IconButton.Icon.Icon,
-  container: HTMLSpanElement,
+  button: HTMLButtonElement,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
   assertElement(icon, IconButton.Icon.Icon);
-  const container = shadowRoot.querySelector('span');
-  assertNotNullOrUndefined(container);
-  return {icon, container};
-};
-
-export const extractData = (shadowRoot: ShadowRoot): {
-  iconData: IconButton.Icon.IconData,
-  containerClasses: string[],
-} => {
-  const {icon, container} = extractElements(shadowRoot);
-  return {
-    iconData: icon.data,
-    containerClasses: Array.from(container.classList),
-  };
+  const button = shadowRoot.querySelector('button');
+  assertElement(button, HTMLButtonElement);
+  return {icon, button};
 };
 
 interface MockIssueResolverEntry {
@@ -95,16 +82,15 @@ class MockIssueResolver {
 
 describeWithLocale('IssueLinkIcon', () => {
   const issueId = 'issue1' as Protocol.Audits.IssueId;
-  const defaultIcon = {iconName: 'issue-questionmark-filled', color: 'var(--icon-default)'};
-  const breakingChangeIcon =
-      IssueCounter.IssueCounter.getIssueKindIconData(IssuesManager.Issue.IssueKind.BreakingChange);
-  const pageErrorIcon = IssueCounter.IssueCounter.getIssueKindIconData(IssuesManager.Issue.IssueKind.PageError);
   const mockIssue = {
     getKind() {
       return IssuesManager.Issue.IssueKind.PageError;
     },
     getIssueId() {
       return issueId;
+    },
+    getDescription() {
+      return null;
     },
   };
 
@@ -121,19 +107,17 @@ describeWithLocale('IssueLinkIcon', () => {
         issueResolver: failingIssueResolver as unknown as IssuesManager.IssueResolver.IssueResolver,
       });
 
-      const {iconData} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, defaultIcon.iconName);
-      assert.strictEqual(iconData.color, defaultIcon.color);
+      const {icon} = extractElements(shadowRoot);
+      assert.strictEqual(icon.name, 'issue-questionmark-filled');
     });
 
-    it('renders correctly with an issue', async () => {
+    it('renders correctly with a "page error" issue', async () => {
       const {shadowRoot} = await renderIssueLinkIcon({
         issue: mockIssue as unknown as IssuesManager.Issue.Issue,
       });
 
-      const {iconData} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, pageErrorIcon.iconName);
-      assert.strictEqual(iconData.color, pageErrorIcon.color);
+      const {icon} = extractElements(shadowRoot);
+      assert.strictEqual(icon.name, 'issue-cross-filled');
     });
 
     it('the style reacts to the presence of the issue', async () => {
@@ -141,8 +125,8 @@ describeWithLocale('IssueLinkIcon', () => {
         issue: mockIssue as unknown as IssuesManager.Issue.Issue,
       });
 
-      const {containerClasses} = extractData(shadowRoot);
-      assert.include(containerClasses, 'link');
+      const {button} = extractElements(shadowRoot);
+      assert.isTrue(button.classList.contains('link'));
     });
 
     it('the style reacts to the absence of an issue', async () => {
@@ -151,8 +135,8 @@ describeWithLocale('IssueLinkIcon', () => {
         issueResolver: failingIssueResolver as unknown as IssuesManager.IssueResolver.IssueResolver,
       });
 
-      const {containerClasses} = extractData(shadowRoot);
-      assert.notInclude(containerClasses, 'link');
+      const {button} = extractElements(shadowRoot);
+      assert.isFalse(button.classList.contains('link'));
     });
   });
 
@@ -164,42 +148,16 @@ describeWithLocale('IssueLinkIcon', () => {
         issueResolver: resolver as unknown as IssuesManager.IssueResolver.IssueResolver,
       });
 
-      const {containerClasses: containerClassesBefore} = extractData(shadowRoot);
-      assert.notInclude(containerClassesBefore, 'link');
-
       resolver.resolve(mockIssue as unknown as IssuesManager.Issue.Issue);
-
       await coordinator.done({waitForWork: true});
 
-      const {containerClasses: containerClassesAfter} = extractData(shadowRoot);
-      assert.include(containerClassesAfter, 'link');
-    });
-
-    it('to set icon color correctly', async () => {
-      const resolver = new MockIssueResolver();
-      const {shadowRoot} = await renderIssueLinkIcon({
-        issueId,
-        issueResolver: resolver as unknown as IssuesManager.IssueResolver.IssueResolver,
-      });
-
-      const {iconData: iconDataBefore} = extractData(shadowRoot);
-      assert.strictEqual(iconDataBefore.color, defaultIcon.color);
-
-      resolver.resolve(mockIssue as unknown as IssuesManager.Issue.Issue);
-
-      await coordinator.done({waitForWork: true});
-
-      const {iconData: iconDataAfter} = extractData(shadowRoot);
-      assert.strictEqual(iconDataAfter.color, pageErrorIcon.color);
+      assert.isTrue(extractElements(shadowRoot).button.classList.contains('link'));
     });
 
     it('handles multiple data assignments', async () => {
       const {shadowRoot, component} = await renderIssueLinkIcon({
         issue: mockIssue as unknown as IssuesManager.Issue.Issue,
       });
-
-      const {iconData: iconDataBefore} = extractData(shadowRoot);
-      assert.strictEqual(iconDataBefore.color, pageErrorIcon.color);
 
       const mockIssue2 = {
         getKind() {
@@ -210,36 +168,23 @@ describeWithLocale('IssueLinkIcon', () => {
       component.data = {
         issue: mockIssue2 as unknown as IssuesManager.Issue.Issue,
       };
-
       await coordinator.done({waitForWork: true});
 
-      const {iconData: iconDataAfter} = extractData(shadowRoot);
-      assert.strictEqual(iconDataAfter.color, breakingChangeIcon.color);
+      const {icon} = extractElements(shadowRoot);
+      assert.strictEqual(icon.name, 'issue-exclamation-filled');
     });
   });
 
   describe('handles clicks correctly', () => {
-    it('if the icon is clicked', async () => {
+    it('if the button is clicked', async () => {
       const revealOverride = sinon.fake(Common.Revealer.reveal);
       const {shadowRoot} = await renderIssueLinkIcon({
         issue: mockIssue as unknown as IssuesManager.Issue.Issue,
         revealOverride,
       });
 
-      const {icon} = extractElements(shadowRoot);
-      icon.click();
-      assert.isTrue(revealOverride.called);
-    });
-
-    it('if the container is clicked', async () => {
-      const revealOverride = sinon.fake(Common.Revealer.reveal);
-      const {shadowRoot} = await renderIssueLinkIcon({
-        issue: mockIssue as unknown as IssuesManager.Issue.Issue,
-        revealOverride,
-      });
-
-      const {container} = extractElements(shadowRoot);
-      container.click();
+      const {button} = extractElements(shadowRoot);
+      button.click();
       assert.isTrue(revealOverride.called);
     });
   });

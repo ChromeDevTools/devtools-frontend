@@ -198,6 +198,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     // Switch to viewing source view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
+    await coordinator.done();
 
     const rawHeadersDiv = responseHeadersCategory.querySelector('.raw-headers');
     assertElement(rawHeadersDiv, HTMLDivElement);
@@ -233,6 +234,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     // Switch to viewing source view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
+    await coordinator.done();
 
     const rawHeadersDiv = responseHeadersCategory.querySelector('.raw-headers');
     assertElement(rawHeadersDiv, HTMLDivElement);
@@ -243,6 +245,8 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(showMoreButton, HTMLElement);
     assert.strictEqual(showMoreButton.textContent, 'Show more');
     showMoreButton.click();
+    await coordinator.done();
+
     const noMoreShowMoreButton = responseHeadersCategory.querySelector('devtools-button');
     assert.isNull(noMoreShowMoreButton);
 

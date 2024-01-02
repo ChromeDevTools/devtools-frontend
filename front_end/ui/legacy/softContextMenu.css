@@ -115,11 +115,11 @@
   }
 
   .soft-context-menu .soft-context-menu-item devtools-icon {
-    --icon-color: ButtonText;
+    color: ButtonText;
   }
 
   .soft-context-menu .soft-context-menu-item.soft-context-menu-item-mouse-over devtools-icon {
-    --icon-color: HighlightText;
+    color: HighlightText;
   }
 
   .soft-context-menu-shortcut {

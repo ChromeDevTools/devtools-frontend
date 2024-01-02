@@ -156,8 +156,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-icon {
-  --icon-color: var(--sys-color-token-subtle);
-
+  color: var(--sys-color-token-subtle);
   flex: none;
 }
 
@@ -214,7 +213,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-icon {
-  --icon-color: var(--sys-color-primary-bright);
+  color: var(--sys-color-primary-bright);
 }
 
 .toolbar-state-on.toolbar-toggle-with-dot .toolbar-icon::after,
@@ -240,8 +239,7 @@ it. */
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-icon,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-icon {
-  --icon-color: var(--color-accent-red) !important;  /* stylelint-disable-line declaration-no-important */
-
+  color: var(--color-accent-red) !important;  /* stylelint-disable-line declaration-no-important */
   background-color: var(--color-accent-red) !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -274,7 +272,7 @@ it. */
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--sys-color-on-surface);
+  color: var(--sys-color-on-surface);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text {
@@ -286,7 +284,7 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-icon {
-  --icon-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-cdt-base-container);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-text {
@@ -298,7 +296,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--sys-color-primary);
+  color: var(--sys-color-primary);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
@@ -528,8 +526,7 @@ devtools-icon.leading-issue-icon {
   }
 
   .toolbar-button.toolbar-state-on .toolbar-icon {
-    --icon-color: Highlight;
-
+    color: Highlight;
     forced-color-adjust: none;
   }
 
@@ -554,8 +551,6 @@ devtools-icon.leading-issue-icon {
   }
 
   :not(.toolbar-render-as-links) .toolbar-button:disabled .toolbar-icon {
-    --icon-color: GrayText;
-
     color: GrayText;
   }
 
@@ -572,7 +567,7 @@ devtools-icon.leading-issue-icon {
   :not(.toolbar-render-as-links) .toolbar-button:enabled:hover .toolbar-icon,
   :not(.toolbar-render-as-links) .toolbar-button:enabled:focus .toolbar-icon,
   :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-icon {
-    --icon-color: HighlightText;
+    color: HighlightText;
   }
 
   :not(.toolbar-render-as-links) .toolbar-button:enabled:hover .toolbar-glyph,

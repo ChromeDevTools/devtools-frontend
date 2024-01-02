@@ -235,7 +235,7 @@ ol.expanded {
   cursor: pointer;
 
   &:hover devtools-icon {
-    --icon-color: var(--icon-default-hover);
+    color: var(--icon-default-hover);
   }
 }
 

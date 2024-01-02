@@ -228,11 +228,11 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 
   .tree-outline:not(.hide-selection-when-blurred) devtools-icon,
   .tree-outline.hide-selection-when-blurred devtools-icon {
-    --icon-color: ButtonText;
+    color: ButtonText;
   }
 
   .tree-outline:not(.hide-selection-when-blurred) .selected devtools-icon,
   .tree-outline.hide-selection-when-blurred .selected:focus-visible devtools-icon {
-    --icon-color: HighlightText;
+    color: HighlightText;
   }
 }

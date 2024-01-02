@@ -4,16 +4,14 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
 import iconStyles from './icon.css.js';
 
-export interface IconWithPath {
-  iconPath: string;
-  color: string;
-  width?: string;
-  height?: string;
-}
+const IMAGES_URL = `${new URL('../../../Images/', import.meta.url)}`;
 
+/**
+ * @deprecated
+ */
 export interface IconWithName {
   iconName: string;
   color: string;
@@ -21,106 +19,138 @@ export interface IconWithName {
   height?: string;
 }
 
-export type IconData = IconWithPath|IconWithName;
+/**
+ * @deprecated
+ */
+export type IconData = IconWithName|{
+  iconPath: string,
+  color: string,
+  width?: string,
+  height?: string,
+};
 
-const isString = (value: string|undefined): value is string => value !== undefined;
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
+/**
+ * A simple icon component to display SVG icons from the `front_end/Images/` folder.
+ *
+ * Usage is simple:
+ *
+ * ```js
+ * // Instantiate directly:
+ * const icon = new IconButton.Icon.Icon();
+ * icon.name = 'bin';
+ * container.appendChild(icon);
+ *
+ * // Use within a template:
+ * LitHtml.html`
+ *   <${IconButton.Icon.Icon.litTagName} name="bin">
+ *   </${IconButton.Icon.Icon.litTagName}>
+ * `;
+ * ```
+ *
+ * The color for the icon defaults to `var(--icon-default)`, while the dimensions
+ * default to 20px times 20px. You can change both color and size via CSS:
+ *
+ * ```css
+ * devtools-icon.my-icon {
+ *   color: red;
+ *   width: 14px;
+ *   height: 14px;
+ * }
+ * ```
+ *
+ * @attr name - The basename of the icon file (not including the `.svg` suffix).
+ * @prop {String} name - The `"name"` attribute is reflected as property.
+ * @prop {IconData} data - Deprecated way to set dimensions, color and name at once.
+ */
 export class Icon extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-icon`;
+  static readonly observedAttributes = ['name'];
 
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #shadowRoot;
+  readonly #icon;
 
-  #iconPath: Readonly<string> = '';
-  #color: Readonly<string> = 'var(--icon-default)';
-  #width: Readonly<string> = '100%';
-  #height: Readonly<string> = '100%';
-  #iconName?: Readonly<string>;
+  constructor() {
+    super();
+    this.#shadowRoot = this.attachShadow({mode: 'open'});
+    this.#icon = document.createElement('span');
+    this.#shadowRoot.appendChild(this.#icon);
+  }
+
+  /**
+   * @deprecated use `name` and CSS instead.
+   */
+  get data(): IconData {
+    return {
+      color: this.style.color,
+      width: this.style.width,
+      height: this.style.height,
+      iconName: this.name ?? '',
+    };
+  }
+
+  /**
+   * @deprecated use `name` and CSS instead.
+   */
+  set data(data: IconData) {
+    const {color, width = '20px', height = '20px'} = data;
+    this.style.color = color;
+    this.style.width = width;
+    this.style.height = height;
+    if ('iconName' in data && data.iconName) {
+      this.name = data.iconName;
+    } else if ('iconPath' in data && data.iconPath) {
+      this.name = data.iconPath;
+    } else {
+      throw new Error('Misconfigured `iconName` or `iconPath`.');
+    }
+  }
+
+  /**
+   * Yields the value of the `"name"` attribute of this `Icon` (`null` in case
+   * there's no `"name"` on this element).
+   */
+  get name(): string|null {
+    return this.getAttribute('name');
+  }
+
+  /**
+   * Changes the value of the `"name"` attribute of this `Icon`. If you pass
+   * `null` the `"name"` attribute will be removed from this element.
+   *
+   * @param name the new icon name or `null` to unset.
+   */
+  set name(name: string|null) {
+    if (name === null) {
+      this.removeAttribute('name');
+    } else {
+      this.setAttribute('name', name);
+    }
+  }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [iconStyles];
+    this.#shadowRoot.adoptedStyleSheets = [iconStyles];
   }
 
-  set data(data: IconData) {
-    const {width, height} = data;
-    this.#color = data.color;
-    this.#width = isString(width) ? width : (isString(height) ? height : this.#width);
-    this.#height = isString(height) ? height : (isString(width) ? width : this.#height);
-    if ('iconPath' in data && data.iconPath) {
-      this.#iconPath = data.iconPath;
-    } else if ('iconName' in data && data.iconName) {
-      this.#iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
-      this.#iconName = data.iconName;
-    } else {
-      throw new Error('Misconfigured iconName or iconPath.');
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    if (oldValue === newValue) {
+      return;
     }
-    this.#render();
-  }
-
-  get data(): IconData {
-    const commonData = {
-      color: this.#color,
-      width: this.#width,
-      height: this.#height,
-    };
-    if (this.#iconName) {
-      return {
-        ...commonData,
-        iconName: this.#iconName,
-      };
+    switch (name) {
+      case 'name': {
+        if (!newValue.endsWith('.svg')) {
+          newValue = `${newValue}.svg`;
+        }
+        const url = new URL(newValue, IMAGES_URL);
+        this.#icon.style.setProperty('--icon-url', `url(${url})`);
+        break;
+      }
     }
-    return {
-      ...commonData,
-      iconPath: this.#iconPath,
-    };
-  }
-
-  #getStyles(): {[key: string]: string} {
-    const iconPath = this.#iconPath;
-    const width = this.#width;
-    const height = this.#height;
-    const color = this.#color;
-    const commonStyles = {
-      width,
-      height,
-      display: 'block',
-    };
-    if (color) {
-      return {
-        ...commonStyles,
-        webkitMaskImage: `url(${iconPath})`,
-        webkitMaskPosition: 'center',
-        webkitMaskRepeat: 'no-repeat',
-        // We are setting this to 99% to work around an issue where non-standard zoom levels would cause the icon to clip.
-        webkitMaskSize: '99%',
-        backgroundColor: `var(--icon-color, ${color})`,
-      };
-    }
-    return {
-      ...commonStyles,
-      backgroundImage: `url(${iconPath})`,
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      // We are setting this to 99% to work around an issue where non-standard zoom levels would cause the icon to clip.
-      backgroundSize: '99%',
-    };
-  }
-
-  #render(): void {
-    void coordinator.write(() => {
-      // clang-format off
-      LitHtml.render(LitHtml.html`
-        <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.#getStyles())}></div>
-      `, this.#shadow, {host: this});
-      // clang-format on
-    });
   }
 }
 
 ComponentHelpers.CustomElements.defineComponent('devtools-icon', Icon);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-icon': Icon;
   }

@@ -22,11 +22,9 @@ generate_css("css_files") {
     "serviceWorkerRouterView.css",
     "sharedStorageAccessGrid.css",
     "sharedStorageMetadataView.css",
-    "sharedStorageMetadataViewResetBudgetButton.css",
     "stackTraceLinkButton.css",
     "stackTraceRow.css",
     "trustTokensView.css",
-    "trustTokensViewDeleteButton.css",
   ]
 }
 

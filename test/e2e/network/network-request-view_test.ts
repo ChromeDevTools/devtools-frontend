@@ -406,7 +406,7 @@ describe('The Network Request view', async () => {
       'Keep-Alive: timeout=5',
       'Transfer-Encoding: chunked',
     ].join('\r\n');
-    const rawHeaders = await $('.raw-headers', section);
+    const rawHeaders = await waitFor('.raw-headers', section);
     const rawHeadersText = await rawHeaders.evaluate(el => el.textContent || '');
     assertOutlineMatches([expectedRawHeadersContent], [rawHeadersText]);
 

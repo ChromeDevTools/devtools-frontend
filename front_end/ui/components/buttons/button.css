@@ -242,23 +242,23 @@ button.text-with-icon devtools-icon {
 
 button.toolbar devtools-icon,
 button.round devtools-icon {
-  --icon-color: var(--icon-default);
+  color: var(--icon-default);
 }
 
 button.primary-toolbar devtools-icon {
-  --icon-color: var(--icon-primary);
+  color: var(--icon-primary);
 }
 
 button.primary devtools-icon {
-  --icon-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-cdt-base-container);
 }
 
 button.tonal devtools-icon {
-  --icon-color: var(--sys-color-on-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 button.secondary devtools-icon {
-  --icon-color: var(--icon-primary);
+  color: var(--icon-primary);
 }
 
 button.explicit-size devtools-icon {
@@ -280,32 +280,32 @@ button.round.explicit-size devtools-icon {
 
 button.toolbar.active devtools-icon,
 button.toolbar:active devtools-icon {
-  --icon-color: var(--icon-toggled);
+  color: var(--icon-toggled);
 }
 
 button.primary-toolbar:active devtools-icon {
-  --icon-color: var(--icon-primary);
+  color: var(--icon-primary);
 }
 
 button.toolbar:hover devtools-icon {
-  --icon-color: var(--icon-default-hover);
+  color: var(--icon-default-hover);
 }
 
 button.primary-toolbar:hover devtools-icon {
-  --icon-color: var(--icon-primary);
+  color: var(--icon-primary);
 }
 
 button.toolbar:disabled devtools-icon,
 button.round:disabled devtools-icon {
-  --icon-color: var(--icon-disabled);
+  color: var(--icon-disabled);
 }
 
 button.primary:disabled devtools-icon {
-  --icon-color: var(--icon-disabled);
+  color: var(--icon-disabled);
 }
 
 button.secondary:disabled devtools-icon {
-  --icon-color: var(--icon-disabled);
+  color: var(--icon-disabled);
 }
 
 .spinner-component.secondary {

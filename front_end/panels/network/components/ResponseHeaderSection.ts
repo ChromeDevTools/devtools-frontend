@@ -489,8 +489,6 @@ export class ResponseHeaderSection extends HTMLElement {
           class="add-header-button"
           .variant=${Buttons.Button.Variant.SECONDARY}
           .iconUrl=${plusIconUrl}
-          .iconWidth=${'12px'}
-          .iconHeight=${'12px'}
           @click=${this.#onAddHeaderClick}
           jslog=${VisualLogging.action().track({click: true}).context('add-header')}>
           ${i18nString(UIStrings.addHeader)}

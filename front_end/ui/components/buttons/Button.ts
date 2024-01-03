@@ -45,8 +45,6 @@ interface ButtonState {
   type: ButtonType;
   value?: string;
   title?: string;
-  iconWidth?: string;
-  iconHeight?: string;
   iconName?: string;
   jslogContext?: string;
 }
@@ -62,8 +60,6 @@ interface CommonButtonData {
   type?: ButtonType;
   value?: string;
   title?: string;
-  iconWidth?: string;
-  iconHeight?: string;
   jslogContext?: string;
 }
 
@@ -112,12 +108,6 @@ export class Button extends HTMLElement {
     if ('size' in data && data.size) {
       this.#props.size = data.size;
     }
-    if ('iconWidth' in data && data.iconWidth) {
-      this.#props.iconWidth = data.iconWidth;
-    }
-    if ('iconHeight' in data && data.iconHeight) {
-      this.#props.iconHeight = data.iconHeight;
-    }
 
     this.#props.active = Boolean(data.active);
     this.#props.spinner = Boolean('spinner' in data ? data.spinner : false);
@@ -149,16 +139,6 @@ export class Button extends HTMLElement {
 
   set size(size: Size) {
     this.#props.size = size;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set iconWidth(iconWidth: string) {
-    this.#props.iconWidth = iconWidth;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set iconHeight(iconHeight: string) {
-    this.#props.iconHeight = iconHeight;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -279,7 +259,6 @@ export class Button extends HTMLElement {
       small: Boolean(this.#props.size === Size.SMALL || this.#props.size === Size.TINY),
       tiny: Boolean(this.#props.size === Size.TINY),
       active: this.#props.active,
-      'explicit-size': Boolean(this.#props.iconHeight || this.#props.iconWidth),
     };
     const spinnerClasses = {
       primary: this.#props.variant === Variant.PRIMARY,
@@ -287,13 +266,6 @@ export class Button extends HTMLElement {
       disabled: Boolean(this.#props.disabled),
       'spinner-component': true,
     };
-    const iconStyles = Object.create(null);
-    if (this.#props.iconWidth) {
-      iconStyles['width'] = this.#props.iconWidth;
-    }
-    if (this.#props.iconHeight) {
-      iconStyles['height'] = this.#props.iconHeight;
-    }
     const jslog =
         this.#props.jslogContext && VisualLogging.action().track({click: true}).context(this.#props.jslogContext);
     // clang-format off
@@ -302,7 +274,7 @@ export class Button extends HTMLElement {
         <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
           ${hasIcon
             ? LitHtml.html`
-                <${IconButton.Icon.Icon.litTagName} name=${this.#props.iconName || this.#props.iconUrl} style=${LitHtml.Directives.styleMap(iconStyles)}>
+                <${IconButton.Icon.Icon.litTagName} name=${this.#props.iconName || this.#props.iconUrl}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}

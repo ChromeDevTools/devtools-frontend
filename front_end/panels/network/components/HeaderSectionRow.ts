@@ -247,8 +247,6 @@ export class HeaderSectionRow extends HTMLElement {
           .size=${Buttons.Button.Size.TINY}
           .iconUrl=${editIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
-          .iconWidth=${'16px'}
-          .iconHeight=${'16px'}
           @click=${(): void => {
             this.dispatchEvent(new EnableHeaderEditingEvent());
           }}
@@ -272,8 +270,6 @@ export class HeaderSectionRow extends HTMLElement {
         .size=${Buttons.Button.Size.TINY}
         .iconUrl=${trashIconUrl}
         .variant=${Buttons.Button.Variant.ROUND}
-        .iconWidth=${'13px'}
-        .iconHeight=${'13px'}
         class="remove-header inline-button"
         @click=${this.#onRemoveOverrideClick}
         jslog=${VisualLogging.action().track({click: true}).context('remove-header-override')}

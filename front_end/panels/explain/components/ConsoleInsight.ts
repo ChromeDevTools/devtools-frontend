@@ -143,6 +143,12 @@ const UIStrings = {
    * additional info when hovered or pressed.
    */
   refineInfo: 'Learn how personalizing of insights works',
+
+  /**
+   * @description Label for screenreaders that is added to the end of the link
+   * title to indicate that the link will be opened in a new tab.
+   */
+  opensInNewTab: '(opens in a new tab)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -800,7 +806,7 @@ class ConsoleInsightSourcesList extends HTMLElement {
         ${Directives.repeat(this.#sources, item => item.value, item => {
           const icon = new IconButton.Icon.Icon();
           icon.data = {iconName: 'open-externally', color: 'var(--sys-color-primary)', width: '14px', height: '14px'};
-          return html`<li><x-link class="link" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
+          return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
         })}
       </ul>
     `, this.#shadow, {

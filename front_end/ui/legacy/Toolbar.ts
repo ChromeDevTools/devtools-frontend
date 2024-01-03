@@ -42,7 +42,6 @@ import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
-import {Icon} from './Icon.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {type Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
@@ -112,7 +111,7 @@ export class Toolbar {
 
     let longClickController: LongClickController|null = null;
     let longClickButtons: ToolbarButton[]|null = null;
-    let longClickGlyph: Icon|null = null;
+    let longClickGlyph: IconButton.Icon.Icon|null = null;
 
     action.addEventListener(ActionEvents.Toggled, updateOptions);
     updateOptions();
@@ -124,7 +123,7 @@ export class Toolbar {
       if (buttons && buttons.length) {
         if (!longClickController) {
           longClickController = new LongClickController(button.element, showOptions);
-          longClickGlyph = Icon.create('triangle-bottom-right', 'long-click-glyph');
+          longClickGlyph = IconButton.Icon.create('triangle-bottom-right', 'long-click-glyph');
           button.element.appendChild(longClickGlyph);
           longClickButtons = buttons;
         }
@@ -555,14 +554,14 @@ export class ToolbarText extends ToolbarItem<void> {
 }
 
 export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
-  private readonly glyphElement: Icon;
+  private readonly glyphElement: IconButton.Icon.Icon;
   private textElement: HTMLElement;
   private text?: string;
   private glyph?: string;
   private icon?: HTMLElement;
   private adorner?: HTMLElement;
   /**
-   * TODO(crbug.com/1126026): remove glyph parameter in favor of icon.
+   * TODO(crbug.com/1515213): Remove arbitrary `HTMLElement`s here.
    */
   constructor(title: string, glyphOrIcon?: string|HTMLElement, text?: string, jslogContext?: string) {
     const element = document.createElement('button');
@@ -571,7 +570,8 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.element.addEventListener('click', this.clicked.bind(this), false);
     this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
 
-    this.glyphElement = Icon.create('', 'toolbar-glyph hidden');
+    this.glyphElement = new IconButton.Icon.Icon();
+    this.glyphElement.className = 'toolbar-glyph hidden';
     this.element.appendChild(this.glyphElement);
     this.textElement = this.element.createChild('div', 'toolbar-text hidden');
 
@@ -624,7 +624,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     if (this.glyph === glyph) {
       return;
     }
-    this.glyphElement.setIconType(glyph);
+    this.glyphElement.name = !glyph ? null : glyph;
     this.glyphElement.classList.toggle('hidden', !glyph);
     this.element.classList.toggle('toolbar-has-glyph', Boolean(glyph));
     this.glyph = glyph;
@@ -647,7 +647,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     if (shrinkable) {
       this.element.classList.add('toolbar-has-dropdown-shrinkable');
     }
-    const dropdownArrowIcon = Icon.create('triangle-down', 'toolbar-dropdown-arrow');
+    const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
   }
 
@@ -939,7 +939,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     element.classList.add('toolbar-select-container');
     super(element);
     this.selectElementInternal = (this.element.createChild('select', 'toolbar-item') as HTMLSelectElement);
-    const dropdownArrowIcon = Icon.create('triangle-down', 'toolbar-dropdown-arrow');
+    const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler) {
       this.selectElementInternal.addEventListener('change', changeHandler, false);

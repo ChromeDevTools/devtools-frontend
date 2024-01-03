@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import {assertNotNullOrUndefined, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, hasClass, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 
@@ -49,9 +49,9 @@ describe('The Performance panel', () => {
     // Check that the warning is shown on the settings gear:
     const gear =
         await waitForAria('- Hardware concurrency override is enabled') as puppeteer.ElementHandle<HTMLElement>;
-    const gearColor = await gear.evaluate(
-        e => e.firstElementChild && getComputedStyle(e.firstElementChild).getPropertyValue('background-color'));
-    assert.deepEqual(gearColor, 'rgb(220, 54, 46)');
+    assert.isTrue(
+        await hasClass(gear, 'toolbar-toggle-with-red-color'),
+        'Performance settings toggle icon should be shown in red');
 
     // Check that the concurrency input shows the correct value:
     const input =

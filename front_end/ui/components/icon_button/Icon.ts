@@ -135,17 +135,21 @@ export class Icon extends HTMLElement {
     this.#shadowRoot.adoptedStyleSheets = [iconStyles];
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
     if (oldValue === newValue) {
       return;
     }
     switch (name) {
       case 'name': {
-        if (!newValue.endsWith('.svg')) {
-          newValue = `${newValue}.svg`;
+        if (newValue === null) {
+          this.#icon.style.removeProperty('--icon-url');
+        } else {
+          if (!newValue.endsWith('.svg')) {
+            newValue = `${newValue}.svg`;
+          }
+          const url = new URL(newValue, IMAGES_URL);
+          this.#icon.style.setProperty('--icon-url', `url(${url})`);
         }
-        const url = new URL(newValue, IMAGES_URL);
-        this.#icon.style.setProperty('--icon-url', `url(${url})`);
         break;
       }
     }

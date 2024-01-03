@@ -52,6 +52,13 @@ describe('Icon', () => {
         assert.isNull(icon.name);
       });
 
+      it('can be set and unset', () => {
+        const icon = new Icon();
+        icon.name = 'foobar';
+        icon.name = null;
+        assert.isNull(icon.name);
+      });
+
       it('reflects the "name" attribute', () => {
         const icon = new Icon();
         icon.setAttribute('name', 'bar');

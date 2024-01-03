@@ -42,7 +42,6 @@ import * as Logs from '../../models/logs/logs.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -419,15 +418,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
 
-    const networkConditionsIcon = new IconButton.Icon.Icon();
-    networkConditionsIcon.data = {
-      iconName: 'network-settings',
-      color: 'var(--icon-default)',
-      width: '20px',
-      height: '20px',
-    };
     const networkConditionsButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon, undefined, 'network-conditions');
+        i18nString(UIStrings.moreNetworkConditions), 'network-settings', undefined, 'network-conditions');
     networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void UI.ViewManager.ViewManager.instance().showView('network.config');
     }, this);

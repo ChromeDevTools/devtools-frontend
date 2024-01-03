@@ -78,6 +78,7 @@ export class Icon extends HTMLElement {
     this.#shadowRoot = this.attachShadow({mode: 'open'});
     this.#icon = document.createElement('span');
     this.#shadowRoot.appendChild(this.#icon);
+    this.role = 'presentation';
   }
 
   /**

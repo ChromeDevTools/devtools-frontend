@@ -87,6 +87,13 @@ describe('Icon', () => {
         assert.match(window.getComputedStyle(span).maskImage, /^url\("\S+\/front_end\/Images\/select-element\.svg"\)$/);
       });
     });
+
+    describe('role', () => {
+      it('is initially presentation', () => {
+        const icon = new Icon();
+        assert.strictEqual(icon.role, 'presentation');
+      });
+    });
   });
 
   describe('create', () => {

@@ -264,7 +264,7 @@ describe('DataGrid', () => {
       const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
       assert.deepEqual(
           stripLitHtmlCommentNodes(cell.innerHTML),
-          '<div style="display: flex; justify-content: center;"><devtools-icon name="arrow-down" style="color: var(--icon-request); width: 16px; height: 16px;"></devtools-icon></div>');
+          '<div style="display: flex; justify-content: center;"><devtools-icon role="presentation" name="arrow-down" style="color: var(--icon-request); width: 16px; height: 16px;"></devtools-icon></div>');
     });
 
     it('accepts any custom renderer', async () => {

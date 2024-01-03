@@ -236,7 +236,6 @@ devtools_svg_sources = [
   "undo.svg",
   "warning-filled.svg",
   "warning.svg",
-  "warning_icon.svg",
   "watch.svg",
   "width.svg",
   "zoom-in.svg",

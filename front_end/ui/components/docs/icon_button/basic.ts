@@ -19,7 +19,7 @@ appendComponent({
   clickHandler: (): void => {},
   groups: [
     {iconName: 'review', iconColor: 'var(--icon-primary)', text: 'Test'},
-    {iconName: 'warning_icon', iconColor: '', text: '1'},
+    {iconName: 'warning-filled', iconColor: '', text: '1'},
   ],
 });
 

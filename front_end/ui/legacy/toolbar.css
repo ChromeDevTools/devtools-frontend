@@ -313,9 +313,6 @@ it. */
   padding: 0 5px 0 2px;
 }
 
-.toolbar-item.checkbox:hover {
-  color: var(--sys-color-on-surface);
-}
 /* Select */
 
 .toolbar-select-container {

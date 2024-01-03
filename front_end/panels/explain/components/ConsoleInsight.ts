@@ -297,8 +297,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #onPopoverRequest(event: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
     const hoveredNode = event.composedPath()[0] as Element;
-    if (!hoveredNode ||
-        (!hoveredNode?.matches('.info') && !hoveredNode.parentElementOrShadowHost()?.matches('.info'))) {
+    if (!hoveredNode || !hoveredNode.isSelfOrDescendant(this.#shadow.querySelector('.info'))) {
       return null;
     }
 
@@ -574,21 +573,18 @@ export class ConsoleInsight extends HTMLElement {
               >
               ${this.#state.type === State.REFINING ? i18nString(UIStrings.refining) : i18nString(UIStrings.refine)}
             </${Buttons.Button.Button.litTagName}>
-            <${IconButton.Icon.Icon.litTagName}
+            <${Buttons.Button.Button.litTagName}
               class="info"
-              role="button"
-              title=${i18nString(UIStrings.refineInfo)}
-              tabindex="0"
-              @keydown=${this.#onInfoKeyDown}
               .data=${
                 {
+                  variant: Buttons.Button.Variant.ROUND,
+                  size: Buttons.Button.Size.SMALL,
                   iconName: 'info',
-                  color: 'var(--icon-default)',
-                  width: '16px',
-                  height: '16px',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>
+                  title: i18nString(UIStrings.refineInfo),
+                } as Buttons.Button.ButtonData
+              }
+              @keydown=${this.#onInfoKeyDown}
+            ></${Buttons.Button.Button.litTagName}>
           </div>
           ` : ''}
         </main>`;

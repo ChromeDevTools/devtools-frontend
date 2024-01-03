@@ -52,7 +52,8 @@ describe('ConsoleInsight', function() {
       if (!element) {
         return false;
       }
-      return element.matches(selector);
+      return element.matches(selector) ||
+          /* button inside devtools-button */ (element.getRootNode() as ShadowRoot).host?.matches(selector);
     }, selector);
   }
 

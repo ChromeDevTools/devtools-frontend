@@ -224,6 +224,11 @@ button.toolbar-item:focus-visible {
   border-radius: 2px;
 }
 
+.toolbar-dropdown-arrow {
+  width: 14px;
+  height: 14px;
+}
+
 @media (forced-colors: active) {
   .filter-bitset-filter span:hover,
   .filter-bitset-filter span.selected,

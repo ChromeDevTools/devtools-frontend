@@ -123,12 +123,6 @@ button.primary:active {
   border: var(--button-border-size) solid color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
 }
 
-button.primary:focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
-  box-shadow: none;
-}
-
 button.primary:disabled {
   border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
   background: var(--sys-color-state-disabled-container);
@@ -148,12 +142,6 @@ button.tonal:hover {
 button.tonal.active,
 button.tonal:active {
   background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-ripple-primary));
-}
-
-button.tonal:focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
-  box-shadow: none;
 }
 
 button.tonal:disabled {

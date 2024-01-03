@@ -8,6 +8,23 @@ import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 const {assert} = chai;
 
 describe('XLink', () => {
+  describe('title', () => {
+    it('equals href by default', () => {
+      const link = new UI.XLink.XLink();
+      link.setAttribute('href', 'https://example.com/');
+      assert.strictEqual(link.href, 'https://example.com/');
+      assert.strictEqual(link.title, link.href);
+    });
+
+    it('overrides href', () => {
+      const link = new UI.XLink.XLink();
+      link.setAttribute('href', 'https://example.com/');
+      link.setAttribute('title', 'test');
+      assert.strictEqual(link.href, 'https://example.com/');
+      assert.strictEqual(link.title, 'test');
+    });
+  });
+
   describe('HTML minification', () => {
     it('properly minifies whitespaces in release mode', () => {
       const target = document.createElement('section');

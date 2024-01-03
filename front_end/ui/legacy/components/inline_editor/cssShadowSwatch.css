@@ -8,14 +8,16 @@
   white-space: nowrap;
 }
 
-[is="ui-icon"].shadow-swatch-icon {
-  background-color: var(--icon-css);
+devtools-icon.shadow-swatch-icon {
+  color: var(--icon-css);
   transform: scale(0.7);
   position: relative;
   margin: -5px -2px -5px -4px;
   user-select: none;
-}
+  vertical-align: baseline;
+  cursor: pointer;
 
-[is="ui-icon"].shadow-swatch-icon:hover {
-  background-color: var(--icon-css-hover);
+  &:hover {
+    color: var(--icon-css-hover);
+  }
 }

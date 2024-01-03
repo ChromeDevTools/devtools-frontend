@@ -52,6 +52,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   Events,
@@ -2571,6 +2572,8 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     this.filterChanged = filterChangedCallback;
 
     this.filterElement = document.createElement('div');
+    this.filterElement.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('request-types')}`);
 
     this.typesCountAdorner = new Adorners.Adorner.Adorner();
     this.selectedTypesCount = document.createElement('span');
@@ -2792,6 +2795,8 @@ export class MoreFiltersDropDownUI extends
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
+    this.filterElement.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('more-filters')}`);
 
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
     this.activeFiltersCount = document.createElement('span');

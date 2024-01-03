@@ -264,7 +264,7 @@ export class Button extends HTMLElement {
       primary: this.#props.variant === Variant.PRIMARY,
       secondary: this.#props.variant === Variant.SECONDARY,
       disabled: Boolean(this.#props.disabled),
-      'spinner-component': true,
+      spinner: true,
     };
     const jslog =
         this.#props.jslogContext && VisualLogging.action().track({click: true}).context(this.#props.jslogContext);

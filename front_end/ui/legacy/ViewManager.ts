@@ -5,10 +5,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {type ContextMenu} from './ContextMenu.js';
-import {Icon} from './Icon.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {type ItemsProvider, Toolbar, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
@@ -406,7 +406,7 @@ export class ContainerWidget extends VBox {
 
 class ExpandableContainerWidget extends VBox {
   private titleElement: HTMLDivElement;
-  private readonly titleExpandIcon: Icon;
+  private readonly titleExpandIcon: IconButton.Icon.Icon;
   private readonly view: View;
   private widget?: Widget;
   private materializePromise?: Promise<void>;
@@ -419,7 +419,7 @@ class ExpandableContainerWidget extends VBox {
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');
     ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = Icon.create('triangle-right', 'title-expand-icon');
+    this.titleExpandIcon = IconButton.Icon.create('triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -472,7 +472,7 @@ class ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.add('expanded');
     ARIAUtils.setExpanded(this.titleElement, true);
-    this.titleExpandIcon.setIconType('triangle-down');
+    this.titleExpandIcon.name = 'triangle-down';
     return this.materialize().then(() => {
       if (this.widget) {
         this.widget.show(this.element);
@@ -486,7 +486,7 @@ class ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.remove('expanded');
     ARIAUtils.setExpanded(this.titleElement, false);
-    this.titleExpandIcon.setIconType('triangle-right');
+    this.titleExpandIcon.name = 'triangle-right';
     void this.materialize().then(() => {
       if (this.widget) {
         this.widget.detach();

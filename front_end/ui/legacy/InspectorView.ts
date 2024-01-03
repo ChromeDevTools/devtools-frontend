@@ -35,25 +35,22 @@ import * as Root from '../../core/root/root.js';
 import type * as IconButton from '../components/icon_button/icon_button.js';
 
 import {type ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
+import * as ARIAUtils from './ARIAUtils.js';
 import {type Context} from './Context.js';
 import {type ContextMenu} from './ContextMenu.js';
 import {Dialog} from './Dialog.js';
 import {DockController, DockState} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
-import {type Icon} from './Icon.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
+import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {type Panel} from './Panel.js';
-import {SplitWidget, ShowMode} from './SplitWidget.js';
-import {Events as TabbedPaneEvents, type EventData, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
-
+import {ShowMode, SplitWidget} from './SplitWidget.js';
+import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {ToolbarButton} from './Toolbar.js';
 import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
-
-import {VBox, WidgetFocusRestorer, type Widget} from './Widget.js';
-import * as ARIAUtils from './ARIAUtils.js';
-import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
+import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -310,7 +307,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     await ViewManager.instance().showView(panelName);
   }
 
-  setPanelIcon(tabId: string, icon: Icon|IconButton.Icon.Icon|null): void {
+  setPanelIcon(tabId: string, icon: IconButton.Icon.Icon|null): void {
     // Find the tabbed location where the panel lives
     const tabbedPane = this.getTabbedPaneForTabId(tabId);
     if (tabbedPane) {

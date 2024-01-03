@@ -37,7 +37,6 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
-import {Icon} from './Icon.js';
 import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
@@ -394,7 +393,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.tabsHistory.slice(0, tabsCount).map(tabToTabId);
   }
 
-  setTabIcon(id: string, icon: Icon|IconButton.Icon.Icon|null): void {
+  setTabIcon(id: string, icon: IconButton.Icon.Icon|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -594,7 +593,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const dropDownContainer = document.createElement('div');
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
     dropDownContainer.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context('more')}`);
-    const chevronIcon = Icon.create('chevron-double-right', 'chevron-icon');
+    const chevronIcon = IconButton.Icon.create('chevron-double-right', 'chevron-icon');
     const moreTabsString = i18nString(UIStrings.moreTabs);
     dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);
@@ -995,8 +994,7 @@ export class TabbedPaneTab {
   shown: boolean;
   measuredWidth!: number|undefined;
   private tabElementInternal!: HTMLElement|undefined;
-  private readonly iconContainer: Element|null;
-  private icon?: Icon|IconButton.Icon.Icon|null;
+  private icon: IconButton.Icon.Icon|null = null;
   private widthInternal?: number;
   private delegate?: TabbedPaneTabDelegate;
   private titleElement?: HTMLElement;
@@ -1012,7 +1010,6 @@ export class TabbedPaneTab {
     this.tooltipInternal = tooltip;
     this.viewInternal = view;
     this.shown = false;
-    this.iconContainer = null;
   }
 
   get id(): string {
@@ -1041,7 +1038,7 @@ export class TabbedPaneTab {
     return this.closeable;
   }
 
-  setIcon(icon: Icon|IconButton.Icon.Icon|null): void {
+  setIcon(icon: IconButton.Icon.Icon|null): void {
     this.icon = icon;
     if (this.tabElementInternal && this.titleElement) {
       this.createIconElement(this.tabElementInternal, this.titleElement, false);
@@ -1118,17 +1115,14 @@ export class TabbedPaneTab {
     tabIcons.set(tabElement, iconContainer);
   }
 
-  private createMeasureClone(original: Icon|IconButton.Icon.Icon): Node {
-    if ('data' in original && original.data.width && original.data.height) {
-      // Cloning doesn't work for the icon component because the shadow
-      // root isn't copied, but it is sufficient to create a div styled
-      // to be the same size.
-      const fakeClone = document.createElement('div');
-      fakeClone.style.width = original.data.width;
-      fakeClone.style.height = original.data.height;
-      return fakeClone;
-    }
-    return original.cloneNode(true);
+  private createMeasureClone(original: IconButton.Icon.Icon): Node {
+    // Cloning doesn't work for the icon component because the shadow
+    // root isn't copied, but it is sufficient to create a div styled
+    // to be the same size.
+    const fakeClone = document.createElement('div');
+    fakeClone.style.width = original.style.width;
+    fakeClone.style.height = original.style.height;
+    return fakeClone;
   }
 
   createTabElement(measuring: boolean): HTMLElement {

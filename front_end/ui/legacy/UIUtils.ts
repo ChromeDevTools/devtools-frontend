@@ -47,7 +47,6 @@ import confirmDialogStyles from './confirmDialog.css.legacy.js';
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
-import {Icon} from './Icon.js';
 import inlineButtonStyles from './inlineButton.css.legacy.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import radioButtonStyles from './radioButton.css.legacy.js';
@@ -1338,7 +1337,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
     Tooltip.install(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.setLabel(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this.buttonElement);
-    const regularIcon = Icon.create('cross', 'default-icon');
+    const regularIcon = IconButton.Icon.create('cross');
     this.buttonElement.appendChild(regularIcon);
   }
 

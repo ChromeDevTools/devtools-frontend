@@ -28,6 +28,13 @@ const UIStrings = {
    * @description Text to show no results have been found
    */
   noResultsFound: 'No results found',
+  /**
+   * @description Aria alert to read the item in list when navigating with screen readers
+   * @example {name} PH1
+   * @example {2} PH2
+   * @example {5} PH3
+   */
+  sItemSOfS: '{PH1}, item {PH2} of {PH3}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -317,6 +324,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
       return;
     }
     this.list.selectItem(item);
+    const text = this.list.elementAtIndex(this.list.selectedIndex())?.textContent;
+    if (text) {
+      UI.ARIAUtils.alert(
+          i18nString(UIStrings.sItemSOfS, {PH1: text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length}));
+    }
   }
 
   setQuery(query: string): void {
@@ -534,6 +546,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     }
     if (handled) {
       keyboardEvent.consume(true);
+      const text = this.list.elementAtIndex(this.list.selectedIndex())?.textContent;
+      if (text) {
+        UI.ARIAUtils.alert(
+            i18nString(UIStrings.sItemSOfS, {PH1: text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length}));
+      }
     }
   }
 

@@ -357,7 +357,7 @@ export class ListControl<T> {
     return Math.min(this.model.length - 1, Math.floor(offset / this.fixedHeight));
   }
 
-  private elementAtIndex(index: number): Element {
+  elementAtIndex(index: number): Element {
     const item = this.model.at(index);
     let element = this.itemToElement.get(item);
     if (!element) {
@@ -429,10 +429,6 @@ export class ListControl<T> {
       }
       if (newElement) {
         ARIAUtils.setSelected(newElement, true);
-        const text = newElement.textContent;
-        if (text) {
-          ARIAUtils.alert(text);
-        }
       }
       ARIAUtils.setActiveDescendant(this.element, newElement);
     }

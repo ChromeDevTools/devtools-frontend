@@ -217,68 +217,63 @@ button devtools-icon {
   height: calc(var(--button-height) - 4px);
 }
 
-button:disabled devtools-icon {
-  color: var(--icon-disabled);
-}
-
-button.text-with-icon devtools-icon {
+.text-with-icon devtools-icon {
   width: 20px;
   height: 20px;
   margin-right: 4px;
 }
 
-button.toolbar devtools-icon,
-button.round devtools-icon {
-  color: var(--icon-default);
-}
-
-button.primary-toolbar devtools-icon {
+.primary-toolbar devtools-icon {
   color: var(--icon-primary);
 }
 
-button.primary devtools-icon {
+.primary devtools-icon {
   color: var(--sys-color-cdt-base-container);
 }
 
-button.tonal devtools-icon {
+.tonal devtools-icon {
   color: var(--sys-color-on-tonal-container);
 }
 
-button.secondary devtools-icon {
+.secondary devtools-icon {
   color: var(--icon-primary);
 }
 
-button.explicit-size devtools-icon {
+.explicit-size devtools-icon {
   width: unset;
   height: unset;
 }
 
-button.small.text-with-icon devtools-icon {
+button:disabled devtools-icon {
+  color: var(--icon-disabled);
+}
+
+.small.text-with-icon devtools-icon {
   width: 16px;
   height: 16px;
   margin-right: 4px;
 }
 
-button.toolbar.explicit-size devtools-icon,
-button.round.explicit-size devtools-icon {
+.toolbar.explicit-size devtools-icon,
+.round.explicit-size devtools-icon {
   width: unset;
   height: unset;
 }
 
-button.toolbar.active devtools-icon,
-button.toolbar:active devtools-icon {
+.toolbar.active devtools-icon,
+.toolbar:active devtools-icon {
   color: var(--icon-toggled);
 }
 
-button.primary-toolbar:active devtools-icon {
+.primary-toolbar:active devtools-icon {
   color: var(--icon-primary);
 }
 
-button.toolbar:hover devtools-icon {
+.toolbar:hover devtools-icon {
   color: var(--icon-default-hover);
 }
 
-button.primary-toolbar:hover devtools-icon {
+.primary-toolbar:hover devtools-icon {
   color: var(--icon-primary);
 }
 

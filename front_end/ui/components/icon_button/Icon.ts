@@ -62,6 +62,10 @@ export type IconData = IconWithName|{
  * }
  * ```
  *
+ * For `'triangle-up'`, `'triangle-down'`, `'triangle-left'`, and `'triangle-right'`
+ * the default dimensions are 14px times 14px, and the default `vertical-align` is
+ * `baseline` (instead of `sub`).
+ *
  * @attr name - The basename of the icon file (not including the `.svg` suffix).
  * @prop {String} name - The `"name"` attribute is reflected as property.
  * @prop {IconData} data - Deprecated way to set dimensions, color and name at once.

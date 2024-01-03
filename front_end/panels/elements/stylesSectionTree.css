@@ -253,9 +253,6 @@ ol.expanded {
   margin-left: -6px;
   margin-right: 2px;
   margin-bottom: -4px;
-  width: 14px;
-  height: 14px;
-  vertical-align: baseline;
 }
 
 .tree-outline li:not(.parent) .expand-icon {

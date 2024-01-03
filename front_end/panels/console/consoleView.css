@@ -453,13 +453,6 @@
   margin-bottom: -4px;
 }
 
-devtools-icon[name="triangle-right"],
-devtools-icon[name="triangle-down"] {
-  width: 14px;
-  height: 14px;
-  vertical-align: baseline;
-}
-
 .console-searchable-view {
   max-height: 100%;
 }

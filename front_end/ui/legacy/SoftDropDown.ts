@@ -4,12 +4,12 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior} from './GlassPane.js';
-import {Icon} from './Icon.js';
 import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {Events as ListModelEvents, type ItemsReplacedEvent, type ListModel} from './ListModel.js';
 import softDropDownStyles from './softDropDown.css.legacy.js';
@@ -56,7 +56,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.element.classList.add('soft-dropdown');
     ThemeSupport.ThemeSupport.instance().appendStyle(this.element, softDropDownButtonStyles);
     this.titleElement = this.element.createChild('span', 'title');
-    const dropdownArrowIcon = Icon.create('triangle-down');
+    const dropdownArrowIcon = IconButton.Icon.create('triangle-down');
     this.element.appendChild(dropdownArrowIcon);
     ARIAUtils.setExpanded(this.element, false);
 

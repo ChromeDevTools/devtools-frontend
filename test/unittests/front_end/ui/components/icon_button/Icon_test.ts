@@ -19,12 +19,24 @@ describe('Icon', () => {
   describe('Icon', () => {
     const {Icon} = IconButton.Icon;
 
-    it('constructs a 20x20 icon by default', () => {
+    it('constructs a sub-aligned 20x20 icon by default', () => {
       const icon = new Icon();
       renderElementIntoDOM(icon);
+      assert.strictEqual(window.getComputedStyle(icon).verticalAlign, 'sub');
       assert.strictEqual(icon.getBoundingClientRect().width, 20);
       assert.strictEqual(icon.getBoundingClientRect().height, 20);
     });
+
+    for (const name of ['triangle-up', 'triangle-down', 'triangle-left', 'triangle-right']) {
+      it(`constructs a baseline-aligned 14x14 icon for "${name}"`, () => {
+        const icon = new Icon();
+        icon.name = name;
+        renderElementIntoDOM(icon);
+        assert.strictEqual(window.getComputedStyle(icon).verticalAlign, 'baseline');
+        assert.strictEqual(icon.getBoundingClientRect().width, 14);
+        assert.strictEqual(icon.getBoundingClientRect().height, 14);
+      });
+    }
 
     describe('data', () => {
       it('can be used to set name and style', () => {

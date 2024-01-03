@@ -77,8 +77,6 @@ devtools-issue-counter.main-toolbar {
   pointer-events: none;
   flex: none;
   margin-left: -4px;
-  width: 14px;
-  height: 14px;
 }
 
 .toolbar-button.dark-text .toolbar-dropdown-arrow {

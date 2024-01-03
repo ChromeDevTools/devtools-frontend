@@ -447,7 +447,7 @@
     background-color: canvas;
   }
 
-  .network-waterfall-header:hover .sort-order-icon-container [is="ui-icon"].icon-mask {
-    background-color: HighlightText;
+  .network-waterfall-header:hover .sort-order-icon-container devtools-icon {
+    color: HighlightText;
   }
 }

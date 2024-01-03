@@ -18,6 +18,15 @@
   display: none;
 }
 
+:host([name="triangle-up"]),
+:host([name="triangle-down"]),
+:host([name="triangle-left"]),
+:host([name="triangle-right"]) {
+  width: 14px;
+  height: 14px;
+  vertical-align: baseline;
+}
+
 span {
   display: block;
   width: 100%;

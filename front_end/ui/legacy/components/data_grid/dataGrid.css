@@ -166,12 +166,10 @@
 .data-grid th .sort-order-icon {
   margin-right: 4px;
   margin-bottom: -2px;
-  display: none;
 }
 
-.data-grid th.sort-ascending .sort-order-icon,
-.data-grid th.sort-descending .sort-order-icon {
-  display: block;
+.data-grid th:not(.sort-ascending):not(.sort-descending) .sort-order-icon {
+  display: none;
 }
 
 .data-grid th.sort-ascending,
@@ -293,10 +291,10 @@
 }
 
 @media (forced-colors: active) {
-  .sort-order-icon-container [is="ui-icon"].icon-mask,
+  .sort-order-icon-container devtools-icon,
   .data-grid td.disclosure::before {
     forced-color-adjust: none;
-    background-color: ButtonText;
+    color: ButtonText;
   }
 
   .data-grid.no-selection:focus-visible * {
@@ -304,11 +302,11 @@
   }
 
   .data-grid th.sortable:hover *,
-  .data-grid th.sortable:hover .sort-order-icon-container [is="ui-icon"].icon-mask,
+  .data-grid th.sortable:hover .sort-order-icon-container devtools-icon,
   .data-grid tr.parent.selected td.disclosure::before,
   .data-grid:focus tr.parent.selected td.disclosure::before,
   .data-grid tbody tr.parent.revealed:hover td.disclosure::before {
-    background-color: HighlightText;
+    color: HighlightText;
   }
 
   .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),

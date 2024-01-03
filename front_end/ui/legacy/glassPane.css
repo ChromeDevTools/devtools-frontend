@@ -34,21 +34,31 @@
   pointer-events: none;
 }
 
+.arrow {
+  background-image: var(--image-file-popoverArrows);
+  width: 19px;
+  height: 19px;
+}
+
 .arrow-top {
+  background-position: 0 76px;
   margin-top: -19px;
   margin-left: -9px;
 }
 
 .arrow-bottom {
+  background-position: 0 57px;
   margin-left: -9px;
 }
 
 .arrow-left {
+  background-position: 0 38px;
   margin-left: -19px;
   margin-top: -9px;
 }
 
 .arrow-right {
+  background-position: 0 19px;
   margin-top: -9px;
 }
 

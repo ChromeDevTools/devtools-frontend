@@ -33,15 +33,22 @@
 
   &.soft-context-menu-item-mouse-over {
     background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-    [is="ui-icon"] {
-      background: var(--icon-default) !important; /* stylelint-disable-line declaration-no-important */
+  & devtools-icon {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+
+    &.checkmark {
+      margin: -1px 5px -1px 0;
+      opacity: 0%;
+
+      .soft-context-menu-item[checked] & {
+        opacity: 100%;
+      }
     }
   }
-}
-
-.soft-context-menu-item devtools-icon {
-  pointer-events: none;
 }
 
 .soft-context-menu-disabled {
@@ -52,13 +59,13 @@
 .soft-context-menu-separator {
   height: 10px;
   margin: 0 1px;
-}
 
-.soft-context-menu-separator > .separator-line {
-  margin: 0;
-  height: 5px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  pointer-events: none;
+  & > .separator-line {
+    margin: 0;
+    height: 5px;
+    border-bottom: 1px solid var(--sys-color-divider);
+    pointer-events: none;
+  }
 }
 
 .soft-context-menu-item-submenu-arrow {
@@ -67,6 +74,8 @@
   text-align: right;
   align-self: center;
   margin-left: auto;
+  width: 14px;
+  height: 14px;
 }
 
 .soft-context-menu-custom-item {
@@ -82,23 +91,10 @@
   flex: 1 1 auto;
   text-align: right;
   padding-left: 10px;
-}
 
-.soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
-  color: inherit;
-}
-
-.checkmark {
-  pointer-events: none;
-  margin: -1px 5px -1px 0;
-}
-
-.soft-context-menu-item .checkmark {
-  opacity: 0%;
-}
-
-.soft-context-menu-item[checked] .checkmark {
-  opacity: 100%;
+  .soft-context-menu-item-mouse-over & {
+    color: inherit;
+  }
 }
 
 @media (forced-colors: active) {
@@ -114,19 +110,13 @@
     forced-color-adjust: none;
   }
 
-  .soft-context-menu .soft-context-menu-item devtools-icon {
+  .soft-context-menu .soft-context-menu-item devtools-icon,
+  .soft-context-menu .soft-context-menu-item .soft-context-menu-shortcut {
     color: ButtonText;
   }
 
-  .soft-context-menu .soft-context-menu-item.soft-context-menu-item-mouse-over devtools-icon {
-    color: HighlightText;
-  }
-
-  .soft-context-menu-shortcut {
-    color: ButtonText;
-  }
-
-  .soft-context-menu-item.soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
+  .soft-context-menu .soft-context-menu-item.soft-context-menu-item-mouse-over devtools-icon,
+  .soft-context-menu .soft-context-menu-item.soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
     color: HighlightText;
   }
 
@@ -138,17 +128,5 @@
 
   .soft-context-menu-separator > .separator-line {
     border-bottom-color: ButtonText;
-  }
-
-  .checkmark {
-    opacity: 100%;
-  }
-
-  .spritesheet-smallicons:not(.icon-mask) {
-    filter: invert(100%);
-  }
-
-  .soft-context-menu-item.soft-context-menu-item-mouse-over .spritesheet-smallicons:not(.icon-mask) {
-    filter: invert(0);
   }
 }

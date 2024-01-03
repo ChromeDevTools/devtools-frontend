@@ -579,7 +579,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
     const messageElement = this.buildMessage();
-    const icon = UI.Icon.Icon.create('triangle-right', 'console-message-expand-icon');
+    const icon = IconButton.Icon.create('triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
     UI.ARIAUtils.setExpanded(clickableElement, false);
     clickableElement.appendChild(icon);
@@ -609,7 +609,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       } else {
         clearTimeout(debounce);
       }
-      icon.setIconType(expand ? 'triangle-down' : 'triangle-right');
+      icon.name = expand ? 'triangle-down' : 'triangle-right';
       stackTraceElement.classList.toggle('hidden', !expand);
       const stackTableState =
           expand ? i18nString(UIStrings.stackMessageExpanded) : i18nString(UIStrings.stackMessageCollapsed);
@@ -1831,7 +1831,7 @@ function getOrCreateTokenizers(): {
 
 export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   private collapsedInternal: boolean;
-  private expandGroupIcon: UI.Icon.Icon|null;
+  private expandGroupIcon: IconButton.Icon.Icon|null;
   private readonly onToggle: () => void;
   private groupEndMessageInternal: ConsoleViewMessage|null;
 
@@ -1850,7 +1850,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   private setCollapsed(collapsed: boolean): void {
     this.collapsedInternal = collapsed;
     if (this.expandGroupIcon) {
-      this.expandGroupIcon.setIconType(this.collapsedInternal ? 'triangle-right' : 'triangle-down');
+      this.expandGroupIcon.name = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
     }
     this.onToggle.call(null);
   }
@@ -1876,7 +1876,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     if (!element) {
       element = super.toMessageElement();
       const iconType = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
-      this.expandGroupIcon = UI.Icon.Icon.create(iconType, 'expand-group-icon');
+      this.expandGroupIcon = IconButton.Icon.create(iconType, 'expand-group-icon');
       // Intercept focus to avoid highlight on click.
       this.contentElement().tabIndex = -1;
       if (this.repeatCountElement) {

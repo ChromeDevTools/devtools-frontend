@@ -179,7 +179,7 @@
 
 .console-message-repeat-count .expand-group-icon {
   position: static;
-  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-cdt-base-container);
   margin-left: -1px;
 }
 
@@ -453,6 +453,13 @@
   margin-bottom: -4px;
 }
 
+devtools-icon[name="triangle-right"],
+devtools-icon[name="triangle-down"] {
+  width: 14px;
+  height: 14px;
+  vertical-align: baseline;
+}
+
 .console-searchable-view {
   max-height: 100%;
 }
@@ -555,9 +562,9 @@ devtools-console-insight {
 
 @media (forced-colors: active) {
   .console-message-expand-icon,
-  .console-warning-level [is="ui-icon"].icon-mask.expand-group-icon {
+  .console-warning-level .expand-group-icon {
     forced-color-adjust: none;
-    background-color: ButtonText;
+    color: ButtonText;
   }
 
   .console-message-wrapper:focus,

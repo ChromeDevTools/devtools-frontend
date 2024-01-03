@@ -920,11 +920,10 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       }
 
       if (viewExtension.isPreviewFeature()) {
-        const previewIcon = new IconButton.Icon.Icon();
-        previewIcon.data = {iconName: 'experiment', color: 'var(--icon-default)', width: '16px', height: '16px'};
+        const additionalElement = IconButton.Icon.create('experiment');
         moreTools.defaultSection().appendItem(title, () => {
           void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-        }, {disabled: false, additionalElement: previewIcon, jslogContext: id});
+        }, {disabled: false, additionalElement, jslogContext: id});
         continue;
       }
 

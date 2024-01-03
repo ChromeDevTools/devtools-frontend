@@ -1653,7 +1653,7 @@ export class SectionBlock {
   private readonly titleElementInternal: Element|null;
   sections: StylePropertiesSection[];
   #expanded = false;
-  #icon: UI.Icon.Icon|undefined;
+  #icon: IconButton.Icon.Icon|undefined;
   constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean) {
     this.titleElementInternal = titleElement;
     this.sections = [];
@@ -1661,7 +1661,7 @@ export class SectionBlock {
 
     if (expandable && titleElement instanceof HTMLElement) {
       this.#icon =
-          UI.Icon.Icon.create(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
+          IconButton.Icon.create(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
       titleElement.classList.toggle('empty-section', !this.#expanded);
       UI.ARIAUtils.setExpanded(titleElement, this.#expanded);
       titleElement.appendChild(this.#icon);
@@ -1676,7 +1676,7 @@ export class SectionBlock {
       return;
     }
     this.titleElementInternal.classList.toggle('empty-section', !expand);
-    this.#icon.setIconType(expand ? 'triangle-down' : 'triangle-right');
+    this.#icon.name = expand ? 'triangle-down' : 'triangle-right';
     UI.ARIAUtils.setExpanded(this.titleElementInternal, expand);
     this.#expanded = expand;
     this.sections.forEach(section => section.element.classList.toggle('hidden', !expand));
@@ -2472,7 +2472,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
     this.button = UI.Toolbar.Toolbar.createActionButtonForId('elements.new-style-rule');
-    const longclickTriangle = UI.Icon.Icon.create('triangle-bottom-right', 'long-click-glyph');
+    const longclickTriangle = IconButton.Icon.create('triangle-bottom-right', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));

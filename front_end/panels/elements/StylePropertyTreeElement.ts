@@ -130,7 +130,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private expandedDueToFilter: boolean;
   valueElement: HTMLElement|null;
   nameElement: HTMLElement|null;
-  private expandElement: UI.Icon.Icon|null;
+  private expandElement: IconButton.Icon.Icon|null;
   private originalPropertyText: string;
   private hasBeenEditedIncrementally: boolean;
   private prompt: CSSPropertyPrompt|null;
@@ -958,9 +958,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     if (this.expanded) {
-      this.expandElement.setIconType('triangle-down');
+      this.expandElement.name = 'triangle-down';
     } else {
-      this.expandElement.setIconType('triangle-right');
+      this.expandElement.name = 'triangle-right';
     }
   }
 
@@ -997,7 +997,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private innerUpdateTitle(): void {
     this.updateState();
     if (this.isExpandable()) {
-      this.expandElement = UI.Icon.Icon.create('triangle-right', 'expand-icon');
+      this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
       this.expandElement.setAttribute('jslog', `${VisualLogging.treeItemExpand().track({click: true})}`);
     }
 

@@ -36,7 +36,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
-import {Icon} from './Icon.js';
 import {InspectorView} from './InspectorView.js';
 import softContextMenuStyles from './softContextMenu.css.legacy.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
@@ -226,15 +225,10 @@ export class SoftContextMenu {
     if (item.checked) {
       menuItemElement.setAttribute('checked', '');
     }
-    const checkMarkElement = new IconButton.Icon.Icon();
-    checkMarkElement.data = {iconName: 'checkmark', color: 'var(--icon-default)', width: '14px', height: '14px'};
-    checkMarkElement.classList.add('checkmark');
+    const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark');
     if (item.id !== undefined) {
       menuItemElement.setAttribute('data-action-id', item.id.toString());
     }
-    checkMarkElement.style.minWidth =
-        '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
-    checkMarkElement.style.minHeight = '14px';
     menuItemElement.appendChild(checkMarkElement);
     if (item.tooltip) {
       Tooltip.install(menuItemElement, item.tooltip);
@@ -320,12 +314,8 @@ export class SoftContextMenu {
     });
 
     // Occupy the same space on the left in all items.
-    const checkMarkElement = new IconButton.Icon.Icon();
-    checkMarkElement.data = {iconName: 'checkmark', color: 'var(--icon-default)', width: '14px', height: '14px'};
-    checkMarkElement.classList.add('checkmark', 'soft-context-menu-item-checkmark');
+    const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark soft-context-menu-item-checkmark');
     menuItemElement.appendChild(checkMarkElement);
-    checkMarkElement.style.minWidth =
-        '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
 
     createTextChild(menuItemElement, item.label || '');
     ARIAUtils.setExpanded(menuItemElement, false);
@@ -336,7 +326,7 @@ export class SoftContextMenu {
       ARIAUtils.markAsHidden(subMenuArrowElement);
       subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
     } else {
-      const subMenuArrowElement = Icon.create('triangle-right', 'soft-context-menu-item-submenu-arrow');
+      const subMenuArrowElement = IconButton.Icon.create('triangle-right', 'soft-context-menu-item-submenu-arrow');
       menuItemElement.appendChild(subMenuArrowElement);
     }
 

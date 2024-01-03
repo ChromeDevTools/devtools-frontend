@@ -13,6 +13,9 @@
   user-select: none;
   margin-right: 4px;
   margin-bottom: -4px;
+  width: 14px;
+  height: 14px;
+  vertical-align: baseline;
 }
 
 .custom-expandable-section-standard-section {

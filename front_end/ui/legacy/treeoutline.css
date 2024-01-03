@@ -204,9 +204,14 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     background-color: transparent;
   }
 
-  .tree-outline li.selected [is="ui-icon"].icon-mask,
-  .tree-outline li.selected:focus [is="ui-icon"]:not(.icon-mask) {
-    background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+  .tree-outline:not(.hide-selection-when-blurred) devtools-icon,
+  .tree-outline.hide-selection-when-blurred devtools-icon {
+    color: ButtonText;
+  }
+
+  .tree-outline li.selected devtools-icon,
+  .tree-outline li.selected:focus devtools-icon {
+    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 
   ol.tree-outline:not(.hide-selection-when-blurred) li.selected,
@@ -224,15 +229,5 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   .tree-outline.hide-selection-when-blurred li.selected:focus-visible devtools-adorner {
     --override-adorner-background-color: Highlight;
     --override-adorner-border-color: HighlightText;
-  }
-
-  .tree-outline:not(.hide-selection-when-blurred) devtools-icon,
-  .tree-outline.hide-selection-when-blurred devtools-icon {
-    color: ButtonText;
-  }
-
-  .tree-outline:not(.hide-selection-when-blurred) .selected devtools-icon,
-  .tree-outline.hide-selection-when-blurred .selected:focus-visible devtools-icon {
-    color: HighlightText;
   }
 }

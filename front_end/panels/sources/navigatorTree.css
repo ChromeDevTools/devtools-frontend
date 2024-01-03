@@ -37,17 +37,6 @@
   margin: -3px -5px;
 }
 
-.icon-stack {
-  position: relative;
-  display: inline-flex;
-}
-
-.icon-stack > [is="ui-icon"]:not(:first-child) {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
 .navigator-fs-folder-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection) {
   filter: grayscale(50%);
@@ -126,7 +115,7 @@
 
 @media (forced-colors: active) {
   .tree-outline li .leading-icons devtools-icon {
-    background: ButtonText;
+    color: ButtonText;
   }
 
   .tree-outline li:hover:not(.selected) .selection {
@@ -134,13 +123,20 @@
     background-color: Highlight;
   }
 
-  .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before,
-  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) devtools-icon {
+  .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before {
     background-color: HighlightText;
   }
 
+  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) devtools-icon,
   .tree-outline li:not(.selected):hover .tree-element-title {
     forced-color-adjust: none;
     color: HighlightText;
+  }
+
+  .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
+  .navigator-fs-folder-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
+  .is-ignore-listed {
+    filter: none;
+    opacity: 100%;
   }
 }

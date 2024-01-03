@@ -71,6 +71,10 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+button:disabled {
+  pointer-events: none;
+}
+
 button.toolbar,
 button.round {
   --button-height: 24px;
@@ -125,12 +129,10 @@ button.primary:focus-visible {
   box-shadow: none;
 }
 
-button.primary:disabled,
-button.primary:disabled:hover {
+button.primary:disabled {
   border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
   background: var(--sys-color-state-disabled-container);
   color: var(--sys-color-state-disabled);
-  cursor: not-allowed;
 }
 
 button.tonal {
@@ -154,12 +156,10 @@ button.tonal:focus-visible {
   box-shadow: none;
 }
 
-button.tonal:disabled,
-button.tonal:disabled:hover {
+button.tonal:disabled {
   border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
   background: var(--sys-color-state-disabled-container);
   color: var(--sys-color-state-disabled);
-  cursor: not-allowed;
 }
 
 button.secondary {
@@ -183,11 +183,9 @@ button.secondary:focus-visible {
   box-shadow: none;
 }
 
-button.secondary:disabled,
-button.secondary:disabled:hover {
+button.secondary:disabled {
   border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
   color: var(--sys-color-state-disabled);
-  cursor: not-allowed;
 }
 
 button.toolbar:hover,
@@ -209,12 +207,9 @@ button.round:focus-visible {
 }
 
 button.toolbar:disabled,
-button.toolbar:disabled:hover,
-button.round:disabled,
-button.round:disabled:hover {
+button.round:disabled {
   background: var(--sys-color-cdt-base-container);
   color: var(--sys-color-state-disabled);
-  cursor: not-allowed;
 }
 
 button.text-with-icon {
@@ -232,6 +227,10 @@ button.only-icon {
 button devtools-icon {
   width: calc(var(--button-width) - 4px);
   height: calc(var(--button-height) - 4px);
+}
+
+button:disabled devtools-icon {
+  color: var(--icon-disabled);
 }
 
 button.text-with-icon devtools-icon {
@@ -293,19 +292,6 @@ button.toolbar:hover devtools-icon {
 
 button.primary-toolbar:hover devtools-icon {
   color: var(--icon-primary);
-}
-
-button.toolbar:disabled devtools-icon,
-button.round:disabled devtools-icon {
-  color: var(--icon-disabled);
-}
-
-button.primary:disabled devtools-icon {
-  color: var(--icon-disabled);
-}
-
-button.secondary:disabled devtools-icon {
-  color: var(--icon-disabled);
 }
 
 .spinner-component.secondary {

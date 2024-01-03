@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -346,7 +347,7 @@ export class ShortcutListItem {
 
   private createEmptyInfo(): void {
     if (UI.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(this.item.id())) {
-      const icon = UI.Icon.Icon.create('keyboard-pen', 'keybinds-modified');
+      const icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
       UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }
@@ -403,9 +404,9 @@ export class ShortcutListItem {
     if (this.editedShortcuts.has(shortcut) && !this.editedShortcuts.get(shortcut)) {
       return;
     }
-    let icon: UI.Icon.Icon;
+    let icon: IconButton.Icon.Icon;
     if (shortcut.type !== UI.KeyboardShortcut.Type.UnsetShortcut && !shortcut.isDefault()) {
-      icon = UI.Icon.Icon.create('keyboard-pen', 'keybinds-modified');
+      icon = IconButton.Icon.create('keyboard-pen', 'keybinds-modified');
       UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }
@@ -465,7 +466,7 @@ export class ShortcutListItem {
     const button = document.createElement('button') as HTMLButtonElement;
     button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
     button.setAttribute('title', label);
-    button.appendChild(UI.Icon.Icon.create(iconName));
+    button.appendChild(IconButton.Icon.create(iconName));
     button.addEventListener('click', listener);
     UI.ARIAUtils.setLabel(button, label);
     if (className) {

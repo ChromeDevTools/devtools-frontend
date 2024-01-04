@@ -90,12 +90,7 @@ export class ExtensionView extends HTMLElement {
               <${IconButton.Icon.Icon.litTagName}
                 class="icon"
                 title=${i18nString(UIStrings.extension)}
-                .data=${
-                  {
-                    iconName: 'extension',
-                    color: 'var(--sys-color-secondary)',
-                  } as IconButton.Icon.IconData
-                }>
+                name="extension">
               </${IconButton.Icon.Icon.litTagName}>
               ${this.#descriptor.title}
             </div>

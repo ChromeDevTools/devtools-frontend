@@ -34,8 +34,10 @@ h1 {
   text-transform: uppercase;
   color: var(--sys-color-secondary);
   margin-bottom: 8px;
-  display: inline-block;
   margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .footer {
@@ -55,11 +57,6 @@ h1 {
   padding: 8px;
   background: var(--sys-color-error-container);
   color: var(--sys-color-error);
-}
-
-.row-label .link {
-  position: relative;
-  top: 0.25em;
 }
 
 .row-label .link:focus-visible {
@@ -90,4 +87,9 @@ h1 {
 
 input[type="checkbox"]:focus-visible {
   outline: var(--sys-color-state-focus-ring) auto 1px;
+}
+
+devtools-icon[name="help"] {
+  width: 16px;
+  height: 16px;
 }

@@ -165,12 +165,7 @@ export class RecordingListView extends HTMLElement {
                 recording.storageName,
               )} @click=${this.#onOpenClick.bind(this, recording.storageName)}>
                     <div class="icon">
-                      <${IconButton.Icon.Icon.litTagName} .data=${
-                        {
-                          iconName: 'flow',
-                          color: 'var( --sys-color-primary)',
-                        } as IconButton.Icon.IconData
-                      }>
+                      <${IconButton.Icon.Icon.litTagName} name="flow">
                       </${IconButton.Icon.Icon.litTagName}>
                     </div>
                     <div class="title">${recording.name}</div>

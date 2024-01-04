@@ -29,7 +29,6 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -113,8 +112,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementToLongTextMap = new WeakMap<Element, string>();
 
 const nodeToColumnIdMap = new WeakMap<Node, string>();
-
-const elementToSortIconMap = new WeakMap<Element, IconButton.Icon.Icon>();
 
 const elementToPreferedWidthMap = new WeakMap<Element, number>();
 
@@ -434,10 +431,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (column.sortable) {
       cell.addEventListener('click', this.clickInHeaderCell.bind(this), false);
       cell.classList.add('sortable');
-      const icon = new IconButton.Icon.Icon();
+      const icon = document.createElement('span');
       icon.className = 'sort-order-icon';
       cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
-      elementToSortIconMap.set(cell, icon);
     }
   }
 
@@ -1275,11 +1271,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
-    const icon = elementToSortIconMap.get(cell);
-    if (!icon) {
-      return;
-    }
-    icon.name = sortOrder === Order.Ascending ? 'triangle-up' : 'triangle-down';
 
     this.dispatchEventToListeners(Events.SortingChanged);
   }

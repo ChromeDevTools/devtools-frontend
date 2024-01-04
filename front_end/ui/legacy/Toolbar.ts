@@ -558,12 +558,9 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private textElement: HTMLElement;
   private text?: string;
   private glyph?: string;
-  private icon?: HTMLElement;
   private adorner?: HTMLElement;
-  /**
-   * TODO(crbug.com/1515213): Remove arbitrary `HTMLElement`s here.
-   */
-  constructor(title: string, glyphOrIcon?: string|HTMLElement, text?: string, jslogContext?: string) {
+
+  constructor(title: string, glyphOrAdorner?: string|Adorners.Adorner.Adorner, text?: string, jslogContext?: string) {
     const element = document.createElement('button');
     element.classList.add('toolbar-button');
     super(element);
@@ -576,8 +573,8 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.textElement = this.element.createChild('div', 'toolbar-text hidden');
 
     this.setTitle(title);
-    if (glyphOrIcon) {
-      this.setGlyphOrIcon(glyphOrIcon);
+    if (glyphOrAdorner) {
+      this.setGlyphOrAdorner(glyphOrAdorner);
     }
     this.setText(text || '');
     if (jslogContext) {
@@ -599,24 +596,16 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.text = text;
   }
 
-  setGlyphOrIcon(glyphOrIcon: string|HTMLElement): void {
-    if (glyphOrIcon instanceof Adorners.Adorner.Adorner) {
+  setGlyphOrAdorner(glyphOrAdorner: string|Adorners.Adorner.Adorner): void {
+    if (glyphOrAdorner instanceof Adorners.Adorner.Adorner) {
       if (this.adorner) {
-        this.adorner.replaceWith(glyphOrIcon);
+        this.adorner.replaceWith(glyphOrAdorner);
       } else {
-        this.element.prepend(glyphOrIcon);
+        this.element.prepend(glyphOrAdorner);
       }
-      this.adorner = glyphOrIcon;
-    } else if (glyphOrIcon instanceof HTMLElement) {
-      glyphOrIcon.classList.add('toolbar-icon');
-      if (this.icon) {
-        this.icon.replaceWith(glyphOrIcon);
-      } else {
-        this.element.appendChild(glyphOrIcon);
-      }
-      this.icon = glyphOrIcon;
-    } else if (glyphOrIcon) {
-      this.setGlyph(glyphOrIcon);
+      this.adorner = glyphOrAdorner;
+    } else {
+      this.setGlyph(glyphOrAdorner);
     }
   }
 
@@ -791,15 +780,14 @@ export namespace ToolbarInput {
 
 export class ToolbarToggle extends ToolbarButton {
   private toggledInternal: boolean;
-  private readonly untoggledGlyphOrIcon: string|HTMLElement|undefined;
-  private readonly toggledGlyphOrIcon: string|HTMLElement|undefined;
+  private readonly untoggledGlyph: string|undefined;
+  private readonly toggledGlyph: string|undefined;
 
-  constructor(
-      title: string, glyphOrIcon?: string|HTMLElement, toggledGlyphOrIcon?: string|HTMLElement, jslogContext?: string) {
-    super(title, glyphOrIcon, '');
+  constructor(title: string, glyph?: string, toggledGlyph?: string, jslogContext?: string) {
+    super(title, glyph, '');
     this.toggledInternal = false;
-    this.untoggledGlyphOrIcon = glyphOrIcon;
-    this.toggledGlyphOrIcon = toggledGlyphOrIcon;
+    this.untoggledGlyph = glyph;
+    this.toggledGlyph = toggledGlyph;
     this.element.classList.add('toolbar-state-off');
     ARIAUtils.setPressed(this.element, false);
     if (jslogContext) {
@@ -819,8 +807,8 @@ export class ToolbarToggle extends ToolbarButton {
     this.element.classList.toggle('toolbar-state-on', toggled);
     this.element.classList.toggle('toolbar-state-off', !toggled);
     ARIAUtils.setPressed(this.element, toggled);
-    if (this.toggledGlyphOrIcon && this.untoggledGlyphOrIcon) {
-      this.setGlyphOrIcon(toggled ? this.toggledGlyphOrIcon : this.untoggledGlyphOrIcon);
+    if (this.toggledGlyph && this.untoggledGlyph) {
+      this.setGlyph(toggled ? this.toggledGlyph : this.untoggledGlyph);
     }
   }
 

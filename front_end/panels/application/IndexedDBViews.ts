@@ -32,7 +32,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -425,26 +424,12 @@ export class IDBDataView extends UI.View.SimpleView {
 
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
 
-    const triangleLeftIcon = new IconButton.Icon.Icon();
-    triangleLeftIcon.data = {
-      iconName: 'triangle-left',
-      color: 'var(--icon-default)',
-      width: '20px',
-      height: '20px',
-    };
-    this.pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), triangleLeftIcon);
+    this.pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'triangle-left');
     this.pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageBackButtonClicked, this);
     this.pageBackButton.element.setAttribute('jslog', `${VisualLogging.previous().track({click: true})}`);
     editorToolbar.appendToolbarItem(this.pageBackButton);
 
-    const triangleRightIcon = new IconButton.Icon.Icon();
-    triangleRightIcon.data = {
-      iconName: 'triangle-right',
-      color: 'var(--icon-default)',
-      width: '20px',
-      height: '20px',
-    };
-    this.pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), triangleRightIcon);
+    this.pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'triangle-right');
     this.pageForwardButton.setEnabled(false);
     this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageForwardButtonClicked, this);
     this.pageForwardButton.element.setAttribute('jslog', `${VisualLogging.next().track({click: true})}`);

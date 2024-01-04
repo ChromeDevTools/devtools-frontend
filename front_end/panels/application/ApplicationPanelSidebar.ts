@@ -39,6 +39,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -211,6 +212,11 @@ const UIStrings = {
    * @description Application sidebar panel
    */
   applicationSidebarPanel: 'Application panel sidebar',
+  /**
+   *@description Tooltip in Application Panel Sidebar of the Application panel
+   *@example {https://example.com} PH1
+   */
+  thirdPartyPhaseout: 'Cookies from {PH1} may have been blocked due to third-party cookie phaseout.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -727,7 +733,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const domain = parsedURL.securityOrigin();
     if (!this.domains[domain]) {
       this.domains[domain] = true;
-      const cookieDomainTreeElement = new CookieTreeElement(this.panel, frame, domain);
+      const cookieDomainTreeElement = new CookieTreeElement(this.panel, frame, parsedURL);
       this.cookieListTreeElement.appendChild(cookieDomainTreeElement);
     }
   }
@@ -1768,12 +1774,20 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   private readonly target: SDK.Target.Target;
   private readonly cookieDomainInternal: string;
 
-  constructor(storagePanel: ResourcesPanel, frame: SDK.ResourceTreeModel.ResourceTreeFrame, cookieDomain: string) {
-    super(storagePanel, cookieDomain ? cookieDomain : i18nString(UIStrings.localFiles), false);
+  constructor(
+      storagePanel: ResourcesPanel, frame: SDK.ResourceTreeModel.ResourceTreeFrame,
+      cookieUrl: Common.ParsedURL.ParsedURL) {
+    super(storagePanel, cookieUrl.securityOrigin() || i18nString(UIStrings.localFiles), false);
     this.target = frame.resourceTreeModel().target();
-    this.cookieDomainInternal = cookieDomain;
-    this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: cookieDomain});
+    this.cookieDomainInternal = cookieUrl.securityOrigin();
+    this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: this.cookieDomainInternal});
     const icon = IconButton.Icon.create('cookie');
+    // Note that we cannot use `cookieDomainInternal` here since it contains scheme.
+    if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
+      icon.name = 'warning-filled';
+      icon.classList.add('warn-icon');
+      this.tooltip = i18nString(UIStrings.thirdPartyPhaseout, {PH1: this.cookieDomainInternal});
+    }
     this.setLeadingIcons([icon]);
   }
 

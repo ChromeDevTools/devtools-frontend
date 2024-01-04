@@ -41,7 +41,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -63,6 +62,10 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
+// COHERENT BEGIN
+import * as Protocol from '../../generated/protocol.js';
+// COHERENT END
+
 const UIStrings = {
   /**
   *@description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
@@ -81,9 +84,15 @@ const UIStrings = {
   */
   screenshots: 'Screenshots',
 
-  traceL1: 'Trace L1',
-  traceL2: 'Trace L2',
-  traceL3: 'Trace L3',
+  // COHERENT BEGIN
+  traceLevelSettingTitle: 'TraceLevel',
+
+  traceSystemSettingTitle: 'TraceSystem',
+
+  traceFilteringEnabledSettingTitle: 'Trace Filtering Enabled',
+
+  // COHERENT END
+
   /**
   *@description Title of the 'Coverage' tool in the bottom drawer
   */
@@ -284,13 +293,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _showScreenshotsSetting: Common.Settings.Setting<any>;
 
-  // COHERENT_BEGIN
+  // COHERENT BEGIN
   _traceLevel: Common.Settings.Setting<string>;
   _traceSystem: Common.Settings.Setting<string>;
   _traceFiltering: Common.Settings.Setting<boolean>;
   _traceLevelsDefinitions: Protocol.Tracing.TraceCategoryDefinition[];
   _traceSystemsDefinitions: Protocol.Tracing.TraceCategoryDefinition[];
-  // COHERENT_END
+  // COHERENT END
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -328,12 +337,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _showWebVitalsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   _startCoverageCheckbox?: UI.Toolbar.ToolbarItem;
   _networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
-  // COHERENT_BEGIN
+  // COHERENT BEGIN
   _traceLevelSelect?: UI.Toolbar.ToolbarComboBox;
   _traceSystemSelect?: UI.Toolbar.ToolbarComboBox;
   _traceFilterEbabledCheckbox?: UI.Toolbar.ToolbarItem;
   _traceCategory?: UI.Widget.VBox;
-  // COHERENT_END
+  // COHERENT END
   _cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   _fileSelectorElement?: HTMLInputElement;
   _selection?: TimelineSelection|null;
@@ -361,16 +370,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this._viewModeSetting = Common.Settings.Settings.instance().createSetting('timelineViewMode', ViewMode.FlameChart);
 
-    // COHERENT_BEGIN
+    // COHERENT BEGIN
     this._traceLevel = Common.Settings.Settings.instance().createSetting('traceLevel', '');
-    this._traceLevel.setTitle(i18nString(UIStrings.traceL1));
+    this._traceLevel.setTitle(i18nString(UIStrings.traceLevelSettingTitle));
 
     this._traceSystem = Common.Settings.Settings.instance().createSetting('traceSystem', '');
-    this._traceSystem.setTitle("TraceSystem");
+    this._traceSystem.setTitle(UIStrings.traceSystemSettingTitle);
 
     this._traceFiltering = Common.Settings.Settings.instance().createSetting('traceFilteringEnabled', true);
-    this._traceFiltering.setTitle("Trace Filtering Enabled");
-    // COHERENT_END
+    this._traceFiltering.setTitle(UIStrings.traceFilteringEnabledSettingTitle);
+    // COHERENT END
 
     this._disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('timelineDisableJSSampling', false);
@@ -451,7 +460,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
 
-    // COHERENT_BEGIN
+    // COHERENT BEGIN
 
     this._traceLevelsDefinitions = [];
     this._traceSystemsDefinitions = [];
@@ -498,7 +507,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       }
     });
-    // COHERENT_END
+    // COHERENT END
   }
 
   static instance(opts: {
@@ -663,7 +672,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this._cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
     cpuThrottlingToolbar.appendToolbarItem(this._cpuThrottlingSelect);
 
-    // COHERENT_BEGIN
+    // COHERENT BEGIN
 
     this._traceCategory = new UI.Widget.VBox();
     this._traceCategory.element.classList.add('flex-auto');
@@ -685,7 +694,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this._traceSystemSelect = this._createTraceFilterSelect("Trace System", 240, this._traceSystem);
     traceSystemToolBar.appendToolbarItem(this._traceSystemSelect);
-    // COHERENT_END
+    // COHERENT END
 
     this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
     this._updateSettingsPaneVisibility();
@@ -718,7 +727,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return toolbarItem;
   }
 
-  // COHERENT_BEGIN
+  // COHERENT BEGIN
   _createTraceFilterSelect(name: string, maxWidth: number, setting: Common.Settings.Setting<string>): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, name);
     toolbarItem.setMaxWidth(maxWidth);
@@ -731,7 +740,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     return toolbarItem;
   }
-  // COHERENT_END
+  // COHERENT END
 
   _prepareToLoadTimeline(): void {
     console.assert(this._state === State.Idle);
@@ -913,11 +922,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       capturePictures: this._captureLayersAndPicturesSetting.get(),
       captureFilmStrip: this._showScreenshotsSetting.get(),
       startCoverage: this._startCoverage.get(),
-      // COHERENT_BEGIN
+      // COHERENT BEGIN
       traceFilteringEnabled : this._traceFiltering.get(),
       traceLevel : this._traceLevel.get(),
       traceSystem : this._traceSystem.get(),
-      // COHERENT_END
+      // COHERENT END
     };
 
     if (recordingOptions.startCoverage) {

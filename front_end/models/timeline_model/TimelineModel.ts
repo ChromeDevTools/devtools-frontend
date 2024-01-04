@@ -1047,6 +1047,24 @@ export class TimelineModelImpl {
       case RecordType.Coherent_ImmediateLayout: {
         break;
       }
+
+      case RecordType.Coherent_ProcessLayer:
+      case RecordType.Coherent_BatchCommands:
+      case RecordType.Coherent_DrawSubLayer:
+      case RecordType.Coherent_ProcessSimpleSublayer:
+      case RecordType.Coherent_DrawSubLayerWithCustomEffect:
+      case RecordType.Coherent_DrawFillRectShaderAndMask:
+      case RecordType.Coherent_DrawSubLayerWithShaderBlendMode:
+      case RecordType.Coherent_DrawSubLayerWithShaderFilter:
+      case RecordType.Coherent_DrawStackingContext:
+      case RecordType.Coherent_SynchronizeNode:
+      case RecordType.Coherent_ResolveNodeStyles: {
+        if (parseInt(event.args['int0']) > 0) {
+          timelineData.backendNodeIds.push(event.args['int0']);
+        }
+        break;
+      }
+
       // COHERENT END
       case RecordType.ResourceSendRequest:
       case RecordType.WebSocketCreate: {
@@ -1112,23 +1130,6 @@ export class TimelineModelImpl {
         this.layoutInvalidate[frameId] = null;
         if (this.currentScriptEvent) {
           this.currentTaskLayoutAndRecalcEvents.push(event);
-        }
-        break;
-      }
-
-      case RecordType.Coherent_ProcessLayer:
-      case RecordType.Coherent_BatchCommands:
-      case RecordType.Coherent_DrawSubLayer:
-      case RecordType.Coherent_ProcessSimpleSublayer:
-      case RecordType.Coherent_DrawSubLayerWithCustomEffect:
-      case RecordType.Coherent_DrawFillRectShaderAndMask:
-      case RecordType.Coherent_DrawSubLayerWithShaderBlendMode:
-      case RecordType.Coherent_DrawSubLayerWithShaderFilter:
-      case RecordType.Coherent_DrawStackingContext:
-      case RecordType.Coherent_SynchronizeNode:
-      case RecordType.Coherent_ResolveNodeStyles: {
-        if (parseInt(event.args['int0']) > 0) {
-          timelineData.backendNodeIds.push(event.args['int0']);
         }
         break;
       }

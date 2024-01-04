@@ -51,7 +51,6 @@ export const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 
 export const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
 export const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');
 export const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
-export const jumpToElement = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToElement');
 export const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
 export const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 

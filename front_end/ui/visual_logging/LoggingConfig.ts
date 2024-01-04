@@ -78,7 +78,7 @@ enum VisualElements {
   GridSettings = 55,
   FlexboxOverlays = 56,
   GridOverlays = 57,
-  JumpToElement = 58,
+  /* 58 used to be JumpToElement, but free to grab now */
   PieChart = 59,
   PieChartSlice = 60,
   PieChartTotal = 61,

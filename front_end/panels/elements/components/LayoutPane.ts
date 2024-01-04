@@ -5,8 +5,8 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
@@ -470,13 +470,13 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} class="color-picker-label" style="background: ${element.color};" jslog=${VisualLogging.showStyleEditor().track({click: true}).context('color')}>
         <input @change=${onColorChange} @input=${onColorChange} title=${i18nString(UIStrings.chooseElementOverlayColor)} tabindex="0" class="color-picker" type="color" value=${element.color} />
       </label>
-      <${IconButton.Icon.Icon.litTagName} .data=${{
-        iconName: 'select-element',
-        color: 'var(--icon-show-element)',
-        width: '16px',
-      } as IconButton.Icon.IconData} tabindex="0", @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element" jslog=${VisualLogging.jumpToElement().track({click:true})}>
-      ()
-      </${IconButton.Icon.Icon.litTagName}>
+      <${Buttons.Button.Button.litTagName} class="show-element"
+                                           title=${i18nString(UIStrings.showElementInTheElementsPanel)}
+                                           .iconName=${'select-element'}
+                                           .jslogContext=${'elements.select-element'}
+                                           .size=${Buttons.Button.Size.SMALL}
+                                           .variant=${Buttons.Button.Variant.ROUND}
+                                           @click=${onElementClick}></${Buttons.Button.Button.litTagName}>
     </div>`;
     // clang-format on
   }

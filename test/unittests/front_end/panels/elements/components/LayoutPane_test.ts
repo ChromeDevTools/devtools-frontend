@@ -174,7 +174,7 @@ describeWithMockConnection('LayoutPane', async () => {
     const component = await renderComponent();
     assertShadowRoot(component.shadowRoot);
 
-    const button = component.shadowRoot.querySelector('devtools-icon.show-element');
+    const button = component.shadowRoot.querySelector('.show-element');
     assertElement(button, HTMLElement);
     button.click();
     assert.isTrue(revealer.calledOnceWith(node));

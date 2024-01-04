@@ -170,13 +170,13 @@ describe('The Application Tab', async () => {
         name: '__Host-foo3',
       },
       {
-        name: 'urlencoded',
+        name: 'foo',
       },
       {
         name: 'foo2',
       },
       {
-        name: 'foo',
+        name: 'urlencoded',
       },
     ]);
 
@@ -190,10 +190,10 @@ describe('The Application Tab', async () => {
         name: '__Host-foo3',
       },
       {
-        name: 'urlencoded',
+        name: 'foo',
       },
       {
-        name: 'foo',
+        name: 'urlencoded',
       },
     ]);
   });

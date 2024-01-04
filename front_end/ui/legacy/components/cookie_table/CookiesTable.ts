@@ -222,7 +222,6 @@ export class CookiesTable extends UI.Widget.VBox {
         id: SDK.Cookie.Attributes.Priority,
         title: 'Priority',
         sortable: true,
-        sort: DataGrid.DataGrid.Order.Descending,
         weight: 7,
         editable: editable,
       },

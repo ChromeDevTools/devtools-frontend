@@ -92,10 +92,10 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   & ::selection {
     background-color: var(--sys-color-state-focus-select);
   }
-}
 
-ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
-  color: inherit;
+  & *:not(devtools-icon) {
+    color: inherit;
+  }
 }
 
 .tree-outline li .icons-container {

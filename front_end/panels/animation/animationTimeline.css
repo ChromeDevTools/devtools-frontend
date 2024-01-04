@@ -304,6 +304,10 @@ text.animation-timeline-grid-label {
   position: relative;
 
   & .screenshot-arrow {
+    background-image: var(--image-file-popoverArrows);
+    background-position: 0 76px;
+    width: 19px;
+    height: 19px;
     position: absolute;
     left: 6px;
     top: -19px;

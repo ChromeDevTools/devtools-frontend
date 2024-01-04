@@ -522,7 +522,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     const screenshotsContainer = document.createElement('div');
     screenshotsContainer.classList.add('screenshots-container', 'no-screenshots');
-    screenshotsContainer.appendChild(UI.Icon.Icon.create('mediumicon-arrow-top', 'screenshot-arrow'));
+    screenshotsContainer.createChild('span', 'screenshot-arrow');
     // After the view is shown on hover, position it if it is out of bounds.
     screenshotsContainer.addEventListener('animationend', () => {
       const {right} = screenshotsContainer.getBoundingClientRect();

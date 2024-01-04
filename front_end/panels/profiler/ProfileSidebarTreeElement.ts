@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -49,7 +50,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
 
     this.menuElement = document.createElement('button');
     this.menuElement.tabIndex = -1;
-    this.menuElement.appendChild(UI.Icon.Icon.create('dots-vertical'));
+    this.menuElement.appendChild(IconButton.Icon.create('dots-vertical'));
     this.menuElement.addEventListener('click', this.handleContextMenuEvent.bind(this));
     this.menuElement.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('dots-menu')}`);
     UI.Tooltip.Tooltip.install(this.menuElement, i18nString(UIStrings.profileOptions));

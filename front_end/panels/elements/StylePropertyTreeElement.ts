@@ -1125,7 +1125,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
       }
 
-      const copyIcon = UI.Icon.Icon.create('copy', 'copy');
+      const copyIcon = IconButton.Icon.create('copy', 'copy');
       UI.Tooltip.Tooltip.install(copyIcon, i18nString(UIStrings.copyDeclaration));
       copyIcon.addEventListener('click', () => {
         const propertyText = `${this.property.name}: ${this.property.value};`;

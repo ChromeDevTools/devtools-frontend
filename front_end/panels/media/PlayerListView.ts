@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -80,7 +81,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
     element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
 
-    entry.$('icon').appendChild(UI.Icon.Icon.create('pause', 'media-player'));
+    entry.$('icon').appendChild(IconButton.Icon.create('pause', 'media-player'));
     return entry;
   }
 
@@ -154,7 +155,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       return;
     }
     icon.textContent = '';
-    icon.appendChild(UI.Icon.Icon.create(iconName, 'media-player'));
+    icon.appendChild(IconButton.Icon.create(iconName, 'media-player'));
   }
 
   private formatAndEvaluate(playerID: string, func: Function, candidate: string, min: number, max: number): void {

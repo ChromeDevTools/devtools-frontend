@@ -388,9 +388,12 @@ export function textContentWithLineBreaksTrimmed(node) {
 export function textContentWithoutStyles(node) {
   let buffer = '';
   let currentNode = node;
-  while (currentNode.traverseNextNode(node)) {
+  while (true) {
     currentNode = currentNode.traverseNextNode(
         node, currentNode.tagName === 'DEVTOOLS-CSS-LENGTH' || currentNode.tagName === 'DEVTOOLS-ICON');
+    if (!currentNode) {
+      break;
+    }
     if (currentNode.nodeType === Node.TEXT_NODE) {
       buffer += currentNode.nodeValue;
     } else if (currentNode.nodeName === 'STYLE') {

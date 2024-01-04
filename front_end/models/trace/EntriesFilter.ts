@@ -110,8 +110,6 @@ export class EntriesFilter {
   }
 
   #applyFilterAction(action: UserApplyFilterAction): Types.TraceEvents.TraceEventData[] {
-    // Identify in the UI that children of the entry are modified.
-    this.#modifiedVisibleEntries.push(action.entry);
     // We apply new user action to the set of all entries, and mark
     // any that should be hidden by adding them to this set.
     // Another approach would be to use splice() to remove items from the
@@ -125,6 +123,12 @@ export class EntriesFilter {
         // children remain visible, so we just have to hide the entry that was
         // selected.
         entriesToHide.add(action.entry);
+        // If parent node exists, add it to modifiedVisibleEntries, so it would be possible to uncollapse its' children.
+        const actionNode = this.#entryToNode.get(action.entry) || null;
+        const parentNode = actionNode && this.#findNextVisibleParent(actionNode);
+        if (parentNode) {
+          this.#modifiedVisibleEntries.push(parentNode?.entry);
+        }
         break;
       }
 
@@ -137,6 +141,10 @@ export class EntriesFilter {
         }
         const allAncestors = this.#findAllAncestorsOfNode(entryNode);
         allAncestors.forEach(ancestor => entriesToHide.add(ancestor));
+        // If there are any children to hide, add selected entry to modifiedVisibleEntries array to identify in the UI that children of the selected entry are modified.
+        if (entriesToHide.size > 0) {
+          this.#modifiedVisibleEntries.push(action.entry);
+        }
         break;
       }
 
@@ -148,6 +156,9 @@ export class EntriesFilter {
         }
         const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
         allRepeatingDescendants.forEach(ancestor => entriesToHide.add(ancestor));
+        if (entriesToHide.size > 0) {
+          this.#modifiedVisibleEntries.push(action.entry);
+        }
         break;
       }
       default:
@@ -157,6 +168,15 @@ export class EntriesFilter {
     this.#invisibleEntries.push(...entriesToHide);
 
     return this.#invisibleEntries;
+  }
+
+  // The direct parent might be hidden by other actions, therefore we look for the next visible parent.
+  #findNextVisibleParent(node: Helpers.TreeHelpers.TraceEntryNode): Helpers.TreeHelpers.TraceEntryNode|null {
+    let parent = node.parent;
+    while (parent && this.#invisibleEntries.includes(parent.entry)) {
+      parent = parent.parent;
+    }
+    return parent;
   }
 
   #findAllAncestorsOfNode(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEventData[] {

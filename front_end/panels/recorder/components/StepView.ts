@@ -801,12 +801,7 @@ export class StepView extends HTMLElement {
               isExpandable
                 ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
                     class="chevron"
-                    .data=${
-                      {
-                        iconName: 'triangle-down',
-                        color: 'var(--sys-color-on-surface)',
-                      } as IconButton.Icon.IconData
-                    }>
+                    name="triangle-down">
                   </${IconButton.Icon.Icon.litTagName}>`
                 : ''
             }

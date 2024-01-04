@@ -7,8 +7,6 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import iconStyles from './icon.css.js';
 
-const IMAGES_URL = `${new URL('../../../Images/', import.meta.url)}`;
-
 /**
  * @deprecated
  */
@@ -30,7 +28,8 @@ export type IconData = IconWithName|{
 };
 
 /**
- * A simple icon component to display SVG icons from the `front_end/Images/` folder.
+ * A simple icon component to display SVG icons from the `front_end/Images/src`
+ * folder (via the `--image-file-<name>` CSS variables).
  *
  * Usage is simple:
  *
@@ -66,7 +65,9 @@ export type IconData = IconWithName|{
  * the default dimensions are 14px times 14px, and the default `vertical-align` is
  * `baseline` (instead of `sub`).
  *
- * @attr name - The basename of the icon file (not including the `.svg` suffix).
+ * @attr name - The basename of the icon file (not including the `.svg` suffix). For
+ *              backwards compatibility we also support a full URL here, but that
+ *              should not be used in newly written code.
  * @prop {String} name - The `"name"` attribute is reflected as property.
  * @prop {IconData} data - Deprecated way to set dimensions, color and name at once.
  */
@@ -149,11 +150,8 @@ export class Icon extends HTMLElement {
         if (newValue === null) {
           this.#icon.style.removeProperty('--icon-url');
         } else {
-          if (!newValue.endsWith('.svg')) {
-            newValue = `${newValue}.svg`;
-          }
-          const url = new URL(newValue, IMAGES_URL);
-          this.#icon.style.setProperty('--icon-url', `url(${url})`);
+          const url = URL.canParse(newValue) ? `url(${newValue})` : `var(--image-file-${newValue})`;
+          this.#icon.style.setProperty('--icon-url', url);
         }
         break;
       }

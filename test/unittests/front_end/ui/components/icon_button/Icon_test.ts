@@ -91,12 +91,13 @@ describe('Icon', () => {
         assert.strictEqual(window.getComputedStyle(span).maskImage, 'url("devtools://path/to/images/file.svg")');
       });
 
-      it('constructs the correct `.svg` icon URL for a name', () => {
+      it('accepts an icon name and resolves that via `--image-file-<name>` CSS variables', () => {
         const icon = new Icon();
-        icon.name = 'select-element';
+        icon.name = 'bar';
+        icon.style.setProperty('--image-file-bar', 'url(http://foo/bar.svg)');
         renderElementIntoDOM(icon);
         const span = getSpanElement(icon);
-        assert.match(window.getComputedStyle(span).maskImage, /^url\("\S+\/front_end\/Images\/select-element\.svg"\)$/);
+        assert.strictEqual(window.getComputedStyle(span).maskImage, 'url("http://foo/bar.svg")');
       });
     });
 

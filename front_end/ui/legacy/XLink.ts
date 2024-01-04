@@ -86,11 +86,6 @@ export class XLink extends XElement {
       return;
     }
 
-    if (attr === 'title') {
-      Tooltip.install(this, newValue);
-      return;
-    }
-
     if (attr === 'href') {
       // For invalid or non-absolute URLs, `href` should remain `null`.
       if (!newValue) {

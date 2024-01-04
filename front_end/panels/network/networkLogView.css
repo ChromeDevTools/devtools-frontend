@@ -435,13 +435,21 @@
 
   .network-waterfall-header:hover {
     forced-color-adjust: none;
-    background-color: Highlight;
+    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+
+    & > div.hover-layer {
+      display: none;
+    }
   }
 
   .network-waterfall-header.small,
   .network-log-grid.data-grid.small thead .network-waterfall-header,
   .network-log-grid.data-grid thead {
     background-color: canvas;
+  }
+
+  .network-waterfall-header .sort-order-icon-container devtools-icon {
+    background-color: inherit;
   }
 
   .network-waterfall-header:hover .sort-order-icon-container devtools-icon {

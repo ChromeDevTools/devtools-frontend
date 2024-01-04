@@ -31,8 +31,7 @@
   width: var(--size);
   height: var(--size);
   margin: -1px 0 0 calc(-1 * var(--size));
-  -webkit-mask-image: var(--image-file-mediumIcons);
-  -webkit-mask-position: -32px 48px;
+  mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-surface-variant);
 }
 

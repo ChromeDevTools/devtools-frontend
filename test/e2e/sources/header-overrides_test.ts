@@ -66,7 +66,7 @@ async function openHeadersTab() {
 }
 
 async function editorTabHasPurpleDot(): Promise<boolean> {
-  const tabHeaderIcon = await waitFor('.tabbed-pane-header-tab-icon .spritesheet-mediumicons');
+  const tabHeaderIcon = await waitFor('.tabbed-pane-header-tab-icon devtools-icon');
   return await tabHeaderIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 

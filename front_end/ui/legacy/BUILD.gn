@@ -88,7 +88,6 @@ devtools_module("ui") {
     "Geometry.ts",
     "GlassPane.ts",
     "HistoryInput.ts",
-    "Icon.ts",
     "Infobar.ts",
     "InplaceEditor.ts",
     "InspectorView.ts",

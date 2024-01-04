@@ -57,7 +57,11 @@
     opacity: 100%;
   }
 
-  .history-dropdown-button[disabled] [is="ui-icon"].icon-mask {
+  .history-dropdown-button > .content::after {
+    background-color: ButtonText;
+  }
+
+  .history-dropdown-button[disabled] > .content::after {
     background-color: GrayText;
   }
 }

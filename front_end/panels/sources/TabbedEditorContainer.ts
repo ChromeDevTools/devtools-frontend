@@ -627,7 +627,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       const title = this.titleForFile(uiSourceCode);
       const tooltip = this.tooltipForFile(uiSourceCode);
       this.tabbedPane.changeTabTitle(tabId, title, tooltip);
-      let icon: IconButton.Icon.Icon|UI.Icon.Icon|null = null;
+      let icon: IconButton.Icon.Icon|null = null;
       if (uiSourceCode.loadError()) {
         icon = new IconButton.Icon.Icon();
         icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};

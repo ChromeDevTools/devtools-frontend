@@ -70,8 +70,7 @@ li {
   }
 
   .tree-outline li:hover devtools-icon,
-  .tree-outline li.selected devtools-icon,
-  .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
+  .tree-outline li.selected devtools-icon {
     color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 }

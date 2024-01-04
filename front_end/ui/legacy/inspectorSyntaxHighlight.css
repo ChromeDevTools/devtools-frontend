@@ -95,16 +95,13 @@
     color: var(--text-link);
   }
 
-  [is="ui-icon"] {
+  devtools-icon {
     vertical-align: middle;
+    color: var(--sys-color-primary);
   }
 
-  [is="ui-icon"].icon-mask {
-    background-color: var(--sys-color-primary);
-  }
-
-  :focus .selected & [is="ui-icon"].icon-mask {
-    background-color: var(--sys-color-tonal-container);
+  :focus .selected & devtools-icon {
+    color: var(--sys-color-tonal-container);
   }
 
   &:focus-visible {

@@ -169,10 +169,14 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 
 @media (forced-colors: active) {
   .tree-outline-disclosure li.parent::before,
-  .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before,
-  .tree-outline li [is="ui-icon"].icon-mask {
+  .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before {
     forced-color-adjust: none;
     background-color: ButtonText;
+  }
+
+  .tree-outline li devtools-icon {
+    forced-color-adjust: none;
+    color: ButtonText;
   }
 
   .tree-outline-disclosure li.parent:hover:not(.selected)::before,

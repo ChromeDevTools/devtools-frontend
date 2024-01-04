@@ -586,8 +586,8 @@ devtools-console-insight {
     color: HighlightText;
   }
 
-  .console-message-wrapper:focus [is="ui-icon"].icon-mask {
-    background-color: HighlightText;
+  .console-message-wrapper:focus devtools-icon {
+    color: HighlightText;
   }
 
   .console-message-wrapper.console-error-level:focus,

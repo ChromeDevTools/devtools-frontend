@@ -256,6 +256,7 @@ export class Button extends HTMLElement {
       round: this.#props.variant === Variant.ROUND,
       'text-with-icon': hasIcon && !this.#isEmpty,
       'only-icon': hasIcon && this.#isEmpty,
+      'only-text': !hasIcon && !this.#isEmpty,
       small: Boolean(this.#props.size === Size.SMALL || this.#props.size === Size.TINY),
       tiny: Boolean(this.#props.size === Size.TINY),
       active: this.#props.active,

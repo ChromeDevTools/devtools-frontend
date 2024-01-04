@@ -4,9 +4,9 @@
  * found in the LICENSE file.
  */
 
-/* TODO(crbug.com/1442257): remove stylelint-disable. */
-/* stylelint-disable plugin/use_theme_colors */
-
+/**
+* Design: http://go/cdt-design-button
+*/
 * {
   margin: 0;
   padding: 0;
@@ -47,17 +47,18 @@ button {
   --button-width: 100%;
 
   align-items: center;
+  background: transparent;
   border-radius: 12px calc(var(--button-has-right-border-radius) * 12px) calc(var(--button-has-right-border-radius) * 12px) 12px;
   display: inline-flex;
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
   height: var(--button-height);
-  line-height: 14px;
-  padding: 5px 12px;
   justify-content: center;
-  width: var(--button-width);
+  line-height: 14px;
+  padding: 0;
   white-space: nowrap;
+  width: var(--button-width);
 
   devtools-icon {
     width: calc(var(--button-width) - 4px);
@@ -75,11 +76,8 @@ button {
     --button-height: 24px;
     --button-width: 24px;
 
-    background: transparent;
     border: none;
     overflow: hidden;
-    padding: 0;
-    white-space: nowrap;
 
     &.small {
       --button-height: 20px;
@@ -136,20 +134,6 @@ button {
     }
   }
 
-  &.text-with-icon {
-    padding: 0 calc(12px - var(--button-border-size)) 0 calc(8px - var(--button-border-size));
-
-    devtools-icon {
-      width: 20px;
-      height: 20px;
-      margin-right: 4px;
-    }
-  }
-
-  &.only-icon {
-    padding: 0;
-  }
-
   &:focus-visible {
     outline: 2px solid var(--sys-color-state-focus-ring);
     outline-offset: 2px;
@@ -190,6 +174,30 @@ button {
     devtools-icon {
       color: var(--icon-disabled);
     }
+  }
+
+  &.text-with-icon {
+    padding: 0 calc(12px - var(--button-border-size)) 0 calc(8px - var(--button-border-size));
+
+    devtools-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
+    }
+
+    .small {
+      padding: 0 calc(9px - var(--button-border-size)) 0 calc(3px - var(--button-border-size));
+
+      devtools-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  &.only-text {
+    padding: 5px 12px;
   }
 
   &:hover {
@@ -242,16 +250,6 @@ button {
       devtools-icon {
         color: var(--icon-toggled);
       }
-    }
-  }
-
-  &.text-with-icon.small {
-    padding: 0 calc(9px - var(--button-border-size)) 0 calc(3px - var(--button-border-size));
-
-    devtools-icon {
-      width: 16px;
-      height: 16px;
-      margin-right: 4px;
     }
   }
 }

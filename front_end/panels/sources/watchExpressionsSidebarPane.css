@@ -7,30 +7,17 @@
 .watch-expression-delete-button {
   position: absolute;
   opacity: 0%;
-  background-color: var(--icon-default);
-  cursor: pointer;
-}
+  right: 0;
 
-.watch-expression-delete-button:hover {
-  background-color: var(--icon-default-hover);
+  .watch-expression-title:hover & {
+    opacity: 100%;
+  }
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-delete-button {
   /* This is a workaround due to a sprite with hardcoded color.
      It should no longer be necessary after we update icons. */
   filter: brightness(1.5);
-}
-
-.right-aligned {
-  right: 16px;
-}
-
-.left-aligned {
-  left: -11px;
-}
-
-.watch-expression-title:hover .watch-expression-delete-button {
-  opacity: 100%;
 }
 
 .watch-expressions {
@@ -63,7 +50,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   flex-shrink: 1000000;
-  min-height: 2em;
+  min-width: 2em;
 }
 
 .watch-expression-error {

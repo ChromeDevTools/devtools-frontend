@@ -279,6 +279,18 @@ declare class NodeProp<T> {
     */
     static group: NodeProp<readonly string[]>;
     /**
+    Attached to nodes to indicate these should be
+    [displayed](https://codemirror.net/docs/ref/#language.syntaxTree)
+    in a bidirectional text isolate, so that direction-neutral
+    characters on their sides don't incorrectly get associated with
+    surrounding text. You'll generally want to set this for nodes
+    that contain arbitrary text, like strings and comments, and for
+    nodes that appear _inside_ arbitrary text, like HTML tags. When
+    not given a value, in a grammar declaration, defaults to
+    `"auto"`.
+    */
+    static isolate: NodeProp<"rtl" | "ltr" | "auto">;
+    /**
     The hash of the [context](#lr.ContextTracker.constructor)
     that the node was parsed in, if any. Used to limit reuse of
     contextual nodes.
@@ -1728,7 +1740,7 @@ declare class SelectionRange {
     /**
     Compare this range to another range.
     */
-    eq(other: SelectionRange): boolean;
+    eq(other: SelectionRange, includeAssoc?: boolean): boolean;
     /**
     Return a JSON-serializable object representing the range.
     */
@@ -1760,9 +1772,12 @@ declare class EditorSelection {
     */
     map(change: ChangeDesc, assoc?: number): EditorSelection;
     /**
-    Compare this selection to another selection.
+    Compare this selection to another selection. By default, ranges
+    are compared only by position. When `includeAssoc` is true,
+    cursor ranges must also have the same
+    [`assoc`](https://codemirror.net/6/docs/ref/#state.SelectionRange.assoc) value.
     */
-    eq(other: EditorSelection): boolean;
+    eq(other: EditorSelection, includeAssoc?: boolean): boolean;
     /**
     Get the primary selection range. Usually, you should make sure
     your code applies to _all_ ranges, by using methods like
@@ -2918,6 +2933,10 @@ declare class RangeSet<T extends RangeValue> {
     */
     static of<T extends RangeValue>(ranges: readonly Range<T>[] | Range<T>, sort?: boolean): RangeSet<T>;
     /**
+    Join an array of range sets into a single set.
+    */
+    static join<T extends RangeValue>(sets: readonly RangeSet<T>[]): RangeSet<T>;
+    /**
     The empty set of ranges.
     */
     static empty: RangeSet<any>;
@@ -3067,9 +3086,12 @@ interface MarkDecorationSpec {
     /**
     When using sets of decorations in
     [`bidiIsolatedRanges`](https://codemirror.net/6/docs/ref/##view.EditorView^bidiIsolatedRanges),
-    this property provides the direction of the isolates.
+    this property provides the direction of the isolates. When null
+    or not given, it indicates the range has `dir=auto`, and its
+    direction should be derived from the first strong directional
+    character in it.
     */
-    bidiIsolate?: Direction;
+    bidiIsolate?: Direction | null;
     /**
     Decoration specs allow extra properties, which can be retrieved
     through the decoration's [`spec`](https://codemirror.net/6/docs/ref/#view.Decoration.spec)
@@ -3434,7 +3456,7 @@ interface MeasureRequest<T> {
     write?(measure: T, view: EditorView): void;
     /**
     When multiple requests with the same key are scheduled, only the
-    last one will actually be ran.
+    last one will actually be run.
     */
     key?: any;
 }
@@ -3851,6 +3873,13 @@ declare class EditorView {
     */
     moveByGroup(start: SelectionRange, forward: boolean): SelectionRange;
     /**
+    Get the cursor position visually at the start or end of a line.
+    Note that this may differ from the _logical_ position at its
+    start or end (which is simply at `line.from`/`line.to`) if text
+    at the start or end goes against the line's base text direction.
+    */
+    visualLineSide(line: Line$1, end: boolean): SelectionRange;
+    /**
     Move to the next line boundary in the given direction. If
     `includeWrap` is true, line wrapping is on, and there is a
     further wrap point on the current line, the wrap point will be
@@ -4146,6 +4175,16 @@ declare class EditorView {
     [`EditorView.atomicRanges`](https://codemirror.net/6/docs/ref/#view.EditorView^atomicRanges).
     */
     static decorations: Facet<DecorationSet | ((view: EditorView) => DecorationSet), readonly (DecorationSet | ((view: EditorView) => DecorationSet))[]>;
+    /**
+    Facet that works much like
+    [`decorations`](https://codemirror.net/6/docs/ref/#view.EditorView^decorations), but puts its
+    inputs at the very bottom of the precedence stack, meaning mark
+    decorations provided here will only be split by other, partially
+    overlapping \`outerDecorations\` ranges, and wrap around all
+    regular decorations. Use this for mark elements that should, as
+    much as possible, remain in one piece.
+    */
+    static outerDecorations: Facet<DecorationSet | ((view: EditorView) => DecorationSet), readonly (DecorationSet | ((view: EditorView) => DecorationSet))[]>;
     /**
     Used to provide ranges that should be treated as atoms as far as
     cursor motion is concerned. This causes methods like
@@ -6009,11 +6048,13 @@ interface StreamParser<State> {
     Read one token, advancing the stream past it, and returning a
     string indicating the token's style tag—either the name of one
     of the tags in
-    [`tags`](https://lezer.codemirror.net/docs/ref#highlight.tags),
-    or such a name suffixed by one or more tag
+    [`tags`](https://lezer.codemirror.net/docs/ref#highlight.tags)
+    or [`tokenTable`](https://codemirror.net/6/docs/ref/#language.StreamParser.tokenTable), or such a
+    name suffixed by one or more tag
     [modifier](https://lezer.codemirror.net/docs/ref#highlight.Tag^defineModifier)
     names, separated by periods. For example `"keyword"` or
-    "`variableName.constant"`.
+    "`variableName.constant"`, or a space-separated set of such
+    token types.
 
     It is okay to return a zero-length token, but only if that
     updates the state so that the next call will return a non-empty
@@ -6045,10 +6086,10 @@ interface StreamParser<State> {
     /**
     Extra tokens to use in this parser. When the tokenizer returns a
     token name that exists as a property in this object, the
-    corresponding tag will be assigned to the token.
+    corresponding tags will be assigned to the token.
     */
     tokenTable?: {
-        [name: string]: Tag;
+        [name: string]: Tag | readonly Tag[];
     };
 }
 /**
@@ -6064,6 +6105,22 @@ declare class StreamLanguage<State> extends Language {
     private getIndent;
     get allowsNesting(): boolean;
 }
+
+/**
+Make sure nodes
+[marked](https://lezer.codemirror.net/docs/ref/#common.NodeProp^isolate)
+as isolating for bidirectional text are rendered in a way that
+isolates them from the surrounding text.
+*/
+declare function bidiIsolates(options?: {
+    /**
+    By default, isolating elements are only added when the editor
+    direction isn't uniformly left-to-right, or if it is, on lines
+    that contain right-to-left character. When true, disable this
+    optimization and add them everywhere.
+    */
+    alwaysIsolate?: boolean;
+}): Extension;
 
 /**
 Objects type used to represent individual completions.
@@ -7590,4 +7647,4 @@ declare function vue(): Promise<typeof _codemirror_lang_vue>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bidiIsolates, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };

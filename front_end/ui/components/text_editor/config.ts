@@ -346,6 +346,7 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
       parent: getTooltipHost() as unknown as HTMLElement,
       tooltipSpace: getTooltipSpace,
     }),
+    CM.bidiIsolates(),
   ];
 }
 

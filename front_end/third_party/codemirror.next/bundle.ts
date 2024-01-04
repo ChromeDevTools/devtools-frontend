@@ -24,6 +24,7 @@ export * as html from '@codemirror/lang-html';
 export * as javascript from '@codemirror/lang-javascript';
 export { bracketMatching,
   codeFolding,
+  bidiIsolates,
   ensureSyntaxTree, foldGutter, foldKeymap, HighlightStyle, indentOnInput, indentUnit,Language, LanguageSupport,
   StreamLanguage, StreamParser, StringStream
 , syntaxHighlighting, syntaxTree, TagStyle} from '@codemirror/language';

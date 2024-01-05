@@ -7,7 +7,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {
@@ -17,6 +16,7 @@ import {
   registerEditorAction,
   type SourcesView,
 } from './SourcesView.js';
+import {type UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
@@ -108,45 +108,37 @@ export class InplaceFormatterEditorAction implements EditorAction {
   }
 
   private formatSourceInPlace(): void {
-    const uiSourceCode = this.sourcesView.currentUISourceCode();
-    if (!uiSourceCode || !this.isFormattable(uiSourceCode)) {
+    const sourceFrame = this.sourcesView.currentSourceFrame();
+    if (!sourceFrame) {
+      return;
+    }
+    const uiSourceCode = sourceFrame.uiSourceCode();
+    if (!this.isFormattable(uiSourceCode)) {
       return;
     }
 
     if (uiSourceCode.isDirty()) {
-      void this.contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
+      void this.contentLoaded(uiSourceCode, sourceFrame, uiSourceCode.workingCopy());
     } else {
       void uiSourceCode.requestContent().then(deferredContent => {
-        void this.contentLoaded((uiSourceCode as Workspace.UISourceCode.UISourceCode), deferredContent.content || '');
+        void this.contentLoaded(uiSourceCode, sourceFrame, deferredContent.content || '');
       });
     }
   }
 
-  private async contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<void> {
-    const highlighterType = uiSourceCode.mimeType();
+  private async contentLoaded(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, sourceFrame: UISourceCodeFrame,
+      content: string): Promise<void> {
     const {formattedContent, formattedMapping} =
-        await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), highlighterType, content);
-    this.formattingComplete(uiSourceCode, formattedContent, formattedMapping);
-  }
-
-  /**
-   * Post-format callback
-   */
-  private formattingComplete(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, formattedContent: string,
-      formatterMapping: Formatter.ScriptFormatter.FormatterSourceMapping): void {
+        await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), sourceFrame.contentType, content);
     if (uiSourceCode.workingCopy() === formattedContent) {
       return;
     }
-    const sourceFrame = (this.sourcesView.viewForFile(uiSourceCode) as SourceFrame.SourceFrame.SourceFrameImpl);
-    let start: number[]|number[] = [0, 0];
-    if (sourceFrame) {
-      const selection = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
-      start = formatterMapping.originalToFormatted(selection.lineNumber, selection.columnNumber);
-    }
+    const selection = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
+    const [lineNumber, columnNumber] =
+        formattedMapping.originalToFormatted(selection.lineNumber, selection.columnNumber);
     uiSourceCode.setWorkingCopy(formattedContent);
-
-    this.sourcesView.showSourceLocation(uiSourceCode, {lineNumber: start[0], columnNumber: start[1]});
+    this.sourcesView.showSourceLocation(uiSourceCode, {lineNumber, columnNumber});
   }
 }
 

@@ -599,7 +599,8 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
 }
 /** Adorner */
 .adorner-container {
-  display: inline-block;
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 .adorner-container.hidden {

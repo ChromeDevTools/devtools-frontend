@@ -156,5 +156,47 @@ describeWithMockConnection('AutofillManager', () => {
       };
       await assertAutofillManagerEvent(inEvent, outEvent);
     });
+
+    it('with an empty string as filled field value', async () => {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: 'name',
+          value: 'Crocodile',
+          autofillType: 'First name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
+        },
+        {
+          htmlType: 'text',
+          id: 'input2',
+          name: 'city',
+          value: '',
+          autofillType: 'City',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 2 as Protocol.DOM.BackendNodeId,
+        },
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'NAME_FULL', value: 'Crocodile Dundee'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: 'Crocodile Dundee',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 9, filledFieldIndex: 0}],
+        autofillModel: model,
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
   });
 });

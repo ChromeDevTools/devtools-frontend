@@ -76,6 +76,9 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // Populate a list of matches by searching in the address string for
     // occurences of filled field values.
     for (let i = 0; i < this.#filledFields.length; i++) {
+      if (this.#filledFields[i].value === '') {
+        continue;
+      }
       // Regex replaces whitespace or comma/dot followed by whitespace with a single space.
       const needle = this.#filledFields[i].value.replaceAll(/[.,]*\s+/g, ' ');
       const matches = this.#address.replaceAll(/\s/g, ' ').matchAll(new RegExp(needle, 'g'));

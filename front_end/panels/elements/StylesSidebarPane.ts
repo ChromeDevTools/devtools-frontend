@@ -433,26 +433,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.userOperation = userOperation;
   }
 
-  createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|string|null): Element {
-    const exclamationElement = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
-    exclamationElement.className = 'exclamation-mark';
-    if (!StylesSidebarPane.ignoreErrorsForProperty(property)) {
-      exclamationElement
-          .data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-    }
-    let invalidMessage: string|Common.UIString.LocalizedString;
-    if (typeof title === 'string') {
-      UI.Tooltip.Tooltip.install(exclamationElement, title);
-      invalidMessage = title;
+  createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
+    const exclamationElement = document.createElement('span');
+    exclamationElement.classList.add('exclamation-mark');
+    const invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
+        i18nString(UIStrings.invalidPropertyValue) :
+        i18nString(UIStrings.unknownPropertyName);
+    if (title === null) {
+      UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
-      invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
-          i18nString(UIStrings.invalidPropertyValue) :
-          i18nString(UIStrings.unknownPropertyName);
-      if (!title) {
-        UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
-      } else {
-        this.addPopover(exclamationElement, () => title);
-      }
+      this.addPopover(exclamationElement, () => title);
     }
     const invalidString =
         i18nString(UIStrings.invalidString, {PH1: invalidMessage, PH2: property.name, PH3: property.value});

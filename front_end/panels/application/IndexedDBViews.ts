@@ -424,15 +424,15 @@ export class IDBDataView extends UI.View.SimpleView {
 
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
 
-    this.pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'triangle-left');
+    this.pageBackButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'triangle-left', undefined, 'prev-page');
     this.pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageBackButtonClicked, this);
-    this.pageBackButton.element.setAttribute('jslog', `${VisualLogging.previous().track({click: true})}`);
     editorToolbar.appendToolbarItem(this.pageBackButton);
 
-    this.pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'triangle-right');
+    this.pageForwardButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'triangle-right', undefined, 'next-page');
     this.pageForwardButton.setEnabled(false);
     this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageForwardButtonClicked, this);
-    this.pageForwardButton.element.setAttribute('jslog', `${VisualLogging.next().track({click: true})}`);
     editorToolbar.appendToolbarItem(this.pageForwardButton);
 
     this.keyInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.startFromKey), '', 0.5);

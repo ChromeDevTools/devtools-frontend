@@ -42,7 +42,7 @@ enum VisualElements {
   /* 19 used to be CssLayersPane, but free to grab now */
   DropDown = 20,
   /* 21 used to be StylesMetricsPane, but free to grab now */
-  JumpToSource = 22,
+  /* 22 used to be JumpToSource, but free to grab now */
   MetricsBox = 23,
   MetricsBoxPart = 24,
   /* 25 used to be DOMBreakpointsPane, but free to grab now */
@@ -65,11 +65,11 @@ enum VisualElements {
   CssGridEditor = 42,
   CssShadowEditor = 43,
   Link = 44,
-  Next = 45,
+  /* 45 used to be Next, but free to grab now */
   Item = 46,
   PaletteColorShades = 47,
   Panel = 48,
-  Previous = 49,
+  /* 49 used to be Previous, but free to grab now */
   ShowStyleEditor = 50,
   Slider = 51,
   CssColorMix = 52,

@@ -51,7 +51,6 @@ export const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 
 export const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
 export const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');
 export const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
-export const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
 export const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 
 /**
@@ -63,7 +62,6 @@ export const link = LoggingConfig.makeConfigStringBuilder.bind(null, 'Link');
 export const mediaInspectorView = LoggingConfig.makeConfigStringBuilder.bind(null, 'MediaInspectorView');
 export const menu = LoggingConfig.makeConfigStringBuilder.bind(null, 'Menu');
 export const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
-export const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 export const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
 export const pane = LoggingConfig.makeConfigStringBuilder.bind(null, 'Pane');
 
@@ -79,7 +77,6 @@ export const pieChart = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieCha
 export const pieChartSlice = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChartSlice');
 export const pieChartTotal = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChartTotal');
 export const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
-export const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
 export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null, 'ResponsivePresets');
 export const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');

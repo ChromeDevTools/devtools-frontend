@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import {type AnimationGroup} from './AnimationModel.js';
 import {AnimationUI} from './AnimationUI.js';
 
@@ -19,8 +21,8 @@ export class AnimationGroupPreviewUI {
     this.element = document.createElement('div');
     this.element.classList.add('animation-buffer-preview');
     this.element.createChild('div', 'animation-paused fill');
-    this.#removeButtonInternal = this.element.createChild('div', 'animation-remove-button');
-    this.#removeButtonInternal.textContent = '\u2715';
+    this.#removeButtonInternal = this.element.createChild('button', 'animation-remove-button');
+    this.#removeButtonInternal.appendChild(IconButton.Icon.create('cross'));
     this.#replayOverlayElement = this.element.createChild('div', 'animation-buffer-preview-animation');
     this.#svg = UI.UIUtils.createSVGChild(this.element, 'svg');
     this.#svg.setAttribute('width', '100%');

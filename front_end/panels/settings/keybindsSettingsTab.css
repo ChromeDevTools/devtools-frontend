@@ -18,9 +18,12 @@ h1 {
   margin: 0;
 }
 
-[role="list"],
-.widget.vbox {
-  min-width: 300px;
+[role="list"] {
+  overflow: auto;
+
+  > * {
+    min-width: 300px;
+  }
 }
 
 .keybinds-key {

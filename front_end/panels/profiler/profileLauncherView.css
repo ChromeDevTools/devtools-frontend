@@ -118,12 +118,6 @@
   flex-wrap: wrap;
 }
 
-.profile-launcher-buttons button {
-  min-width: 120px;
-  height: 28px;
-  margin: 4px 16px 4px 0;
-}
-
 @media (forced-colors: active) {
   .profile-memory-usage-item {
     forced-color-adjust: none;

@@ -209,11 +209,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
   }
 
-  modifyTree(
-      group: PerfUI.FlameChart.Group, node: number, action: TraceEngine.EntriesFilter.FilterAction,
-      flameChartView: PerfUI.FlameChart.FlameChart): void {
+  modifyTree(group: PerfUI.FlameChart.Group, node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEntry;
-    this.compatibilityTracksAppender?.modifyTree(group, entry, action, flameChartView);
+    this.compatibilityTracksAppender?.modifyTree(group, entry, action);
   }
 
   findPossibleContextMenuActions(group: PerfUI.FlameChart.Group, node: number):

@@ -89,7 +89,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     assert.isFalse(flameChartView.isNetworkTrackShownForTests());
   });
 
-  it('Adds Hidden Ancestors Arrow as a decoration when TreeModified event is dispatched on a node', async function() {
+  it('Adds Hidden Ancestors Arrow as a decoration when a Context Menu action is applied on a node', async function() {
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
     const mockViewDelegate = new MockViewDelegate();
 
@@ -120,13 +120,9 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       throw new Error('Could not find a visible node with children');
     }
 
-    // Dispatch a TreeModified event that should apply COLLAPSE_FUNCTION action to the node.
-    // This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
-    flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
-      group: mainTrack,
-      node: node?.id,
-      action: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION,
-    });
+    // Apply COLLAPSE_FUNCTION action to the node. This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
+    flameChartView.getMainFlameChart().modifyTree(
+        TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, node?.id);
 
     const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
     assert.deepEqual(decorationsForEntry, [
@@ -136,7 +132,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     ]);
   });
 
-  it('Removes Hidden Ancestors Arrow as a decoration when Reset Children event is dispatched on a node',
+  it('Removes Hidden Ancestors Arrow as a decoration when Reset Children action is applied on a node',
      async function() {
        const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
        const mockViewDelegate = new MockViewDelegate();
@@ -169,13 +165,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
          throw new Error('Could not find a visible node with children');
        }
 
-       // Dispatch a TreeModified event that should apply COLLAPSE_FUNCTION action to the node.
+       // Apply COLLAPSE_FUNCTION Context Menu action to the node.
        // This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
-       flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
-         group: mainTrack,
-         node: node?.id,
-         action: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION,
-       });
+       flameChartView.getMainFlameChart().modifyTree(
+           TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, node?.id);
 
        let decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
        assert.deepEqual(decorationsForEntry, [
@@ -190,13 +183,9 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        if (!mainTrack) {
          throw new Error('Could not find main track');
        }
-       // Dispatch a TreeModified event that should apply RESET_CHILDREN action to the node.
-       // This action will eveal all of the hidden children of the passed node and remove HIDDEN_ANCESTORS_ARROW decoration from it.
-       flameChartView.getMainFlameChart().dispatchEventToListeners(PerfUI.FlameChart.Events.TreeModified, {
-         group: mainTrack,
-         node: node?.id,
-         action: TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN,
-       });
+       // Apply a RESET_CHILDREN action that will reveal all of the hidden children of the passed node and remove HIDDEN_ANCESTORS_ARROW decoration from it.
+       flameChartView.getMainFlameChart().modifyTree(
+           TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, node?.id);
 
        // No decorations should exist on the node
        decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];

@@ -99,9 +99,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, mainViewGroupExpansionSetting);
     this.mainFlameChart.alwaysShowVerticalScroll();
     this.mainFlameChart.enableRuler(false);
-    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.TreeModified, event => {
-      this.mainDataProvider.modifyTree(event.data.group, event.data.node, event.data.action, this.mainFlameChart);
-    });
 
     this.networkFlameChartGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
@@ -141,7 +138,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.onNetworkEntrySelected = this.onEntrySelected.bind(this, this.networkDataProvider);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onMainEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onMainEntrySelected, this);
-    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntriesModified, this.onEntriesModified, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onNetworkEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
@@ -171,19 +167,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
     this.updateSearchResults(false, false);
-  }
-
-  onEntriesModified(): void {
-    if (!this.model) {
-      return;
-    }
-    this.mainDataProvider.timelineData(true);
-    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
-    if (traceBoundsState) {
-      const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-      this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
-    }
-    this.mainFlameChart.update();
   }
 
   isNetworkTrackShownForTests(): boolean {

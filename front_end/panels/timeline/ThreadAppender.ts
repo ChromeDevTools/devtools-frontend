@@ -214,14 +214,13 @@ export class ThreadAppender implements TrackAppender {
     this.#url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
   }
 
-  modifyTree(
-      traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.EntriesFilter.FilterAction,
-      flameChartView: PerfUI.FlameChart.FlameChart): void {
-    if (!this.#entriesFilter) {
-      return;
+  modifyTree(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.EntriesFilter.FilterAction):
+      void {
+    if (this.#entriesFilter) {
+      this.#entriesFilter.applyAction({type: action, entry: traceEvent});
+    } else {
+      console.warn('Could not modify tree because entriesFilter does not exist');
     }
-    this.#entriesFilter.applyAction({type: action, entry: traceEvent});
-    flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }
 
   findPossibleContextMenuActions(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry):

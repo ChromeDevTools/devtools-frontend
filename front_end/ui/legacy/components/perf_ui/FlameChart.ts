@@ -751,7 +751,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.draw();
   }
 
-  #dispatchTreeModifiedEvent(treeAction: TraceEngine.EntriesFilter.FilterAction, index: number): void {
+  modifyTree(treeAction: TraceEngine.EntriesFilter.FilterAction, index: number): void {
     const data = this.timelineData();
     if (!data) {
       return;
@@ -760,11 +760,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!group || !group.expanded || !group.showStackContextMenu) {
       return;
     }
-    this.dispatchEventToListeners(Events.TreeModified, {
-      group: group,
-      node: index,
-      action: treeAction,
-    });
+    this.dataProvider.modifyTree?.(group, index, treeAction);
+    this.dataProvider.timelineData(true);
+    this.update();
   }
 
   onContextMenu(_event: Event): void {
@@ -798,27 +796,24 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.contextMenu = new UI.ContextMenu.ContextMenu(_event);
     // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
     this.contextMenu.headerSection().appendItem('Merge function', () => {
-      this.#dispatchTreeModifiedEvent(
-          TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
+      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
     });
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
       this.contextMenu.headerSection().appendItem('Collapse function', () => {
-        this.#dispatchTreeModifiedEvent(
-            TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.highlightedEntryIndex);
+        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.highlightedEntryIndex);
       });
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
       this.contextMenu.headerSection().appendItem('Collapse repeating descendants', () => {
-        this.#dispatchTreeModifiedEvent(
+        this.modifyTree(
             TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.highlightedEntryIndex);
       });
     }
 
     this.contextMenu.headerSection().appendItem('Reset trace', () => {
-      this.#dispatchTreeModifiedEvent(
-          TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.highlightedEntryIndex);
+      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.highlightedEntryIndex);
     });
 
     void this.contextMenu.show();
@@ -2552,7 +2547,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // clicked is not selected to avoid needing to double click
     if (this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW) &&
         this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
-      this.#dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entryIndex);
+      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entryIndex);
     }
     if (this.selectedEntryIndex === entryIndex) {
       return;
@@ -2911,6 +2906,8 @@ export interface FlameChartDataProvider {
 
   mainFrameNavigationStartEvents?(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 
+  modifyTree?(group: Group, node: number, action: TraceEngine.EntriesFilter.FilterAction): void;
+
   findPossibleContextMenuActions?(group: Group, node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void;
 }
 
@@ -2954,16 +2951,6 @@ export enum Events {
    * mouse off the event)
    */
   EntryHighlighted = 'EntryHighlighted',
-  /**
-   * Emitted when a there is a modify actioned(ex. merge, collapse recursion)
-   * chosen from the flame chart context  menu
-   */
-  TreeModified = 'TreeModified',
-  /**
-   * Emitted when a there is a modify actioned(ex. merge, collapse recursion)
-   * chosen from the flame chart context  menu
-   */
-  EntriesModified = 'EntriesModified',
 }
 
 export type EventTypes = {
@@ -2971,12 +2958,6 @@ export type EventTypes = {
   [Events.EntryInvoked]: number,
   [Events.EntrySelected]: number,
   [Events.EntryHighlighted]: number,
-  [Events.TreeModified]: {
-    group: Group,
-    node: number,
-    action: TraceEngine.EntriesFilter.FilterAction,
-  },
-  [Events.EntriesModified]: void,
 };
 
 export interface Group {

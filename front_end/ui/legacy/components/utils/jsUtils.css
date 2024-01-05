@@ -5,12 +5,18 @@
  */
 
 :host {
-  display: inline;
+  display: inline-block;
+  width: 100%;
 }
 
 .stack-preview-async-description {
   padding: 3px 0 1px;
   font-style: italic;
+}
+
+.stack-preview-container {
+  display: block;
+  width: 100%;
 }
 
 .stack-preview-container .ignore-list-link {
@@ -27,6 +33,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding-inline: 2px;
+}
+
+.stack-preview-container td.link {
+  /* width: 100%; and max-width: 0; combination causes the link cell to be
+  extended as much as possible while still staying inside the table */
+  width: 100%;
+  max-width: 0;
 }
 
 .stack-preview-container .function-name {

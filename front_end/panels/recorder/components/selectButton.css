@@ -27,14 +27,11 @@
   background-color: var(--sys-color-on-surface);
   display: inline-block;
   mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
   mask-position: center;
-  -webkit-mask-position: center;
   width: 24px;
   height: 24px;
   margin-right: 4px;
   mask-image: var(--item-mask-icon);
-  -webkit-mask-image: var(--item-mask-icon);
 }
 
 devtools-select-menu {

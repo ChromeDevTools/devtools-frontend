@@ -203,7 +203,7 @@
 
 .data-grid td.disclosure::before {
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   float: left;
   width: 14px;
   height: 14px;

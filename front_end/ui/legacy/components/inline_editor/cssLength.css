@@ -33,8 +33,8 @@
 .icon {
   position: absolute;
   display: inline-block;
-  -webkit-mask-image: var(--image-file-chevron-down);
-  -webkit-mask-repeat: no-repeat;
+  mask-image: var(--image-file-chevron-down);
+  mask-repeat: no-repeat;
   background-color: var(--icon-default);
   transform: scale(0.7);
   margin-left: -7px;

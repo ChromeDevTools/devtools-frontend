@@ -58,7 +58,7 @@ details > summary:hover {
 details > summary::before {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   content: "";
   height: 14px;

@@ -568,10 +568,10 @@ input.custom-search-input::-webkit-search-cancel-button {
   height: 15px;
   margin-right: 0;
   opacity: 70%;
-  -webkit-mask-image: var(--image-file-cross-circle-filled);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 99%;
+  mask-image: var(--image-file-cross-circle-filled);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 99%;
   background-color: var(--icon-default);
 }
 

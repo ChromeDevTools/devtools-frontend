@@ -30,7 +30,7 @@
 
 .message li::before {
   content: "→";
-  -webkit-mask-image: none;
+  mask-image: none;
   padding-right: 5px;
   position: relative;
   top: -1px;

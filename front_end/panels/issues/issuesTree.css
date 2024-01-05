@@ -247,12 +247,12 @@ devtools-icon.leading-issue-icon {
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
 .link-list li::before {
   content: none;
-  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .resolutions-list li::before {
   content: "→";
-  -webkit-mask-image: none;
+  mask-image: none;
   padding-right: 5px;
   position: relative;
   top: -1px;

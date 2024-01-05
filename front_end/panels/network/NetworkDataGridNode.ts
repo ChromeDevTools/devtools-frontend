@@ -1146,7 +1146,7 @@ export class NetworkRequestNode extends NetworkNode {
     const iconElement = document.createElement('div');
     iconElement.title = title;
     iconElement.style.setProperty(
-        '-webkit-mask',
+        'mask',
         `url('${
             new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center /99%`);
     iconElement.style.setProperty('background-color', iconData.color);

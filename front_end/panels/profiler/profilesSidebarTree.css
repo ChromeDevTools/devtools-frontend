@@ -146,12 +146,12 @@ li.selected:hover button {
 /* Heap profiles and CPU profiles */
 .heap-snapshot-sidebar-tree-item .icon,
 .profile-sidebar-tree-item .icon {
-  -webkit-mask-image: var(--image-file-heap-snapshot);
+  mask-image: var(--image-file-heap-snapshot);
   background: var(--icon-default);
 }
 
 .profile-group-sidebar-tree-item .icon {
-  -webkit-mask-image: var(--image-file-heap-snapshots);
+  mask-image: var(--image-file-heap-snapshots);
   background: var(--icon-default);
 }
 
@@ -165,17 +165,17 @@ li.wait .icon {
 }
 
 .heap-snapshot-sidebar-tree-item.wait .icon {
-  -webkit-mask-image: unset;
+  mask-image: unset;
   background-color: inherit;
 }
 
 .heap-snapshot-sidebar-tree-item.small .icon {
-  -webkit-mask-image: var(--image-file-heap-snapshots);
+  mask-image: var(--image-file-heap-snapshots);
   background: var(--icon-default);
 }
 
 .profile-sidebar-tree-item.small .icon {
-  -webkit-mask-image: var(--image-file-heap-snapshots);
+  mask-image: var(--image-file-heap-snapshots);
   background: var(--icon-default);
 }
 

@@ -40,8 +40,8 @@
 }
 
 .ax-breadcrumbs .ax-node::before {
-  -webkit-mask-image: var(--image-file-chevron-right);
-  -webkit-mask-repeat: no-repeat;
+  mask-image: var(--image-file-chevron-right);
+  mask-repeat: no-repeat;
   background-color: var(--icon-default);
   transform: scale(0.7);
   content: "";
@@ -59,7 +59,7 @@
 }
 
 .ax-breadcrumbs .ax-node.parent::before {
-  -webkit-mask-image: var(--image-file-chevron-down);
+  mask-image: var(--image-file-chevron-down);
 }
 
 .ax-breadcrumbs .ax-node.no-dom-node {
@@ -67,7 +67,7 @@
 }
 
 .ax-breadcrumbs .ax-node.children-unloaded::before {
-  -webkit-mask-position: 0 1px;
+  mask-position: 0 1px;
   width: 13px;
   opacity: 40%;
 }

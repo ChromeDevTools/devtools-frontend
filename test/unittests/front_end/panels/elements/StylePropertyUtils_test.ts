@@ -33,6 +33,10 @@ describeWithEnvironment('StylePropertyUtils', async () => {
         '\'--monospace-font-size\': \'12px\'');
     assert.strictEqual(
         Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
+            {name: 'mask-position', value: 'bottom'} as SDK.CSSProperty.CSSProperty),
+        'maskPosition: \'bottom\'');
+    assert.strictEqual(
+        Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
             {name: '-webkit-mask-position', value: 'bottom'} as SDK.CSSProperty.CSSProperty),
         'WebkitMaskPosition: \'bottom\'');
     assert.strictEqual(

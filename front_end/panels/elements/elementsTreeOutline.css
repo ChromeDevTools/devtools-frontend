@@ -96,7 +96,7 @@
 .elements-disclosure li.parent:not(.always-parent)::before {
   box-sizing: border-box;
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   height: 14px;
   width: 14px;
   content: "\A0\A0";

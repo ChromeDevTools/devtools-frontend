@@ -33,13 +33,10 @@
   transform: translateY(-50%);
   display: inline-block;
   mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
   mask-position: center;
-  -webkit-mask-position: center;
   width: calc(var(--menu-checkmark-width) - 10px);
   height: var(--menu-checkmark-height);
   mask-image: var(--selected-item-check);
-  -webkit-mask-image: var(--selected-item-check);
   background: var(--sys-color-token-subtle);
 }
 

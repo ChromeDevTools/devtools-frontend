@@ -89,27 +89,27 @@
 }
 
 .info-icon {
-  -webkit-mask-image: var(--image-file-info);
+  mask-image: var(--image-file-info);
   background-color: var(--icon-info);
 }
 
 .warning-icon {
-  -webkit-mask-image: var(--image-file-warning);
+  mask-image: var(--image-file-warning);
   background-color: var(--icon-warning);
 }
 
 .error-icon {
-  -webkit-mask-image: var(--image-file-cross-circle);
+  mask-image: var(--image-file-cross-circle);
   background-color: var(--icon-error);
 }
 
 .issue-icon {
-  -webkit-mask-image: var(--image-file-issue-text-filled);
+  mask-image: var(--image-file-issue-text-filled);
   background-color: var(--icon-info);
 }
 
 .icon {
-  -webkit-mask-size: 20px 20px;
+  mask-size: 20px 20px;
   width: 20px;
   height: 20px;
   flex-shrink: 0;

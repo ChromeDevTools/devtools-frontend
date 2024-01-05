@@ -55,18 +55,16 @@
 
 #arrow {
   mask-image: var(--deploy-menu-arrow);
-  -webkit-mask-image: var(--deploy-menu-arrow);
   -webkit-mask-position-y: center;
   margin-left: 5px;
   width: 14px;
   flex-shrink: 0;
   height: 14px;
   display: inline-block;
-  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   background-color: var(--override-throttling-icon-and-text-color, var(--override-select-menu-arrow-color, var(--sys-color-on-surface)));
   transform: rotate(var(--arrow-angle));
   transform-origin: center;
-  mask-repeat: no-repeat;
   transition: 200ms;
 }
 

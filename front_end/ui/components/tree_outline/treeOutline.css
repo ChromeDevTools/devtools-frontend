@@ -33,7 +33,7 @@ li {
 .arrow-icon {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   content: "";
   text-shadow: none;
@@ -54,7 +54,7 @@ ul[role="group"] {
 }
 
 li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
-  -webkit-mask-size: 0;
+  mask-size: 0;
 }
 
 li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {

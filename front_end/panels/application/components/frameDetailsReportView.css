@@ -66,6 +66,7 @@ button.text-link {
 
 .inline-items {
   display: flex;
+  gap: 3px;
 }
 
 .span-cols {

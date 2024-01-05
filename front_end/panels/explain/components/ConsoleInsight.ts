@@ -642,17 +642,7 @@ export class ConsoleInsight extends HTMLElement {
         </div>
         <div class="filler"></div>
         ${this.#dogfood ? html`<div class="dogfood-feedback">
-            <${IconButton.Icon.Icon.litTagName}
-              role="presentation"
-              .data=${
-                {
-                  iconName: 'dog-paw',
-                  color: 'var(--icon-default)',
-                  width: '16px',
-                  height: '16px',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>
+            <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
             <span>${i18nString(UIStrings.dogfood)} - </span>
             <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>
         </div>`: ''}
@@ -687,17 +677,7 @@ export class ConsoleInsight extends HTMLElement {
       <div class=${topWrapper}>
         <header>
           <div>
-            <${IconButton.Icon.Icon.litTagName}
-              role="presentation"
-              .data=${
-                {
-                  iconName: 'spark',
-                  color: 'var(--sys-color-primary-bright)',
-                  width: '20px',
-                  height: '20px',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>
+            <${IconButton.Icon.Icon.litTagName} name="spark"></${IconButton.Icon.Icon.litTagName}>
           </div>
           <div class="filler">
             <h2>

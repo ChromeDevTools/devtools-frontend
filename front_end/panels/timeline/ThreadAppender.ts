@@ -224,6 +224,11 @@ export class ThreadAppender implements TrackAppender {
     flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }
 
+  findPossibleContextMenuActions(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry):
+      TraceEngine.EntriesFilter.PossibleFilterActions|void {
+    return this.#entriesFilter?.findPossibleActions(traceEvent);
+  }
+
   processId(): TraceEngine.Types.TraceEvents.ProcessID {
     return this.#processId;
   }

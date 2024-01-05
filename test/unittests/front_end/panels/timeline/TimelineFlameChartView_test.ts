@@ -202,4 +202,96 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
        assert.isUndefined(decorationsForEntry);
      });
+
+  it('When an entry has no children, correctly show only Merge as a possible Context Menu action', async function() {
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setModel(performanceModel, traceParsedData);
+
+    // Find the Main track to later collapse entries of
+    const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+      return group.name === 'Main — http://127.0.0.1:8080/';
+    });
+    if (!mainTrack) {
+      throw new Error('Could not find main track');
+    }
+
+    // Find the first node that has no children and is visible in the timeline
+    const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+    const firstNodeWithoutChildren = nodeOfGroup?.find(node => {
+      const childrenAmount =
+          traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)?.children.length;
+      return childrenAmount === 0 && node.cat === 'devtools.timeline';
+    });
+    const node =
+        traceParsedData.Renderer.entryToNode.get(firstNodeWithoutChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+    if (!node) {
+      throw new Error('Could not find a visible node without children');
+    }
+
+    // Highlight the node to make the Context Menu dispatch on this node
+    flameChartView.getMainFlameChart().highlightEntry(node?.id);
+    // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+    flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+    assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 2);
+    assert.strictEqual(
+        flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+        'Merge function');
+    assert.strictEqual(
+        flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+        'Reset trace');
+  });
+
+  it('When an entry has children, correctly show only Merge and Collapse as a possible Context Menu actions',
+     async function() {
+       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
+       const mockViewDelegate = new MockViewDelegate();
+
+       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+       flameChartView.setModel(performanceModel, traceParsedData);
+
+       // Find the Main track to later collapse entries of
+       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+         return group.name === 'Main — http://127.0.0.1:8080/';
+       });
+       if (!mainTrack) {
+         throw new Error('Could not find main track');
+       }
+
+       // Find the first node that has some children to collapse and is visible in the timeline
+       const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+       const firstNodeWithChildren = nodeOfGroup?.find(node => {
+         const childrenAmount =
+             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)
+                 ?.children.length;
+         if (!childrenAmount) {
+           return false;
+         }
+         return childrenAmount > 0 && node.cat === 'devtools.timeline';
+       });
+       const node =
+           traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+       if (!node) {
+         throw new Error('Could not find a visible node with children');
+       }
+
+       // Highlight the node to make the Context Menu dispatch on this node
+       flameChartView.getMainFlameChart().highlightEntry(node?.id);
+       // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+       flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 3);
+       assert.strictEqual(
+           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+           'Merge function');
+       assert.strictEqual(
+           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+           'Collapse function');
+       assert.strictEqual(
+           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(2)?.buildDescriptor().label,
+           'Reset trace');
+     });
 });

@@ -216,6 +216,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.compatibilityTracksAppender?.modifyTree(group, entry, action, flameChartView);
   }
 
+  findPossibleContextMenuActions(group: PerfUI.FlameChart.Group, node: number):
+      TraceEngine.EntriesFilter.PossibleFilterActions|void {
+    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEntry;
+    return this.compatibilityTracksAppender?.findPossibleContextMenuActions(group, entry);
+  }
+
   private buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
     const defaultGroupStyle = {
       padding: 4,

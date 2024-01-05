@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
@@ -308,6 +308,42 @@ describeWithMockConnection('NetworkLogView', () => {
 
     it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
     it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
+
+    it('appends requests on prerender activation with preserve log on', async () => {
+      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(true);
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const anotherTarget = createTarget();
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assertNotNullOrUndefined(networkManager);
+      const request1 = createNetworkRequest('url1', {target});
+      const request2 = createNetworkRequest('url2', {target});
+      const request3 = createNetworkRequest('url3', {target: anotherTarget});
+      networkLogView = createNetworkLogView();
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      await coordinator.done();
+
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()), [request1, request2]);
+
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+      const frame = {
+        url: 'http://example.com/',
+        unreachableUrl: () => Platform.DevToolsPath.EmptyUrlString,
+        resourceTreeModel: () => resourceTreeModel,
+      } as SDK.ResourceTreeModel.ResourceTreeFrame;
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+      await coordinator.done();
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
+          [request1, request2, request3]);
+
+      networkLogView.detach();
+    });
 
     it('hide Chrome extension requests from checkbox', async () => {
       createNetworkRequest('chrome-extension://url1', {target});
@@ -653,7 +689,7 @@ describeWithMockConnection('NetworkLogView', () => {
       const rootNode = networkLogView.columns().dataGrid().rootNode();
       assert.strictEqual(rootNode.children.length, 1);
 
-      networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, request);
+      networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, {request});
       assert.strictEqual(rootNode.children.length, 0);
 
       networkLogView.detach();

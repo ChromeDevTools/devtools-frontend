@@ -390,7 +390,7 @@ describeWithMockConnection('NetworkLog', () => {
     let removedRequest: SDK.NetworkRequest.NetworkRequest|null = null;
     networkLog.addEventListener(Logs.NetworkLog.Events.RequestRemoved, event => {
       assert.isNull(removedRequest, 'Request was removed multiple times.');
-      removedRequest = event.data;
+      removedRequest = event.data.request;
     });
 
     const request = {

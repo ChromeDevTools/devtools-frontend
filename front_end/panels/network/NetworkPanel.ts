@@ -759,8 +759,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.networkLogView.clearFilmStripFrame();
   }
 
-  private onUpdateRequest(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
-    const request = event.data;
+  private onUpdateRequest(event: Common.EventTarget.EventTargetEvent<{request: SDK.NetworkRequest.NetworkRequest}>):
+      void {
+    const {request} = event.data;
     this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this.overviewPane.setBounds(

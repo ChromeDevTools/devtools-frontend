@@ -36,6 +36,6 @@ export class MockNetworkLog extends Common.ObjectWrapper.ObjectWrapper<Logs.Netw
   addRequest(mockRequest: MockNetworkRequest) {
     this.mockRequests.push(mockRequest);
     this.dispatchEventToListeners(
-        Logs.NetworkLog.Events.RequestAdded, mockRequest as SDK.NetworkRequest.NetworkRequest);
+        Logs.NetworkLog.Events.RequestAdded, {request: mockRequest as SDK.NetworkRequest.NetworkRequest});
   }
 }

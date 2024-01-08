@@ -96,7 +96,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         fixedWidth: false,
         sortable: true,
       },
-    ] as DataGrid.DataGrid.ColumnDescriptor[];
+    ];
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.developerResources),
       columns,
@@ -105,6 +105,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       deleteCallback: undefined,
     });
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this.dataGrid.setStriped(true);
     this.dataGrid.element.classList.add('flex-auto');
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
     this.dataGrid.setRowContextMenuCallback(this.populateContextMenu.bind(this));

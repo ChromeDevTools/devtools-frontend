@@ -138,7 +138,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this.isVisibleFilter = isVisibleFilter;
     this.highlightRegExp = null;
 
-    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
+    const columns = [
       {
         id: 'url',
         title: i18nString(UIStrings.url),
@@ -185,6 +185,7 @@ export class CoverageListView extends UI.Widget.VBox {
       deleteCallback: undefined,
     });
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this.dataGrid.setStriped(true);
     this.dataGrid.element.classList.add('flex-auto');
     this.dataGrid.element.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this.onOpenedNode, this);

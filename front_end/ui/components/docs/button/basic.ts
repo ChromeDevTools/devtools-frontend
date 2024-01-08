@@ -9,9 +9,9 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const testIcon = '/front_end/Images/file-image.svg';
-const plusIcon = '/front_end/Images/plus.svg';
-const minusIcon = '/front_end/Images/minus.svg';
+const testIcon = 'file-image';
+const plusIcon = 'plus';
+const minusIcon = 'minus';
 
 function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);
@@ -131,7 +131,7 @@ const primaryIconButton = new Buttons.Button.Button();
 primaryIconButton.innerText = 'Click me';
 primaryIconButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
 };
 primaryIconButton.onclick = () => alert('clicked');
 appendButton(primaryIconButton);
@@ -144,7 +144,7 @@ secondaryIconButton.onclick = () => {
 };
 secondaryIconButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
 };
 appendButton(secondaryIconButton);
 
@@ -152,7 +152,7 @@ appendButton(secondaryIconButton);
 const primaryIconOnlyButton = new Buttons.Button.Button();
 primaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
 };
 primaryIconOnlyButton.onclick = () => alert('clicked');
 primaryIconOnlyButton.style.width = '24px';
@@ -174,7 +174,7 @@ secondaryIconOnlyButton.onclick = () => alert('clicked');
 secondaryIconOnlyButton.style.width = '24px';
 secondaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
 };
 appendButton(secondaryIconOnlyButton);
 
@@ -183,7 +183,7 @@ const smallPrimaryIconButton = new Buttons.Button.Button();
 smallPrimaryIconButton.innerText = 'Click me';
 smallPrimaryIconButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
   size: Buttons.Button.Size.SMALL,
 };
 smallPrimaryIconButton.onclick = () => alert('clicked');
@@ -195,7 +195,7 @@ smallSecondaryIconOnlyButton.onclick = () => alert('clicked');
 smallSecondaryIconOnlyButton.style.width = '18px';
 smallSecondaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
   size: Buttons.Button.Size.SMALL,
 };
 appendButton(smallSecondaryIconOnlyButton);
@@ -205,7 +205,7 @@ const disabledPrimaryIconButton = new Buttons.Button.Button();
 disabledPrimaryIconButton.innerText = 'Cannot click me';
 disabledPrimaryIconButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
   size: Buttons.Button.Size.SMALL,
   disabled: true,
 };
@@ -218,7 +218,7 @@ disabledSecondaryIconOnlyButton.onclick = () => alert('clicked');
 disabledSecondaryIconOnlyButton.style.width = '18px';
 disabledSecondaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
-  iconUrl: testIcon,
+  iconName: testIcon,
   size: Buttons.Button.Size.SMALL,
   disabled: true,
 };
@@ -228,7 +228,7 @@ appendButton(disabledSecondaryIconOnlyButton);
 const roundButton = new Buttons.Button.Button();
 roundButton.data = {
   variant: Buttons.Button.Variant.ROUND,
-  iconUrl: testIcon,
+  iconName: testIcon,
 };
 roundButton.title = 'Round Button';
 roundButton.onclick = () => alert('clicked');
@@ -238,7 +238,7 @@ appendButton(roundButton);
 const roundButtonDisabled = new Buttons.Button.Button();
 roundButtonDisabled.data = {
   variant: Buttons.Button.Variant.ROUND,
-  iconUrl: testIcon,
+  iconName: testIcon,
   disabled: true,
 };
 roundButtonDisabled.title = 'Disabled Round Button';
@@ -247,9 +247,9 @@ appendButton(roundButtonDisabled);
 
 // Small Round Buttons
 const roundIcons = [
-  {iconUrl: testIcon},
-  {iconUrl: plusIcon},
-  {iconUrl: minusIcon},
+  {iconName: testIcon},
+  {iconName: plusIcon},
+  {iconName: minusIcon},
 ];
 for (const roundIcon of roundIcons) {
   const smallRoundButton = new Buttons.Button.Button();
@@ -265,8 +265,8 @@ for (const roundIcon of roundIcons) {
 
 // Tiny Round Buttons
 const tinyRoundIcons = [
-  {iconUrl: plusIcon},
-  {iconUrl: minusIcon},
+  {iconName: plusIcon},
+  {iconName: minusIcon},
 ];
 for (const roundIcon of tinyRoundIcons) {
   const tinyRoundButton = new Buttons.Button.Button();
@@ -284,7 +284,7 @@ for (const roundIcon of tinyRoundIcons) {
 const smallRoundButtonDisabled = new Buttons.Button.Button();
 smallRoundButtonDisabled.data = {
   variant: Buttons.Button.Variant.ROUND,
-  iconUrl: testIcon,
+  iconName: testIcon,
   disabled: true,
   size: Buttons.Button.Size.SMALL,
 };
@@ -308,7 +308,7 @@ for (let i = 0; i < 6; i++) {
   toolbarButton.onclick = () => alert('clicked');
   toolbarButton.data = {
     variant: i % 2 === 1 ? Buttons.Button.Variant.TOOLBAR : Buttons.Button.Variant.PRIMARY_TOOLBAR,
-    iconUrl: testIcon,
+    iconName: testIcon,
   };
   appendToToolbar(toolbarButton);
   if (i % 3 === 1) {
@@ -323,7 +323,7 @@ const toolbarButton = new Buttons.Button.Button();
 toolbarButton.onclick = () => alert('clicked');
 toolbarButton.data = {
   variant: Buttons.Button.Variant.TOOLBAR,
-  iconUrl: testIcon,
+  iconName: testIcon,
   disabled: true,
 };
 appendToToolbar(toolbarButton);
@@ -335,7 +335,7 @@ for (let i = 0; i < 6; i++) {
   smallToolbarButton.data = {
     variant: Buttons.Button.Variant.TOOLBAR,
     size: Buttons.Button.Size.SMALL,
-    iconUrl: testIcon,
+    iconName: testIcon,
   };
   appendToSmallToolbar(smallToolbarButton);
   if (i % 3 === 1) {

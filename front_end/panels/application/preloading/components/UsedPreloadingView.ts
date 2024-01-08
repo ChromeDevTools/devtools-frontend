@@ -451,14 +451,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format off
     return LitHtml.html`
       <span class=${klass}>
-        <${IconButton.Icon.Icon.litTagName}
-          .data=${{
-            iconName,
-            color: 'var(--icon-default)',
-            width: '16px',
-          } as IconButton.Icon.IconWithName}
-        >
-        </${IconButton.Icon.Icon.litTagName}>
+        <${IconButton.Icon.Icon.litTagName} name=${iconName}></${IconButton.Icon.Icon.litTagName}>
         <span>
           ${message}
         </span>

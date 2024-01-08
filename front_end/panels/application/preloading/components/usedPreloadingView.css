@@ -56,6 +56,11 @@ devtools-report-divider {
 .status-badge {
   border-radius: 4px;
   padding: 4px;
+
+  devtools-icon {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .status-badge-success {
@@ -68,8 +73,4 @@ devtools-report-divider {
 
 .status-badge-neutral {
   background: var(--sys-color-neutral-container);
-}
-
-.status-badge devtools-icon {
-  vertical-align: sub;
 }

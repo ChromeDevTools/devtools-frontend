@@ -336,7 +336,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (message.command !== PrivateAPI.Commands.GetWasmGlobal) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmGlobal}`);
     }
-    return this.loadWasmValue(`globals[${Number(message.global)}]`, message.stopId);
+    const global = Number(message.global);
+    const result = await this.loadWasmValue<Chrome.DevTools.WasmValue>(`globals[${global}]`, message.stopId);
+    return result ?? this.status.E_BADARG('global', `No global with index ${global}`);
   }
 
   private async onGetWasmLocal(message: PrivateAPI.ExtensionServerRequestMessage):
@@ -344,14 +346,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (message.command !== PrivateAPI.Commands.GetWasmLocal) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmLocal}`);
     }
-    return this.loadWasmValue(`locals[${Number(message.local)}]`, message.stopId);
+    const local = Number(message.local);
+    const result = await this.loadWasmValue<Chrome.DevTools.WasmValue>(`locals[${local}]`, message.stopId);
+    return result ?? this.status.E_BADARG('local', `No local with index ${local}`);
   }
+
   private async onGetWasmOp(message: PrivateAPI.ExtensionServerRequestMessage):
       Promise<Record|Chrome.DevTools.WasmValue> {
     if (message.command !== PrivateAPI.Commands.GetWasmOp) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmOp}`);
     }
-    return this.loadWasmValue(`stack[${Number(message.op)}]`, message.stopId);
+    const op = Number(message.op);
+    const result = await this.loadWasmValue<Chrome.DevTools.WasmValue>(`stack[${op}]`, message.stopId);
+    return result ?? this.status.E_BADARG('op', `No operand with index ${op}`);
   }
 
   private registerRecorderExtensionEndpoint(

@@ -1238,6 +1238,7 @@ export class DevToolsIconLabel extends HTMLSpanElement {
     });
     this.#icon = new IconButton.Icon.Icon();
     this.#icon.style.setProperty('margin-right', '4px');
+    this.#icon.style.setProperty('vertical-align', 'baseline');
     root.appendChild(this.#icon);
     root.createChild('slot');
   }

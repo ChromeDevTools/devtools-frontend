@@ -26,6 +26,10 @@ li.storage-group-list-item::before {
   min-height: 26px;
   line-height: 26px;
 
+  &:nth-child(odd) {
+    background: var(--sys-color-surface1);
+  }
+
   &:hover {
     background: var(--sys-color-state-hover-on-subtle);
   }
@@ -36,17 +40,9 @@ li.storage-group-list-item::before {
   }
 }
 
-.player-entry-row:nth-child(odd):not(:hover) {
-  background: var(--sys-color-surface1);
-}
-
 .player-entry-status-icon-centering {
   margin: auto;
   display: inherit;
-}
-
-.player-entry-row.selected .player-entry-status-icon-centering {
-  filter: invert(100);
 }
 
 .player-entry-status-icon {

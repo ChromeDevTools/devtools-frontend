@@ -68,6 +68,9 @@ def parse_options(cli_args):
         help='Defaults to tot. '
         'If tot, fetch origin/main of Chromium repository and use it. '
         'If working-tree, use working tree as is.')
+    parser.add_argument('--update-node',
+                        action=argparse.BooleanOptionalAction,
+                        help='If set it syncs nodejs.')
     parser.add_argument('chromium_dir', help='path to chromium/src directory')
     parser.add_argument('devtools_dir',
                         help='path to devtools/devtools-frontend directory')
@@ -78,6 +81,29 @@ def update(options):
     subprocess.check_call(['git', 'checkout', 'origin/main'],
                           cwd=options.chromium_dir)
     subprocess.check_call(['gclient', 'sync'], cwd=options.chromium_dir)
+
+
+def get_hook_action(options, hook_name):
+    """Parses Chromium DEPS file and returns the action for the given hook.
+    """
+    sys.path.append(
+        os.path.join(options.chromium_dir, 'third_party', 'depot_tools'))
+    import gclient_eval
+
+    filepath = os.path.join(options.chromium_dir, 'DEPS')
+    with open(filepath) as deps_file:
+        deps = gclient_eval.Parse(deps_file.read(), filepath)
+    for hook in deps['hooks']:
+        if hook['name'] == hook_name:
+            return hook['action']
+    raise RuntimeError(f'{hook_name} hook not found in DEPS')
+
+
+def sync_node(options):
+    """Executes the nodejs sync hook from Chromium DEPS file."""
+    action = get_hook_action(options, 'node_linux64')
+    gclient_context = os.path.join(options.chromium_dir, '..')
+    subprocess.check_call(action, cwd=gclient_context)
 
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
@@ -112,6 +138,8 @@ if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
         update(OPTIONS)
+    if OPTIONS.update_node:
+        sync_node(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)

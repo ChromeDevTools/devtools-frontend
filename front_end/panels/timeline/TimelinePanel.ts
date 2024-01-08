@@ -64,6 +64,7 @@ import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
 // COHERENT BEGIN
 import * as Protocol from '../../generated/protocol.js';
+import { ToolbarCheckbox, ToolbarComboBox } from '../../ui/legacy/Toolbar.js';
 // COHERENT END
 
 const UIStrings = {
@@ -89,7 +90,7 @@ const UIStrings = {
 
   traceSystemSettingTitle: 'TraceSystem',
 
-  traceFilteringEnabledSettingTitle: 'Trace Filtering Enabled',
+  traceFilteringEnabledSettingTitle: 'Trace Filtering',
 
   // COHERENT END
 
@@ -680,17 +681,29 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const traceFilteringEnabledToolbar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
 
-    this._traceFilterEbabledCheckbox = this._createSettingCheckbox(this._traceFiltering, "Trace Filtering Enabled");
+    this._traceFilterEbabledCheckbox = this._createSettingCheckbox(this._traceFiltering, "Trace Filtering");
     traceFilteringEnabledToolbar.appendToolbarItem(this._traceFilterEbabledCheckbox);
+
+    (this._traceFilterEbabledCheckbox as ToolbarCheckbox).inputElement.addEventListener("change", () => {
+      const isTracingEnabled = (this._traceFilterEbabledCheckbox as ToolbarCheckbox).checked();
+      if (isTracingEnabled) {
+        (this._traceLevelSelect as ToolbarComboBox).selectElement().disabled = false;
+        (this._traceSystemSelect as ToolbarComboBox).selectElement().disabled = false;
+
+      } else {
+        (this._traceLevelSelect as ToolbarComboBox).selectElement().disabled = true;
+        (this._traceSystemSelect as ToolbarComboBox).selectElement().disabled = true;
+      }
+    });
 
     const traceLevelToolBar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
     traceLevelToolBar.appendText("Trace Level");
 
-    this._traceLevelSelect = this._createTraceFilterSelect("Trace Level", 140, this._traceLevel);
+    this._traceLevelSelect = this._createTraceFilterSelect("Trace Level: ", 140, this._traceLevel);
     traceLevelToolBar.appendToolbarItem(this._traceLevelSelect);
 
     const traceSystemToolBar = new UI.Toolbar.Toolbar('', this._traceCategory.element);
-    traceSystemToolBar.appendText("Trace System");
+    traceSystemToolBar.appendText("Trace System: ");
 
     this._traceSystemSelect = this._createTraceFilterSelect("Trace System", 240, this._traceSystem);
     traceSystemToolBar.appendToolbarItem(this._traceSystemSelect);

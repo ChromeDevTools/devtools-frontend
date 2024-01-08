@@ -146,31 +146,6 @@ button {
   }
 
   &:disabled {
-    pointer-events: none;
-
-    &.primary {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.tonal {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.secondary {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.toolbar,
-    &.round {
-      background: var(--sys-color-cdt-base-container);
-      color: var(--sys-color-state-disabled);
-    }
-
     devtools-icon {
       color: var(--icon-disabled);
     }
@@ -250,6 +225,32 @@ button {
       devtools-icon {
         color: var(--icon-toggled);
       }
+    }
+  }
+
+  &:disabled,
+  &:disabled:hover {
+    &.primary {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      background: var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.tonal {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      background: var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.secondary {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.toolbar,
+    &.round {
+      background: var(--sys-color-cdt-base-container);
+      color: var(--sys-color-state-disabled);
     }
   }
 }

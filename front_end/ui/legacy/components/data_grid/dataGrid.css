@@ -126,7 +126,12 @@
 
 .data-grid th:first-child,
 .data-grid td:first-child {
-  border-left: none !important; /* stylelint-disable-line declaration-no-important */
+  border-left-width: 0;
+}
+
+.data-grid tr.selected td,
+.data-grid tr.selected th {
+  border-left-color: var(--sys-color-divider-on-tonal-container);
 }
 
 .data-grid td > div,

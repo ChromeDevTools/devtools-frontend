@@ -270,6 +270,7 @@
   --sys-color-yellow-outline: var(--ref-palette-yellow70);
   --sys-color-error-outline: var(--ref-palette-error80);
   --sys-color-divider: var(--ref-palette-primary90);
+  --sys-color-divider-on-tonal-container: var(--ref-palette-primary80);
   --sys-color-divider-prominent: var(--ref-palette-primary70);
 
   /* States */
@@ -640,6 +641,7 @@
   --sys-color-yellow-outline: var(--ref-palette-yellow40);
   --sys-color-error-outline: var(--ref-palette-error80);
   --sys-color-divider: var(--ref-palette-neutral30);
+  --sys-color-divider-on-tonal-container: var(--ref-palette-neutral40);
   --sys-color-divider-prominent: var(--ref-palette-neutral50);
 
   /* States */

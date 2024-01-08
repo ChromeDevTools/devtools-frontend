@@ -108,7 +108,7 @@ th:hover.sortable {
 /* There is no divider before the first cell */
 td.firstVisibleColumn,
 th.firstVisibleColumn {
-  border-left: none;
+  border-left-width: 0;
 }
 
 .hidden {
@@ -133,6 +133,10 @@ th.firstVisibleColumn {
    * it will then have some height & expand the row it's in to 100% high as
    * desired. */
   padding: 1px;
+}
+
+tbody tr.selected:focus-within td {
+  border-left-color: var(--sys-color-divider-on-tonal-container);
 }
 
 /* Leave space for the sort indicator */

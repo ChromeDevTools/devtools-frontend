@@ -26,6 +26,11 @@ const UIStrings = {
    *@description A link to rehide frames that are by default hidden.
    */
   showLess: 'Show less',
+  /**
+   *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
+   * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
+   */
+  creationStackTrace: 'Frame Creation `Stack Trace`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -201,11 +206,12 @@ export class StackTrace extends HTMLElement {
         this.#shadow, {host: this});
       return;
     }
+
     const expandableRows = this.createRowTemplates();
     LitHtml.render(
       LitHtml.html`
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${{
-          rows: expandableRows,
+          rows: expandableRows, title: i18nString(UIStrings.creationStackTrace),
         } as ExpandableList.ExpandableList.ExpandableListData}>
         </${ExpandableList.ExpandableList.ExpandableList.litTagName}>
       `,

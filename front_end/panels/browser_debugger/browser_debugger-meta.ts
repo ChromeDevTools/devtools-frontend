@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Sources from '../sources/sources.js';
 
 import type * as BrowserDebugger from './browser_debugger.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    *@description Command for showing the 'Event Listener Breakpoints' tool
@@ -74,6 +74,10 @@ const UIStrings = {
    *@description Command for showing the 'Content scripts' tool in the sources panel
    */
   showContentScripts: 'Show Content scripts',
+  /**
+   *@description Label for a button in the sources panel that refreshes the list of global event listeners.
+   */
+  refreshGlobalListeners: 'Refresh global listeners',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/browser_debugger-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -84,6 +88,14 @@ async function loadBrowserDebuggerModule(): Promise<typeof BrowserDebugger> {
     loadedBrowserDebuggerModule = await import('./browser_debugger.js');
   }
   return loadedBrowserDebuggerModule;
+}
+
+function maybeRetrieveContextTypes<T = unknown>(
+    getClassCallBack: (loadedBrowserDebuggerModule: typeof BrowserDebugger) => T[]): T[] {
+  if (loadedBrowserDebuggerModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedBrowserDebuggerModule);
 }
 
 let loadedSourcesModule: (typeof Sources|undefined);
@@ -156,7 +168,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   async loadView() {
     const BrowserDebugger = await loadBrowserDebuggerModule();
-    return BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane.instance();
+    return new BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane();
   },
   id: 'sources.globalListeners',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
@@ -216,6 +228,23 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const Sources = await loadSourcesModule();
     return new Sources.SourcesNavigator.ContentScriptsNavigatorView();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'browser-debugger.refresh-global-event-listeners',
+  async loadActionDelegate() {
+    const BrowserDebugger = await loadBrowserDebuggerModule();
+    return new BrowserDebugger.ObjectEventListenersSidebarPane.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.refreshGlobalListeners),
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
+  contextTypes() {
+    return maybeRetrieveContextTypes(
+        BrowserDebugger =>
+            [BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane,
+    ]);
   },
 });
 

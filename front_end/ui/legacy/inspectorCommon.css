@@ -279,8 +279,9 @@ input::placeholder {
   --override-input-placeholder-color: rgb(230 230 230 / 54%);
 }
 
-:host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
-  accent-color: var(--color-checkbox-accent-color);
+input[type="checkbox"]:not(.-theme-preserve) {
+  accent-color: var(--sys-color-primary-bright);
+  color: var(--sys-color-on-primary);
 }
 
 .harmony-input:not([type]),

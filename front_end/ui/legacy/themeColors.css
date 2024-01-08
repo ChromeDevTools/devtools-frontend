@@ -110,7 +110,6 @@
   --color-error-text: #f00;
   --color-error-border: hsl(0deg 100% 92%);
   --color-error-background: hsl(0deg 100% 97%);
-  --color-checkbox-accent-color: var(--color-primary-old);
   --color-image-preview-background: rgb(255 255 255);
 
   /* Colors for styling inputs */
@@ -485,7 +484,6 @@
   --color-error-text: hsl(0deg 100% 75%);
   --color-error-border: rgb(92 0 0);
   --color-error-background: hsl(0deg 100% 8%);
-  --color-checkbox-accent-color: rgb(255 165 0);
   /* Colors for styling inputs */
   --color-input-outline: rgb(60 64 67);
   --color-input-outline-active: rgb(138 180 248);

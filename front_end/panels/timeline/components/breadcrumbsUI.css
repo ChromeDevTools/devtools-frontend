@@ -5,7 +5,7 @@
  */
 
 .breadcrumbs {
-  display: flex;
+  display: none;
   align-items: center;
   height: 29px;
   padding: 3px;

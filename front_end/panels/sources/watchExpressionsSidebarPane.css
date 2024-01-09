@@ -96,8 +96,12 @@ li.watch-expression-tree-item {
   padding-left: 4px;
 }
 
-li.watch-expression-tree-item:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
+li.watch-expression-tree-item.selected {
+  background: var(--sys-color-neutral-container);
+}
+
+li.watch-expression-tree-item.selected:focus {
+  background: var(--sys-color-tonal-container);
 }
 
 .watch-expression-header:focus-visible {

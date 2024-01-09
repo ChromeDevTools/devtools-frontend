@@ -32,7 +32,7 @@ li.search-result {
 }
 
 li.search-result:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 li.search-result .search-result-file-name {
@@ -82,7 +82,7 @@ li.search-match .search-match-line-number {
 }
 
 li.search-match:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .tree-outline .devtools-link {

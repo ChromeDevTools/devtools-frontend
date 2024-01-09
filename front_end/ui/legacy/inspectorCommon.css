@@ -40,7 +40,6 @@
   --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
   --legacy-item-selection-bg-color: #cfe8fc;
   --legacy-item-selection-inactive-bg-color: #e0e0e0;
-  --item-hover-color: rgb(56 121 217 / 10%);
   --monospace-font-size: 10px;
   --monospace-font-family: monospace;
   --source-code-font-size: 11px;
@@ -229,18 +228,9 @@ iframe.widget {
 }
 
 .highlighted-search-result {
-  --override-highlighted-search-result-background-color: rgb(255 255 0 / 80%);
-
   border-radius: 1px;
-  background-color: var(--override-highlighted-search-result-background-color);
-  outline: 1px solid var(--override-highlighted-search-result-background-color);
-}
-
-.-theme-with-dark-background .highlighted-search-result,
-:host-context(.-theme-with-dark-background) .highlighted-search-result {
-  --override-highlighted-search-result-background-color: hsl(133deg 100% 30%);
-
-  color: #333;
+  background-color: var(--sys-color-yellow-container);
+  outline: 1px solid var(--sys-color-yellow-container);
 }
 
 .link {

@@ -42,7 +42,7 @@
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
   display: block;
-  background-color: var(--sys-color-neutral-container);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {

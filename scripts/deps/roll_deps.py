@@ -69,7 +69,8 @@ def parse_options(cli_args):
         'If tot, fetch origin/main of Chromium repository and use it. '
         'If working-tree, use working tree as is.')
     parser.add_argument('--update-node',
-                        action=argparse.BooleanOptionalAction,
+                        action="store_true",
+                        default=False,
                         help='If set it syncs nodejs.')
     parser.add_argument('chromium_dir', help='path to chromium/src directory')
     parser.add_argument('devtools_dir',

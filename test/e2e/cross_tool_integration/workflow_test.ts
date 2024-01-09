@@ -7,6 +7,7 @@ import {
   click,
   clickElement,
   reloadDevTools,
+  timeout,
   waitFor,
   waitForFunction,
   waitForMany,
@@ -71,11 +72,25 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  // Skip until flake is fixed
-  it.skip('[crbug.com/1375161]: Performance -> Sources', async () => {
+  it('Performance -> Sources', async () => {
     await navigateToPerformanceTab();
 
     await startRecording();
+
+    // Wait until we have collected a bit of trace data (indicated by the progress bar
+    // changing at least twice), to ensure that there's at least a single tick within
+    // `default.html` below.
+    const statusIndicator = await waitFor('.timeline-status-dialog .progress .indicator');
+    const statusIndicatorValues = new Set<Number>();
+    do {
+      const indicatorValue = await statusIndicator.evaluate(n => Number(n.getAttribute('aria-valuenow')));
+      if (statusIndicatorValues.has(indicatorValue)) {
+        await timeout(50);
+      } else {
+        statusIndicatorValues.add(indicatorValue);
+      }
+    } while (statusIndicatorValues.size <= 2);
+
     await stopRecording();
 
     await navigateToPerformanceSidebarTab('Bottom-Up');

@@ -1,3 +1,8 @@
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import type { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
 import type { ConnectionTransport } from './ConnectionTransport.js';
 import type { Viewport } from './Viewport.js';

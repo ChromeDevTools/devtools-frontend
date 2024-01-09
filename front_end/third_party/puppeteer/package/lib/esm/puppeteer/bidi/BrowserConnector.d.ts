@@ -1,3 +1,8 @@
+/**
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { BrowserConnectOptions, ConnectOptions } from '../common/ConnectOptions.js';
 import type { BidiBrowser } from './Browser.js';

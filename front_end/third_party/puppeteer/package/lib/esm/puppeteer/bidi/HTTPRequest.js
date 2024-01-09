@@ -48,6 +48,12 @@ export class BidiHTTPRequest extends HTTPRequest {
     postData() {
         return this.#postData;
     }
+    hasPostData() {
+        return this.#postData !== undefined;
+    }
+    async fetchPostData() {
+        return this.#postData;
+    }
     headers() {
         return this.#headers;
     }

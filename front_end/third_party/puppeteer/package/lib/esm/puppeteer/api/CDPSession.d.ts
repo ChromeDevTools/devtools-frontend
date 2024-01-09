@@ -41,6 +41,12 @@ export interface CDPSessionEvents extends CDPEvents, Record<EventType, unknown> 
     [CDPSessionEvent.SessionDetached]: CDPSession;
 }
 /**
+ * @public
+ */
+export interface CommandOptions {
+    timeout: number;
+}
+/**
  * The `CDPSession` instances are used to talk raw Chrome Devtools Protocol.
  *
  * @remarks
@@ -80,7 +86,7 @@ export declare abstract class CDPSession extends EventEmitter<CDPSessionEvents> 
      * @internal
      */
     parentSession(): CDPSession | undefined;
-    abstract send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    abstract send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object
      * won't emit any events and can't be used to send messages.

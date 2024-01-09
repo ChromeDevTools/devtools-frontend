@@ -792,7 +792,7 @@ export declare abstract class CDPSession extends EventEmitter<CDPSessionEvents> 
     /* Excluded from this release type: __constructor */
     abstract connection(): Connection | undefined;
     /* Excluded from this release type: parentSession */
-    abstract send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    abstract send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object
      * won't emit any events and can't be used to send messages.
@@ -832,6 +832,8 @@ export declare interface CDPSessionEvents extends CDPEvents, Record<EventType, u
 
 /* Excluded from this release type: CdpTouchscreen */
 
+/* Excluded from this release type: CdpWebWorker */
+
 /* Excluded from this release type: ChromeLauncher */
 
 /**
@@ -862,6 +864,13 @@ export declare interface ClickOptions extends MouseClickOptions {
 /* Excluded from this release type: ClientProvider */
 
 declare type CombinatorTokens = [' ', '>', '+', '~', '|', '|'];
+
+/**
+ * @public
+ */
+export declare interface CommandOptions {
+    timeout: number;
+}
 
 /* Excluded from this release type: Commands */
 
@@ -1003,7 +1012,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
      */
     session(sessionId: string): CDPSession | null;
     url(): string;
-    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /* Excluded from this release type: _rawSend */
     /* Excluded from this release type: closeBrowser */
     /* Excluded from this release type: onMessage */
@@ -1018,19 +1027,9 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
 }
 
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * @public
@@ -1241,6 +1240,8 @@ export declare interface CoverageEntry {
 
 /* Excluded from this release type: createEvaluationError */
 
+/* Excluded from this release type: createIncrementalIdGenerator */
+
 /* Excluded from this release type: createProtocolErrorMessage */
 
 /**
@@ -1276,19 +1277,9 @@ export declare interface CSSCoverageOptions {
 }
 
 /**
- * Copyright 2018 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2018 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * @deprecated Do not use.
@@ -2898,6 +2889,8 @@ export declare interface GeolocationOptions {
 
 /* Excluded from this release type: getFetch */
 
+/* Excluded from this release type: GetIdFn */
+
 /* Excluded from this release type: getPageContent */
 
 /* Excluded from this release type: getQueryHandlerAndSelector */
@@ -3053,6 +3046,17 @@ export declare abstract class HTTPRequest {
      * The request's post body, if any.
      */
     abstract postData(): string | undefined;
+    /**
+     * True when the request has POST data. Note that {@link HTTPRequest.postData}
+     * might still be undefined when this flag is true when the data is too long
+     * or not readily available in the decoded form. In that case, use
+     * {@link HTTPRequest.fetchPostData}.
+     */
+    abstract hasPostData(): boolean;
+    /**
+     * Fetches the POST data for the request from the browser.
+     */
+    abstract fetchPostData(): Promise<string | undefined>;
     /**
      * An object with HTTP headers associated with the request. All
      * header names are lower-case.
@@ -5985,10 +5989,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
-     * Waits for a function to finish evaluating in the page's context.
+     * Waits for the provided function, `pageFunction`, to return a truthy value when
+     * evaluated in the page's context.
      *
      * @example
-     * The {@link Page.waitForFunction} can be used to observe viewport size change:
+     * {@link Page.waitForFunction} can be used to observe a viewport size change:
      *
      * ```ts
      * import puppeteer from 'puppeteer';
@@ -6003,8 +6008,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @example
-     * To pass arguments from node.js to the predicate of
-     * {@link Page.waitForFunction} function:
+     * Arguments can be passed from Node.js to `pageFunction`:
      *
      * ```ts
      * const selector = '.foo';
@@ -6016,7 +6020,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @example
-     * The predicate of {@link Page.waitForFunction} can be asynchronous too:
+     * The provided `pageFunction` can be asynchronous:
      *
      * ```ts
      * const username = 'github-username';
@@ -6038,7 +6042,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * );
      * ```
      *
-     * @param pageFunction - Function to be evaluated in browser context
+     * @param pageFunction - Function to be evaluated in browser context until it returns a
+     * truthy value.
      * @param options - Options for configuring waiting behavior.
      */
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
@@ -6307,19 +6312,9 @@ export declare type PaperFormat = Uppercase<LowerCasePaperFormat> | Capitalize<L
 /* Excluded from this release type: ParsedPDFOptionsInterface */
 
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * @public
@@ -6488,19 +6483,9 @@ export declare const PredefinedNetworkConditions: Readonly<{
 export declare type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
 
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Supported products.
@@ -6903,6 +6888,7 @@ export declare interface ResponseForRequest {
 /* Excluded from this release type: SandboxChart */
 
 /**
+ * @public
  * @experimental
  */
 export declare interface ScreencastOptions {
@@ -7188,6 +7174,12 @@ export declare abstract class Target {
      * returns `null`.
      */
     page(): Promise<Page | null>;
+    /**
+     * Forcefully creates a page for a target of any type. It is useful if you
+     * want to handle a CDP target of type `other` as a page. If you deal with a
+     * regular page target, use {@link Target.page}.
+     */
+    abstract asPage(): Promise<Page>;
     abstract url(): string;
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
@@ -7384,19 +7376,9 @@ export declare class UnsupportedOperation extends CustomError {
 /* Excluded from this release type: valueFromRemoteObject */
 
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * @public
@@ -7564,7 +7546,7 @@ export declare interface WaitTimeoutOptions {
  *
  * @public
  */
-export declare class WebWorker extends EventEmitter<Record<EventType, unknown>> {
+export declare abstract class WebWorker extends EventEmitter<Record<EventType, unknown>> {
     #private;
     /* Excluded from this release type: timeoutSettings */
     /* Excluded from this release type: __constructor */
@@ -7576,35 +7558,48 @@ export declare class WebWorker extends EventEmitter<Record<EventType, unknown>> 
     /**
      * The CDP session client the WebWorker belongs to.
      */
-    get client(): CDPSession;
+    abstract get client(): CDPSession;
     /**
-     * If the function passed to the `worker.evaluate` returns a Promise, then
-     * `worker.evaluate` would wait for the promise to resolve and return its
-     * value. If the function passed to the `worker.evaluate` returns a
-     * non-serializable value, then `worker.evaluate` resolves to `undefined`.
-     * DevTools Protocol also supports transferring some additional values that
-     * are not serializable by `JSON`: `-0`, `NaN`, `Infinity`, `-Infinity`, and
-     * bigint literals.
-     * Shortcut for `await worker.executionContext()).evaluate(pageFunction, ...args)`.
+     * Evaluates a given function in the {@link WebWorker | worker}.
      *
-     * @param pageFunction - Function to be evaluated in the worker context.
-     * @param args - Arguments to pass to `pageFunction`.
-     * @returns Promise which resolves to the return value of `pageFunction`.
+     * @remarks If the given function returns a promise,
+     * {@link WebWorker.evaluate | evaluate} will wait for the promise to resolve.
+     *
+     * As a rule of thumb, if the return value of the given function is more
+     * complicated than a JSON object (e.g. most classes), then
+     * {@link WebWorker.evaluate | evaluate} will _likely_ return some truncated
+     * value (or `{}`). This is because we are not returning the actual return
+     * value, but a deserialized version as a result of transferring the return
+     * value through a protocol to Puppeteer.
+     *
+     * In general, you should use
+     * {@link WebWorker.evaluateHandle | evaluateHandle} if
+     * {@link WebWorker.evaluate | evaluate} cannot serialize the return value
+     * properly or you need a mutable {@link JSHandle | handle} to the return
+     * object.
+     *
+     * @param func - Function to be evaluated.
+     * @param args - Arguments to pass into `func`.
+     * @returns The result of `func`.
      */
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * The only difference between `worker.evaluate` and `worker.evaluateHandle`
-     * is that `worker.evaluateHandle` returns in-page object (JSHandle). If the
-     * function passed to the `worker.evaluateHandle` returns a `Promise`, then
-     * `worker.evaluateHandle` would wait for the promise to resolve and return
-     * its value. Shortcut for
-     * `await worker.executionContext()).evaluateHandle(pageFunction, ...args)`
+     * Evaluates a given function in the {@link WebWorker | worker}.
      *
-     * @param pageFunction - Function to be evaluated in the page context.
-     * @param args - Arguments to pass to `pageFunction`.
-     * @returns Promise which resolves to the return value of `pageFunction`.
+     * @remarks If the given function returns a promise,
+     * {@link WebWorker.evaluate | evaluate} will wait for the promise to resolve.
+     *
+     * In general, you should use
+     * {@link WebWorker.evaluateHandle | evaluateHandle} if
+     * {@link WebWorker.evaluate | evaluate} cannot serialize the return value
+     * properly or you need a mutable {@link JSHandle | handle} to the return
+     * object.
+     *
+     * @param func - Function to be evaluated.
+     * @param args - Arguments to pass into `func`.
+     * @returns A {@link JSHandle | handle} to the return value of `func`.
      */
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
 }
 
 /* Excluded from this release type: withSourcePuppeteerURLIfNone */

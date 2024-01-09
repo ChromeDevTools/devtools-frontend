@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import { map, NEVER, timer, firstValueFrom, fromEvent, filterAsync, from, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
@@ -273,6 +263,12 @@ export function addPageBinding(type, name) {
     // This is the CDP binding.
     // @ts-expect-error: In a different context.
     const callCdp = globalThis[name];
+    // Depending on the frame loading state either Runtime.evaluate or
+    // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
+    // don't re-wrap Puppeteer's binding.
+    if (callCdp[Symbol.toStringTag] === 'PuppeteerBinding') {
+        return;
+    }
     // We replace the CDP binding with a Puppeteer binding.
     Object.assign(globalThis, {
         [name](...args) {
@@ -307,6 +303,8 @@ export function addPageBinding(type, name) {
             });
         },
     });
+    // @ts-expect-error: In a different context.
+    globalThis[name][Symbol.toStringTag] = 'PuppeteerBinding';
 }
 /**
  * @internal

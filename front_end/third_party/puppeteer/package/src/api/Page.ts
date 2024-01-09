@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import type {Readable} from 'stream';
@@ -46,7 +36,6 @@ import type {
   NetworkConditions,
 } from '../cdp/NetworkManager.js';
 import type {Tracing} from '../cdp/Tracing.js';
-import type {WebWorker} from '../cdp/WebWorker.js';
 import type {ConsoleMessage} from '../common/ConsoleMessage.js';
 import type {Device} from '../common/Device.js';
 import {TargetCloseError} from '../common/Errors.js';
@@ -122,6 +111,7 @@ import {
   type AwaitedLocator,
 } from './locators/locators.js';
 import type {Target} from './Target.js';
+import type {WebWorker} from './WebWorker.js';
 
 /**
  * @public
@@ -285,6 +275,7 @@ export interface ScreenshotOptions {
 }
 
 /**
+ * @public
  * @experimental
  */
 export interface ScreencastOptions {
@@ -2273,7 +2264,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
       }
 
       const viewportWidth = width / devicePixelRatio;
-      const viewportHeight = width / devicePixelRatio;
+      const viewportHeight = height / devicePixelRatio;
       if (x + cropWidth > viewportWidth) {
         throw new Error(
           `\`crop.width\` cannot be larger than the viewport width (${viewportWidth}).`
@@ -2901,10 +2892,11 @@ export abstract class Page extends EventEmitter<PageEvents> {
   }
 
   /**
-   * Waits for a function to finish evaluating in the page's context.
+   * Waits for the provided function, `pageFunction`, to return a truthy value when
+   * evaluated in the page's context.
    *
    * @example
-   * The {@link Page.waitForFunction} can be used to observe viewport size change:
+   * {@link Page.waitForFunction} can be used to observe a viewport size change:
    *
    * ```ts
    * import puppeteer from 'puppeteer';
@@ -2919,8 +2911,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * ```
    *
    * @example
-   * To pass arguments from node.js to the predicate of
-   * {@link Page.waitForFunction} function:
+   * Arguments can be passed from Node.js to `pageFunction`:
    *
    * ```ts
    * const selector = '.foo';
@@ -2932,7 +2923,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * ```
    *
    * @example
-   * The predicate of {@link Page.waitForFunction} can be asynchronous too:
+   * The provided `pageFunction` can be asynchronous:
    *
    * ```ts
    * const username = 'github-username';
@@ -2954,7 +2945,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * );
    * ```
    *
-   * @param pageFunction - Function to be evaluated in browser context
+   * @param pageFunction - Function to be evaluated in browser context until it returns a
+   * truthy value.
    * @param options - Options for configuring waiting behavior.
    */
   waitForFunction<

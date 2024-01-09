@@ -1,3 +1,8 @@
+/**
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import type { Browser } from '../api/Browser.js';
 import type { ConnectOptions } from './ConnectOptions.js';
 /**

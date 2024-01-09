@@ -51,6 +51,12 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     postData() {
         return this.#postData;
     }
+    hasPostData() {
+        return this.#postData !== undefined;
+    }
+    async fetchPostData() {
+        return this.#postData;
+    }
     headers() {
         return this.#headers;
     }

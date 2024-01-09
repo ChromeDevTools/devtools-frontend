@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /// <reference types="node" />
 /// <reference types="node" />
@@ -26,7 +16,6 @@ import type { Coverage } from '../cdp/Coverage.js';
 import type { DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
 import type { NetworkManager as CdpNetworkManager, Credentials, NetworkConditions } from '../cdp/NetworkManager.js';
 import type { Tracing } from '../cdp/Tracing.js';
-import type { WebWorker } from '../cdp/WebWorker.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Device } from '../common/Device.js';
 import { EventEmitter, type EventsWithWildcard, type EventType } from '../common/EventEmitter.js';
@@ -47,6 +36,7 @@ import type { Keyboard, KeyboardTypeOptions, Mouse, Touchscreen } from './Input.
 import type { JSHandle } from './JSHandle.js';
 import { Locator, type AwaitedLocator } from './locators/locators.js';
 import type { Target } from './Target.js';
+import type { WebWorker } from './WebWorker.js';
 /**
  * @public
  */
@@ -202,6 +192,7 @@ export interface ScreenshotOptions {
     captureBeyondViewport?: boolean;
 }
 /**
+ * @public
  * @experimental
  */
 export interface ScreencastOptions {
@@ -2147,10 +2138,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
-     * Waits for a function to finish evaluating in the page's context.
+     * Waits for the provided function, `pageFunction`, to return a truthy value when
+     * evaluated in the page's context.
      *
      * @example
-     * The {@link Page.waitForFunction} can be used to observe viewport size change:
+     * {@link Page.waitForFunction} can be used to observe a viewport size change:
      *
      * ```ts
      * import puppeteer from 'puppeteer';
@@ -2165,8 +2157,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @example
-     * To pass arguments from node.js to the predicate of
-     * {@link Page.waitForFunction} function:
+     * Arguments can be passed from Node.js to `pageFunction`:
      *
      * ```ts
      * const selector = '.foo';
@@ -2178,7 +2169,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      *
      * @example
-     * The predicate of {@link Page.waitForFunction} can be asynchronous too:
+     * The provided `pageFunction` can be asynchronous:
      *
      * ```ts
      * const username = 'github-username';
@@ -2200,7 +2191,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * );
      * ```
      *
-     * @param pageFunction - Function to be evaluated in browser context
+     * @param pageFunction - Function to be evaluated in browser context until it returns a
+     * truthy value.
      * @param options - Options for configuring waiting behavior.
      */
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;

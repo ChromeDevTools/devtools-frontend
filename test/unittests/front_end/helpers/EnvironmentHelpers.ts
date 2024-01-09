@@ -303,6 +303,7 @@ export async function deinitializeGlobalVars() {
   SDK.TargetManager.TargetManager.removeInstance();
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
+  Common.Revealer.RevealerRegistry.removeInstance();
   Common.Console.Console.removeInstance();
   Workspace.Workspace.WorkspaceImpl.removeInstance();
   Bindings.IgnoreListManager.IgnoreListManager.removeInstance();

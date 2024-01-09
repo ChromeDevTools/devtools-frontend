@@ -3,16 +3,15 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
-import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
-import {TestRevealer} from '../../../helpers/RevealerHelpers.js';
-import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const {assert} = chai;
 
@@ -168,8 +167,7 @@ describeWithMockConnection('LayoutPane', async () => {
     ]);
     const node = makeNode(ID_1);
     sinon.stub(domModel, 'nodeForId').withArgs(ID_1).returns(node);
-    const revealer = sinon.stub().resolves();
-    TestRevealer.install(revealer);
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
 
     const component = await renderComponent();
     assertShadowRoot(component.shadowRoot);
@@ -177,8 +175,7 @@ describeWithMockConnection('LayoutPane', async () => {
     const button = component.shadowRoot.querySelector('.show-element');
     assertElement(button, HTMLElement);
     button.click();
-    assert.isTrue(revealer.calledOnceWith(node));
-    TestRevealer.reset();
+    assert.isTrue(reveal.calledOnceWith(node, false));
   });
 
   it('expands/collapses <details> using ArrowLeft/ArrowRight keys', async () => {

@@ -22,6 +22,7 @@ ts_library("common") {
     "Progress_test.ts",
     "ResolverBase_test.ts",
     "ResourceType_test.ts",
+    "Revealer_test.ts",
     "SegmentedRange_test.ts",
     "Settings_test.ts",
     "SimpleHistoryManager_test.ts",

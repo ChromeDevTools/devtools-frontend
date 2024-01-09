@@ -22,7 +22,6 @@ ts_library("helpers") {
     "OverridesHelpers.ts",
     "PersistenceHelpers.ts",
     "RealConnection.ts",
-    "RevealerHelpers.ts",
     "SourceMapEncoder.ts",
     "SourceMapEncoder_test.ts",
     "SourceMapHelpers.ts",

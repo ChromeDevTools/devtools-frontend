@@ -688,23 +688,38 @@ describeWithDevtoolsExtension('Wasm extension API', {}, context => {
         callFrame);
   });
 
+  function captureError(expectedMessage: string): sinon.SinonStub {
+    const original = console.error;
+    return sinon.stub(console, 'error').callsFake((message, ...args) => {
+      if (expectedMessage !== message) {
+        original(message, ...args);
+      }
+    });
+  }
+
   it('getWasmGlobal does not block on invalid indices', async () => {
+    const log = captureError('Extension server error: Invalid argument global: No global with index 0');
     const result = await context.chrome.devtools?.languageServices.getWasmGlobal(0, stopId);
     assertIsStatus(result);
+    assert.isTrue(log.calledOnce);
     assert.strictEqual(result.code, 'E_BADARG');
     assert.strictEqual(result.details[0], 'global');
   });
 
   it('getWasmLocal does not block on invalid indices', async () => {
+    const log = captureError('Extension server error: Invalid argument local: No local with index 0');
     const result = await context.chrome.devtools?.languageServices.getWasmLocal(0, stopId);
     assertIsStatus(result);
+    assert.isTrue(log.calledOnce);
     assert.strictEqual(result.code, 'E_BADARG');
     assert.strictEqual(result.details[0], 'local');
   });
 
   it('getWasmOp does not block on invalid indices', async () => {
+    const log = captureError('Extension server error: Invalid argument op: No operand with index 0');
     const result = await context.chrome.devtools?.languageServices.getWasmOp(0, stopId);
     assertIsStatus(result);
+    assert.isTrue(log.calledOnce);
     assert.strictEqual(result.code, 'E_BADARG');
     assert.strictEqual(result.details[0], 'op');
   });

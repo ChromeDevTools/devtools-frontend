@@ -6,12 +6,12 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
-import {Cookie, type Attributes} from './Cookie.js';
+import {type Attributes, Cookie} from './Cookie.js';
 import {type Resource} from './Resource.js';
-import {ResourceTreeModel} from './ResourceTreeModel.js';
-
-import {Capability, type Target} from './Target.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export class CookieModel extends SDKModel<void> {
   readonly #blockedCookies: Map<string, Cookie>;
@@ -21,6 +21,8 @@ export class CookieModel extends SDKModel<void> {
 
     this.#blockedCookies = new Map();
     this.#cookieToBlockedReasons = new Map();
+    TargetManager.instance().addModelListener(
+        ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
 
   addBlockedCookie(cookie: Cookie, blockedReasons: BlockedReason[]|null): void {
@@ -35,6 +37,11 @@ export class CookieModel extends SDKModel<void> {
     if (previousCookie) {
       this.#cookieToBlockedReasons.delete(previousCookie);
     }
+  }
+
+  #onPrimaryPageChanged(): void {
+    this.#blockedCookies.clear();
+    this.#cookieToBlockedReasons.clear();
   }
 
   getCookieToBlockedReasonsMap(): ReadonlyMap<Cookie, BlockedReason[]> {

@@ -569,4 +569,7 @@ export enum ExperimentName {
 export enum ConditionName {
   CAN_DOCK = 'can_dock',
   NOT_SOURCES_HIDE_ADD_FOLDER = '!sources.hide_add_folder',
+  // COHERENT BEGIN
+  COHERENT_CAN_DOCK = "!can_dock"
+  // COHERENT END
 }

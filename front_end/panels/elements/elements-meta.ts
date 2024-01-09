@@ -344,6 +344,7 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
+// TODO: Implement and enable capture area screenshot by using COHERENT_CAN_DOCK
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.capture-area-screenshot',
   async loadActionDelegate() {

@@ -106,10 +106,13 @@ UI.ActionRegistration.registerActionExtension({
     const Emulation = await loadEmulationModule();
     return Emulation.DeviceModeWrapper.ActionDelegate.instance();
   },
-  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  // COHERENT BEGIN
+  condition: Root.Runtime.ConditionName.COHERENT_CAN_DOCK,
+  // COHERENT END
   title: i18nLazyString(UIStrings.captureScreenshot),
 });
 
+// TODO: Implement and enable capture full size screenshot and capture node screenshot by using COHERENT_CAN_DOCK
 UI.ActionRegistration.registerActionExtension({
   actionId: 'emulation.capture-full-height-screenshot',
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
@@ -201,7 +204,9 @@ Common.AppProvider.registerAppProvider({
     const Emulation = await loadEmulationModule();
     return Emulation.AdvancedApp.AdvancedAppProvider.instance();
   },
-  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  // COHERENT BEGIN
+  condition: Root.Runtime.ConditionName.COHERENT_CAN_DOCK,
+  // COHERENT END
   order: 0,
 });
 

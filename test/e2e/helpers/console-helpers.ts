@@ -290,12 +290,6 @@ export async function waitForConsoleInfoMessageAndClickOnLink() {
   await click('span.devtools-link', {root: consoleMessage});
 }
 
-export async function navigateToIssuesPanelViaInfoBar() {
-  // Navigate to Issues panel
-  await click('#console-issues-counter');
-  await waitFor('.issues-pane');
-}
-
 export async function turnOffHistoryAutocomplete() {
   await click(CONSOLE_SETTINGS_SELECTOR);
   await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);

@@ -2,27 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  assertNotNullOrUndefined,
-  click,
-  clickElement,
-  reloadDevTools,
-  timeout,
-  waitFor,
-  waitForFunction,
-  waitForMany,
-} from '../../shared/helper.js';
+import {click, closeAllCloseableTabs, goToResource, reloadDevTools, timeout, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {
-  navigateToConsoleTab,
-  navigateToIssuesPanelViaInfoBar,
-  waitForConsoleInfoMessageAndClickOnLink,
-} from '../helpers/console-helpers.js';
+import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
   MOVE_TO_DRAWER_SELECTOR,
   MOVE_TO_MAIN_PANEL_SELECTOR,
-  prepareForCrossToolScenario,
   tabExistsInDrawer,
   tabExistsInMainPanel,
 } from '../helpers/cross-tool-helper.js';
@@ -44,7 +30,8 @@ describe('A user can navigate across', async function() {
   }
 
   beforeEach(async function() {
-    await prepareForCrossToolScenario();
+    await goToResource('cross_tool/default.html');
+    await closeAllCloseableTabs();
   });
 
   it('Console -> Sources', async () => {
@@ -53,22 +40,15 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  // Skip until flake is fixed
-  it.skip('[crbug.com/1342045]: Console -> Issues', async () => {
+  it('Console -> Issues', async () => {
     await navigateToConsoleTab();
-    await navigateToIssuesPanelViaInfoBar();
-
-    // Expand the first issue
-    await click('li.issue.parent');
-
-    // Expand the affected resources
-    await click('li.parent', {root: await waitFor('ol.affected-resources')});
+    await click('#console-issues-counter');
+    await waitFor('[aria-label="Issues panel"]');
   });
 
   it('Elements -> Sources', async () => {
     await navigateToElementsTab();
     await clickOnFirstLinkInStylesPanel();
-
     await waitFor('.panel[aria-label="sources"]');
   });
 
@@ -95,16 +75,7 @@ describe('A user can navigate across', async function() {
 
     await navigateToPerformanceSidebarTab('Bottom-Up');
 
-    // Find the link pointing to default.html.
-    const link = await waitForFunction(async () => {
-      const allLinks = await waitForMany('.devtools-link', 1);
-      const linkText = await Promise.all(allLinks.map(link => link.evaluate(x => x.textContent)));
-      const linkIdx = linkText.findIndex(text => text?.startsWith('default.html'));
-      return linkIdx < 0 ? undefined : allLinks[linkIdx];
-    });
-
-    assertNotNullOrUndefined(link);
-    await clickElement(link);
+    await click('.devtools-link[title*="default.html"]');
     await waitFor('.panel[aria-label="sources"]');
   });
 });

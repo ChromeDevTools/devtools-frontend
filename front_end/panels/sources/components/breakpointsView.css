@@ -36,6 +36,7 @@ input {
 
 details {
   border-top: 1px solid var(--sys-color-divider);
+  padding: 2px 0;
 }
 
 details:not(.active) {
@@ -44,7 +45,7 @@ details:not(.active) {
 }
 
 details > summary {
-  height: 18px;
+  min-height: 20px;
   list-style: none;
   display: flex;
   padding: 0 8px 0 6px;
@@ -90,8 +91,6 @@ details[open] > summary::before {
 
 .group-header-title {
   margin-left: 4px;
-  font-weight: 500;
-  font-size: var(--source-code-font-size);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

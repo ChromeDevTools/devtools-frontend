@@ -58,7 +58,7 @@
 
 .filter-bitset-filter span {
   color: var(--sys-color-on-surface);
-  outline: 1px solid var(--sys-color-tonal-outline);
+  outline: 1px solid var(--sys-color-neutral-outline);
   outline-offset: -1px;
   box-sizing: border-box;
   display: inline-block;
@@ -87,11 +87,6 @@
   color: var(--sys-color-on-tonal-container);
   outline: none;
   background-color: var(--sys-color-tonal-container);
-}
-
-.-theme-with-dark-background .filter-bitset-filter span,
-:host-context(.-theme-with-dark-background) .filter-bitset-filter span {
-  outline-color: var(--sys-color-neutral-outline);
 }
 
 .filter-bitset-filter-divider {

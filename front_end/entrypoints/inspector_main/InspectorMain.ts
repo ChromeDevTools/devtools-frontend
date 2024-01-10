@@ -70,15 +70,22 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', name, type, null, undefined, waitForDebuggerInPage);
 
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      targetManager.observeTargets({
-        targetAdded: (target: SDK.Target.Target) => {
-          if (target === targetManager.primaryPageTarget()) {
-            target.setName(i18nString(UIStrings.main));
-          }
-        },
-        targetRemoved: (_: unknown) => {},
-      });
+      const waitForPrimaryPageTarget = (): Promise<SDK.Target.Target> => {
+        return new Promise(resolve => {
+          const targetManager = SDK.TargetManager.TargetManager.instance();
+          targetManager.observeTargets({
+            targetAdded: (target: SDK.Target.Target): void => {
+              if (target === targetManager.primaryPageTarget()) {
+                target.setName(i18nString(UIStrings.main));
+                resolve(target);
+              }
+            },
+            targetRemoved: (_: unknown): void => {},
+          });
+        });
+      };
+      await waitForPrimaryPageTarget();
+
       // Only resume target during the first connection,
       // subsequent connections are due to connection hand-over,
       // there is no need to pause in debugger.

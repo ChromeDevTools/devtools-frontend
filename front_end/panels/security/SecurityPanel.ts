@@ -10,19 +10,19 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import lockIconStyles from './lockIcon.css.js';
 import mainViewStyles from './mainView.css.js';
 import originViewStyles from './originView.css.js';
-import sidebarStyles from './sidebar.css.js';
-
 import {
   Events,
+  type PageVisibleSecurityState,
   SecurityModel,
   SecurityStyleExplanation,
   SummaryMessages,
-  type PageVisibleSecurityState,
 } from './SecurityModel.js';
+import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {
   /**
@@ -546,7 +546,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       if (names.length > 0) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
       }
-    }, 'origin-button');
+    }, 'origin-button', false /* primary */, undefined, 'security.view-certificate-for-origin');
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
@@ -555,7 +555,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     const certificateButton = UI.UIUtils.createTextButton(text, e => {
       e.consume();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
-    }, 'origin-button');
+    }, 'origin-button', false /* primary */, undefined, 'security.view-certificate');
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
@@ -813,6 +813,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
 
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('security.sidebar')}`);
 
     this.appendChild(mainViewElement);
 
@@ -1005,6 +1006,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   private securityState: Protocol.Security.SecurityState|null;
   constructor(panel: SecurityPanel) {
     super(true);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('security.main-view')}`);
 
     this.setMinimumSize(200, 100);
 
@@ -1453,6 +1455,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
   private readonly originLockIcon: HTMLElement;
   constructor(panel: SecurityPanel, origin: Platform.DevToolsPath.UrlString, originState: OriginState) {
     super();
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('security.origin-view')}`);
     this.panel = panel;
     this.setMinimumSize(200, 100);
 
@@ -1477,7 +1480,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
         {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
       ]));
-    });
+    }, undefined, false /* primary */, undefined, 'security.view-requests-in-network-panel');
     originNetworkDiv.appendChild(originNetworkButton);
     UI.ARIAUtils.markAsLink(originNetworkButton);
 
@@ -1695,7 +1698,8 @@ export class SecurityOriginView extends UI.Widget.VBox {
           UI.ARIAUtils.setExpanded(truncatedSANToggle, isTruncated);
         }
         const truncatedSANToggle = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length}), toggleSANTruncation);
+            i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length}), toggleSANTruncation, undefined,
+            false /* primary */, undefined, 'security.toggle-san-truncation');
         sanDiv.appendChild(truncatedSANToggle);
         toggleSANTruncation();
       }

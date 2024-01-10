@@ -1074,7 +1074,7 @@ export const createTextChildren = (element: Element|DocumentFragment, ...childre
 
 export function createTextButton(
     text: string, eventHandler?: ((arg0: Event) => void), className?: string, primary?: boolean,
-    alternativeEvent?: string): HTMLButtonElement {
+    alternativeEvent?: string, jslogContext?: string): HTMLButtonElement {
   const element = document.createElement('button');
   if (className) {
     element.className = className;
@@ -1086,6 +1086,9 @@ export function createTextButton(
   }
   if (eventHandler) {
     element.addEventListener(alternativeEvent || 'click', eventHandler);
+  }
+  if (jslogContext) {
+    element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
   }
   element.type = 'button';
   return element;

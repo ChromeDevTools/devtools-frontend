@@ -76,7 +76,8 @@ describe('The Console Tab', async () => {
       });
     });
 
-    describe('inspect', () => {
+    // These tests are causing random E2E test suite failures.
+    describe.skip('[crbug.com/1517265]: inspect', () => {
       it('which reveals the correct node in the Elements panel', async () => {
         const {frontend} = getBrowserAndPages();
 

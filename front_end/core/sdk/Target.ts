@@ -70,6 +70,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
             Capability.IO | Capability.Media | Capability.Emulation | Capability.EventBreakpoints;
         break;
+      case Type.Worklet:
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.EventBreakpoints;
+        break;
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;
         break;
@@ -254,6 +257,7 @@ export enum Type {
   Node = 'node',
   Browser = 'browser',
   AuctionWorklet = 'auction-worklet',
+  Worklet = 'worklet',
   Tab = 'tab',
 }
 

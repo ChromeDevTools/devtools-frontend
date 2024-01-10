@@ -29,7 +29,7 @@ enum VisualElements {
   Toggle = 6,
   Tree = 7,
   TextField = 8,
-  ShowAllStyleProperties = 9,
+  /* 9 used to be ShowAllStyleProperties, but free to grab now */
   Section = 10,
   StylePropertiesSectionSeparator = 11,
   /* 12 used to be StylesPane, but free to grab now */

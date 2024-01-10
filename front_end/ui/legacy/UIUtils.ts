@@ -1072,23 +1072,25 @@ export const createTextChildren = (element: Element|DocumentFragment, ...childre
   }
 };
 
-export function createTextButton(
-    text: string, eventHandler?: ((arg0: Event) => void), className?: string, primary?: boolean,
-    alternativeEvent?: string, jslogContext?: string): HTMLButtonElement {
+export function createTextButton(text: string, clickHandler?: ((arg0: Event) => void), opts?: {
+  className?: string,
+  jslogContext?: string,
+  primary?: boolean,
+}): HTMLButtonElement {
   const element = document.createElement('button');
-  if (className) {
-    element.className = className;
+  if (opts?.className) {
+    element.className = opts.className;
   }
   element.textContent = text;
   element.classList.add('text-button');
-  if (primary) {
+  if (opts?.primary) {
     element.classList.add('primary-button');
   }
-  if (eventHandler) {
-    element.addEventListener(alternativeEvent || 'click', eventHandler);
+  if (clickHandler) {
+    element.addEventListener('click', clickHandler);
   }
-  if (jslogContext) {
-    element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
+  if (opts?.jslogContext) {
+    element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(opts.jslogContext)}`);
   }
   element.type = 'button';
   return element;
@@ -1554,7 +1556,7 @@ export class MessageDialog {
         dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
-      const okButton = createTextButton(i18nString(UIStrings.ok), resolve, '', true);
+      const okButton = createTextButton(i18nString(UIStrings.ok), resolve, {jslogContext: 'confirm', primary: true});
       content.createChild('div', 'message').createChild('span').textContent = message;
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {
@@ -1582,11 +1584,10 @@ export class ConfirmDialog {
     const result = await new Promise<boolean>(resolve => {
       const okButton = createTextButton(
           /* text= */ options?.okButtonLabel || i18nString(UIStrings.ok), /* clickHandler= */ () => resolve(true),
-          /* className= */ '',
-          /* primary= */ true);
+          {jslogContext: 'confirm', primary: true});
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(
-          createTextButton(options?.cancelButtonLabel || i18nString(UIStrings.cancel), () => resolve(false)));
+      buttonsBar.appendChild(createTextButton(
+          options?.cancelButtonLabel || i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'}));
       dialog.setOutsideClickCallback(event => {
         event.consume();
         resolve(false);

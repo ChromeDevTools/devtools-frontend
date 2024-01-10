@@ -561,15 +561,14 @@ export class Section {
 
   private createSyncNotificationField(
       label: string, initialValue: string, placeholder: string, callback: (arg0: string) => void,
-      jsLogContext: string): void {
+      jslogContext: string): void {
     const form =
         this.wrapWidget(this.section.appendField(label)).createChild('form', 'service-worker-editor-with-button');
     const editor = UI.UIUtils.createInput('source-code service-worker-notification-editor');
-    editor.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context(jsLogContext)}`);
+    editor.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context(jslogContext)}`);
     form.appendChild(editor);
-    const button = UI.UIUtils.createTextButton(label);
+    const button = UI.UIUtils.createTextButton(label, undefined, {jslogContext});
     button.type = 'submit';
-    button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jsLogContext)}`);
     form.appendChild(button);
 
     editor.value = initialValue;

@@ -9,7 +9,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -85,8 +84,10 @@ export class AffectedCookiesView extends AffectedResourcesView {
             filterValue: cookie.path,
           },
         ]));
-      }, 'link-style devtools-link');
-      button.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('cookie-filter')}`);
+      }, {
+        className: 'link-style devtools-link',
+        jslogContext: 'issues.filter-network-requests-by-cookie',
+      });
       name.appendChild(button);
     } else {
       name.textContent = cookie.name;
@@ -125,7 +126,10 @@ export class AffectedRawCookieLinesView extends AffectedResourcesView {
               filterValue: cookie.rawCookieLine,
             },
           ]));
-        }, 'link-style devtools-link');
+        }, {
+          className: 'link-style devtools-link',
+          jslogContext: 'issues.filter-network-requests-by-raw-cookie',
+        });
         textButton.title = i18nString(UIStrings.filterSetCookieTitle);
         cookieLine.appendChild(textButton);
         row.appendChild(cookieLine);

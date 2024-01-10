@@ -78,7 +78,6 @@ export const pieChartSlice = LoggingConfig.makeConfigStringBuilder.bind(null, 'P
 export const pieChartTotal = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChartTotal');
 export const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
 export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null, 'ResponsivePresets');
-export const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
 export const stylesComputedPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesComputedPane');

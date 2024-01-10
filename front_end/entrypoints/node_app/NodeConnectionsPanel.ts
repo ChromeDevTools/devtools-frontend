@@ -107,7 +107,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
 
     const addButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.addConnection), this.#addNetworkTargetButtonClicked.bind(this),
-        'add-network-target-button', true /* primary */);
+        {className: 'add-network-target-button', primary: true});
     this.element.appendChild(addButton);
 
     this.#networkDiscoveryConfig = [];

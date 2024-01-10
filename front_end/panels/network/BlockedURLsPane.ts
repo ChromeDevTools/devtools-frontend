@@ -103,11 +103,9 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   private createEmptyPlaceholder(): Element {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
-    const addButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addPattern.bind(this), 'add-button', true);
-    addButton.setAttribute(
-        'jslog',
-        `${VisualLogging.action().track({click: true}).context('network.add-network-request-blocking-pattern')}`);
+    const addButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addPattern), this.addPattern.bind(this),
+        {className: 'add-button', jslogContext: 'network.add-network-request-blocking-pattern', primary: true});
     UI.ARIAUtils.setLabel(addButton, i18nString(UIStrings.addNetworkRequestBlockingPattern));
     element.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.networkRequestsAreNotBlockedS, {PH1: addButton}));

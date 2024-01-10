@@ -1100,11 +1100,12 @@ export class SelfXssWarningDialog {
       content.appendChild(input);
 
       const buttonsBar = content.createChild('div', 'button');
-      const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false));
+      const cancelButton =
+          UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'});
       buttonsBar.appendChild(cancelButton);
       const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
         resolve(input.value === i18nString(UIStrings.allowPasting));
-      }, '', true);
+      }, {jslogContext: 'confirm', primary: true});
       allowButton.disabled = true;
       buttonsBar.appendChild(allowButton);
 
@@ -1194,7 +1195,8 @@ const searchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch'});
 const currentSearchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch cm-searchMatch-selected'});
 
 const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
-  decorations: CodeMirror.DecorationSet;
+decorations:
+  CodeMirror.DecorationSet;
 
   constructor(view: CodeMirror.EditorView) {
     this.decorations = this.computeDecorations(view);

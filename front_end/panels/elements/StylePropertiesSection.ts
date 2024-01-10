@@ -195,8 +195,10 @@ export class StylePropertiesSection {
     this.propertiesTreeOutline.section = this;
     this.innerElement.appendChild(this.propertiesTreeOutline.element);
 
-    this.showAllButton = UI.UIUtils.createTextButton('', this.showAllItems.bind(this), 'styles-show-all');
-    this.showAllButton.setAttribute('jslog', `${VisualLogging.showAllStyleProperties().track({click: true})}`);
+    this.showAllButton = UI.UIUtils.createTextButton('', this.showAllItems.bind(this), {
+      className: 'styles-show-all',
+      jslogContext: 'elements.show-all-style-properties',
+    });
     this.innerElement.appendChild(this.showAllButton);
 
     const selectorContainer = document.createElement('div');

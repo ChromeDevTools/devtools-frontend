@@ -73,10 +73,11 @@ export class TimespanView extends UI.Dialog.Dialog {
     this.endButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.endTimespan),
         this.endTimespan.bind(this),
-        undefined,
-        true,
+        {primary: true, jslogContext: 'lighthouse.end-time-span'},
     );
-    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this.cancel.bind(this));
+    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this.cancel.bind(this), {
+      jslogContext: 'lighthouse.cancel',
+    });
     const fragment = UI.Fragment.Fragment.build`
   <div class="lighthouse-view vbox">
   <h2 $="status-header"></h2>

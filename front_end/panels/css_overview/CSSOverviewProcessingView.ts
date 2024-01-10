@@ -5,9 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
-
 import {Events, type OverviewController} from './CSSOverviewController.js';
+import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
 
 const UIStrings = {
   /**
@@ -17,6 +16,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
   readonly #controller: OverviewController;
   fragment?: UI.Fragment.Fragment;
@@ -29,8 +29,8 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
 
   #render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
-        true /* primary */);
+        i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.RequestOverviewCancel),
+        {jslogContext: 'css-overview.cancel-processing', primary: true});
     this.setDefaultFocusedElement(cancelButton);
 
     this.fragment = UI.Fragment.Fragment.build`
@@ -43,6 +43,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
     this.contentElement.appendChild(this.fragment.element());
     this.contentElement.style.overflow = 'auto';
   }
+
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cssOverviewProcessingViewStyles]);

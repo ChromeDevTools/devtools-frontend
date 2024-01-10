@@ -121,9 +121,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
         UI.UIUtils.createTextButton(i18nString(UIStrings.RestoreDefaultShortcuts), () => {
           userShortcutsSetting.set([]);
           keybindsSetSetting.set(UI.ShortcutRegistry.DefaultShortcutSetting);
-        });
-    restoreDefaultShortcutsButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('restore-default-shortcuts')}`);
+        }, {jslogContext: 'restore-default-shortcuts'});
     footer.appendChild(restoreDefaultShortcutsButton);
     this.editingItem = null;
     this.editingRow = null;

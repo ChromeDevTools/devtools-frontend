@@ -262,10 +262,9 @@ export class SensorsView extends UI.Widget.VBox {
     this.customLocationsGroup = (this.locationSelectElement.createChild('optgroup') as HTMLOptGroupElement);
     this.customLocationsGroup.label = i18nString(UIStrings.overrides);
     const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
-    const manageButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations));
-    manageButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('sensors.manage-locations')}`);
+    const manageButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations),
+        {jslogContext: 'sensors.manage-locations'});
     UI.ARIAUtils.setLabel(manageButton, i18nString(UIStrings.manageTheListOfLocations));
     fields.appendChild(manageButton);
     const fillCustomSettings = (): void => {
@@ -630,9 +629,8 @@ export class SensorsView extends UI.Widget.VBox {
     this.gammaSetter(String(deviceOrientation.gamma));
 
     const resetButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.reset), this.resetDeviceOrientation.bind(this), 'orientation-reset-button');
-    resetButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('sensors.reset-device-orientiation')}`);
+        i18nString(UIStrings.reset), this.resetDeviceOrientation.bind(this),
+        {className: 'orientation-reset-button', jslogContext: 'sensors.reset-device-orientiation'});
     UI.ARIAUtils.setLabel(resetButton, i18nString(UIStrings.resetDeviceOrientation));
     resetButton.setAttribute('type', 'reset');
     cellElement.appendChild(resetButton);

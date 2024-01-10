@@ -32,7 +32,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
@@ -96,10 +95,9 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
         i18nString(UIStrings.excludedFolders);
     const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this), 'add-button');
+        i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this),
+        {className: 'add-button', jslogContext: 'settings.add-excluded-folder'});
     excludedFoldersHeader.appendChild(addButton);
-    addButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('settings.add-excluded-folder')}`);
     this.excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this.excludedFoldersList.element.classList.add('file-system-list');
 

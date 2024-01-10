@@ -296,11 +296,15 @@ export class Editor<T> {
     }, this.commitClicked.bind(this)), false);
 
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this.commitButton = createTextButton('', this.commitClicked.bind(this), '', true /* primary */);
-    this.commitButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('commit')}`);
+    this.commitButton = createTextButton('', this.commitClicked.bind(this), {
+      jslogContext: 'commit',
+      primary: true,
+    });
     buttonsRow.appendChild(this.commitButton);
-    this.cancelButton =
-        createTextButton(i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), '', true /* primary */);
+    this.cancelButton = createTextButton(i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), {
+      jslogContext: 'cancel',
+      primary: true,
+    });
     this.cancelButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('cancel')}`);
     buttonsRow.appendChild(this.cancelButton);
 

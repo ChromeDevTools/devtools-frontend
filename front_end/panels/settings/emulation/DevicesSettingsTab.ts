@@ -90,10 +90,9 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
-    this.addCustomButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this));
-    this.addCustomButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('custom-device-add-button')}`);
+    this.addCustomButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this),
+        {jslogContext: 'custom-device-add-button'});
     this.addCustomButton.id = 'custom-device-add-button';
     buttonsRow.appendChild(this.addCustomButton);
     this.ariaSuccessMessageElement = this.containerElement.createChild('div', 'device-success-message');

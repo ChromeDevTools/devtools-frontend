@@ -109,8 +109,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
     const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addLocation), this.addButtonClicked.bind(this), 'add-locations-button');
-    addButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('add-location')}`);
+        i18nString(UIStrings.addLocation), this.addButtonClicked.bind(this),
+        {className: 'add-locations-button', jslogContext: 'emulation.add-location'});
     this.contentElement.appendChild(addButton);
 
     this.list = new UI.ListWidget.ListWidget(this);

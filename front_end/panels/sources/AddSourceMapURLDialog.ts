@@ -38,7 +38,9 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
     this.input.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.contentElement.appendChild(this.input);
 
-    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this));
+    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this), {
+      jslogContext: 'sources.add-source-map-url',
+    });
     this.contentElement.appendChild(addButton);
 
     this.dialog = new UI.Dialog.Dialog();

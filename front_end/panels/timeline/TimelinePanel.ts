@@ -1696,15 +1696,18 @@ export class StatusPane extends UI.Widget.VBox {
     }
 
     const buttonContainer = this.contentElement.createChild('div', 'stop-button');
-    this.downloadTraceButton = UI.UIUtils.createTextButton(i18nString(UIStrings.downloadAfterError), async () => {
+    this.downloadTraceButton = UI.UIUtils.createTextButton(i18nString(UIStrings.downloadAfterError), () => {
       void this.#downloadRawTraceAfterError();
-    });
+    }, {jslogContext: 'timeline.download-after-error'});
 
     this.downloadTraceButton.disabled = true;
     this.downloadTraceButton.style.visibility = 'hidden';
 
     const buttonText = options.buttonText || i18nString(UIStrings.stop);
-    this.button = UI.UIUtils.createTextButton(buttonText, buttonCallback, '', true);
+    this.button = UI.UIUtils.createTextButton(buttonText, buttonCallback, {
+      jslogContext: 'timeline.stop-recording',
+      primary: true,
+    });
     // Profiling can't be stopped during initialization.
     this.button.disabled = !options.buttonDisabled === false;
 

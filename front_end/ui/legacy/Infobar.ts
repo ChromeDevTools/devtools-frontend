@@ -95,10 +95,10 @@ export class Infobar {
           buttonClass += ' primary-button';
         }
 
-        const button = createTextButton(action.text, actionCallback, buttonClass);
-        if (action.jsLogContext) {
-          button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(action.jsLogContext)}`);
-        }
+        const button = createTextButton(action.text, actionCallback, {
+          className: buttonClass,
+          jslogContext: action.jsLogContext,
+        });
         if (action.highlight && !this.#firstFocusableElement) {
           this.#firstFocusableElement = button;
         }
@@ -108,14 +108,15 @@ export class Infobar {
 
     this.disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton =
-          createTextButton(i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), 'infobar-button');
+      const disableButton = createTextButton(
+          i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), {className: 'infobar-button'});
       this.actionContainer.appendChild(disableButton);
     }
 
     this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
     this.toggleElement = createTextButton(
-        i18nString(UIStrings.showMore), this.onToggleDetails.bind(this), 'link-style devtools-link hidden');
+        i18nString(UIStrings.showMore), this.onToggleDetails.bind(this),
+        {className: 'link-style devtools-link hidden'});
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('div', 'close-button', 'dt-close-button');

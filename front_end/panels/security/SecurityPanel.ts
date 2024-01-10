@@ -546,7 +546,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       if (names.length > 0) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
       }
-    }, 'origin-button', false /* primary */, undefined, 'security.view-certificate-for-origin');
+    }, {className: 'origin-button', jslogContext: 'security.view-certificate-for-origin'});
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
@@ -555,7 +555,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     const certificateButton = UI.UIUtils.createTextButton(text, e => {
       e.consume();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
-    }, 'origin-button', false /* primary */, undefined, 'security.view-certificate');
+    }, {className: 'origin-button', jslogContext: 'security.view-certificate'});
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
@@ -1480,7 +1480,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
         {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
       ]));
-    }, undefined, false /* primary */, undefined, 'security.view-requests-in-network-panel');
+    }, {jslogContext: 'security.view-requests-in-network-panel'});
     originNetworkDiv.appendChild(originNetworkButton);
     UI.ARIAUtils.markAsLink(originNetworkButton);
 
@@ -1621,7 +1621,8 @@ export class SecurityOriginView extends UI.Widget.VBox {
           sctTableWrapper.classList.toggle('hidden');
         }
         const toggleSctsDetailsLink = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.showFullDetails), toggleSctDetailsDisplay, 'details-toggle');
+            i18nString(UIStrings.showFullDetails), toggleSctDetailsDisplay,
+            {className: 'details-toggle', jslogContext: 'security.toggle-scts-details'});
         sctSection.appendChild(toggleSctsDetailsLink);
       }
 
@@ -1698,8 +1699,8 @@ export class SecurityOriginView extends UI.Widget.VBox {
           UI.ARIAUtils.setExpanded(truncatedSANToggle, isTruncated);
         }
         const truncatedSANToggle = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length}), toggleSANTruncation, undefined,
-            false /* primary */, undefined, 'security.toggle-san-truncation');
+            i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length}), toggleSANTruncation,
+            {jslogContext: 'security.toggle-san-truncation'});
         sanDiv.appendChild(truncatedSANToggle);
         toggleSANTruncation();
       }

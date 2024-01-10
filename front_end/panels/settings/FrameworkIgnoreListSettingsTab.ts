@@ -140,10 +140,9 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     placeholder.classList.add('ignore-list-empty');
     this.list.setEmptyPlaceholder(placeholder);
     this.list.show(ignoreListOptions);
-    const addPatternButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
-    addPatternButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('settings.add-ignore-list-pattern')}`);
+    const addPatternButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this),
+        {className: 'add-button', jslogContext: 'settings.add-ignore-list-pattern'});
     UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     ignoreListOptions.appendChild(addPatternButton);
     this.setting =

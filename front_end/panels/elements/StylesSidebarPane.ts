@@ -2400,7 +2400,8 @@ export class StylesSidebarPropertyRenderer {
       matchers.push(new LegacyRegexMatcher(/^.*$/g, this.positionFallbackHandler));
     }
 
-    renderPropertyValue(this.propertyValue, matchers).forEach(node => valueElement.appendChild(node));
+    renderPropertyValue(this.propertyValue, matchers, this.propertyName)
+        .forEach(node => valueElement.appendChild(node));
     valueElement.normalize();
     return valueElement;
   }

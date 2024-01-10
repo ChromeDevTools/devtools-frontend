@@ -7,9 +7,9 @@
  * that's potentially `null` you can use this function to assert that it isn't,
  * and satisfy TypeScript that the value is present.
  */
-export function assertNotNullOrUndefined<T>(val: T): asserts val is NonNullable<T> {
+export function assertNotNullOrUndefined<T>(val: T, message?: string): asserts val is NonNullable<T> {
   if (val === null || val === undefined) {
-    throw new Error(`Expected given value to not be null/undefined but it was: ${val}`);
+    throw new Error(`Expected given value to not be null/undefined but it was: ${val}${message ? `\n${message}` : ''}`);
   }
 }
 

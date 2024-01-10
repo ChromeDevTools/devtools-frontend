@@ -7,13 +7,20 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 
 const cssParser = CodeMirror.css.cssLanguage.parser;
 
+function nodeText(node: CodeMirror.SyntaxNode, text: string): string {
+  return text.substring(node.from, node.to);
+}
+
 export class SyntaxTree {
   readonly propertyValue: string;
   readonly rule: string;
   readonly tree: CodeMirror.SyntaxNode;
   readonly trailingNodes: CodeMirror.SyntaxNode[];
+  readonly propertyName: string|undefined;
   constructor(
-      propertyValue: string, rule: string, tree: CodeMirror.SyntaxNode, trailingNodes: CodeMirror.SyntaxNode[] = []) {
+      propertyValue: string, rule: string, tree: CodeMirror.SyntaxNode, propertyName?: string,
+      trailingNodes: CodeMirror.SyntaxNode[] = []) {
+    this.propertyName = propertyName;
     this.propertyValue = propertyValue;
     this.rule = rule;
     this.tree = tree;
@@ -21,10 +28,7 @@ export class SyntaxTree {
   }
 
   text(node?: CodeMirror.SyntaxNode): string {
-    if (!node) {
-      node = this.tree;
-    }
-    return this.rule.substring(node.from, node.to);
+    return nodeText(node ?? this.tree, this.rule);
   }
 
   subtree(node: CodeMirror.SyntaxNode): SyntaxTree {
@@ -399,15 +403,19 @@ class TextMatcher implements Matcher {
   }
 }
 
-export function tokenizePropertyValue(propertyValue: string): SyntaxTree|null {
+function declaration(rule: string): CodeMirror.SyntaxNode|null {
+  return cssParser.parse(rule).topNode.getChild('RuleSet')?.getChild('Block')?.getChild('Declaration') ?? null;
+}
+
+export function tokenizePropertyValue(propertyValue: string, propertyName?: string): SyntaxTree|null {
   const fakePropertyName = '--property';
   const rule = `*{${fakePropertyName}: ${propertyValue};}`;
-  const declaration = cssParser.parse(rule).topNode.getChild('RuleSet')?.getChild('Block')?.getChild('Declaration');
-  if (!declaration || declaration.type.isError) {
+  const decl = declaration(rule);
+  if (!decl || decl.type.isError) {
     return null;
   }
 
-  const childNodes = children(declaration);
+  const childNodes = children(decl);
   if (childNodes.length < 3) {
     return null;
   }
@@ -419,17 +427,33 @@ export function tokenizePropertyValue(propertyValue: string): SyntaxTree|null {
   // It's possible that there are nodes following the declaration when there are comments or syntax errors. We want to
   // render any comments, so pick up any trailing nodes following the declaration excluding the final semicolon and
   // brace.
-  const trailingNodes = siblings(declaration).slice(1);
+  const trailingNodes = siblings(decl).slice(1);
   const [semicolon, brace] = trailingNodes.splice(trailingNodes.length - 2, 2);
   if (semicolon?.name !== ';' && brace?.name !== '}') {
     return null;
   }
 
-  const ast = new SyntaxTree(propertyValue, rule, tree, trailingNodes);
+  const name = (propertyName && tokenizePropertyName(propertyName)) ?? undefined;
+  const ast = new SyntaxTree(propertyValue, rule, tree, name, trailingNodes);
   if (ast.text(varName) !== fakePropertyName || colon.name !== ':') {
     return null;
   }
   return ast;
+}
+
+export function tokenizePropertyName(name: string): string|null {
+  const rule = `*{${name}: inherit;}`;
+  const decl = declaration(rule);
+  if (!decl || decl.type.isError) {
+    return null;
+  }
+
+  const propertyName = decl.getChild('PropertyName');
+  if (!propertyName) {
+    return null;
+  }
+
+  return nodeText(propertyName, rule);
 }
 
 // This function renders a property value as HTML, customizing the presentation with a set of given AST matchers. This
@@ -440,8 +464,8 @@ export function tokenizePropertyValue(propertyValue: string): SyntaxTree|null {
 //
 // More general, longer matches take precedence over shorter, more specific matches. Whitespaces are normalized, for
 // unmatched text and around rendered matching results.
-export function renderPropertyValue(value: string, matchers: Matcher[]): Node[] {
-  const ast = tokenizePropertyValue(value);
+export function renderPropertyValue(value: string, matchers: Matcher[], propertyName?: string): Node[] {
+  const ast = tokenizePropertyValue(value, propertyName);
   if (!ast) {
     return [document.createTextNode(value)];
   }

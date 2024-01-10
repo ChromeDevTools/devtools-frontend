@@ -30,15 +30,20 @@ export class Printer extends Elements.PropertyParser.TreeWalker {
     /* eslint-disable-next-line no-console */
     console.log(Printer.walk(ast).get());
   }
+
+  static rule(rule: string): string {
+    const ast = new Elements.PropertyParser.SyntaxTree('', rule, cssParser.parse(rule).topNode);
+    return Printer.walk(ast).get();
+  }
 }
 
 function textFragments(nodes: Node[]): Array<string|null> {
   return nodes.map(n => n.textContent);
 }
 
-function tokenizePropertyValue(value: string): Elements.PropertyParser.SyntaxTree {
-  const ast = Elements.PropertyParser.tokenizePropertyValue(value);
-  Platform.assertNotNullOrUndefined(ast);
+function tokenizePropertyValue(value: string, name?: string): Elements.PropertyParser.SyntaxTree {
+  const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+  Platform.assertNotNullOrUndefined(ast, Printer.rule(`*{${name}: ${value};}`));
   return ast;
 }
 
@@ -170,6 +175,14 @@ describe('PropertyParser', () => {
     assert.isNull(Elements.PropertyParser.tokenizePropertyValue(''));
     assert.isNull(Elements.PropertyParser.tokenizePropertyValue('/*'));
     assert.isNull(Elements.PropertyParser.tokenizePropertyValue('}'));
+  });
+
+  it('correctly parses property names', () => {
+    assert.strictEqual(tokenizePropertyValue('red', 'color /*comment*/')?.propertyName, 'color');
+    assert.strictEqual(tokenizePropertyValue('red', '/*comment*/color/*comment*/')?.propertyName, 'color');
+    assert.strictEqual(tokenizePropertyValue('red', ' /*comment*/color')?.propertyName, 'color');
+    assert.strictEqual(tokenizePropertyValue('red', 'co/*comment*/lor')?.propertyName, 'lor');
+    assert.strictEqual(tokenizePropertyValue('red', 'co:lor')?.propertyName, undefined);
   });
 
   class ComputedTextMatch implements Elements.PropertyParser.Match {

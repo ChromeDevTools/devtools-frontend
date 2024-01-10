@@ -67,6 +67,22 @@ const UIStrings = {
    *@example {Network} PH1
    */
   sCollapsed: '{PH1} collapsed',
+  /**
+   *@description Text for Hiding a function from the Flame Chart
+   */
+  hideFunction: 'Hide function',
+  /**
+   *@description Text for Hiding all children of a function from the Flame Chart
+   */
+  hideChildren: 'Hide children',
+  /**
+   *@description Text for Hiding all repeating child entries of a function from the Flame Chart
+   */
+  hideRepeatingChildren: 'Hide repeating children',
+  /**
+   *@description Text for reseting trace and showing all of the hidden children of the Flame Chart
+   */
+  resetTrace: 'Reset trace',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -765,11 +781,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.update();
   }
 
-  onContextMenu(_event: Event): void {
-    // The context menu only applies if the user is hovering over an individual entry.
-    if (this.highlightedEntryIndex === -1) {
-      return;
-    }
+  getPossibleActions(): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const data = this.timelineData();
     if (!data) {
       return;
@@ -784,39 +796,88 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
+    // Check which actions are possible on an entry.
+    // If an action would not change the entries (for example it has no children to collapse), we do not need to show it.
+    return this.dataProvider.findPossibleContextMenuActions?.(group, this.selectedEntryIndex);
+  }
+
+  onContextMenu(_event: Event): void {
+    // The context menu only applies if the user is hovering over an individual entry.
+    if (this.highlightedEntryIndex === -1) {
+      return;
+    }
+
     // Update the selected index to match the highlighted index, which
     // represents the entry under the cursor where the user has right clicked
     // to trigger a context menu.
     this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
+    this.setSelectedEntry(this.highlightedEntryIndex);
 
-    // Before showing the context menu, check which actions are possible on an entry.
-    // If an action would not change the entries (for example it has no children to collapse), we do not need to show it.
-    const possibleActions = this.dataProvider.findPossibleContextMenuActions?.(group, this.highlightedEntryIndex);
+    const possibleActions = this.getPossibleActions();
+    if (!possibleActions) {
+      return;
+    }
 
     this.contextMenu = new UI.ContextMenu.ContextMenu(_event);
-    // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
-    this.contextMenu.headerSection().appendItem('Merge function', () => {
+    this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideFunction), () => {
       this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
     });
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
-      this.contextMenu.headerSection().appendItem('Collapse function', () => {
+      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideChildren), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.highlightedEntryIndex);
       });
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
-      this.contextMenu.headerSection().appendItem('Collapse repeating descendants', () => {
+      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
         this.modifyTree(
             TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.highlightedEntryIndex);
       });
     }
 
-    this.contextMenu.headerSection().appendItem('Reset trace', () => {
+    this.contextMenu.headerSection().appendItem(i18nString(UIStrings.resetTrace), () => {
       this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.highlightedEntryIndex);
     });
 
     void this.contextMenu.show();
+  }
+
+  private handleFlameChartTransformEvent(event: Event): void {
+    // TODO(crbug.com/1469887): Indicate Shortcuts to the user when the designs are complete.
+    if (this.selectedEntryIndex === -1) {
+      return;
+    }
+
+    const possibleActions = this.getPossibleActions();
+    if (!possibleActions) {
+      return;
+    }
+
+    const keyboardEvent = (event as KeyboardEvent);
+    let handled = false;
+
+    if (keyboardEvent.key === 'h') {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.selectedEntryIndex);
+      handled = true;
+    } else if (
+        keyboardEvent.key === 'c' && possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
+      handled = true;
+    } else if (
+        keyboardEvent.key === 'r' &&
+        possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
+      this.modifyTree(
+          TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
+      handled = true;
+    } else if (keyboardEvent.key === 'u') {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, this.selectedEntryIndex);
+      handled = true;
+    }
+
+    if (handled) {
+      keyboardEvent.consume(true);
+    }
   }
 
   private onKeyDown(e: KeyboardEvent): void {
@@ -824,11 +885,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    const eventHandled = this.handleSelectionNavigation(e);
+    let eventHandled = this.handleSelectionNavigation(e);
 
     // Handle keyboard navigation in groups
     if (!eventHandled && this.rawTimelineData && this.rawTimelineData.groups) {
-      this.handleKeyboardGroupNavigation(e);
+      eventHandled = this.handleKeyboardGroupNavigation(e);
+    }
+
+    if (!eventHandled) {
+      this.handleFlameChartTransformEvent(e);
     }
   }
 
@@ -836,7 +901,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener(eventName, onEvent);
   }
 
-  private handleKeyboardGroupNavigation(event: Event): void {
+  private handleKeyboardGroupNavigation(event: Event): boolean {
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
     let entrySelected = false;
@@ -868,6 +933,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (handled) {
       keyboardEvent.consume(true);
     }
+
+    return handled;
   }
 
   private selectFirstEntryInCurrentGroup(): boolean {
@@ -1191,6 +1258,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    */
   getCanvasOffset(): {x: number, y: number} {
     return this.canvas.getBoundingClientRect();
+  }
+
+  getCanvas(): HTMLCanvasElement {
+    return this.canvas;
   }
 
   /**

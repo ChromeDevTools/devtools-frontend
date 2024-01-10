@@ -132,6 +132,53 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     ]);
   });
 
+  it('Adds Hidden Ancestors Arrow as a decoration when a Context Menu action is applied on a selected node with a key shorcut event',
+     async function() {
+       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
+       const mockViewDelegate = new MockViewDelegate();
+
+       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+       flameChartView.setModel(performanceModel, traceParsedData);
+
+       // Find the main track to later collapse entries of
+       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+         return group.name === 'Main — http://localhost:8080/';
+       });
+       if (!mainTrack) {
+         throw new Error('Could not find main track');
+       }
+
+       // Find the first node that has children to collapse and is visible in the timeline
+       const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+       const firstNodeWithChildren = nodeOfGroup?.find(node => {
+         const childrenAmount =
+             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)
+                 ?.children.length;
+         if (!childrenAmount) {
+           return false;
+         }
+         return childrenAmount > 0 && node.cat === 'devtools.timeline';
+       });
+       const node =
+           traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+       if (!node) {
+         throw new Error('Could not find a visible node with children');
+       }
+
+       flameChartView.getMainFlameChart().setSelectedEntry(node?.id);
+
+       // Dispatch a shortcut keydown event that applies 'Hide Children' Context menu action
+       const event = new KeyboardEvent('keydown', {key: 'c'});
+       flameChartView.getMainFlameChart().getCanvas().dispatchEvent(event);
+
+       const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
+       assert.deepEqual(decorationsForEntry, [
+         {
+           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
+         },
+       ]);
+     });
+
   it('Removes Hidden Ancestors Arrow as a decoration when Reset Children action is applied on a node',
      async function() {
        const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
@@ -192,7 +239,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        assert.isUndefined(decorationsForEntry);
      });
 
-  it('When an entry has no children, correctly show only Merge as a possible Context Menu action', async function() {
+  it('When an entry has no children, correctly show only Hide as a possible Context Menu action', async function() {
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
     const mockViewDelegate = new MockViewDelegate();
 
@@ -228,13 +275,13 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 2);
     assert.strictEqual(
         flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
-        'Merge function');
+        'Hide function');
     assert.strictEqual(
         flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
         'Reset trace');
   });
 
-  it('When an entry has children, correctly show only Merge and Collapse as a possible Context Menu actions',
+  it('When an entry has children, correctly show only Hide and Hide Children as possible Context Menu actions',
      async function() {
        const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
        const mockViewDelegate = new MockViewDelegate();
@@ -275,10 +322,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 3);
        assert.strictEqual(
            flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
-           'Merge function');
+           'Hide function');
        assert.strictEqual(
            flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
-           'Collapse function');
+           'Hide children');
        assert.strictEqual(
            flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(2)?.buildDescriptor().label,
            'Reset trace');

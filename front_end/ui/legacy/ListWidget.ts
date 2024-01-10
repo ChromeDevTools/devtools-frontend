@@ -34,6 +34,14 @@ const UIStrings = {
    *@description Text to cancel something
    */
   cancelString: 'Cancel',
+  /**
+   * @description Text for screen reader to announce that an item has been saved.
+   */
+  changesSaved: 'Changes to item have been saved',
+  /**
+   * @description Text for screen reader to announce that an item has been removed.
+   */
+  removedItem: 'Item has been removed',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -174,6 +182,9 @@ export class ListWidget<T> extends VBox {
       const index = this.elements.indexOf(element);
       this.element.focus();
       this.delegate.removeItemRequested(this.items[index], index);
+      ARIAUtils.alert(i18nString(UIStrings.removedItem));
+      // focus on the next item in the list, or the last item if we're removing the last item
+      (this.elements[Math.min(index, this.elements.length - 1)] as HTMLElement).focus();
     }
   }
 
@@ -223,9 +234,15 @@ export class ListWidget<T> extends VBox {
     const editItem = this.editItem;
     const isNew = !this.editElement;
     const editor = (this.editor as Editor<T>);
+    // Focus on the current item or the new item after committing
+    const focusElementIndex = this.editElement ? this.elements.indexOf(this.editElement) : this.elements.length - 1;
     this.stopEditing();
     if (editItem !== null) {
       this.delegate.commitEdit(editItem, editor, isNew);
+      ARIAUtils.alert(i18nString(UIStrings.changesSaved));
+      if (this.elements[focusElementIndex]) {
+        (this.elements[focusElementIndex] as HTMLElement).focus();
+      }
     }
   }
 

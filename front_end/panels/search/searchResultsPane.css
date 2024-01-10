@@ -68,6 +68,10 @@ li.search-match {
   white-space: pre;
 }
 
+li.search-match.selected:focus-visible {
+  background: var(--sys-color-tonal-container);
+}
+
 li.search-match::before {
   display: none;
 }
@@ -79,10 +83,6 @@ li.search-match .search-match-line-number {
   word-break: normal;
   padding: 2px 4px 2px 6px;
   margin-right: 5px;
-}
-
-li.search-match:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .tree-outline .devtools-link {

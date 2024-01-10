@@ -278,7 +278,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.contentElement.setAttribute('jslog', `${VisualLogging.colorPicker()}`);
     this.colorElement = this.contentElement.createChild('div', 'spectrum-color');
     this.colorElement.tabIndex = 0;
-    this.colorElement.setAttribute('jslog', `${VisualLogging.colorCanvas().track({click: true, drag: true})}`);
+    this.colorElement.setAttribute(
+        'jslog', `${VisualLogging.canvas().track({click: true, drag: true}).context('color-canvas')}`);
     this.setDefaultFocusedElement(this.colorElement);
     this.colorElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionColor.bind(this)));
     const swatchAriaText = i18nString(UIStrings.pressArrowKeysMessage);

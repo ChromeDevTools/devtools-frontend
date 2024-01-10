@@ -32,19 +32,18 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import layerDetailsViewStyles from './layerDetailsView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
-
 import {
-  ScrollRectSelection,
-  Type,
   type LayerView,
   type LayerViewHost,
+  ScrollRectSelection,
   type Selection,
   type SnapshotSelection,
+  Type,
 } from './LayerViewHost.js';
 
 const UIStrings = {
@@ -180,6 +179,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('layers-details')}`);
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
@@ -246,6 +246,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       PH5: scrollRect.rect.y,
     });
     element.addEventListener('click', this.onScrollRectClicked.bind(this, index), false);
+    element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('layers.select-object')}`);
   }
 
   private formatStickyAncestorLayer(title: string, layer: SDK.LayerTreeBase.Layer|null): string {
@@ -350,6 +351,8 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
         this.invokeProfilerLink();
       }
     });
+    this.paintProfilerLink.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true, keydown: 'Enter'}).context('layers.paint-profiler')}`);
   }
 
   private createRow(title: string): HTMLElement {

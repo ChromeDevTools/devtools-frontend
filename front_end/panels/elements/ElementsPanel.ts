@@ -1297,7 +1297,8 @@ export class ContextMenuProvider implements
       return;
     }
     contextMenu.revealSection().appendItem(
-        i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object));
+        i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object),
+        {jslogContext: 'elements.reveal-node'});
   }
 }
 

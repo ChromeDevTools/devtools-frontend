@@ -56,7 +56,7 @@ enum VisualElements {
   BezierEditor = 33,
   BezierPresetCategory = 34,
   Preview = 35,
-  ColorCanvas = 36,
+  Canvas = 36,
   ColorEyeDropper = 37,
   ColorPicker = 38,
   CopyColor = 39,

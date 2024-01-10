@@ -171,7 +171,8 @@ export class LayerViewHost {
   showContextMenu(contextMenu: UI.ContextMenu.ContextMenu, selection: Selection|null): void {
     contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.showInternalLayers), this.toggleShowInternalLayers.bind(this),
-        this.showInternalLayersSettingInternal.get());
+        this.showInternalLayersSettingInternal.get(), undefined, undefined, undefined,
+        this.showInternalLayersSettingInternal.name);
     const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node) {
       contextMenu.appendApplicableItems(node);

@@ -10,7 +10,7 @@ copy_to_gen("console") {
     "alert-toString-exception.html",
     "big-int.html",
     "built-ins.html",
-    "command-line-api-getEventListeners.html",
+    "command-line-api.html",
     "console-fetch-logging.html",
     "console-filter.html",
     "console-uncaught-promise.html",

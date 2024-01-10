@@ -107,15 +107,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const ignoreListOptions = this.contentElement.createChild('div', 'ignore-list-options');
 
-    ignoreListOptions.createChild('div', 'ignore-list-option-group').textContent =
-        i18nString(UIStrings.generalExclusionRules);
+    const generalExclusionGroup = this.createSettingGroup(i18nString(UIStrings.generalExclusionRules));
+    ignoreListOptions.appendChild(generalExclusionGroup);
 
-    const ignoreListContentScripts = ignoreListOptions.createChild('div', 'ignore-list-option');
+    const ignoreListContentScripts = generalExclusionGroup.createChild('div', 'ignore-list-option');
     ignoreListContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.ignoreListContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
 
-    const automaticallyIgnoreList = ignoreListOptions.createChild('div', 'ignore-list-option');
+    const automaticallyIgnoreList = generalExclusionGroup.createChild('div', 'ignore-list-option');
     automaticallyIgnoreList.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
         Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts'), true));
@@ -130,8 +130,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     automaticallyIgnoreLink.prepend(automaticallyIgnoreLinkIcon);
     automaticallyIgnoreList.appendChild(automaticallyIgnoreLink);
 
-    ignoreListOptions.createChild('div', 'ignore-list-option-group').textContent =
-        i18nString(UIStrings.customExclusionRules);
+    const customExclusionGroup = this.createSettingGroup(i18nString(UIStrings.customExclusionRules));
+    ignoreListOptions.appendChild(customExclusionGroup);
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('ignore-list');
@@ -139,12 +139,12 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');
     this.list.setEmptyPlaceholder(placeholder);
-    this.list.show(ignoreListOptions);
+    this.list.show(customExclusionGroup);
     const addPatternButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this),
         {className: 'add-button', jslogContext: 'settings.add-ignore-list-pattern'});
     UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
-    ignoreListOptions.appendChild(addPatternButton);
+    customExclusionGroup.appendChild(addPatternButton);
     this.setting =
         Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
     this.setting.addChangeListener(this.settingUpdated, this);
@@ -181,6 +181,17 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   private addButtonClicked(): void {
     this.list.addNewItem(this.setting.getAsArray().length, {pattern: '', disabled: false});
+  }
+
+  private createSettingGroup(title: string): Element {
+    const group = document.createElement('div');
+    group.classList.add('ignore-list-option-group');
+    UI.ARIAUtils.markAsGroup(group);
+    const groupTitle = group.createChild('div', 'ignore-list-option-group-title');
+    UI.ARIAUtils.markAsHeading(groupTitle, 2);
+    UI.ARIAUtils.setLabel(group, title);
+    groupTitle.textContent = title;
+    return group;
   }
 
   renderItem(item: Common.Settings.RegExpSettingItem, _editable: boolean): Element {

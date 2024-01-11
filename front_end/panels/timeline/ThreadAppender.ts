@@ -228,6 +228,13 @@ export class ThreadAppender implements TrackAppender {
     return this.#entriesFilter?.findPossibleActions(traceEvent);
   }
 
+  findHiddenAncestorsAmount(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry): number|void {
+    if ((this.#entriesFilter)) {
+      return this.#entriesFilter?.findHiddenAncestorsAmount(traceEvent);
+    }
+    console.warn('Could not find hidden entries because entriesFilter does not exist');
+  }
+
   processId(): TraceEngine.Types.TraceEvents.ProcessID {
     return this.#processId;
   }

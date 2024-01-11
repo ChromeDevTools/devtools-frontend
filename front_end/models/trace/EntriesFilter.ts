@@ -115,6 +115,18 @@ export class EntriesFilter {
   }
 
   /**
+   * Returns the amount of entry ancestors that belong to the hidden entries array.
+   * **/
+  findHiddenAncestorsAmount(entry: Types.TraceEvents.TraceEntry): number {
+    const entryNode = this.#entryToNode.get(entry);
+    if (!entryNode) {
+      return 0;
+    }
+    const allAncestors = this.#findAllAncestorsOfNode(entryNode);
+    return allAncestors.filter(ancestor => this.invisibleEntries().includes(ancestor)).length;
+  }
+
+  /**
    * If undo action is UNDO_ALL_ACTIONS, assign invisibleEntries array to an empty one.
    * **/
   #applyUndoAction(action: UserFilterAction): void {

@@ -938,6 +938,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return element;
   }
 
+  prepareHighlightedHiddenEntriesArrowInfo(group: PerfUI.FlameChart.Group, entryIndex: number): Element|null {
+    const element = document.createElement('div');
+    const root = UI.Utils.createShadowRootWithCoreStyles(element, {
+      cssFile: [timelineFlamechartPopoverStyles],
+      delegatesFocus: undefined,
+    });
+
+    const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEntry;
+    const hiddenEntriesAmount = this.compatibilityTracksAppender?.findHiddenAncestorsAmount(group, entry);
+
+    if (!hiddenEntriesAmount) {
+      return null;
+    }
+    const contents = root.createChild('div', 'timeline-flamechart-popover');
+    contents.createChild('span', 'timeline-info-title').textContent = hiddenEntriesAmount + ' hidden';
+
+    return element;
+  }
+
   entryColor(entryIndex: number): string {
     function patchColorAndCache<KEY>(cache: Map<KEY, string>, key: KEY, lookupColor: (arg0: KEY) => string): string {
       let color = cache.get(key);

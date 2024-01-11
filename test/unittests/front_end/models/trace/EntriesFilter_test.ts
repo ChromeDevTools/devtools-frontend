@@ -554,4 +554,44 @@ describe('EntriesFilter', function() {
         allFooExceptSecondInStackAreVisible,
         'Some foo calls except the second one are invisible or the second one is visible');
   });
+
+  it('correctly returns the amount of hidden children of a node', async function() {
+    const data = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
+    const mainThread = getMainThread(data.Renderer);
+    /** This stack looks roughly like so (with some erlier events omitted):
+     * ======== onclick ============
+     * =========== foo =============
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *
+     * In this test we want to test if the amount of hidden children returned is correct:
+     * If we collapse repeating children on the first foo call, the 3 child foo calls should be removed.
+     * Therefore, the amount of hidden children should be equal to 3.
+     * ======== onclick ============
+     * =========== foo =============                  << all foo except first hidden
+     *               ===== foo2 ====
+     *               ==== foo2 =====
+     *               ==== foo2 =====
+     **/
+
+    const firstFooCallEntry = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo' &&
+          entry.dur === 233;
+    });
+
+    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+
+    // Before applying any action on a node, there should be no entries hidden under it
+    assert.strictEqual(stack.findHiddenAncestorsAmount(firstFooCallEntry), 0);
+
+    stack.applyAction(
+        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+
+    // There should be 3 foo() entries hidden under the first foo call entry
+    assert.strictEqual(stack.findHiddenAncestorsAmount(firstFooCallEntry), 3);
+  });
 });

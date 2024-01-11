@@ -418,8 +418,12 @@ export class Editor<T> {
         ARIAUtils.setInvalid(input, true);
       }
 
-      if (!forceValid && errorMessage && !this.errorMessageContainer.textContent) {
-        this.errorMessageContainer.textContent = errorMessage;
+      if (!forceValid && errorMessage) {
+        if (this.errorMessageContainer.textContent) {
+          const br = document.createElement('br');
+          this.errorMessageContainer.append(br);
+        }
+        this.errorMessageContainer.append(errorMessage);
       }
 
       allValid = allValid && valid;

@@ -59,7 +59,7 @@ enum VisualElements {
   Canvas = 36,
   ColorEyeDropper = 37,
   ColorPicker = 38,
-  CopyColor = 39,
+  /* 39 used to be CopyColor, but free to grab now */
   CssAngleEditor = 40,
   CssFlexboxEditor = 41,
   CssGridEditor = 42,
@@ -75,9 +75,9 @@ enum VisualElements {
   CssColorMix = 52,
   Value = 53,
   Key = 54,
-  GridSettings = 55,
-  FlexboxOverlays = 56,
-  GridOverlays = 57,
+  /* 55 used to be GridSettings, but free to grab now */
+  /* 56 used to be FlexboxOverlays, but free to grab now */
+  /* 57 used to be GridOverlays, but free to grab now */
   /* 58 used to be JumpToElement, but free to grab now */
   PieChart = 59,
   PieChartSlice = 60,
@@ -91,7 +91,7 @@ enum VisualElements {
   /* 68 used to be DeveloperResourcesPanel, but free to grab now */
   TableHeader = 69,
   TableCell = 70,
-  StylesComputedPane = 71,
+  /* 71 used to be StylesComputedPane, but free to grab now */
   Pane = 72,
   ResponsivePresets = 73,
   DeviceModeRuler = 74,

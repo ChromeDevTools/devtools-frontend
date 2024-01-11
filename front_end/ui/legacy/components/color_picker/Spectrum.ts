@@ -361,7 +361,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     UI.ARIAUtils.setLabel(this.hexValue, label.textContent);
 
     const displaySwitcher = toolsContainer.createChild('button', 'spectrum-display-switcher spectrum-switcher');
-    displaySwitcher.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context('colorFormat')}`);
+    displaySwitcher.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context('color-format')}`);
     appendSwitcherIcon(displaySwitcher);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     displaySwitcher.tabIndex = 0;
@@ -407,7 +407,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     const paletteSwitcher =
         this.paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     paletteSwitcher.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('paletteSwitcher')}`);
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('palette-switcher')}`);
     appendSwitcherIcon(paletteSwitcher);
     UI.UIUtils.setTitle(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     UI.ARIAUtils.markAsButton(paletteSwitcher);
@@ -1619,7 +1619,7 @@ export class Swatch {
   private readonly swatchCopyIcon: IconButton.Icon.Icon;
   constructor(parentElement: HTMLElement) {
     const swatchElement = parentElement.createChild('span', 'swatch');
-    swatchElement.setAttribute('jslog', `${VisualLogging.copyColor().track({click: true})}`);
+    swatchElement.setAttribute('jslog', `${VisualLogging.action().context('copy-color').track({click: true})}`);
     this.swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
     this.swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay') as HTMLElement;
     UI.ARIAUtils.markAsButton(this.swatchOverlayElement);

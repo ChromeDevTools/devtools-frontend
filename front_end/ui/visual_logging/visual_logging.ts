@@ -35,7 +35,6 @@ export const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(n
 export const canvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'Canvas');
 export const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 export const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
-export const copyColor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CopyColor');
 export const cssAngleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssAngleEditor');
 export const cssColorMix = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssColorMix');
 export const cssFlexboxEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssFlexboxEditor');
@@ -47,9 +46,6 @@ export const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDo
 export const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 export const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
 export const infoBar = LoggingConfig.makeConfigStringBuilder.bind(null, 'InfoBar');
-export const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'FlexboxOverlays');
-export const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
-export const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');
 export const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
 export const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 
@@ -80,7 +76,6 @@ export const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview
 export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null, 'ResponsivePresets');
 export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
-export const stylesComputedPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesComputedPane');
 export const section = LoggingConfig.makeConfigStringBuilder.bind(null, 'Section');
 export const stylePropertiesSectionSeparator =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSectionSeparator');

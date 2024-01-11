@@ -341,7 +341,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
           <summary class="header" @keydown=${this.#onSummaryKeyDown}>
             ${i18nString(UIStrings.grid)}
           </summary>
-          <div class="content-section" jslog=${VisualLogging.gridSettings()}>
+          <div class="content-section" jslog=${VisualLogging.section().context('grid-settings')}>
             <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
             <div class="select-settings">
               ${this.#getEnumSettings().map(setting => this.#renderEnumSetting(setting))}
@@ -351,7 +351,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
             </div>
           </div>
           ${gridElements ?
-            html`<div class="content-section" jslog=${VisualLogging.gridOverlays()}>
+            html`<div class="content-section" jslog=${VisualLogging.section().context('grid-overlays')}>
               <h3 class="content-section-title">
                 ${gridElements.length ? i18nString(UIStrings.gridOverlays) : i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
               </h3>
@@ -368,7 +368,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
               ${i18nString(UIStrings.flexbox)}
             </summary>
             ${flexContainerElements ?
-              html`<div class="content-section" jslog=${VisualLogging.flexboxOverlays()}>
+              html`<div class="content-section" jslog=${VisualLogging.section().context('flexbox-overlays')}>
                 <h3 class="content-section-title">
                   ${flexContainerElements.length ? i18nString(UIStrings.flexboxOverlays) : i18nString(UIStrings.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>

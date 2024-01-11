@@ -48,6 +48,7 @@ import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
+import {ColorMatch, ColorMatcher, type RenderingContext} from './PropertyParser.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 import {StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
@@ -114,8 +115,8 @@ function renderPropertyContents(
   if (valueFromCache) {
     return valueFromCache;
   }
-  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-  renderer.setColorHandler(processColor);
+  const renderer =
+      new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue, [ColorRenderer.matcher()]);
   const name = renderer.renderName();
   name.slot = 'name';
   const value = renderer.renderValue();
@@ -155,8 +156,8 @@ const createTraceElement =
      linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
-      const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, (property.value as string));
-      renderer.setColorHandler(processColor);
+      const renderer = new StylesSidebarPropertyRenderer(
+          null, node, property.name, (property.value as string), [ColorRenderer.matcher()]);
       const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
@@ -176,21 +177,28 @@ const createTraceElement =
       return trace;
     };
 
-const processColor = (text: string): Node => {
-  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-  swatch.renderColor(text, true);
-  const valueElement = document.createElement('span');
-  valueElement.textContent = swatch.getText();
-  swatch.append(valueElement);
+class ColorRenderer extends ColorMatch {
+  render(context: RenderingContext): Node[] {
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    swatch.renderColor(this.text, true);
+    const valueElement = document.createElement('span');
+    valueElement.textContent = swatch.getText();
+    swatch.append(valueElement);
 
-  swatch.addEventListener(
-      InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-        const {data} = event;
-        valueElement.textContent = data.text;
-      });
+    swatch.addEventListener(
+        InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
+          const {data} = event;
+          valueElement.textContent = data.text;
+        });
 
-  return swatch;
-};
+    context.addControl('color', swatch);
+    return [swatch];
+  }
+
+  static matcher(): ColorMatcher {
+    return new ColorMatcher(text => new ColorRenderer(text));
+  }
+}
 
 const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event): void => {
   if (!event) {

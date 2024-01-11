@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 
 const cssParser = CodeMirror.css.cssLanguage.parser;
@@ -101,8 +103,19 @@ export interface Match {
   computedText?(): string;
 }
 
-interface Matcher {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Constructor = (abstract new (...args: any[]) => any)|(new (...args: any[]) => any);
+export type MatchFactory<MatchT extends Constructor> = (...args: ConstructorParameters<MatchT>) => InstanceType<MatchT>;
+
+export interface Matcher {
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null;
+}
+
+export abstract class MatcherBase<MatchT extends Constructor> implements Matcher {
+  constructor(readonly createMatch: MatchFactory<MatchT>) {
+  }
+
+  abstract matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null;
 }
 
 type MatchKey = Platform.Brand.Brand<string, 'MatchKey'>;
@@ -326,6 +339,39 @@ function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
 
 export function children(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode[] {
   return siblings(node.firstChild);
+}
+
+export abstract class ColorMatch implements Match {
+  readonly text: string;
+  get type(): string {
+    return 'color';
+  }
+  constructor(text: string) {
+    this.text = text;
+  }
+  abstract render(context: RenderingContext): Node[];
+}
+
+export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
+  matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (matching.ast.propertyName && !SDK.CSSMetadata.cssMetadata().isColorAwareProperty(matching.ast.propertyName)) {
+      return null;
+    }
+    const text = matching.ast.text(node);
+    if (node.name === 'ColorLiteral') {
+      return this.createMatch(text);
+    }
+    if (node.name === 'ValueName' && Common.Color.Nicknames.has(text)) {
+      return this.createMatch(text);
+    }
+    if (node.name === 'CallExpression') {
+      const callee = node.getChild('Callee');
+      if (callee && matching.ast.text(callee).match(/^(rgba?|hsla?|hwba?|lab|lch|oklab|oklch|color)$/)) {
+        return this.createMatch(text);
+      }
+    }
+    return null;
+  }
 }
 
 class LegacyRegexMatch implements Match {

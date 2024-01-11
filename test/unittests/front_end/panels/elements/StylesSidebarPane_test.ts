@@ -168,7 +168,6 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     };
     const renderer =
         new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'animation-name', 'foobar');
-    renderer.setColorHandler(throwingHandler);
     renderer.setBezierHandler(throwingHandler);
     renderer.setFontHandler(throwingHandler);
     renderer.setShadowHandler(throwingHandler);
@@ -197,16 +196,13 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
 
   it('does not call bezier handler when color() value contains srgb-linear color space in a variable definition',
      () => {
-       const colorHandler = sinon.fake.returns(document.createTextNode('colorHandler'));
        const bezierHandler = sinon.fake.returns(document.createTextNode('bezierHandler'));
        const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
            null, null, '--color', 'color(srgb-linear 1 0.55 0.72)');
-       renderer.setColorHandler(colorHandler);
        renderer.setBezierHandler(bezierHandler);
 
        renderer.renderValue();
 
-       assert.isTrue(colorHandler.called, trace.toString());
        assert.isFalse(bezierHandler.called, trace.toString());
      });
 
@@ -230,27 +226,6 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     const node = renderer.renderValue();
 
     assert.deepEqual(node.textContent, nodeContents, trace.toString());
-  });
-
-  it('parses colors correctly', () => {
-    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-        null, null, 'border', 'rgb(.5 .5 .5 .5) 1px solid');
-    renderer.setColorHandler(() => document.createTextNode('MATCH'));
-
-    const node = renderer.renderValue();
-
-    // The MATCH on `solid` is bogus but expected with the color matcher.
-    assert.deepEqual(node.textContent, 'MATCH 1px MATCH', trace.toString());
-  });
-
-  it('parses colors with comments correctly', () => {
-    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-        null, null, 'background-color', 'rgb(/* R */155, /* G */51, /* B */255)');
-    renderer.setColorHandler(() => document.createTextNode('MATCH'));
-
-    const node = renderer.renderValue();
-
-    assert.deepEqual(node.textContent, 'MATCH', trace.toString());
   });
 
   it('parses lengths correctly', () => {

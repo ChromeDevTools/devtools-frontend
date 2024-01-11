@@ -25,6 +25,11 @@ import {
 import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
+import {
+  ColorMatch,
+  ColorMatcher,
+  type RenderingContext,
+} from './PropertyParser.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
@@ -117,6 +122,86 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
+export class ColorRenderer extends ColorMatch {
+  constructor(private readonly treeElement: StylePropertyTreeElement, text: string) {
+    super(text);
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): ColorMatcher {
+    return new ColorMatcher((text: string) => new ColorRenderer(treeElement, text));
+  }
+
+  render(context: RenderingContext): Node[] {
+    const swatch = this.renderColorSwatch();
+    context.addControl('color', swatch);
+    return [swatch];
+  }
+
+  renderColorSwatch(valueChild?: Node|null): HTMLElement {
+    const editable = this.treeElement.editable();
+    const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
+    const tooltip = editable ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
+
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    swatch.setReadonly(!editable);
+    swatch.renderColor(this.text, editable, tooltip);
+
+    if (!valueChild) {
+      valueChild = swatch.createChild('span');
+      const color = swatch.getColor();
+      valueChild.textContent =
+          color ? (color.getAuthoredText() ?? color.asString(swatch.getFormat() ?? undefined)) : this.text;
+    }
+    swatch.appendChild(valueChild);
+
+    const onColorChanged = (event: InlineEditor.ColorSwatch.ColorChangedEvent): void => {
+      const {data} = event;
+      swatch.firstElementChild && swatch.firstElementChild.remove();
+      swatch.createChild('span').textContent = data.text;
+      void this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
+    };
+
+    swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
+    });
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
+
+    if (editable) {
+      const swatchIcon =
+          new ColorSwatchPopoverIcon(this.treeElement, this.treeElement.parentPane().swatchPopoverHelper(), swatch);
+      swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
+        // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
+        // This needs consideration as current structure feels a bit different:
+        // There are: ColorSwatch, ColorSwatchPopoverIcon, and Spectrum
+        // * Our entry into the Spectrum is `ColorSwatch` and `ColorSwatch` is able to
+        // update the color too. (its format at least, don't know the difference)
+        // * ColorSwatchPopoverIcon is a helper to show/hide the Spectrum popover
+        // * Spectrum is the color picker
+        //
+        // My idea is: merge `ColorSwatch` and `ColorSwatchPopoverIcon`
+        // and emit `ColorChanged` event whenever color is changed.
+        // Until then, this is a hack to kind of emulate the behavior described above
+        // `swatch` is dispatching its own ColorChangedEvent with the changed
+        // color text whenever the color changes.
+        swatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorChangedEvent(ev.data));
+      });
+      void this.#addColorContrastInfo(swatchIcon);
+    }
+
+    return swatch;
+  }
+
+  async #addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
+    const cssModel = this.treeElement.parentPane().cssModel();
+    const node = this.treeElement.node();
+    if (this.treeElement.property.name !== 'color' || !cssModel || !node || typeof node.id === 'undefined') {
+      return;
+    }
+    const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo(await cssModel.getBackgroundColors(node.id));
+    swatchIcon.setContrastInfo(contrastInfo);
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -176,7 +261,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.matchedStylesInternal;
   }
 
-  private editable(): boolean {
+  editable(): boolean {
     const isLonghandInsideShorthand = this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand;
     const hasSourceData = Boolean(this.style.styleSheetId && this.style.range);
     return !isLonghandInsideShorthand && hasSourceData;
@@ -243,67 +328,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedDueToFilter = false;
     }
     return matches;
-  }
-
-  private renderColorSwatch(text: string, valueChild?: Node|null): Node {
-    const useUserSettingFormat = this.editable();
-    const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
-    const tooltip = this.editable() ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
-
-    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.setReadonly(!this.editable());
-    swatch.renderColor(text, useUserSettingFormat, tooltip);
-
-    if (!valueChild) {
-      valueChild = swatch.createChild('span');
-      const color = swatch.getColor();
-      valueChild.textContent =
-          color ? (color.getAuthoredText() ?? color.asString(swatch.getFormat() ?? undefined)) : text;
-    }
-    swatch.appendChild(valueChild);
-
-    const onColorChanged = (event: InlineEditor.ColorSwatch.ColorChangedEvent): void => {
-      const {data} = event;
-      swatch.firstElementChild && swatch.firstElementChild.remove();
-      swatch.createChild('span').textContent = data.text;
-      // This is a terrible hack to make sure that color swatch works for CSS variable usages with
-      // variable fallbacks. The issue is `StylesSidebarPropertyRenderer` renders CSS variables with var() fallbacks
-      // with two additions to the value element: CSS var swatch that renders `var(--red, var(--blue)` part -- without the last parens
-      // and a text node with a closing parenthesis. If the color is changed through color swatch, the value becomes invalid with an
-      // additional parenthesis like `#000)`; so in here, we explicitly remove the last parenthesis.
-      if (swatch.nextSibling?.textContent === ')') {
-        swatch.nextSibling.textContent = '';
-      }
-      void this.applyStyleText(this.renderedPropertyText(), false);
-    };
-
-    swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
-      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
-    });
-    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
-
-    if (this.editable()) {
-      const swatchIcon = new ColorSwatchPopoverIcon(this, this.parentPaneInternal.swatchPopoverHelper(), swatch);
-      swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
-        // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
-        // This needs consideration as current structure feels a bit different:
-        // There are: ColorSwatch, ColorSwatchPopoverIcon, and Spectrum
-        // * Our entry into the Spectrum is `ColorSwatch` and `ColorSwatch` is able to
-        // update the color too. (its format at least, don't know the difference)
-        // * ColorSwatchPopoverIcon is a helper to show/hide the Spectrum popover
-        // * Spectrum is the color picker
-        //
-        // My idea is: merge `ColorSwatch` and `ColorSwatchPopoverIcon`
-        // and emit `ColorChanged` event whenever color is changed.
-        // Until then, this is a hack to kind of emulate the behavior described above
-        // `swatch` is dispatching its own ColorChangedEvent with the changed
-        // color text whenever the color changes.
-        swatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorChangedEvent(ev.data));
-      });
-      void this.addColorContrastInfo(swatchIcon);
-    }
-
-    return swatch;
   }
 
   private processAnimationName(animationNamePropertyText: string): Node {
@@ -407,10 +431,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return contentChild;
   }
 
-  private processColor(text: string, valueChild?: Node|null): Node {
-    return this.renderColorSwatch(text, valueChild);
-  }
-
   private processColorMix(text: string): Node {
     let colorMixText = text;
     let interpolationMethodResolvedCorrectly = false;
@@ -472,7 +492,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       // Parameter is specified as an actual color (i.e. #000)
       if (value.match(Common.Color.Regex)) {
-        const colorSwatch = this.processColor(value);
+        const colorSwatch = new ColorRenderer(this, value).renderColorSwatch();
         if (colorSwatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
           colorSwatch.addEventListener(
               InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
@@ -577,7 +597,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return varSwatch;
     }
 
-    return this.processColor(computedValue, varSwatch);
+    return new ColorRenderer(this, computedValue).renderColorSwatch(varSwatch);
   }
 
   private handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
@@ -592,18 +612,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.parentPaneInternal.jumpToProperty(variable) ||
           this.parentPaneInternal.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
-    }
-  }
-
-  private async addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
-    if (this.property.name !== 'color' || !this.parentPaneInternal.cssModel() || !this.node()) {
-      return;
-    }
-    const cssModel = this.parentPaneInternal.cssModel();
-    const node = this.node();
-    if (cssModel && node && typeof node.id !== 'undefined') {
-      const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo(await cssModel.getBackgroundColors(node.id));
-      swatchIcon.setContrastInfo(contrastInfo);
     }
   }
 
@@ -1002,12 +1010,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const propertyRenderer =
-        new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value);
+        new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value, [
+          ColorRenderer.matcher(this),
+        ]);
     if (this.property.parsedOk) {
       propertyRenderer.setVarHandler(this.processVar.bind(this));
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
-      propertyRenderer.setColorHandler(this.processColor.bind(this));
       propertyRenderer.setColorMixHandler(this.processColorMix.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));

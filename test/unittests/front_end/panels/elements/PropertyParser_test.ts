@@ -41,6 +41,41 @@ function textFragments(nodes: Node[]): Array<string|null> {
   return nodes.map(n => n.textContent);
 }
 
+function matchSingleValue<T extends Elements.PropertyParser.Match, ArgTs>(
+    name: string|undefined, value: string, matchType: abstract new (...args: ArgTs[]) => T,
+    matcher: Elements.PropertyParser.Matcher):
+    {ast: Elements.PropertyParser.SyntaxTree|null, match: T|null, text: string} {
+  const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+  if (!ast) {
+    return {ast, match: null, text: value};
+  }
+
+  const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
+  const match = matchedResult.getMatch(ast.tree);
+
+  return {
+    ast,
+    match: match instanceof matchType ? match : null,
+    text: Printer.walk(ast).get(),
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Constructor = (new (...args: any[]) => any)|(abstract new (...args: any[]) => any);
+function nilRenderer<Base extends Constructor>(base: Base): Elements.PropertyParser.MatchFactory<Base> {
+  return (...args: unknown[]) => {
+    class Renderer extends base {
+      constructor(...args: unknown[]) {
+        super(...args);
+      }
+      render(): Node[] {
+        return [];
+      }
+    }
+    return new Renderer(...args);
+  };
+}
+
 function tokenizePropertyValue(value: string, name?: string): Elements.PropertyParser.SyntaxTree {
   const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
   Platform.assertNotNullOrUndefined(ast, Printer.rule(`*{${name}: ${value};}`));
@@ -183,6 +218,33 @@ describe('PropertyParser', () => {
     assert.strictEqual(tokenizePropertyValue('red', ' /*comment*/color')?.propertyName, 'color');
     assert.strictEqual(tokenizePropertyValue('red', 'co/*comment*/lor')?.propertyName, 'lor');
     assert.strictEqual(tokenizePropertyValue('red', 'co:lor')?.propertyName, undefined);
+  });
+
+  it('parses colors', () => {
+    for (const fail of ['red-blue', '#f', '#foobar', '', 'rgbz(1 2 2)', 'tan(45deg)']) {
+      const {match, text} = matchSingleValue(
+          'color', fail, Elements.PropertyParser.ColorMatch,
+          new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch)));
+      assert.isNull(match, text);
+    }
+    for (const succeed
+             of ['rgb(/* R */155, /* G */51, /* B */255)', 'red', 'rgb(0 0 0)', 'rgba(0 0 0)', '#fff', '#ffff',
+                 '#ffffff', '#ffffffff']) {
+      const {match, text} = matchSingleValue(
+          'color', succeed, Elements.PropertyParser.ColorMatch,
+          new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch)));
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.text, succeed);
+    }
+    // The property name matters:
+    for (const fail
+             of ['rgb(/* R */155, /* G */51, /* B */255)', 'red', 'rgb(0 0 0)', 'rgba(0 0 0)', '#fff', '#ffff',
+                 '#ffffff', '#ffffffff']) {
+      const {match, text} = matchSingleValue(
+          'width', fail, Elements.PropertyParser.ColorMatch,
+          new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch)));
+      assert.isNull(match, text);
+    }
   });
 
   class ComputedTextMatch implements Elements.PropertyParser.Match {

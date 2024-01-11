@@ -58,7 +58,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import * as LayersWidget from './LayersWidget.js';
-import {LegacyRegexMatcher, renderPropertyValue} from './PropertyParser.js';
+import {LegacyRegexMatcher, type Matcher, renderPropertyValue} from './PropertyParser.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {
   BlankStylePropertiesSection,
@@ -2205,7 +2205,6 @@ export class StylesSidebarPropertyRenderer {
   private node: SDK.DOMModel.DOMNode|null;
   readonly propertyName: string;
   readonly propertyValue: string;
-  private colorHandler: ((arg0: string) => Node)|null;
   private colorMixHandler: ((arg0: string) => Node)|null;
   private bezierHandler: ((arg0: string) => Node)|null;
   private fontHandler: ((arg0: string) => Node)|null;
@@ -2218,13 +2217,15 @@ export class StylesSidebarPropertyRenderer {
   private animationHandler: ((data: string) => Node)|null;
   private positionFallbackHandler: ((data: string) => Node)|null;
   private fontPaletteHandler: ((data: string) => Node)|null;
+  matchers: Matcher[];
 
-  constructor(rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null, name: string, value: string) {
+  constructor(
+      rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null, name: string, value: string,
+      matchers: Matcher[] = []) {
     this.rule = rule;
     this.node = node;
     this.propertyName = name;
     this.propertyValue = value;
-    this.colorHandler = null;
     this.colorMixHandler = null;
     this.bezierHandler = null;
     this.fontHandler = null;
@@ -2237,10 +2238,7 @@ export class StylesSidebarPropertyRenderer {
     this.animationHandler = null;
     this.positionFallbackHandler = null;
     this.fontPaletteHandler = null;
-  }
-
-  setColorHandler(handler: (arg0: string) => Node): void {
-    this.colorHandler = handler;
+    this.matchers = matchers;
   }
 
   setColorMixHandler(handler: (arg0: string) => Node): void {
@@ -2335,7 +2333,7 @@ export class StylesSidebarPropertyRenderer {
       UI.Tooltip.Tooltip.install(valueElement, unescapeCssString(this.propertyValue));
     }
 
-    const matchers: LegacyRegexMatcher[] = [];
+    const matchers: Matcher[] = [...this.matchers];
 
     // AST matching applies regexes bottom-up to subexpressions. This requires the regexes to be explicit enough to only
     // capture a full subexpression and not partials or prefixes. This helper converts a regex to a full-line regex if
@@ -2361,16 +2359,6 @@ export class StylesSidebarPropertyRenderer {
       matchers.push(new LegacyRegexMatcher(SDK.CSSMetadata.VariableRegex, this.varHandler));
     }
     matchers.push(new LegacyRegexMatcher(SDK.CSSMetadata.URLRegex, this.processURL.bind(this)));
-    // Handle `color` properties before handling other ones
-    // because color Regex is fairly narrow to only select real colors.
-    // However, some other Regexes like Bezier is very wide (text that
-    // contains keyword 'linear'. So, we're handling the narrowly matching
-    // handler first so that we will reduce the possibility of wrong matches.
-    // i.e. color(srgb-linear ...) matching as a bezier curve (because
-    // of the `linear` keyword)
-    if (this.colorHandler && metadata.isColorAwareProperty(this.propertyName)) {
-      matchers.push(new LegacyRegexMatcher(Common.Color.Regex, this.colorHandler));
-    }
     if (this.bezierHandler && metadata.isBezierAwareProperty(this.propertyName)) {
       matchers.push(new LegacyRegexMatcher(UI.Geometry.CubicBezier.Regex, this.bezierHandler));
     }

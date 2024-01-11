@@ -70,9 +70,9 @@ export class EntriesFilter {
   // List of entries whose children are modified. This list is used to
   // keep track of entries that should be identified in the UI as modified.
   #modifiedVisibleEntries: Types.TraceEvents.TraceEventData[] = [];
-  // Cache for ancestors of entry that have already been gathered. The ancestors
+  // Cache for descendants of entry that have already been gathered. The descendants
   // will never change so we can avoid running the potentially expensive search again.
-  #entryToAncestorsMap: Map<Helpers.TreeHelpers.TraceEntryNode, Types.TraceEvents.TraceEventData[]> = new Map();
+  #entryToDescendantsMap: Map<Helpers.TreeHelpers.TraceEntryNode, Types.TraceEvents.TraceEventData[]> = new Map();
 
   constructor(entryToNode: EntryToNodeMap) {
     this.#entryToNode = entryToNode;
@@ -104,26 +104,26 @@ export class EntriesFilter {
         [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: false,
       };
     }
-    const allAncestors = this.#findAllAncestorsOfNode(entryNode);
+    const allDescendants = this.#findAllDescendantsOfNode(entryNode);
     const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
     // If there are children to hide, indicate action as possible
     const possibleActions: PossibleFilterActions = {
-      [FilterApplyAction.COLLAPSE_FUNCTION]: allAncestors.length > 0,
+      [FilterApplyAction.COLLAPSE_FUNCTION]: allDescendants.length > 0,
       [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: allRepeatingDescendants.length > 0,
     };
     return possibleActions;
   }
 
   /**
-   * Returns the amount of entry ancestors that belong to the hidden entries array.
+   * Returns the amount of entry descendants that belong to the hidden entries array.
    * **/
-  findHiddenAncestorsAmount(entry: Types.TraceEvents.TraceEntry): number {
+  findHiddenDescendantsAmount(entry: Types.TraceEvents.TraceEntry): number {
     const entryNode = this.#entryToNode.get(entry);
     if (!entryNode) {
       return 0;
     }
-    const allAncestors = this.#findAllAncestorsOfNode(entryNode);
-    return allAncestors.filter(ancestor => this.invisibleEntries().includes(ancestor)).length;
+    const allDescendants = this.#findAllDescendantsOfNode(entryNode);
+    return allDescendants.filter(descendant => this.invisibleEntries().includes(descendant)).length;
   }
 
   /**
@@ -174,14 +174,14 @@ export class EntriesFilter {
       }
 
       case FilterApplyAction.COLLAPSE_FUNCTION: {
-        // The entry itself remains visible, but all of its ancestors are hidden.
+        // The entry itself remains visible, but all of its descendants are hidden.
         const entryNode = this.#entryToNode.get(action.entry);
         if (!entryNode) {
           // Invalid node was given, just ignore and move on.
           break;
         }
-        const allAncestors = this.#findAllAncestorsOfNode(entryNode);
-        allAncestors.forEach(ancestor => entriesToHide.add(ancestor));
+        const allDescendants = this.#findAllDescendantsOfNode(entryNode);
+        allDescendants.forEach(descendant => entriesToHide.add(descendant));
         // If there are any children to hide, add selected entry to modifiedVisibleEntries array to identify in the UI that children of the selected entry are modified.
         if (entriesToHide.size > 0) {
           this.#modifiedVisibleEntries.push(action.entry);
@@ -196,7 +196,7 @@ export class EntriesFilter {
           break;
         }
         const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
-        allRepeatingDescendants.forEach(ancestor => entriesToHide.add(ancestor));
+        allRepeatingDescendants.forEach(descendant => entriesToHide.add(descendant));
         if (entriesToHide.size > 0) {
           this.#modifiedVisibleEntries.push(action.entry);
         }
@@ -220,36 +220,36 @@ export class EntriesFilter {
     return parent;
   }
 
-  #findAllAncestorsOfNode(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEventData[] {
-    const cachedAncestors = this.#entryToAncestorsMap.get(root);
-    if (cachedAncestors) {
-      return cachedAncestors;
+  #findAllDescendantsOfNode(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEventData[] {
+    const cachedDescendants = this.#entryToDescendantsMap.get(root);
+    if (cachedDescendants) {
+      return cachedDescendants;
     }
 
-    const ancestors: Types.TraceEvents.TraceEventData[] = [];
+    const descendants: Types.TraceEvents.TraceEventData[] = [];
 
-    // Walk through all the ancestors, starting at the root node.
+    // Walk through all the descendants, starting at the root node.
     const children: Helpers.TreeHelpers.TraceEntryNode[] = [...root.children];
     while (children.length > 0) {
       const childNode = children.shift();
       if (childNode) {
-        ancestors.push(childNode.entry);
-        const childNodeCachedAncestors = this.#entryToAncestorsMap.get(childNode);
-        // If the ancestors of a child are cached, get them from the cache instead of iterating through them again
-        if (childNodeCachedAncestors) {
-          ancestors.push(...childNodeCachedAncestors);
+        descendants.push(childNode.entry);
+        const childNodeCachedDescendants = this.#entryToDescendantsMap.get(childNode);
+        // If the descendants of a child are cached, get them from the cache instead of iterating through them again
+        if (childNodeCachedDescendants) {
+          descendants.push(...childNodeCachedDescendants);
         } else {
           children.push(...childNode.children);
         }
       }
     }
 
-    this.#entryToAncestorsMap.set(root, ancestors);
-    return ancestors;
+    this.#entryToDescendantsMap.set(root, descendants);
+    return descendants;
   }
 
   #findAllRepeatingDescendantsOfNext(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEntry[] {
-    // Walk through all the ancestors, starting at the root node.
+    // Walk through all the descendants, starting at the root node.
     const children: Helpers.TreeHelpers.TraceEntryNode[] = [...root.children];
     const repeatingNodes: Types.TraceEvents.TraceEntry[] = [];
     const rootIsProfileCall = Types.TraceEvents.isProfileCall(root.entry);
@@ -288,25 +288,25 @@ export class EntriesFilter {
       // Invalid node was given, just ignore and move on.
       return;
     }
-    const ancestors = this.#findAllAncestorsOfNode(entryNode);
+    const descendants = this.#findAllDescendantsOfNode(entryNode);
 
     /**
-     * Filter out all ancestors of the node
+     * Filter out all descendant of the node
      * from the invisible entries list.
      **/
     this.#invisibleEntries = this.#invisibleEntries.filter(entry => {
-      if (ancestors.includes(entry)) {
+      if (descendants.includes(entry)) {
         return false;
       }
       return true;
     });
 
     /**
-     * Filter out all ancestors and entry from modified entries
+     * Filter out all descentants and entry from modified entries
      * list to not show that some entries below those are hidden.
      **/
     this.#modifiedVisibleEntries = this.#modifiedVisibleEntries.filter(iterEntry => {
-      if (ancestors.includes(iterEntry) || iterEntry === entry) {
+      if (descendants.includes(iterEntry) || iterEntry === entry) {
         return false;
       }
       return true;

@@ -228,9 +228,9 @@ export class ThreadAppender implements TrackAppender {
     return this.#entriesFilter?.findPossibleActions(traceEvent);
   }
 
-  findHiddenAncestorsAmount(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry): number|void {
+  findHiddenDescendantsAmount(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry): number|void {
     if ((this.#entriesFilter)) {
-      return this.#entriesFilter?.findHiddenAncestorsAmount(traceEvent);
+      return this.#entriesFilter?.findHiddenDescendantsAmount(traceEvent);
     }
     console.warn('Could not find hidden entries because entriesFilter does not exist');
   }
@@ -524,7 +524,7 @@ export class ThreadAppender implements TrackAppender {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
     if (childrenCollapsed) {
       addDecorationToEvent(
-          flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW});
+          flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }
     const warnings = this.#traceParsedData.Warnings.perEvent.get(entry);
     if (!warnings) {

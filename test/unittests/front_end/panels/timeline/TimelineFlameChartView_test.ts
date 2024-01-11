@@ -89,7 +89,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     assert.isFalse(flameChartView.isNetworkTrackShownForTests());
   });
 
-  it('Adds Hidden Ancestors Arrow as a decoration when a Context Menu action is applied on a node', async function() {
+  it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a node', async function() {
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
     const mockViewDelegate = new MockViewDelegate();
 
@@ -120,19 +120,19 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       throw new Error('Could not find a visible node with children');
     }
 
-    // Apply COLLAPSE_FUNCTION action to the node. This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
+    // Apply COLLAPSE_FUNCTION action to the node. This action will hide all the children of the passed node and add HIDDEN_DESCENDANTS_ARROW decoration to it.
     flameChartView.getMainFlameChart().modifyTree(
         TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, node?.id);
 
     const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
     assert.deepEqual(decorationsForEntry, [
       {
-        type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
+        type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,
       },
     ]);
   });
 
-  it('Adds Hidden Ancestors Arrow as a decoration when a Context Menu action is applied on a selected node with a key shorcut event',
+  it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a selected node with a key shorcut event',
      async function() {
        const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
        const mockViewDelegate = new MockViewDelegate();
@@ -174,12 +174,12 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
        assert.deepEqual(decorationsForEntry, [
          {
-           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
+           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,
          },
        ]);
      });
 
-  it('Removes Hidden Ancestors Arrow as a decoration when Reset Children action is applied on a node',
+  it('Removes Hidden Descendants Arrow as a decoration when Reset Children action is applied on a node',
      async function() {
        const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
        const mockViewDelegate = new MockViewDelegate();
@@ -213,14 +213,14 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        }
 
        // Apply COLLAPSE_FUNCTION Context Menu action to the node.
-       // This action will hide all the children of the passed node and add HIDDEN_ANCESTORS_ARROW decoration to it.
+       // This action will hide all the children of the passed node and add HIDDEN_DESCENDANTS_ARROW decoration to it.
        flameChartView.getMainFlameChart().modifyTree(
            TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, node?.id);
 
        let decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
        assert.deepEqual(decorationsForEntry, [
          {
-           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
+           type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,
          },
        ]);
 
@@ -230,7 +230,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        if (!mainTrack) {
          throw new Error('Could not find main track');
        }
-       // Apply a RESET_CHILDREN action that will reveal all of the hidden children of the passed node and remove HIDDEN_ANCESTORS_ARROW decoration from it.
+       // Apply a RESET_CHILDREN action that will reveal all of the hidden children of the passed node and remove HIDDEN_DESCENDANTS_ARROW decoration from it.
        flameChartView.getMainFlameChart().modifyTree(
            TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, node?.id);
 

@@ -586,12 +586,12 @@ describe('EntriesFilter', function() {
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
 
     // Before applying any action on a node, there should be no entries hidden under it
-    assert.strictEqual(stack.findHiddenAncestorsAmount(firstFooCallEntry), 0);
+    assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 0);
 
     stack.applyAction(
         {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // There should be 3 foo() entries hidden under the first foo call entry
-    assert.strictEqual(stack.findHiddenAncestorsAmount(firstFooCallEntry), 3);
+    assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 3);
   });
 });

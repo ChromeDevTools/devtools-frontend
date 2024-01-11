@@ -86,7 +86,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const HIDDEN_ANCESTOR_ARROW = 'data:image/jpg;base64,' +
+const HIDDEN_DESCENDANT_ARROW = 'data:image/jpg;base64,' +
     'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABYSURBVHgB7c6xDYBACAVQIM5BWOUmM47iJK5CGATEhMKYK7TyinsV+YEfAKb/YS9k5pWI5J65u5rZ9txdegV5vEfEkaNUpJm11x9cJFUJIGLTBF9JgWlwJyvOFrGul+FpAAAAAElFTkSuQmCC';
 
 export class FlameChartDelegate {
@@ -129,7 +129,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private entryInfo: HTMLElement;
   private readonly markerHighlighElement: HTMLElement;
   readonly highlightElement: HTMLElement;
-  readonly revealAncestorsArrowHighlightElement: HTMLElement;
+  readonly revealDescendantsArrowHighlightElement: HTMLElement;
   private readonly selectedElement: HTMLElement;
   private rulerEnabled: boolean;
   private barHeight: number;
@@ -219,8 +219,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
     this.highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
-    this.revealAncestorsArrowHighlightElement =
-        this.viewportElement.createChild('div', 'reveal-ancestors-arrow-highlight-element');
+    this.revealDescendantsArrowHighlightElement =
+        this.viewportElement.createChild('div', 'reveal-descendants-arrow-highlight-element');
     this.selectedElement = this.viewportElement.createChild('div', 'flame-chart-selected-element');
     this.canvas.addEventListener('focus', () => {
       this.dispatchEventToListeners(Events.CanvasFocused);
@@ -473,7 +473,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
     const group = data.groups.at(this.selectedGroupIndex);
-    // If the mouse is hovering over the hidden ancestors arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
+    // If the mouse is hovering over the hidden descendants arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
     const popoverElement = (this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex) && group) ?
         this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
             this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(group, entryIndex) :
@@ -1218,7 +1218,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    */
   isMouseOverRevealChildrenArrow(x: number, index: number): boolean {
     // Check if given entry has an arrow
-    if (!this.entryHasDecoration(index, FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW)) {
+    if (!this.entryHasDecoration(index, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW)) {
       return false;
     }
     const timelineData = this.timelineData();
@@ -1563,7 +1563,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             context.restore();
             break;
           }
-          case FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW: {
+          case FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW: {
             const barX = this.timeToPositionClipped(entryStartTime);
             const barLevel = entryLevels[entryIndex];
             const barHeight = this.#eventBarHeight(timelineData, entryIndex);
@@ -1575,7 +1575,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             const arrowSize = barHeight;
             if (barWidth > arrowSize * 2) {
               const image = new Image();
-              image.src = HIDDEN_ANCESTOR_ARROW;
+              image.src = HIDDEN_DESCENDANT_ARROW;
               context.drawImage(image, barX + barWidth - arrowSize, barY, arrowSize, arrowSize);
             }
             context.restore();
@@ -1954,7 +1954,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       let text = this.dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this.#font;
-        const hasArrowDecoration = this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW);
+        const hasArrowDecoration =
+            this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
         // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration, also substract the width of the decoration.
         // The decoration is square, therefore it's width is equal to this.barHeight
         const maxBarWidth = (hasArrowDecoration) ? barWidth - textPadding - this.barHeight : barWidth - 2 * textPadding;
@@ -2712,16 +2713,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   // Updates the highlight of an Arrow button that is shown on an entry if it has hidden child entries
   private updateHiddenChildrenArrowHighlighPosition(entryIndex: number): void {
-    this.revealAncestorsArrowHighlightElement.classList.add('hidden');
+    this.revealDescendantsArrowHighlightElement.classList.add('hidden');
     /**
-     * No need to update the hidden ancestors arrow highlight if
+     * No need to update the hidden descendants arrow highlight if
      * 1. No entry is highlighted
      * 2. Mouse is not hovering over the arrow button
      */
     if (entryIndex === -1 || !this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
       return;
     }
-    this.updateElementPosition(this.revealAncestorsArrowHighlightElement, entryIndex, true);
+    this.updateElementPosition(this.revealDescendantsArrowHighlightElement, entryIndex, true);
   }
 
   private timeToPositionClipped(time: number): number {
@@ -2853,7 +2854,7 @@ export const MinimalTimeWindowMs = 0.5;
 export const enum FlameChartDecorationType {
   CANDY = 'CANDY',
   WARNING_TRIANGLE = 'WARNING_TRIANGLE',
-  HIDDEN_ANCESTORS_ARROW = 'HIDDEN_ANCESTORS_ARROW',
+  HIDDEN_DESCENDANTS_ARROW = 'HIDDEN_DESCENDANTS_ARROW',
 }
 
 /**
@@ -2877,7 +2878,7 @@ export type FlameChartDecoration = {
   type: FlameChartDecorationType.WARNING_TRIANGLE,
   customEndTime?: TraceEngine.Types.Timing.MicroSeconds,
 }|{
-  type: FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW,
+  type: FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,
 };
 
 // We have to ensure we draw the decorations in a particular order; warning
@@ -2885,7 +2886,7 @@ export type FlameChartDecoration = {
 const decorationDrawOrder: Record<FlameChartDecorationType, number> = {
   CANDY: 1,
   WARNING_TRIANGLE: 2,
-  HIDDEN_ANCESTORS_ARROW: 3,
+  HIDDEN_DESCENDANTS_ARROW: 3,
 };
 
 export function sortDecorationsForRenderingOrder(decorations: FlameChartDecoration[]): void {

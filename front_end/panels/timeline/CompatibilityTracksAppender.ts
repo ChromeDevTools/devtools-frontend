@@ -199,11 +199,11 @@ export class CompatibilityTracksAppender {
     console.warn('Could not modify tree in not thread track');
   }
 
-  findHiddenAncestorsAmount(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry): number|
+  findHiddenDescendantsAmount(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry): number|
       void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
-      return threadTrackAppender.findHiddenAncestorsAmount(node);
+      return threadTrackAppender.findHiddenDescendantsAmount(node);
     }
     console.warn('Could not find hidden entries because non thread tracks are not modifiable');
   }

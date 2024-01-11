@@ -88,7 +88,7 @@ function renderExample2() {
           ],
           [{type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE}],
           [
-            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
             {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
           ],
           [
@@ -102,22 +102,22 @@ function renderExample2() {
               type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
               startAtTime: TraceEngine.Types.Timing.MicroSeconds(10_000),
             },
-            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
           ],
           [
-            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
           ],
           [
             {
               type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
               startAtTime: TraceEngine.Types.Timing.MicroSeconds(10_000),
             },
-            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_ANCESTORS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
             {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
           ],
         ],
         groups: [{
-          name: 'Testing Candy Stripe, warning triangles and hidden ancestors arrow decorations' as
+          name: 'Testing Candy Stripe, warning triangles and hidden descendants arrow decorations' as
               Platform.UIString.LocalizedString,
           startLevel: 0,
           style: defaultGroupStyle,

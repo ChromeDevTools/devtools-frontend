@@ -946,7 +946,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEntry;
-    const hiddenEntriesAmount = this.compatibilityTracksAppender?.findHiddenAncestorsAmount(group, entry);
+    const hiddenEntriesAmount = this.compatibilityTracksAppender?.findHiddenDescendantsAmount(group, entry);
 
     if (!hiddenEntriesAmount) {
       return null;

@@ -99,8 +99,6 @@ const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
-Root.Runtime.experiments.setEnabled(
-    Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL, params.has('breadcrumbs'));
 Root.Runtime.experiments.setEnabled('timelineInvalidationTracking', params.has('invalidations'));
 
 const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});

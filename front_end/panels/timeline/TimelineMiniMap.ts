@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -60,10 +59,7 @@ export class TimelineMiniMap extends
     this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OverviewPaneWindowChanged, event => {
       this.#onOverviewPanelWindowChanged(event);
     });
-
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL)) {
-      this.#activateBreadcrumbs();
-    }
+    this.#activateBreadcrumbs();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }

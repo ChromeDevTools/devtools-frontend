@@ -1147,13 +1147,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.flameChart.resizeToPreferredHeights();
     }
 
-    // Set the initial zoom: if we are using breadcrumbs we leave the entire
-    // window visible, but if not we zoom into the biggest period of activity
-    // (we might want to consider doing the same for breadcrumbs)
-    if (this.#minimapComponent.breadcrumbsActivated) {
-      this.#minimapComponent.addInitialBreadcrumb();
-    } else if (traceParsedData) {
-      // We expect traceParsedData to always exist, this check is to keep TS happy.
+    // Set the initial zoom and if we are using breadcrumbs, create the initial breadcrum.
+    // We expect traceParsedData to always exist, this check is to keep TS happy.
+    if (traceParsedData) {
+      if (this.#minimapComponent.breadcrumbsActivated) {
+        this.#minimapComponent.addInitialBreadcrumb();
+      }
 
       // To calculate the activity we might want to zoom in, we find the last
       // main thread. Or we find the CPU Profile thread, for e.g. Node traces.

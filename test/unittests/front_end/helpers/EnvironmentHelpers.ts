@@ -124,7 +124,6 @@ const REGISTERED_EXPERIMENTS = [
   'useSourceMapScopes',
   'fontEditor',
   'networkPanelFilterBarRedesign',
-  'breadcrumbsPerformancePanel',
   'trackContextMenu',
   'sourcesFrameIndentationMarkersTemporarilyDisable',
 ];

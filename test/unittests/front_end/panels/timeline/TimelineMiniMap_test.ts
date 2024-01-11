@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as TimelineComponents from '../../../../../front_end/panels/timeline/components/components.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import * as TraceBounds from '../../../../../front_end/services/trace_bounds/trace_bounds.js';
@@ -65,8 +64,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.detach();
   });
 
-  it('creates the first breadcrumb when breadcrumbsPerformancePanel experiment is enabled', async function() {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL);
+  it('creates the first breadcrumb', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(traceParsedData.Meta.traceBounds);
@@ -96,28 +94,5 @@ describeWithEnvironment('TimelineMiniMap', function() {
     assert.strictEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(minimap.breadcrumbs.initialBreadcrumb).length, 1);
     assert.deepEqual(minimap.breadcrumbs.initialBreadcrumb, {window: traceParsedData.Meta.traceBounds, child: null});
-  });
-
-  it('does not create breadcrumbs when breadcrumbsPerformancePanel experiment is disabled', async function() {
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-
-    const container = document.createElement('div');
-    renderElementIntoDOM(container);
-
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
-    minimap.markAsRoot();
-    minimap.show(container);
-
-    minimap.setData({
-      traceParsedData,
-      settings: {
-        showMemory: true,
-        showScreenshots: true,
-      },
-    });
-
-    await raf();
-
-    assert.isNull(minimap.breadcrumbs);
   });
 });

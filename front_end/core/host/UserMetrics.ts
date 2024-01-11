@@ -986,7 +986,6 @@ export enum DevtoolsExperiments {
   'useSourceMapScopes' = 76,
   'storageBucketsTree' = 77,
   'networkPanelFilterBarRedesign' = 79,
-  'breadcrumbsPerformancePanel' = 80,
   'trackContextMenu' = 81,
   'autofillView' = 82,
   'sourcesFrameIndentationMarkersTemporarilyDisable' = 83,

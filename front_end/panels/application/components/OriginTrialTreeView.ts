@@ -342,6 +342,7 @@ export class OriginTrialTreeView extends HTMLElement {
             iconName: 'clear',
             color: 'var(--icon-default)',
             width: '16px',
+            height: '16px',
           } as IconButton.Icon.IconWithName}
         >
       </${IconButton.Icon.Icon.litTagName}>

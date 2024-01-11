@@ -160,7 +160,7 @@ button {
       margin-right: 4px;
     }
 
-    .small {
+    &.small {
       padding: 0 calc(9px - var(--button-border-size)) 0 calc(3px - var(--button-border-size));
 
       devtools-icon {

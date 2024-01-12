@@ -316,7 +316,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu, gridNode: DataGrid.DataGrid.DataGridNode<unknown>):
       void {
     const node = (gridNode as ProfileDataGridNode);
-    if (node.linkElement && !contextMenu.containsTarget(node.linkElement)) {
+    if (node.linkElement) {
       contextMenu.appendApplicableItems(node.linkElement);
     }
   }

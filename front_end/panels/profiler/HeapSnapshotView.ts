@@ -1837,9 +1837,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
 
   onContextMenu(link: Element, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (!contextMenu.containsTarget(link)) {
-      contextMenu.appendApplicableItems(link);
-    }
+    contextMenu.appendApplicableItems(link);
     void contextMenu.show();
     event.consume(true);
   }

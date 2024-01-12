@@ -552,7 +552,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   private onContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, eventGridNode: DataGrid.DataGrid.DataGridNode<GridNode>): void {
     const gridNode = (eventGridNode as GridNode);
-    if (gridNode.linkElement && !contextMenu.containsTarget(gridNode.linkElement)) {
+    if (gridNode.linkElement) {
       contextMenu.appendApplicableItems(gridNode.linkElement);
     }
     const profileNode = gridNode.profileNode;

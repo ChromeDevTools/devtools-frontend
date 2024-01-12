@@ -867,7 +867,7 @@ function setupRequestTypesDropdown() {
                                                                 }));
 
   const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
-  const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
+  const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, setting);
   return dropdown;
 }
 

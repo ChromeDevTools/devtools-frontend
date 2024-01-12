@@ -556,15 +556,17 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
                     ({name: category.title(), label: (): string => category.shortTitle(), title: category.title()}));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN)) {
-      this.resourceCategoryFilterUI =
-          new DropDownTypesUI(filterItems, this.filterChanged.bind(this), this.networkResourceTypeFiltersSetting);
+      this.resourceCategoryFilterUI = new DropDownTypesUI(filterItems, this.networkResourceTypeFiltersSetting);
+      this.resourceCategoryFilterUI.addEventListener(
+          UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
       UI.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString(UIStrings.requestTypesToInclude));
       this.resourceCategoryFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
       filterBar.addFilter(this.resourceCategoryFilterUI);
       filterBar.addDivider();
 
-      this.moreFiltersDropDownUI = new MoreFiltersDropDownUI(this.filterChanged.bind(this));
+      this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
+      this.moreFiltersDropDownUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged, this);
       filterBar.addFilter(this.moreFiltersDropDownUI);
     } else {
       this.dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
@@ -2558,7 +2560,6 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     UI.FilterBar.FilterUI {
   private readonly filterElement: HTMLDivElement;
   private readonly dropDownButton: UI.Toolbar.ToolbarButton;
-  private readonly filterChanged: () => void;
   private displayedTypes: Set<string>;
   private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>;
   private readonly items: UI.FilterBar.Item[];
@@ -2567,12 +2568,9 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
   private typesCountAdorner: Adorners.Adorner.Adorner;
   private hasChanged = false;
 
-  constructor(
-      items: UI.FilterBar.Item[], filterChangedCallback: () => void,
-      setting: Common.Settings.Setting<{[key: string]: boolean}>) {
+  constructor(items: UI.FilterBar.Item[], setting: Common.Settings.Setting<{[key: string]: boolean}>) {
     super();
     this.items = items;
-    this.filterChanged = filterChangedCallback;
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute(
@@ -2684,6 +2682,10 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     this.contextMenu?.setChecked(menuItems[0], this.displayedTypes.has('all'));
   }
 
+  private filterChanged(): void {
+    this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FilterChanged);
+  }
+
   private settingChanged(): void {
     this.hasChanged = true;
     this.displayedTypes = new Set();
@@ -2771,7 +2773,6 @@ export class MoreFiltersDropDownUI extends
     Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements UI.FilterBar.FilterUI {
   private readonly filterElement: HTMLDivElement;
   private readonly dropDownButton: UI.Toolbar.ToolbarButton;
-  private readonly filterChangedCallback: () => void;
   private networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   private networkHideChromeExtensionsSetting: Common.Settings.Setting<boolean>;
   private networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
@@ -2782,9 +2783,8 @@ export class MoreFiltersDropDownUI extends
   private activeFiltersCountAdorner: Adorners.Adorner.Adorner;
   private hasChanged = false;
 
-  constructor(filterChangedCallback: () => void) {
+  constructor() {
     super();
-    this.filterChangedCallback = filterChangedCallback;
 
     this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
     this.networkHideChromeExtensionsSetting =
@@ -2833,7 +2833,7 @@ export class MoreFiltersDropDownUI extends
 
   #onSettingChanged(): void {
     this.hasChanged = true;
-    this.filterChangedCallback();
+    this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FilterChanged);
   }
 
   showMoreFiltersContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
@@ -2918,7 +2918,7 @@ export class MoreFiltersDropDownUI extends
   }
 
   isActive(): boolean {
-    return true;
+    return this.selectedFilters().length !== 0;
   }
 
   element(): HTMLDivElement {

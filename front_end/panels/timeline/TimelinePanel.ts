@@ -52,6 +52,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
+import {IsolateSelector} from './IsolateSelector.js';
 import {PerformanceModel} from './PerformanceModel.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
@@ -250,6 +251,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
@@ -519,6 +521,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // GC
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
+
+    // Isolate selector
+    const isolateSelector = new IsolateSelector();
+    if (isNode) {
+      this.panelToolbar.appendSeparator();
+      this.panelToolbar.appendToolbarItem(isolateSelector);
+    }
 
     // Settings
     if (!isNode) {
@@ -842,19 +851,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   async #startCPUProfilingRecording(): Promise<void> {
     try {
-      // Only profile the first target devtools connects to. If we profile all target, but this will cause some bugs
-      // like time for the function is calculated wrong, because the profiles will be concated and sorted together,
-      // so the total time will be amplified.
-      // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
-      // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
-      const firstNodeTarget =
-          SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
-      if (!firstNodeTarget) {
-        throw new Error('Could not load any Node target.');
+      this.cpuProfiler = UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel);
+      if (!this.cpuProfiler) {
+        // If there is no isolate selected, we will profile the first isolate that devtools connects to.
+        // If we profile all target, but this will cause some bugs like time for the function is calculated wrong,
+        // because the profiles will be concated and sorted together, so the total time will be amplified.
+        // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
+        // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
+        const firstNodeTarget =
+            SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
+        if (!firstNodeTarget) {
+          throw new Error('Could not load any Node target.');
+        }
+        if (firstNodeTarget) {
+          this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
+        }
       }
-      if (firstNodeTarget) {
-        this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
-      }
+
       this.setUIControlsEnabled(false);
       this.hideLandingPage();
       if (!this.cpuProfiler) {

@@ -2706,6 +2706,10 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
         return this.name();
       case 'code':
         return '(compiled code)';
+      case 'closure':
+        return 'Function';
+      case 'regexp':
+        return 'RegExp';
       default:
         return '(' + type + ')';
     }

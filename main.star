@@ -31,7 +31,7 @@ def analysis_bindings():
         ),
         luci.binding(
             roles = "role/analysis.queryUser",
-            groups = "mdb/v8-infra",
+            groups = ["mdb/v8-infra", "project-devtools-committers"],
         ),
         luci.binding(
             roles = "role/analysis.editor",

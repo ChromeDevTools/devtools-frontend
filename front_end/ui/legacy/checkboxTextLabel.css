@@ -39,6 +39,7 @@ input.inside-datagrid {
 
 .dt-checkbox-subtitle {
   color: var(--sys-color-token-subtle);
+  white-space: break-spaces;
 }
 
 @media (forced-colors: active) {

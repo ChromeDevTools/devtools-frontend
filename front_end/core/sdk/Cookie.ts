@@ -83,6 +83,10 @@ export class Cookie {
     return 'secure' in this.#attributes;
   }
 
+  partitioned(): boolean {
+    return 'partitioned' in this.#attributes || Boolean(this.partitionKey()) || this.partitionKeyOpaque();
+  }
+
   sameSite(): Protocol.Network.CookieSameSite {
     // TODO(allada) This should not rely on #attributes and instead store them individually.
     // when #attributes get added via addAttribute() they are lowercased, hence the lowercasing of samesite here

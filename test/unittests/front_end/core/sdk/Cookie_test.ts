@@ -73,6 +73,7 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
     assert.strictEqual(cookie.partitionKey(), 'https://a.com');
     assert.strictEqual(cookie.partitionKeyOpaque(), false);
+    assert.strictEqual(cookie.partitioned(), true);
   });
 
   // The jsdoc states that the fields are required, not optional
@@ -234,5 +235,11 @@ describe('Cookie', () => {
     assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('.example.de', 'example.de.vu'));
 
     assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('example.com', 'notexample.com'));
+  });
+
+  it('detects the Partitioned attribute in the Set-Cookie header', () => {
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
+    cookie.addAttribute('Partitioned');
+    assert.isTrue(cookie.partitioned());
   });
 });

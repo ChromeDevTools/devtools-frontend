@@ -924,7 +924,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         section.element.focus();
         return;
       }
-      element.startEditing();
+      element.startEditingName();
     }
   }
 

@@ -1208,11 +1208,28 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const section = this.section();
+    let selectedElement = event.target as Element;
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && section && section.navigable) {
-      this.navigateToSource((event.target as Element));
+      this.navigateToSource(selectedElement);
       return;
     }
-    this.startEditing((event.target as Element));
+
+    if (this.expandElement && selectedElement === this.expandElement) {
+      return;
+    }
+
+    if (section && !section.editable) {
+      return;
+    }
+
+    selectedElement = selectedElement.enclosingNodeOrSelfWithClass('webkit-css-property') ||
+        selectedElement.enclosingNodeOrSelfWithClass('value') ||
+        selectedElement.enclosingNodeOrSelfWithClass('styles-semicolon');
+    if (!selectedElement || selectedElement === this.nameElement) {
+      this.startEditingName();
+    } else {
+      this.startEditingValue();
+    }
   }
 
   private handleContextMenuEvent(context: Context, event: Event): void {
@@ -1347,85 +1364,68 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  startEditing(selectElement?: Element|null): void {
+  startEditingValue(): void {
+    const context: Context = {
+      expanded: this.expanded,
+      hasChildren: this.isExpandable(),
+      isEditingName: false,
+      originalProperty: this.property,
+      previousContent: this.value,
+    };
+
+    // Grid definitions are often multiline. Instead of showing the authored text reformat it a little bit nicer.
+    if (SDK.CSSMetadata.cssMetadata().isGridAreaDefiningProperty(this.name)) {
+      const splitResult =
+          TextUtils.TextUtils.Utils.splitStringByRegexes(this.value, [SDK.CSSMetadata.GridAreaRowRegex]);
+      context.previousContent = splitResult.map(result => result.value.trim()).join('\n');
+    }
+
+    this.#startEditing(context);
+  }
+
+  startEditingName(): void {
+    const context: Context = {
+      expanded: this.expanded,
+      hasChildren: this.isExpandable(),
+      isEditingName: true,
+      originalProperty: this.property,
+      previousContent: this.name.split('\n').map(l => l.trim()).join('\n'),
+    };
+
+    this.#startEditing(context);
+  }
+
+  // TODO(crbug:1504820) Remove once layout tests are migrated
+  startEditing(selectedElement?: HTMLElement): void {
+    if (!selectedElement || selectedElement === this.nameElement) {
+      this.startEditingName();
+    } else {
+      this.startEditingValue();
+    }
+  }
+
+  #startEditing(context: Context): void {
+    this.contextForTest = context;
+
     // FIXME: we don't allow editing of longhand properties under a shorthand right now.
     if (this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand) {
       return;
     }
 
-    if (this.expandElement && selectElement === this.expandElement) {
+    const selectedElement = context.isEditingName ? this.nameElement : this.valueElement;
+    if (!selectedElement) {
       return;
     }
 
-    const section = this.section();
-    if (section && !section.editable) {
+    if (UI.UIUtils.isBeingEdited(selectedElement)) {
       return;
     }
-
-    if (selectElement) {
-      selectElement = selectElement.enclosingNodeOrSelfWithClass('webkit-css-property') ||
-          selectElement.enclosingNodeOrSelfWithClass('value') ||
-          selectElement.enclosingNodeOrSelfWithClass('styles-semicolon');
-    }
-    if (!selectElement) {
-      selectElement = this.nameElement;
-    }
-
-    if (UI.UIUtils.isBeingEdited(selectElement)) {
-      return;
-    }
-
-    const isEditingName = selectElement === this.nameElement;
-    if (!isEditingName && this.valueElement) {
-      if (SDK.CSSMetadata.cssMetadata().isGridAreaDefiningProperty(this.name)) {
-        this.valueElement.textContent = restoreGridIndents(this.value);
-      }
-      this.valueElement.textContent = restoreURLs(this.valueElement.textContent || '', this.value);
-      selectElement = this.valueElement;
-    }
-
-    function restoreGridIndents(value: string): string {
-      const splitResult = TextUtils.TextUtils.Utils.splitStringByRegexes(value, [SDK.CSSMetadata.GridAreaRowRegex]);
-      return splitResult.map(result => result.value.trim()).join('\n');
-    }
-
-    function restoreURLs(fieldValue: string, modelValue: string): string {
-      const splitFieldValue = fieldValue.split(SDK.CSSMetadata.URLRegex);
-      if (splitFieldValue.length === 1) {
-        return fieldValue;
-      }
-      const modelUrlRegex = new RegExp(SDK.CSSMetadata.URLRegex);
-      for (let i = 1; i < splitFieldValue.length; i += 2) {
-        const match = modelUrlRegex.exec(modelValue);
-        if (match) {
-          splitFieldValue[i] = match[0];
-        }
-      }
-      return splitFieldValue.join('');
-    }
-
-    const previousContent = selectElement ? (selectElement.textContent || '') : '';
-
-    const context: Context = {
-      expanded: this.expanded,
-      hasChildren: this.isExpandable(),
-      isEditingName: isEditingName,
-      originalProperty: this.property,
-      previousContent: previousContent,
-      originalName: undefined,
-      originalValue: undefined,
-    };
-    this.contextForTest = context;
 
     // Lie about our children to prevent expanding on double click and to collapse shorthands.
     this.setExpandable(false);
 
-    if (selectElement) {
-      if (selectElement.parentElement) {
-        selectElement.parentElement.classList.add('child-editing');
-      }
-      selectElement.textContent = selectElement.textContent;  // remove color swatch and the like
-    }
+    selectedElement.parentElement?.classList.add('child-editing');
+    selectedElement.textContent = context.previousContent;  // remove color swatch and the like
 
     function pasteHandler(this: StylePropertyTreeElement, context: Context, event: Event): void {
       const clipboardEvent = (event as ClipboardEvent);
@@ -1484,38 +1484,31 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.originalPropertyText = this.property.propertyText || '';
 
     this.parentPaneInternal.setEditingStyle(true, this);
-    if (selectElement && selectElement.parentElement) {
-      selectElement.parentElement.scrollIntoViewIfNeeded(false);
-    }
+    selectedElement.parentElement?.scrollIntoViewIfNeeded(false);
 
-    this.prompt = new CSSPropertyPrompt(this, isEditingName);
+    this.prompt = new CSSPropertyPrompt(this, context.isEditingName);
     this.prompt.setAutocompletionTimeout(0);
 
-    this.prompt.addEventListener(UI.TextPrompt.Events.TextChanged, _event => {
+    this.prompt.addEventListener(UI.TextPrompt.Events.TextChanged, () => {
       void this.applyFreeFlowStyleTextEdit(context);
     });
 
     const invalidString = this.property.getInvalidStringForInvalidProperty();
-    if (invalidString && selectElement) {
+    if (invalidString) {
       UI.ARIAUtils.alert(invalidString);
     }
 
-    if (selectElement) {
-      const proxyElement = this.prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
-      this.navigateToSource(selectElement, true);
+    const proxyElement = this.prompt.attachAndStartEditing(selectedElement, blurListener.bind(this, context));
+    this.navigateToSource(selectedElement, true);
 
-      proxyElement.addEventListener('keydown', this.editingNameValueKeyDown.bind(this, context), false);
-      proxyElement.addEventListener('keypress', this.editingNameValueKeyPress.bind(this, context), false);
-      if (isEditingName) {
-        proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
-        proxyElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this, context), false);
-      }
-
-      const componentSelection = selectElement.getComponentSelection();
-      if (componentSelection) {
-        componentSelection.selectAllChildren(selectElement);
-      }
+    proxyElement.addEventListener('keydown', this.editingNameValueKeyDown.bind(this, context), false);
+    proxyElement.addEventListener('keypress', this.editingNameValueKeyPress.bind(this, context), false);
+    if (context.isEditingName) {
+      proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
+      proxyElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this, context), false);
     }
+
+    selectedElement.getComponentSelection()?.selectAllChildren(selectedElement);
   }
 
   private editingNameValueKeyDown(context: Context, event: Event): void {
@@ -1798,7 +1791,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       // User just tabbed through without changes.
       if (moveTo && moveTo.parent) {
-        moveTo.startEditing(!isEditingName ? moveTo.nameElement : moveTo.valueElement);
+        if (isEditingName) {
+          moveTo.startEditingValue();
+        } else {
+          moveTo.startEditingName();
+        }
         return;
       }
 
@@ -1815,12 +1812,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           const treeElement =
               (moveToIndex >= 0 ? rootElement.childAt(moveToIndex) : null) as StylePropertyTreeElement | null;
           if (treeElement) {
-            let elementToEdit =
-                !isEditingName || isPropertySplitPaste ? treeElement.nameElement : treeElement.valueElement;
             if (alreadyNew && blankInput) {
-              elementToEdit = moveDirection === 'forward' ? treeElement.nameElement : treeElement.valueElement;
+              if (moveDirection === 'forward') {
+                treeElement.startEditingName();
+              } else {
+                treeElement.startEditingValue();
+              }
+            } else if (!isEditingName || isPropertySplitPaste) {
+              treeElement.startEditingName();
+            } else {
+              treeElement.startEditingValue();
             }
-            treeElement.startEditing(elementToEdit);
             return;
           }
           if (!alreadyNew) {
@@ -1835,7 +1837,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           return;
         }
 
-        section.addNewBlankProperty().startEditing();
+        section.addNewBlankProperty().startEditingName();
         return;
       }
 

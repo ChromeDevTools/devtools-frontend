@@ -544,7 +544,7 @@ export class StylePropertiesSection {
       default:
         // Filter out non-printable key strokes.
         if (keyboardEvent.key.length === 1) {
-          this.addNewBlankProperty(0).startEditing();
+          this.addNewBlankProperty(0).startEditingName();
         }
         break;
     }
@@ -1170,12 +1170,12 @@ export class StylePropertiesSection {
     const deepTarget = UI.UIUtils.deepElementFromEvent(event);
     const treeElement = deepTarget && UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(deepTarget);
     if (treeElement && treeElement instanceof StylePropertyTreeElement) {
-      this.addNewBlankProperty(treeElement.property.index + 1).startEditing();
+      this.addNewBlankProperty(treeElement.property.index + 1).startEditingName();
     } else if (
         target.classList.contains('selector-container') || target.classList.contains('styles-section-subtitle')) {
-      this.addNewBlankProperty(0).startEditing();
+      this.addNewBlankProperty(0).startEditingName();
     } else {
-      this.addNewBlankProperty().startEditing();
+      this.addNewBlankProperty().startEditingName();
     }
     event.consume(true);
   }
@@ -1414,9 +1414,9 @@ export class StylePropertiesSection {
         currentChild = sibling instanceof StylePropertyTreeElement ? sibling : null;
       }
       if (!currentChild) {
-        this.addNewBlankProperty().startEditing();
+        this.addNewBlankProperty().startEditingName();
       } else {
-        currentChild.startEditing(currentChild.nameElement);
+        currentChild.startEditingName();
       }
     } else {
       const previousSection = this.previousEditableSibling();
@@ -1424,7 +1424,7 @@ export class StylePropertiesSection {
         return;
       }
 
-      previousSection.addNewBlankProperty().startEditing();
+      previousSection.addNewBlankProperty().startEditingName();
     }
   }
 

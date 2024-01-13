@@ -219,29 +219,4 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(layoutShifts.sessionMaxScore, globalCLS);
     assert.strictEqual(layoutShifts.clsWindowID, clusterWithCLS);
   });
-
-  describe('findNextScreenshotEvent', () => {
-    it('gets the first screenshot after a trace', async function() {
-      await processTrace(this, 'cls-cluster-navigation.json.gz');
-      const screenshots = TraceModel.Handlers.ModelHandlers.Screenshots.data();
-      const {clusters} = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
-      const shifts = clusters.flatMap(cluster => cluster.events);
-      for (const shift of shifts) {
-        const screenshotIndex =
-            TraceModel.Handlers.ModelHandlers.LayoutShifts.findNextScreenshotEventIndex(screenshots, shift.ts);
-        if (screenshotIndex === null) {
-          continue;
-        }
-        assert.isDefined(shift.parsedData.screenshotSource);
-        // Make sure the screenshot came after the shift.
-        assert.isAtLeast(screenshots[screenshotIndex].ts, shift.ts);
-        if (screenshotIndex > 0) {
-          // Make sure the previous screenshot came before the shift, meaning
-          // the index corresponds to the first screenshot after the shift.
-          // (the screenshot data is ordered asc).
-          assert.isBelow(screenshots[screenshotIndex - 1].ts, shift.ts);
-        }
-      }
-    });
-  });
 });

@@ -168,6 +168,33 @@ describe('StringUtilities', () => {
     });
   });
 
+  describe('isExtendedKebab', () => {
+    const {isExtendedKebabCase} = Platform.StringUtilities;
+
+    it('yields `true` for kebab case strings', () => {
+      assert.isTrue(isExtendedKebabCase('a-b-c'));
+      assert.isTrue(isExtendedKebabCase('a-b'));
+      assert.isTrue(isExtendedKebabCase('abc'));
+    });
+
+    it('yields `true` for kebab case strings with dots', () => {
+      assert.isTrue(isExtendedKebabCase('quick-open.show'));
+      assert.isTrue(isExtendedKebabCase('main.target.reload-page'));
+    });
+
+    it('yields `false` for broken kebab case', () => {
+      assert.isFalse(isExtendedKebabCase('a-b-'));
+      assert.isFalse(isExtendedKebabCase('-abc'));
+      assert.isFalse(isExtendedKebabCase('a--c'));
+    });
+
+    it('yields `false` for other cases', () => {
+      assert.isFalse(isExtendedKebabCase('quickOpen.show'));
+      assert.isFalse(isExtendedKebabCase('inspector_main.reload'));
+      assert.isFalse(isExtendedKebabCase('Main.target.ReloadPage'));
+    });
+  });
+
   describe('toTitleCase', () => {
     it('converts a string to title case', () => {
       const output = Platform.StringUtilities.toTitleCase('foo bar baz');

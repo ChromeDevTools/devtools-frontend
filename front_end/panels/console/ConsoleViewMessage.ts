@@ -227,10 +227,10 @@ const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|nul
       return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
     };
 
-const EXPLAIN_HOVER_ACTION_ID = 'explain.consoleMessage:hover';
-const EXPLAIN_CONTEXT_ERROR_ACTION_ID = 'explain.consoleMessage:context:error';
-const EXPLAIN_CONTEXT_WARNING_ACTION_ID = 'explain.consoleMessage:context:warning';
-const EXPLAIN_CONTEXT_OTHER_ACTION_ID = 'explain.consoleMessage:context:other';
+const EXPLAIN_HOVER_ACTION_ID = 'explain.console-message.hover';
+const EXPLAIN_CONTEXT_ERROR_ACTION_ID = 'explain.console-message.context.error';
+const EXPLAIN_CONTEXT_WARNING_ACTION_ID = 'explain.console-message.context.warning';
+const EXPLAIN_CONTEXT_OTHER_ACTION_ID = 'explain.console-message.context.other';
 
 const hoverButtonObserver = new IntersectionObserver(results => {
   for (const result of results) {

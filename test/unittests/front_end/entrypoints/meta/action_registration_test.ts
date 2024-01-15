@@ -15,7 +15,7 @@ import {
 const {assert} = chai;
 let actionExecuted = false;
 const actionTitle = 'Mock action';
-const actionId = 'mockAction';
+const actionId = 'mock.action';
 class MockActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     actionExecuted = true;
@@ -100,6 +100,15 @@ describeWithEnvironment('Action registration', () => {
       UI.ActionRegistration.registerActionExtension({
         actionId,
         category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+      });
+    });
+  });
+
+  it('throws an error trying to register an action with an invalid id', () => {
+    assert.throws(() => {
+      UI.ActionRegistration.registerActionExtension({
+        actionId: 'quickOpen.show',
+        category: UI.ActionRegistration.ActionCategory.GLOBAL,
       });
     });
   });

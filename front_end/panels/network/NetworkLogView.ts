@@ -1044,7 +1044,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (this.recording) {
       let reloadShortcutNode: Element|null = null;
       const reloadShortcut =
-          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector_main.reload')[0];
+          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector-main.reload')[0];
       if (reloadShortcut) {
         reloadShortcutNode = this.recordingHint.createChild('b');
         reloadShortcutNode.textContent = reloadShortcut.title();

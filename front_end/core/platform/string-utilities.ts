@@ -246,6 +246,23 @@ export const stripLineBreaks = (inputStr: string): string => {
   return inputStr.replace(/(\r)?\n/g, '');
 };
 
+const EXTENDED_KEBAP_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * Tests if the `inputStr` is following the extended Kebab Case naming convetion,
+ * where words are separated with either a dash (`-`) or a dot (`.`), and all
+ * characters must be lower-case alphanumeric.
+ *
+ * For example, it will yield `true` for `'my.amazing-string.literal'`, but `false`
+ * for `'Another.AmazingLiteral'` or '`another_amazing_literal'`.
+ *
+ * @param inputStr the input string to test.
+ * @return `true` if the `inputStr` follows the extended Kebab Case convention.
+ */
+export const isExtendedKebabCase = (inputStr: string): boolean => {
+  return EXTENDED_KEBAP_CASE_REGEXP.test(inputStr);
+};
+
 export const toTitleCase = (inputStr: string): string => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
 };

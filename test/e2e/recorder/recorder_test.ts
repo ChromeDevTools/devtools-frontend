@@ -641,7 +641,7 @@ describe('Recorder', function() {
       const controller = await getRecordingController();
       await controller.evaluate(element => {
         return element.handleActions(
-            'chrome_recorder.create-recording' as RecorderActions.CreateRecording,
+            'chrome-recorder.create-recording' as RecorderActions.CreateRecording,
         );
       });
       const page = await controller.evaluate(element => {

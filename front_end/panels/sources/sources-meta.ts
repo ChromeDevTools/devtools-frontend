@@ -1917,7 +1917,7 @@ UI.Context.registerListener({
 
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.NAVIGATOR_MENU_DEFAULT,
-  actionId: 'quickOpen.show',
+  actionId: 'quick-open.show',
   order: undefined,
 });
 

@@ -92,7 +92,7 @@ describeWithMockConnection('CoverageView', () => {
       'coverage.export',
       'coverage.start-with-reload',
       'coverage.toggle-recording',
-      'inspector_main.reload',
+      'inspector-main.reload',
     ]);
   });
 

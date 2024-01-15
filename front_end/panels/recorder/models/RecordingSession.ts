@@ -499,7 +499,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   #getStopShortcuts(): Shortcut[] {
     const descriptors = UI.ShortcutRegistry.ShortcutRegistry.instance()
-                            .shortcutsForAction('chrome_recorder.start-recording')
+                            .shortcutsForAction('chrome-recorder.start-recording')
                             .map(key => key.descriptors.map(press => press.key));
 
     return createShortcuts(descriptors);

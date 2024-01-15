@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {Context} from './Context.js';
@@ -233,7 +233,10 @@ const registeredActions = new Map<string, Action>();
 export function registerActionExtension(registration: ActionRegistration): void {
   const actionId = registration.actionId;
   if (registeredActions.has(actionId)) {
-    throw new Error(`Duplicate Action id '${actionId}': ${new Error().stack}`);
+    throw new Error(`Duplicate action ID '${actionId}'`);
+  }
+  if (!Platform.StringUtilities.isExtendedKebabCase(actionId)) {
+    throw new Error(`Invalid action ID '${actionId}'`);
   }
   registeredActions.set(actionId, new Action(registration));
 }

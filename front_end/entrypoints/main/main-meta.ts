@@ -231,7 +231,7 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DRAWER,
-  actionId: 'inspector_main.focus-debuggee',
+  actionId: 'inspector-main.focus-debuggee',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
     return new InspectorMain.InspectorMain.FocusDebuggeeActionDelegate();

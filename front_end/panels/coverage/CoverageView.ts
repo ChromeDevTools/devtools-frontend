@@ -275,7 +275,7 @@ export class CoverageView extends UI.Widget.VBox {
     reasonDiv.textContent = message;
     widget.contentElement.appendChild(reasonDiv);
     this.inlineReloadButton =
-        UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButtonForId('inspector_main.reload'));
+        UI.UIUtils.createInlineButton(UI.Toolbar.Toolbar.createActionButtonForId('inspector-main.reload'));
     const messageElement =
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.reloadPrompt, {PH1: this.inlineReloadButton});
     messageElement.classList.add('message');

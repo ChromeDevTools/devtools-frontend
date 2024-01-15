@@ -1555,7 +1555,7 @@ export class DebuggerPlugin extends Plugin {
       }
       this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesShouldBeAdded));
       this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesAreAvailable, {
-        PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')),
+        PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quick-open.show')),
       }));
     } else {
       let text: string;

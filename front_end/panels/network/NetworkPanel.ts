@@ -574,7 +574,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   private resetFilmStripView(): void {
     const reloadShortcut =
-        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector_main.reload')[0];
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector-main.reload')[0];
 
     if (this.filmStripView) {
       this.filmStripView.reset();

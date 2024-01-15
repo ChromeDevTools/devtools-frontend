@@ -142,7 +142,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.NAVIGATION,
-  actionId: 'inspector_main.reload',
+  actionId: 'inspector-main.reload',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
     return new InspectorMain.InspectorMain.ReloadActionDelegate();
@@ -167,7 +167,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.NAVIGATION,
-  actionId: 'inspector_main.hard-reload',
+  actionId: 'inspector-main.hard-reload',
   async loadActionDelegate() {
     const InspectorMain = await loadInspectorMainModule();
     return new InspectorMain.InspectorMain.ReloadActionDelegate();

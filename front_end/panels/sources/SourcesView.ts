@@ -145,8 +145,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private placeholderElement(): Element {
     const shortcuts = [
-      {actionId: 'quickOpen.show', description: i18nString(UIStrings.openFile)},
-      {actionId: 'commandMenu.show', description: i18nString(UIStrings.runCommand)},
+      {actionId: 'quick-open.show', description: i18nString(UIStrings.openFile)},
+      {actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand)},
       {
         actionId: 'sources.add-folder-to-workspace',
         description: i18nString(UIStrings.workspaceDropInAFolderToSyncSources),

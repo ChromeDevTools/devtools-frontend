@@ -125,10 +125,10 @@ Common.Runnable.registerEarlyInitializationRunnable(InspectorMainImpl.instance);
 export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
-      case 'inspector_main.reload':
+      case 'inspector-main.reload':
         SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(false);
         return true;
-      case 'inspector_main.hard-reload':
+      case 'inspector-main.hard-reload':
         SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(true);
         return true;
     }

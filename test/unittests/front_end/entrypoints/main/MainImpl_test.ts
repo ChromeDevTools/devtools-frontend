@@ -25,10 +25,10 @@ describeWithMockConnection('MainMenuItem', () => {
       targetFactory();
 
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
+          .withArgs(sinon.match(/inspector-main.focus-debuggee|main.toggle-drawer/))
           .returns(true);
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
-          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
+          .withArgs(sinon.match(/inspector-main.focus-debuggee|main.toggle-drawer/))
           .returns(sinon.createStubInstance(UI.ActionRegistration.Action));
     });
 

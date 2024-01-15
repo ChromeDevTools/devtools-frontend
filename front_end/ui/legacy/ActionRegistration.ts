@@ -228,26 +228,22 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 }
 
-const registeredActionExtensions: Array<Action> = [];
-
-const actionIdSet = new Set<string>();
+const registeredActions = new Map<string, Action>();
 
 export function registerActionExtension(registration: ActionRegistration): void {
   const actionId = registration.actionId;
-  if (actionIdSet.has(actionId)) {
+  if (registeredActions.has(actionId)) {
     throw new Error(`Duplicate Action id '${actionId}': ${new Error().stack}`);
   }
-  actionIdSet.add(actionId);
-  registeredActionExtensions.push(new Action(registration));
+  registeredActions.set(actionId, new Action(registration));
 }
 
 export function reset(): void {
-  actionIdSet.clear();
-  registeredActionExtensions.length = 0;
+  registeredActions.clear();
 }
 
 export function getRegisteredActionExtensions(): Array<Action> {
-  return registeredActionExtensions
+  return Array.from(registeredActions.values())
       .filter(
           action => Root.Runtime.Runtime.isDescriptorEnabled(
               {experiment: action.experiment(), condition: action.condition()}))
@@ -259,12 +255,7 @@ export function getRegisteredActionExtensions(): Array<Action> {
 }
 
 export function maybeRemoveActionExtension(actionId: string): boolean {
-  const actionIndex = registeredActionExtensions.findIndex(action => action.id() === actionId);
-  if (actionIndex < 0 || !actionIdSet.delete(actionId)) {
-    return false;
-  }
-  registeredActionExtensions.splice(actionIndex, 1);
-  return true;
+  return registeredActions.delete(actionId);
 }
 
 export const enum Platforms {

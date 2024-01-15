@@ -555,6 +555,17 @@ class PreloadingRuleSetSelector implements
     } else {
       this.dropDown.selectItem(selected);
     }
+    this.updateWidth(items);
+  }
+
+  // Updates the width for the DropDown element.
+  private updateWidth(items: (Protocol.Preload.RuleSetId|typeof AllRuleSetRootId)[]): void {
+    // Width set by `UI.SoftDropDown`.
+    const DEFAULT_WIDTH = 315;
+    const urlLengths = items.map(x => this.titleFor(x).length);
+    const maxLength = Math.max(...urlLengths);
+    const width = Math.min(maxLength * 6 + 16, DEFAULT_WIDTH);
+    this.dropDown.setWidth(width);
   }
 
   // AllRuleSetRootId is used within the selector to indicate the root item. When interacting with PreloadingModel,

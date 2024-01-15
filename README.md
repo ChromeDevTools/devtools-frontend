@@ -4,6 +4,34 @@ Source code for React Native's debugger frontend, based on Chrome DevTools. This
 
 This repository is a fork of [ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend).
 
+## Development
+
+### Initial setup
+
+1. Install [`depot_tools`](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up) (ensuring your `PATH` is updated).
+
+2. This repository must be located inside a gclient workspace directory. Run the `setup.sh` script to perform this one-time step (which will relocate the repo folder).
+
+    ```sh
+    # Using `source` will enable the script to change dir in your shell
+    source setup.sh
+    ```
+
+### Build and run
+
+```sh
+npm run build
+# or npm run build-release
+```
+
+This can then be served from a static web server to test locally:
+
+```sh
+python3 -m http.server 8000 --directory out/Default/gen/front_end
+```
+
+The frontend will be available at `http://localhost:8000/inspector.html` (or `http://localhost:8000/rn_inspector.html` for the RN-specific entry point).
+
 ## Contributing
 
 ### Project documentation

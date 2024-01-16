@@ -57,10 +57,10 @@ const UIStrings = {
    */
   heur: 'heur',
   /**
-   * @description Label for checkbox in the Autofill tab. If checked, this tab will open
+   * @description Label for checkbox in the Autofill panel. If checked, this panel will open
    * automatically whenever a form is being autofilled.
    */
-  autoShow: 'Automatically open tab on autofill',
+  autoShow: 'Open panel on autofill',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);

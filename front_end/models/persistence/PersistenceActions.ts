@@ -107,23 +107,22 @@ export class ContextMenuProvider implements
       return;
     }
 
+    let disabled = true;
+    let handler = (): void => {};
     if (uiSourceCode && networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode)) {
       if (!uiSourceCode.contentType().isFromSourceMap()) {
-        contextMenu.overrideSection().appendItem(
-            i18nString(UIStrings.overrideContent),
-            async () => await this.handleOverrideContent(uiSourceCode, contentProvider));
+        disabled = false;
+        handler = this.handleOverrideContent.bind(this, uiSourceCode, contentProvider);
       } else {
         // show redirect dialog for source mapped file
         const deployedUiSourceCode = this.getDeployedUiSourceCode(uiSourceCode);
         if (deployedUiSourceCode) {
-          contextMenu.overrideSection().appendItem(
-              i18nString(UIStrings.overrideContent),
-              async () => await this.redirectOverrideToDeployedUiSourceCode(deployedUiSourceCode, uiSourceCode));
+          disabled = false;
+          handler = this.redirectOverrideToDeployedUiSourceCode.bind(this, deployedUiSourceCode, uiSourceCode);
         }
       }
-    } else {
-      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, {disabled: true});
     }
+    contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), handler, {disabled});
 
     if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString(UIStrings.showOverrides), async () => {

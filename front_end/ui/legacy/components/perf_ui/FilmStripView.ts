@@ -48,9 +48,9 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.reset();
   }
 
-  static setImageData(imageElement: HTMLImageElement, data: string|null): void {
-    if (data) {
-      imageElement.src = 'data:image/jpg;base64,' + data;
+  static setImageData(imageElement: HTMLImageElement, dataUri: string|null): void {
+    if (dataUri) {
+      imageElement.src = dataUri;
     }
   }
 
@@ -89,7 +89,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     });
 
-    FilmStripView.setImageData(imageElement, frame.screenshotAsString);
+    FilmStripView.setImageData(imageElement, frame.screenshotEvent.args.dataUri);
     return element;
   }
 
@@ -273,21 +273,13 @@ export class Dialog {
     void this.render();
   }
 
-  #currentFrameData(): {snapshot: string, timestamp: TraceEngine.Types.Timing.MilliSeconds} {
-    const frame = this.#data.frames[this.index];
-    return {
-      snapshot: frame.screenshotAsString,
-      timestamp: TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts),
-    };
-  }
-
   private render(): void {
-    const currentFrameData = this.#currentFrameData();
-    this.fragment.$('time').textContent =
-        i18n.TimeUtilities.millisToString(currentFrameData.timestamp - this.#zeroTime());
+    const frame = this.#data.frames[this.index];
+    const timestamp = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts);
+    this.fragment.$('time').textContent = i18n.TimeUtilities.millisToString(timestamp - this.#zeroTime());
     const image = (this.fragment.$('image') as HTMLImageElement);
     image.setAttribute('data-frame-index', this.index.toString());
-    FilmStripView.setImageData(image, currentFrameData.snapshot);
+    FilmStripView.setImageData(image, frame.screenshotEvent.args.dataUri);
     this.resize();
   }
 }

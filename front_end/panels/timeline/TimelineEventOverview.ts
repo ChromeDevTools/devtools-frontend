@@ -460,8 +460,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   private async imageByFrame(frame: TraceEngine.Extras.FilmStrip.Frame): Promise<HTMLImageElement|null> {
     let imagePromise: Promise<HTMLImageElement|null>|undefined = this.frameToImagePromise.get(frame);
     if (!imagePromise) {
-      const data = frame.screenshotAsString;
-      imagePromise = UI.UIUtils.loadImageFromData(data);
+      imagePromise = UI.UIUtils.loadImage(frame.screenshotEvent.args.dataUri);
       this.frameToImagePromise.set(frame, (imagePromise as Promise<HTMLImageElement>));
     }
     return imagePromise;

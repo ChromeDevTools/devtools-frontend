@@ -818,7 +818,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     // Give the image element time to render and load.
     await doubleRaf();
     const img = container.querySelector<HTMLImageElement>('.timeline-filmstrip-preview img');
-    assert.isTrue(img?.currentSrc.includes(filmStrip.frames[0].screenshotAsString));
+    assert.isTrue(img?.currentSrc.includes(filmStrip.frames[0].screenshotEvent.args.dataUri));
 
     const durationRow = container.querySelector<HTMLElement>('[data-row-title="Duration"]');
     const durationValue = durationRow?.querySelector<HTMLSpanElement>('.timeline-details-view-row-value span');

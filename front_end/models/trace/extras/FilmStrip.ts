@@ -14,7 +14,6 @@ export interface Data {
 
 export interface Frame {
   screenshotEvent: Types.TraceEvents.SyntheticScreenshot;
-  screenshotAsString: string;
   index: number;
 }
 
@@ -50,7 +49,6 @@ export function fromTraceData(traceData: HandlerDataWithScreenshots, customZeroT
     const frame: Frame = {
       index: frames.length,
       screenshotEvent: screenshotEvent,
-      screenshotAsString: screenshotEvent.args.origArgs.snapshot,
     };
     frames.push(frame);
   }

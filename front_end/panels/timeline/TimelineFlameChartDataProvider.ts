@@ -1092,8 +1092,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const screenshot = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticScreenshot);
     if (!this.screenshotImageCache.has(screenshot)) {
       this.screenshotImageCache.set(screenshot, null);
-      const data = screenshot.args.origArgs.snapshot;
-      const image = await UI.UIUtils.loadImageFromData(data);
+      const data = screenshot.args.dataUri;
+      const image = await UI.UIUtils.loadImage(data);
       this.screenshotImageCache.set(screenshot, image);
       this.dispatchEventToListeners(Events.DataChanged);
       return;

@@ -46,7 +46,7 @@ describeWithEnvironment('FilmStripView', function() {
     // data. And that the time label is as expected.
     renderedFrames.forEach((frame, index) => {
       const img = querySelectorErrorOnMissing<HTMLImageElement>(frame, 'img');
-      assert.isTrue(img.src.includes(traceParsedData.Screenshots[index].args.origArgs.snapshot));
+      assert.isTrue(img.src.includes(traceParsedData.Screenshots[index].args.dataUri));
 
       const timeElement = querySelectorErrorOnMissing<HTMLDivElement>(frame, '.time');
       // Remove whitespace to avoid having to compare with &nbsp; in the
@@ -80,7 +80,7 @@ describeWithEnvironment('FilmStripView', function() {
       const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
       const {dialog, shadowRoot} = await renderDialogWithTraceEngine(filmStrip, 0);
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -95,7 +95,7 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -110,7 +110,7 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -127,7 +127,7 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -143,7 +143,7 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[1].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[1].args.dataUri));
       dialog.hide();
     });
 
@@ -154,8 +154,7 @@ describeWithEnvironment('FilmStripView', function() {
       const {dialog, shadowRoot} = await renderDialogWithTraceEngine(filmStrip, numberOfFrames - 1);
 
       let renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(
-          renderedImage?.currentSrc.includes(traceParsedData.Screenshots[numberOfFrames - 1].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[numberOfFrames - 1].args.dataUri));
 
       const nextBtn = shadowRoot.querySelector<HTMLButtonElement>('[title="Next frame"]');
       if (!nextBtn) {
@@ -164,8 +163,7 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(
-          renderedImage?.currentSrc.includes(traceParsedData.Screenshots[numberOfFrames - 1].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[numberOfFrames - 1].args.dataUri));
       dialog.hide();
     });
 
@@ -182,7 +180,7 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[1].args.origArgs.snapshot));
+      assert.isTrue(renderedImage?.currentSrc.includes(traceParsedData.Screenshots[1].args.dataUri));
       dialog.hide();
     });
   });

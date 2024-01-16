@@ -344,7 +344,7 @@ export class TimelineHistoryManager {
     if (!lastFrame) {
       return container;
     }
-    void UI.UIUtils.loadImageFromData(lastFrame.screenshotAsString).then(img => {
+    void UI.UIUtils.loadImage(lastFrame.screenshotEvent.args.dataUri).then(img => {
       if (img) {
         container.appendChild(img);
       }

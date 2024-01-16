@@ -2933,7 +2933,7 @@ export class TimelineUIUtils {
     if (filmStrip && filmStripFrame) {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');
-      void UI.UIUtils.loadImageFromData(filmStripFrame.screenshotAsString)
+      void UI.UIUtils.loadImage(filmStripFrame.screenshotEvent.args.dataUri)
           .then(image => image && filmStripPreview.appendChild(image));
       contentHelper.appendElementRow('', filmStripPreview);
       filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStrip, filmStripFrame), false);

@@ -34,7 +34,7 @@ describeWithEnvironment('FilmStrip', function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     assert.isTrue(filmStrip.frames.every(frame => {
-      return typeof frame.screenshotAsString === 'string' && frame.screenshotAsString.length > 0;
+      return typeof frame.screenshotEvent.args.dataUri === 'string' && frame.screenshotEvent.args.dataUri.length > 0;
     }));
   });
 
@@ -45,11 +45,11 @@ describeWithEnvironment('FilmStrip', function() {
     const newCustomZeroTime = TraceEngine.Types.Timing.MicroSeconds(filmStrip.frames[0].screenshotEvent.ts + 1000);
     const newFilmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData, newCustomZeroTime);
     // Check that the new film strip is all the frames other than the first, now we have set a custom time.
-    assert.deepEqual(newFilmStrip.frames.map(f => f.screenshotAsString), [
-      filmStrip.frames[1].screenshotAsString,
-      filmStrip.frames[2].screenshotAsString,
-      filmStrip.frames[3].screenshotAsString,
-      filmStrip.frames[4].screenshotAsString,
+    assert.deepEqual(newFilmStrip.frames.map(f => f.screenshotEvent.args.dataUri), [
+      filmStrip.frames[1].screenshotEvent.args.dataUri,
+      filmStrip.frames[2].screenshotEvent.args.dataUri,
+      filmStrip.frames[3].screenshotEvent.args.dataUri,
+      filmStrip.frames[4].screenshotEvent.args.dataUri,
     ]);
   });
 

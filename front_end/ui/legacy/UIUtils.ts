@@ -1527,10 +1527,6 @@ export function loadImage(url: string): Promise<HTMLImageElement|null> {
   });
 }
 
-export function loadImageFromData(data: string|null): Promise<HTMLImageElement|null> {
-  return data ? loadImage('data:image/jpg;base64,' + data) : Promise.resolve(null);
-}
-
 export function createFileSelectorElement(callback: (arg0: File) => void): HTMLInputElement {
   const fileSelectorElement = document.createElement('input');
   fileSelectorElement.type = 'file';

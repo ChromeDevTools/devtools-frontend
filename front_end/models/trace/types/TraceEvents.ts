@@ -444,9 +444,7 @@ export interface SyntheticScreenshot extends TraceEventData {
   /** This is the correct presentation timestamp. */
   ts: MicroSeconds;
   args: TraceEventArgs&{
-    origArgs: TraceEventArgs & {
-      snapshot: string,
-    },
+    dataUri: string,
   };
   name: KnownEventName.Screenshot;
   cat: 'disabled-by-default-devtools.screenshot';

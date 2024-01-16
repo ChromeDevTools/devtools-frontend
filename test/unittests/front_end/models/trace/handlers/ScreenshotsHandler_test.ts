@@ -61,12 +61,8 @@ describe('ScreenshotsHandler', function() {
     function getMsDifferences(
         syntheticScreenshotEvents: TraceModel.Types.TraceEvents.SyntheticScreenshot[],
         originalScreenshotEvents: TraceModel.Types.TraceEvents.TraceEventScreenshot[]): number[] {
-      return syntheticScreenshotEvents.map(synEvent => {
-        // Find the original trace event that matches.
-        const origEvents = originalScreenshotEvents.filter(oEvent => oEvent.args === synEvent.args.origArgs);
-        assert.strictEqual(origEvents.length, 1);
-        const origEvent = origEvents.at(0) as TraceModel.Types.TraceEvents.TraceEventScreenshot;
-
+      return syntheticScreenshotEvents.map((synEvent, i) => {
+        const origEvent = originalScreenshotEvents.at(i) as TraceModel.Types.TraceEvents.TraceEventScreenshot;
         const msDifference = (synEvent.ts - origEvent.ts) / 1000;
         return msDifference;
       });

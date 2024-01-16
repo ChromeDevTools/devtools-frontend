@@ -50,9 +50,8 @@ export async function finalize(): Promise<void> {
       tid,
       // `getPresentationTimestamp(snapshotEvent) - snapshotEvent.ts` is how many microsec the screenshot was adjusted to the right/later
       ts: getPresentationTimestamp(snapshotEvent),
-      // Add by args by reference to avoid making another copy of the screenshot datauri strings.
       args: {
-        origArgs: snapshotEvent.args,
+        dataUri: `data:image/jpg;base64,${snapshotEvent.args.snapshot}`,
       },
     };
     syntheticScreenshotEvents.push(syntheticEvent);

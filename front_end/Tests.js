@@ -1008,11 +1008,11 @@
         frame.imageDataPromise().then(onGotImageData);
       }
 
-      function onGotImageData(data) {
+      function onGotImageData(dataUri) {
         const image = new Image();
-        test.assertTrue(Boolean(data), 'No image data for frame');
+        test.assertTrue(Boolean(dataUri), 'No image data for frame');
         image.addEventListener('load', onLoad);
-        image.src = 'data:image/jpg;base64,' + data;
+        image.src = dataUri;
       }
 
       function onLoad(event) {

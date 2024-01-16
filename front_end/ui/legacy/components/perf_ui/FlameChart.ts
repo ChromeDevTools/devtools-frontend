@@ -824,9 +824,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     this.contextMenu = new UI.ContextMenu.ContextMenu(_event);
-    this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideFunction), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
-    });
+    if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION]) {
+      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideFunction), () => {
+        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
+      });
+    }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
       this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideChildren), () => {
@@ -862,7 +864,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
 
-    if (keyboardEvent.key === 'h') {
+    if (keyboardEvent.key === 'h' && possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION]) {
       this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.selectedEntryIndex);
       handled = true;
     } else if (

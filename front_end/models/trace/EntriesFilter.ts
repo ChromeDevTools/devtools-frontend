@@ -45,6 +45,7 @@ export interface UserApplyFilterAction {
 
 // Object used to indicate to the Context Menu if an action is possible on the selected entry.
 export interface PossibleFilterActions {
+  [FilterApplyAction.MERGE_FUNCTION]: boolean;
   [FilterApplyAction.COLLAPSE_FUNCTION]: boolean;
   [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: boolean;
 }
@@ -100,14 +101,17 @@ export class EntriesFilter {
     if (!entryNode) {
       // Invalid node was given, return no possible actions.
       return {
+        [FilterApplyAction.MERGE_FUNCTION]: false,
         [FilterApplyAction.COLLAPSE_FUNCTION]: false,
         [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: false,
       };
     }
+    const entryParent = entryNode.parent;
     const allDescendants = this.#findAllDescendantsOfNode(entryNode);
     const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
     // If there are children to hide, indicate action as possible
     const possibleActions: PossibleFilterActions = {
+      [FilterApplyAction.MERGE_FUNCTION]: entryParent !== null,
       [FilterApplyAction.COLLAPSE_FUNCTION]: allDescendants.length > 0,
       [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: allRepeatingDescendants.length > 0,
     };

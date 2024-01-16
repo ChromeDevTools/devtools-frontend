@@ -219,7 +219,8 @@ export class CSSProperty {
       if (!insideProperty) {
         const disabledProperty = tokenType?.includes('comment') && isDisabledProperty(token);
         const isPropertyStart =
-            (tokenType?.includes('string') || tokenType?.includes('meta') || tokenType?.includes('property') ||
+            (tokenType?.includes('def') || tokenType?.includes('string') || tokenType?.includes('meta') ||
+             tokenType?.includes('property') ||
              (tokenType?.includes('variableName') && tokenType !== ('variableName.function')));
         if (disabledProperty) {
           result = result.trimEnd() + indentation + token;

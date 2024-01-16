@@ -57,6 +57,11 @@ describeWithEnvironment('CSSProperty', () => {
         '--_name: background var(--another-name)',
       );
     });
+
+    // Regression test for crbug/1518839
+    it('formats CSS variable declarations without newline at the start of the var params', async () => {
+      assert.strictEqual(await formatStyle('--b: var(--non-existent, 2);'), '\n --b: var(--non-existent, 2);\n');
+    });
   });
 
   it('should correctly construct new CSSProperty', () => {

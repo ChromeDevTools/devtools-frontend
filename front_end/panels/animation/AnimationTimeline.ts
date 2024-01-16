@@ -525,8 +525,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     screenshotsContainer.createChild('span', 'screenshot-arrow');
     // After the view is shown on hover, position it if it is out of bounds.
     screenshotsContainer.addEventListener('animationend', () => {
-      const {right} = screenshotsContainer.getBoundingClientRect();
-      if (right > window.innerWidth) {
+      const {right, left, width} = screenshotsContainer.getBoundingClientRect();
+      // Render to the left if it is not getting out of bounds when rendered on the left.
+      if (right > window.innerWidth && (left - width) >= 0) {
         screenshotsContainer.classList.add('to-the-left');
       }
     });

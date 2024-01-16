@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
-import type * as Types from '../types/types.js';
-import type * as Handlers from '../handlers/handlers.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as Handlers from '../handlers/handlers.js';
+import type * as Types from '../types/types.js';
 
 export interface Data {
   zeroTime: Types.Timing.MicroSeconds;
@@ -13,7 +13,7 @@ export interface Data {
 }
 
 export interface Frame {
-  screenshotEvent: Types.TraceEvents.TraceEventSnapshot;
+  screenshotEvent: Types.TraceEvents.SyntheticScreenshot;
   screenshotAsString: string;
   index: number;
 }
@@ -43,14 +43,14 @@ export function fromTraceData(traceData: HandlerDataWithScreenshots, customZeroT
     return fromCache;
   }
 
-  for (const screenshot of traceData.Screenshots) {
-    if (screenshot.ts < zeroTime) {
+  for (const screenshotEvent of traceData.Screenshots) {
+    if (screenshotEvent.ts < zeroTime) {
       continue;
     }
     const frame: Frame = {
       index: frames.length,
-      screenshotEvent: screenshot,
-      screenshotAsString: screenshot.args.snapshot,
+      screenshotEvent: screenshotEvent,
+      screenshotAsString: screenshotEvent.args.origArgs.snapshot,
     };
     frames.push(frame);
   }

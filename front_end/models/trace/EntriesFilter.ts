@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Helpers from './helpers/helpers.js';
 import * as Types from './types/types.js';
 
-type EntryToNodeMap = Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
+type EntryToNodeMap = Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
 
 export type FilterAction = FilterApplyAction|FilterUndoAction;
 
@@ -35,12 +35,12 @@ const filterUndoActionSet: Set<FilterUndoAction> = new Set([
 // Object passed from the frontend that can be either Undo or Apply filter action.
 export interface UserFilterAction {
   type: FilterAction;
-  entry: Types.TraceEvents.TraceEntry;
+  entry: Types.TraceEvents.SyntheticTraceEntry;
 }
 
 export interface UserApplyFilterAction {
   type: FilterApplyAction;
-  entry: Types.TraceEvents.TraceEntry;
+  entry: Types.TraceEvents.SyntheticTraceEntry;
 }
 
 // Object used to indicate to the Context Menu if an action is possible on the selected entry.
@@ -96,7 +96,7 @@ export class EntriesFilter {
    * Checks which actions can be applied on an entry. This allows us to only show possible actions in the Context Menu.
    * For example, if an entry has no children, COLLAPSE_FUNCTION will not change the FlameChart, therefore there is no need to show this action as an option.
    **/
-  findPossibleActions(entry: Types.TraceEvents.TraceEntry): PossibleFilterActions {
+  findPossibleActions(entry: Types.TraceEvents.SyntheticTraceEntry): PossibleFilterActions {
     const entryNode = this.#entryToNode.get(entry);
     if (!entryNode) {
       // Invalid node was given, return no possible actions.
@@ -121,7 +121,7 @@ export class EntriesFilter {
   /**
    * Returns the amount of entry descendants that belong to the hidden entries array.
    * **/
-  findHiddenDescendantsAmount(entry: Types.TraceEvents.TraceEntry): number {
+  findHiddenDescendantsAmount(entry: Types.TraceEvents.SyntheticTraceEntry): number {
     const entryNode = this.#entryToNode.get(entry);
     if (!entryNode) {
       return 0;
@@ -252,19 +252,20 @@ export class EntriesFilter {
     return descendants;
   }
 
-  #findAllRepeatingDescendantsOfNext(root: Helpers.TreeHelpers.TraceEntryNode): Types.TraceEvents.TraceEntry[] {
-    // Walk through all the descendants, starting at the root node.
+  #findAllRepeatingDescendantsOfNext(root: Helpers.TreeHelpers.TraceEntryNode):
+      Types.TraceEvents.SyntheticTraceEntry[] {
+    // Walk through all the ancestors, starting at the root node.
     const children: Helpers.TreeHelpers.TraceEntryNode[] = [...root.children];
-    const repeatingNodes: Types.TraceEvents.TraceEntry[] = [];
+    const repeatingNodes: Types.TraceEvents.SyntheticTraceEntry[] = [];
     const rootIsProfileCall = Types.TraceEvents.isProfileCall(root.entry);
 
     while (children.length > 0) {
       const childNode = children.shift();
       if (childNode) {
         const childIsProfileCall = Types.TraceEvents.isProfileCall(childNode.entry);
-        if (/* Handle TraceEventSyntheticProfileCalls */ rootIsProfileCall && childIsProfileCall) {
-          const rootNodeEntry = root.entry as Types.TraceEvents.TraceEventSyntheticProfileCall;
-          const childNodeEntry = childNode.entry as Types.TraceEvents.TraceEventSyntheticProfileCall;
+        if (/* Handle SyntheticProfileCalls */ rootIsProfileCall && childIsProfileCall) {
+          const rootNodeEntry = root.entry as Types.TraceEvents.SyntheticProfileCall;
+          const childNodeEntry = childNode.entry as Types.TraceEvents.SyntheticProfileCall;
 
           if (Helpers.SamplesIntegrator.SamplesIntegrator.framesAreEqual(
                   rootNodeEntry.callFrame, childNodeEntry.callFrame)) {
@@ -286,7 +287,7 @@ export class EntriesFilter {
    * Removes all of the entry children from the
    * invisible entries array to make them visible.
    **/
-  #makeEntryChildrenVisible(entry: Types.TraceEvents.TraceEntry): void {
+  #makeEntryChildrenVisible(entry: Types.TraceEvents.SyntheticTraceEntry): void {
     const entryNode = this.#entryToNode.get(entry);
     if (!entryNode) {
       // Invalid node was given, just ignore and move on.

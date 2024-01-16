@@ -214,8 +214,9 @@ export class ThreadAppender implements TrackAppender {
     this.#url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
   }
 
-  modifyTree(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.EntriesFilter.FilterAction):
-      void {
+  modifyTree(
+      traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry,
+      action: TraceEngine.EntriesFilter.FilterAction): void {
     if (this.#entriesFilter) {
       this.#entriesFilter.applyAction({type: action, entry: traceEvent});
     } else {
@@ -223,12 +224,12 @@ export class ThreadAppender implements TrackAppender {
     }
   }
 
-  findPossibleContextMenuActions(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry):
+  findPossibleContextMenuActions(traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry):
       TraceEngine.EntriesFilter.PossibleFilterActions|void {
     return this.#entriesFilter?.findPossibleActions(traceEvent);
   }
 
-  findHiddenDescendantsAmount(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry): number|void {
+  findHiddenDescendantsAmount(traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): number|void {
     if ((this.#entriesFilter)) {
       return this.#entriesFilter?.findHiddenDescendantsAmount(traceEvent);
     }

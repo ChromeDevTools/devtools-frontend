@@ -27,7 +27,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
   let target: SDK.Target.Target;
   let script: SDK.Script.Script;
   let traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
-  let profileCall: TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall;
+  let profileCall: TraceEngine.Types.TraceEvents.SyntheticProfileCall;
   beforeEach(async function() {
     target = createTarget();
     script = (await loadBasicSourceMapExample(target)).script;

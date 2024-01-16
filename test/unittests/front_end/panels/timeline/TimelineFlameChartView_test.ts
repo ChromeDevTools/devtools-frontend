@@ -108,14 +108,15 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
     const firstNodeWithChildren = nodeOfGroup?.find(node => {
       const childrenAmount =
-          traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)?.children.length;
+          traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.SyntheticTraceEntry)
+              ?.children.length;
       if (!childrenAmount) {
         return false;
       }
       return childrenAmount > 0 && node.cat === 'devtools.timeline';
     });
-    const node =
-        traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+    const node = traceParsedData.Renderer.entryToNode.get(
+        firstNodeWithChildren as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
     if (!node) {
       throw new Error('Could not find a visible node with children');
     }
@@ -152,15 +153,15 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
        const firstNodeWithChildren = nodeOfGroup?.find(node => {
          const childrenAmount =
-             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)
+             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.SyntheticTraceEntry)
                  ?.children.length;
          if (!childrenAmount) {
            return false;
          }
          return childrenAmount > 0 && node.cat === 'devtools.timeline';
        });
-       const node =
-           traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+       const node = traceParsedData.Renderer.entryToNode.get(
+           firstNodeWithChildren as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
        if (!node) {
          throw new Error('Could not find a visible node with children');
        }
@@ -199,15 +200,15 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
        const firstNodeWithChildren = nodeOfGroup?.find(node => {
          const childrenAmount =
-             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.TraceEntry)
+             traceParsedData.Renderer.entryToNode.get(node as TraceEngine.Types.TraceEvents.SyntheticTraceEntry)
                  ?.children.length;
          if (!childrenAmount) {
            return false;
          }
          return childrenAmount > 0 && node.cat === 'devtools.timeline';
        });
-       const node =
-           traceParsedData.Renderer.entryToNode.get(firstNodeWithChildren as TraceEngine.Types.TraceEvents.TraceEntry);
+       const node = traceParsedData.Renderer.entryToNode.get(
+           firstNodeWithChildren as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
        if (!node) {
          throw new Error('Could not find a visible node with children');
        }

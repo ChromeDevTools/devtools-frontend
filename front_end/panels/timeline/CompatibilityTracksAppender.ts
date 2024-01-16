@@ -180,7 +180,7 @@ export class CompatibilityTracksAppender {
   }
 
   modifyTree(
-      group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry,
+      group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.SyntheticTraceEntry,
       action: TraceEngine.EntriesFilter.FilterAction): void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
@@ -190,8 +190,9 @@ export class CompatibilityTracksAppender {
     }
   }
 
-  findPossibleContextMenuActions(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry):
-      TraceEngine.EntriesFilter.PossibleFilterActions|void {
+  findPossibleContextMenuActions(
+      group: PerfUI.FlameChart.Group,
+      node: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
       return threadTrackAppender.findPossibleContextMenuActions(node);
@@ -199,8 +200,8 @@ export class CompatibilityTracksAppender {
     console.warn('Could not modify tree in not thread track');
   }
 
-  findHiddenDescendantsAmount(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry): number|
-      void {
+  findHiddenDescendantsAmount(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.SyntheticTraceEntry):
+      number|void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
       return threadTrackAppender.findHiddenDescendantsAmount(node);

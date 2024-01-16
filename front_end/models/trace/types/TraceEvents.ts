@@ -123,7 +123,7 @@ export interface TraceEventSample extends TraceEventData {
  * A fake trace event created to support CDP.Profiler.Profiles in the
  * trace engine.
  */
-export interface SyntheticTraceEventCpuProfile extends TraceEventInstant {
+export interface SyntheticCpuProfile extends TraceEventInstant {
   name: 'CpuProfile';
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
@@ -223,7 +223,7 @@ export interface TraceEventEnd extends TraceEventData {
  * complete event that comprises the data of both from the beginning in
  * the RendererHandler.
  */
-export type TraceEventSyntheticCompleteEvent = TraceEventComplete;
+export type SyntheticCompleteEvent = TraceEventComplete;
 
 export interface TraceEventEventTiming extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
@@ -261,7 +261,7 @@ export interface TraceEventGPUTask extends TraceEventComplete {
   };
 }
 
-export interface TraceEventSyntheticNetworkRedirect {
+export interface SyntheticNetworkRedirect {
   url: string;
   priority: string;
   requestMethod?: string;
@@ -272,7 +272,7 @@ export interface TraceEventSyntheticNetworkRedirect {
 // TraceEventProcessedArgsData is used to store the processed data of a network
 // request. Which is used to distinguish from the date we extract from the
 // trace event directly.
-interface TraceEventSyntheticArgsData {
+interface SyntheticArgsData {
   dnsLookup: MicroSeconds;
   download: MicroSeconds;
   downloadStart: MicroSeconds;
@@ -295,10 +295,10 @@ interface TraceEventSyntheticArgsData {
   waiting: MicroSeconds;
 }
 
-export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
+export interface SyntheticNetworkRequest extends TraceEventComplete {
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
-      syntheticData: TraceEventSyntheticArgsData,
+      syntheticData: SyntheticArgsData,
       // All fields below are from TraceEventsForNetworkRequest,
       // Required fields
       decodedBodyLength: number,
@@ -312,7 +312,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       priority: Priority,
       initialPriority: Priority,
       protocol: string,
-      redirects: TraceEventSyntheticNetworkRedirect[],
+      redirects: SyntheticNetworkRedirect[],
       renderBlocking: RenderBlocking,
       requestId: string,
       requestingFrameUrl: string,
@@ -1133,7 +1133,7 @@ export function isTraceEventPipelineReporter(event: TraceEventData): event is Tr
 // Nestable async events with a duration are made up of two distinct
 // events: the begin, and the end. We need both of them to be able to
 // display the right information, so we create these synthetic events.
-export interface TraceEventSyntheticNestableAsyncEvent extends TraceEventData {
+export interface SyntheticNestableAsyncEvent extends TraceEventData {
   id?: string;
   id2?: {local?: string, global?: string};
   dur: MicroSeconds;
@@ -1145,16 +1145,16 @@ export interface TraceEventSyntheticNestableAsyncEvent extends TraceEventData {
   };
 }
 
-export interface TraceEventSyntheticPipelineReporter extends TraceEventSyntheticNestableAsyncEvent {
+export interface SyntheticPipelineReporter extends SyntheticNestableAsyncEvent {
   args: TraceEventArgs&{
-    data: TraceEventSyntheticNestableAsyncEvent['args']['data'] & {
+    data: SyntheticNestableAsyncEvent['args']['data'] & {
       beginEvent: TraceEventPipelineReporter,
       endEvent: TraceEventPipelineReporter,
     },
   };
 }
 
-export interface TraceEventSyntheticUserTiming extends TraceEventSyntheticNestableAsyncEvent {
+export interface SyntheticUserTiming extends SyntheticNestableAsyncEvent {
   id: string;
   dur: MicroSeconds;
   args: TraceEventArgs&{
@@ -1165,7 +1165,7 @@ export interface TraceEventSyntheticUserTiming extends TraceEventSyntheticNestab
   };
 }
 
-export interface TraceEventSyntheticConsoleTiming extends TraceEventSyntheticNestableAsyncEvent {
+export interface SyntheticConsoleTiming extends SyntheticNestableAsyncEvent {
   id2: {local: string};
   dur: MicroSeconds;
   args: TraceEventArgs&{
@@ -1176,7 +1176,7 @@ export interface TraceEventSyntheticConsoleTiming extends TraceEventSyntheticNes
   };
 }
 
-export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAsyncEvent {
+export interface SyntheticInteractionEvent extends SyntheticNestableAsyncEvent {
   // InteractionID and type are available within the beginEvent's data, but we
   // put them on the top level for ease of access.
   interactionId: number;
@@ -1219,7 +1219,7 @@ export interface SyntheticEventWithSelfTime extends TraceEventData {
  * A profile call created in the frontend from samples disguised as a
  * trace event.
  */
-export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTime {
+export interface SyntheticProfileCall extends SyntheticEventWithSelfTime {
   callFrame: Protocol.Runtime.CallFrame;
   nodeId: Protocol.integer;
 }
@@ -1230,14 +1230,14 @@ export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTi
  */
 export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticEventWithSelfTime;
 
-export type TraceEntry = SyntheticRendererEvent|TraceEventSyntheticProfileCall;
+export type SyntheticTraceEntry = SyntheticRendererEvent|SyntheticProfileCall;
 
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
 }
 
-export function isRendererEvent(event: TraceEventData): event is TraceEntry {
+export function isRendererEvent(event: TraceEventData): event is SyntheticTraceEntry {
   return isTraceEventRendererEvent(event) || isProfileCall(event);
 }
 
@@ -1391,7 +1391,7 @@ export interface SyntheticInvalidation extends TraceEventInstant {
   stackTrace?: TraceEventCallFrame[];
 }
 
-export function isTraceEventSyntheticInvalidation(event: TraceEventData): event is SyntheticInvalidation {
+export function isSyntheticInvalidation(event: TraceEventData): event is SyntheticInvalidation {
   return event.name === 'SyntheticInvalidation';
 }
 
@@ -1629,8 +1629,7 @@ export function isTraceEventProfile(traceEventData: TraceEventData): traceEventD
   return traceEventData.name === 'Profile';
 }
 
-export function isSyntheticTraceEventCpuProfile(traceEventData: TraceEventData):
-    traceEventData is SyntheticTraceEventCpuProfile {
+export function isSyntheticCpuProfile(traceEventData: TraceEventData): traceEventData is SyntheticCpuProfile {
   return traceEventData.name === 'CpuProfile';
 }
 
@@ -1682,7 +1681,7 @@ export function isTraceEventResourceReceivedData(
 
 export function isSyntheticNetworkRequestDetailsEvent(
     traceEventData: TraceEventData,
-    ): traceEventData is TraceEventSyntheticNetworkRequest {
+    ): traceEventData is SyntheticNetworkRequest {
   return traceEventData.name === 'SyntheticNetworkRequest';
 }
 
@@ -1702,8 +1701,7 @@ export function isTraceEventMainFrameViewport(
   return traceEventData.name === 'PaintTimingVisualizer::Viewport';
 }
 
-export function isSyntheticUserTimingTraceEvent(traceEventData: TraceEventData):
-    traceEventData is TraceEventSyntheticUserTiming {
+export function isSyntheticUserTiming(traceEventData: TraceEventData): traceEventData is SyntheticUserTiming {
   if (traceEventData.cat !== 'blink.user_timing') {
     return false;
   }
@@ -1714,8 +1712,7 @@ export function isSyntheticUserTimingTraceEvent(traceEventData: TraceEventData):
   return 'beginEvent' in data && 'endEvent' in data;
 }
 
-export function isSyntheticConsoleTimingTraceEvent(traceEventData: TraceEventData):
-    traceEventData is TraceEventSyntheticConsoleTiming {
+export function isSyntheticConsoleTiming(traceEventData: TraceEventData): traceEventData is SyntheticConsoleTiming {
   if (traceEventData.cat !== 'blink.console') {
     return false;
   }
@@ -1775,7 +1772,7 @@ export function isSyntheticLayoutShift(traceEventData: TraceEventData): traceEve
   return 'rawEvent' in traceEventData.args.data;
 }
 
-export function isProfileCall(event: TraceEventData): event is TraceEventSyntheticProfileCall {
+export function isProfileCall(event: TraceEventData): event is SyntheticProfileCall {
   return 'callFrame' in event;
 }
 

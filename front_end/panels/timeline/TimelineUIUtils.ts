@@ -1005,8 +1005,7 @@ let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
 let colorGenerator: Common.Color.Generator;
 
-const requestPreviewElements =
-    new WeakMap<TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest, HTMLImageElement>();
+const requestPreviewElements = new WeakMap<TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, HTMLImageElement>();
 
 interface EventStylesMap {
   [x: string]: TimelineRecordStyle;
@@ -1335,7 +1334,7 @@ export class TimelineUIUtils {
     return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
   }
 
-  static syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest):
+  static syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
       NetworkCategory {
     const categories = NetworkCategory;
     switch (request.args.data.mimeType) {
@@ -2394,7 +2393,7 @@ export class TimelineUIUtils {
   }
 
   static async buildSyntheticNetworkRequestDetails(
-      event: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest,
+      event: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest,
       model: TimelineModel.TimelineModel.TimelineModelImpl,
       linkifier: LegacyComponents.Linkifier.Linkifier): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);

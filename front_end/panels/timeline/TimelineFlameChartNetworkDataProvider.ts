@@ -19,7 +19,7 @@ import {TimelineSelection} from './TimelineSelection.js';
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   #minimumBoundaryInternal: number;
   #timeSpan: number;
-  #events: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+  #events: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest[];
   #maxLevel: number;
   #networkTrackAppender: NetworkTrackAppender|null;
 
@@ -149,7 +149,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * @returns the pixels to draw waiting time and left and right whiskers and url text
    */
   getDecorationPixels(
-      event: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest, unclippedBarX: number,
+      event: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, unclippedBarX: number,
       timeToPixelRatio: number): {sendStart: number, headersEnd: number, finish: number, start: number, end: number} {
     const beginTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
     const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);

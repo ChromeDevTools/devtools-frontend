@@ -389,7 +389,7 @@ describeWithEnvironment('TraceModel helpers', function() {
       // There's a lot of events, let's only assert one event per name
       const seen = new Set();
       // Make a readable output of each event to assert
-      const eventSummary = (e: TraceModel.Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent) =>
+      const eventSummary = (e: TraceModel.Types.TraceEvents.SyntheticNestableAsyncEvent) =>
           `@ ${(e.ts / 1000 - 1003e5).toFixed(3).padEnd(9)} for ${(e.dur / 1000).toFixed(3).padStart(8)}: ${e.name}`;
       const eventsSummary = synthEvents
                                 .filter(e => {

@@ -278,9 +278,9 @@ export function getEventsIn(nodes: IterableIterator<TraceEngine.Helpers.TreeHelp
  */
 export function prettyPrint(
     tree: TraceEngine.Helpers.TreeHelpers.TraceEntryTree,
-    predicate:
-        (node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode, event: TraceEngine.Types.TraceEvents.TraceEntry) =>
-            boolean = () => true,
+    predicate: (
+        node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode,
+        event: TraceEngine.Types.TraceEvents.SyntheticTraceEntry) => boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
@@ -392,7 +392,7 @@ export function makeProfileCall(
     functionName: string, tsMs: number, durMs: number,
     pid: TraceEngine.Types.TraceEvents.ProcessID = TraceEngine.Types.TraceEvents.ProcessID(0),
     tid: TraceEngine.Types.TraceEvents.ThreadID = TraceEngine.Types.TraceEvents.ThreadID(0), nodeId: number = 0,
-    url: string = ''): TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall {
+    url: string = ''): TraceEngine.Types.TraceEvents.SyntheticProfileCall {
   return {
     cat: '',
     name: 'ProfileCall',
@@ -503,7 +503,7 @@ export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): T
  * Mocks an object compatible with the return type of the
  * RendererHandler using only an array of ordered entries.
  */
-export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.TraceEntry[]):
+export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[]):
     TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData {
   const {tree, entryToNode} = TraceEngine.Helpers.TreeHelpers.treify(entries, {filter: {has: () => true}});
   const mockThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread = {
@@ -537,8 +537,7 @@ export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEven
  * Mocks an object compatible with the return type of the
  * SamplesHandler using only an array of ordered profile calls.
  */
-export function makeMockSamplesHandlerData(
-    profileCalls: TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall[]):
+export function makeMockSamplesHandlerData(profileCalls: TraceEngine.Types.TraceEvents.SyntheticProfileCall[]):
     TraceEngine.Handlers.ModelHandlers.Samples.SamplesHandlerData {
   const {tree, entryToNode} = TraceEngine.Helpers.TreeHelpers.treify(profileCalls, {filter: {has: () => true}});
   const profile: Protocol.Profiler.Profile = {

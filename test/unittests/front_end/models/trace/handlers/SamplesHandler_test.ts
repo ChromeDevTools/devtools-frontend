@@ -262,12 +262,12 @@ describeWithEnvironment('SamplesHandler', function() {
     // Find an event from the trace that represents some work. The use of
     // this specific call frame event is not for any real reason.
     function getProfileEventAndNode(traceData: TraceModel.Handlers.Types.TraceParseData): {
-      entry: TraceModel.Types.TraceEvents.TraceEventSyntheticProfileCall,
+      entry: TraceModel.Types.TraceEvents.SyntheticProfileCall,
       profileNode: CPUProfile.ProfileTreeModel.ProfileNode,
     } {
       const mainThread = getMainThread(traceData.Renderer);
       let foundNode: CPUProfile.ProfileTreeModel.ProfileNode|null = null;
-      let foundEntry: TraceModel.Types.TraceEvents.TraceEventSyntheticProfileCall|null = null;
+      let foundEntry: TraceModel.Types.TraceEvents.SyntheticProfileCall|null = null;
 
       for (const entry of mainThread.entries) {
         if (TraceModel.Types.TraceEvents.isProfileCall(entry) &&

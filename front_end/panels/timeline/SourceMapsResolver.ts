@@ -46,7 +46,7 @@ export class SourceMapsResolver extends EventTarget {
     resolvedNodeNames.clear();
   }
 
-  static resolvedNodeNameForEntry(entry: TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall): string|null {
+  static resolvedNodeNameForEntry(entry: TraceEngine.Types.TraceEvents.SyntheticProfileCall): string|null {
     return resolvedNodeNames.get(entry.pid)?.get(entry.tid)?.get(entry.nodeId) ?? null;
   }
 

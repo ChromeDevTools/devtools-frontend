@@ -52,17 +52,17 @@ describeWithEnvironment('TraceEvent types', function() {
   it('is able to determine that an event is a synthetic user timing event', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
-    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticUserTimingTraceEvent(timingEvent));
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticUserTiming(timingEvent));
     const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
-    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticUserTimingTraceEvent(consoleEvent));
+    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticUserTiming(consoleEvent));
   });
 
   it('is able to determine that an event is a synthetic console event', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
-    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticConsoleTimingTraceEvent(consoleEvent));
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticConsoleTiming(consoleEvent));
     const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
-    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticConsoleTimingTraceEvent(timingEvent));
+    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticConsoleTiming(timingEvent));
   });
 
   it('is able to detemrine that an event is a synthetic network request event', async function() {

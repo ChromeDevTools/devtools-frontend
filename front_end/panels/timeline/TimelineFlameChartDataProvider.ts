@@ -210,13 +210,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   modifyTree(group: PerfUI.FlameChart.Group, node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
-    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEntry;
+    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
     this.compatibilityTracksAppender?.modifyTree(group, entry, action);
   }
 
   findPossibleContextMenuActions(group: PerfUI.FlameChart.Group, node: number):
       TraceEngine.EntriesFilter.PossibleFilterActions|void {
-    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEntry;
+    const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
     return this.compatibilityTracksAppender?.findPossibleContextMenuActions(group, entry);
   }
 
@@ -945,7 +945,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       delegatesFocus: undefined,
     });
 
-    const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEntry;
+    const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
     const hiddenEntriesAmount = this.compatibilityTracksAppender?.findHiddenDescendantsAmount(group, entry);
 
     if (!hiddenEntriesAmount) {

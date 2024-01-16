@@ -35,7 +35,7 @@ export class TimelineSelection {
   }
 
   static isSyntheticNetworkRequestDetailsEventSelection(object: PermittedObjectTypes):
-      object is TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest {
+      object is TraceEngine.Types.TraceEvents.SyntheticNetworkRequest {
     if (object instanceof TraceEngine.Legacy.Event) {
       return false;
     }

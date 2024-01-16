@@ -27,7 +27,7 @@ export interface InjectedIframe {
 }
 
 export interface RootCauseRequest {
-  request: Types.TraceEvents.TraceEventSyntheticNetworkRequest;
+  request: Types.TraceEvents.SyntheticNetworkRequest;
   initiator?: Protocol.Network.Initiator;
 }
 
@@ -79,7 +79,7 @@ const NON_RENDER_BLOCKING_VALUES = new Set<Types.TraceEvents.RenderBlocking>([
   'potentially_blocking',
 ]);
 function networkRequestIsRenderBlockingInFrame(
-    event: Types.TraceEvents.TraceEventSyntheticNetworkRequest, frameId: string): boolean {
+    event: Types.TraceEvents.SyntheticNetworkRequest, frameId: string): boolean {
   const isRenderBlocking = !NON_RENDER_BLOCKING_VALUES.has(event.args.data.renderBlocking);
   return isRenderBlocking && event.args.data.frame === frameId;
 }

@@ -12,7 +12,7 @@ import {HandlerState} from './types.js';
  * See UserTimings.md in this directory for some handy documentation on
  * UserTimings and the trace events we parse currently.
  **/
-const syntheticEvents: Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[] = [];
+const syntheticEvents: Types.TraceEvents.SyntheticNestableAsyncEvent[] = [];
 const performanceMeasureEvents: (Types.TraceEvents.TraceEventPerformanceMeasureBegin|
                                  Types.TraceEvents.TraceEventPerformanceMeasureEnd)[] = [];
 const performanceMarkEvents: Types.TraceEvents.TraceEventPerformanceMark[] = [];
@@ -26,7 +26,7 @@ export interface UserTimingsData {
    * Events triggered with the performance.measure() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure
    */
-  performanceMeasures: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
+  performanceMeasures: readonly Types.TraceEvents.SyntheticNestableAsyncEvent[];
   /**
    * Events triggered with the performance.mark() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
@@ -37,7 +37,7 @@ export interface UserTimingsData {
    * console.timeLog() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/console/time
    */
-  consoleTimings: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
+  consoleTimings: readonly Types.TraceEvents.SyntheticNestableAsyncEvent[];
   /**
    * Events triggered with the console.timeStamp() API
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp

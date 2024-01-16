@@ -351,7 +351,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
                                    node => TraceEngine.Legacy.eventIsFromNewEngine(node.event) &&
                                        TraceEngine.Types.TraceEvents.isProfileCall(node.event) &&
                                        node.event.callFrame.functionName.length > 0)
-                               .map(n => n.event as TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall);
+                               .map(n => n.event as TraceEngine.Types.TraceEvents.SyntheticProfileCall);
       const functionNames = profileCalls.map(entry => entry.callFrame.functionName);
       assert.deepEqual(
           functionNames, ['fetch', 'getTime', 'wasm-to-js::l-imports.getTime', 'mainWasm', 'js-to-wasm::i']);

@@ -33,20 +33,20 @@ interface TraceEventsForNetworkRequest {
 
 interface NetworkRequestData {
   byOrigin: Map<string, {
-    renderBlocking: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
-    nonRenderBlocking: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
-    all: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
+    renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
+    nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
+    all: Types.TraceEvents.SyntheticNetworkRequest[],
   }>;
-  byTime: Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+  byTime: Types.TraceEvents.SyntheticNetworkRequest[];
 }
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
 const requestsByOrigin = new Map<string, {
-  renderBlocking: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
-  nonRenderBlocking: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
-  all: Types.TraceEvents.TraceEventSyntheticNetworkRequest[],
+  renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
+  nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
+  all: Types.TraceEvents.SyntheticNetworkRequest[],
 }>();
-const requestsByTime: Types.TraceEvents.TraceEventSyntheticNetworkRequest[] = [];
+const requestsByTime: Types.TraceEvents.SyntheticNetworkRequest[] = [];
 
 function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkRequest>(
     requestId: string, key: K, value: TraceEventsForNetworkRequest[K]): void {
@@ -159,7 +159,7 @@ export async function finalize(): Promise<void> {
     // url, priority etc since it contains those values, but we use the
     // willSendRequest (if it exists) to calculate the timestamp and durations
     // of redirects.
-    const redirects: Types.TraceEvents.TraceEventSyntheticNetworkRedirect[] = [];
+    const redirects: Types.TraceEvents.SyntheticNetworkRedirect[] = [];
     for (let i = 0; i < request.sendRequests.length - 1; i++) {
       const sendRequest = request.sendRequests[i];
       const nextSendRequest = request.sendRequests[i + 1];
@@ -348,7 +348,7 @@ export async function finalize(): Promise<void> {
         Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
 
     // Construct a synthetic trace event for this network request.
-    const networkEvent: Types.TraceEvents.TraceEventSyntheticNetworkRequest = {
+    const networkEvent: Types.TraceEvents.SyntheticNetworkRequest = {
       args: {
         data: {
           // All data we create from trace events should be added to |syntheticData|.

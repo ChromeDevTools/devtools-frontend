@@ -32,7 +32,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 
 export async function finalize(): Promise<void> {
   const pipelineReporterEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(unpairedAsyncEvents) as
-      Types.TraceEvents.TraceEventSyntheticPipelineReporter[];
+      Types.TraceEvents.SyntheticPipelineReporter[];
 
   frameSequenceToTs = Object.fromEntries(pipelineReporterEvents.map(evt => {
     const frameSequenceId = evt.args.data.beginEvent.args.chrome_frame_reporter.frame_sequence;

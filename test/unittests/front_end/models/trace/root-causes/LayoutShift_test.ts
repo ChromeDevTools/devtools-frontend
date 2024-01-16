@@ -449,7 +449,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
             },
           },
         },
-      ] as unknown as TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+      ] as unknown as TraceEngine.Types.TraceEvents.SyntheticNetworkRequest[];
 
       it('marks fonts changes in LayoutInvalidation events as a potential root cause to layout shifts correctly',
          async () => {
@@ -482,7 +482,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
                                            mimeType: 'font/woff2',
                                          },
                                        },
-                                     }] as unknown as TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+                                     }] as unknown as TraceEngine.Types.TraceEvents.SyntheticNetworkRequest[];
         modelMut.NetworkRequests.byTime = optionalFontRequests;
         fontFaceMock = {fontFamily: 'Roboto', src: fontSource, fontDisplay: 'optional'} as Protocol.CSS.FontFace;
         const rootCauses =
@@ -500,17 +500,16 @@ describeWithMockConnection('LayoutShift root causes', () => {
       });
       it('ignores requests for fonts that lie outside the fixed time window from ending at the "font change" layout invalidation event',
          async () => {
-           const optionalFontRequests =
-               [{
-                 dur: TraceEngine.Types.Timing.MicroSeconds(2),
-                 ts: TraceEngine.Types.Timing.MicroSeconds(85),
-                 args: {
-                   data: {
-                     url: fontSource,
-                     mimeType: 'font/woff2',
-                   },
-                 },
-               }] as unknown as TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+           const optionalFontRequests = [{
+                                          dur: TraceEngine.Types.Timing.MicroSeconds(2),
+                                          ts: TraceEngine.Types.Timing.MicroSeconds(85),
+                                          args: {
+                                            data: {
+                                              url: fontSource,
+                                              mimeType: 'font/woff2',
+                                            },
+                                          },
+                                        }] as unknown as TraceEngine.Types.TraceEvents.SyntheticNetworkRequest[];
            modelMut.NetworkRequests.byTime = optionalFontRequests;
            fontFaceMock = {fontFamily: 'Roboto', src: fontSource, fontDisplay: 'swap'} as Protocol.CSS.FontFace;
            const rootCauses =
@@ -552,7 +551,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
             },
           },
         },
-      ] as TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest[];
+      ] as TraceEngine.Types.TraceEvents.SyntheticNetworkRequest[];
 
       it('marks render blocks in LayoutInvalidation events as a potential root cause to layout shifts correctly',
          async () => {
@@ -597,7 +596,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
         modelMut.Renderer.allTraceEntries = [{
           name: 'Layout',
           ts: 82,
-        } as unknown as TraceEngine.Types.TraceEvents.TraceEntry];
+        } as unknown as TraceEngine.Types.TraceEvents.SyntheticTraceEntry];
 
         const node = {
           entry: model.Renderer.allTraceEntries[0],

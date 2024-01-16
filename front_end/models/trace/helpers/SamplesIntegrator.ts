@@ -44,7 +44,7 @@ export class SamplesIntegrator {
    * with their approximated duration after integrating samples into the
    * trace event tree.
    */
-  #constructedProfileCalls: Types.TraceEvents.TraceEventSyntheticProfileCall[] = [];
+  #constructedProfileCalls: Types.TraceEvents.SyntheticProfileCall[] = [];
   /**
    * tracks the state of the JS stack at each point in time to update
    * the profile call durations as new events arrive. This doesn't only
@@ -52,7 +52,7 @@ export class SamplesIntegrator {
    * stack in them) but also with trace events (in which case we would
    * update the duration of the events we are tracking at the moment).
    */
-  #currentJSStack: Types.TraceEvents.TraceEventSyntheticProfileCall[] = [];
+  #currentJSStack: Types.TraceEvents.SyntheticProfileCall[] = [];
   /**
    * Process holding the CPU profile and trace events.
    */
@@ -91,7 +91,7 @@ export class SamplesIntegrator {
    * infer information about the duration of the executed code when a
    * GC node is sampled.
    */
-  #nodeForGC = new Map<Types.TraceEvents.TraceEventSyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
+  #nodeForGC = new Map<Types.TraceEvents.SyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
 
   #engineConfig: Types.Configuration.Configuration;
 
@@ -104,8 +104,7 @@ export class SamplesIntegrator {
     this.#engineConfig = configuration || Types.Configuration.DEFAULT;
   }
 
-  buildProfileCalls(traceEvents: Types.TraceEvents.TraceEventData[]):
-      Types.TraceEvents.TraceEventSyntheticProfileCall[] {
+  buildProfileCalls(traceEvents: Types.TraceEvents.TraceEventData[]): Types.TraceEvents.SyntheticProfileCall[] {
     const mergedEvents = mergeEventsInOrder(traceEvents, this.callsFromProfileSamples());
     const stack = [];
     for (let i = 0; i < mergedEvents.length; i++) {
@@ -193,8 +192,7 @@ export class SamplesIntegrator {
     this.#lockedJsStackDepth.push(this.#currentJSStack.length);
   }
 
-  #onProfileCall(event: Types.TraceEvents.TraceEventSyntheticProfileCall, parent?: Types.TraceEvents.TraceEventData):
-      void {
+  #onProfileCall(event: Types.TraceEvents.SyntheticProfileCall, parent?: Types.TraceEvents.TraceEventData): void {
     if ((parent && SamplesIntegrator.isJSInvocationEvent(parent)) || this.#fakeJSInvocation) {
       this.#extractStackTrace(event);
     } else if (Types.TraceEvents.isProfileCall(event) && this.#currentJSStack.length === 0) {
@@ -223,13 +221,13 @@ export class SamplesIntegrator {
    * that they can be traversed in order with them and their duration
    * can be updated as the SampleIntegrator callbacks are invoked.
    */
-  callsFromProfileSamples(): Types.TraceEvents.TraceEventSyntheticProfileCall[] {
+  callsFromProfileSamples(): Types.TraceEvents.SyntheticProfileCall[] {
     const samples = this.#profileModel.samples;
     const timestamps = this.#profileModel.timestamps;
     if (!samples) {
       return [];
     }
-    const calls: Types.TraceEvents.TraceEventSyntheticProfileCall[] = [];
+    const calls: Types.TraceEvents.SyntheticProfileCall[] = [];
     let prevNode;
     for (let i = 0; i < samples.length; i++) {
       const node = this.#profileModel.nodeByIndex(i);
@@ -251,8 +249,8 @@ export class SamplesIntegrator {
     return calls;
   }
 
-  #getStackTraceFromProfileCall(profileCall: Types.TraceEvents.TraceEventSyntheticProfileCall):
-      Types.TraceEvents.TraceEventSyntheticProfileCall[] {
+  #getStackTraceFromProfileCall(profileCall: Types.TraceEvents.SyntheticProfileCall):
+      Types.TraceEvents.SyntheticProfileCall[] {
     let node = this.#profileModel.nodeById(profileCall.nodeId);
     const isGarbageCollection = node?.id === this.#profileModel.gcNode?.id;
     if (isGarbageCollection) {
@@ -265,8 +263,7 @@ export class SamplesIntegrator {
     }
     // `node.depth` is 0 based, so to set the size of the array we need
     // to add 1 to its value.
-    const callFrames =
-        new Array<Types.TraceEvents.TraceEventSyntheticProfileCall>(node.depth + 1 + Number(isGarbageCollection));
+    const callFrames = new Array<Types.TraceEvents.SyntheticProfileCall>(node.depth + 1 + Number(isGarbageCollection));
     // Add the stack trace in reverse order (bottom first).
     let i = callFrames.length - 1;
     if (isGarbageCollection) {
@@ -426,8 +423,7 @@ export class SamplesIntegrator {
   }
 
   static filterStackFrames(
-      stack: Types.TraceEvents.TraceEventSyntheticProfileCall[],
-      engineConfig: Types.Configuration.Configuration): void {
+      stack: Types.TraceEvents.SyntheticProfileCall[], engineConfig: Types.Configuration.Configuration): void {
     const showAllEvents = engineConfig.experiments.timelineShowAllEvents;
     if (showAllEvents) {
       return;

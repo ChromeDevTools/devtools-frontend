@@ -32,10 +32,10 @@ const compositorTileWorkers = Array<{
   pid: Types.TraceEvents.ProcessID,
   tid: Types.TraceEvents.ThreadID,
 }>();
-const entryToNode: Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode> = new Map();
-let allTraceEntries: Types.TraceEvents.TraceEntry[] = [];
+const entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode> = new Map();
+let allTraceEntries: Types.TraceEvents.SyntheticTraceEntry[] = [];
 
-const completeEventStack: (Types.TraceEvents.TraceEventSyntheticCompleteEvent)[] = [];
+const completeEventStack: (Types.TraceEvents.SyntheticCompleteEvent)[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;
 let config: Types.Configuration.Configuration = Types.Configuration.DEFAULT;
@@ -342,8 +342,8 @@ export function buildHierarchy(
   }
 }
 
-export function makeCompleteEvent(event: Types.TraceEvents.TraceEventBegin|Types.TraceEvents.TraceEventEnd):
-    Types.TraceEvents.TraceEventSyntheticCompleteEvent|null {
+export function makeCompleteEvent(event: Types.TraceEvents.TraceEventBegin|
+                                  Types.TraceEvents.TraceEventEnd): Types.TraceEvents.SyntheticCompleteEvent|null {
   if (Types.TraceEvents.isTraceEventEnd(event)) {
     // Quietly ignore unbalanced close events, they're legit (we could
     // have missed start one).
@@ -365,7 +365,7 @@ export function makeCompleteEvent(event: Types.TraceEvents.TraceEventBegin|Types
 
   // Create a synthetic event using the begin event, when we find the
   // matching end event later we will update its duration.
-  const syntheticComplete: Types.TraceEvents.TraceEventSyntheticCompleteEvent = {
+  const syntheticComplete: Types.TraceEvents.SyntheticCompleteEvent = {
     ...event,
     ph: Types.TraceEvents.Phase.COMPLETE,
     dur: Types.Timing.MicroSeconds(0),
@@ -386,12 +386,12 @@ export interface RendererHandlerData {
    * by the process ID.
    */
   compositorTileWorkers: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]>;
-  entryToNode: Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
+  entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
   /**
    * All trace events and synthetic profile calls made from
    * samples.
    */
-  allTraceEntries: Types.TraceEvents.TraceEntry[];
+  allTraceEntries: Types.TraceEvents.SyntheticTraceEntry[];
 }
 
 export interface RendererProcess {
@@ -408,6 +408,6 @@ export interface RendererThread {
    * Contains trace events and synthetic profile calls made from
    * samples.
    */
-  entries: Types.TraceEvents.TraceEntry[];
+  entries: Types.TraceEvents.SyntheticTraceEntry[];
   tree?: Helpers.TreeHelpers.TraceEntryTree;
 }

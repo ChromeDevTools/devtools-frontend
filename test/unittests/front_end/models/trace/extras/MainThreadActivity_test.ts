@@ -12,10 +12,10 @@ function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
   return TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(x));
 }
 
-function makeFakeMainThreadTraceEntry(payload: FakeEventPayload): TraceEngine.Types.TraceEvents.TraceEntry {
+function makeFakeMainThreadTraceEntry(payload: FakeEventPayload): TraceEngine.Types.TraceEvents.SyntheticTraceEntry {
   // It does not technically make a full TraceEntry, but for these tests that
   // need some events to simulate main thread activity, they are good enough.
-  return makeFakeEventPayload(payload) as unknown as TraceEngine.Types.TraceEvents.TraceEntry;
+  return makeFakeEventPayload(payload) as unknown as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 }
 
 function makeFakeBounds(min: number, max: number): TraceEngine.Types.Timing.TraceWindowMicroSeconds {

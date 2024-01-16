@@ -12,12 +12,12 @@ import {type TraceParseData} from './types.js';
 export interface ThreadData {
   pid: Types.TraceEvents.ProcessID;
   tid: Types.TraceEvents.ThreadID;
-  entries: readonly Types.TraceEvents.TraceEntry[];
+  entries: readonly Types.TraceEvents.SyntheticTraceEntry[];
   processIsOnMainFrame: boolean;
   tree: Helpers.TreeHelpers.TraceEntryTree;
   type: ThreadType;
   name: string|null;
-  entryToNode: Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
+  entryToNode: Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
 }
 
 export const enum ThreadType {

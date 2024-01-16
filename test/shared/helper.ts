@@ -334,12 +334,14 @@ export const waitForNoElementsWithTextContent =
                              }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
     };
 
+export const TIMEOUT_ERROR_MESSAGE = 'Test timed out';
+
 export const waitForFunction =
     async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string): Promise<T> => {
   const innerFunction = async () => {
     while (true) {
       if (asyncScope.isCanceled()) {
-        throw new Error('Test timed out');
+        throw new Error(TIMEOUT_ERROR_MESSAGE);
       }
       const result = await fn();
       if (result) {

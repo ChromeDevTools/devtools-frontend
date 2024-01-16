@@ -11,7 +11,7 @@ import {ScreenshotError} from '../shared/screenshot-error.js';
 
 import {AsyncScope} from './async-scope.js';
 import {getEnvVar} from './config.js';
-import {platform, type Platform} from './helper.js';
+import {platform, type Platform, TIMEOUT_ERROR_MESSAGE} from './helper.js';
 
 export {after, beforeEach} from 'mocha';
 
@@ -253,7 +253,8 @@ function wrapMochaCall(
 
     if (callback.length === 0) {
       async function onError(this: unknown, err?: unknown) {
-        if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError)) {
+        const isTimeoutError = err instanceof Error && err.message?.includes(TIMEOUT_ERROR_MESSAGE);
+        if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError) && !isTimeoutError) {
           const {target, frontend} = await takeScreenshots(name);
           err = ScreenshotError.fromBase64Images(err, target, frontend);
         }

@@ -345,7 +345,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationNameLink);
           this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
         },
-        jslogContext: 'cssAnimationName',
+        jslogContext: 'css-animation-name',
       };
       contentChild.appendChild(swatch);
 
@@ -406,7 +406,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.PositionFallbackLink);
         this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`);
       },
-      jslogContext: 'cssPositionFallback',
+      jslogContext: 'css-position-fallback',
     };
     contentChild.appendChild(swatch);
 
@@ -424,7 +424,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       onLinkActivate: (): void => {
         this.parentPaneInternal.jumpToSectionBlock(`@font-palette-values ${propertyText}`);
       },
-      jslogContext: 'cssFontPalette',
+      jslogContext: 'css-font-palette',
     };
     contentChild.appendChild(swatch);
 
@@ -666,7 +666,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // TODO(flandy): editing the property value should use the original value with all spaces.
       const cssShadowSwatch = InlineEditor.Swatches.CSSShadowSwatch.create();
       cssShadowSwatch.setAttribute(
-          'jslog', `${VisualLogging.showStyleEditor().context('cssShadow').track({click: true})}`);
+          'jslog', `${VisualLogging.showStyleEditor().context('css-shadow').track({click: true})}`);
       cssShadowSwatch.setCSSShadow(shadows[i]);
       cssShadowSwatch.iconElement().addEventListener('click', () => {
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
@@ -713,7 +713,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return document.createTextNode(angleText);
     }
     const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
-    cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('cssAngle')}`);
+    cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('css-angle')}`);
     const valueElement = document.createElement('span');
     valueElement.textContent = angleText;
     const computedPropertyValue =

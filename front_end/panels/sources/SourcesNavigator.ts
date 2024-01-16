@@ -310,7 +310,7 @@ export class OverridesNavigatorView extends NavigatorView {
 
 export class ContentScriptsNavigatorView extends NavigatorView {
   constructor() {
-    super('navigator-contentScripts');
+    super('navigator-content-scripts');
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
     this.setPlaceholder(placeholder);
     placeholder.appendParagraph().appendChild(UI.Fragment.html`

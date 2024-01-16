@@ -1553,7 +1553,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const button =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), 'brush', 'brush-filled');
     button.element.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('renderingEmulations')}`);
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('rendering-emulations')}`);
     button.element.addEventListener('click', event => {
       const boundingRect = button.element.getBoundingClientRect();
       const menu = new UI.ContextMenu.ContextMenu(event, {

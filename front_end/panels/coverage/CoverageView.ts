@@ -142,7 +142,7 @@ export class CoverageView extends UI.Widget.VBox {
 
     this.coverageTypeComboBox = new UI.Toolbar.ToolbarComboBox(
         this.onCoverageTypeComboBoxSelectionChanged.bind(this), i18nString(UIStrings.chooseCoverageGranularityPer),
-        undefined, 'coverageViewCoverageType');
+        undefined, 'coverage-type');
     const coverageTypes = [
       {
         label: i18nString(UIStrings.perFunction),
@@ -194,7 +194,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.typeFilterValue = null;
     this.filterByTypeComboBox = new UI.Toolbar.ToolbarComboBox(
         this.onFilterByTypeChanged.bind(this), i18nString(UIStrings.filterCoverageByType), undefined,
-        'coverageViewCoverageByType');
+        'coverage-by-type');
     const options = [
       {
         label: i18nString(UIStrings.all),

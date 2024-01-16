@@ -930,7 +930,7 @@ export class ElementsTreeOutline extends
     const commentNode = node.enclosingNodeOrSelfWithClass('webkit-html-comment');
     contextMenu.saveSection().appendItem(
         i18nString(UIStrings.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()),
-        {jslogContext: 'storeAsGlobalVariable'});
+        {jslogContext: 'store-as-global-variable'});
     if (textNode) {
       treeElement.populateTextContextMenu(contextMenu, textNode);
     } else if (isTag) {
@@ -943,7 +943,7 @@ export class ElementsTreeOutline extends
 
     contextMenu.viewSection().appendItem(i18nString(UIStrings.adornerSettings), () => {
       ElementsPanel.instance().showAdornerSettingsPane();
-    }, {jslogContext: 'showAdornerSettings'});
+    }, {jslogContext: 'show-adorner-settings'});
 
     contextMenu.appendApplicableItems(treeElement.node());
     void contextMenu.show();

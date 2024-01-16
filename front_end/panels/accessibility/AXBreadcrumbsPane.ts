@@ -69,7 +69,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     this.hoveredBreadcrumb = null;
     const previewToggle = new Feedback.PreviewToggle.PreviewToggle();
-    previewToggle.setAttribute('jslog', `${VisualLogging.toggle().context('fullAccessibilityTree')}`);
+    previewToggle.setAttribute('jslog', `${VisualLogging.toggle().context('full-accessibility-tree')}`);
     const name = i18nString(UIStrings.fullTreeExperimentName);
     const experiment = Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE;
     const onChangeCallback: (checked: boolean) => void = checked => {

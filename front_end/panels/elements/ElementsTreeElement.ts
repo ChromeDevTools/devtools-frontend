@@ -690,7 +690,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     contextMenu.editSection().appendItem(
         i18nString(UIStrings.addAttribute), treeElement.addNewAttribute.bind(treeElement),
-        {jslogContext: 'addAttribute'});
+        {jslogContext: 'add-attribute'});
 
     const target = (event.target as Element);
     const attribute = target.enclosingNodeOrSelfWithClass('webkit-html-attribute');
@@ -698,7 +698,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (attribute && !newAttribute) {
       contextMenu.editSection().appendItem(
           i18nString(UIStrings.editAttribute), this.startEditingAttribute.bind(this, attribute, target),
-          {jslogContext: 'editAttribute'});
+          {jslogContext: 'edit-attribute'});
     }
     this.populateNodeContextMenu(contextMenu);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
@@ -719,19 +719,19 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private populateExpandRecursively(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this),
-        {jslogContext: 'expandRecursively'});
+        {jslogContext: 'expand-recursively'});
   }
 
   private populateScrollIntoView(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.scrollIntoView), () => this.nodeInternal.scrollIntoView(),
-        {jslogContext: 'scrollIntoView'});
+        {jslogContext: 'scroll-into-view'});
   }
 
   populateTextContextMenu(contextMenu: UI.ContextMenu.ContextMenu, textNode: Element): void {
     if (!this.editing) {
       contextMenu.editSection().appendItem(
-          i18nString(UIStrings.editText), this.startEditingTextNode.bind(this, textNode), {jslogContext: 'editText'});
+          i18nString(UIStrings.editText), this.startEditingTextNode.bind(this, textNode), {jslogContext: 'edit-text'});
     }
     this.populateNodeContextMenu(contextMenu);
   }
@@ -741,7 +741,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isEditable = this.hasEditableNode();
     // clang-format off
     if (isEditable && !this.editing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), {jslogContext: 'editAsHtml'});
+      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), {jslogContext: 'edit-as-html'});
     }
     // clang-format on
     const isShadowRoot = this.nodeInternal.isShadowRoot();
@@ -765,34 +765,34 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!isShadowRoot) {
       menuItem = section.appendItem(
           i18nString(UIStrings.copyOuterhtml), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal),
-          {jslogContext: 'copyOuterHtml'});
+          {jslogContext: 'copy-outer-html'});
       menuItem.setShortcut(createShortcut('V', modifier));
     }
     if (this.nodeInternal.nodeType() === Node.ELEMENT_NODE) {
       section.appendItem(
-          i18nString(UIStrings.copySelector), this.copyCSSPath.bind(this), {jslogContext: 'copySelector'});
+          i18nString(UIStrings.copySelector), this.copyCSSPath.bind(this), {jslogContext: 'copy-selector'});
       section.appendItem(
           i18nString(UIStrings.copyJsPath), this.copyJSPath.bind(this),
-          {disabled: !canGetJSPath(this.nodeInternal), jslogContext: 'copyJsPath'});
-      section.appendItem(i18nString(UIStrings.copyStyles), this.copyStyles.bind(this), {jslogContext: 'copyStyles'});
+          {disabled: !canGetJSPath(this.nodeInternal), jslogContext: 'copy-js-path'});
+      section.appendItem(i18nString(UIStrings.copyStyles), this.copyStyles.bind(this), {jslogContext: 'copy-styles'});
     }
     if (!isShadowRoot) {
-      section.appendItem(i18nString(UIStrings.copyXpath), this.copyXPath.bind(this), {jslogContext: 'copyXpath'});
+      section.appendItem(i18nString(UIStrings.copyXpath), this.copyXPath.bind(this), {jslogContext: 'copy-xpath'});
       section.appendItem(
-          i18nString(UIStrings.copyFullXpath), this.copyFullXPath.bind(this), {jslogContext: 'copyFullXpath'});
+          i18nString(UIStrings.copyFullXpath), this.copyFullXPath.bind(this), {jslogContext: 'copy-full-xpath'});
     }
 
     if (!isShadowRoot) {
       menuItem = copyMenu.clipboardSection().appendItem(
           i18nString(UIStrings.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal),
-          {jslogContext: 'copyElement'});
+          {jslogContext: 'copy-element'});
       menuItem.setShortcut(createShortcut('C', modifier));
 
       // Duplicate element, disabled on root element and ShadowDOM.
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === '#document';
       menuItem = contextMenu.editSection().appendItem(
           i18nString(UIStrings.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal),
-          {disabled: (this.nodeInternal.isInShadowTree() || isRootElement), jslogContext: 'duplicateElement'});
+          {disabled: (this.nodeInternal.isInShadowTree() || isRootElement), jslogContext: 'duplicate-element'});
     }
 
     menuItem = contextMenu.clipboardSection().appendItem(
@@ -808,18 +808,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     if (isEditable) {
       contextMenu.editSection().appendItem(
-          i18nString(UIStrings.deleteElement), this.remove.bind(this), {jslogContext: 'deleteElement'});
+          i18nString(UIStrings.deleteElement), this.remove.bind(this), {jslogContext: 'delete-element'});
     }
 
     this.populateExpandRecursively(contextMenu);
     contextMenu.viewSection().appendItem(
-        i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), {jslogContext: 'collapseChildren'});
+        i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), {jslogContext: 'collapse-children'});
     const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.captureNodeScreenshot),
         deviceModeWrapperAction.handleAction.bind(
             null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'),
-        {jslogContext: 'captureNodeScreenshot'});
+        {jslogContext: 'capture-node-screenshot'});
     if (this.nodeInternal.frameOwnerFrameId()) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.showFrameDetails), () => {
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
@@ -827,7 +827,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
           void Common.Revealer.reveal(frame);
         }
-      }, {jslogContext: 'showFrameDetails'});
+      }, {jslogContext: 'show-frame-details'});
     }
   }
 

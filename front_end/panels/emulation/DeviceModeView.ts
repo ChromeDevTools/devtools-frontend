@@ -181,7 +181,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       const block = (outer.createChild('div', 'device-mode-preset-bar') as HTMLElement);
       block.createChild('span').textContent = titles[i] + ' \u2013 ' + sizes[i] + 'px';
       block.setAttribute(
-          'jslog', `${VisualLogging.action().track({click: true}).context(`deviceModePreset-${sizes[i]}px`)}`);
+          'jslog', `${VisualLogging.action().track({click: true}).context(`device-mode-preset-${sizes[i]}px`)}`);
       block.addEventListener('click', applySize.bind(this, sizes[i]), false);
       this.blockElementToWidth.set(block, sizes[i]);
       this.presetBlocks.push(block);
@@ -196,7 +196,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
   private createResizer(element: Element, widthFactor: number, heightFactor: number): UI.ResizerWidget.ResizerWidget {
     const resizer = new UI.ResizerWidget.ResizerWidget();
-    element.setAttribute('jslog', `${VisualLogging.slider().context('deviceModeResizer').track({drag: true})}`);
+    element.setAttribute('jslog', `${VisualLogging.slider().context('device-mode-resizer').track({drag: true})}`);
     resizer.addElement((element as HTMLElement));
     let cursor: 'nwse-resize'|'nesw-resize'|('ew-resize' | 'ns-resize') = widthFactor ? 'ew-resize' : 'ns-resize';
     if (widthFactor * heightFactor > 0) {

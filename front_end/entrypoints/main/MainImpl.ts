@@ -887,7 +887,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
                                                                     i18nString(UIStrings.showConsoleDrawer));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools =
-        contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools), false, 'moreTools');
+        contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools), false, 'more-tools');
     const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
     viewExtensions.sort((extension1, extension2) => {
       const title1 = extension1.title();

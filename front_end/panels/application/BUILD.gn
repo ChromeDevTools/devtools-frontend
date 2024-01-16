@@ -16,6 +16,7 @@ generate_css("css_files") {
     "interestGroupStorageView.css",
     "openedWindowDetailsView.css",
     "preloading/preloadingView.css",
+    "preloading/preloadingViewDropDown.css",
     "reportingApiReportsView.css",
     "resourcesPanel.css",
     "resourcesSidebar.css",

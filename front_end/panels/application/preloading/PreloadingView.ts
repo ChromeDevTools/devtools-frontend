@@ -20,6 +20,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
+import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
 const UIStrings = {
   /**
@@ -606,8 +607,8 @@ class PreloadingRuleSetSelector implements
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
   createElementForItem(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): Element {
     const element = document.createElement('div');
-    const shadowRoot =
-        UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: undefined, delegatesFocus: undefined});
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        element, {cssFile: [preloadingViewDropDownStyles], delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

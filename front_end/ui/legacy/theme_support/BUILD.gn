@@ -32,5 +32,6 @@ devtools_entrypoint("bundle") {
     "../../../panels/*",
     "../../components/docs/*",
     "../../components/helpers/*",
+    "../../components/icon_button/*",
   ]
 }

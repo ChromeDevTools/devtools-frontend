@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import iconStyles from './icon.css.js';
+import iconStyles from './icon.css.legacy.js';
 
 /**
  * @deprecated
@@ -80,10 +81,19 @@ export class Icon extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadowRoot = this.attachShadow({mode: 'open'});
-    this.#icon = document.createElement('span');
-    this.#shadowRoot.appendChild(this.#icon);
     this.role = 'presentation';
+    this.#icon = document.createElement('span');
+    this.#shadowRoot = this.attachShadow({mode: 'open'});
+    this.#shadowRoot.appendChild(this.#icon);
+
+    // TODO(bmeurer): Ideally we'd have a `connectedCallback()` that would just
+    // install the CSS via `adoptedStyleSheets`, but that throws when using the
+    // same `CSSStyleSheet` across two different documents (which happens in the
+    // case of undocked DevTools windows and using the DeviceMode). So the work-
+    // around for now is to use legacy CSS injected as a <style> tag into the
+    // ShadowRoot (which has been working well for the legacy UI components for
+    // a long time).
+    ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadowRoot, iconStyles);
   }
 
   /**
@@ -135,10 +145,6 @@ export class Icon extends HTMLElement {
     } else {
       this.setAttribute('name', name);
     }
-  }
-
-  connectedCallback(): void {
-    this.#shadowRoot.adoptedStyleSheets = [iconStyles];
   }
 
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {

@@ -1869,7 +1869,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/highlighting/highlighting.css.js",
   "front_end/ui/components/icon_button/Icon.js",
   "front_end/ui/components/icon_button/IconButton.js",
-  "front_end/ui/components/icon_button/icon.css.js",
+  "front_end/ui/components/icon_button/icon.css.legacy.js",
   "front_end/ui/components/icon_button/iconButton.css.js",
   "front_end/ui/components/input/checkbox.css.js",
   "front_end/ui/components/input/textInput.css.js",

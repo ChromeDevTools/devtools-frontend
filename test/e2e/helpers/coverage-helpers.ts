@@ -45,6 +45,6 @@ export async function getCoverageData(expectedCount: number) {
   return Promise.all(rows.map(r => r.evaluate((r: Element) => ({
                                                 url: r.querySelector('.url-column')?.textContent,
                                                 total: r.querySelector('.size-column')?.textContent,
-                                                unused: r.querySelector('.unusedSize-column span')?.textContent,
+                                                unused: r.querySelector('.unused-size-column span')?.textContent,
                                               }))));
 }

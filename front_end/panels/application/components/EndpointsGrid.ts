@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -44,24 +45,25 @@ export class EndpointsGrid extends HTMLElement {
   }
 
   #render(): void {
+    const k = Platform.StringUtilities.kebab;
     const endpointsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
-          id: 'origin',
+          id: k('origin'),
           title: i18n.i18n.lockedString('Origin'),
           widthWeighting: 30,
           hideable: false,
           visible: true,
         },
         {
-          id: 'name',
+          id: k('name'),
           title: i18n.i18n.lockedString('Name'),
           widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
-          id: 'url',
+          id: k('url'),
           title: i18n.i18n.lockedString('URL'),
           widthWeighting: 30,
           hideable: false,

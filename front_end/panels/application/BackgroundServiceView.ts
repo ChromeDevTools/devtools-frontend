@@ -354,14 +354,15 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<EventData> {
+    const k = Platform.StringUtilities.kebab;
     const columns = ([
-      {id: 'id', title: '#', weight: 1},
-      {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7},
-      {id: 'eventName', title: i18nString(UIStrings.event), weight: 8},
-      {id: 'origin', title: i18nString(UIStrings.origin), weight: 8},
-      {id: 'storageKey', title: i18nString(UIStrings.storageKey), weight: 8},
-      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 4},
-      {id: 'instanceId', title: i18nString(UIStrings.instanceId), weight: 8},
+      {id: k('id'), title: '#', weight: 1},
+      {id: k('timestamp'), title: i18nString(UIStrings.timestamp), weight: 7},
+      {id: k('event-name'), title: i18nString(UIStrings.event), weight: 8},
+      {id: k('origin'), title: i18nString(UIStrings.origin), weight: 8},
+      {id: k('storage-key'), title: i18nString(UIStrings.storageKey), weight: 8},
+      {id: k('sw-scope'), title: i18nString(UIStrings.swScope), weight: 4},
+      {id: k('instance-id'), title: i18nString(UIStrings.instanceId), weight: 8},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.backgroundServices),
@@ -396,10 +397,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       id: this.dataGrid.rootNode().children.length + 1,
       timestamp: UI.UIUtils.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
       origin: serviceEvent.origin,
-      storageKey: serviceEvent.storageKey,
-      swScope,
-      eventName: serviceEvent.eventName,
-      instanceId: serviceEvent.instanceId,
+      'storage-key': serviceEvent.storageKey,
+      'sw-scope': swScope,
+      'event-name': serviceEvent.eventName,
+      'instance-id': serviceEvent.instanceId,
     };
   }
 
@@ -580,8 +581,8 @@ export interface EventData {
   id: number;
   timestamp: string;
   origin: string;
-  storageKey: string;
-  swScope: string;
-  eventName: string;
-  instanceId: string;
+  'storage-key': string;
+  'sw-scope': string;
+  'event-name': string;
+  'instance-id': string;
 }

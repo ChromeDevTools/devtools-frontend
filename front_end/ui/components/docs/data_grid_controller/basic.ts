@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
@@ -10,11 +11,12 @@ await EnvironmentHelpers.initializeGlobalVars();
 await ComponentHelpers.ComponentServerSetup.setup();
 
 const component = new DataGrid.DataGridController.DataGridController();
+const k = Platform.StringUtilities.kebab;
 
 component.data = {
   columns: [
-    {id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
-    {id: 'value', title: 'Value', sortable: true, widthWeighting: 1, visible: true, hideable: true},
+    {id: k('key'), title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+    {id: k('value'), title: 'Value', sortable: true, widthWeighting: 1, visible: true, hideable: true},
   ],
   rows: [
     // Each key is the ID of a column, and the value is the value for that column

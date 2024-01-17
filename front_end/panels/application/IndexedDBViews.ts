@@ -29,6 +29,7 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
@@ -325,6 +326,7 @@ export class IDBDataView extends UI.View.SimpleView {
     const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
 
     const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const k = Platform.StringUtilities.kebab;
 
     // Create column defaults so that we avoid repetition below.
     const columnDefaults = {
@@ -345,24 +347,24 @@ export class IDBDataView extends UI.View.SimpleView {
       defaultWeight: undefined,
     };
     columns.push(
-        ({...columnDefaults, id: 'number', title: '#', sortable: false, width: '50px'} as
+        ({...columnDefaults, id: k('number'), title: '#', sortable: false, width: '50px'} as
          DataGrid.DataGrid.ColumnDescriptor));
     columns.push(({
       ...columnDefaults,
-      id: 'key',
+      id: k('key'),
       titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.keyString), keyPath),
       sortable: false,
     } as DataGrid.DataGrid.ColumnDescriptor));
     if (this.isIndex) {
       columns.push(({
         ...columnDefaults,
-        id: 'primaryKey',
+        id: k('primary-key'),
         titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.primaryKey), this.objectStore.keyPath),
         sortable: false,
       } as DataGrid.DataGrid.ColumnDescriptor));
     }
     const title = i18nString(UIStrings.valueString);
-    columns.push(({...columnDefaults, id: 'value', title, sortable: false} as DataGrid.DataGrid.ColumnDescriptor));
+    columns.push(({...columnDefaults, id: k('value'), title, sortable: false} as DataGrid.DataGrid.ColumnDescriptor));
 
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.indexedDb),
@@ -533,7 +535,7 @@ export class IDBDataView extends UI.View.SimpleView {
         const data: any = {};
         data['number'] = i + skipCount;
         data['key'] = entries[i].key;
-        data['primaryKey'] = entries[i].primaryKey;
+        data['primary-key'] = entries[i].primaryKey;
         data['value'] = entries[i].value;
 
         const node = new IDBDataGridNode(data);
@@ -618,7 +620,7 @@ export class IDBDataView extends UI.View.SimpleView {
         return;
       }
     }
-    const key = (this.isIndex ? node.data.primaryKey : node.data.key as SDK.RemoteObject.RemoteObject);
+    const key = (this.isIndex ? node.data['primary-key'] : node.data.key as SDK.RemoteObject.RemoteObject);
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const keyValue = (key.value as string | number | any[] | Date);
@@ -686,7 +688,7 @@ export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
         break;
       }
       case 'key':
-      case 'primaryKey': {
+      case 'primary-key': {
         cell.removeChildren();
         const objectElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.defaultObjectPresentation(
             value, undefined /* linkifier */, true /* skipProto */, true /* readOnly */);

@@ -39,12 +39,13 @@ import {
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+const k = Platform.StringUtilities.kebab;
 
 const createColumns = (): DataGrid.DataGridUtils.Column[] => {
   return [
-    {id: 'city', title: 'City', sortable: true, widthWeighting: 2, visible: true, hideable: false},
-    {id: 'country', title: 'Country', sortable: false, widthWeighting: 2, visible: true, hideable: false},
-    {id: 'population', title: 'Population', sortable: false, widthWeighting: 1, visible: true, hideable: false},
+    {id: k('city'), title: 'City', sortable: true, widthWeighting: 2, visible: true, hideable: false},
+    {id: k('country'), title: 'Country', sortable: false, widthWeighting: 2, visible: true, hideable: false},
+    {id: k('population'), title: 'Population', sortable: false, widthWeighting: 1, visible: true, hideable: false},
   ];
 };
 
@@ -213,7 +214,7 @@ describe('DataGrid', () => {
   describe('data-grid renderers', () => {
     it('uses the string renderer by default', async () => {
       const columns: DataGrid.DataGridUtils.Column[] =
-          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
+          [{id: k('key'), title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: DataGrid.DataGridUtils.Row[] = [{cells: [{columnId: 'key', value: 'Hello World'}]}];
       const component = renderDataGrid({columns, rows});
       assertShadowRoot(component.shadowRoot);
@@ -224,7 +225,7 @@ describe('DataGrid', () => {
 
     it('can use the code block renderer to render text in a <code> tag', async () => {
       const columns: DataGrid.DataGridUtils.Column[] =
-          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
+          [{id: k('key'), title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: DataGrid.DataGridUtils.Row[] = [{
         cells: [
           {
@@ -247,7 +248,7 @@ describe('DataGrid', () => {
       icon.data = {iconName: 'arrow-down', color: 'var(--icon-request)', width: '16px', height: '16px'};
 
       const columns: DataGrid.DataGridUtils.Column[] =
-          [{id: 'type', title: 'Type', widthWeighting: 1, visible: true, hideable: false}];
+          [{id: k('type'), title: 'Type', widthWeighting: 1, visible: true, hideable: false}];
       const rows: DataGrid.DataGridUtils.Row[] = [{
         cells: [
           {
@@ -269,7 +270,7 @@ describe('DataGrid', () => {
 
     it('accepts any custom renderer', async () => {
       const columns: DataGrid.DataGridUtils.Column[] =
-          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
+          [{id: k('key'), title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: DataGrid.DataGridUtils.Row[] = [{
         cells: [{
           columnId: 'key',
@@ -715,7 +716,7 @@ describe('DataGrid', () => {
     const makeColumnsWithWeightings = (...weights: number[]): DataGrid.DataGridUtils.Column[] => {
       return weights.map((weight, index) => {
         return {
-          id: `column-${index}`,
+          id: `column-${index}` as Platform.StringUtilities.KebabString,
           title: `Column ${index}`,
           sortable: false,
           visible: true,
@@ -758,9 +759,9 @@ describe('DataGrid', () => {
   describe('#DataGrid.DataGridUtils.handleArrowKeyNavigation util', () => {
     const makeColumns = (): DataGrid.DataGridUtils.Column[] => {
       return [
-        {id: 'a', title: 'A', sortable: false, visible: true, hideable: false, widthWeighting: 1},
-        {id: 'b', title: 'B', sortable: false, visible: true, hideable: false, widthWeighting: 1},
-        {id: 'c', title: 'C', sortable: false, visible: true, hideable: false, widthWeighting: 1},
+        {id: k('a'), title: 'A', sortable: false, visible: true, hideable: false, widthWeighting: 1},
+        {id: k('b'), title: 'B', sortable: false, visible: true, hideable: false, widthWeighting: 1},
+        {id: k('c'), title: 'C', sortable: false, visible: true, hideable: false, widthWeighting: 1},
       ];
     };
 

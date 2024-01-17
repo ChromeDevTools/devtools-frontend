@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -14,6 +15,7 @@ import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAll
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+const k = Platform.StringUtilities.kebab;
 
 const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController): ShadowRoot => {
   assertShadowRoot(component.shadowRoot);
@@ -27,7 +29,7 @@ const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.Da
 describe('DataGridController', () => {
   describeWithLocale('sorting the columns', () => {
     const columns = [
-      {id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+      {id: k('key'), title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     ];
     const rows = [
       {cells: [{columnId: 'key', value: 'Bravo'}]},
@@ -204,8 +206,8 @@ describe('DataGridController', () => {
 
   describeWithLocale('filtering rows', () => {
     const columns = [
-      {id: 'key', title: 'Letter', sortable: true, widthWeighting: 1, visible: true, hideable: false},
-      {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+      {id: k('key'), title: 'Letter', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+      {id: k('value'), title: 'Phonetic', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     ];
     const rows = [
       {

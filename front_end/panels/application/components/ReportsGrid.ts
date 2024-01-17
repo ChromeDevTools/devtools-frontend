@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
@@ -91,24 +92,25 @@ export class ReportsGrid extends HTMLElement {
   }
 
   #render(): void {
+    const k = Platform.StringUtilities.kebab;
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
-          id: 'url',
+          id: k('url'),
           title: i18n.i18n.lockedString('URL'),
           widthWeighting: 30,
           hideable: false,
           visible: true,
         },
         {
-          id: 'type',
+          id: k('type'),
           title: i18n.i18n.lockedString('Type'),
           widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
-          id: 'status',
+          id: k('status'),
           title: i18nString(UIStrings.status),
           widthWeighting: 20,
           hideable: false,
@@ -118,21 +120,21 @@ export class ReportsGrid extends HTMLElement {
           `,
         },
         {
-          id: 'destination',
+          id: k('destination'),
           title: i18nString(UIStrings.destination),
           widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
-          id: 'timestamp',
+          id: k('timestamp'),
           title: i18nString(UIStrings.generatedAt),
           widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
-          id: 'body',
+          id: k('body'),
           title: i18n.i18n.lockedString('Body'),
           widthWeighting: 20,
           hideable: false,
@@ -144,7 +146,7 @@ export class ReportsGrid extends HTMLElement {
 
     if (this.#protocolMonitorExperimentEnabled) {
       reportsGridData.columns.unshift(
-          {id: 'id', title: 'ID', widthWeighting: 30, hideable: false, visible: true},
+          {id: k('id'), title: 'ID', widthWeighting: 30, hideable: false, visible: true},
       );
     }
 

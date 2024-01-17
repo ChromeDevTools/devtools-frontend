@@ -194,33 +194,34 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
+    const k = Platform.StringUtilities.kebab;
     const columns = ([
-      {id: 'number', title: '#', sortable: false, width: '3px'},
-      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
+      {id: k('number'), title: '#', sortable: false, width: '3px'},
+      {id: k('name'), title: i18nString(UIStrings.name), weight: 4, sortable: true},
       {
-        id: 'responseType',
+        id: k('response-type'),
         title: i18n.i18n.lockedString('Response-Type'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: 'contentType', title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
+      {id: k('content-type'), title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
       {
-        id: 'contentLength',
+        id: k('content-length'),
         title: i18n.i18n.lockedString('Content-Length'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
       {
-        id: 'responseTime',
+        id: k('response-time'),
         title: i18nString(UIStrings.timeCached),
         width: '12em',
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: 'varyHeader', title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
+      {id: k('vary-header'), title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),
@@ -251,15 +252,15 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     let comparator: (arg0: DataGridNode, arg1: DataGridNode) => number;
     if (columnId === 'name') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.name.localeCompare(b.name);
-    } else if (columnId === 'contentType') {
+    } else if (columnId === 'content-type') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.mimeType.localeCompare(b.data.mimeType);
-    } else if (columnId === 'contentLength') {
+    } else if (columnId === 'content-length') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.resourceSize - b.data.resourceSize;
-    } else if (columnId === 'responseTime') {
+    } else if (columnId === 'response-time') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.endTime - b.data.endTime;
-    } else if (columnId === 'responseType') {
+    } else if (columnId === 'response-type') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.responseType.localeCompare(b.responseType);
-    } else if (columnId === 'varyHeader') {
+    } else if (columnId === 'vary-header') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.varyHeader.localeCompare(b.varyHeader);
     }
 
@@ -483,7 +484,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
       value = String(this.number);
     } else if (columnId === 'name') {
       value = this.name;
-    } else if (columnId === 'responseType') {
+    } else if (columnId === 'response-type') {
       if (this.responseType === 'opaqueResponse') {
         value = 'opaque';
       } else if (this.responseType === 'opaqueRedirect') {
@@ -491,13 +492,13 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
       } else {
         value = this.responseType;
       }
-    } else if (columnId === 'contentType') {
+    } else if (columnId === 'content-type') {
       value = this.request.mimeType;
-    } else if (columnId === 'contentLength') {
+    } else if (columnId === 'content-length') {
       value = (this.request.resourceSize | 0).toLocaleString('en-US');
-    } else if (columnId === 'responseTime') {
+    } else if (columnId === 'response-time') {
       value = new Date(this.request.endTime * 1000).toLocaleString();
-    } else if (columnId === 'varyHeader') {
+    } else if (columnId === 'vary-header') {
       value = this.varyHeader;
       if (this.varyHeader) {
         tooltip = i18nString(UIStrings.varyHeaderWarning);

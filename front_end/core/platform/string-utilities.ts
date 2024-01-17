@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {type Brand} from './brand.js';
+
 export const escapeCharacters = (inputString: string, charsToEscape: string): string => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
@@ -246,7 +248,7 @@ export const stripLineBreaks = (inputStr: string): string => {
   return inputStr.replace(/(\r)?\n/g, '');
 };
 
-const EXTENDED_KEBAP_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
  * Tests if the `inputStr` is following the extended Kebab Case naming convetion,
@@ -260,8 +262,22 @@ const EXTENDED_KEBAP_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[
  * @return `true` if the `inputStr` follows the extended Kebab Case convention.
  */
 export const isExtendedKebabCase = (inputStr: string): boolean => {
-  return EXTENDED_KEBAP_CASE_REGEXP.test(inputStr);
+  return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);
 };
+
+type KebabChar = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|
+    'z'|'0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'.'|'-';
+
+type IsKebab<ToProcess extends string, AlreadyProcessed extends string = ''> =
+    ToProcess extends `${infer FirstChar}${infer Rest}` ?
+    IsKebab<Rest, `${AlreadyProcessed}${FirstChar extends KebabChar ? FirstChar : never}`>:
+    AlreadyProcessed;
+
+export type KebabString = Brand<string, 'KebabString'>;
+
+export function kebab<T extends string>(x: T extends IsKebab<T>? T : IsKebab<T>): KebabString {
+  return x as unknown as KebabString;
+}
 
 export const toTitleCase = (inputStr: string): string => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
@@ -495,6 +511,16 @@ export type LowerCaseString = string&LowerCaseStringTag;
 
 export const toLowerCaseString = function(input: string): LowerCaseString {
   return input.toLowerCase() as LowerCaseString;
+};
+
+const WORD = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z0-9]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
+//            <---1---><-----------2----------> <----------3--------> <-----4---->
+// 1: two or more consecutive uppercase letters. This is useful for identifying acronyms
+// 2: lookahead assertion that matches a word boundary
+// 3: word starting with an optional uppercase letter
+// 4: single uppercase letter or number
+export const toKebabCase = function(input: string): string {
+  return input.match(WORD)?.map(w => w.toLowerCase()).join('-') || input;
 };
 
 // Replaces the last ocurrence of parameter `search` with parameter `replacement` in `input`

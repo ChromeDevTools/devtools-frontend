@@ -434,7 +434,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
     let sortFunction;
     switch (columnId) {
-      case 'startTime':
+      case 'start-time':
         sortFunction = compareStartTime;
         break;
       case 'self':
@@ -680,7 +680,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   }
 
   private createValueCell(columnId: string): HTMLElement|null {
-    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'startTime') {
+    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'start-time') {
       return null;
     }
 
@@ -689,7 +689,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let maxTime: number|undefined;
     let event: TraceEngine.Legacy.CompatibleTraceEvent|null;
     switch (columnId) {
-      case 'startTime': {
+      case 'start-time': {
         event = this.profileNode.event;
         const traceParseData = this.treeView.traceParseData();
         if (!traceParseData) {

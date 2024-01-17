@@ -22,7 +22,7 @@ export const dumpCacheTreeNoRefresh = async function(pathFilter) {
   function _dumpDataGrid(dataGrid) {
     for (const node of dataGrid.rootNode().children) {
       const children = Array.from(node.element().children).filter(function(element) {
-        return !element.classList.contains('responseTime-column');
+        return !element.classList.contains('response-time-column');
       });
 
       const entries = Array.from(children, td => td.textContent).filter(text => text);

@@ -26,7 +26,7 @@ export interface CSSStylesObject {
  * - `styles`: an optional property of key-value sets of CSS properties and values.
  */
 export interface Column {
-  id: string;
+  id: Platform.StringUtilities.KebabString;
   title: string;
   titleElement?: LitHtml.TemplateResult;
   sortable?: boolean;

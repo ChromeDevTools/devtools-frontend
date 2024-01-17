@@ -10,6 +10,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -26,9 +27,13 @@ import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
+  type BottomUpTreeMatching,
   ColorMatch,
   ColorMatcher,
+  Renderer,
   type RenderingContext,
+  VariableMatch,
+  VariableMatcher,
 } from './PropertyParser.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
@@ -122,6 +127,96 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
+export class VariableRenderer extends VariableMatch {
+  readonly #treeElement: StylePropertyTreeElement;
+  readonly #style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
+  constructor(
+      treeElement: StylePropertyTreeElement, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, text: string,
+      name: string, fallback: CodeMirror.SyntaxNode[], matching: BottomUpTreeMatching) {
+    super(text, name, fallback, matching);
+    this.#treeElement = treeElement;
+    this.#style = style;
+  }
+
+  resolveVariable(): SDK.CSSMatchedStyles.CSSVariableValue|null {
+    return this.#matchedStyles.computeCSSVariable(this.#style, this.name);
+  }
+
+  fallbackValue(): string|null {
+    if (this.fallback.length === 0 || this.fallback.some(node => this.matching.hasUnresolvedVars(node))) {
+      return null;
+    }
+    return this.fallback.map(node => this.matching.getComputedText(node)).join(' ');
+  }
+
+  computedText(): string|null {
+    return this.resolveVariable()?.value ?? this.fallbackValue();
+  }
+
+  render(context: RenderingContext): Node[] {
+    const renderedFallback = this.fallback.length > 0 ? Renderer.render(this.fallback, context) : undefined;
+
+    const {declaration, value: variableValue} = this.resolveVariable() ?? {};
+    const fromFallback = !variableValue;
+    const computedValue = variableValue ?? this.fallbackValue();
+
+    const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
+    UI.UIUtils.createTextChild(varSwatch, this.text);
+    varSwatch.data = {
+      computedValue,
+      variableName: this.name,
+      fromFallback,
+      fallbackHtml: renderedFallback?.nodes ?? [],
+      onLinkActivate: name => this.#handleVarDefinitionActivate(declaration ?? name),
+    };
+
+    if (varSwatch.link) {
+      this.#pane.addPopover(
+          varSwatch.link, () => this.#treeElement.getVariablePopoverContents(this.name, variableValue ?? null));
+    }
+
+    const innerSwatches =
+        renderedFallback?.cssControls?.get('color')?.filter(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch);
+    innerSwatches?.forEach(swatch => swatch.setReadonly(true));
+
+    if (!computedValue || !Common.Color.parse(computedValue)) {
+      return [varSwatch];
+    }
+
+    const colorSwatch = new ColorRenderer(this.#treeElement, computedValue).renderColorSwatch(varSwatch);
+    context.addControl('color', colorSwatch);
+    return [colorSwatch];
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration):
+      VariableMatcher {
+    return new VariableMatcher(
+        (text, name, fallback, matching) => new VariableRenderer(treeElement, style, text, name, fallback, matching));
+  }
+
+  get #pane(): StylesSidebarPane {
+    return this.#treeElement.parentPane();
+  }
+
+  get #matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles {
+    return this.#treeElement.matchedStyles();
+  }
+
+  #handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
+                               SDK.CSSMatchedStyles.CSSRegisteredProperty): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
+    if (variable instanceof SDK.CSSProperty.CSSProperty) {
+      this.#pane.revealProperty(variable);
+    } else if (variable instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
+      this.#pane.jumpToProperty('initial-value', variable.propertyName(), REGISTERED_PROPERTY_SECTION_NAME);
+    } else {
+      this.#pane.jumpToProperty(variable) ||
+          this.#pane.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+    }
+  }
+}
+
 export class ColorRenderer extends ColorMatch {
   constructor(private readonly treeElement: StylePropertyTreeElement, text: string) {
     super(text);
@@ -137,7 +232,7 @@ export class ColorRenderer extends ColorMatch {
     return [swatch];
   }
 
-  renderColorSwatch(valueChild?: Node|null): HTMLElement {
+  renderColorSwatch(valueChild?: Node|null): InlineEditor.ColorSwatch.ColorSwatch {
     const editable = this.treeElement.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
@@ -548,6 +643,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
+  // TODO(chromium:1504820) Delete once callers are migrated
   private processVar(text: string, {shouldShowColorSwatch = true}: {shouldShowColorSwatch?: boolean} = {}): Node {
     // The regex that matches to variables in `StylesSidebarPropertyRenderer`
     // uses a lazy match. Because of this, when there are multiple right parantheses inside the
@@ -564,11 +660,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const {declaration} = this.matchedStylesInternal.computeCSSVariable(this.style, variableName) ?? {};
     const {computedValue, fromFallback} = computedSingleValue;
-    let fallbackHtml: Node|null = null;
+    let fallbackHtml: Node[]|null = null;
     if (fromFallback && fallback?.startsWith('var(')) {
-      fallbackHtml = this.processVar(fallback, {shouldShowColorSwatch: false});
+      fallbackHtml = [this.processVar(fallback, {shouldShowColorSwatch: false})];
     } else if (fallback) {
-      fallbackHtml = document.createTextNode(fallback);
+      fallbackHtml = [document.createTextNode(fallback)];
     }
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
@@ -589,7 +685,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             null;
         this.parentPaneInternal.addPopover(
             varSwatch.link,
-            () => this.#getVariablePopoverContents(textContent, computedValueOfLink?.computedValue ?? null));
+            () => this.getVariablePopoverContents(textContent, computedValueOfLink?.computedValue ?? null));
       }
     }
 
@@ -980,7 +1076,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return registration ? {registration, goToDefinition} : undefined;
   }
 
-  #getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
+  getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
     return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
       variableName,
       value: computedValue ?? undefined,
@@ -1011,10 +1107,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const propertyRenderer =
         new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value, [
+          VariableRenderer.matcher(this, this.style),
           ColorRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
-      propertyRenderer.setVarHandler(this.processVar.bind(this));
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
       propertyRenderer.setColorMixHandler(this.processColorMix.bind(this));
@@ -1033,7 +1129,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.property.name.startsWith('--') && this.nameElement) {
       this.parentPaneInternal.addPopover(
           this.nameElement,
-          () => this.#getVariablePopoverContents(
+          () => this.getVariablePopoverContents(
               this.property.name,
               this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null));
     }

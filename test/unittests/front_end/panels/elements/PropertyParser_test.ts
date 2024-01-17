@@ -41,8 +41,8 @@ function textFragments(nodes: Node[]): Array<string|null> {
   return nodes.map(n => n.textContent);
 }
 
-function matchSingleValue<T extends Elements.PropertyParser.Match, ArgTs>(
-    name: string|undefined, value: string, matchType: abstract new (...args: ArgTs[]) => T,
+function matchSingleValue<T extends Elements.PropertyParser.Match, ArgTs extends unknown[]>(
+    name: string|undefined, value: string, matchType: abstract new (...args: ArgTs) => T,
     matcher: Elements.PropertyParser.Matcher):
     {ast: Elements.PropertyParser.SyntaxTree|null, match: T|null, text: string} {
   const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
@@ -487,5 +487,30 @@ describe('PropertyParser', () => {
     assert.strictEqual(matching.computedText.get(0, ast.propertyValue.length), '1px  solid');
     assert.strictEqual(matching.getComputedText(width), '1px');
     assert.strictEqual(matching.getComputedText(style), 'solid');
+  });
+
+  it('parses vars correctly', () => {
+    for (const succeed
+             of ['var(--a)', 'var(--a, 123)', 'var(--a, calc(1+1))', 'var(--a, var(--b))', 'var(--a, var(--b, 123))',
+                 'var(--a, a b c)']) {
+      const {ast, match, text} = matchSingleValue(
+          'width', succeed, Elements.PropertyParser.VariableMatch,
+          new Elements.PropertyParser.VariableMatcher(nilRenderer(Elements.PropertyParser.VariableMatch)));
+
+      Platform.assertNotNullOrUndefined(ast, succeed);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.text, succeed);
+      assert.strictEqual(match.name, '--a');
+      const [name, ...fallback] = succeed.substring(4, succeed.length - 1).split(', ');
+      assert.strictEqual(match.name, name);
+      assert.strictEqual(match.fallback.map(n => ast.text(n)).join(' '), fallback.join(', '));
+    }
+    for (const fail of ['var', 'var(--a, 123, 123)', 'var(a)', 'var(--a']) {
+      const {match, text} = matchSingleValue(
+          'width', fail, Elements.PropertyParser.VariableMatch,
+          new Elements.PropertyParser.VariableMatcher(nilRenderer(Elements.PropertyParser.VariableMatch)));
+
+      assert.isNull(match, text);
+    }
   });
 });

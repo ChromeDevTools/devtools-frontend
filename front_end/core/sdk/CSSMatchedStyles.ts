@@ -843,7 +843,7 @@ class NodeCascade {
   }
 }
 
-interface CSSVariableValue {
+export interface CSSVariableValue {
   value: string;
   declaration: CSSProperty|CSSRegisteredProperty|null;
 }

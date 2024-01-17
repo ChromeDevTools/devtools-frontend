@@ -81,19 +81,19 @@ describeWithLocale('CSSVarSwatch', () => {
     });
   });
 
-  it('renders a var function with an undefined property but a fallback node', () => {
+  it('renders a var function with an undefined property but fallback nodes', () => {
     const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       variableName: '--undefined',
-      computedValue: '3px',
+      computedValue: '3px 40px',
       fromFallback: true,
-      fallbackHtml: document.createTextNode('3px'),
+      fallbackHtml: [document.createTextNode('3px'), document.createTextNode('40px')],
       onLinkActivate: () => {},
     };
 
     assertVarSwatch(component, {
-      valueTooltip: '3px',
+      valueTooltip: '3px 40px',
       linkTooltip: '--undefined is not defined',
       isDefined: false,
       varText: '--undefined',

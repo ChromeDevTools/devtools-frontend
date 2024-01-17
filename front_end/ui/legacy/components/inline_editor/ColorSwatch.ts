@@ -60,6 +60,10 @@ export class ColorSwatch extends HTMLElement {
     return element.localName === 'devtools-color-swatch';
   }
 
+  getReadonly(): boolean {
+    return this.readonly;
+  }
+
   setReadonly(readonly: boolean): void {
     this.readonly = readonly;
   }

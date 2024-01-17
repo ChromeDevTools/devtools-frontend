@@ -238,17 +238,6 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     assert.deepEqual(node.textContent, 'calc(MATCH + MATCH)', trace.toString());
   });
 
-  it('parses vars correctly', () => {
-    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-        null, null, 'width', 'calc(var(--a, var(--b)) + var(--b))');
-    renderer.setVarHandler(() => document.createTextNode('MATCH'));
-
-    const node = renderer.renderValue();
-
-    // Regex fails to match the closing parenthesis correctly for fallbacks.
-    assert.deepEqual(node.textContent, 'calc(MATCH) + MATCH)', trace.toString());
-  });
-
   it('parses font-family correctly', () => {
     const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
         null, null, 'font-family', '"Gill Sans", sans-serif');

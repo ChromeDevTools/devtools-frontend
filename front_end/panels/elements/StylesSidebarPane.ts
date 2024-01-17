@@ -2355,9 +2355,6 @@ export class StylesSidebarPropertyRenderer {
       matchers.push(new LegacyRegexMatcher(Common.Color.ColorMixRegex, this.colorMixHandler));
     }
 
-    if (this.varHandler) {
-      matchers.push(new LegacyRegexMatcher(SDK.CSSMetadata.VariableRegex, this.varHandler));
-    }
     matchers.push(new LegacyRegexMatcher(SDK.CSSMetadata.URLRegex, this.processURL.bind(this)));
     if (this.bezierHandler && metadata.isBezierAwareProperty(this.propertyName)) {
       matchers.push(new LegacyRegexMatcher(UI.Geometry.CubicBezier.Regex, this.bezierHandler));

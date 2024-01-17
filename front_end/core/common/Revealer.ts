@@ -153,7 +153,6 @@ export async function reveal(revealable: unknown, omitFocus: boolean = false): P
 }
 
 export interface RevealerRegistration<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   contextTypes: () => Array<abstract new(...any: any[]) => T>;
   loadRevealer: () => Promise<Revealer<T>>;
   destination?: RevealerDestination;

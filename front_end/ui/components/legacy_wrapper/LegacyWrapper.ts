@@ -16,7 +16,6 @@ export abstract class WrappableComponent<T extends UI.Widget.Widget = UI.Widget.
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T extends UI.Widget.Widget> = new (...args: any[]) => T;
 
 export type LegacyWrapper<T extends UI.Widget.Widget, Component extends WrappableComponent<T>> = {
@@ -29,7 +28,6 @@ legacyWrapper<T extends Constructor<UI.Widget.Widget>, Component extends Wrappab
   return new class extends base {
     #component: Component;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(..._args: any[]) {
       super(/* isWebComponent=*/ true);
       this.#component = component;

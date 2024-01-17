@@ -115,7 +115,6 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor = new (...args: any[]) => {};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

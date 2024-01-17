@@ -115,7 +115,12 @@ module.exports = {
     '@typescript-eslint/naming-convention':
         [2, {'selector': 'interface', 'format': ['PascalCase'], 'custom': {'regex': '^I[A-Z]', 'match': false}}],
     '@typescript-eslint/explicit-member-accessibility': [0],
-    '@typescript-eslint/no-explicit-any': 2,
+    '@typescript-eslint/no-explicit-any': [
+      "error",
+      {
+        "ignoreRestArgs": true
+      }
+    ],
 
     // Closure does not properly typecheck default exports
     'import/no-default-export': 2,

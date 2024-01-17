@@ -698,8 +698,7 @@ export enum ItemLocation {
 }
 
 export interface ProviderRegistration<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  contextTypes: () => Array<abstract new(...any: any) => T>;
+  contextTypes: () => Array<abstract new(...any: any[]) => T>;
   loadProvider: () => Promise<Provider<T>>;
   experiment?: Root.Runtime.ExperimentName;
 }

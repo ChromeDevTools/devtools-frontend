@@ -49,6 +49,12 @@ export class WidgetElement extends HTMLDivElement {
   }
 }
 
+function assert(condition: unknown, message: string): void {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
 export class Widget {
   element!: WidgetElement;
   contentElement: HTMLDivElement;
@@ -126,16 +132,8 @@ export class Widget {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention
-  private static assert(condition: any, message: string): void {
-    if (!condition) {
-      throw new Error(message);
-    }
-  }
-
   markAsRoot(): void {
-    Widget.assert(!this.element.parentElement, 'Attempt to mark as root attached node');
+    assert(!this.element.parentElement, 'Attempt to mark as root attached node');
     this.isRoot = true;
   }
 
@@ -262,7 +260,7 @@ export class Widget {
   }
 
   show(parentElement: Element, insertBefore?: Node|null): void {
-    Widget.assert(parentElement, 'Attempt to attach widget with no parent element');
+    assert(parentElement, 'Attempt to attach widget with no parent element');
 
     if (!this.isRoot) {
       // Update widget hierarchy.
@@ -307,9 +305,9 @@ export class Widget {
     }
 
     if (this.isRoot) {
-      Widget.assert(!currentParent, 'Attempt to show root widget under another widget');
+      assert(!currentParent, 'Attempt to show root widget under another widget');
     } else {
-      Widget.assert(
+      assert(
           currentParent && currentParent.__widget === this.parentWidgetInternal,
           'Attempt to show under node belonging to alien widget');
     }
@@ -405,7 +403,7 @@ export class Widget {
     // Update widget hierarchy.
     if (this.parentWidgetInternal) {
       const childIndex = this.parentWidgetInternal.childrenInternal.indexOf(this);
-      Widget.assert(childIndex >= 0, 'Attempt to remove non-child widget');
+      assert(childIndex >= 0, 'Attempt to remove non-child widget');
       this.parentWidgetInternal.childrenInternal.splice(childIndex, 1);
       if (this.parentWidgetInternal.defaultFocusedChild === this) {
         this.parentWidgetInternal.defaultFocusedChild = null;
@@ -413,7 +411,7 @@ export class Widget {
       this.parentWidgetInternal.childWasDetached(this);
       this.parentWidgetInternal = null;
     } else {
-      Widget.assert(this.isRoot, 'Removing non-root widget from DOM');
+      assert(this.isRoot, 'Removing non-root widget from DOM');
     }
   }
 
@@ -506,7 +504,7 @@ export class Widget {
   }
 
   setDefaultFocusedChild(child: Widget): void {
-    Widget.assert(child.parentWidgetInternal === this, 'Attempt to set non-child widget as default focused.');
+    assert(child.parentWidgetInternal === this, 'Attempt to set non-child widget as default focused.');
     this.defaultFocusedChild = child;
   }
 
@@ -614,8 +612,7 @@ export class Widget {
   // Also note that this must be called before the widget is shown so that
   // so that its ancestor's widgetCounter is not incremented.
   markAsExternallyManaged(): void {
-    Widget.assert(
-        !this.parentWidgetInternal, 'Attempt to mark widget as externally managed after insertion to the DOM');
+    assert(!this.parentWidgetInternal, 'Attempt to mark widget as externally managed after insertion to the DOM');
     this.externallyManaged = true;
   }
 }

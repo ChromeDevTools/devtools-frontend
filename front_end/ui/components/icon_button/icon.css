@@ -12,6 +12,7 @@
   height: 20px;
   color: var(--icon-default);
   vertical-align: sub;
+  position: relative;
 }
 
 :host([hidden]) {

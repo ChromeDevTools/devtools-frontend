@@ -61,6 +61,14 @@ const UIStrings = {
    * automatically whenever a form is being autofilled.
    */
   autoShow: 'Open panel on autofill',
+  /**
+   * @description Aria text for the section of the autofill view containing a preview of the autofilled address.
+   */
+  addressPreview: 'Address preview',
+  /**
+   * @description Aria text for the section of the autofill view containing the info about the autofilled form fields.
+   */
+  formInspector: 'Form inspector',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);
@@ -130,15 +138,17 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <div class="top-right-corner">
-          <label class="checkbox-label">
-            <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
-            <span>${i18nString(UIStrings.autoShow)}</span>
-          </label>
-        </div>
-        <div class="placeholder-container" jslog=${VisualLogging.pane().context('autofill-empty')}>
-          <div class="placeholder">${i18nString(UIStrings.noDataAvailable)}</h1>
-        </div>
+        <main>
+          <div class="top-right-corner">
+            <label class="checkbox-label">
+              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+              <span>${i18nString(UIStrings.autoShow)}</span>
+            </label>
+          </div>
+          <div class="placeholder-container" jslog=${VisualLogging.pane().context('autofill-empty')}>
+            <div class="placeholder">${i18nString(UIStrings.noDataAvailable)}</h1>
+          </div>
+        </main>
       `, this.#shadow, {host: this});
       // clang-format on
       return;
@@ -147,18 +157,20 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <div class="content-container" jslog=${VisualLogging.pane().context('autofill')}>
-        <div class="right-to-left">
-          <div class="label-container">
-            <label class="checkbox-label">
-              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
-              <span>${i18nString(UIStrings.autoShow)}</span>
-            </label>
+      <main>
+        <div class="content-container" jslog=${VisualLogging.pane().context('autofill')}>
+          <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
+            <div class="label-container">
+              <label class="checkbox-label">
+                <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+                <span>${i18nString(UIStrings.autoShow)}</span>
+              </label>
+            </div>
+            ${this.#renderAddress()}
           </div>
-          ${this.#renderAddress()}
+          ${this.#renderFilledFields()}
         </div>
-        ${this.#renderFilledFields()}
-      </div>
+      </main>
     `, this.#shadow, {host: this});
     // clang-format on
   }
@@ -273,7 +285,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-      <div class="grid-wrapper">
+      <div class="grid-wrapper" role="region" aria-label=${i18nString(UIStrings.formInspector)}>
         <${DataGrid.DataGridController.DataGridController.litTagName}
           @rowmouseenter=${this.#onGridRowMouseEnter}
           @rowmouseleave=${this.#onGridRowMouseLeave}

@@ -388,9 +388,7 @@ export class CounterUI {
   private readonly countersPane: CountersGraph;
   counter: Counter;
   private readonly formatter: (arg0: number) => string;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly setting: Common.Settings.Setting<any>;
+  private readonly setting: Common.Settings.Setting<boolean>;
   private filter: UI.Toolbar.ToolbarSettingCheckbox;
   private range: HTMLElement;
   private value: HTMLElement;

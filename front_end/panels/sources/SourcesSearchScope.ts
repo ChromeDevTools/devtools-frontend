@@ -313,10 +313,8 @@ export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
     return new Workspace.UISourceCode.UILocationRange(this.uiSourceCode, range);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  matchLabel(index: number): any {
-    return this.searchMatches[index].lineNumber + 1;
+  matchLabel(index: number): string {
+    return String(this.searchMatches[index].lineNumber + 1);
   }
 
   matchColumn(index: number): number {

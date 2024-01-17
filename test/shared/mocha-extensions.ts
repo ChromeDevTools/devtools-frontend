@@ -133,8 +133,7 @@ describe.skipOnPlatforms = function(platforms: Array<Platform>, name: string, fn
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err?: any) {
+async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err?: unknown) {
   function* joinStacks() {
     const scopes = AsyncScope.scopes;
     if (scopes.size === 0) {

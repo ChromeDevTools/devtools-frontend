@@ -26,8 +26,10 @@ export class StubIssue extends Issue {
   }
 
   getDescription() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return ({} as any);
+    return {
+      file: '',
+      links: [],
+    };
   }
 
   primaryKey(): string {

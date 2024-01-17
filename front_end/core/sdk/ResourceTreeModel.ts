@@ -436,9 +436,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     void this.agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigate(url: Platform.DevToolsPath.UrlString): Promise<any> {
+  navigate(url: Platform.DevToolsPath.UrlString): Promise<Protocol.Page.NavigateResponse> {
     return this.agent.invoke_navigate({url});
   }
 

@@ -537,8 +537,10 @@ export interface AffectedResources {
   issueId?: Protocol.Audits.IssueId;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractExceptionMetaData(metaData: any|undefined): AffectedResources|undefined {
+function extractExceptionMetaData(metaData?: {
+  requestId?: Protocol.Network.RequestId,
+  issueId?: Protocol.Audits.IssueId,
+}): AffectedResources|undefined {
   if (!metaData) {
     return undefined;
   }

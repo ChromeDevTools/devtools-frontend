@@ -7,14 +7,12 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import nodeIconStyles from './nodeIcon.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -198,14 +196,11 @@ export class SourcesPanelIndicator {
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged(): void {
-      let icon: IconButton.Icon.Icon|null = null;
-      const javaScriptDisabled = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
-      if (javaScriptDisabled) {
-        icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.javascriptIsDisabled));
+      const warnings = [];
+      if (Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get()) {
+        warnings.push(i18nString(UIStrings.javascriptIsDisabled));
       }
-      UI.InspectorView.InspectorView.instance().setPanelIcon('sources', icon);
+      UI.InspectorView.InspectorView.instance().setPanelWarnings('sources', warnings);
     }
   }
 }

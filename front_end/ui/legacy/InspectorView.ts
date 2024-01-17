@@ -32,7 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import type * as IconButton from '../components/icon_button/icon_button.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import {type ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -48,6 +48,7 @@ import {type Panel} from './Panel.js';
 import {ShowMode, SplitWidget} from './SplitWidget.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {ToolbarButton} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
 import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
 import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
@@ -307,10 +308,16 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     await ViewManager.instance().showView(panelName);
   }
 
-  setPanelIcon(tabId: string, icon: IconButton.Icon.Icon|null): void {
+  setPanelWarnings(tabId: string, warnings: string[]): void {
     // Find the tabbed location where the panel lives
     const tabbedPane = this.getTabbedPaneForTabId(tabId);
     if (tabbedPane) {
+      let icon: IconButton.Icon.Icon|null = null;
+      if (warnings.length !== 0) {
+        const warning = warnings.length === 1 ? warnings[0] : '· ' + warnings.join('\n· ');
+        icon = IconButton.Icon.create('warning-filled');
+        Tooltip.install(icon, warning);
+      }
       tabbedPane.setTabIcon(tabId, icon);
     }
   }

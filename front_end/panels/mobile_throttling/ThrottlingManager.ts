@@ -269,24 +269,14 @@ export class ThrottlingManager {
   }
 
   private updatePanelIcon(): void {
-    const cpuRate = this.cpuThrottlingManager.cpuThrottlingRate();
-
-    if (cpuRate === SDK.CPUThrottlingManager.CPUThrottlingRates.NoThrottling &&
-        !this.hardwareConcurrencyOverrideEnabled) {
-      UI.InspectorView.InspectorView.instance().setPanelIcon('timeline', null);
-      return;
-    }
-    const icon = new IconButton.Icon.Icon();
-    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-    const tooltips: string[] = [];
-    if (cpuRate !== SDK.CPUThrottlingManager.CPUThrottlingRates.NoThrottling) {
-      tooltips.push(i18nString(UIStrings.cpuThrottlingIsEnabled));
+    const warnings = [];
+    if (this.cpuThrottlingManager.cpuThrottlingRate() !== SDK.CPUThrottlingManager.CPUThrottlingRates.NoThrottling) {
+      warnings.push(i18nString(UIStrings.cpuThrottlingIsEnabled));
     }
     if (this.hardwareConcurrencyOverrideEnabled) {
-      tooltips.push(i18nString(UIStrings.hardwareConcurrencyIsEnabled));
+      warnings.push(i18nString(UIStrings.hardwareConcurrencyIsEnabled));
     }
-    icon.title = tooltips.join('\n');
-    UI.InspectorView.InspectorView.instance().setPanelIcon('timeline', icon);
+    UI.InspectorView.InspectorView.instance().setPanelWarnings('timeline', warnings);
   }
 
   setCPUThrottlingRate(rate: number): void {

@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -52,7 +51,7 @@ export class NetworkPanelIndicator {
     updateVisibility();
 
     function updateVisibility(): void {
-      const warnings: Common.UIString.LocalizedString[] = [];
+      const warnings = [];
       if (manager.isThrottling()) {
         warnings.push(i18nString(UIStrings.networkThrottlingIsEnabled));
       }
@@ -68,14 +67,7 @@ export class NetworkPanelIndicator {
       if (manager.isAcceptedEncodingOverrideSet()) {
         warnings.push(i18nString(UIStrings.acceptedEncodingOverrideSet));
       }
-      let icon: IconButton.Icon.Icon|null = null;
-      if (warnings.length) {
-        icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-        const tooltipContent = warnings.length === 1 ? warnings[0] : '· ' + warnings.join('\n· ');
-        UI.Tooltip.Tooltip.install(icon, tooltipContent);
-      }
-      UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
+      UI.InspectorView.InspectorView.instance().setPanelWarnings('network', warnings);
     }
   }
 }

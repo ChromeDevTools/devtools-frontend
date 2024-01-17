@@ -9,16 +9,16 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules',
 module.exports = {
   'rules' : {
     // errors on it('test') with no body
-    'mocha/no-pending-tests' : 2,
+    'mocha/no-pending-tests' : 'error',
 
     // errors on {describe, it}.only
-    'rulesdir/no_only' : 2,
-    'rulesdir/check_test_definitions' : 2,
-    'rulesdir/avoid_assert_equal' : 2,
-    'rulesdir/no_repeated_tests' : 2,
-    'rulesdir/compare_arrays_with_assert_deepequal' : 2,
-    'rulesdir/ban_screenshot_test_outside_perf_panel' : 2,
-    'rulesdir/trace_engine_test_timeouts' : 2,
+    'rulesdir/no_only' : 'error',
+    'rulesdir/check_test_definitions' : 'error',
+    'rulesdir/avoid_assert_equal' : 'error',
+    'rulesdir/no_repeated_tests' : 'error',
+    'rulesdir/compare_arrays_with_assert_deepequal' : 'error',
+    'rulesdir/ban_screenshot_test_outside_perf_panel' : 'error',
+    'rulesdir/trace_engine_test_timeouts' : 'error',
   },
   'overrides' : [{
     'files' : ['*.ts'],

@@ -92,6 +92,10 @@ li.is-top-level:last-child {
   display: flex;
   align-content: center;
   align-items: center;
+
+  & ::selection {
+    background-color: var(--sys-color-state-focus-select);
+  }
 }
 
 [role="treeitem"]:focus {

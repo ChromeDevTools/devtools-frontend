@@ -193,12 +193,40 @@ class ComputedTextChunk {
 export class ComputedText {
   readonly #chunks: ComputedTextChunk[] = [];
   readonly text: string;
+  #sorted: boolean = true;
   constructor(text: string) {
     this.text = text;
   }
 
+  clear(): void {
+    this.#chunks.splice(0);
+  }
+
   get chunkCount(): number {
     return this.#chunks.length;
+  }
+
+  #sortIfNecessary(): void {
+    if (this.#sorted) {
+      return;
+    }
+    // Sort intervals by offset, with longer intervals first if the offset is identical.
+    this.#chunks.sort((a, b) => {
+      if (a.offset < b.offset) {
+        return -1;
+      }
+      if (b.offset < a.offset) {
+        return 1;
+      }
+      if (a.end > b.end) {
+        return -1;
+      }
+      if (a.end < b.end) {
+        return 1;
+      }
+      return 0;
+    });
+    this.#sorted = true;
   }
 
   // Add another substitutable match. The match will either be appended to the list of existing matches or it will
@@ -214,18 +242,23 @@ export class ComputedText {
     if (chunk.end > this.text.length) {
       return;
     }
-    if (this.#chunks.length === 0) {
-      this.#chunks.push(chunk);
-      return;
-    }
-    const lastChunk = this.#chunks[this.#chunks.length - 1];
-    if (chunk.offset <= lastChunk.offset && lastChunk.end <= chunk.end) {
-      // The new chunk is more general than the last chunk, so drop that and retry.
-      this.#chunks.pop();
-      this.push(match, offset);
-    } else if (chunk.offset >= lastChunk.end) {
-      // The new chunk is to be inserted after the last chunk.
-      this.#chunks.push(chunk);
+    this.#sorted = false;
+    this.#chunks.push(chunk);
+  }
+
+  * #range(begin: number, end: number): Generator<ComputedTextChunk> {
+    this.#sortIfNecessary();
+    let i = this.#chunks.findIndex(c => c.offset >= begin);
+    while (i >= 0 && i < this.#chunks.length && this.#chunks[i].end > begin && begin < end) {
+      if (this.#chunks[i].end > end) {
+        i++;
+        continue;
+      }
+      yield this.#chunks[i];
+      begin = this.#chunks[i].end;
+      while (begin < end && i < this.#chunks.length && this.#chunks[i].offset < begin) {
+        i++;
+      }
     }
   }
 
@@ -235,14 +268,13 @@ export class ComputedText {
   get(begin: number, end: number): string {
     const pieces = [];
 
-    for (let currentChunk = this.#chunks.find(c => c.offset >= begin); begin < end && currentChunk;
-         currentChunk = this.#chunks.find(c => c.offset >= begin)) {
-      pieces.push(this.text.substring(begin, Math.min(currentChunk.offset, end)));
-      if (end >= currentChunk.end) {
-        pieces.push(currentChunk.computedText);
+    for (const chunk of this.#range(begin, end)) {
+      pieces.push(this.text.substring(begin, Math.min(chunk.offset, end)));
+      if (end >= chunk.end) {
+        pieces.push(chunk.computedText);
       }
 
-      begin = currentChunk.end;
+      begin = chunk.end;
     }
     if (begin < end) {
       pieces.push(this.text.substring(begin, end));

@@ -38,9 +38,9 @@ import {ParsedURL} from './ParsedURL.js';
 
 const UIStrings = {
   /**
-   *@description Text that appears in a tooltip the xhr and fetch resource types filter.
+   *@description Text that appears in a tooltip the fetch and xhr resource types filter.
    */
-  xhrAndFetch: '`XHR` and `Fetch`',
+  fetchAndXHR: '`Fetch` and `XHR`',
   /**
    *@description Text that appears in a tooltip for the JavaScript types filter.
    */
@@ -357,7 +357,7 @@ export class ResourceCategory {
 }
 
 export const resourceCategories = {
-  XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18n.i18n.lockedLazyString('Fetch/XHR')),
+  XHR: new ResourceCategory(i18nLazyString(UIStrings.fetchAndXHR), i18n.i18n.lockedLazyString('Fetch/XHR')),
   Document: new ResourceCategory(i18nLazyString(UIStrings.document), i18nLazyString(UIStrings.doc)),
   Stylesheet: new ResourceCategory(i18nLazyString(UIStrings.css), i18nLazyString(UIStrings.css)),
   Script: new ResourceCategory(i18nLazyString(UIStrings.javascript), i18nLazyString(UIStrings.js)),

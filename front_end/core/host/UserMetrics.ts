@@ -1208,7 +1208,7 @@ export enum ResourceType {
   /* eslint-enable @typescript-eslint/naming-convention */
   Documents = 1,
   Scripts = 2,
-  'XHR and Fetch' = 3,
+  'Fetch and XHR' = 3,
   Stylesheets = 4,
   Fonts = 5,
   Images = 6,

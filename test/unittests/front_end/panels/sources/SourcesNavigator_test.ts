@@ -97,7 +97,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       project.removeProject();
     });
 
-    it('does not show XHR and Fetch requests', async () => {
+    it('does not show Fetch and XHR requests', async () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {

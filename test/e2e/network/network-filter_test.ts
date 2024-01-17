@@ -381,7 +381,7 @@ describe('The Network Tab', async function() {
 
     await openRequestTypeDropdown();
 
-    let categoryXHRFilter = await getCategoryTypeFilter('XHR and Fetch');
+    let categoryXHRFilter = await getCategoryTypeFilter('Fetch and XHR');
     assert.isTrue(await checkOpacityCheckmark(categoryXHRFilter, '0'));
 
     await categoryXHRFilter.click();
@@ -393,7 +393,7 @@ describe('The Network Tab', async function() {
 
     await openRequestTypeDropdown();
 
-    categoryXHRFilter = await getCategoryTypeFilter('XHR and Fetch');
+    categoryXHRFilter = await getCategoryTypeFilter('Fetch and XHR');
 
     assert.isTrue(await checkOpacityCheckmark(categoryXHRFilter, '1'));
   });
@@ -404,7 +404,7 @@ describe('The Network Tab', async function() {
 
     await openRequestTypeDropdown();
 
-    const categoryXHRFilter = await getCategoryTypeFilter('XHR and Fetch');
+    const categoryXHRFilter = await getCategoryTypeFilter('Fetch and XHR');
     const categoryAllFilter = await getCategoryTypeFilter('All');
 
     let names = await getAllRequestNames();

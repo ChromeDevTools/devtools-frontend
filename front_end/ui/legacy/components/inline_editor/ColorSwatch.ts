@@ -123,12 +123,17 @@ export class ColorSwatch extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
 
+    const colorSwatchClasses = LitHtml.Directives.classMap({
+      'color-swatch': true,
+      'readonly': this.readonly,
+    });
+
     // Note that we use a <slot> with a default value here to display the color text. Consumers of this component are
     // free to append any content to replace what is being shown here.
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     LitHtml.render(
-      LitHtml.html`<span class="color-swatch" title=${this.tooltip}><span class="color-swatch-inner"
+      LitHtml.html`<span class=${colorSwatchClasses} title=${this.tooltip}><span class="color-swatch-inner"
         style="background-color: ${this.text};"
         jslog=${VisualLogging.showStyleEditor().track({click: true}).context('color')}
         @click=${this.onClick}

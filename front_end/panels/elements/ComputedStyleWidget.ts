@@ -180,6 +180,7 @@ const createTraceElement =
 class ColorRenderer extends ColorMatch {
   render(context: RenderingContext): Node[] {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    swatch.setReadonly(true);
     swatch.renderColor(this.text, true);
     const valueElement = document.createElement('span');
     valueElement.textContent = swatch.getText();

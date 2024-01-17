@@ -31,7 +31,11 @@
   cursor: pointer;
 }
 
-.color-swatch:not(.read-only) .color-swatch-inner:hover {
+.color-swatch.readonly .color-swatch-inner {
+  cursor: unset;
+}
+
+.color-swatch:not(.readonly) .color-swatch-inner:hover {
   border: 1px solid var(--sys-color-outline);
 }
 

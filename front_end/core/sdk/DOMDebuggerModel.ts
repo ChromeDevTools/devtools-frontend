@@ -391,8 +391,6 @@ export class EventListener {
 
       return this.#eventTarget
                  .callFunction(
-                     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-                     // @ts-expect-error
                      removeListener,
                      [
                        RemoteObject.toCallArgument(this.#typeInternal),
@@ -411,8 +409,6 @@ export class EventListener {
 
       return this.#customRemoveFunction
           .callFunction(
-              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-              // @ts-expect-error
               callCustomRemove,
               [
                 RemoteObject.toCallArgument(this.#typeInternal),
@@ -432,8 +428,6 @@ export class EventListener {
   togglePassive(): Promise<undefined> {
     return this.#eventTarget
         .callFunction(
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             callTogglePassive,
             [
               RemoteObject.toCallArgument(this.#typeInternal),

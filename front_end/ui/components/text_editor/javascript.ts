@@ -707,9 +707,9 @@ async function prototypesFromObject(object: SDK.RemoteObject.RemoteObject): Prom
   if (object.type === 'undefined' || object.subtype === 'null') {
     return [];
   }
-  return await object.callFunctionJSON(function() {
+  return await object.callFunctionJSON(function(this: Object) {
     const result = [];
-    for (let object: Object = this; object; object = Object.getPrototypeOf(object)) {
+    for (let object = this; object; object = Object.getPrototypeOf(object)) {
       if (typeof object === 'object' && object.constructor && object.constructor.name) {
         result[result.length] = object.constructor.name;
       }

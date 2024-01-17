@@ -937,9 +937,7 @@ export class DOMNode {
     if (!object) {
       return;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    void object.callFunction(scrollIntoView);
+    await object.callFunction(scrollIntoView);
     object.release();
     node.highlightForTwoSeconds();
 
@@ -957,8 +955,6 @@ export class DOMNode {
     if (!object) {
       return;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
     await object.callFunction(focusInPage);
     object.release();
     node.highlightForTwoSeconds();

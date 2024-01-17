@@ -35,38 +35,35 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
-
-export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
-
-import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from './CPUProfilerModel.js';
-
+import {CPUProfilerModel, type EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
 import {
-  Events as DebuggerModelEvents,
-  type Location,
   BreakpointType,
   COND_BREAKPOINT_SOURCE_URL,
+  Events as DebuggerModelEvents,
+  type Location,
   LOGPOINT_SOURCE_URL,
 } from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {
   Events as ResourceTreeModelEvents,
-  ResourceTreeModel,
-  type ResourceTreeFrame,
   type PrimaryPageChangeType,
+  type ResourceTreeFrame,
+  ResourceTreeModel,
 } from './ResourceTreeModel.js';
-
 import {
-  Events as RuntimeModelEvents,
-  RuntimeModel,
   type ConsoleAPICall,
+  Events as RuntimeModelEvents,
   type ExceptionWithTimestamp,
   type ExecutionContext,
   type QueryObjectRequestedEvent,
+  RuntimeModel,
 } from './RuntimeModel.js';
+import {SDKModel} from './SDKModel.js';
 import {Capability, type Target, Type} from './Target.js';
 import {TargetManager} from './TargetManager.js';
-import {SDKModel} from './SDKModel.js';
+
+export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 const UIStrings = {
   /**
@@ -473,8 +470,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
     const globalObject = result.object;
     const callFunctionResult =
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
         await globalObject.callFunction(saveVariable, [RemoteObject.toCallArgument(remoteObject)]);
     globalObject.release();
     if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {

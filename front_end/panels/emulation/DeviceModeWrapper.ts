@@ -108,63 +108,59 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(_context: UI.Context.Context, actionId: string): boolean {
-    if (DeviceModeWrapper.instance()) {
-      switch (actionId) {
-        case 'emulation.capture-screenshot':
-          return DeviceModeWrapper.instance().captureScreenshot();
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    switch (actionId) {
+      case 'emulation.capture-screenshot':
+        return DeviceModeWrapper.instance().captureScreenshot();
 
-        case 'emulation.capture-node-screenshot': {
-          const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-          if (!node) {
-            return true;
-          }
-          async function captureClip(): Promise<void> {
-            if (!node) {
-              return;
-            }
-
-            const object = await node.resolveToObject();
-            if (!object) {
-              return;
-            }
-            const result = await object.callFunction(function() {
-              const rect = (this as Element).getBoundingClientRect();
-              const docRect = (this as Element).ownerDocument.documentElement.getBoundingClientRect();
-              return JSON.stringify({
-                x: rect.left - docRect.left,
-                y: rect.top - docRect.top,
-                width: rect.width,
-                height: rect.height,
-                scale: 1,
-              });
-            });
-            if (!result.object) {
-              throw new Error('Clipping error: could not get object data.');
-            }
-            const clip = (JSON.parse((result.object.value as string)));
-            const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
-            const error = response.getError();
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            const page_zoom = !error && response.visualViewport.zoom || 1;
-            clip.x *= page_zoom;
-            clip.y *= page_zoom;
-            clip.width *= page_zoom;
-            clip.height *= page_zoom;
-            DeviceModeWrapper.instance().captureScreenshot(false, clip);
-          }
-          void captureClip();
+      case 'emulation.capture-node-screenshot': {
+        const node = context.flavor(SDK.DOMModel.DOMNode);
+        if (!node) {
           return true;
         }
+        async function captureClip(): Promise<void> {
+          if (!node) {
+            return;
+          }
 
-        case 'emulation.capture-full-height-screenshot':
-          return DeviceModeWrapper.instance().captureScreenshot(true);
-
-        case 'emulation.toggle-device-mode':
-          DeviceModeWrapper.instance().toggleDeviceMode();
-          return true;
+          const object = await node.resolveToObject();
+          if (!object) {
+            return;
+          }
+          const result = await object.callFunction(function(this: Element) {
+            const rect = this.getBoundingClientRect();
+            const docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+            return JSON.stringify({
+              x: rect.left - docRect.left,
+              y: rect.top - docRect.top,
+              width: rect.width,
+              height: rect.height,
+              scale: 1,
+            });
+          });
+          if (!result.object) {
+            throw new Error('Clipping error: could not get object data.');
+          }
+          const clip = (JSON.parse((result.object.value as string)));
+          const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
+          const error = response.getError();
+          const zoom = !error && response.visualViewport.zoom || 1;
+          clip.x *= zoom;
+          clip.y *= zoom;
+          clip.width *= zoom;
+          clip.height *= zoom;
+          DeviceModeWrapper.instance().captureScreenshot(false, clip);
+        }
+        void captureClip();
+        return true;
       }
+
+      case 'emulation.capture-full-height-screenshot':
+        return DeviceModeWrapper.instance().captureScreenshot(true);
+
+      case 'emulation.toggle-device-mode':
+        DeviceModeWrapper.instance().toggleDeviceMode();
+        return true;
     }
     return false;
   }

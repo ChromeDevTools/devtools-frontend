@@ -1503,15 +1503,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#startEditing(context);
   }
 
-  // TODO(crbug:1504820) Remove once layout tests are migrated
-  startEditing(selectedElement?: HTMLElement): void {
-    if (!selectedElement || selectedElement === this.nameElement) {
-      this.startEditingName();
-    } else {
-      this.startEditingValue();
-    }
-  }
-
   #startEditing(context: Context): void {
     this.contextForTest = context;
 

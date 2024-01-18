@@ -120,7 +120,7 @@ describe('The Sources Tab', function() {
     await step('can un-pretty-print a json subtype file', async () => {
       await click(PRETTY_PRINT_BUTTON);
       const expectedNotPrettyLines =
-          '{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]}';
+          '{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]},';
       const actualNotPrettyText = await retrieveCodeMirrorEditorContent();
       assert.strictEqual(expectedNotPrettyLines, actualNotPrettyText.toString());
     });

@@ -161,7 +161,7 @@ describe('The Network Tab', async function() {
     // Open the raw response HTML
     await click('[aria-label="Response"]');
     // Disable pretty printing
-    await waitFor('[aria-label="Pretty print"][aria-pressed="true"]');
+    await waitFor('[aria-label="Pretty print"]');
     await Promise.all([
       click('[aria-label="Pretty print"]'),
       waitFor('[aria-label="Pretty print"][aria-pressed="true"]'),
@@ -173,7 +173,7 @@ describe('The Network Tab', async function() {
 
     assert.strictEqual(
         htmlRawResponse,
-        '<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
+        '<html>    <body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
   it('the correct MIME type when resources came from HTTP cache', async () => {

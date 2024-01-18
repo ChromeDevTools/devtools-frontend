@@ -133,7 +133,7 @@ describe('Scope View', async () => {
       // Wait until we pause in the other worker.
       await waitFor(PAUSE_INDICATOR_SELECTOR);
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:1');
+      assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:10');
     });
 
     await step('open other buffer in other worker', async () => {

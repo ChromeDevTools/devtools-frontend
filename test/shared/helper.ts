@@ -242,8 +242,9 @@ export const $$textContent = async (textContent: string, root?: puppeteer.JSHand
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const getTextContent = async<ElementType extends Element = Element>(selector: string) => {
-  const text = await (await $<ElementType>(selector))?.evaluate(node => node.textContent);
+export const getTextContent =
+    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle) => {
+  const text = await (await $<ElementType>(selector, root))?.evaluate(node => node.textContent);
   return text ?? undefined;
 };
 

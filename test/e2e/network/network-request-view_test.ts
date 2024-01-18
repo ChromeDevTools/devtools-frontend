@@ -3,22 +3,24 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {expectError} from '../../conductor/events.js';
 import {
   $,
   $$,
+  assertNotNullOrUndefined,
   click,
+  getBrowserAndPages,
+  getResourcesPath,
+  getTextContent,
+  pasteText,
   step,
   typeText,
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
-  getBrowserAndPages,
-  getResourcesPath,
-  assertNotNullOrUndefined,
-  pasteText,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
@@ -205,6 +207,115 @@ describe('The Network Request view', async () => {
     const color = await p.evaluate(e => getComputedStyle(e).color);
 
     assert.deepEqual(color, 'rgb(255, 0, 0)');
+  });
+
+  const navigateToEventStreamMessages = async () => {
+    await navigateToNetworkTab('eventstream.html');
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('event-stream.rawresponse');
+
+    const networkView = await waitFor('.network-item-view');
+    await click('[aria-label=EventStream][role=tab]', {
+      root: networkView,
+    });
+    await waitFor(
+        '[aria-label=EventStream][role=tab][aria-selected=true]',
+        networkView,
+    );
+    return waitFor('.event-source-messages-view');
+  };
+
+  interface EventSourceMessageRaw {
+    id: string|undefined;
+    type: string|undefined;
+    data: string|undefined;
+    time?: string;
+  }
+
+  const waitForMessages =
+      async(messagesView: puppeteer.ElementHandle<Element>, count: number): Promise<EventSourceMessageRaw[]> => {
+    return waitForFunction(async () => {
+      const messages = await $$('.data-grid-data-grid-node', messagesView);
+      if (messages.length !== count) {
+        return undefined;
+      }
+
+      return Promise.all(messages.map(message => {
+        return new Promise<EventSourceMessageRaw>(async resolve => {
+          const [id, type, data] = await Promise.all([
+            getTextContent('.id-column', message),
+            getTextContent('.type-column', message),
+            getTextContent('.data-column', message),
+          ]);
+          resolve({
+            id,
+            type,
+            data,
+          });
+        });
+      }));
+    });
+  };
+
+  const knownMessages: EventSourceMessageRaw[] = [
+    {id: '1', type: 'custom-one', data: '{"one": "value-one"}'},
+    {id: '2', type: 'message', data: '{"two": "value-two"}'},
+    {id: '3', type: 'message', data: '{"three": "value-three"}'},
+  ];
+  const assertMessage = (actualMessage: EventSourceMessageRaw, expectedMessage: EventSourceMessageRaw) => {
+    assert.deepEqual(actualMessage.id, expectedMessage.id);
+    assert.deepEqual(actualMessage.type, expectedMessage.type);
+    assert.deepEqual(actualMessage.data, expectedMessage.data);
+  };
+  const assertBaseState = async(messagesView: puppeteer.ElementHandle<Element>): Promise<void> => {
+    const messages = await waitForMessages(messagesView, 3);
+    assertMessage(messages[0], knownMessages[0]);
+    assertMessage(messages[1], knownMessages[1]);
+    assertMessage(messages[2], knownMessages[2]);
+  };
+
+  it('stores EventSource filter', async () => {
+    const messagesView = await navigateToEventStreamMessages();
+    let messages = await waitForMessages(messagesView, 3);
+    await assertBaseState(messagesView);
+
+    const inputSelector = '[aria-placeholder="Enter regex, for example: https?';
+
+    const filterInput = await waitFor(inputSelector, messagesView);
+
+    // "one"
+    await filterInput.focus();
+    await typeText('one');
+    messages = await waitForMessages(messagesView, 1);
+    assertMessage(messages[0], knownMessages[0]);
+
+    // clear
+    await click('[title="Clear input"]', {
+      root: messagesView,
+    });
+    await assertBaseState(messagesView);
+
+    // "two"
+    await filterInput.focus();
+    await typeText('two');
+    messages = await waitForMessages(messagesView, 1);
+    assertMessage(messages[0], knownMessages[1]);
+
+    // invalid regex
+    await filterInput.focus();
+    await typeText('invalid(');
+    messages = await waitForMessages(messagesView, 0);
+  });
+
+  it('handles EventSource clear', async () => {
+    const messagesView = await navigateToEventStreamMessages();
+    await assertBaseState(messagesView);
+
+    await click('[aria-label="Clear all"]', {
+      root: messagesView,
+    });
+    await waitForMessages(messagesView, 0);
   });
 
   it('stores websocket filter', async () => {

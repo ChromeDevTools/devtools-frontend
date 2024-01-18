@@ -215,7 +215,8 @@ async function requestHandler(request, response) {
   }
 
   function parseRawResponse(rawResponse) {
-    const lines = rawResponse.split('\n');
+    const newline = '\n';
+    const lines = rawResponse.split(newline);
 
     let isHeader = true;
     let line = lines.shift();
@@ -226,6 +227,11 @@ async function requestHandler(request, response) {
 
     while ((line = lines.shift()) !== undefined) {
       if (line.trim() === '') {
+        if (!isHeader) {
+          // The first empty line should be omitted as it indicates the transition from headers to body.
+          // All those that follow should be included in the response body.
+          data += line + newline;
+        }
         isHeader = false;
         if (request.headers['if-none-match'] && response.getHeader('ETag') === request.headers['if-none-match']) {
           return {statusCode: 304};
@@ -239,7 +245,7 @@ async function requestHandler(request, response) {
         headerValue = headerValue.replace('$host_port', `${server.address().port}`);
         headers.set(line.substring(0, firstColon), headerValue);
       } else {
-        data += line;
+        data += line + newline;
       }
     }
 

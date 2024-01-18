@@ -75,7 +75,7 @@ describe('The Network Tab', function() {
     await step('can un-pretty-print a json subtype', async () => {
       const actualNotPrettyText = await retrieveCodeMirrorEditorContent();
       const expectedNotPrettyText =
-          '{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]}';
+          '{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]},';
 
       assert.strictEqual(expectedNotPrettyText, actualNotPrettyText.toString());
     });

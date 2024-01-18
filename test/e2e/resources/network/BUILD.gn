@@ -13,6 +13,8 @@ copy_to_gen("network") {
     "coffees.json",
     "csp-report-only.rawresponse",
     "embedded_requests.html",
+    "event-stream.rawresponse",
+    "eventstream.html",
     "fetch-json.html",
     "fetch.html",
     "headers-and-payload.html",

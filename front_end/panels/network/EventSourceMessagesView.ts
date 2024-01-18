@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -37,12 +37,27 @@ const UIStrings = {
    *@description A context menu item in the Resource Web Socket Frame View of the Network panel
    */
   copyMessage: 'Copy message',
+  /**
+   *@description Text to clear everything
+   */
+  clearAll: 'Clear all',
+  /**
+   *@description Example for placeholder text
+   */
+  enterRegex: 'Enter regex, for example: https?',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventSourceMessagesView extends UI.Widget.VBox {
   private readonly request: SDK.NetworkRequest.NetworkRequest;
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<EventSourceMessageNode>;
+  private readonly mainToolbar: UI.Toolbar.Toolbar;
+  private readonly clearAllButton: UI.Toolbar.ToolbarButton;
+  private readonly filterTextInput: UI.Toolbar.ToolbarInput;
+  private filterRegex: RegExp|null;
+
+  private messageFilterSetting: Common.Settings.Setting<string> =
+      Common.Settings.Settings.instance().createSetting('networkEventSourceMessageFilter', '');
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
@@ -50,6 +65,25 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.element.classList.add('event-source-messages-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('event-stream')}`);
     this.request = request;
+
+    this.mainToolbar = new UI.Toolbar.Toolbar('');
+
+    this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
+    this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearMessages, this);
+    this.mainToolbar.appendToolbarItem(this.clearAllButton);
+
+    const placeholder = i18nString(UIStrings.enterRegex);
+    this.filterTextInput = new UI.Toolbar.ToolbarInput(placeholder, '', 0.4);
+    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateFilterSetting, this);
+    const filter = this.messageFilterSetting.get();
+    this.filterRegex = null;
+    this.setFilter(filter);
+    if (filter) {
+      this.filterTextInput.setValue(filter);
+    }
+    this.mainToolbar.appendToolbarItem(this.filterTextInput);
+
+    this.element.appendChild(this.mainToolbar.element);
 
     const columns = ([
       {id: 'id', title: i18nString(UIStrings.id), sortable: true, weight: 8},
@@ -77,13 +111,8 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
-    this.dataGrid.rootNode().removeChildren();
+    this.refresh();
     this.registerCSSFiles([eventSourceMessagesViewStyles]);
-    const messages = this.request.eventSourceMessages();
-    for (let i = 0; i < messages.length; ++i) {
-      this.dataGrid.insertChild(new EventSourceMessageNode(messages[i]));
-    }
-
     this.request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 
@@ -93,7 +122,39 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   private messageAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.EventSourceMessage>): void {
     const message = event.data;
+    if (!this.messageFilter(message)) {
+      return;
+    }
     this.dataGrid.insertChild(new EventSourceMessageNode(message));
+  }
+
+  private messageFilter(message: SDK.NetworkRequest.EventSourceMessage): boolean {
+    return !this.filterRegex || this.filterRegex.test(message.eventName) || this.filterRegex.test(message.eventId) ||
+        this.filterRegex.test(message.data);
+  }
+
+  private clearMessages(): void {
+    clearMessageOffsets.set(this.request, this.request.eventSourceMessages().length);
+    this.refresh();
+  }
+
+  private updateFilterSetting(): void {
+    const text = this.filterTextInput.value();
+    this.messageFilterSetting.set(text);
+    this.setFilter(text);
+    this.refresh();
+  }
+
+  private setFilter(text: string): void {
+    this.filterRegex = null;
+    if (text) {
+      try {
+        this.filterRegex = new RegExp(text, 'i');
+      } catch (e) {
+        // this regex will never match any input
+        this.filterRegex = new RegExp('(?!)', 'i');
+      }
+    }
   }
 
   private sortItems(): void {
@@ -120,6 +181,16 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
         i18nString(UIStrings.copyMessage),
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data));
+  }
+
+  refresh(): void {
+    this.dataGrid.rootNode().removeChildren();
+
+    let messages = this.request.eventSourceMessages();
+    const offset = clearMessageOffsets.get(this.request) || 0;
+    messages = messages.slice(offset);
+    messages = messages.filter(this.messageFilter.bind(this));
+    messages.forEach(message => this.dataGrid.insertChild(new EventSourceMessageNode(message)));
   }
 }
 
@@ -155,3 +226,5 @@ export const Comparators: {
   'type': EventSourceMessageNodeComparator.bind(null, message => message.eventName),
   'time': EventSourceMessageNodeComparator.bind(null, message => message.time),
 };
+
+const clearMessageOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();

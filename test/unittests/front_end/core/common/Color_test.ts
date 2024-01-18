@@ -92,8 +92,16 @@ describe('Color', () => {
     assert.deepEqual(parseAndAssertNotNull('#FF00FF00').rgba(), [1, 0, 1, 0]);
   });
 
+  it('does not parse hex values with whitespace', () => {
+    assert.isNull(Color.parse('#FF00FF 00'));
+  });
+
   it('parses nickname values', () => {
     assert.deepEqual(parseAndAssertNotNull('red').rgba(), [1, 0, 0, 1]);
+  });
+
+  it('does not parse nickname values with whitespace', () => {
+    assert.isNull(Color.parse('blue red'));
   });
 
   it('parses rgb(a) values', () => {

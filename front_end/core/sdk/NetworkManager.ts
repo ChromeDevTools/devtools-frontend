@@ -210,8 +210,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
       return {error};
     }
     return new ContentDataClass(
-        response.body, response.base64Encoded, request.resourceType(), request.mimeType,
-        request.charset() ?? undefined);
+        response.body, response.base64Encoded, request.mimeType, request.charset() ?? undefined);
   }
 
   static async requestPostData(request: NetworkRequest): Promise<string|null> {

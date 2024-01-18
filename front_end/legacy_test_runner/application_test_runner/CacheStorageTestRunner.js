@@ -123,7 +123,7 @@ export const dumpCachedEntryContentNoRefresh = async function(cacheName, request
           const contentObject = await view.requestContent(request);
           let content = null;
           if (!SDK.ContentData.ContentData.isError(contentObject)) {
-            content = contentObject.resourceType.isTextType() ? contentObject.text : contentObject.base64;
+            content = contentObject.isTextContent ? contentObject.text : contentObject.base64;
           }
           TestRunner.addResult(' '.repeat(8) + (content ? content : '(nothing to preview)'));
         }

@@ -1341,7 +1341,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
 
     const contentData = await this.contentData();
-    if (ContentDataClass.isError(contentData) || !contentData.resourceType.isTextType()) {
+    if (ContentDataClass.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
     return TextUtils.TextUtils.performSearchInContent(contentData.text, query, caseSensitive, isRegex);

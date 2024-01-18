@@ -870,7 +870,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     let content: string;
     if (SDK.ContentData.ContentData.isError(contentData)) {
       content = '';
-    } else if (!contentData.resourceType.isTextType()) {
+    } else if (!contentData.isTextContent) {
       content = contentData.asDataUrl() ?? '';
     } else {
       content = contentData.text;

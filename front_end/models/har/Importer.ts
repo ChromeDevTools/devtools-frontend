@@ -112,8 +112,7 @@ export class Importer {
     const {mimeType, charset} = SDK.MimeType.parseContentType(entry.response.content.mimeType);
 
     request.setContentDataProvider(
-        async () => new SDK.ContentData.ContentData(
-            contentText ?? '', isBase64, request.resourceType(), mimeType ?? '', charset ?? undefined));
+        async () => new SDK.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));
 
     // Timing data.
     Importer.setupTiming(request, issueTime, entry.time, entry.timings);

@@ -440,7 +440,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       return {error: 'No cached response found'};
     }
     return new SDK.ContentData.ContentData(
-        response.body, /* isBase64=*/ true, request.resourceType(), request.mimeType, request.charset() ?? undefined);
+        response.body, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
   }
 
   private updatedForTest(): void {

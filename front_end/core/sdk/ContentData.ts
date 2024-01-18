@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as Common from '../common/common.js';
 
+import {isTextType} from './MimeType.js';
 import {type ContentData as LegacyContentData} from './NetworkRequest.js';
 
 /**
  * This class is a small wrapper around either raw binary or text data.
  * As the binary data can actually contain textual data, we also store the
- * resource type, MIME type, and if applicable, the charset.
+ * MIME type and if applicable, the charset.
  *
  * This information should be generally kept together, as interpreting text
  * from raw bytes requires an encoding.
@@ -24,18 +24,13 @@ import {type ContentData as LegacyContentData} from './NetworkRequest.js';
  * to re-encode text into base64 bytes using a specified charset.
  */
 export class ContentData {
-  readonly resourceType: Common.ResourceType.ResourceType;
-  // We need mimeType on top of `resourceType` so we can turn this content into a data URL.
   readonly mimeType: string;
   readonly #charset?: string;
 
   #contentAsBase64?: string;
   #contentAsText?: string;
 
-  constructor(
-      data: string, isBase64: boolean, resourceType: Common.ResourceType.ResourceType, mimeType: string,
-      charset?: string) {
-    this.resourceType = resourceType;
+  constructor(data: string, isBase64: boolean, mimeType: string, charset?: string) {
     this.mimeType = mimeType;
     this.#charset = charset;
     if (isBase64) {
@@ -68,7 +63,7 @@ export class ContentData {
       return this.#contentAsText;
     }
 
-    if (!this.resourceType.isTextType()) {
+    if (!this.isTextContent) {
       throw new Error('Cannot interpret binary data as text');
     }
 
@@ -77,6 +72,10 @@ export class ContentData {
     const bytes = Uint8Array.from(binaryString, m => m.codePointAt(0) as number);
     this.#contentAsText = new TextDecoder(charset).decode(bytes);
     return this.#contentAsText;
+  }
+
+  get isTextContent(): boolean {
+    return isTextType(this.mimeType);
   }
 
   asDataUrl(): string|null {

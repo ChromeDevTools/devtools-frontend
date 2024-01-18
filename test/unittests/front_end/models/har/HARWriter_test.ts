@@ -17,8 +17,7 @@ const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.Net
   const request = SDK.NetworkRequest.NetworkRequest.create(
       requestId, 'p0.com' as Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
   request.setIssueTime(startTime, startTime);
-  request.setContentDataProvider(
-      () => Promise.resolve(new SDK.ContentData.ContentData('', false, request.resourceType(), request.mimeType)));
+  request.setContentDataProvider(() => Promise.resolve(new SDK.ContentData.ContentData('', false, request.mimeType)));
   return request;
 };
 

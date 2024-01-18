@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Application from '../../../../../front_end/panels/application/application.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';

@@ -28,12 +28,13 @@
  */
 
 import type * as Platform from '../platform/platform.js';
+
 import {
   type EventDescriptor,
   type EventListener,
+  type EventPayloadToRestParameters,
   type EventTarget,
   type EventTargetEvent,
-  type EventPayloadToRestParameters,
 } from './EventTarget.js';
 
 export interface ListenerCallbackTuple<Events, T extends keyof Events> {

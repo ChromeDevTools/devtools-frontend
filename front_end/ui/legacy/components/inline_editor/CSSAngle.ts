@@ -44,6 +44,12 @@ export class UnitChangedEvent extends Event {
   }
 }
 
+interface EventTypes {
+  [PopoverToggledEvent.eventName]: PopoverToggledEvent;
+  [UnitChangedEvent.eventName]: UnitChangedEvent;
+  [ValueChangedEvent.eventName]: ValueChangedEvent;
+}
+
 export interface CSSAngleData {
   propertyName: string;
   propertyValue: string;
@@ -130,6 +136,18 @@ export class CSSAngle extends HTMLElement {
     this.popoverOpen = true;
     this.render();
     this.angleElement.focus();
+  }
+
+  override addEventListener<K extends keyof EventTypes>(
+      type: K, listener: (this: CSSAngle, ev: EventTypes[K]) => void,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener<K extends keyof HTMLElementEventMap>(
+      type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener(
+      type: string, listener: EventListenerOrEventListenerObject,
+      options?: boolean|AddEventListenerOptions|undefined): void {
+    super.addEventListener(type, listener, options);
   }
 
   minify(): void {

@@ -441,9 +441,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     return this.#hasSideEffectSupportInternal;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  terminateExecution(): Promise<any> {
+  terminateExecution(): Promise<Protocol.ProtocolResponseWithError> {
     return this.agent.invoke_terminateExecution();
   }
 

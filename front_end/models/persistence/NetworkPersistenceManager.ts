@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {FileSystemWorkspaceBinding, type FileSystem} from './FileSystemWorkspaceBinding.js';
+import {type FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 

@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Platform from '../platform/platform.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {Type as TargetType, Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
-import * as Root from '../root/root.js';
+import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import {assertNotNullOrUndefined} from '../platform/platform.js';
+import type * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
+
+import {SDKModel} from './SDKModel.js';
+import {Target, Type as TargetType} from './Target.js';
 
 let targetManagerInstance: TargetManager|undefined;
 type ModelClass<T = SDKModel> = new (arg1: Target) => T;
@@ -449,6 +450,6 @@ export class SDKModelObserver<T> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isSDKModelEvent(arg: any): arg is Common.EventTarget.EventTargetEvent<any, any> {
+function isSDKModelEvent(arg: Object): arg is Common.EventTarget.EventTargetEvent<any, any> {
   return 'source' in arg && arg.source instanceof SDKModel;
 }

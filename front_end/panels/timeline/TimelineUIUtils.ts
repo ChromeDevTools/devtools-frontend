@@ -1174,9 +1174,7 @@ export class TimelineUIUtils {
     return eventStyles;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static setEventStylesMap(eventStyles: any): void {
+  static setEventStylesMap(eventStyles: EventStylesMap): void {
     eventStylesMap = eventStyles;
   }
 

@@ -5,15 +5,20 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export const enum Events {
   CredentialAdded = 'CredentialAdded',
   CredentialAsserted = 'CredentialAsserted',
 }
 
-export class WebAuthnModel extends SDKModel {
+export type EventTypes = {
+  [Events.CredentialAdded]: Protocol.WebAuthn.CredentialAddedEvent,
+  [Events.CredentialAsserted]: Protocol.WebAuthn.CredentialAssertedEvent,
+};
+
+export class WebAuthnModel extends SDKModel<EventTypes> {
   readonly #agent: ProtocolProxyApi.WebAuthnApi;
   constructor(target: Target) {
     super(target);

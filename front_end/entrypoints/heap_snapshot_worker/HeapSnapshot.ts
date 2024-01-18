@@ -35,7 +35,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
-
 import {type HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export interface HeapSnapshotItem {
@@ -568,6 +567,10 @@ export interface Profile {
   trace_tree: Object;
 }
 
+export interface LiveObjects {
+  [x: number]: {count: number, size: number, ids: number[]};
+}
+
 /**
  * DOM node link state.
  */
@@ -768,7 +771,7 @@ export abstract class HeapSnapshot {
       const nodesLength = nodes.length;
       const nodeFieldCount = this.nodeFieldCount;
       const node = this.rootNode();
-      const liveObjects: {[x: number]: {count: number, size: number, ids: number[]}} = {};
+      const liveObjects: LiveObjects = {};
       for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
         node.nodeIndex = nodeIndex;
         const traceNodeId = node.traceNodeId();

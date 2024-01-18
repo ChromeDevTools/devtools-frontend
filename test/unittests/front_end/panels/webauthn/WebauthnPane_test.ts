@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import type * as WebauthnModule from '../../../../../front_end/panels/webauthn/webauthn.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
 } from '../../helpers/MockConnection.js';
-
-import type * as WebauthnModule from '../../../../../front_end/panels/webauthn/webauthn.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 const {assert} = chai;
 
@@ -143,6 +142,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         rpId: 'talos1.org',
         userHandle: 'morgan',
         signCount: 1,
+        privateKey: '',
       };
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CredentialAdded, {
         authenticatorId,
@@ -188,6 +188,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         rpId: 'talos1.org',
         userHandle: 'morgan',
         signCount: 1,
+        privateKey: '',
       };
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CredentialAdded, {
         authenticatorId,
@@ -212,6 +213,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         rpId: 'talos1.org',
         userHandle: 'morgan',
         signCount: 2,
+        privateKey: '',
       };
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CredentialAsserted, {
         authenticatorId,
@@ -229,6 +231,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         rpId: 'talos1.org',
         userHandle: 'alex',
         signCount: 1,
+        privateKey: '',
       };
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CredentialAsserted, {
         authenticatorId,

@@ -835,15 +835,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     };
     cssAngle.append(valueElement);
 
-    const popoverToggled = (event: Event): void => {
+    cssAngle.addEventListener('popovertoggled', ({data}) => {
       const section = this.section();
       if (!section) {
         return;
       }
 
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const {data} = (event as any);
       if (data.open) {
         this.parentPaneInternal.hideAllPopovers();
         this.parentPaneInternal.activeCSSAngle = cssAngle;
@@ -852,26 +849,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       section.element.classList.toggle('has-open-popover', data.open);
       this.parentPaneInternal.setEditingStyle(data.open);
-    };
-
-    const valueChanged = async(event: Event): Promise<void> => {
-      const {data} = (event as InlineEditor.InlineEditorUtils.ValueChangedEvent);
-
+    });
+    cssAngle.addEventListener('valuechanged', async ({data}) => {
       valueElement.textContent = data.value;
       await this.applyStyleText(this.renderedPropertyText(), false);
       const computedPropertyValue =
           this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value) || '';
       cssAngle.updateProperty(this.property.name, computedPropertyValue);
-    };
-
-    const unitChanged = async(event: Event): Promise<void> => {
-      const {data} = (event as InlineEditor.CSSAngle.UnitChangedEvent);
+    });
+    cssAngle.addEventListener('unitchanged', ({data}) => {
       valueElement.textContent = data.value;
-    };
-
-    cssAngle.addEventListener('popovertoggled', popoverToggled);
-    cssAngle.addEventListener('valuechanged', valueChanged);
-    cssAngle.addEventListener('unitchanged', unitChanged);
+    });
 
     return cssAngle;
   }

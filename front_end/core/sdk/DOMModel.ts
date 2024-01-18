@@ -33,23 +33,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
 import {type RemoteObject} from './RemoteObject.js';
-import {RuntimeModel} from './RuntimeModel.js';
-
-import {Capability, type Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
-import {TargetManager} from './TargetManager.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
+import {RuntimeModel} from './RuntimeModel.js';
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export class DOMNode {
   #domModelInternal: DOMModel;
@@ -75,9 +74,7 @@ export class DOMNode {
   assignedSlot: DOMNodeShortcut|null;
   readonly shadowRootsInternal: DOMNode[];
   #attributesInternal: Map<string, Attribute>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #markers: Map<string, any>;
+  #markers: Map<string, unknown>;
   #subtreeMarkerCount: number;
   childNodeCountInternal!: number;
   childrenInternal: DOMNode[]|null;
@@ -807,9 +804,7 @@ export class DOMNode {
     return Boolean(this.#xmlVersion);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setMarker(name: string, value: any): void {
+  setMarker(name: string, value: unknown): void {
     if (value === null) {
       if (!this.#markers.has(name)) {
         return;
@@ -837,7 +832,7 @@ export class DOMNode {
   }
 
   marker<T>(name: string): T|null {
-    return this.#markers.get(name) || null;
+    return this.#markers.get(name) as T || null;
   }
 
   getMarkerKeysForTest(): string[] {

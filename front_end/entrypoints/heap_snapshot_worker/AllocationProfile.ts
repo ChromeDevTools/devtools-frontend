@@ -30,10 +30,10 @@
 
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
+import {type LiveObjects, type Profile} from './HeapSnapshot.js';
+
 export class AllocationProfile {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly #strings: any;
+  readonly #strings: string[];
   #nextNodeId: number;
   #functionInfos: FunctionAllocationInfo[];
   #idToNode: {[x: number]: BottomUpAllocationNode|null};
@@ -41,9 +41,7 @@ export class AllocationProfile {
   #collapsedTopNodeIdToFunctionInfo: {[x: number]: FunctionAllocationInfo};
   #traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]|null;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(profile: any, liveObjectStats: any) {
+  constructor(profile: Profile, liveObjectStats: LiveObjects) {
     this.#strings = profile.strings;
 
     this.#nextNodeId = 1;
@@ -61,9 +59,7 @@ export class AllocationProfile {
     this.#buildAllocationTree(profile, liveObjectStats);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #buildFunctionAllocationInfos(profile: any): void {
+  #buildFunctionAllocationInfos(profile: Profile): void {
     const strings = this.#strings;
 
     const functionInfoFields = profile.snapshot.meta.trace_function_info_fields;
@@ -85,9 +81,8 @@ export class AllocationProfile {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #buildAllocationTree(profile: any, liveObjectStats: any): TopDownAllocationNode {
+  #buildAllocationTree(profile: Profile, liveObjectStats: LiveObjects): TopDownAllocationNode {
     const traceTreeRaw = profile.trace_tree;
     const functionInfos = this.#functionInfos;
     const idToTopDownNode = this.#idToTopDownNode;

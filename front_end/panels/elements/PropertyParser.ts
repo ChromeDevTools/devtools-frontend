@@ -280,17 +280,29 @@ export class ComputedText {
   // slice "1px var(--".
   get(begin: number, end: number): string {
     const pieces: string[] = [];
+    const push = (text: string): void => {
+      if (text.length === 0) {
+        return;
+      }
+      if (pieces.length > 0 && requiresSpace(pieces[pieces.length - 1], text)) {
+        pieces.push(' ');
+      }
+      pieces.push(text);
+    };
 
     for (const chunk of this.#range(begin, end)) {
-      pieces.push(this.text.substring(begin, Math.min(chunk.offset, end)));
+      const piece = this.text.substring(begin, Math.min(chunk.offset, end));
+
+      push(piece);
       if (end >= chunk.end) {
-        pieces.push(chunk.computedText ?? chunk.match.text);
+        push(chunk.computedText ?? chunk.match.text);
       }
 
       begin = chunk.end;
     }
     if (begin < end) {
-      pieces.push(this.text.substring(begin, end));
+      const piece = this.text.substring(begin, end);
+      push(piece);
     }
     return pieces.join('');
   }
@@ -300,15 +312,18 @@ export class ComputedText {
 // shouldn't be any space between 'var' and '(', but there should be a space between '1px' and 'solid'. The node
 // sequences that make up the pieces of text may contain non-text nodes/trees. Any such element inbetween the texts is
 // ignored for the spacing requirement.
-export function requiresSpace(a: Node[], b: Node[]): boolean {
-  const tail = a.findLast(node => node.textContent)?.textContent;
+export function requiresSpace(a: string, b: string): boolean;
+export function requiresSpace(a: Node[], b: Node[]): boolean;
+export function requiresSpace(a: Node[]|string|undefined, b: Node[]|string|undefined): boolean {
+  const tail = Array.isArray(a) ? a.findLast(node => node.textContent)?.textContent : a;
+  const head = Array.isArray(b) ? b.find(node => node.textContent)?.textContent : b;
   const trailingChar = tail ? tail[tail.length - 1] : '';
-  const head = b.find(node => node.textContent)?.textContent;
   const leadingChar = head ? head[0] : '';
 
-  const noSpaceAfter = ['', '(', ' ', '{', '}', ';'];
-  const noSpaceBefore = ['', '(', ')', ',', ':', ' ', '*', '{', ';'];
-  return !noSpaceAfter.includes(trailingChar) && !noSpaceBefore.includes(leadingChar);
+  const noSpaceAfter = ['', '(', '{', '}', ';'];
+  const noSpaceBefore = ['', '(', ')', ',', ':', '*', '{', ';'];
+  return !/\s/.test(trailingChar) && !/\s/.test(leadingChar) && !noSpaceAfter.includes(trailingChar) &&
+      !noSpaceBefore.includes(leadingChar);
 }
 
 function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {

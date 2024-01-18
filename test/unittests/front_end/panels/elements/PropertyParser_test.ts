@@ -284,7 +284,7 @@ describe('PropertyParser', () => {
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |-----------|
     // 'abcdefgh012  nopqr      yz'
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('o')), 'cdefgh012n');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('o')), 'cdefgh 012 n');
 
     // Range ends in original text ends on the beginning of a chunk
     // 'abcdefghijklmnopqrstuvwxyz'
@@ -296,13 +296,13 @@ describe('PropertyParser', () => {
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |----------|
     // 'abcdefgh012  nopqr      yz'
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n')), 'cdefgh012');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n')), 'cdefgh 012');
 
     // Range ends in original text after the second chunk
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |----------------------|
     // 'abcdefgh012  nopqr      yz'
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('z')), 'cdefgh012nopqry');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('z')), 'cdefgh 012 nopqr y');
 
     // Range ends in original text after the second chunk containing no chunk
     // 'abcdefghijklmnopqrstuvwxyz'
@@ -314,7 +314,7 @@ describe('PropertyParser', () => {
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |---------------------|
     // 'abcdefgh012  nopqr      yz'
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('y')), 'cdefgh012nopqr');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('y')), 'cdefgh 012 nopqr');
 
     // range starts in original text after the chunk
     // 'abcdefghijklmnopqrstuvwxyz'
@@ -326,7 +326,7 @@ describe('PropertyParser', () => {
     // 'abcdefghijklmnopqrstuvwxyz'
     //          |-------|
     // 'abcdefgh012  nopqr      yz'
-    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('q')), '012nop');
+    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('q')), '012 nop');
 
     // range starts on the second chunk
     // 'abcdefghijklmnopqrstuvwxyz'
@@ -371,11 +371,12 @@ describe('PropertyParser', () => {
     computedText.clear();
     push('c', 'o');
     push('c', 'h');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'bCDEFGHIJKLMNOpq');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('q') + 1), 'CDEFGHIJKLMNOpq');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('i') + 1), 'bCDEFGHi');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('h') + 1), 'bCDEFGH');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'CDEFGHi');
+    assert.strictEqual(
+        computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'b CDEFGHIJKLMNO pq');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('q') + 1), 'CDEFGHIJKLMNO pq');
+    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('i') + 1), 'b CDEFGH i');
+    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('h') + 1), 'b CDEFGH');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'CDEFGH i');
     assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('h') + 1), 'CDEFGH');
 
     // 'abcdefghijklmnopqrstuvwxyz'
@@ -389,11 +390,12 @@ describe('PropertyParser', () => {
     computedText.clear();
     push('c', 'o');
     push('h', 'm');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'bCDEFGHIJKLMNOpq');
-    assert.strictEqual(computedText.get(originalText.indexOf('h'), originalText.indexOf('n') + 1), 'HIJKLMn');
-    assert.strictEqual(computedText.get(originalText.indexOf('g'), originalText.indexOf('n') + 1), 'gHIJKLMn');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('m') + 1), 'bcdefgHIJKLM');
-    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('m') + 1), 'defgHIJKLM');
+    assert.strictEqual(
+        computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'b CDEFGHIJKLMNO pq');
+    assert.strictEqual(computedText.get(originalText.indexOf('h'), originalText.indexOf('n') + 1), 'HIJKLM n');
+    assert.strictEqual(computedText.get(originalText.indexOf('g'), originalText.indexOf('n') + 1), 'g HIJKLM n');
+    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('m') + 1), 'bcdefg HIJKLM');
+    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('m') + 1), 'defg HIJKLM');
 
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |-----------|
@@ -405,9 +407,10 @@ describe('PropertyParser', () => {
     // Swap the insertion order around to test sorting behavior.
     push('j', 'o');
     push('c', 'o');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'bCDEFGHIJKLMNOpq');
+    assert.strictEqual(
+        computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'b CDEFGHIJKLMNO pq');
     assert.strictEqual(computedText.get(originalText.indexOf('j'), originalText.indexOf('o') + 1), 'JKLMNO');
-    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('o') + 1), 'iJKLMNO');
+    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('o') + 1), 'i JKLMNO');
 
     // 'abcdefghijklmnopqrstuvwxyz'
     //    |-----------|
@@ -423,13 +426,14 @@ describe('PropertyParser', () => {
     push('c', 'o');
     push('c', 'h');
     push('j', 'm');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'bCDEFGHIJKLMNOpq');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n') + 1), 'CDEFGHiJKLMn');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('m') + 1), 'CDEFGHiJKLM');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'CDEFGHi');
+    assert.strictEqual(
+        computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'b CDEFGHIJKLMNO pq');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n') + 1), 'CDEFGH i JKLM n');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('m') + 1), 'CDEFGH i JKLM');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'CDEFGH i');
     assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('h') + 1), 'CDEFGH');
-    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('m') + 1), 'iJKLM');
-    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('n') + 1), 'iJKLMn');
+    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('m') + 1), 'i JKLM');
+    assert.strictEqual(computedText.get(originalText.indexOf('i'), originalText.indexOf('n') + 1), 'i JKLM n');
 
     // 'abcdefghijklmnopqrstuvwxyz';
     //    |-----------|
@@ -455,26 +459,27 @@ describe('PropertyParser', () => {
     push('k', 'n');
     push('c', 'o');
     push('d', 'i');
-    assert.strictEqual(computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'bCDEFGHIJKLMNOpq');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n') + 1), 'cDEFGHIjKLMN');
+    assert.strictEqual(
+        computedText.get(originalText.indexOf('b'), originalText.indexOf('q') + 1), 'b CDEFGHIJKLMNO pq');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('n') + 1), 'c DEFGHI j KLMN');
     assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('o') + 1), 'CDEFGHIJKLMNO');
-    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('n') + 1), 'DEFGHIjKLMN');
-    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('o') + 1), 'DEFGHIjKLMNo');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'cDEFGHI');
-    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('j') + 1), 'cDEFGHIj');
+    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('n') + 1), 'DEFGHI j KLMN');
+    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('o') + 1), 'DEFGHI j KLMN o');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('i') + 1), 'c DEFGHI');
+    assert.strictEqual(computedText.get(originalText.indexOf('c'), originalText.indexOf('j') + 1), 'c DEFGHI j');
     assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('i') + 1), 'DEFGHI');
-    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('j') + 1), 'DEFGHIj');
-    assert.strictEqual(computedText.get(originalText.indexOf('j'), originalText.indexOf('n') + 1), 'jKLMN');
+    assert.strictEqual(computedText.get(originalText.indexOf('d'), originalText.indexOf('j') + 1), 'DEFGHI j');
+    assert.strictEqual(computedText.get(originalText.indexOf('j'), originalText.indexOf('n') + 1), 'j KLMN');
     assert.strictEqual(computedText.get(originalText.indexOf('k'), originalText.indexOf('n') + 1), 'KLMN');
-    assert.strictEqual(computedText.get(originalText.indexOf('j'), originalText.indexOf('o') + 1), 'jKLMNo');
-    assert.strictEqual(computedText.get(originalText.indexOf('k'), originalText.indexOf('o') + 1), 'KLMNo');
+    assert.strictEqual(computedText.get(originalText.indexOf('j'), originalText.indexOf('o') + 1), 'j KLMN o');
+    assert.strictEqual(computedText.get(originalText.indexOf('k'), originalText.indexOf('o') + 1), 'KLMN o');
   });
 
   it('computes ComputedText with back-to-back chunks', () => {
     const computedText = new Elements.PropertyParser.ComputedText('abcdefgh');
     computedText.push(new ComputedTextMatch('abcd', '01234'), 0);
     computedText.push(new ComputedTextMatch('efgh', '56789'), 4);
-    assert.strictEqual(computedText.get(0, 8), '0123456789');
+    assert.strictEqual(computedText.get(0, 8), '01234 56789');
   });
 
   it('correctly produces the computed text during matching', () => {
@@ -487,6 +492,12 @@ describe('PropertyParser', () => {
     assert.strictEqual(matching.computedText.get(0, ast.propertyValue.length), '1px  solid');
     assert.strictEqual(matching.getComputedText(width), '1px');
     assert.strictEqual(matching.getComputedText(style), 'solid');
+  });
+
+  it('retains tokenization in the computed text', () => {
+    const ast = tokenizePropertyValue('dark/**/gray');
+    const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, []);
+    assert.strictEqual(matching.computedText.get(0, ast.propertyValue.length), 'dark gray');
   });
 
   it('parses vars correctly', () => {

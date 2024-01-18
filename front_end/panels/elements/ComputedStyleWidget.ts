@@ -178,7 +178,7 @@ const createTraceElement =
     };
 
 class ColorRenderer extends ColorMatch {
-  render(context: RenderingContext): Node[] {
+  render(_node: unknown, context: RenderingContext): Node[] {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.setReadonly(true);
     swatch.renderColor(this.text, true);

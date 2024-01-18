@@ -28,6 +28,7 @@ import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
   type BottomUpTreeMatching,
+  children,
   ColorMatch,
   ColorMatcher,
   Renderer,
@@ -153,7 +154,7 @@ export class VariableRenderer extends VariableMatch {
     return this.resolveVariable()?.value ?? this.fallbackValue();
   }
 
-  render(context: RenderingContext): Node[] {
+  render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
     const renderedFallback = this.fallback.length > 0 ? Renderer.render(this.fallback, context) : undefined;
 
     const {declaration, value: variableValue} = this.resolveVariable() ?? {};
@@ -223,23 +224,34 @@ export class ColorRenderer extends ColorMatch {
   }
 
   static matcher(treeElement: StylePropertyTreeElement): ColorMatcher {
-    return new ColorMatcher((text: string) => new ColorRenderer(treeElement, text));
+    return new ColorMatcher(text => new ColorRenderer(treeElement, text));
   }
 
-  render(context: RenderingContext): Node[] {
-    const swatch = this.renderColorSwatch();
+  #getValueChild(node: CodeMirror.SyntaxNode, context: RenderingContext): HTMLSpanElement {
+    const valueChild = document.createElement('span');
+    if (node.name === 'ColorLiteral' || (node.name === 'ValueName' && Common.Color.Nicknames.has(this.text))) {
+      valueChild.appendChild(document.createTextNode(this.text));
+    } else {
+      Renderer.renderInto(children(node), context, valueChild);
+    }
+    return valueChild;
+  }
+
+  render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
+    const swatch =
+        this.renderColorSwatch(this.#getValueChild(node, context), context.matchedResult.getComputedText(node));
     context.addControl('color', swatch);
     return [swatch];
   }
 
-  renderColorSwatch(valueChild?: Node|null): InlineEditor.ColorSwatch.ColorSwatch {
+  renderColorSwatch(valueChild?: Node, text?: string): InlineEditor.ColorSwatch.ColorSwatch {
     const editable = this.treeElement.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
 
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.setReadonly(!editable);
-    swatch.renderColor(this.text, editable, tooltip);
+    swatch.renderColor(text ?? this.text, editable, tooltip);
 
     if (!valueChild) {
       valueChild = swatch.createChild('span');

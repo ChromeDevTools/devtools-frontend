@@ -40,6 +40,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         'var(--space)': 'shorter hue',
         'var(--garbage-space)': 'this-is-garbage-text',
         'var(--prop)': 'customproperty',
+        'var(--zero)': '0',
       };
 
       if (!mockVariableMap[param]) {
@@ -807,6 +808,34 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       assert.deepStrictEqual(
           await matchProperty('var(--no, var(--no2))'),
           {hasUnresolvedVars: true, computedText: 'var(--no, var(--no2))'});
+    });
+  });
+
+  describe('ColorRenderer', () => {
+    it('correctly renders children of the color swatch', () => {
+      const property = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'color', 'rgb(255, var(--zero), var(--zero))', true, false, true, false, '',
+          undefined);
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesPane: stylesSidebarPane,
+        matchedStyles: mockMatchedStyles,
+        property,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: true,
+      });
+
+      stylePropertyTreeElement.updateTitle();
+
+      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, property.value);
+      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+      assertNotNullOrUndefined(colorSwatch);
+      assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HEX), '#ff0000');
+
+      const varSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch');
+      assertNotNullOrUndefined(varSwatches);
+      assert.lengthOf(varSwatches, 2);
     });
   });
 });

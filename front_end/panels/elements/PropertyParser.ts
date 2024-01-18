@@ -99,7 +99,7 @@ export class RenderingContext {
 export interface Match {
   readonly text: string;
   readonly type: string;
-  render(context: RenderingContext): Node[];
+  render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
   computedText?(): string|null;
 }
 
@@ -378,7 +378,7 @@ export class Renderer extends TreeWalker {
   protected override enter({node}: SyntaxNodeRef): boolean {
     const match = this.#matchedResult.getMatch(node);
     if (match) {
-      const output = match.render(this.#context);
+      const output = match.render(node, this.#context);
       this.renderedMatchForTest(output, match);
       this.#output = mergeWithSpacing(this.#output, output);
       return false;
@@ -408,7 +408,7 @@ export abstract class VariableMatch implements Match {
       protected readonly matching: BottomUpTreeMatching) {
   }
 
-  abstract render(context: RenderingContext): Node[];
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
 }
 
 export class VariableMatcher extends MatcherBase<typeof VariableMatch> {
@@ -456,14 +456,10 @@ export class VariableMatcher extends MatcherBase<typeof VariableMatch> {
 }
 
 export abstract class ColorMatch implements Match {
-  readonly text: string;
-  get type(): string {
-    return 'color';
+  readonly type = 'color';
+  constructor(readonly text: string) {
   }
-  constructor(text: string) {
-    this.text = text;
-  }
-  abstract render(context: RenderingContext): Node[];
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
 }
 
 export class ColorMatcher extends MatcherBase<typeof ColorMatch> {

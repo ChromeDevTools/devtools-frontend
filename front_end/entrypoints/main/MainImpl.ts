@@ -456,6 +456,11 @@ export class MainImpl {
     highContrastMediaQuery.addEventListener('change', onThemeChange);
     themeSetting.addChangeListener(onThemeChange);
 
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, async () => {
+          await UI.Utils.DynamicTheming.refetchColors(document);
+        }, this);
+
     UI.UIUtils.installComponentRootStyles((document.body as Element));
 
     this.#addMainEventListeners(document);
@@ -561,6 +566,7 @@ export class MainImpl {
     const app = (appProvider as Common.AppProvider.AppProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
     UI.DockController.DockController.instance().initialize();
+    await UI.Utils.DynamicTheming.refetchColors(document);
     app.presentUI(document);
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {

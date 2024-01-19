@@ -16,6 +16,7 @@ ts_library("ui") {
     "ShortcutRegistry_test.ts",
     "UIUtils_test.ts",
     "ViewLocation_test.ts",
+    "utils/DynamicTheming_test.ts",
     "utils/measured-scrollbar-width_test.ts",
   ]
 

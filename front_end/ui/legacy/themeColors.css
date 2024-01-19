@@ -291,11 +291,11 @@
 
   /* Surfaces */
 
-  --sys-color-surface5: rgb(234 240 249 / 100%);
-  --sys-color-surface4: rgb(237 239 246 / 100%);
-  --sys-color-surface3: rgb(238 243 250 / 100%);
-  --sys-color-surface2: rgb(243 246 252 / 100%);
-  --sys-color-surface1: rgb(247 249 253 / 100%);
+  --sys-color-surface5: var(--color-sys-surface5, rgb(234 240 249 / 100%));
+  --sys-color-surface4: var(--color-sys-surface4, rgb(237 239 246 / 100%));
+  --sys-color-surface3: var(--color-sys-surface3, rgb(238 243 250 / 100%));
+  --sys-color-surface2: var(--color-sys-surface2, rgb(243 246 252 / 100%));
+  --sys-color-surface1: var(--color-sys-surface1, rgb(247 249 253 / 100%));
 
   /* Chrome DevTools Design System */
 

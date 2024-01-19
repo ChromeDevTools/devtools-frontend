@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("emulation") {
   testonly = true
-  sources = [ "MediaQueryInspector_test.ts" ]
+  sources = [
+    "AdvancedApp_test.ts",
+    "MediaQueryInspector_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/panels/emulation:bundle",

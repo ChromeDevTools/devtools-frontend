@@ -319,6 +319,10 @@ const DevToolsAPIImpl = class {
     this._dispatchOnInspectorFrontendAPI('searchCompleted', [requestId, fileSystemPath, files]);
   }
 
+  colorThemeChanged() {
+    this._dispatchOnInspectorFrontendAPI('colorThemeChanged', []);
+  }
+
   /**
    * @param {string} tabId
    */

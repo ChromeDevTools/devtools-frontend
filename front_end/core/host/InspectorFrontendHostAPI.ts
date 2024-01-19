@@ -9,6 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 export enum Events {
   AppendedToURL = 'appendedToURL',
   CanceledSaveURL = 'canceledSaveURL',
+  ColorThemeChanged = 'colorThemeChanged',
   ContextMenuCleared = 'contextMenuCleared',
   ContextMenuItemSelected = 'contextMenuItemSelected',
   DeviceCountUpdated = 'deviceCountUpdated',
@@ -40,6 +41,7 @@ export enum Events {
 export const EventDescriptors = [
   [Events.AppendedToURL, 'appendedToURL', ['url']],
   [Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
+  [Events.ColorThemeChanged, 'colorThemeChanged', []],
   [Events.ContextMenuCleared, 'contextMenuCleared', []],
   [Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
   [Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
@@ -185,6 +187,7 @@ export interface KeyDownEvent {
 export type EventTypes = {
   [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString,
   [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString,
+  [Events.ColorThemeChanged]: void,
   [Events.ContextMenuCleared]: void,
   [Events.ContextMenuItemSelected]: number,
   [Events.DeviceCountUpdated]: number,

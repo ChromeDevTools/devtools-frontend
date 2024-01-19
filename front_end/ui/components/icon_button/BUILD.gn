@@ -25,7 +25,6 @@ devtools_module("icon_button") {
   deps = [
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/legacy/theme_support:bundle",
     "../../../ui/lit-html:bundle",
   ]
 

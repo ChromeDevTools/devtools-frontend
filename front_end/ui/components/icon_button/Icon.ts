@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import iconStyles from './icon.css.legacy.js';
@@ -93,7 +92,9 @@ export class Icon extends HTMLElement {
     // around for now is to use legacy CSS injected as a <style> tag into the
     // ShadowRoot (which has been working well for the legacy UI components for
     // a long time).
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadowRoot, iconStyles);
+    const styleElement = document.createElement('style');
+    styleElement.textContent = iconStyles.cssContent;
+    this.#shadowRoot.appendChild(styleElement);
   }
 
   /**

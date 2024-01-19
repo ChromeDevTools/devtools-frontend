@@ -60,7 +60,9 @@ export class Console extends ObjectWrapper<EventTypes> {
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   MessageAdded = 'messageAdded',
 }
 
@@ -68,7 +70,9 @@ export type EventTypes = {
   [Events.MessageAdded]: Message,
 };
 
-export const enum MessageLevel {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum MessageLevel {
   Info = 'info',
   Warning = 'warning',
   Error = 'error',

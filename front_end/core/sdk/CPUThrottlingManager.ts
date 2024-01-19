@@ -115,7 +115,9 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   RateChanged = 'RateChanged',
   HardwareConcurrencyChanged = 'HardwareConcurrencyChanged',
 }

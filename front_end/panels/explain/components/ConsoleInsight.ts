@@ -220,7 +220,9 @@ function buildRatingFormLink(
                  .join('&')}` as Platform.DevToolsPath.UrlString;
 }
 
-const enum State {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
   REFINING = 'refining',

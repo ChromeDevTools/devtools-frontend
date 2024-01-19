@@ -684,7 +684,9 @@ function getRegisteredItems(): ContextMenuItemRegistration[] {
   return registeredItemsProviders;
 }
 
-export const enum ItemLocation {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ItemLocation {
   DEVICE_MODE_MENU_SAVE = 'deviceModeMenu/save',
   MAIN_MENU = 'mainMenu',
   MAIN_MENU_DEFAULT = 'mainMenu/default',

@@ -1358,7 +1358,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   SidebarPaneAdded = 'SidebarPaneAdded',
 }
 

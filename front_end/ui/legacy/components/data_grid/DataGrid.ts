@@ -1579,7 +1579,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 // Keep in sync with .data-grid col.corner style rule.
 export const CornerWidth = 14;
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   SelectedNode = 'SelectedNode',
   DeselectedNode = 'DeselectedNode',
   OpenedNode = 'OpenedNode',
@@ -1602,12 +1604,16 @@ export enum Order {
   Descending = 'sort-descending',
 }
 
-export const enum Align {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Align {
   Center = 'center',
   Right = 'right',
 }
 
-export const enum DataType {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum DataType {
   String = 'String',
   Boolean = 'Boolean',
 }
@@ -1615,7 +1621,9 @@ export const enum DataType {
 export const ColumnResizePadding = 24;
 export const CenterResizerOverBorderAdjustment = 3;
 
-export const enum ResizeMethod {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ResizeMethod {
   Nearest = 'nearest',
   First = 'first',
   Last = 'last',

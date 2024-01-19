@@ -38,6 +38,8 @@ export enum Events {
   ShowPanel = 'showPanel',
 }
 
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
 export const EventDescriptors = [
   [Events.AppendedToURL, 'appendedToURL', ['url']],
   [Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
@@ -409,7 +411,9 @@ export interface SyncInformation {
  * front_end/devtools_compatibility.js
  * @readonly
  */
-export const enum EnumeratedHistogram {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum EnumeratedHistogram {
   ActionTaken = 'DevTools.ActionTaken',
   BreakpointWithConditionAdded = 'DevTools.BreakpointWithConditionAdded',
   BreakpointEditDialogRevealedFrom = 'DevTools.BreakpointEditDialogRevealedFrom',

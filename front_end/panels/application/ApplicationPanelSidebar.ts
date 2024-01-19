@@ -228,7 +228,9 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
 }
 
 export namespace SharedStorageTreeElementDispatcher {
-  export const enum Events {
+  // TODO(crbug.com/1167717): Make this a const enum.
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
     SharedStorageTreeElementAdded = 'SharedStorageTreeElementAdded',
   }
 

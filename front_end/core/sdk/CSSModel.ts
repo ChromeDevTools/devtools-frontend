@@ -1028,7 +1028,9 @@ export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper<CSSPr
 
 const StylePollingInterval = 1000;  // throttling interval for style polling, in milliseconds
 
-export const enum CSSPropertyTrackerEvents {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum CSSPropertyTrackerEvents {
   TrackedCSSPropertiesUpdated = 'TrackedCSSPropertiesUpdated',
 }
 

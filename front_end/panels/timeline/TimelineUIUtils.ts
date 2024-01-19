@@ -1183,10 +1183,11 @@ export class TimelineUIUtils {
       return UI.UIUtils.beautifyFunctionName(frame.functionName);
     }
     const nativeGroup = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.nativeGroup(frame.functionName);
+    const groups = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups;
     switch (nativeGroup) {
-      case TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.Compile:
+      case groups.Compile:
         return i18nString(UIStrings.compile);
-      case TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.Parse:
+      case groups.Parse:
         return i18nString(UIStrings.parse);
     }
     return frame.functionName;
@@ -1333,15 +1334,16 @@ export class TimelineUIUtils {
 
   static syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
       NetworkCategory {
+    const categories = NetworkCategory;
     switch (request.args.data.mimeType) {
       case 'text/html':
-        return NetworkCategory.HTML;
+        return categories.HTML;
       case 'application/javascript':
       case 'application/x-javascript':
       case 'text/javascript':
-        return NetworkCategory.Script;
+        return categories.Script;
       case 'text/css':
-        return NetworkCategory.Style;
+        return categories.Style;
       case 'audio/ogg':
       case 'image/gif':
       case 'image/jpeg':
@@ -1353,25 +1355,26 @@ export class TimelineUIUtils {
       case 'font/woff2':
       case 'font/ttf':
       case 'application/font-woff':
-        return NetworkCategory.Media;
+        return categories.Media;
       default:
-        return NetworkCategory.Other;
+        return categories.Other;
     }
   }
 
   static networkCategoryColor(category: NetworkCategory): string {
+    const categories = NetworkCategory;
     let cssVarName = '--app-color-system';
     switch (category) {
-      case NetworkCategory.HTML:
+      case categories.HTML:
         cssVarName = '--app-color-loading';
         break;
-      case NetworkCategory.Script:
+      case categories.Script:
         cssVarName = '--app-color-scripting';
         break;
-      case NetworkCategory.Style:
+      case categories.Style:
         cssVarName = '--app-color-rendering';
         break;
-      case NetworkCategory.Media:
+      case categories.Media:
         cssVarName = '--app-color-painting';
         break;
       default:
@@ -3087,7 +3090,9 @@ export class TimelineUIUtils {
   }
 }
 
-export const enum NetworkCategory {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum NetworkCategory {
   HTML = 'HTML',
   Script = 'Script',
   Style = 'Style',

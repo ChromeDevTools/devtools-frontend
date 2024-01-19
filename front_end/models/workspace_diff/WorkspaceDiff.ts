@@ -294,7 +294,9 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
   }
 }
 
-export const enum UISourceCodeDiffEvents {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum UISourceCodeDiffEvents {
   DiffChanged = 'DiffChanged',
 }
 

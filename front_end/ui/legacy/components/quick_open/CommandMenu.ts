@@ -239,7 +239,8 @@ export interface CreateCommandOptions {
   isPanelOrDrawer?: PanelOrDrawer;
 }
 
-export const enum PanelOrDrawer {
+// eslint-disable-next-line rulesdir/const_enum
+export enum PanelOrDrawer {
   PANEL = 'PANEL',
   DRAWER = 'DRAWER',
 }

@@ -300,7 +300,9 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _minimumSpread = 0.1;
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   BoundariesChanged = 'BoundariesChanged',
 }
 

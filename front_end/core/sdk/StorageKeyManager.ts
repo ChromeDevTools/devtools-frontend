@@ -77,7 +77,9 @@ export interface StorageKey {
   components: Map<StorageKeyComponent, string>;
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   StorageKeyAdded = 'StorageKeyAdded',
   StorageKeyRemoved = 'StorageKeyRemoved',
   MainStorageKeyChanged = 'MainStorageKeyChanged',

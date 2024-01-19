@@ -292,7 +292,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   CacheAdded = 'CacheAdded',
   CacheRemoved = 'CacheRemoved',
   CacheStorageContentUpdated = 'CacheStorageContentUpdated',

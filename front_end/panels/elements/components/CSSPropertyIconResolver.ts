@@ -9,7 +9,8 @@ const writingModesAffectingFlexDirection = new Set([
   'vertical-rl',
 ]);
 
-export const enum PhysicalDirection {
+// eslint-disable-next-line rulesdir/const_enum
+export enum PhysicalDirection {
   LEFT_TO_RIGHT = 'left-to-right',
   RIGHT_TO_LEFT = 'right-to-left',
   BOTTOM_TO_TOP = 'bottom-to-top',

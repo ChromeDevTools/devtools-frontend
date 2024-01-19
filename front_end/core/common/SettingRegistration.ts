@@ -123,7 +123,9 @@ export function maybeRemoveSettingExtension(settingName: string): boolean {
   return true;
 }
 
-export const enum SettingCategory {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',
   APPEARANCE = 'APPEARANCE',
@@ -185,7 +187,7 @@ export function getLocalizedSettingsCategory(category: SettingCategory): Platfor
   }
 }
 
-// TODO(b/319814509): Turn this into a `const enum`.
+// TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum SettingType {
   ARRAY = 'array',

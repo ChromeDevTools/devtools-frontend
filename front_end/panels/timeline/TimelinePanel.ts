@@ -1028,16 +1028,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private updateTimelineControls(): void {
-    this.toggleRecordAction.setToggled(this.state === State.Recording);
-    this.toggleRecordAction.setEnabled(this.state === State.Recording || this.state === State.Idle);
-    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.Idle);
-    this.#historyManager.setEnabled(this.state === State.Idle);
-    this.clearButton.setEnabled(this.state === State.Idle);
-    this.panelToolbar.setEnabled(this.state !== State.Loading);
-    this.panelRightToolbar.setEnabled(this.state !== State.Loading);
-    this.dropTarget.setEnabled(this.state === State.Idle);
-    this.loadButton.setEnabled(this.state === State.Idle);
-    this.saveButton.setEnabled(this.state === State.Idle && Boolean(this.performanceModel));
+    const state = State;
+    this.toggleRecordAction.setToggled(this.state === state.Recording);
+    this.toggleRecordAction.setEnabled(this.state === state.Recording || this.state === state.Idle);
+    this.recordReloadAction.setEnabled(isNode ? false : this.state === state.Idle);
+    this.#historyManager.setEnabled(this.state === state.Idle);
+    this.clearButton.setEnabled(this.state === state.Idle);
+    this.panelToolbar.setEnabled(this.state !== state.Loading);
+    this.panelRightToolbar.setEnabled(this.state !== state.Loading);
+    this.dropTarget.setEnabled(this.state === state.Idle);
+    this.loadButton.setEnabled(this.state === state.Idle);
+    this.saveButton.setEnabled(this.state === state.Idle && Boolean(this.performanceModel));
   }
 
   async toggleRecording(): Promise<void> {
@@ -1635,7 +1636,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 }
 
-export const enum State {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum State {
   Idle = 'Idle',
   StartPending = 'StartPending',
   Recording = 'Recording',

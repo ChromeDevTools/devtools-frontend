@@ -245,12 +245,16 @@ export class Cookie {
   }
 }
 
-export const enum Type {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Type {
   Request = 0,
   Response = 1,
 }
 
-export const enum Attributes {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Attributes {
   Name = 'name',
   Value = 'value',
   Size = 'size',

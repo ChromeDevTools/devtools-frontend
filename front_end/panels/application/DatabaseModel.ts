@@ -171,7 +171,9 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
 SDK.SDKModel.SDKModel.register(DatabaseModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   DatabaseAdded = 'DatabaseAdded',
   DatabasesRemoved = 'DatabasesRemoved',
 }

@@ -90,7 +90,9 @@ export class StatusUpdate {
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   UpdateStatus = 'UpdateStatus',
   ProfileTitleChanged = 'ProfileTitleChanged',
 }
@@ -261,7 +263,9 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper<ProfileEvent
   }
 }
 
-export const enum ProfileEvents {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ProfileEvents {
   AddProfileHeader = 'add-profile-header',
   ProfileComplete = 'profile-complete',
   RemoveProfileHeader = 'remove-profile-header',

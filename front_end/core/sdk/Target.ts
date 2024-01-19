@@ -261,7 +261,9 @@ export enum Type {
   Tab = 'tab',
 }
 
-export const enum Capability {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Capability {
   Browser = 1 << 0,
   DOM = 1 << 1,
   JS = 1 << 2,

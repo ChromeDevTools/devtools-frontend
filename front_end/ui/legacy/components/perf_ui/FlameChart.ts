@@ -2999,7 +2999,9 @@ export interface FlameChartMarker {
   draw(context: CanvasRenderingContext2D, x: number, height: number, pixelsPerMillisecond: number): void;
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   /**
    * Emitted when the <canvas> element of the FlameChart is focused by the user.
    **/

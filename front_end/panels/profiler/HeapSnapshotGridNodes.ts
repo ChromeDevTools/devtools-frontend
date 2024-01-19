@@ -475,7 +475,9 @@ export class HeapSnapshotGridNode extends
 }
 
 export namespace HeapSnapshotGridNode {
-  export const enum Events {
+  // TODO(crbug.com/1167717): Make this a const enum again
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
     PopulateComplete = 'PopulateComplete',
   }
 

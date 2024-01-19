@@ -5,7 +5,9 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 
-export const enum UIHeaderSection {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum UIHeaderSection {
   General = 'General',
   Request = 'Request',
   Response = 'Response',
@@ -16,7 +18,9 @@ interface UIHeaderLocation {
   header: SDK.NetworkRequest.NameValue|null;
 }
 
-export const enum UIRequestTabs {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum UIRequestTabs {
   Cookies = 'cookies',
   EventSource = 'eventSource',
   HeadersComponent = 'headersComponent',

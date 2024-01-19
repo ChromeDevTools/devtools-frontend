@@ -7,6 +7,8 @@ const {assert} = chai;
 import * as Common from '../../../../../front_end/core/common/common.js';
 
 const Console = Common.Console.Console;
+const Events = Common.Console.Events;
+const MessageLevel = Common.Console.MessageLevel;
 
 describe('Console', () => {
   let consoleImpl: Common.Console.Console;
@@ -15,7 +17,7 @@ describe('Console', () => {
   });
 
   it('adds messages', () => {
-    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
+    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
     const messages = consoleImpl.messages();
     assert.strictEqual(messages.length, 1);
     assert.strictEqual(messages[0].text, 'Foo');
@@ -23,9 +25,9 @@ describe('Console', () => {
 
   it('adds handles messages of all types', () => {
     const messageTypes = new Map<Common.Console.MessageLevel, string>([
-      [Common.Console.MessageLevel.Info, 'log'],
-      [Common.Console.MessageLevel.Warning, 'warn'],
-      [Common.Console.MessageLevel.Error, 'error'],
+      [MessageLevel.Info, 'log'],
+      [MessageLevel.Warning, 'warn'],
+      [MessageLevel.Error, 'error'],
     ]);
 
     for (const [type, method] of messageTypes) {
@@ -44,22 +46,22 @@ describe('Console', () => {
   });
 
   it('stores messages', () => {
-    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
-    consoleImpl.addMessage('Baz', Common.Console.MessageLevel.Warning, true);
-    consoleImpl.addMessage('Bar', Common.Console.MessageLevel.Error, true);
-    consoleImpl.addMessage('Donkey', Common.Console.MessageLevel.Info, true);
+    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
+    consoleImpl.addMessage('Baz', MessageLevel.Warning, true);
+    consoleImpl.addMessage('Bar', MessageLevel.Error, true);
+    consoleImpl.addMessage('Donkey', MessageLevel.Info, true);
     const messages = consoleImpl.messages();
     assert.strictEqual(messages.length, 4);
   });
 
   it('dispatches events to listeners', done => {
     const callback = ({data}: Common.EventTarget.EventTargetEvent<Common.Console.Message>) => {
-      consoleImpl.removeEventListener(Common.Console.Events.MessageAdded, callback);
+      consoleImpl.removeEventListener(Events.MessageAdded, callback);
       assert.strictEqual(data.text, 'Foo');
       done();
     };
 
-    consoleImpl.addEventListener(Common.Console.Events.MessageAdded, callback);
-    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
+    consoleImpl.addEventListener(Events.MessageAdded, callback);
+    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
   });
 });

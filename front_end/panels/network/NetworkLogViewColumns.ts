@@ -208,8 +208,8 @@ export class NetworkLogViewColumns {
     this.popupLinkifier = new Components.Linkifier.Linkifier();
 
     this.calculatorsMap = new Map();
-    this.calculatorsMap.set(CalculatorTypes.Time, timeCalculator);
-    this.calculatorsMap.set(CalculatorTypes.Duration, durationCalculator);
+    this.calculatorsMap.set(_calculatorTypes.Time, timeCalculator);
+    this.calculatorsMap.set(_calculatorTypes.Duration, durationCalculator);
 
     this.lastWheelTime = 0;
 
@@ -696,10 +696,10 @@ export class NetworkLogViewColumns {
         this.activeWaterfallSortId === waterfallSortIds.Latency);
 
     function setWaterfallMode(this: NetworkLogViewColumns, sortId: WaterfallSortIds): void {
-      let calculator = this.calculatorsMap.get(CalculatorTypes.Time);
+      let calculator = this.calculatorsMap.get(_calculatorTypes.Time);
       const waterfallSortIds = WaterfallSortIds;
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency) {
-        calculator = this.calculatorsMap.get(CalculatorTypes.Duration);
+        calculator = this.calculatorsMap.get(_calculatorTypes.Duration);
       }
       this.networkLogView.setCalculator((calculator as NetworkTimeCalculator));
 
@@ -874,7 +874,9 @@ export class NetworkLogViewColumns {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _initialSortColumn = 'waterfall';
 
-const enum CalculatorTypes {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum, @typescript-eslint/naming-convention
+export enum _calculatorTypes {
   Duration = 'Duration',
   Time = 'Time',
 }
@@ -1096,7 +1098,7 @@ export const _filmStripDividerColor = '#fccc49';
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
-enum WaterfallSortIds {
+export enum WaterfallSortIds {
   StartTime = 'startTime',
   ResponseTime = 'responseReceivedTime',
   EndTime = 'endTime',

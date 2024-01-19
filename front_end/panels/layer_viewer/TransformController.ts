@@ -260,7 +260,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   TransformChanged = 'TransformChanged',
 }
 

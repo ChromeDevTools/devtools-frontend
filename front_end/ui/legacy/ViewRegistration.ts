@@ -199,7 +199,8 @@ export function resetViewRegistration(): void {
   viewIdSet.clear();
 }
 
-export const enum ViewLocationCategory {
+// eslint-disable-next-line rulesdir/const_enum
+export enum ViewLocationCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',
   DRAWER = 'DRAWER',

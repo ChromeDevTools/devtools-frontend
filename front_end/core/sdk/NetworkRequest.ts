@@ -1678,7 +1678,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   FinishedLoading = 'FinishedLoading',
   TimingChanged = 'TimingChanged',
   RemoteAddressChanged = 'RemoteAddressChanged',
@@ -1700,7 +1702,9 @@ export type EventTypes = {
   [Events.TrustTokenResultAdded]: void,
 };
 
-export const enum InitiatorType {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum InitiatorType {
   Other = 'other',
   Parser = 'parser',
   Redirect = 'redirect',

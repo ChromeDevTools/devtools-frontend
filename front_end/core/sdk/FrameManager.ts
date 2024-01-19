@@ -235,7 +235,9 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 }
 
-export const enum Events {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   // The FrameAddedToTarget event is sent whenever a frame is added to a target.
   // This means that for OOPIFs it is sent twice: once when it's added to a
   // parent target and a second time when it's added to its own target.

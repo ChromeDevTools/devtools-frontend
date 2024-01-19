@@ -61,36 +61,14 @@ export class RequestResponseView extends UI.Widget.VBox {
     this.contentViewPromise = null;
   }
 
-  private static hasTextContent(
-      request: SDK.NetworkRequest.NetworkRequest, contentData: SDK.NetworkRequest.ContentData): boolean {
-    const mimeType = request.mimeType || '';
-    let resourceType = Common.ResourceType.ResourceType.fromMimeType(mimeType);
-    if (resourceType === Common.ResourceType.resourceTypes.Other) {
-      resourceType = request.contentType();
-    }
-    if (resourceType === Common.ResourceType.resourceTypes.Image) {
-      return mimeType.startsWith('image/svg');
-    }
-    if (resourceType.isTextType()) {
-      return true;
-    }
-    if (contentData.error) {
-      return false;
-    }
-    if (resourceType === Common.ResourceType.resourceTypes.Other) {
-      return Boolean(contentData.content) && !contentData.encoded;
-    }
-    return false;
-  }
-
   static async sourceViewForRequest(request: SDK.NetworkRequest.NetworkRequest): Promise<UI.Widget.Widget|null> {
     let sourceView = requestToSourceView.get(request);
     if (sourceView !== undefined) {
       return sourceView;
     }
 
-    const contentData = SDK.ContentData.ContentData.asLegacyContentData(await request.contentData());
-    if (!RequestResponseView.hasTextContent(request, contentData)) {
+    const contentData = await request.contentData();
+    if (SDK.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       requestToSourceView.delete(request);
       return null;
     }
@@ -105,7 +83,7 @@ export class RequestResponseView extends UI.Widget.VBox {
     }
 
     const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
-        mimeType, request.resourceType().isFromSourceMap(), TextUtils.TextUtils.isMinified(contentData.content ?? ''));
+        mimeType, request.resourceType().isFromSourceMap(), TextUtils.TextUtils.isMinified(contentData.text));
 
     Host.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);

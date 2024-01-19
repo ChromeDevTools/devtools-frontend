@@ -628,12 +628,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 }
 
-export  // TODO(crbug.com/1167717): Make this a const enum again
-    // eslint-disable-next-line rulesdir/const_enum
-    enum Events {
-      EditorClosed = 'EditorClosed',
-      EditorSelected = 'EditorSelected',
-    }
+export const enum Events {
+  EditorClosed = 'EditorClosed',
+  EditorSelected = 'EditorSelected',
+}
 
 export interface EditorClosedEvent {
   uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -752,8 +750,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
 const HEADER_OVERRIDES_FILENAME = '.headers';
 
-// eslint-disable-next-line rulesdir/const_enum
-enum SourceViewType {
+const enum SourceViewType {
   ImageView = 'ImageView',
   FontView = 'FontView',
   HeadersView = 'HeadersView',

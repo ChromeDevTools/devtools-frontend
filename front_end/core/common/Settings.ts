@@ -1248,7 +1248,7 @@ export class VersionController {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
+// TODO(b/319814509): Turn this into a `const enum`.
 // eslint-disable-next-line rulesdir/const_enum
 export enum SettingStorageType {
   /**

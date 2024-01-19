@@ -525,8 +525,6 @@ export class TimelineFlameChartMarker implements PerfUI.FlameChart.FlameChartMar
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ColorBy {
+export const enum ColorBy {
   URL = 'URL',
 }

@@ -300,9 +300,7 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   RegistrationUpdated = 'RegistrationUpdated',
   RegistrationErrorAdded = 'RegistrationErrorAdded',
   RegistrationDeleted = 'RegistrationDeleted',
@@ -522,9 +520,7 @@ export namespace ServiceWorkerVersion {
     [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString(UIStrings.redundant),
   };
 
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Modes {
+  export const enum Modes {
     Installing = 'installing',
     Waiting = 'waiting',
     Active = 'active',

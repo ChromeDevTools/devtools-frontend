@@ -657,9 +657,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
 }
 
 export namespace ToolbarButton {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
+  export const enum Events {
     Click = 'Click',
     MouseDown = 'MouseDown',
   }
@@ -765,9 +763,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
 }
 
 export namespace ToolbarInput {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Event {
+  export const enum Event {
     TextChanged = 'TextChanged',
     EnterPressed = 'EnterPressed',
   }
@@ -1138,9 +1134,7 @@ export interface ToolbarItemRegistration {
   jslog?: string;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ToolbarItemLocation {
+export const enum ToolbarItemLocation {
   FILES_NAVIGATION_TOOLBAR = 'files-navigator-toolbar',
   MAIN_TOOLBAR_RIGHT = 'main-toolbar-right',
   MAIN_TOOLBAR_LEFT = 'main-toolbar-left',

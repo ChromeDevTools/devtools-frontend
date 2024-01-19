@@ -265,9 +265,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   DOMBreakpointAdded = 'DOMBreakpointAdded',
   DOMBreakpointToggled = 'DOMBreakpointToggled',
   DOMBreakpointsRemoved = 'DOMBreakpointsRemoved',
@@ -468,9 +466,7 @@ export class EventListener {
 }
 
 export namespace EventListener {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Origin {
+  export const enum Origin {
     Raw = 'Raw',
     Framework = 'Framework',
     FrameworkUser = 'FrameworkUser',

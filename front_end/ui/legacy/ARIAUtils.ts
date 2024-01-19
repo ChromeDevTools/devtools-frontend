@@ -253,26 +253,15 @@ export function setLevel(element: Element, level: number): void {
   element.setAttribute('aria-level', level.toString());
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum AutocompleteInteractionModel {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  inline = 'inline',
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  list = 'list',
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  both = 'both',
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  none = 'none',
+export const enum AutocompleteInteractionModel {
+  Inline = 'inline',
+  List = 'list',
+  Both = 'both',
+  None = 'none',
 }
 
 export function setAutocomplete(
-    element: Element,
-    interactionModel: AutocompleteInteractionModel|undefined = AutocompleteInteractionModel.none): void {
+    element: Element, interactionModel: AutocompleteInteractionModel = AutocompleteInteractionModel.None): void {
   element.setAttribute('aria-autocomplete', interactionModel);
 }
 

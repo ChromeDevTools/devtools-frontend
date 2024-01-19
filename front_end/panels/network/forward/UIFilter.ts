@@ -28,18 +28,14 @@ export enum FilterType {
   Url = 'url',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum IsFilterType {
+export const enum IsFilterType {
   Running = 'running',
   FromCache = 'from-cache',
   ServiceWorkerIntercepted = 'service-worker-intercepted',
   ServiceWorkerInitiated = 'service-worker-initiated',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum MixedContentFilterValues {
+export const enum MixedContentFilterValues {
   All = 'all',
   Displayed = 'displayed',
   Blocked = 'blocked',

@@ -214,9 +214,7 @@ export type EventTypes = {
   [Events.Hidden]: void,
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum OutsideTabIndexBehavior {
+export const enum OutsideTabIndexBehavior {
   DisableAllOutsideTabIndex = 'DisableAllTabIndex',
   PreserveMainViewTabIndex = 'PreserveMainViewTabIndex',
   PreserveTabIndex = 'PreserveTabIndex',

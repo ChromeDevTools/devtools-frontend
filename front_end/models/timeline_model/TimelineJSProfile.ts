@@ -71,9 +71,7 @@ export class TimelineJSProfileProcessor {
 }
 
 export namespace TimelineJSProfileProcessor {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum NativeGroups {
+  export const enum NativeGroups {
     Compile = 'Compile',
     Parse = 'Parse',
   }

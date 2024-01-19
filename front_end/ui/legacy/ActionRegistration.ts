@@ -279,6 +279,7 @@ export type EventTypes = {
   [Events.Toggled]: boolean,
 };
 
+// TODO(b/319814509): Turn this into a `const enum`.
 // eslint-disable-next-line rulesdir/const_enum
 export enum ActionCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.

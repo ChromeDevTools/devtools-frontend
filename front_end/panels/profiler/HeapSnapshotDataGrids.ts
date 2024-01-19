@@ -407,9 +407,7 @@ export class HeapSnapshotSortableDataGrid extends
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum HeapSnapshotSortableDataGridEvents {
+export const enum HeapSnapshotSortableDataGridEvents {
   ContentShown = 'ContentShown',
   SortingComplete = 'SortingComplete',
   ExpandRetainersComplete = 'ExpandRetainersComplete',

@@ -874,17 +874,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ShowMode {
+export const enum ShowMode {
   Both = 'Both',
   OnlyMain = 'OnlyMain',
   OnlySidebar = 'OnlySidebar',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   SidebarSizeChanged = 'SidebarSizeChanged',
   ShowModeChanged = 'ShowModeChanged',
 }

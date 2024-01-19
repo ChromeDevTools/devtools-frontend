@@ -40,9 +40,7 @@ export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.L
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   EntryAdded = 'EntryAdded',
 }
 

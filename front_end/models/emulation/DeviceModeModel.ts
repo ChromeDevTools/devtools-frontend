@@ -10,12 +10,12 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {
+  type EmulatedDevice,
   Horizontal,
   HorizontalSpanned,
+  type Mode,
   Vertical,
   VerticalSpanned,
-  type EmulatedDevice,
-  type Mode,
 } from './EmulatedDevices.js';
 
 const UIStrings = {
@@ -889,9 +889,7 @@ export enum Type {
   Device = 'Device',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum UA {
+export const enum UA {
   // TODO(crbug.com/1136655): This enum is used for both display and code functionality.
   // we should refactor this so localization of these strings only happens for user display.
   Mobile = 'Mobile',

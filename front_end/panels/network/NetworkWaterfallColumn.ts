@@ -107,30 +107,39 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   private static buildRequestTimeRangeStyle(): Map<RequestTimeRangeNames, _LayerStyle> {
-    const types = RequestTimeRangeNames;
     const styleMap = new Map<RequestTimeRangeNames, _LayerStyle>();
-    styleMap.set(types.Connecting, {fillStyle: RequestTimeRangeNameToColor[types.Connecting]});
-    styleMap.set(types.SSL, {fillStyle: RequestTimeRangeNameToColor[types.SSL]});
-    styleMap.set(types.DNS, {fillStyle: RequestTimeRangeNameToColor[types.DNS]});
-    styleMap.set(types.Proxy, {fillStyle: RequestTimeRangeNameToColor[types.Proxy]});
-    styleMap.set(types.Blocking, {fillStyle: RequestTimeRangeNameToColor[types.Blocking]});
-    styleMap.set(types.Push, {fillStyle: RequestTimeRangeNameToColor[types.Push]});
     styleMap.set(
-        types.Queueing,
-        {fillStyle: RequestTimeRangeNameToColor[types.Queueing], lineWidth: 2, borderColor: 'lightgrey'});
+        RequestTimeRangeNames.Connecting, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Connecting]});
+    styleMap.set(RequestTimeRangeNames.SSL, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.SSL]});
+    styleMap.set(RequestTimeRangeNames.DNS, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.DNS]});
+    styleMap.set(RequestTimeRangeNames.Proxy, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Proxy]});
+    styleMap.set(
+        RequestTimeRangeNames.Blocking, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Blocking]});
+    styleMap.set(RequestTimeRangeNames.Push, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Push]});
+    styleMap.set(RequestTimeRangeNames.Queueing, {
+      fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Queueing],
+      lineWidth: 2,
+      borderColor: 'lightgrey',
+    });
     // This ensures we always show at least 2 px for a request.
-    styleMap.set(types.Receiving, {
-      fillStyle: RequestTimeRangeNameToColor[types.Receiving],
+    styleMap.set(RequestTimeRangeNames.Receiving, {
+      fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Receiving],
       lineWidth: 2,
       borderColor: '#03A9F4',
     });
-    styleMap.set(types.Waiting, {fillStyle: RequestTimeRangeNameToColor[types.Waiting]});
-    styleMap.set(types.ReceivingPush, {fillStyle: RequestTimeRangeNameToColor[types.ReceivingPush]});
-    styleMap.set(types.ServiceWorker, {fillStyle: RequestTimeRangeNameToColor[types.ServiceWorker]});
     styleMap.set(
-        types.ServiceWorkerPreparation, {fillStyle: RequestTimeRangeNameToColor[types.ServiceWorkerPreparation]});
-    styleMap.set(types.ServiceWorkerRespondWith, {
-      fillStyle: RequestTimeRangeNameToColor[types.ServiceWorkerRespondWith],
+        RequestTimeRangeNames.Waiting, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Waiting]});
+    styleMap.set(
+        RequestTimeRangeNames.ReceivingPush,
+        {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.ReceivingPush]});
+    styleMap.set(
+        RequestTimeRangeNames.ServiceWorker,
+        {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.ServiceWorker]});
+    styleMap.set(
+        RequestTimeRangeNames.ServiceWorkerPreparation,
+        {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.ServiceWorkerPreparation]});
+    styleMap.set(RequestTimeRangeNames.ServiceWorkerRespondWith, {
+      fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.ServiceWorkerRespondWith],
     });
     return styleMap;
   }
@@ -482,15 +491,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   private getBarHeight(type?: RequestTimeRangeNames): number {
-    const types = RequestTimeRangeNames;
     switch (type) {
-      case types.Connecting:
-      case types.SSL:
-      case types.DNS:
-      case types.Proxy:
-      case types.Blocking:
-      case types.Push:
-      case types.Queueing:
+      case RequestTimeRangeNames.Connecting:
+      case RequestTimeRangeNames.SSL:
+      case RequestTimeRangeNames.DNS:
+      case RequestTimeRangeNames.Proxy:
+      case RequestTimeRangeNames.Blocking:
+      case RequestTimeRangeNames.Push:
+      case RequestTimeRangeNames.Queueing:
         return 7;
       default:
         return 13;

@@ -316,7 +316,7 @@
    * Tests that Recorder tab can be open.
    */
   TestSuite.prototype.testShowRecorderTab = function() {
-    this.showPanel('chrome_recorder')
+    this.showPanel('chrome-recorder')
         .then(() => {
           this.releaseControl();
         })

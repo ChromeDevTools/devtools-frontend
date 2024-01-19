@@ -288,7 +288,7 @@ export class SamplingHeapProfileTypeBase extends
     profileHeader.updateStatus(i18nString(UIStrings.recording));
 
     const warnings = [i18nString(UIStrings.heapProfilerIsRecording)];
-    UI.InspectorView.InspectorView.instance().setPanelWarnings('heap_profiler', warnings);
+    UI.InspectorView.InspectorView.instance().setPanelWarnings('heap-profiler', warnings);
 
     this.recording = true;
     this.startSampling();
@@ -311,7 +311,7 @@ export class SamplingHeapProfileTypeBase extends
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
     }
-    UI.InspectorView.InspectorView.instance().setPanelWarnings('heap_profiler', []);
+    UI.InspectorView.InspectorView.instance().setPanelWarnings('heap-profiler', []);
 
     // If the data was cleared during the middle of the recording we no
     // longer treat the profile as being completed. This means we avoid

@@ -80,7 +80,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (profilerModul
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'heap_profiler',
+  id: 'heap-profiler',
   commandPrompt: i18nLazyString(UIStrings.showMemory),
   title: i18nLazyString(UIStrings.memory),
   order: 60,
@@ -92,7 +92,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
-  id: 'live_heap_profile',
+  id: 'live-heap-profile',
   commandPrompt: i18nLazyString(UIStrings.showLiveHeapProfile),
   title: i18nLazyString(UIStrings.liveHeapProfile),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,

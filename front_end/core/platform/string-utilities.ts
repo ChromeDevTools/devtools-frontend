@@ -519,9 +519,25 @@ const WORD = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z0-9]?[a-z]+[0-9]*|[A-Z]|[0-9
 // 2: lookahead assertion that matches a word boundary
 // 3: word starting with an optional uppercase letter
 // 4: single uppercase letter or number
-export const toKebabCase = function(input: string): string {
-  return input.match(WORD)?.map(w => w.toLowerCase()).join('-') || input;
+export const toKebabCase = function(input: string): Lowercase<string> {
+  return (input.match?.(WORD)?.map(w => w.toLowerCase()).join('-') || input) as Lowercase<string>;
 };
+
+// TODO(b/320405843): remove this when kebab migration is complete and
+// replace with settings version upgrade
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function toKebabCaseKeys(settingValue: {
+  [x: string]: any,
+}): {[x: string]: any} {
+  const result: {
+    [x: string]: any,
+  } = {};
+  for (const [key, value] of Object.entries(settingValue)) {
+    result[toKebabCase(key)] = value;
+  }
+  return result;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 // Replaces the last ocurrence of parameter `search` with parameter `replacement` in `input`
 export const replaceLast = function(input: string, search: string, replacement: string): string {

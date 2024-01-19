@@ -219,7 +219,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
-  id: 'elements.eventListeners',
+  id: 'elements.event-listeners',
   commandPrompt: i18nLazyString(UIStrings.showEventListeners),
   title: i18nLazyString(UIStrings.eventListeners),
   order: 5,
@@ -233,7 +233,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
-  id: 'elements.domProperties',
+  id: 'elements.dom-properties',
   commandPrompt: i18nLazyString(UIStrings.showProperties),
   title: i18nLazyString(UIStrings.properties),
   order: 7,
@@ -247,7 +247,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
-  id: 'elements.domCreation',
+  id: 'elements.dom-creation',
   commandPrompt: i18nLazyString(UIStrings.showStackTrace),
   title: i18nLazyString(UIStrings.stackTrace),
   order: 10,

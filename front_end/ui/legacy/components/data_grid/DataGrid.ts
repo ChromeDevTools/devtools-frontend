@@ -947,14 +947,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!this.columnWeightsSetting) {
       return;
     }
-    const weights: {
-      [x: string]: any,
-    } = {};
-    // TODO(b/320405843): remove this when kebab migration is complete and
-    // replace with settings version upgrade
-    for (const [key, value] of Object.entries(this.columnWeightsSetting.get())) {
-      weights[Platform.StringUtilities.toKebabCase(key)] = value;
-    }
+    const weights = Platform.StringUtilities.toKebabCaseKeys(this.columnWeightsSetting.get());
     for (let i = 0; i < this.columnsArray.length; ++i) {
       const column = this.columnsArray[i];
       const weight = weights[column.id];

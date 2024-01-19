@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {type TabbedPane} from './TabbedPane.js';
 import {type ToolbarItem, type ToolbarMenuButton} from './Toolbar.js';
 import {ViewManager} from './ViewManager.js';
-
 import {VBox, type Widget} from './Widget.js';
 
 export interface View {
@@ -30,12 +29,17 @@ export interface View {
 
 export class SimpleView extends VBox implements View {
   readonly #title: Platform.UIString.LocalizedString;
-  readonly #viewId: string;
+  readonly #viewId: Lowercase<string>;
 
-  constructor(title: Platform.UIString.LocalizedString, isWebComponent?: boolean, viewId?: string) {
+  constructor(title: Platform.UIString.LocalizedString, isWebComponent?: boolean, viewId?: Lowercase<string>) {
     super(isWebComponent);
     this.#title = title;
-    this.#viewId = viewId ?? title;
+    if (viewId) {
+      if (!Platform.StringUtilities.isExtendedKebabCase(viewId)) {
+        throw new Error(`Invalid view ID '${viewId}'`);
+      }
+    }
+    this.#viewId = viewId ?? Platform.StringUtilities.toKebabCase(title);
   }
 
   viewId(): string {

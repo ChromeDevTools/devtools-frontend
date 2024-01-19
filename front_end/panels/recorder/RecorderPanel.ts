@@ -10,7 +10,7 @@ import {RecorderController} from './RecorderController.js';
 let recorderPanelInstance: RecorderPanel;
 
 export class RecorderPanel extends UI.Panel.Panel {
-  static panelName = 'chrome_recorder';
+  static panelName = 'chrome-recorder';
 
   #controller: RecorderController;
 

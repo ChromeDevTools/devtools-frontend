@@ -103,7 +103,7 @@ export interface ViewRegistration {
   /**
    * Unique identifier of the view.
    */
-  id: string;
+  id: Lowercase<string>;
   /**
    * An identifier for the location of the view. The location is resolved by
    * an extension of type '@UI.ViewLocationResolver'.

@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -145,7 +146,7 @@ export class ViewManager {
 
     // Read override setting for location
     this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
-    const preferredExtensionLocations = this.locationOverrideSetting.get();
+    const preferredExtensionLocations = Platform.StringUtilities.toKebabCaseKeys(this.locationOverrideSetting.get());
 
     // Views may define their initial ordering within a location. When the user has not reordered, we use the
     // default ordering as defined by the views themselves.
@@ -176,6 +177,9 @@ export class ViewManager {
       const location = view.location();
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
+      }
+      if (!Platform.StringUtilities.isExtendedKebabCase(viewId)) {
+        throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
       // Use the preferred user location if available
@@ -241,7 +245,7 @@ export class ViewManager {
       this.locationNameByViewId.set(viewId, locationName);
 
       // Update the settings of location overwrites
-      const locations = this.locationOverrideSetting.get();
+      const locations = Platform.StringUtilities.toKebabCaseKeys(this.locationOverrideSetting.get());
       locations[viewId] = locationName;
       this.locationOverrideSetting.set(locations);
     }
@@ -614,7 +618,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     // and append the new tabs with value of true so they are shown open
     const newClosable = {
       ...defaultOptionsForTabs,
-      ...this.closeableTabSetting.get(),
+      ...Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get()),
     };
     this.closeableTabSetting.set(newClosable);
   }
@@ -638,7 +642,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     const views = this.manager.viewsForLocation(locationName);
     if (this.allowReorder) {
       let i = 0;
-      const persistedOrders = this.tabOrderSetting.get();
+      const persistedOrders = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
       const orders = new Map<string, number>();
       for (const view of views) {
         orders.set(view.viewId(), persistedOrders[view.viewId()] || (++i) * TabbedLocation.orderStep);
@@ -655,7 +659,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       }
       if (!view.isCloseable()) {
         this.appendTab(view);
-      } else if (this.closeableTabSetting.get()[id]) {
+      } else if (Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get())[id]) {
         this.appendTab(view);
       }
     }
@@ -675,8 +679,10 @@ class TabbedLocation extends Location implements TabbedViewLocation {
           void this.showView(view);
         }
       }
-    } else if (this.lastSelectedTabSetting && this.tabbedPaneInternal.hasTab(this.lastSelectedTabSetting.get())) {
-      this.tabbedPaneInternal.selectTab(this.lastSelectedTabSetting.get());
+    } else if (
+        this.lastSelectedTabSetting &&
+        this.tabbedPaneInternal.hasTab(Platform.StringUtilities.toKebabCase(this.lastSelectedTabSetting.get()))) {
+      this.tabbedPaneInternal.selectTab(Platform.StringUtilities.toKebabCase(this.lastSelectedTabSetting.get()));
     }
   }
 
@@ -718,7 +724,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     let index: number|undefined = undefined;
     const tabIds = this.tabbedPaneInternal.tabIds();
     if (this.allowReorder) {
-      const orderSetting = this.tabOrderSetting.get();
+      const orderSetting = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
       const order = orderSetting[view.viewId()];
       for (let i = 0; order && i < tabIds.length; ++i) {
         if (orderSetting[tabIds[i]] && orderSetting[tabIds[i]] > order) {
@@ -737,7 +743,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.appendTab(view, index);
 
     if (view.isCloseable()) {
-      const tabs = this.closeableTabSetting.get();
+      const tabs = Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
       const tabId = view.viewId();
       if (!tabs[tabId]) {
         tabs[tabId] = true;
@@ -781,7 +787,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
 
   private tabClosed(event: Common.EventTarget.EventTargetEvent<EventData>): void {
     const {tabId} = event.data;
-    const tabs = this.closeableTabSetting.get();
+    const tabs = Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
     if (tabs[tabId]) {
       tabs[tabId] = false;
       this.closeableTabSetting.set(tabs);
@@ -801,7 +807,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       tabOrders[tabIds[i]] = (i + 1) * TabbedLocation.orderStep;
     }
 
-    const oldTabOrder = this.tabOrderSetting.get();
+    const oldTabOrder = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
     const oldTabArray = Object.keys(oldTabOrder);
     oldTabArray.sort((a, b) => oldTabOrder[a] - oldTabOrder[b]);
     let lastOrder = 0;
@@ -816,7 +822,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   getCloseableTabSetting(): CloseableTabSetting {
-    return this.closeableTabSetting.get();
+    return Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
   }
 
   static orderStep = 10;  // Keep in sync with descriptors.

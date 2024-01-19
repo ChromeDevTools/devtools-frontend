@@ -121,7 +121,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   }
 
   private async addButtonClicked(): Promise<void> {
-    await UI.ViewManager.ViewManager.instance().showView('sources.xhrBreakpoints');
+    await UI.ViewManager.ViewManager.instance().showView('sources.xhr-breakpoints');
 
     const inputElementContainer = document.createElement('p');
     inputElementContainer.classList.add('breakpoint-condition');
@@ -374,7 +374,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       return;
     }
     this.#list.refreshItem(url);
-    void UI.ViewManager.ViewManager.instance().showView('sources.xhrBreakpoints');
+    void UI.ViewManager.ViewManager.instance().showView('sources.xhr-breakpoints');
   }
 
   private restoreBreakpoints(): void {

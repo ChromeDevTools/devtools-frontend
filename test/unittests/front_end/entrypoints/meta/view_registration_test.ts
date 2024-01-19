@@ -13,7 +13,7 @@ class MockView extends UI.Widget.Widget implements UI.View.ViewLocationResolver 
     return UI.ViewManager.ViewManager.instance().createStackLocation();
   }
 }
-const viewId = 'mockView';
+const viewId = 'mock-view';
 const viewTitle = 'Mock';
 const commandPrompt = 'Show Mock';
 const order = 10;

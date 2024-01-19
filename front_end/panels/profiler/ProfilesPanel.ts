@@ -683,7 +683,7 @@ let jsProfilerPanelInstance: JSProfilerPanel;
 export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistration.ActionDelegate {
   constructor() {
     const registry = instance;
-    super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
+    super('js-profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
     this.splitWidget().mainWidget()?.setMinimumSize(350, 0);
     this.#showDeprecationInfobar();
   }

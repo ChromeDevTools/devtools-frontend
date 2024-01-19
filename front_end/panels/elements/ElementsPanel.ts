@@ -154,8 +154,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * collects usage metrics for the different sidebar tabs.
  */
 export const enum SidebarPaneTabId {
-  Computed = 'Computed',
-  Styles = 'Styles',
+  Computed = 'computed',
+  Styles = 'styles',
 }
 
 const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => {
@@ -1084,14 +1084,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     UI.ARIAUtils.markAsComplementary(contentElement);
     UI.ARIAUtils.setLabel(contentElement, i18nString(UIStrings.sidePanelContent));
 
-    const stylesView =
-        new UI.View.SimpleView(i18nString(UIStrings.styles), /* isWebComponent */ undefined, SidebarPaneTabId.Styles);
+    const stylesView = new UI.View.SimpleView(
+        i18nString(UIStrings.styles), /* isWebComponent */ undefined, SidebarPaneTabId.Styles as Lowercase<string>);
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add('flex-auto');
     stylesSplitWidget.show(stylesView.element);
 
     const computedView = new UI.View.SimpleView(
-        i18nString(UIStrings.computed), /* isWebComponent */ undefined, SidebarPaneTabId.Computed);
+        i18nString(UIStrings.computed), /* isWebComponent */ undefined, SidebarPaneTabId.Computed as Lowercase<string>);
     computedView.element.classList.add('composite', 'fill');
 
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);

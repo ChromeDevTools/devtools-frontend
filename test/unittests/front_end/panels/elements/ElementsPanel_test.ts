@@ -62,19 +62,19 @@ describeWithMockConnection('ElementsPanel', () => {
     assert.isTrue(
         recordedMetricsContain(
             Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.Computed),
-        'Expected "Computed" tab to show up in metrics');
+            Host.UserMetrics.ElementsSidebarTabCodes.computed),
+        'Expected "computed" tab to show up in metrics');
     assert.isFalse(
         recordedMetricsContain(
             Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.Styles),
+            Host.UserMetrics.ElementsSidebarTabCodes.styles),
         'Expected "Styles" tab to not show up in metrics');
 
     tabbedPane.selectTab(Elements.ElementsPanel.SidebarPaneTabId.Styles);
     assert.isTrue(
         recordedMetricsContain(
             Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.Styles),
+            Host.UserMetrics.ElementsSidebarTabCodes.styles),
         'Expected "Styles" tab to show up in metrics');
   });
 

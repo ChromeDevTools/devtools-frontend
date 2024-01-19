@@ -1115,8 +1115,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.sidebarPaneStack.appendView(this.threadsSidebarPane);
     }
 
-    const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints');
-    const scopeChainView = UI.ViewManager.ViewManager.instance().view('sources.scopeChain');
+    const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.js-breakpoints');
+    const scopeChainView = UI.ViewManager.ViewManager.instance().view('sources.scope-chain');
 
     if (this.tabbedLocationHeader) {
       this.splitWidget.uninstallResizer(this.tabbedLocationHeader);

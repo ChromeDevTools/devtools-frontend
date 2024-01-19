@@ -73,7 +73,7 @@ function maybeRetrieveContextTypes<T = unknown>(
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'chrome_recorder',
+  id: 'chrome-recorder',
   commandPrompt: i18nLazyString(UIStrings.showRecorder),
   title: i18nLazyString(UIStrings.recorder),
   order: 90,

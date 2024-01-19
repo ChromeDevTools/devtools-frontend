@@ -521,7 +521,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ViewManager.registerViewExtension({
-  id: 'sources.scopeChain',
+  id: 'sources.scope-chain',
   commandPrompt: i18nLazyString(UIStrings.showScope),
   title: i18nLazyString(UIStrings.scope),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -544,7 +544,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ViewManager.registerViewExtension({
-  id: 'sources.jsBreakpoints',
+  id: 'sources.js-breakpoints',
   commandPrompt: i18nLazyString(UIStrings.showBreakpoints),
   title: i18nLazyString(UIStrings.breakpoints),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,

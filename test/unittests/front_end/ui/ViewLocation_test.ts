@@ -16,7 +16,7 @@ describeWithEnvironment('ViewLocation', () => {
       UI.ViewManager.registerViewExtension({
         // @ts-ignore
         location: 'mock-location',
-        id: title,
+        id: title as Lowercase<string>,
         title: () => title as Platform.UIString.LocalizedString,
         commandPrompt: () => title as Platform.UIString.LocalizedString,
         persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,

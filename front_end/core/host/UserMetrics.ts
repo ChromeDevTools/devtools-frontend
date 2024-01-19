@@ -698,7 +698,7 @@ export enum PanelCodes {
   'issues-pane' = 37,
   'settings-keybinds' = 38,
   'cssoverview' = 39,
-  'chrome_recorder' = 40,
+  'chrome-recorder' = 40,
   'trust_tokens' = 41,
   'reporting_api' = 42,
   'interest_groups' = 43,
@@ -871,12 +871,12 @@ export enum PanelWithLocation {
 /* eslint-disable @typescript-eslint/naming-convention */
 export enum ElementsSidebarTabCodes {
   'OtherSidebarPane' = 0,
-  'Styles' = 1,
-  'Computed' = 2,
+  'styles' = 1,
+  'computed' = 2,
   'elements.layout' = 3,
-  'elements.eventListeners' = 4,
-  'elements.domBreakpoints' = 5,
-  'elements.domProperties' = 6,
+  'elements.event-listeners' = 4,
+  'elements.dom-breakpoints' = 5,
+  'elements.dom-properties' = 6,
   'accessibility.view' = 7,
   MaxValue = 8,
 }
@@ -889,7 +889,7 @@ export enum SourcesSidebarTabCodes {
   'navigator-network' = 1,
   'navigator-files' = 2,
   'navigator-overrides' = 3,
-  'navigator-contentScripts' = 4,
+  'navigator-content-scripts' = 4,
   'navigator-snippets' = 5,
   MaxValue = 6,
 }

@@ -407,7 +407,7 @@ export class HeapSnapshotSortableDataGrid extends
   }
 }
 
-export const enum HeapSnapshotSortableDataGridEvents {
+export enum HeapSnapshotSortableDataGridEvents {
   ContentShown = 'ContentShown',
   SortingComplete = 'SortingComplete',
   ExpandRetainersComplete = 'ExpandRetainersComplete',

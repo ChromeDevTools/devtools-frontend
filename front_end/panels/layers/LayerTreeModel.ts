@@ -142,7 +142,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
 SDK.SDKModel.SDKModel.register(LayerTreeModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
-export const enum Events {
+export enum Events {
   LayerTreeChanged = 'LayerTreeChanged',
   LayerPainted = 'LayerPainted',
 }

@@ -1678,7 +1678,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 }
 
-export const enum Events {
+export enum Events {
   FinishedLoading = 'FinishedLoading',
   TimingChanged = 'TimingChanged',
   RemoteAddressChanged = 'RemoteAddressChanged',

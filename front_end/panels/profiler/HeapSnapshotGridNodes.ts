@@ -475,7 +475,7 @@ export class HeapSnapshotGridNode extends
 }
 
 export namespace HeapSnapshotGridNode {
-  export const enum Events {
+  export enum Events {
     PopulateComplete = 'PopulateComplete',
   }
 

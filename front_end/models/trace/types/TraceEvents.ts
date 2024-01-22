@@ -2046,6 +2046,28 @@ export function isTraceEventV8Compile(event: TraceEventData): event is TraceEven
 }
 
 /**
+ * Generally, before JS is executed, a trace event is dispatched that
+ * parents the JS calls. These we call "invocation" events. This
+ * function determines if an event is one of such.
+ */
+export function isJSInvocationEvent(event: TraceEventData): boolean {
+  switch (event.name) {
+    case KnownEventName.RunMicrotasks:
+    case KnownEventName.FunctionCall:
+    case KnownEventName.EvaluateScript:
+    case KnownEventName.EvaluateModule:
+    case KnownEventName.EventDispatch:
+    case KnownEventName.V8Execute:
+      return true;
+  }
+  // Also consider any new v8 trace events. (eg 'V8.RunMicrotasks' and 'v8.run')
+  if (event.name.startsWith('v8') || event.name.startsWith('V8')) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame
  * chart, some of them we only use for parsing.

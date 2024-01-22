@@ -599,13 +599,13 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       assertNotNullOrUndefined(cssVarSwatch);
 
       const firstLinkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
-      const insideCssVarSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-css-var-swatch');
+      const insideCssVarSwatch = cssVarSwatch.querySelector('devtools-css-var-swatch');
       const secondLinkSwatch = insideCssVarSwatch?.shadowRoot?.querySelector('devtools-base-link-swatch');
       assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, 'var(--not-existing, var(--a))');
       assert.strictEqual(firstLinkSwatch?.shadowRoot?.textContent, '--not-existing');
-      assert.strictEqual(cssVarSwatch.deepTextContent(), 'var(--not-existing, var(--a))');
+      assert.strictEqual(cssVarSwatch.textContent, 'var(--not-existing, var(--a))');
       assert.strictEqual(secondLinkSwatch?.shadowRoot?.textContent, '--a');
-      assert.strictEqual(insideCssVarSwatch?.deepTextContent(), 'var(--a)');
+      assert.strictEqual(insideCssVarSwatch?.textContent, 'var(--a)');
     });
 
     it('should render a CSSVarSwatch inside CSSVarSwatch for variable usage with calc expression as fallback', () => {
@@ -656,7 +656,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
         assertNotNullOrUndefined(cssVarSwatch);
 
-        const colorSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-color-swatch');
+        const colorSwatch = cssVarSwatch.querySelector('devtools-color-swatch');
         assertNotNullOrUndefined(colorSwatch);
         assert.isTrue(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(colorSwatch) && colorSwatch.getReadonly());
 
@@ -664,7 +664,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
         assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, `var(${varName}, var(--blue))`);
         assert.strictEqual(firstLinkSwatch?.shadowRoot?.textContent, varName);
-        assert.strictEqual(cssVarSwatch.deepTextContent(), `var(${varName}, var(--blue))`);
+        assert.strictEqual(cssVarSwatch.textContent, `var(${varName}, var(--blue))`);
       }
     });
 
@@ -708,7 +708,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
       const linkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
       assert.strictEqual(linkSwatch?.shadowRoot?.textContent, '--test');
-      assert.strictEqual(cssVarSwatch.deepTextContent(), 'var(--test)');
+      assert.strictEqual(cssVarSwatch.textContent, 'var( --test    )');
       assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, 'var( --test    )');
     });
   });

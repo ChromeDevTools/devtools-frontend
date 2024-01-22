@@ -162,14 +162,26 @@ export class VariableRenderer extends VariableMatch {
     const computedValue = variableValue ?? this.fallbackValue();
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    UI.UIUtils.createTextChild(varSwatch, this.text);
     varSwatch.data = {
       computedValue,
       variableName: this.name,
       fromFallback,
-      fallbackHtml: renderedFallback?.nodes ?? [],
+      fallbackText: this.fallback.map(n => context.ast.text(n)).join(' '),
       onLinkActivate: name => this.#handleVarDefinitionActivate(declaration ?? name),
     };
+
+    if (renderedFallback?.nodes.length) {
+      // When slotting someting into the fallback slot, also emit text children so that .textContent produces the
+      // correct var value.
+      varSwatch.appendChild(document.createTextNode(`var(${this.name}`));
+      const span = varSwatch.appendChild(document.createElement('span'));
+      span.appendChild(document.createTextNode(', '));
+      span.slot = 'fallback';
+      renderedFallback.nodes.forEach(n => span.appendChild(n));
+      varSwatch.appendChild(document.createTextNode(')'));
+    } else {
+      UI.UIUtils.createTextChild(varSwatch, this.text);
+    }
 
     if (varSwatch.link) {
       this.#pane.addPopover(
@@ -656,7 +668,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   // TODO(chromium:1504820) Delete once callers are migrated
-  private processVar(text: string, {shouldShowColorSwatch = true}: {shouldShowColorSwatch?: boolean} = {}): Node {
+  private processVar(text: string, {shouldShowColorSwatch = true}: {shouldShowColorSwatch?: boolean} = {}): HTMLElement
+      |Text {
     // The regex that matches to variables in `StylesSidebarPropertyRenderer`
     // uses a lazy match. Because of this, when there are multiple right parantheses inside the
     // var() function, it stops the match. So, for a match like `var(--a, var(--b))`, the text
@@ -672,7 +685,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const {declaration} = this.matchedStylesInternal.computeCSSVariable(this.style, variableName) ?? {};
     const {computedValue, fromFallback} = computedSingleValue;
-    let fallbackHtml: Node[]|null = null;
+    let fallbackHtml: Array<HTMLElement|Text>|null = null;
     if (fromFallback && fallback?.startsWith('var(')) {
       fallbackHtml = [this.processVar(fallback, {shouldShowColorSwatch: false})];
     } else if (fallback) {
@@ -680,12 +693,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {
       computedValue,
       variableName,
       fromFallback,
-      fallbackHtml,
+      fallbackText: fallbackHtml ? fallbackHtml[0].textContent : null,
       onLinkActivate: name => this.handleVarDefinitionActivate(declaration ?? name),
     };
 
@@ -699,6 +711,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             varSwatch.link,
             () => this.getVariablePopoverContents(textContent, computedValueOfLink?.computedValue ?? null));
       }
+    }
+
+    if (fallbackHtml) {
+      // When slotting someting into the fallback slot, also emit text children so that .textContent produces the
+      // correct var value.
+      varSwatch.appendChild(document.createTextNode(`var(${this.name}`));
+      const span = varSwatch.appendChild(document.createElement('span'));
+      span.appendChild(document.createTextNode(', '));
+      span.slot = 'fallback';
+      span.appendChild(fallbackHtml[0]);
+      varSwatch.appendChild(document.createTextNode(')'));
+    } else {
+      UI.UIUtils.createTextChild(varSwatch, text);
     }
 
     if (!computedValue || !Common.Color.parse(computedValue) || !shouldShowColorSwatch) {

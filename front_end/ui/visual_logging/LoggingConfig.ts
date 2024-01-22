@@ -19,7 +19,6 @@ export function getLoggingConfig(element: Element): LoggingConfig {
   return parseJsLog(element.getAttribute(LOGGING_ATTRIBUTE) || '');
 }
 
-// eslint-disable-next-line rulesdir/const_enum
 enum VisualElements {
   TreeItem = 1,
   /* 2 used to be AriaAttributes, but free to grab now */

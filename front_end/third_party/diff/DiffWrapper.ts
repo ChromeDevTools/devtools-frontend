@@ -93,8 +93,6 @@ export const DiffWrapper = {
   },
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Operation {
   Equal = 0,
   Insert = 1,

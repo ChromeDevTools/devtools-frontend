@@ -81,8 +81,7 @@ export interface Project {
   uiSourceCodes(): Iterable<UISourceCode>;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum, @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum projectTypes {
   Debugger = 'debugger',
   Formatter = 'formatter',
@@ -322,8 +321,6 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   UISourceCodeAdded = 'UISourceCodeAdded',
   UISourceCodeRemoved = 'UISourceCodeRemoved',

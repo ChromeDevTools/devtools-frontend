@@ -1094,8 +1094,6 @@ const _defaultColumns = (_temporaryDefaultColumns as any);
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _filmStripDividerColor = '#fccc49';
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 enum WaterfallSortIds {
   StartTime = 'startTime',
   ResponseTime = 'responseReceivedTime',

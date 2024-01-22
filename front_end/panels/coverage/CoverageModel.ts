@@ -22,8 +22,6 @@ export const enum SuspensionState {
   Suspended = 'Suspended',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   CoverageUpdated = 'CoverageUpdated',
   CoverageReset = 'CoverageReset',
@@ -878,8 +876,6 @@ export class SourceURLCoverageInfo extends URLCoverageInfo {
 }
 
 export namespace URLCoverageInfo {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
   export enum Events {
     SizesChanged = 'SizesChanged',
   }

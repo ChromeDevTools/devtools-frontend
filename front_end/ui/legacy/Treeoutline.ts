@@ -49,8 +49,6 @@ import * as Utils from './utils/utils.js';
 
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   ElementAttached = 'ElementAttached',
   ElementsDetached = 'ElementsDetached',

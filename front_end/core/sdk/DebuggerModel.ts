@@ -933,8 +933,6 @@ export const _debuggerIdToModel = new Map<string, DebuggerModel>();
 /**
  * Keep these in sync with WebCore::V8Debugger
  */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum PauseOnExceptionsState {
   DontPauseOnExceptions = 'none',
   PauseOnAllExceptions = 'all',
@@ -942,8 +940,6 @@ export enum PauseOnExceptionsState {
   PauseOnUncaughtExceptions = 'uncaught',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   DebuggerWasEnabled = 'DebuggerWasEnabled',
   DebuggerWasDisabled = 'DebuggerWasDisabled',

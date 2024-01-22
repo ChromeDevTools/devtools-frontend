@@ -468,8 +468,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   DatabaseAdded = 'DatabaseAdded',
   DatabaseRemoved = 'DatabaseRemoved',

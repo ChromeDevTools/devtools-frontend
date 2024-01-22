@@ -949,8 +949,6 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum OriginGroup {
   MainOrigin = 'MainOrigin',
   NonSecure = 'NonSecure',

@@ -748,9 +748,7 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
 // TODO(crbug.com/1228674): Remove this enum, it is only used in web tests.
-// eslint-disable-next-line rulesdir/const_enum
 export enum HeapSnapshotRetainmentDataGridEvents {
   ExpandRetainersComplete = 'ExpandRetainersComplete',
 }

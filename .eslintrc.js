@@ -192,7 +192,6 @@ module.exports = {
        */
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
-      'rulesdir/const_enum': 'error',
       'rulesdir/no_underscored_properties': 'error',
       'rulesdir/prefer_readonly_keyword': 'error',
       'rulesdir/inline_type_imports': 'error',

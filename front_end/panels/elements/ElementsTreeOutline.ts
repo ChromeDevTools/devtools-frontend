@@ -1612,8 +1612,6 @@ export class ElementsTreeOutline extends
 }
 
 export namespace ElementsTreeOutline {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
   export enum Events {
     SelectedNodeChanged = 'SelectedNodeChanged',
     ElementsTreeUpdated = 'ElementsTreeUpdated',

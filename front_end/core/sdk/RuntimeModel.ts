@@ -467,8 +467,6 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const _sideEffectTestExpression: string = '(async function(){ await 1; })()';
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   BindingCalled = 'BindingCalled',
   ExecutionContextCreated = 'ExecutionContextCreated',

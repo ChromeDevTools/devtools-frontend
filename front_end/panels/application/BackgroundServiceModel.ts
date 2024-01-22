@@ -53,8 +53,6 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel<EventTypes> im
 
 SDK.SDKModel.SDKModel.register(BackgroundServiceModel, {capabilities: SDK.Target.Capability.Browser, autostart: false});
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   RecordingStateChanged = 'RecordingStateChanged',
   BackgroundServiceEventReceived = 'BackgroundServiceEventReceived',

@@ -531,8 +531,6 @@ export class UserMetrics {
 // Codes below are used to collect UMA histograms in the Chromium port.
 // Do not change the values below, additional actions are needed on the Chromium side
 // in order to add more codes.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Action {
   WindowDocked = 1,
   WindowUndocked = 2,
@@ -661,8 +659,6 @@ export enum Action {
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum PanelCodes {
   elements = 1,
   resources = 2,
@@ -735,8 +731,6 @@ export enum PanelCodes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum PanelWithLocation {
   'elements-main' = 1,
   'elements-drawer' = 2,
@@ -875,8 +869,6 @@ export enum PanelWithLocation {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum ElementsSidebarTabCodes {
   'OtherSidebarPane' = 0,
   'Styles' = 1,
@@ -892,8 +884,6 @@ export enum ElementsSidebarTabCodes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum SourcesSidebarTabCodes {
   'OtherSidebarPane' = 0,
   'navigator-network' = 1,
@@ -906,8 +896,6 @@ export enum SourcesSidebarTabCodes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum MediaTypes {
   Unknown = 0,
   'text/css' = 2,
@@ -949,8 +937,6 @@ export enum MediaTypes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum KeybindSetSettings {
   'devToolsDefault' = 0,
   'vsCode' = 1,
@@ -959,8 +945,6 @@ export enum KeybindSetSettings {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum KeyboardShortcutAction {
   OtherShortcut = 0,
   'quick-open.show-command-menu' = 1,
@@ -1099,8 +1083,6 @@ export const enum IssueOpener {
  * gaps are expected.
  */
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum DevtoolsExperiments {
   'applyCustomStylesheet' = 0,
   'captureNodeCreationStacks' = 1,
@@ -1193,8 +1175,6 @@ export const enum BreakpointsRestoredFromStorageCount {
 }
 
 // Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum IssueExpanded {
   CrossOriginEmbedderPolicy = 0,
   MixedContent = 1,
@@ -1208,8 +1188,6 @@ export enum IssueExpanded {
   MaxValue = 9,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum IssueResourceOpened {
   CrossOriginEmbedderPolicyRequest = 0,
   CrossOriginEmbedderPolicyElement = 1,
@@ -1231,8 +1209,6 @@ export enum IssueResourceOpened {
  * This list should contain the currently active issue types,
  * gaps are expected.
  */
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum IssueCreated {
   MixedContentIssue = 0,
   'ContentSecurityPolicyIssue::kInlineViolation' = 1,
@@ -1343,8 +1319,6 @@ export const enum DeveloperResourceScheme {
   MaxValue = 9,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum ResourceType {
   /* eslint-disable @typescript-eslint/naming-convention */
   all = 0,
@@ -1363,9 +1337,7 @@ export enum ResourceType {
   MaxValue = 12,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
 /* eslint-disable @typescript-eslint/naming-convention */
-// eslint-disable-next-line rulesdir/const_enum
 export enum NetworkPanelMoreFilters {
   'Hide data URLs' = 0,
   'Hide extension URLs' = 1,
@@ -1398,8 +1370,6 @@ export const enum VMInlineScriptType {
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// TODO(crbug.com/1167717) = Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Language {
   'af' = 1,
   'am' = 2,
@@ -1586,8 +1556,6 @@ export const enum StyleTextCopied {
   MaxValue = 11,
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum ManifestSectionCodes {
   OtherSection = 0,
   'Identity' = 1,

@@ -129,8 +129,6 @@ export function throttlingManager(): CPUThrottlingManager {
   return CPUThrottlingManager.instance();
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum CPUThrottlingRates {
   NoThrottling = 1,
   MidTierMobile = 4,

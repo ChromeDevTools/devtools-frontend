@@ -1019,8 +1019,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   private static readonly v8NativePrefix = 'native ';
 }
 export namespace AggregatedTimelineTreeView {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
   export enum GroupBy {
     None = 'None',
     EventName = 'EventName',

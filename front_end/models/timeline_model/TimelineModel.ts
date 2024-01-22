@@ -1025,8 +1025,6 @@ export class TimelineModelImpl {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum RecordType {
   Task = 'RunTask',
   Program = 'Program',
@@ -1338,8 +1336,6 @@ export class Track {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum TrackType {
   MainThread = 'MainThread',
   Worker = 'Worker',

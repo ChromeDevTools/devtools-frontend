@@ -496,8 +496,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   BreakpointAdded = 'breakpoint-added',
   BreakpointRemoved = 'breakpoint-removed',

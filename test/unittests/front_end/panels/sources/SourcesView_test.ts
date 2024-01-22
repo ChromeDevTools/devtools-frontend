@@ -184,4 +184,17 @@ describeWithMockConnection('SourcesView', () => {
     const removedURLs = removeUISourceCodesSpy.args.map(args => args[0][0].url());
     assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
   });
+
+  it('doesn\'t remove non-network UISourceCodes when changing the scope target', () => {
+    createFileSystemUISourceCode({
+      url: 'snippet:///foo.js' as Platform.DevToolsPath.UrlString,
+      mimeType: 'application/javascript',
+      type: 'snippets',
+    });
+
+    const sourcesView = new Sources.SourcesView.SourcesView();
+    const removeUISourceCodesSpy = sinon.spy(sourcesView.editorContainer, 'removeUISourceCodes');
+    target2.targetManager().setScopeTarget(target2);
+    assert.isTrue(removeUISourceCodesSpy.notCalled);
+  });
 });

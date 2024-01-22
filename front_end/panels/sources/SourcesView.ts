@@ -289,6 +289,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   #onScopeChange(): void {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     for (const uiSourceCode of workspace.uiSourceCodes()) {
+      if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network) {
+        continue;
+      }
       const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
       if (SDK.TargetManager.TargetManager.instance().isInScope(target)) {
         this.addUISourceCode(uiSourceCode);
@@ -304,17 +307,23 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    if (uiSourceCode.project().isServiceProject()) {
+    const project = uiSourceCode.project();
+    if (project.isServiceProject()) {
       return;
     }
-    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(uiSourceCode.project()) ===
-            'overrides') {
-      return;
-    }
-    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
-    if (!SDK.TargetManager.TargetManager.instance().isInScope(target)) {
-      return;
+    switch (project.type()) {
+      case Workspace.Workspace.projectTypes.FileSystem: {
+        if (Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'overrides') {
+          return;
+        }
+        break;
+      }
+      case Workspace.Workspace.projectTypes.Network: {
+        const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+        if (!SDK.TargetManager.TargetManager.instance().isInScope(target)) {
+          return;
+        }
+      }
     }
     this.editorContainer.addUISourceCode(uiSourceCode);
   }

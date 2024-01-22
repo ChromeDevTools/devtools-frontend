@@ -113,7 +113,8 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     // Details of additional bids can't be looked up like regular bids,
     // they are ephemeral to the auction.
     if (eventType !== Protocol.Storage.InterestGroupAccessType.AdditionalBid &&
-        eventType !== Protocol.Storage.InterestGroupAccessType.AdditionalBidWin) {
+        eventType !== Protocol.Storage.InterestGroupAccessType.AdditionalBidWin &&
+        eventType !== Protocol.Storage.InterestGroupAccessType.TopLevelAdditionalBid) {
       details = await this.detailsGetter.getInterestGroupDetails(ownerOrigin, name);
     }
     if (details) {

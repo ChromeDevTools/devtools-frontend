@@ -99,32 +99,38 @@ describeWithMockConnection('InterestGroupStorageView', () => {
         assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
       });
 
-  it('Clears sidebarWidget upon receiving cellFocusedEvent on an additionalBid event', async function() {
+  it('Clears sidebarWidget upon receiving cellFocusedEvent on an additionalBid-type events', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
     }
 
-    const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
-    events.forEach(event => {
-      view.addEvent(event);
-    });
-    const grid = view.getInterestGroupGridForTesting();
-    const cells = [
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.AdditionalBid},
-      {columnId: 'event-group-owner', value: 'https://owner1.com'},
-      {columnId: 'event-group-name', value: 'cars'},
-    ];
-    const sideBarUpdateDone = new Promise<void>(resolve => {
-      sinon.stub(view, 'sidebarUpdatedForTesting').callsFake(resolve);
-    });
-    const spy = sinon.spy(view, 'setSidebarWidget');
-    assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
-    await sideBarUpdateDone;
-    assert.isTrue(spy.calledOnce);
-    assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
-    assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('No details'));
+    for (const eventType
+             of [Protocol.Storage.InterestGroupAccessType.AdditionalBid,
+                 Protocol.Storage.InterestGroupAccessType.AdditionalBidWin,
+                 Protocol.Storage.InterestGroupAccessType.TopLevelAdditionalBid]) {
+      const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
+      events.forEach(event => {
+        view.addEvent(event);
+      });
+      const grid = view.getInterestGroupGridForTesting();
+      const cells = [
+        {columnId: 'event-time', value: 0},
+        {columnId: 'event-type', value: eventType},
+        {columnId: 'event-group-owner', value: 'https://owner1.com'},
+        {columnId: 'event-group-name', value: 'cars'},
+      ];
+      const sideBarUpdateDone = new Promise<void>(resolve => {
+        sinon.stub(view, 'sidebarUpdatedForTesting').callsFake(resolve);
+      });
+      const spy = sinon.spy(view, 'setSidebarWidget');
+      assert.isTrue(spy.notCalled);
+      grid.dispatchEvent(
+          new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+      await sideBarUpdateDone;
+      assert.isTrue(spy.calledOnce);
+      assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
+      assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('No details'));
+    }
   });
 
   // Disabled due to flakiness

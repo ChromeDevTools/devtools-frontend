@@ -539,7 +539,8 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatch events when a "Learn More" link is clicked', async () => {
+  // TODO(crbug/1520446): Flaky timeouts
+  it.skipOnPlatforms(['mac'], '[crbug.com/1520446] Learn More" link is clicked', async () => {
     const {browser} = getBrowserAndPages();
 
     await goToResource('elements/element-reveal-inline-issue.html');

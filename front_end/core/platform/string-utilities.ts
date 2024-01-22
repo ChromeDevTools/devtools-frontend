@@ -540,3 +540,16 @@ export const stringifyWithPrecision = function stringifyWithPrecision(s: number,
   const string = s.toFixed(precision).replace(/\.?0*$/, '');
   return string === '-0' ? '0' : string;
 };
+
+/**
+ * Somewhat efficiently concatenates 2 base64 encoded strings.
+ */
+export const concatBase64 = function(lhs: string, rhs: string): string {
+  if (lhs.length === 0 || !lhs.endsWith('=')) {
+    // Empty string or no padding, we can straight-up concatenate.
+    return lhs + rhs;
+  }
+  const lhsLeaveAsIs = lhs.substring(0, lhs.length - 4);
+  const lhsToDecode = lhs.substring(lhs.length - 4);
+  return lhsLeaveAsIs + window.btoa(window.atob(lhsToDecode) + window.atob(rhs));
+};

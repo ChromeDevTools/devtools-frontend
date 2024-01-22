@@ -606,4 +606,18 @@ describe('StringUtilities', () => {
       assert.strictEqual('0.686', Platform.StringUtilities.stringifyWithPrecision(0.685733, 3));
     });
   });
+
+  describe('concatBase64', () => {
+    it('correctly concatenates two base64 strings', () => {
+      const str = 'This is a small sample sentence for encoding.';
+      const strAsBase64 = window.btoa(str);
+
+      for (let i = 0; i < str.length; ++i) {
+        const lhs = window.btoa(str.substring(0, i));
+        const rhs = window.btoa(str.substring(i));
+
+        assert.strictEqual(Platform.StringUtilities.concatBase64(lhs, rhs), strAsBase64);
+      }
+    });
+  });
 });

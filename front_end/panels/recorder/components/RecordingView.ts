@@ -641,9 +641,7 @@ export class RecordingView extends HTMLElement {
 
     event.preventDefault();
     await this.#copyCurrentSelection(this.#selectedStep);
-    Host.userMetrics.keyboardShortcutFired(
-        'chrome_recorder.copy-recording-or-step',
-    );
+    Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.CopyRecordingOrStep);
   }
 
   #renderSettings(): LitHtml.TemplateResult {

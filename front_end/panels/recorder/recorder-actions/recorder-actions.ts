@@ -7,4 +7,5 @@ export const enum RecorderActions {
   StartRecording = 'chrome-recorder.start-recording',
   ReplayRecording = 'chrome-recorder.replay-recording',
   ToggleCodeView = 'chrome-recorder.toggle-code-view',
+  CopyRecordingOrStep = 'chrome-recorder.copy-recording-or-step',
 }

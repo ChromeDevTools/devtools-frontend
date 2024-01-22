@@ -1028,6 +1028,10 @@ export class RecorderController extends LitElement {
         return (this.currentPage === Pages.RecordingPage && !this.#replayState.isPlaying);
       case Actions.RecorderActions.ToggleCodeView:
         return this.currentPage === Pages.RecordingPage;
+      case Actions.RecorderActions.CopyRecordingOrStep:
+        // This action is handled in the RecordingView
+        // It relies on browser `copy` event.
+        return false;
     }
   }
 

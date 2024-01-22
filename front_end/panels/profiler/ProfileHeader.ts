@@ -116,7 +116,7 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper<ProfileEvent
     this.nextProfileUidInternal = 1;
 
     if (!window.opener) {
-      window.addEventListener('unload', this.clearTempStorage.bind(this), false);
+      window.addEventListener('pagehide', this.clearTempStorage.bind(this), false);
     }
   }
 

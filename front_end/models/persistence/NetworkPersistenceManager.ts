@@ -931,16 +931,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       responseHeaders = interceptedRequest.responseHeaders || [];
     }
 
-    let mimeType = '';
-    if (interceptedRequest.responseHeaders) {
-      for (const header of interceptedRequest.responseHeaders) {
-        if (header.name.toLowerCase() === 'content-type') {
-          mimeType = header.value;
-          break;
-        }
-      }
-    }
-
+    let {mimeType} = interceptedRequest.getMimeTypeAndCharset();
     if (!mimeType) {
       const expectedResourceType =
           Common.ResourceType.resourceTypes[interceptedRequest.resourceType] || Common.ResourceType.resourceTypes.Other;
@@ -953,18 +944,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (fileSystemUISourceCode) {
       this.originalResponseContentPromises.set(
           fileSystemUISourceCode, interceptedRequest.responseBody().then(response => {
-            if (response.error || response.content === null) {
+            if (SDK.ContentData.ContentData.isError(response) || !response.isTextContent) {
               return null;
             }
-            if (response.encoded) {
-              const text = atob(response.content);
-              const data = new Uint8Array(text.length);
-              for (let i = 0; i < text.length; ++i) {
-                data[i] = text.charCodeAt(i);
-              }
-              return new TextDecoder('utf-8').decode(data);
-            }
-            return response.content;
+            return response.text;
           }));
 
       const project = fileSystemUISourceCode.project() as FileSystem;
@@ -978,9 +961,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
           new Blob([], {type: mimeType}), /* encoded */ true, responseHeaders, /* isBodyOverridden */ false);
     } else {
       const responseBody = await interceptedRequest.responseBody();
-      if (!responseBody.error && responseBody.content) {
+      if (!SDK.ContentData.ContentData.isError(responseBody)) {
+        const content = responseBody.isTextContent ? responseBody.text : responseBody.base64;
         void interceptedRequest.continueRequestWithContent(
-            new Blob([responseBody.content], {type: mimeType}), /* encoded */ true, responseHeaders,
+            new Blob([content], {type: mimeType}), /* encoded */ true, responseHeaders,
             /* isBodyOverridden */ false);
       }
     }

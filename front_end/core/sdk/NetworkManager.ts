@@ -43,9 +43,9 @@ import * as Platform from '../platform/platform.js';
 
 import {ContentData as ContentDataClass, type ContentDataOrError} from './ContentData.js';
 import {Cookie} from './Cookie.js';
+import {parseContentType} from './MimeType.js';
 import {
   type BlockedCookieWithReason,
-  type ContentData,
   Events as NetworkRequestEvents,
   type ExtraRequestInfo,
   type ExtraResponseInfo,
@@ -1733,14 +1733,37 @@ export class InterceptedRequest {
     void this.#fetchAgent.invoke_failRequest({requestId: this.requestId, errorReason});
   }
 
-  async responseBody(): Promise<ContentData> {
+  async responseBody(): Promise<ContentDataOrError> {
     const response = await this.#fetchAgent.invoke_getResponseBody({requestId: this.requestId});
-    const error = response.getError() || null;
-    return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
+    const error = response.getError();
+    if (error) {
+      return {error};
+    }
+
+    const {mimeType, charset} = this.getMimeTypeAndCharset();
+    return new ContentDataClass(
+        response.body, response.base64Encoded, mimeType ?? 'application/octet-stream', charset ?? undefined);
   }
 
   isRedirect(): boolean {
     return this.responseStatusCode !== undefined && this.responseStatusCode >= 300 && this.responseStatusCode < 400;
+  }
+
+  /**
+   * Tries to determine the MIME type and charset for this intercepted request.
+   * Looks at the interecepted response headers first (for Content-Type header), then
+   * checks the `NetworkRequest` if we have one.
+   */
+  getMimeTypeAndCharset(): {mimeType: string|null, charset: string|null} {
+    for (const header of this.responseHeaders ?? []) {
+      if (header.name.toLowerCase() === 'content-type') {
+        return parseContentType(header.value);
+      }
+    }
+
+    const mimeType = this.networkRequest?.mimeType ?? null;
+    const charset = this.networkRequest?.charset() ?? null;
+    return {mimeType, charset};
   }
 }
 

@@ -78,6 +78,11 @@ export class ContentData {
     return isTextType(this.mimeType);
   }
 
+  get isEmpty(): boolean {
+    // Don't trigger unnecessary decoding. Only check if both of the strings are empty.
+    return !Boolean(this.#contentAsBase64) && !Boolean(this.#contentAsText);
+  }
+
   asDataUrl(): string|null {
     // To keep with existing behavior we prefer to return the content
     // encoded if that is how this ContentData was constructed with.

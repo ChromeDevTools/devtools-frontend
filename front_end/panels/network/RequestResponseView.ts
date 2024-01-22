@@ -109,21 +109,17 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   async createPreview(): Promise<UI.Widget.Widget> {
-    const contentData = SDK.ContentData.ContentData.asLegacyContentData(await this.request.contentData());
-    const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
-    if ((!contentData.content || !sourceView) && !contentData.error) {
-      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
-    }
-    if (contentData.content && sourceView) {
-      return sourceView;
-    }
-    if (contentData.error) {
+    const contentData = await this.request.contentData();
+    if (SDK.ContentData.ContentData.isError(contentData)) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }
-    if (this.request.statusCode === 204) {
+
+    const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
+    if (contentData.isEmpty || !sourceView || this.request.statusCode === 204) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
     }
-    return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
+
+    return sourceView;
   }
 
   async revealPosition(position: SourceFrame.SourceFrame.RevealPosition): Promise<void> {

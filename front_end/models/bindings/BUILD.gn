@@ -55,21 +55,18 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/panels/coverage/*",
     "../../../test/unittests/front_end/panels/sources/*",
     "../../../test/unittests/front_end/panels/timeline/*",
+    "../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../entrypoints/main/*",
     "../../legacy_test_runner/*",
     "../../panels/application/*",
     "../../panels/console/*",
     "../../panels/coverage/*",
+    "../../panels/elements/*",
+    "../../panels/emulation/*",
     "../../panels/network/*",
     "../../panels/profiler/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
-    "../persistence/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../../test/unittests/front_end/ui/legacy/components/utils/*",
-    "../../panels/elements/*",
-    "../../panels/emulation/*",
     "../../ui/components/docs/performance_panel/*",
     "../../ui/components/linkifier/*",
     "../../ui/legacy/components/inline_editor/*",
@@ -79,6 +76,7 @@ devtools_entrypoint("bundle") {
     "../extensions/*",
     "../formatter/*",
     "../issues_manager/*",
+    "../persistence/*",
     "../source_map_scopes/*",
   ]
 

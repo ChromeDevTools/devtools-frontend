@@ -42,8 +42,6 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/panels/emulation/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../browser_debugger/*",
     "../elements/*",
   ]

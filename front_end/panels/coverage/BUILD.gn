@@ -50,8 +50,6 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/panels/coverage/*",
     "../../entrypoints/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../sources/*",
     "../timeline/*",
   ]

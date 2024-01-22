@@ -110,8 +110,6 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../panels/explain/*",
     "../../panels/network/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../browser_debugger/*",
   ]
 

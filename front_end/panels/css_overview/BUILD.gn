@@ -59,8 +59,6 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/panels/css_overview/*",
     "../../entrypoints/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../ui/legacy/components/inline_editor/*",
   ]
 

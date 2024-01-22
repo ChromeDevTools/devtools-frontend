@@ -89,8 +89,6 @@ devtools_entrypoint("bundle") {
     "../../../../panels/application/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../components/docs/color_swatch/*",
     "../../../components/text_editor/*",
   ]

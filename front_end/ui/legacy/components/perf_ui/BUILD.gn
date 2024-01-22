@@ -82,10 +82,8 @@ devtools_entrypoint("bundle") {
     "../../../../panels/network/*",
     "../../../../panels/profiler/*",
     "../../../../panels/timeline/*",
-    "../../../components/docs/performance_panel/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../components/docs/perf_piechart/*",
+    "../../../components/docs/performance_panel/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

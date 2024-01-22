@@ -159,20 +159,18 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
-    "../../panels/*",
-    "../../services/window_bounds/*",
-    "../components/docs/performance_panel/*",
-    "./*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../models/autofill_manager:*",
     "../../models/emulation:*",
     "../../models/extensions:*",
     "../../models/persistence:*",
+    "../../panels/*",
+    "../../services/window_bounds/*",
     "../components/data_grid:*",
+    "../components/docs/performance_panel/*",
     "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
+    "./*",
 
     # Required for x-link
     "../components/panel_feedback/*",

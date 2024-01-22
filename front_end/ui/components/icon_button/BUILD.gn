@@ -41,7 +41,6 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../entrypoints/inspector_main/*",
     "../../../entrypoints/main/*",
     "../../legacy/*",

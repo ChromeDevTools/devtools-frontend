@@ -51,15 +51,13 @@ devtools_entrypoint("bundle") {
     "../../../../../test/unittests/front_end/panels/console/*",
     "../../../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../../../entrypoints/*",
-    "../../../../panels/*",
-    "../../../../panels/search/*",
-    "../inline_editor/*",
-    "../object_ui/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../../models/extensions/*",
     "../../../../models/persistence/*",
+    "../../../../panels/*",
+    "../../../../panels/search/*",
     "../../../components/linear_memory_inspector/*",
+    "../inline_editor/*",
+    "../object_ui/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

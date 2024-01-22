@@ -29,10 +29,7 @@ devtools_entrypoint("bundle") {
     ":text_prompt",
   ]
 
-  visibility = [
-    # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../legacy/components/quick_open/*",
-  ]
+  visibility = [ "../../legacy/components/quick_open/*" ]
 
   visibility += default_components_visibility
 }

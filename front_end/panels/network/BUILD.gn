@@ -111,8 +111,6 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/panels/network/*",
     "../../entrypoints/*",
     "../../ui/components/request_link_icon/*",
-
-    # TODO(crbug.com/1202788): Remove invalid dependents
     "../application/*",
   ]
 

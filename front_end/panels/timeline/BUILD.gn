@@ -121,7 +121,15 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "timeline-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../panels/profiler:bundle",
+    "../../ui/legacy:bundle",
+    "./components:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

@@ -71,7 +71,11 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "object_ui-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../../core/sdk:bundle",
+    "../../../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../../../entrypoints/*" ]
 }

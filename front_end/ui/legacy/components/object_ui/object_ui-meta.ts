@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as UI from '../../legacy.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 
 import type * as ObjectUI from './object_ui.js';
 

@@ -73,7 +73,14 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "persistence-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../models/workspace:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

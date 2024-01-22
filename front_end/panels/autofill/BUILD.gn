@@ -44,7 +44,13 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "autofill-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../ui/components/legacy_wrapper:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

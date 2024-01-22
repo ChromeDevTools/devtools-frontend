@@ -57,7 +57,13 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "inspector_main-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [
     "../../../test/unittests/front_end/helpers/*",

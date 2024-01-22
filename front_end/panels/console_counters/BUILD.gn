@@ -47,7 +47,10 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "console_counters-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../ui/legacy:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

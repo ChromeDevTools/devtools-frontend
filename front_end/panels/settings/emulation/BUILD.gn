@@ -43,7 +43,11 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "emulation-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../core/i18n:bundle",
+    "../../../ui/legacy:bundle",
+  ]
 
   visibility = [
     "../*",

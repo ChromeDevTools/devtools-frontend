@@ -126,7 +126,14 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "application-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../ui/legacy:bundle",
+    "./preloading/helper:bundle",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

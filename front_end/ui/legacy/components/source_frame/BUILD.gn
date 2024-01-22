@@ -76,7 +76,11 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "source_frame-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../../core/common:bundle",
+    "../../../../core/i18n:bundle",
+  ]
 
   visibility = [ "../../../../entrypoints/*" ]
 }

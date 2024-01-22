@@ -4,8 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Sources from '../sources/sources.js';
 
 import type * as BrowserDebugger from './browser_debugger.js';
 

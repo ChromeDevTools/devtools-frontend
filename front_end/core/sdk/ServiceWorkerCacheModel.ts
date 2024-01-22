@@ -266,10 +266,16 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     }
   }
 
+  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
+  }
+
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
   indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
+  }
+
+  interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void {
   }
 
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {

@@ -2629,13 +2629,7 @@ export const NativeFunctions = [
   },
   {
     name: 'namedItem',
-    signatures: [['name']],
-    receivers: ['HTMLAllCollection','HTMLCollection','HTMLCollectionOf','HTMLFormControlsCollection','HTMLSelectElement','MimeTypeArray','Plugin','PluginArray']
-  },
-  {
-    name: 'namedItem',
-    signatures: [['?name']],
-    receivers: ['RTCStatsResponse']
+    signatures: [['name']]
   },
   {
     name: 'setCustomValidity',
@@ -3474,7 +3468,7 @@ export const NativeFunctions = [
   },
   {
     name: 'getStats',
-    signatures: [['?selector'],['?callbackOrSelector','?legacySelector']],
+    signatures: [['?selector']],
     receivers: ['RTCPeerConnection']
   },
   {
@@ -3495,7 +3489,7 @@ export const NativeFunctions = [
   },
   {
     name: 'setParameters',
-    signatures: [['parameters']]
+    signatures: [['parameters','?options']]
   },
   {
     name: 'setStreams',
@@ -5398,6 +5392,11 @@ export const NativeFunctions = [
     signatures: [['?dimension']]
   },
   {
+    name: 'toArray',
+    signatures: [['?options']],
+    receivers: ['Observable']
+  },
+  {
     name: 'next',
     signatures: [['...args']],
     receivers: ['Generator','Iterator','AsyncIterator','AsyncGenerator']
@@ -5874,7 +5873,7 @@ export const NativeFunctions = [
   {
     name: '',
     signatures: [['name']],
-    receivers: ['StyleSheetList','WindowProperties','RTCStatsResponse']
+    receivers: ['StyleSheetList','WindowProperties']
   },
   {
     name: '',
@@ -6342,6 +6341,10 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
+    name: 'on',
+    signatures: [['type','?options']]
+  },
+  {
     name: 'Event',
     signatures: [['type','?eventInitDict']]
   },
@@ -6600,10 +6603,6 @@ export const NativeFunctions = [
   {
     name: 'isInputPending',
     signatures: [['?options']]
-  },
-  {
-    name: 'setResizable',
-    signatures: [['resizable']]
   },
   {
     name: 'getComputedAccessibleNode',
@@ -7026,6 +7025,10 @@ export const NativeFunctions = [
     signatures: [['sinkId']]
   },
   {
+    name: 'setResizable',
+    signatures: [['resizable']]
+  },
+  {
     name: 'BackgroundFetchEvent',
     signatures: [['type','init']]
   },
@@ -7161,6 +7164,22 @@ export const NativeFunctions = [
     signatures: [['formattedText','x','y']]
   },
   {
+    name: 'createMesh2DVertexBuffer',
+    signatures: [['buffer']]
+  },
+  {
+    name: 'createMesh2DUVBuffer',
+    signatures: [['buffer']]
+  },
+  {
+    name: 'createMesh2DIndexBuffer',
+    signatures: [['buffer']]
+  },
+  {
+    name: 'drawMesh',
+    signatures: [['vertex_buffer','uv_buffer','index_buffer','image']]
+  },
+  {
     name: 'Path2D',
     signatures: [['?path']]
   },
@@ -7203,6 +7222,10 @@ export const NativeFunctions = [
   {
     name: 'PasswordCredential',
     signatures: [['data'],['form']]
+  },
+  {
+    name: 'parseCreationOptionsFromJSON',
+    signatures: [['options']]
   },
   {
     name: 'registerPaint',
@@ -7345,6 +7368,10 @@ export const NativeFunctions = [
   {
     name: 'format',
     signatures: [['text_runs','?style','?inline_constraint','?block_constraint']]
+  },
+  {
+    name: 'runFuzzer',
+    signatures: [['fuzzer_id','fuzzer_data']]
   },
   {
     name: 'GamepadAxisEvent',
@@ -7559,6 +7586,14 @@ export const NativeFunctions = [
     signatures: [['desc','bufferView']]
   },
   {
+    name: 'argMin',
+    signatures: [['input','?options']]
+  },
+  {
+    name: 'argMax',
+    signatures: [['input','?options']]
+  },
+  {
     name: 'batchNormalization',
     signatures: [['input','mean','variance','?options']]
   },
@@ -7583,7 +7618,15 @@ export const NativeFunctions = [
     signatures: [['a','b']]
   },
   {
+    name: 'greaterOrEqual',
+    signatures: [['a','b']]
+  },
+  {
     name: 'lesser',
+    signatures: [['a','b']]
+  },
+  {
+    name: 'lesserOrEqual',
     signatures: [['a','b']]
   },
   {
@@ -7623,8 +7666,16 @@ export const NativeFunctions = [
     signatures: [['a','b','?options']]
   },
   {
+    name: 'hardSigmoid',
+    signatures: [['?options'],['x','?options']]
+  },
+  {
     name: 'hardSwish',
     signatures: [['?x']]
+  },
+  {
+    name: 'instanceNormalization',
+    signatures: [['input','?options']]
   },
   {
     name: 'matmul',
@@ -7719,6 +7770,10 @@ export const NativeFunctions = [
     signatures: [['?input']]
   },
   {
+    name: 'softplus',
+    signatures: [['?options'],['input','?options']]
+  },
+  {
     name: 'softsign',
     signatures: [['?input']]
   },
@@ -7737,6 +7792,14 @@ export const NativeFunctions = [
   {
     name: 'buildSync',
     signatures: [['outputs']]
+  },
+  {
+    name: 'execute',
+    signatures: [['input']]
+  },
+  {
+    name: 'executeStreaming',
+    signatures: [['input']]
   },
   {
     name: 'getFileSystemAccessTransferToken',
@@ -7861,10 +7924,6 @@ export const NativeFunctions = [
   {
     name: 'RTCIceCandidate',
     signatures: [['?candidateInitDict']]
-  },
-  {
-    name: 'stat',
-    signatures: [['name']]
   },
   {
     name: 'RTCPeerConnectionIceErrorEvent',

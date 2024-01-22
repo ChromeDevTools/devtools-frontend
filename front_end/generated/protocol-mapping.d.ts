@@ -472,9 +472,15 @@ export namespace ProtocolMapping {
      */
     'Storage.indexedDBListUpdated': [Protocol.Storage.IndexedDBListUpdatedEvent];
     /**
-     * One of the interest groups was accessed by the associated page.
+     * One of the interest groups was accessed. Note that these events are global
+     * to all targets sharing an interest group store.
      */
     'Storage.interestGroupAccessed': [Protocol.Storage.InterestGroupAccessedEvent];
+    /**
+     * An auction involving interest groups is taking place. These events are
+     * target-specific.
+     */
+    'Storage.interestGroupAuctionEventOccurred': [Protocol.Storage.InterestGroupAuctionEventOccurredEvent];
     /**
      * Shared storage was accessed by the associated page.
      * The following parameters are included in all events.
@@ -482,11 +488,8 @@ export namespace ProtocolMapping {
     'Storage.sharedStorageAccessed': [Protocol.Storage.SharedStorageAccessedEvent];
     'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
-    /**
-     * TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
-     * trigger registration.
-     */
     'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
+    'Storage.attributionReportingTriggerRegistered': [Protocol.Storage.AttributionReportingTriggerRegisteredEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -3720,6 +3723,13 @@ export namespace ProtocolMapping {
      */
     'Storage.setInterestGroupTracking': {
       paramsType: [Protocol.Storage.SetInterestGroupTrackingRequest];
+      returnType: void;
+    };
+    /**
+     * Enables/Disables issuing of interestGroupAuctionEvent events.
+     */
+    'Storage.setInterestGroupAuctionTracking': {
+      paramsType: [Protocol.Storage.SetInterestGroupAuctionTrackingRequest];
       returnType: void;
     };
     /**

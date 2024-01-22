@@ -443,6 +443,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
           Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
     }
   }
+  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
+  }
 
   cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
   }
@@ -451,6 +453,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
+  }
+
+  interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void {
   }
 
   sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {

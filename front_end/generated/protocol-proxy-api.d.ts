@@ -3079,6 +3079,11 @@ declare namespace ProtocolProxyApi {
     invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Enables/Disables issuing of interestGroupAuctionEvent events.
+     */
+    invoke_setInterestGroupAuctionTracking(params: Protocol.Storage.SetInterestGroupAuctionTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Gets metadata for an origin's shared storage.
      */
     invoke_getSharedStorageMetadata(params: Protocol.Storage.GetSharedStorageMetadataRequest): Promise<Protocol.Storage.GetSharedStorageMetadataResponse>;
@@ -3161,9 +3166,16 @@ declare namespace ProtocolProxyApi {
     indexedDBListUpdated(params: Protocol.Storage.IndexedDBListUpdatedEvent): void;
 
     /**
-     * One of the interest groups was accessed by the associated page.
+     * One of the interest groups was accessed. Note that these events are global
+     * to all targets sharing an interest group store.
      */
     interestGroupAccessed(params: Protocol.Storage.InterestGroupAccessedEvent): void;
+
+    /**
+     * An auction involving interest groups is taking place. These events are
+     * target-specific.
+     */
+    interestGroupAuctionEventOccurred(params: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void;
 
     /**
      * Shared storage was accessed by the associated page.
@@ -3175,11 +3187,9 @@ declare namespace ProtocolProxyApi {
 
     storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
 
-    /**
-     * TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
-     * trigger registration.
-     */
     attributionReportingSourceRegistered(params: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
+
+    attributionReportingTriggerRegistered(params: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
 
   }
 

@@ -207,6 +207,9 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
     this.dispatchEventToListeners(Events.SharedStorageAccess, event);
   }
 
+  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
+  }
+
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
@@ -220,6 +223,9 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
   }
 
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
+  }
+
+  interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void {
   }
 
   storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {

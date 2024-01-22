@@ -40,8 +40,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/Issue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum IssueCategory {
+export const enum IssueCategory {
   CrossOriginEmbedderPolicy = 'CrossOriginEmbedderPolicy',
   Generic = 'Generic',
   MixedContent = 'MixedContent',
@@ -55,8 +54,7 @@ export enum IssueCategory {
   Other = 'Other',
 }
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum IssueKind {
+export const enum IssueKind {
   /**
    * Something is not working in the page right now. Issues of this kind need
    * usually be fixed right away. They usually indicate that a Web API is being

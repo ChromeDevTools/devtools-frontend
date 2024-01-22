@@ -22,9 +22,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum IssueCode {
+export const enum IssueCode {
   InsecurePrivateNetwork = 'CorsIssue::InsecurePrivateNetwork',
   InvalidHeaderValues = 'CorsIssue::InvalidHeaders',
   WildcardOriginNotAllowed = 'CorsIssue::WildcardOriginWithCredentials',

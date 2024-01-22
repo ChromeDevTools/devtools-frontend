@@ -309,9 +309,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   // RequestSelected might fire twice for the same "activation"
   RequestSelected = 'RequestSelected',
   RequestActivated = 'RequestActivated',

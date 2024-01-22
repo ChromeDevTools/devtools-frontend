@@ -355,9 +355,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
 export const TransferChunkLengthBytes = 5000000;
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum State {
+export const enum State {
   Initial = 'Initial',
   LookingForEvents = 'LookingForEvents',
   ReadingEvents = 'ReadingEvents',

@@ -82,9 +82,7 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
 }
 
 export namespace DOMStorage {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
+  export const enum Events {
     DOMStorageItemsCleared = 'DOMStorageItemsCleared',
     DOMStorageItemRemoved = 'DOMStorageItemRemoved',
     DOMStorageItemAdded = 'DOMStorageItemAdded',
@@ -260,9 +258,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
 SDK.SDKModel.SDKModel.register(DOMStorageModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   DOMStorageAdded = 'DOMStorageAdded',
   DOMStorageRemoved = 'DOMStorageRemoved',
 }

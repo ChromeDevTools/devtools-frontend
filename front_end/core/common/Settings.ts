@@ -1248,9 +1248,7 @@ export class VersionController {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SettingStorageType {
+export const enum SettingStorageType {
   /**
    * Synced storage persists settings with the active Chrome profile but also
    * syncs the settings across devices via Chrome Sync.

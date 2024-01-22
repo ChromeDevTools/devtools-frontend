@@ -141,9 +141,7 @@ export function sortAndMergeRanges(locationRanges: Protocol.Debugger.LocationRan
   return merged;
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum StepMode {
+export const enum StepMode {
   StepInto = 'StepInto',
   StepOut = 'StepOut',
   StepOver = 'StepOver',

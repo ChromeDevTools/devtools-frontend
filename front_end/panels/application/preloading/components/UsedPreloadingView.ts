@@ -127,9 +127,7 @@ export interface UsedPreloadingViewData {
   currentAttempts: SDK.PreloadingModel.PreloadingAttempt[];
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum UsedKind {
+export const enum UsedKind {
   DowngradedPrerenderToPrefetchAndUsed = 'DowngradedPrerenderToPrefetchAndUsed',
   PrefetchUsed = 'PrefetchUsed',
   PrerenderUsed = 'PrerenderUsed',

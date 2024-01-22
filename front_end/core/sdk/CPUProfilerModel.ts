@@ -161,9 +161,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   ConsoleProfileStarted = 'ConsoleProfileStarted',
   ConsoleProfileFinished = 'ConsoleProfileFinished',
 }

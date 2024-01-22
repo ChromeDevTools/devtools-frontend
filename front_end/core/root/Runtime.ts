@@ -271,9 +271,7 @@ export class Experiment {
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ExperimentName {
+export const enum ExperimentName {
   CAPTURE_NODE_CREATION_STACKS = 'captureNodeCreationStacks',
   CSS_OVERVIEW = 'cssOverview',
   LIVE_HEAP_PROFILE = 'liveHeapProfile',
@@ -302,9 +300,7 @@ export enum ExperimentName {
   CONSOLE_INSIGHTS = 'consoleInsights',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ConditionName {
+export const enum ConditionName {
   CAN_DOCK = 'can_dock',
   NOT_SOURCES_HIDE_ADD_FOLDER = '!sources.hide_add_folder',
 }

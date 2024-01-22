@@ -319,9 +319,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   entryTitle(entryIndex: number): string|null {
-    const entryTypes = EntryType;
     const entryType = this.entryType(entryIndex);
-    if (entryType === entryTypes.Event) {
+    if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_INTO ||
           event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST) {
@@ -332,10 +331,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       return TimelineUIUtils.eventTitle(event);
     }
-    if (entryType === entryTypes.Screenshot) {
+    if (entryType === EntryType.Screenshot) {
       return '';
     }
-    if (entryType === entryTypes.TrackAppender) {
+    if (entryType === EntryType.TrackAppender) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
@@ -976,9 +975,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return '';
     }
 
-    const entryTypes = EntryType;
     const entryType = this.entryType(entryIndex);
-    if (entryType === entryTypes.Event) {
+    if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       if (this.legacyTimelineModel.isGenericTrace()) {
         return this.genericTraceEventColor(event);
@@ -992,10 +990,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const category = TimelineUIUtils.eventStyle(event).category;
       return patchColorAndCache(this.asyncColorByCategory, category, () => category.getComputedColorValue());
     }
-    if (entryType === entryTypes.Frame) {
+    if (entryType === EntryType.Frame) {
       return 'white';
     }
-    if (entryType === entryTypes.TrackAppender) {
+    if (entryType === EntryType.TrackAppender) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
@@ -1247,16 +1245,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   forceDecoration(entryIndex: number): boolean {
-    const entryTypes = EntryType;
     const entryType = this.entryType(entryIndex);
-    if (entryType === entryTypes.Frame) {
+    if (entryType === EntryType.Frame) {
       return true;
     }
-    if (entryType === entryTypes.Screenshot) {
+    if (entryType === EntryType.Screenshot) {
       return true;
     }
 
-    if (entryType === entryTypes.Event) {
+    if (entryType === EntryType.Event) {
       // TODO: this entryType can no longer exist as all tracks are now
       // migrated to appenders. This can be removed as part of the old engine
       // removal.
@@ -1465,9 +1462,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
 export const InstantEventVisibleDurationMs = 0.001;
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   DataChanged = 'DataChanged',
 }
 
@@ -1482,9 +1477,7 @@ export type EventTypes = {
 // In the future we won't have this checks: instead we will forward
 // the event to the corresponding "track appender" and it will determine
 // how the event shall be rendered.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum EntryType {
+export const enum EntryType {
   Frame = 'Frame',
   Event = 'Event',
   TrackAppender = 'TrackAppender',

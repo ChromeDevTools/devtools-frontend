@@ -50,9 +50,7 @@ export class SharedStorageForOrigin extends Common.ObjectWrapper.ObjectWrapper<S
 }
 
 export namespace SharedStorageForOrigin {
-  // TODO(crbug.com/1167717): Make this a const enum.
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
+  export const enum Events {
     SharedStorageChanged = 'SharedStorageChanged',
   }
 
@@ -236,8 +234,7 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
 SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   SharedStorageAccess = 'SharedStorageAccess',
   SharedStorageAdded = 'SharedStorageAdded',
   SharedStorageRemoved = 'SharedStorageRemoved',

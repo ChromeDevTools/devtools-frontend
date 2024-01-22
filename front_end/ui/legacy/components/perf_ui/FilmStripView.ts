@@ -6,6 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import filmStripViewStyles from './filmStripView.css.legacy.js';
@@ -73,6 +74,8 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.doubleclickToZoomImageClickTo));
     element.createChild('div', 'time').textContent = frameTime;
     element.tabIndex = 0;
+    element.setAttribute(
+        'jslog', `${VisualLogging.preview().track({click: true, dblclick: true}).context('film-strip')}`);
     element.setAttribute('aria-label', i18nString(UIStrings.screenshotForSSelectToView, {PH1: frameTime}));
     UI.ARIAUtils.markAsButton(element);
     const imageElement = (element.createChild('div', 'thumbnail').createChild('img') as HTMLImageElement);

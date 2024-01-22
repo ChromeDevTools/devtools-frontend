@@ -555,6 +555,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     if (toggled && !this.filmStripRecorder) {
       this.filmStripView = new PerfUI.FilmStripView.FilmStripView();
       this.filmStripView.element.classList.add('network-film-strip');
+      this.filmStripView.element.setAttribute('jslog', `${VisualLogging.pane().context('network-film-strip')}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
       this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this.onFilmFrameSelected, this);

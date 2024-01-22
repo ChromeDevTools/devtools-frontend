@@ -1610,7 +1610,7 @@ export const enum DataType {
   Boolean = 'Boolean',
 }
 
-export const ColumnResizePadding = 24;
+export const ColumnResizePadding = 34;
 export const CenterResizerOverBorderAdjustment = 3;
 
 export const enum ResizeMethod {

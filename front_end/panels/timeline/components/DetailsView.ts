@@ -74,8 +74,7 @@ export function buildWarningElementsForEvent(
         TraceEngine.Helpers.Timing.microSecondsToMilliseconds(TraceEngine.Types.Timing.MicroSeconds(event.dur || 0));
     const span = document.createElement('span');
     switch (warning) {
-      case 'FORCED_STYLE':
-      case 'FORCED_LAYOUT': {
+      case 'FORCED_REFLOW': {
         const forcedReflowLink = UI.XLink.XLink.create(
             'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
             i18nString(UIStrings.forcedReflow), undefined, undefined, 'forced-reflow');

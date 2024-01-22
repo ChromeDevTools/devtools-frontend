@@ -131,7 +131,7 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/f
 
 ### large-recalc-style
 
-Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/forced-layout-main-thread. Has a large recalc style event.
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/forced-layout-main-thread. Has a large recalc style event that isn't forced by JS.
 
 ### two-workers
 

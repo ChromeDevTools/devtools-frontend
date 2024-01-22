@@ -345,9 +345,8 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     // All the warnings that we care about regarding responsiveness and want to represent on the overview.
     const warningsForResponsiveness = new Set<TraceEngine.Handlers.ModelHandlers.Warnings.Warning>([
       'LONG_TASK',
-      'FORCED_STYLE',
+      'FORCED_REFLOW',
       'IDLE_CALLBACK_OVER_TIME',
-      'FORCED_LAYOUT',
     ]);
 
     const allWarningEvents = new Set<TraceEngine.Types.TraceEvents.TraceEventData>();

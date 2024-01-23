@@ -272,24 +272,6 @@ export class UserMetrics {
         EnumeratedHistogram.VMInlineScriptTypeShown, inlineScriptType, VMInlineScriptType.MaxValue);
   }
 
-  linearMemoryInspectorRevealedFrom(linearMemoryInspectorRevealedFrom: LinearMemoryInspectorRevealedFrom): void {
-    if (linearMemoryInspectorRevealedFrom >= LinearMemoryInspectorRevealedFrom.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LinearMemoryInspectorRevealedFrom, linearMemoryInspectorRevealedFrom,
-        LinearMemoryInspectorRevealedFrom.MaxValue);
-  }
-
-  linearMemoryInspectorTarget(linearMemoryInspectorTarget: LinearMemoryInspectorTarget): void {
-    if (linearMemoryInspectorTarget >= LinearMemoryInspectorTarget.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LinearMemoryInspectorTarget, linearMemoryInspectorTarget,
-        LinearMemoryInspectorTarget.MaxValue);
-  }
-
   language(language: Intl.UnicodeBCP47LocaleIdentifier): void {
     const languageCode = Language[language as keyof typeof Language];
     if (languageCode === undefined) {
@@ -1347,21 +1329,6 @@ export enum NetworkPanelMoreFilters {
   MaxValue = 5,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const enum LinearMemoryInspectorRevealedFrom {
-  ContextMenu = 0,
-  MemoryIcon = 1,
-  MaxValue = 2,
-}
-
-export const enum LinearMemoryInspectorTarget {
-  DWARFInspectableAddress = 0,
-  ArrayBuffer = 1,
-  DataView = 2,
-  TypedArray = 3,
-  WebAssemblyMemory = 4,
-  MaxValue = 5,
-}
 
 export const enum VMInlineScriptType {
   MODULE_SCRIPT = 0,

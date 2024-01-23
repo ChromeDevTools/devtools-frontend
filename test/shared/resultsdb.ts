@@ -83,7 +83,7 @@ export function sendTestResult(results: TestResult): void {
 
   // As per ResultSink documentation, this will always be a localhost connection
   // and can be treated as reliable as a local file write.
-  const request = http.request(sinkData.url, postOptions, () => {});
+  const request = http.request(sinkData.url, postOptions);
 
   const data = JSON.stringify({testResults: [results]});
   request.write(data);

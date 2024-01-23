@@ -3,18 +3,19 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
 import type * as puppeteer from 'puppeteer-core';
 
 import {
-  $$,
   $,
+  $$,
   assertNotNullOrUndefined,
+  clickElement,
+  disableExperiment,
+  enableExperiment,
   getBrowserAndPages,
   goToResource,
   step,
   waitFor,
-  clickElement,
   waitForElementsWithTextContent,
   waitForElementWithTextContent,
   waitForFunction,
@@ -24,8 +25,11 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
+  expandFocusedRow,
   findSearchResult,
+  focusTableRow,
   getDataGridRows,
+  getSizesFromSelectedRow,
   navigateToMemoryTab,
   setClassFilter,
   setSearchFilter,
@@ -398,5 +402,54 @@ describe('The Memory Panel', async function() {
           await waitForFunction(async () => element?.evaluate(e => e.querySelector('.devtools-link')?.textContent));
       assert.strictEqual(linkText, entry.link);
     }
+  });
+
+  async function runJSSetTest() {
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('Retainer');
+    await waitForSearchResultNumber(4);
+    await findSearchResult('Retainer()');
+    await focusTableRow('Retainer()');
+    await expandFocusedRow();
+    await focusTableRow('customProperty');
+    const sizesForSet = await getSizesFromSelectedRow();
+    await expandFocusedRow();
+    await focusTableRow('(internal array)[]');
+    const sizesForBackingStorage = await getSizesFromSelectedRow();
+    return {sizesForSet, sizesForBackingStorage};
+  }
+
+  it('Does not include backing store size in the shallow size of a JS Set', async () => {
+    await goToResource('memory/set.html');
+    await disableExperiment('heapSnapshotTreatBackingStoreAsContainingObject');
+    const sizes = await runJSSetTest();
+
+    // The Set object is small, regardless of the contained content.
+    assert.isTrue(sizes.sizesForSet.shallowSize <= 100);
+    // The Set retains its backing storage.
+    assert.isTrue(
+        sizes.sizesForSet.retainedSize >= sizes.sizesForSet.shallowSize + sizes.sizesForBackingStorage.retainedSize);
+    // The backing storage contains 100 items, which occupy at least one pointer per item.
+    assert.isTrue(sizes.sizesForBackingStorage.shallowSize >= 400);
+    // The backing storage retains 100 strings, which occupy at least 16 bytes each.
+    assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= sizes.sizesForBackingStorage.shallowSize + 1600);
+  });
+
+  it('Includes backing store size in the shallow size of a JS Set', async () => {
+    await goToResource('memory/set.html');
+    await enableExperiment('heapSnapshotTreatBackingStoreAsContainingObject');
+    const sizes = await runJSSetTest();
+
+    // The Set is reported as containing at least 100 pointers.
+    assert.isTrue(sizes.sizesForSet.shallowSize >= 400);
+    // The Set retains its backing storage.
+    assert.isTrue(
+        sizes.sizesForSet.retainedSize >= sizes.sizesForSet.shallowSize + sizes.sizesForBackingStorage.retainedSize);
+    // The backing storage is reported as zero size.
+    assert.strictEqual(sizes.sizesForBackingStorage.shallowSize, 0);
+    // The backing storage retains 100 strings, which occupy at least 16 bytes each.
+    assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= 1600);
   });
 });

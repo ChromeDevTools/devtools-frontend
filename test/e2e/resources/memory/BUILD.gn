@@ -15,5 +15,6 @@ copy_to_gen("memory") {
     "dom-objects.html",
     "event-listeners.html",
     "multiple-retainers.html",
+    "set.html",
   ]
 }

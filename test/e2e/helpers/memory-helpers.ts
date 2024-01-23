@@ -282,3 +282,29 @@ export async function changeAllocationSampleViewViaDropdown(newPerspective: stri
   }
   await dropdown.select(optionValue);
 }
+
+export async function focusTableRow(text: string) {
+  const row = await waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+  // Click in a numeric cell, to avoid accidentally clicking a link.
+  const cell = await waitFor('.numeric-column', row);
+  await clickElement(cell);
+}
+
+export async function expandFocusedRow() {
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.press('ArrowRight');
+  await waitFor('.selected.data-grid-data-grid-node.expanded');
+}
+
+export async function getSizesFromSelectedRow() {
+  const row = await waitFor('.selected.data-grid-data-grid-node');
+  const numericData = await $$('.numeric-column>.profile-multiple-values>span', row);
+  assert.strictEqual(numericData.length, 4);
+  function readNumber(e: Element) {
+    return parseInt((e.textContent as string).replaceAll('\xa0', ''), 10);
+  }
+  const shallowSize = await numericData[0].evaluate(readNumber);
+  const retainedSize = await numericData[2].evaluate(readNumber);
+  assert.isTrue(retainedSize >= shallowSize);
+  return {shallowSize, retainedSize};
+}

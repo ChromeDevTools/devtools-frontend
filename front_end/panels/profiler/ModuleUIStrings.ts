@@ -35,6 +35,10 @@ export const UIStrings = {
   /**
    *@description Text to indicate the status of a heap snapshot in the Performance Pane
    */
+  calculatingShallowSizes: 'Calculating shallow sizes…',
+  /**
+   *@description Text to indicate the status of a heap snapshot in the Performance Pane
+   */
   calculatingRetainedSizes: 'Calculating retained sizes…',
   /**
    *@description Text to indicate the status of a heap snapshot in the Performance Pane

@@ -29,6 +29,7 @@
  */
 
 import * as Platfrom from '../../core/platform/platform.js';
+import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {type HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, type Profile} from './HeapSnapshot.js';
@@ -75,11 +76,11 @@ export class HeapSnapshotLoader {
     }
   }
 
-  buildSnapshot(): JSHeapSnapshot {
+  buildSnapshot(options: HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotOptions): JSHeapSnapshot {
     this.#snapshot = this.#snapshot || {};
 
     this.#progress.updateStatus('Processing snapshot…');
-    const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress);
+    const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress, options);
     this.#reset();
     return result;
   }

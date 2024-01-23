@@ -1838,7 +1838,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-token-subtle');
-    context.beginPath();
     this.forEachGroupInViewport((offset, index, group) => {
       if (this.isGroupCollapsible(index)) {
         drawExpansionArrow.call(
@@ -1846,7 +1845,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             offset + group.style.height - this.textBaseline - this.arrowSide / 2, Boolean(group.expanded));
       }
     });
-    context.fill();
 
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-outline');
     context.beginPath();
@@ -1875,11 +1873,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const arrowHeight = this.arrowSide * Math.sqrt(3) / 2;
       const arrowCenterOffset = Math.round(arrowHeight / 2);
       context.save();
+      context.beginPath();
       context.translate(x, y);
       context.rotate(expanded ? Math.PI / 2 : 0);
       context.moveTo(-arrowCenterOffset, -this.arrowSide / 2);
       context.lineTo(-arrowCenterOffset, this.arrowSide / 2);
       context.lineTo(arrowHeight - arrowCenterOffset, 0);
+      context.fill();
       context.restore();
     }
   }

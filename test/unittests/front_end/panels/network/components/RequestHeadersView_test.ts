@@ -474,6 +474,7 @@ describeWithEnvironment('RequestHeadersView\'s Category', () => {
     component.data = {
       name: 'general',
       title: 'General' as Common.UIString.LocalizedString,
+      loggingContext: 'details-general',
     };
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();
@@ -508,6 +509,7 @@ describeWithEnvironment('RequestHeadersView\'s Category', () => {
       title: 'Response Headers' as Common.UIString.LocalizedString,
       headerCount: 3,
       checked: false,
+      loggingContext: 'details-response-headers',
     };
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();

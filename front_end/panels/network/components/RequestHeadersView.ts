@@ -222,6 +222,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
           additionalContent: this.#renderHeaderOverridesLink(),
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response,
+          loggingContext: 'details-response-headers',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.responseHeaders)}
       >
@@ -325,6 +326,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           headerCount: this.#request.requestHeaders().length,
           checked: requestHeadersText? this.#showRequestHeadersText : undefined,
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request,
+          loggingContext: 'details-request-headers',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.requestHeaders)}
       >
@@ -431,6 +433,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           name: 'general',
           title: i18nString(UIStrings.general),
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.General,
+          loggingContext: 'details-general',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.general)}
       >
@@ -474,6 +477,7 @@ export interface CategoryData {
   checked?: boolean;
   additionalContent?: LitHtml.LitTemplate;
   forceOpen?: boolean;
+  loggingContext: string;
 }
 
 export class Category extends HTMLElement {
@@ -485,6 +489,7 @@ export class Category extends HTMLElement {
   #checked: boolean|undefined = undefined;
   #additionalContent: LitHtml.LitTemplate|undefined = undefined;
   #forceOpen: boolean|undefined = undefined;
+  #loggingContext = '';
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles, Input.checkboxStyles];
@@ -498,6 +503,7 @@ export class Category extends HTMLElement {
     this.#checked = data.checked;
     this.#additionalContent = data.additionalContent;
     this.#forceOpen = data.forceOpen;
+    this.#loggingContext = data.loggingContext;
     this.#render();
   }
 
@@ -511,7 +517,11 @@ export class Category extends HTMLElement {
     // clang-format off
     render(html`
       <details ?open=${isOpen} @toggle=${this.#onToggle}>
-        <summary class="header" @keydown=${this.#onSummaryKeyDown}>
+        <summary
+          class="header"
+          @keydown=${this.#onSummaryKeyDown}
+          jslog=${VisualLogging.action().track({click: true}).context(this.#loggingContext)}
+        >
           <div class="header-grid-container">
             <div>
               ${this.#title}${this.#headerCount !== undefined ?

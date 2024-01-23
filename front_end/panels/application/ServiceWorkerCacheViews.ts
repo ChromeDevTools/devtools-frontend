@@ -194,34 +194,33 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
-    const k = Platform.StringUtilities.kebab;
     const columns = ([
-      {id: k('number'), title: '#', sortable: false, width: '3px'},
-      {id: k('name'), title: i18nString(UIStrings.name), weight: 4, sortable: true},
+      {id: 'number', title: '#', sortable: false, width: '3px'},
+      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
       {
-        id: k('response-type'),
+        id: 'response-type',
         title: i18n.i18n.lockedString('Response-Type'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: k('content-type'), title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
+      {id: 'content-type', title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
       {
-        id: k('content-length'),
+        id: 'content-length',
         title: i18n.i18n.lockedString('Content-Length'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
       {
-        id: k('response-time'),
+        id: 'response-time',
         title: i18nString(UIStrings.timeCached),
         width: '12em',
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true,
       },
-      {id: k('vary-header'), title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
+      {id: 'vary-header', title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),

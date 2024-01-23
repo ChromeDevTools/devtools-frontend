@@ -77,13 +77,12 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.isVisibleFilter = isVisibleFilter;
     this.highlightRegExp = null;
 
-    const k = Platform.StringUtilities.kebab;
     const columns = [
-      {id: k('status'), title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},
-      {id: k('url'), title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
-      {id: k('initiator'), title: i18nString(UIStrings.initiator), width: '80px', fixedWidth: false, sortable: true},
+      {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},
+      {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
+      {id: 'initiator', title: i18nString(UIStrings.initiator), width: '80px', fixedWidth: false, sortable: true},
       {
-        id: k('size'),
+        id: 'size',
         title: i18nString(UIStrings.totalBytes),
         width: '80px',
         fixedWidth: true,
@@ -91,13 +90,13 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         align: DataGrid.DataGrid.Align.Right,
       },
       {
-        id: k('error-message'),
+        id: 'error-message',
         title: i18nString(UIStrings.error),
         width: '200px',
         fixedWidth: false,
         sortable: true,
       },
-    ];
+    ] as DataGrid.DataGrid.ColumnDescriptor[];
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.developerResources),
       columns,

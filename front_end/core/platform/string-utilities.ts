@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Brand} from './brand.js';
-
 export const escapeCharacters = (inputString: string, charsToEscape: string): string => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
@@ -264,20 +262,6 @@ const EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[
 export const isExtendedKebabCase = (inputStr: string): boolean => {
   return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);
 };
-
-type KebabChar = 'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|
-    'z'|'0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'.'|'-';
-
-type IsKebab<ToProcess extends string, AlreadyProcessed extends string = ''> =
-    ToProcess extends `${infer FirstChar}${infer Rest}` ?
-    IsKebab<Rest, `${AlreadyProcessed}${FirstChar extends KebabChar ? FirstChar : never}`>:
-    AlreadyProcessed;
-
-export type KebabString = Brand<string, 'KebabString'>;
-
-export function kebab<T extends string>(x: T extends IsKebab<T>? T : IsKebab<T>): KebabString {
-  return x as unknown as KebabString;
-}
 
 export const toTitleCase = (inputStr: string): string => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);

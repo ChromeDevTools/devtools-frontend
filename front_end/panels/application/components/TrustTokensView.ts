@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -101,11 +100,10 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return LitHtml.html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
     }
 
-    const k = Platform.StringUtilities.kebab;
     const gridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
-          id: k('issuer'),
+          id: 'issuer',
           title: i18nString(UIStrings.issuer),
           widthWeighting: 10,
           hideable: false,
@@ -113,7 +111,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           sortable: true,
         },
         {
-          id: k('count'),
+          id: 'count',
           title: i18nString(UIStrings.storedTokenCount),
           widthWeighting: 5,
           hideable: false,
@@ -121,7 +119,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           sortable: true,
         },
         {
-          id: k('delete-button'),
+          id: 'delete-button',
           title: '',
           widthWeighting: 1,
           hideable: false,

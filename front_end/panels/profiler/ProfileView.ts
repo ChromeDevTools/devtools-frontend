@@ -135,9 +135,8 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.searchableViewInternal.show(this.element);
 
     const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
-    const k = Platform.StringUtilities.kebab;
     columns.push({
-      id: k('self'),
+      id: 'self',
       title: this.columnHeader('self'),
       width: '120px',
       fixedWidth: true,
@@ -155,7 +154,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
       defaultWeight: undefined,
     });
     columns.push({
-      id: k('total'),
+      id: 'total',
       title: this.columnHeader('total'),
       width: '120px',
       fixedWidth: true,
@@ -173,7 +172,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
       defaultWeight: undefined,
     });
     columns.push({
-      id: k('function'),
+      id: 'function',
       title: i18nString(UIStrings.function),
       disclosure: true,
       sortable: true,

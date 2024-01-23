@@ -29,7 +29,6 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
@@ -326,7 +325,6 @@ export class IDBDataView extends UI.View.SimpleView {
     const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
 
     const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
-    const k = Platform.StringUtilities.kebab;
 
     // Create column defaults so that we avoid repetition below.
     const columnDefaults = {
@@ -347,24 +345,24 @@ export class IDBDataView extends UI.View.SimpleView {
       defaultWeight: undefined,
     };
     columns.push(
-        ({...columnDefaults, id: k('number'), title: '#', sortable: false, width: '50px'} as
+        ({...columnDefaults, id: 'number', title: '#', sortable: false, width: '50px'} as
          DataGrid.DataGrid.ColumnDescriptor));
     columns.push(({
       ...columnDefaults,
-      id: k('key'),
+      id: 'key',
       titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.keyString), keyPath),
       sortable: false,
     } as DataGrid.DataGrid.ColumnDescriptor));
     if (this.isIndex) {
       columns.push(({
         ...columnDefaults,
-        id: k('primary-key'),
+        id: 'primary-key',
         titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.primaryKey), this.objectStore.keyPath),
         sortable: false,
       } as DataGrid.DataGrid.ColumnDescriptor));
     }
     const title = i18nString(UIStrings.valueString);
-    columns.push(({...columnDefaults, id: k('value'), title, sortable: false} as DataGrid.DataGrid.ColumnDescriptor));
+    columns.push(({...columnDefaults, id: 'value', title, sortable: false} as DataGrid.DataGrid.ColumnDescriptor));
 
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.indexedDb),

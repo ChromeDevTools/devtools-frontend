@@ -138,10 +138,9 @@ export class CoverageListView extends UI.Widget.VBox {
     this.isVisibleFilter = isVisibleFilter;
     this.highlightRegExp = null;
 
-    const k = Platform.StringUtilities.kebab;
     const columns = [
       {
-        id: k('url'),
+        id: 'url',
         title: i18nString(UIStrings.url),
         width: '250px',
         weight: 3,
@@ -149,9 +148,9 @@ export class CoverageListView extends UI.Widget.VBox {
         sortable: true,
         disclosure: true,
       },
-      {id: k('type'), title: i18nString(UIStrings.type), width: '45px', weight: 1, fixedWidth: true, sortable: true},
+      {id: 'type', title: i18nString(UIStrings.type), width: '45px', weight: 1, fixedWidth: true, sortable: true},
       {
-        id: k('size'),
+        id: 'size',
         title: i18nString(UIStrings.totalBytes),
         width: '60px',
         fixedWidth: true,
@@ -160,7 +159,7 @@ export class CoverageListView extends UI.Widget.VBox {
         weight: 1,
       },
       {
-        id: k('unused-size'),
+        id: 'unused-size',
         title: i18nString(UIStrings.unusedBytes),
         width: '100px',
         fixedWidth: true,
@@ -170,14 +169,14 @@ export class CoverageListView extends UI.Widget.VBox {
         weight: 1,
       },
       {
-        id: k('bars'),
+        id: 'bars',
         title: i18nString(UIStrings.usageVisualization),
         width: '250px',
         fixedWidth: false,
         sortable: true,
         weight: 1,
       },
-    ];
+    ] as DataGrid.DataGrid.ColumnDescriptor[];
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid<GridNode>({
       displayName: i18nString(UIStrings.codeCoverage),
       columns,

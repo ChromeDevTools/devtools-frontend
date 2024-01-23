@@ -354,15 +354,14 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<EventData> {
-    const k = Platform.StringUtilities.kebab;
     const columns = ([
-      {id: k('id'), title: '#', weight: 1},
-      {id: k('timestamp'), title: i18nString(UIStrings.timestamp), weight: 7},
-      {id: k('event-name'), title: i18nString(UIStrings.event), weight: 8},
-      {id: k('origin'), title: i18nString(UIStrings.origin), weight: 8},
-      {id: k('storage-key'), title: i18nString(UIStrings.storageKey), weight: 8},
-      {id: k('sw-scope'), title: i18nString(UIStrings.swScope), weight: 4},
-      {id: k('instance-id'), title: i18nString(UIStrings.instanceId), weight: 8},
+      {id: 'id', title: '#', weight: 1},
+      {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7},
+      {id: 'event-name', title: i18nString(UIStrings.event), weight: 8},
+      {id: 'origin', title: i18nString(UIStrings.origin), weight: 8},
+      {id: 'storage-key', title: i18nString(UIStrings.storageKey), weight: 8},
+      {id: 'sw-scope', title: i18nString(UIStrings.swScope), weight: 4},
+      {id: 'instance-id', title: i18nString(UIStrings.instanceId), weight: 8},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.backgroundServices),

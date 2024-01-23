@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
@@ -10,14 +9,13 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 
 const component = new DataGrid.DataGridController.DataGridController();
-const k = Platform.StringUtilities.kebab;
 
 const filterParser = new TextUtils.TextUtils.FilterParser(['key', 'value']);
 
 component.data = {
   columns: [
-    {id: k('key'), title: 'Method', sortable: true, widthWeighting: 1, visible: true, hideable: false},
-    {id: k('value'), title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: false},
+    {id: 'key', title: 'Method', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+    {id: 'value', title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: false},
   ],
   rows: [
     {

@@ -217,13 +217,12 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     topToolbar.appendToolbarItem(saveButton);
     this.selector = this.#createTargetSelector();
     this.infoWidget = new InfoWidget();
-    const k = Platform.StringUtilities.kebab;
     const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       paddingRowsCount: 100,
       showScrollbar: true,
       columns: [
         {
-          id: k('type'),
+          id: 'type',
           title: i18nString(UIStrings.type),
           sortable: true,
           widthWeighting: 1,
@@ -234,7 +233,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           },
         },
         {
-          id: k('method'),
+          id: 'method',
           title: i18nString(UIStrings.method),
           sortable: false,
           widthWeighting: 5,
@@ -242,7 +241,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: false,
         },
         {
-          id: k('request'),
+          id: 'request',
           title: i18nString(UIStrings.request),
           sortable: false,
           widthWeighting: 5,
@@ -250,7 +249,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: true,
         },
         {
-          id: k('response'),
+          id: 'response',
           title: i18nString(UIStrings.response),
           sortable: false,
           widthWeighting: 5,
@@ -258,7 +257,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: true,
         },
         {
-          id: k('elapsed-time'),
+          id: 'elapsed-time',
           title: i18nString(UIStrings.elapsedTime),
           sortable: true,
           widthWeighting: 2,
@@ -266,7 +265,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: true,
         },
         {
-          id: k('timestamp'),
+          id: 'timestamp',
           title: i18nString(UIStrings.timestamp),
           sortable: true,
           widthWeighting: 5,
@@ -274,7 +273,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: true,
         },
         {
-          id: k('target'),
+          id: 'target',
           title: i18nString(UIStrings.target),
           sortable: true,
           widthWeighting: 5,
@@ -282,7 +281,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           hideable: true,
         },
         {
-          id: k('session'),
+          id: 'session',
           title: i18nString(UIStrings.session),
           sortable: true,
           widthWeighting: 5,

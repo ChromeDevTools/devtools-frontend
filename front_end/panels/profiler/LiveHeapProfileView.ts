@@ -99,9 +99,8 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   }
 
   createDataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<GridNode> {
-    const k = Platform.StringUtilities.kebab;
     const defaultColumnConfig: DataGrid.DataGrid.ColumnDescriptor = {
-      id: k(''),
+      id: '',
       title: Common.UIString.LocalizedEmptyString,
       width: undefined,
       fixedWidth: true,
@@ -121,7 +120,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const columns = [
       {
         ...defaultColumnConfig,
-        id: k('size'),
+        id: 'size',
         title: i18nString(UIStrings.jsHeap),
         width: '72px',
         fixedWidth: true,
@@ -132,7 +131,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       },
       {
         ...defaultColumnConfig,
-        id: k('isolates'),
+        id: 'isolates',
         title: i18nString(UIStrings.vms),
         width: '40px',
         fixedWidth: true,
@@ -141,13 +140,13 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       },
       {
         ...defaultColumnConfig,
-        id: k('url'),
+        id: 'url',
         title: i18nString(UIStrings.scriptUrl),
         fixedWidth: false,
         sortable: true,
         tooltip: i18nString(UIStrings.urlOfTheScriptSource),
       },
-    ];
+    ] as ({tooltip: Common.UIString.LocalizedString} & DataGrid.DataGrid.ColumnDescriptor)[];
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.heapProfile),
       columns,

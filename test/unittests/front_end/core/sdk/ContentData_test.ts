@@ -63,22 +63,6 @@ describe('ContentData', () => {
     assert.strictEqual(deferredBinaryData.content, 'AQIDBA==');
   });
 
-  it('converts to legacy ContentData', () => {
-    const textContent = new ContentData('a simple text', false, MimeType.HTML);
-    const legacyTextContent = textContent.asLegacyContentData();
-
-    assert.isNull(legacyTextContent.error);
-    assert.isFalse(legacyTextContent.encoded);
-    assert.strictEqual(legacyTextContent.content, 'a simple text');
-
-    const binaryData = new ContentData('AQIDBA==', true, 'application/wasm');
-    const legcayBinaryData = binaryData.asLegacyContentData();
-
-    assert.isNull(legcayBinaryData.error);
-    assert.isTrue(legcayBinaryData.encoded);
-    assert.strictEqual(legcayBinaryData.content, 'AQIDBA==');
-  });
-
   it('converts ContentDataOrError to DeferredContent', () => {
     const textContent: ContentDataOrError = new ContentData('a simple text', false, MimeType.HTML);
     const deferredTextContent = ContentData.asDeferredContent(textContent);
@@ -92,18 +76,5 @@ describe('ContentData', () => {
     // TypeScript somehow doesn't think DeferredContent.error is a thing.
     assert.property(deferedErrorContent, 'error');
     assert.propertyVal(deferedErrorContent, 'error', 'something went wrong');
-  });
-
-  it('converts ContentDataOrError to legacay ContentData', () => {
-    const textContent: ContentDataOrError = new ContentData('a simple text', false, MimeType.HTML);
-    const legacyTextContent = ContentData.asLegacyContentData(textContent);
-
-    assert.isFalse(legacyTextContent.encoded);
-    assert.strictEqual(legacyTextContent.content, 'a simple text');
-
-    const error: ContentDataOrError = {error: 'something went wrong'};
-    const legacyErrorContent = ContentData.asLegacyContentData(error);
-
-    assert.strictEqual(legacyErrorContent.error, 'something went wrong');
   });
 });

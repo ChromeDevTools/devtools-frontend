@@ -106,8 +106,8 @@ export class Writer {
 
     function contentLoaded(entry: EntryDTO, contentDataOrError: SDK.ContentData.ContentDataOrError): void {
       progress.incrementWorked();
-      const contentData = SDK.ContentData.ContentData.asLegacyContentData(contentDataOrError);
-      let encoded: true|boolean = contentData.encoded;
+      const contentData = SDK.ContentData.ContentData.asDeferredContent(contentDataOrError);
+      let encoded: true|boolean = contentData.isEncoded;
       if (contentData.content !== null) {
         let content: string = contentData.content;
         if (content && !encoded && needsEncoding(content)) {

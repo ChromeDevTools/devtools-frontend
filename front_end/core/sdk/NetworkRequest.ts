@@ -1882,12 +1882,6 @@ export interface BlockedCookieWithReason {
   cookie: Cookie;
 }
 
-export interface ContentData {
-  error: string|null;
-  content: string|null;
-  encoded: boolean;
-}
-
 export interface EventSourceMessage {
   time: number;
   eventName: string;

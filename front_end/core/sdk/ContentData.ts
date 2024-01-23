@@ -5,7 +5,6 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {isTextType} from './MimeType.js';
-import {type ContentData as LegacyContentData} from './NetworkRequest.js';
 
 /**
  * This class is a small wrapper around either raw binary or text data.
@@ -105,18 +104,6 @@ export class ContentData {
     return {content: this.text, isEncoded: false};
   }
 
-  /**
-   * @deprecated Used during migration from `NetworkRequest.ContentData` to `ContentData`.
-   */
-  asLegacyContentData(): LegacyContentData {
-    // To keep with existing behavior we prefer to return the content
-    // encoded if that is how this ContentData was constructed with.
-    if (this.#contentAsBase64 !== undefined) {
-      return {error: null, content: this.#contentAsBase64, encoded: true};
-    }
-    return {error: null, content: this.text, encoded: false};
-  }
-
   static isError(contentDataOrError: ContentDataOrError): contentDataOrError is {error: string} {
     return 'error' in contentDataOrError;
   }
@@ -129,16 +116,6 @@ export class ContentData {
       return {error: contentDataOrError.error, content: null, isEncoded: false};
     }
     return contentDataOrError.asDeferedContent();
-  }
-
-  /**
-   * @deprecated Used during migration from `DeferredContent` to `ContentData`.
-   */
-  static asLegacyContentData(contentDataOrError: ContentDataOrError): LegacyContentData {
-    if (ContentData.isError(contentDataOrError)) {
-      return {error: contentDataOrError.error, content: null, encoded: false};
-    }
-    return contentDataOrError.asLegacyContentData();
   }
 }
 

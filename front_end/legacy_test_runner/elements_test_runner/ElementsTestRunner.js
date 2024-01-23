@@ -602,7 +602,7 @@ ElementsTestRunner.showEventListenersWidget = function() {
  * @return {Promise}
  */
 ElementsTestRunner.showComputedStyles = function() {
-  Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('Computed', true);
+  Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('computed', true);
   return ElementsTestRunner.computedStyleWidget().doUpdate();
 };
 

@@ -188,10 +188,6 @@ export class VariableRenderer extends VariableMatch {
           varSwatch.link, () => this.#treeElement.getVariablePopoverContents(this.name, variableValue ?? null));
     }
 
-    const innerSwatches =
-        renderedFallback?.cssControls?.get('color')?.filter(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch);
-    innerSwatches?.forEach(swatch => swatch.setReadonly(true));
-
     if (!computedValue || !Common.Color.parse(computedValue)) {
       return [varSwatch];
     }

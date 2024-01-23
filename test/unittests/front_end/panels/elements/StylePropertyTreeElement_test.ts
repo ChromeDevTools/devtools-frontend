@@ -658,7 +658,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
         const colorSwatch = cssVarSwatch.querySelector('devtools-color-swatch');
         assertNotNullOrUndefined(colorSwatch);
-        assert.isTrue(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(colorSwatch) && colorSwatch.getReadonly());
+        assert.isTrue(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(colorSwatch));
 
         const firstLinkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
 

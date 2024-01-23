@@ -235,6 +235,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.overviewPane.addEventListener(
         PerfUI.TimelineOverviewPane.Events.OverviewPaneWindowChanged, this.onWindowChanged.bind(this));
     this.overviewPane.element.id = 'network-overview-panel';
+    this.overviewPane.element.setAttribute(
+        'jslog', `${VisualLogging.pane().track({click: true, drag: true}).context('network-overview')}`);
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
     this.overviewPlaceholderElement = panel.contentElement.createChild('div');

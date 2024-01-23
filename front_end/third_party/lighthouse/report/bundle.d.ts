@@ -1,4 +1,4 @@
-declare var Y: {
+declare var X: {
     new (e: any, t: any): {
         _document: any;
         _lighthouseChannel: string;
@@ -26,7 +26,7 @@ declare var Y: {
         saveFile(e: any, t: any): void;
     };
 };
-declare var ne: {
+declare var te: {
     new (e: any): {
         _dom: any;
         _opts: {};
@@ -40,7 +40,7 @@ declare var ne: {
         _renderReport(e: any): any;
     };
 };
-declare var re: {
+declare var ne: {
     new (e: any, t?: {}): {
         _dom: any;
         _opts: {};
@@ -111,4 +111,4 @@ declare function Ct(r: any, e: any): {
 };
 declare function zt(r: any, e: any): void;
 declare function Lt(r: any): boolean;
-export { Y as DOM, ne as ReportRenderer, re as ReportUIFeatures, Mt as format, St as renderReport, Ct as swapLocale };
+export { X as DOM, te as ReportRenderer, ne as ReportUIFeatures, Mt as format, St as renderReport, Ct as swapLocale };

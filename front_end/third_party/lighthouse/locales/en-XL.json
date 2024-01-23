@@ -1166,6 +1166,30 @@
   "core/audits/layout-shift-elements.js | title": {
     "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "L̂áŷóût́ ŝh́îf́t̂ śĉór̂é"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "T̂h́êśê ár̂é t̂h́ê ĺâŕĝéŝt́ l̂áŷóût́ ŝh́îf́t̂ś ôb́ŝér̂v́êd́ ôń t̂h́ê ṕâǵê. Éâćĥ t́âb́l̂é ît́êḿ r̂ép̂ŕêśêńt̂ś â śîńĝĺê ĺâýôút̂ śĥíf̂t́, âńd̂ śĥóŵś t̂h́ê él̂ém̂én̂t́ t̂h́ât́ ŝh́îf́t̂éd̂ t́ĥé m̂óŝt́. B̂él̂óŵ éâćĥ ít̂ém̂ ár̂é p̂óŝśîb́l̂é r̂óôt́ ĉáûśêś t̂h́ât́ l̂éd̂ t́ô t́ĥé l̂áŷóût́ ŝh́îf́t̂. Śôḿê óf̂ t́ĥéŝé l̂áŷóût́ ŝh́îf́t̂ś m̂áŷ ńôt́ b̂é îńĉĺûd́êd́ îń t̂h́ê ĆL̂Ś m̂ét̂ŕîć v̂ál̂úê d́ûé t̂ó [ŵín̂d́ôẃîńĝ](https://web.dev/articles/cls#what_is_cls). [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount, plural, =1 {1 l̂áŷóût́ ŝh́îf́t̂ f́ôún̂d́} other {# l̂áŷóût́ ŝh́îf́t̂ś f̂óûńd̂}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Ŵéb̂ f́ôńt̂ ĺôád̂éd̂"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Îńĵéĉt́êd́ îf́r̂ám̂é"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Â ĺât́ê ńêt́ŵór̂ḱ r̂éq̂úêśt̂ ád̂j́ûśt̂éd̂ t́ĥé p̂áĝé l̂áŷóût́"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "M̂éd̂íâ él̂ém̂én̂t́ l̂áĉḱîńĝ án̂ éx̂ṕl̂íĉít̂ śîźê"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
     "message": "Âb́ôv́ê-t́ĥé-f̂ól̂d́ îḿâǵêś t̂h́ât́ âŕê ĺâźîĺŷ ĺôád̂éd̂ ŕêńd̂ér̂ ĺât́êŕ îń t̂h́ê ṕâǵê ĺîf́êćŷćl̂é, ŵh́îćĥ ćâń d̂él̂áŷ t́ĥé l̂ár̂ǵêśt̂ ćôńt̂én̂t́f̂úl̂ ṕâín̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ ôṕt̂ím̂ál̂ ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/articles/lcp-lazy-loading)."
   },
@@ -3373,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "P̂áŝśêd́ âúd̂ít̂ś"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Âĺôńĝśîd́ê [Ćĥŕôḿê’ś ûṕd̂át̂éd̂ Ín̂śt̂ál̂ĺâb́îĺît́ŷ Ćr̂ít̂ér̂íâ](https://developer.chrome.com/blog/update-install-criteria), Ĺîǵĥt́ĥóûśê ẃîĺl̂ b́ê d́êṕr̂éĉát̂ín̂ǵ t̂h́ê ṔŴÁ ĉát̂éĝór̂ý îń â f́ût́ûŕê ŕêĺêáŝé. P̂ĺêáŝé r̂éf̂ér̂ t́ô t́ĥé [ûṕd̂át̂éd̂ ṔŴÁ d̂óĉúm̂én̂t́ât́îón̂](https://developer.chrome.com/docs/devtools/progressive-web-apps/) f́ôŕ f̂út̂úr̂é P̂ẂÂ t́êśt̂ín̂ǵ."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Îńît́îál̂ ṕâǵê ĺôád̂"

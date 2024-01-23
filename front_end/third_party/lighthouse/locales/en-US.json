@@ -1166,6 +1166,30 @@
   "core/audits/layout-shift-elements.js | title": {
     "message": "Avoid large layout shifts"
   },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Layout shift score"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount, plural, =1 {1 layout shift found} other {# layout shifts found}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Web font loaded"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Injected iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "A late network request adjusted the page layout"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Media element lacking an explicit size"
+  },
+  "core/audits/layout-shifts.js | title": {
+    "message": "Avoid large layout shifts"
+  },
   "core/audits/lcp-lazy-loaded.js | description": {
     "message": "Above-the-fold images that are lazily loaded render later in the page lifecycle, which can delay the largest contentful paint. [Learn more about optimal lazy loading](https://web.dev/articles/lcp-lazy-loading)."
   },
@@ -3373,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Passed audits"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Alongside [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse will be deprecating the PWA category in a future release. Please refer to the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for future PWA testing."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Initial page load"

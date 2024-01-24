@@ -93,7 +93,6 @@ describeWithMockConnection('StorageView', () => {
     });
 
     it('also clears cookies on clear', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
       const cookieModel = target.model(SDK.CookieModel.CookieModel)!;
       const clearByOriginSpy = sinon.spy(target.storageAgent(), 'invoke_clearDataForOrigin');
       const cookieClearSpy = sinon.spy(cookieModel, 'clear');

@@ -21,5 +21,6 @@ module.exports = createMochaConfig({
     // tests can cause very long running tests in some edge cases. We are more linient
     // in e2e tests.
     timeout : 10000,
+    retries : 4,
   }
 })

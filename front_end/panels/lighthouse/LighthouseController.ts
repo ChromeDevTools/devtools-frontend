@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
@@ -364,10 +364,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   private async evaluateInspectedURL(): Promise<Platform.DevToolsPath.UrlString> {
-    if (!this.manager) {
-      return Platform.DevToolsPath.EmptyUrlString;
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      throw new Error('Unable to find main target required for Lighthouse');
     }
-    const mainTarget = this.manager.target();
+
     // target.inspectedURL is reliably populated, however it lacks any url #hash
     const inspectedURL = mainTarget.inspectedURL();
 

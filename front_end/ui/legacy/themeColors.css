@@ -291,20 +291,11 @@
 
   /* Surfaces */
 
-  /* Additonal layer of variables to make surface colors work for canvas (e.g. waterfall row in the Network panel)
-  /  since it currently can't make sense of color-mix
-  */
-  --sys-color-surface5-computed: color-mix(in sRGB, var(--ref-palette-primary40) 14%, var(--ref-palette-neutral99));
-  --sys-color-surface4-computed: color-mix(in sRGB, var(--ref-palette-primary40) 12%, var(--ref-palette-neutral99));
-  --sys-color-surface3-computed: color-mix(in sRGB, var(--ref-palette-primary40) 11%, var(--ref-palette-neutral99));
-  --sys-color-surface2-computed: color-mix(in sRGB, var(--ref-palette-primary40) 8%, var(--ref-palette-neutral99));
-  --sys-color-surface1-computed: color-mix(in sRGB, var(--ref-palette-primary40) 5%, var(--ref-palette-neutral99));
-  --sys-color-surface5: var(--sys-color-surface5-computed, rgb(234 240 249 / 100%));
-  --sys-color-surface4: var(--sys-color-surface4-computed, rgb(237 239 246 / 100%));
-  --sys-color-surface3: var(--sys-color-surface3-computed, rgb(238 243 250 / 100%));
-  --sys-color-surface2: var(--sys-color-surface2-computed, rgb(243 246 252 / 100%));
-  --sys-color-surface1: var(--sys-color-surface1-computed, rgb(247 249 253 / 100%));
-
+  --sys-color-surface5: color-mix(in sRGB, var(--ref-palette-primary40) 14%, var(--ref-palette-neutral99));
+  --sys-color-surface4: color-mix(in sRGB, var(--ref-palette-primary40) 12%, var(--ref-palette-neutral99));
+  --sys-color-surface3: color-mix(in sRGB, var(--ref-palette-primary40) 11%, var(--ref-palette-neutral99));
+  --sys-color-surface2: color-mix(in sRGB, var(--ref-palette-primary40) 8%, var(--ref-palette-neutral99));
+  --sys-color-surface1: color-mix(in sRGB, var(--ref-palette-primary40) 5%, var(--ref-palette-neutral99));
   /* Chrome DevTools Design System */
 
   /* Prominent accent colors for icons */
@@ -669,19 +660,11 @@
 
   /* Surfaces */
 
-  /* Additonal layer of variables to make surface colors work for canvas (e.g. waterfall row in the Network panel)
-  /  since it currently can't make sense of color-mix
-  */
-  --sys-color-surface5-computed: color-mix(in sRGB, var(--ref-palette-primary80) 14%, var(--ref-palette-neutral10));
-  --sys-color-surface4-computed: color-mix(in sRGB, var(--ref-palette-primary80) 12%, var(--ref-palette-neutral10));
-  --sys-color-surface3-computed: color-mix(in sRGB, var(--ref-palette-primary80) 11%, var(--ref-palette-neutral10));
-  --sys-color-surface2-computed: color-mix(in sRGB, var(--ref-palette-primary80) 8%, var(--ref-palette-neutral10));
-  --sys-color-surface1-computed: color-mix(in sRGB, var(--ref-palette-primary80) 5%, var(--ref-palette-neutral10));
-  --sys-color-surface5: var(--sys-color-surface5-computed, rgb(56 58 62 / 100%));
-  --sys-color-surface4: var(--sys-color-surface4-computed, rgb(52 54 58 / 100%));
-  --sys-color-surface3: var(--sys-color-surface3-computed, rgb(51 52 56 / 100%));
-  --sys-color-surface2: var(--sys-color-surface2-computed, rgb(45 47 49 / 100%));
-  --sys-color-surface1: var(--sys-color-surface1-computed, rgb(40 41 42 / 100%));
+  --sys-color-surface5: color-mix(in sRGB, var(--ref-palette-primary80) 14%, var(--ref-palette-neutral10));
+  --sys-color-surface4: color-mix(in sRGB, var(--ref-palette-primary80) 12%, var(--ref-palette-neutral10));
+  --sys-color-surface3: color-mix(in sRGB, var(--ref-palette-primary80) 11%, var(--ref-palette-neutral10));
+  --sys-color-surface2: color-mix(in sRGB, var(--ref-palette-primary80) 8%, var(--ref-palette-neutral10));
+  --sys-color-surface1: color-mix(in sRGB, var(--ref-palette-primary80) 5%, var(--ref-palette-neutral10));
 
   /* Chrome DevTools Design System */
 

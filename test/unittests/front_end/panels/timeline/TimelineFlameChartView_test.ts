@@ -280,12 +280,12 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
     flameChartView.getMainFlameChart().onContextMenu(new Event(''));
 
-    assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 2);
+    assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
     assert.strictEqual(
-        flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+        flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
         'Hide function');
     assert.strictEqual(
-        flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+        flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
         'Reset trace');
   });
 
@@ -331,15 +331,15 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
        flameChartView.getMainFlameChart().onContextMenu(new Event(''));
 
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 3);
+       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 3);
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
            'Hide function');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
            'Hide children');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(2)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
            'Reset trace');
      });
 
@@ -384,18 +384,18 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
        flameChartView.getMainFlameChart().onContextMenu(new Event(''));
 
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 4);
+       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 4);
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
            'Hide function');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
            'Hide children');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(2)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
            'Hide repeating children');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(3)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(3)?.buildDescriptor().label,
            'Reset trace');
      });
 
@@ -441,12 +441,12 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
        flameChartView.getMainFlameChart().onContextMenu(new Event(''));
 
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.length, 2);
+       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(0)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
            'Hide children');
        assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.headerSection().items.at(1)?.buildDescriptor().label,
+           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
            'Reset trace');
      });
 });

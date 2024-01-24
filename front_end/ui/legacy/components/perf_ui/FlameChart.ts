@@ -823,29 +823,33 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    this.contextMenu = new UI.ContextMenu.ContextMenu(_event);
+    this.contextMenu = new UI.ContextMenu.ContextMenu(_event, {useSoftMenu: true});
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION]) {
-      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideFunction), () => {
-        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.highlightedEntryIndex);
+      const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
+        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.selectedEntryIndex);
       });
+      item.setShortcut('H');
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
-      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideChildren), () => {
-        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.highlightedEntryIndex);
+      const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideChildren), () => {
+        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
       });
+      item.setShortcut('C');
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
-      this.contextMenu.headerSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
+      const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
         this.modifyTree(
-            TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.highlightedEntryIndex);
+            TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
       });
+      item.setShortcut('R');
     }
 
-    this.contextMenu.headerSection().appendItem(i18nString(UIStrings.resetTrace), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.highlightedEntryIndex);
+    const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetTrace), () => {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
     });
+    item.setShortcut('U');
 
     void this.contextMenu.show();
   }

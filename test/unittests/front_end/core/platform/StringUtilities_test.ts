@@ -620,4 +620,51 @@ describe('StringUtilities', () => {
       }
     });
   });
+
+  describe('toKebabCase', () => {
+    const toKebabCase = Platform.StringUtilities.toKebabCase;
+    it('should convert camelCase to kebab-case', () => {
+      assert.strictEqual(toKebabCase('activeKeybindSet'), 'active-keybind-set');
+    });
+
+    it('should convert PascalCase to kebab-case', () => {
+      assert.strictEqual(toKebabCase('MediaPanelSplitViewState'), 'media-panel-split-view-state');
+    });
+
+    it('should convert snake_case to kebab-case', () => {
+      assert.strictEqual(toKebabCase('recorder_preferred_copy_format'), 'recorder-preferred-copy-format');
+    });
+
+    it('should handle uppercase acronyms as words', () => {
+      assert.strictEqual(toKebabCase('showUAShadowDOM'), 'show-ua-shadow-dom');
+    });
+
+    it('should handle uppercase acronyms as words', () => {
+      assert.strictEqual(toKebabCase('showUAShadowDOM'), 'show-ua-shadow-dom');
+    });
+
+    it('should preserve \'.\' characters', () => {
+      assert.strictEqual(
+          toKebabCase('InspectorView.screencastSplitViewState'), 'inspector-view.screencast-split-view-state');
+      assert.strictEqual(toKebabCase('version1.2.3'), 'version-1.2.3');
+    });
+
+    it('should handle numeronyms', () => {
+      assert.strictEqual(toKebabCase('lighthouse.cat_a11y'), 'lighthouse.cat-a11y');
+      assert.strictEqual(toKebabCase('i18n'), 'i18n');
+    });
+
+    it('should handle numbers', () => {
+      assert.strictEqual(toKebabCase('Margin: 2px'), 'margin-2px');
+      assert.strictEqual(toKebabCase('Margin2px'), 'margin-2px');
+      assert.strictEqual(toKebabCase('Layers 3D display'), 'layers-3d-display');
+      assert.strictEqual(toKebabCase('perfmonActiveIndicators2'), 'perfmon-active-indicators-2');
+      assert.strictEqual(
+          toKebabCase('HideIssueByCodeSetting-Experiment-2021'), 'hide-issue-by-code-setting-experiment-2021');
+    });
+
+    it('should handle mixed cases', () => {
+      assert.strictEqual(toKebabCase('CamelCase_with.DOTS123'), 'camel-case-with.dots-123');
+    });
+  });
 });

@@ -497,14 +497,22 @@ export const toLowerCaseString = function(input: string): LowerCaseString {
   return input.toLowerCase() as LowerCaseString;
 };
 
-const WORD = /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z0-9]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g;
-//            <---1---><-----------2----------> <----------3--------> <-----4---->
+const WORD = /[A-Z]{2,}(?=[A-Z0-9][a-z0-9]+|\b)|[A-Za-z][0-9]+[a-z]|[A-Z]?[a-z]+|[0-9][A-Za-z]+|[A-Z]|[0-9]+|[.]/g;
+//            <---1---><-----------2----------> <--------3--------> <-----4----> <------5-----> <-----6----> <7>
 // 1: two or more consecutive uppercase letters. This is useful for identifying acronyms
 // 2: lookahead assertion that matches a word boundary
-// 3: word starting with an optional uppercase letter
-// 4: single uppercase letter or number
+// 3: numeronym: single letter followed by number and another letter
+// 4: word starting with an optional uppercase letter
+// 5: single digit followed by word to handle '3D' or '2px' (this might be controverial)
+// 6: single uppercase letter or number
+// 7: a dot character. We extract it into a separate word and remove dashes around it later.
+//    This is makes more sense conceptually and allows accounting for all possible word variants.
+//    Making dot a part of a word prevent us from handling acronyms or numeronyms after the word
+//    correctly without making the RegExp prohibitively complicated.
+// https://regex101.com/r/LtFugp/1
 export const toKebabCase = function(input: string): Lowercase<string> {
-  return (input.match?.(WORD)?.map(w => w.toLowerCase()).join('-') || input) as Lowercase<string>;
+  return (input.match?.(WORD)?.map(w => w.toLowerCase()).join('-').replaceAll('-.-', '.') || input) as
+      Lowercase<string>;
 };
 
 // TODO(b/320405843): remove this when kebab migration is complete and

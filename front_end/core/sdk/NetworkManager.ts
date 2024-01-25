@@ -693,21 +693,15 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#manager.dispatchEventToListeners(Events.ResponseReceived, {request: networkRequest, response});
   }
 
-  dataReceived({requestId, timestamp, dataLength, encodedDataLength}: Protocol.Network.DataReceivedEvent): void {
-    let networkRequest: NetworkRequest|null|undefined = this.#requestsById.get(requestId);
+  dataReceived(event: Protocol.Network.DataReceivedEvent): void {
+    let networkRequest: NetworkRequest|null|undefined = this.#requestsById.get(event.requestId);
     if (!networkRequest) {
-      networkRequest = this.maybeAdoptMainResourceRequest(requestId);
+      networkRequest = this.maybeAdoptMainResourceRequest(event.requestId);
     }
     if (!networkRequest) {
       return;
     }
-
-    networkRequest.resourceSize += dataLength;
-    if (encodedDataLength !== -1) {
-      networkRequest.increaseTransferSize(encodedDataLength);
-    }
-    networkRequest.endTime = timestamp;
-
+    networkRequest.addDataReceivedEvent(event);
     this.updateNetworkRequest(networkRequest);
   }
 

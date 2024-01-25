@@ -1676,6 +1676,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   hasThirdPartyCookiePhaseoutIssue(): boolean {
     return this.#hasThirdPartyCookiePhaseoutIssue;
   }
+
+  addDataReceivedEvent({timestamp, dataLength, encodedDataLength}: Protocol.Network.DataReceivedEvent): void {
+    this.resourceSize += dataLength;
+    if (encodedDataLength !== -1) {
+      this.increaseTransferSize(encodedDataLength);
+    }
+    this.endTime = timestamp;
+  }
 }
 
 export enum Events {

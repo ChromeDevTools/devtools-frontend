@@ -22,6 +22,7 @@ export class BidiConnection extends EventEmitter {
     #closed = false;
     #callbacks = new CallbackRegistry();
     #browsingContexts = new Map();
+    #emitters = [];
     constructor(url, transport, delay = 0, timeout) {
         super();
         this.#url = url;
@@ -36,6 +37,15 @@ export class BidiConnection extends EventEmitter {
     }
     get url() {
         return this.#url;
+    }
+    pipeTo(emitter) {
+        this.#emitters.push(emitter);
+    }
+    emit(type, event) {
+        for (const emitter of this.#emitters) {
+            emitter.emit(type, event);
+        }
+        return super.emit(type, event);
     }
     send(method, params) {
         assert(!this.#closed, 'Protocol error: Connection closed.');

@@ -152,7 +152,7 @@ let BidiFrame = (() => {
             const [waitEvent, networkIdle] = (0, lifecycle_js_1.getBiDiLifecycleEvent)(waitUntil);
             await (0, rxjs_js_1.firstValueFrom)(this.#page
                 ._waitWithNetworkIdle((0, rxjs_js_1.forkJoin)([
-                (0, rxjs_js_1.fromEvent)(this.#context, waitEvent).pipe((0, rxjs_js_1.first)()),
+                (0, util_js_1.fromEmitterEvent)(this.#context, waitEvent).pipe((0, rxjs_js_1.first)()),
                 (0, rxjs_js_1.from)(this.setFrameContent(html)),
             ]).pipe((0, rxjs_js_1.map)(() => {
                 return null;
@@ -167,9 +167,9 @@ let BidiFrame = (() => {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitUntilEvent, networkIdle] = (0, lifecycle_js_1.getBiDiLifecycleEvent)(waitUntil);
             const navigatedObservable = (0, rxjs_js_1.merge)((0, rxjs_js_1.forkJoin)([
-                (0, rxjs_js_1.fromEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe((0, rxjs_js_1.first)()),
-                (0, rxjs_js_1.fromEvent)(this.#context, waitUntilEvent).pipe((0, rxjs_js_1.first)()),
-            ]), (0, rxjs_js_1.fromEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe((0, rxjs_js_1.map)(result => {
+                (0, util_js_1.fromEmitterEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe((0, rxjs_js_1.first)()),
+                (0, util_js_1.fromEmitterEvent)(this.#context, waitUntilEvent).pipe((0, rxjs_js_1.first)()),
+            ]), (0, util_js_1.fromEmitterEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe((0, rxjs_js_1.map)(result => {
                 if (Array.isArray(result)) {
                     return { result: result[1] };
                 }

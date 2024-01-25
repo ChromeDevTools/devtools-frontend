@@ -21,10 +21,12 @@ export class EventEmitter {
     #emitter;
     #handlers = new Map();
     /**
+     * If you pass an emitter, the returned emitter will wrap the passed emitter.
+     *
      * @internal
      */
-    constructor() {
-        this.#emitter = mitt(this.#handlers);
+    constructor(emitter = mitt(new Map())) {
+        this.#emitter = emitter;
     }
     /**
      * Bind an event listener to fire when an event occurs.
@@ -33,6 +35,13 @@ export class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     on(type, handler) {
+        const handlers = this.#handlers.get(type);
+        if (handlers === undefined) {
+            this.#handlers.set(type, [handler]);
+        }
+        else {
+            handlers.push(handler);
+        }
         this.#emitter.on(type, handler);
         return this;
     }
@@ -43,25 +52,18 @@ export class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     off(type, handler) {
-        this.#emitter.off(type, handler);
-        return this;
-    }
-    /**
-     * Remove an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.off} instead.
-     */
-    removeListener(type, handler) {
-        this.off(type, handler);
-        return this;
-    }
-    /**
-     * Add an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.on} instead.
-     */
-    addListener(type, handler) {
-        this.on(type, handler);
+        const handlers = this.#handlers.get(type) ?? [];
+        if (handler === undefined) {
+            for (const handler of handlers) {
+                this.#emitter.off(type, handler);
+            }
+            this.#handlers.delete(type);
+            return this;
+        }
+        const index = handlers.lastIndexOf(handler);
+        if (index > -1) {
+            this.#emitter.off(type, ...handlers.splice(index, 1));
+        }
         return this;
     }
     /**
@@ -74,6 +76,22 @@ export class EventEmitter {
     emit(type, event) {
         this.#emitter.emit(type, event);
         return this.listenerCount(type) > 0;
+    }
+    /**
+     * Remove an event listener.
+     *
+     * @deprecated please use {@link EventEmitter.off} instead.
+     */
+    removeListener(type, handler) {
+        return this.off(type, handler);
+    }
+    /**
+     * Add an event listener.
+     *
+     * @deprecated please use {@link EventEmitter.on} instead.
+     */
+    addListener(type, handler) {
+        return this.on(type, handler);
     }
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
@@ -105,13 +123,22 @@ export class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(type) {
-        if (type === undefined || type === '*') {
-            this.#handlers.clear();
+        if (type !== undefined) {
+            return this.off(type);
         }
-        else {
-            this.#handlers.delete(type);
-        }
+        this[disposeSymbol]();
         return this;
+    }
+    /**
+     * @internal
+     */
+    [disposeSymbol]() {
+        for (const [type, handlers] of this.#handlers) {
+            for (const handler of handlers) {
+                this.#emitter.off(type, handler);
+            }
+        }
+        this.#handlers.clear();
     }
 }
 /**

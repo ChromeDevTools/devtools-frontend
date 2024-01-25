@@ -12,6 +12,7 @@ import type { Target } from '../api/Target.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiConnection } from './Connection.js';
+import type { Browser as BrowserCore } from './core/Browser.js';
 import { type BidiTarget } from './Target.js';
 /**
  * @internal
@@ -32,10 +33,7 @@ export declare class BidiBrowser extends Browser {
     static readonly subscribeModules: string[];
     static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
-    constructor(opts: BidiBrowserOptions & {
-        browserName: string;
-        browserVersion: string;
-    });
+    constructor(browserCore: BrowserCore, opts: BidiBrowserOptions);
     userAgent(): never;
     get connection(): BidiConnection;
     wsEndpoint(): string;

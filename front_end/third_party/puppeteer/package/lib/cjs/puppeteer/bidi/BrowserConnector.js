@@ -79,7 +79,7 @@ async function getBiDiConnection(connectionTransport, url, options) {
         }
     }
     catch (e) {
-        if (!('name' in e && e.name === 'ProtocolError')) {
+        if (!(e instanceof Errors_js_1.ProtocolError)) {
             // Unexpected exception not related to BiDi / CDP. Rethrow.
             throw e;
         }

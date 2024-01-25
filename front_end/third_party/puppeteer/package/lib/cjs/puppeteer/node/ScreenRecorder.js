@@ -143,7 +143,7 @@ let ScreenRecorder = (() => {
             client.once(CDPSession_js_1.CDPSessionEvent.Disconnected, () => {
                 void this.stop().catch(util_js_1.debugError);
             });
-            this.#lastFrame = (0, rxjs_js_1.lastValueFrom)((0, rxjs_js_1.fromEvent)(client, 'Page.screencastFrame').pipe((0, rxjs_js_1.tap)(event => {
+            this.#lastFrame = (0, rxjs_js_1.lastValueFrom)((0, util_js_1.fromEmitterEvent)(client, 'Page.screencastFrame').pipe((0, rxjs_js_1.tap)(event => {
                 void client.send('Page.screencastFrameAck', {
                     sessionId: event.sessionId,
                 });

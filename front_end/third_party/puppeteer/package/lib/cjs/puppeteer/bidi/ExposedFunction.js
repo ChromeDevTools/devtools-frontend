@@ -59,7 +59,6 @@ class ExposeableFunction {
     async expose() {
         const connection = this.#connection;
         const channelArguments = this.#channelArguments;
-        const { name } = this;
         // TODO(jrandolf): Implement cleanup with removePreloadScript.
         connection.on(Bidi.ChromiumBidi.Script.EventNames.Message, this.#handleArgumentsMessage);
         connection.on(Bidi.ChromiumBidi.Script.EventNames.Message, this.#handleResolveMessage);
@@ -76,7 +75,7 @@ class ExposeableFunction {
                     });
                 },
             });
-        }, { name: JSON.stringify(name) }));
+        }, { name: JSON.stringify(this.name) }));
         const { result } = await connection.send('script.addPreloadScript', {
             functionDeclaration,
             arguments: channelArguments,
@@ -114,7 +113,9 @@ class ExposeableFunction {
                     Serializer_js_1.BidiSerializer.serializeRemoteValue(result),
                 ],
                 awaitPromise: false,
-                target: params.source,
+                target: {
+                    realm: params.source.realm,
+                },
             });
         }
         catch (error) {
@@ -136,7 +137,9 @@ class ExposeableFunction {
                             Serializer_js_1.BidiSerializer.serializeRemoteValue(error.stack),
                         ],
                         awaitPromise: false,
-                        target: params.source,
+                        target: {
+                            realm: params.source.realm,
+                        },
                     });
                 }
                 else {
@@ -149,7 +152,9 @@ class ExposeableFunction {
                             Serializer_js_1.BidiSerializer.serializeRemoteValue(error),
                         ],
                         awaitPromise: false,
-                        target: params.source,
+                        target: {
+                            realm: params.source.realm,
+                        },
                     });
                 }
             }

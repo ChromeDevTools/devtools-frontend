@@ -256,12 +256,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             this.#attachedTargetsByTargetId.set(targetInfo.targetId, target);
             this.#attachedTargetsBySessionId.set(session.id(), target);
         }
-        if (parentSession instanceof CDPSession_js_1.CDPSession) {
-            parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
-        }
-        else {
-            parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
-        }
+        parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
         this.#targetsIdsForInit.delete(target._targetId);
         if (!isExistingTarget) {
             this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);

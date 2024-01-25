@@ -20,7 +20,7 @@ async function releaseReference(client, remoteReference) {
         target: client.target,
         handles: [remoteReference.handle],
     })
-        .catch((error) => {
+        .catch(error => {
         // Exceptions might happen in case of a page been navigated or closed.
         // Swallow these since they are harmless and we don't leak anything in this case.
         (0, util_js_1.debugError)(error);

@@ -3,6 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { type Emitter } from '../../third_party/mitt/mitt.js';
 import { disposeSymbol } from '../util/disposable.js';
 /**
  * @public
@@ -46,9 +47,11 @@ export type EventsWithWildcard<Events extends Record<EventType, unknown>> = Even
 export declare class EventEmitter<Events extends Record<EventType, unknown>> implements CommonEventEmitter<EventsWithWildcard<Events>> {
     #private;
     /**
+     * If you pass an emitter, the returned emitter will wrap the passed emitter.
+     *
      * @internal
      */
-    constructor();
+    constructor(emitter?: Emitter<EventsWithWildcard<Events>> | EventEmitter<Events>);
     /**
      * Bind an event listener to fire when an event occurs.
      * @param type - the event type you'd like to listen to. Can be a string or symbol.
@@ -64,6 +67,14 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      */
     off<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler?: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
+     * Emit an event and call any associated listeners.
+     *
+     * @param type - the event you'd like to emit
+     * @param eventData - any data you'd like to emit with the event
+     * @returns `true` if there are any listeners, `false` if there are not.
+     */
+    emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
+    /**
      * Remove an event listener.
      *
      * @deprecated please use {@link EventEmitter.off} instead.
@@ -75,14 +86,6 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @deprecated please use {@link EventEmitter.on} instead.
      */
     addListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
-    /**
-     * Emit an event and call any associated listeners.
-     *
-     * @param type - the event you'd like to emit
-     * @param eventData - any data you'd like to emit with the event
-     * @returns `true` if there are any listeners, `false` if there are not.
-     */
-    emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param type - the event you'd like to listen to
@@ -105,6 +108,10 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
+    /**
+     * @internal
+     */
+    [disposeSymbol](): void;
 }
 /**
  * @internal

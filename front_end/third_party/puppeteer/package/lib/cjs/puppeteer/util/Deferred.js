@@ -12,58 +12,6 @@ const Errors_js_1 = require("../common/Errors.js");
  * @internal
  */
 class Deferred {
-    #isResolved = false;
-    #isRejected = false;
-    #value;
-    #resolver = () => { };
-    #taskPromise = new Promise(resolve => {
-        this.#resolver = resolve;
-    });
-    #timeoutId;
-    #timeoutError;
-    constructor(opts) {
-        if (opts && opts.timeout > 0) {
-            this.#timeoutError = new Errors_js_1.TimeoutError(opts.message);
-            this.#timeoutId = setTimeout(() => {
-                this.reject(this.#timeoutError);
-            }, opts.timeout);
-        }
-    }
-    #finish(value) {
-        clearTimeout(this.#timeoutId);
-        this.#value = value;
-        this.#resolver();
-    }
-    resolve(value) {
-        if (this.#isRejected || this.#isResolved) {
-            return;
-        }
-        this.#isResolved = true;
-        this.#finish(value);
-    }
-    reject(error) {
-        if (this.#isRejected || this.#isResolved) {
-            return;
-        }
-        this.#isRejected = true;
-        this.#finish(error);
-    }
-    resolved() {
-        return this.#isResolved;
-    }
-    finished() {
-        return this.#isResolved || this.#isRejected;
-    }
-    value() {
-        return this.#value;
-    }
-    async valueOrThrow() {
-        await this.#taskPromise;
-        if (this.#isRejected) {
-            throw this.#value;
-        }
-        return this.#value;
-    }
     static create(opts) {
         return new Deferred(opts);
     }
@@ -90,6 +38,65 @@ class Deferred {
                 deferred.reject(new Error('Timeout cleared'));
             }
         }
+    }
+    #isResolved = false;
+    #isRejected = false;
+    #value;
+    // SAFETY: This is ensured by #taskPromise.
+    #resolve;
+    #taskPromise = new Promise(resolve => {
+        this.#resolve = resolve;
+    });
+    #timeoutId;
+    #timeoutError;
+    constructor(opts) {
+        if (opts && opts.timeout > 0) {
+            this.#timeoutError = new Errors_js_1.TimeoutError(opts.message);
+            this.#timeoutId = setTimeout(() => {
+                this.reject(this.#timeoutError);
+            }, opts.timeout);
+        }
+    }
+    #finish(value) {
+        clearTimeout(this.#timeoutId);
+        this.#value = value;
+        this.#resolve();
+    }
+    resolve(value) {
+        if (this.#isRejected || this.#isResolved) {
+            return;
+        }
+        this.#isResolved = true;
+        this.#finish(value);
+    }
+    reject(error) {
+        if (this.#isRejected || this.#isResolved) {
+            return;
+        }
+        this.#isRejected = true;
+        this.#finish(error);
+    }
+    resolved() {
+        return this.#isResolved;
+    }
+    finished() {
+        return this.#isResolved || this.#isRejected;
+    }
+    value() {
+        return this.#value;
+    }
+    #promise;
+    valueOrThrow() {
+        if (!this.#promise) {
+            this.#promise = (async () => {
+                await this.#taskPromise;
+                if (this.#isRejected) {
+                    throw this.#value;
+                }
+                return this.#value;
+            })();
+        }
+        return this.#promise;
     }
 }
 exports.Deferred = Deferred;

@@ -49,11 +49,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { Realm } from '../api/Realm.js';
-import { addPageBinding, debugError, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { debugError, withSourcePuppeteerURLIfNone } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { Mutex } from '../util/Mutex.js';
 import { ExecutionContext, createCdpHandle } from './ExecutionContext.js';
+import { addPageBinding } from './utils.js';
 /**
  * @internal
  */

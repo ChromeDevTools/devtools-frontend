@@ -9,12 +9,12 @@
 /// <reference types="node" />
 import type FS from 'fs/promises';
 import type { Readable } from 'stream';
-import type { Protocol } from 'devtools-protocol';
-import { type Observable } from '../../third_party/rxjs/rxjs.js';
+import { Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Deferred } from '../util/Deferred.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
 import type { NetworkManagerEvents } from './NetworkManagerEvents.js';
+import type { ParsedPDFOptions, PDFOptions } from './PDFOptions.js';
 /**
  * @internal
  */
@@ -26,14 +26,6 @@ export declare const DEFAULT_VIEWPORT: Readonly<{
     width: 800;
     height: 600;
 }>;
-/**
- * @internal
- */
-export declare function createEvaluationError(details: Protocol.Runtime.ExceptionDetails): unknown;
-/**
- * @internal
- */
-export declare function createClientError(details: Protocol.Runtime.ExceptionDetails): Error;
 /**
  * @internal
  */
@@ -55,10 +47,6 @@ export declare const withSourcePuppeteerURLIfNone: <T extends {}>(functionName: 
  * @internal
  */
 export declare const getSourcePuppeteerURLIfAvailable: <T extends {}>(object: T) => PuppeteerURL | undefined;
-/**
- * @internal
- */
-export declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.RemoteObject): any;
 /**
  * @internal
  */
@@ -86,14 +74,6 @@ export declare function evaluationString(fun: Function | string, ...args: unknow
 /**
  * @internal
  */
-export declare function addPageBinding(type: string, name: string): void;
-/**
- * @internal
- */
-export declare function pageBindingInitString(type: string, name: string): string;
-/**
- * @internal
- */
 export declare function importFSPromises(): Promise<typeof FS>;
 /**
  * @internal
@@ -103,10 +83,6 @@ export declare function getReadableAsBuffer(readable: Readable, path?: string): 
  * @internal
  */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
-/**
- * @internal
- */
-export declare function getPageContent(): string;
 /**
  * @internal
  */
@@ -139,4 +115,21 @@ ms: number, cancelation: Deferred<never>): Promise<T>;
  * @internal
  */
 export declare const NETWORK_IDLE_TIME = 500;
+/**
+ * @internal
+ */
+export declare function parsePDFOptions(options?: PDFOptions, lengthUnit?: 'in' | 'cm'): ParsedPDFOptions;
+/**
+ * @internal
+ */
+export declare const unitToPixels: {
+    px: number;
+    in: number;
+    cm: number;
+    mm: number;
+};
+/**
+ * @internal
+ */
+export declare function fromEmitterEvent<Events extends Record<EventType, unknown>, Event extends keyof Events>(emitter: EventEmitter<Events>, eventName: Event): Observable<Events[Event]>;
 //# sourceMappingURL=util.d.ts.map

@@ -38,10 +38,10 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { from, fromEvent, merge, map, forkJoin, first, firstValueFrom, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { first, firstValueFrom, forkJoin, from, map, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { UTILITY_WORLD_NAME, timeout } from '../common/util.js';
+import { fromEmitterEvent, timeout, UTILITY_WORLD_NAME } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { ExposeableFunction } from './ExposedFunction.js';
@@ -126,7 +126,7 @@ let BidiFrame = (() => {
             const [waitEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
             await firstValueFrom(this.#page
                 ._waitWithNetworkIdle(forkJoin([
-                fromEvent(this.#context, waitEvent).pipe(first()),
+                fromEmitterEvent(this.#context, waitEvent).pipe(first()),
                 from(this.setFrameContent(html)),
             ]).pipe(map(() => {
                 return null;
@@ -141,9 +141,9 @@ let BidiFrame = (() => {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitUntilEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
             const navigatedObservable = merge(forkJoin([
-                fromEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe(first()),
-                fromEvent(this.#context, waitUntilEvent).pipe(first()),
-            ]), fromEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe(map(result => {
+                fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe(first()),
+                fromEmitterEvent(this.#context, waitUntilEvent).pipe(first()),
+            ]), fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe(map(result => {
                 if (Array.isArray(result)) {
                     return { result: result[1] };
                 }

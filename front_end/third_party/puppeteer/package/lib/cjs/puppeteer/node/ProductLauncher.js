@@ -33,6 +33,7 @@ const fs_1 = require("fs");
 const os_1 = require("os");
 const path_1 = require("path");
 const browsers_1 = require("@puppeteer/browsers");
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Browser_js_1 = require("../cdp/Browser.js");
 const Connection_js_1 = require("../cdp/Connection.js");
 const Errors_js_1 = require("../common/Errors.js");
@@ -169,7 +170,10 @@ class ProductLauncher {
             }
         }
         else {
-            await browserProcess.close();
+            // Wait for a possible graceful shutdown.
+            await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.race)((0, rxjs_js_1.from)(browserProcess.hasClosed()), (0, rxjs_js_1.timer)(5000).pipe((0, rxjs_js_1.map)(() => {
+                return (0, rxjs_js_1.from)(browserProcess.close());
+            }))));
         }
     }
     /**

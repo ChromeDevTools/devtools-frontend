@@ -12,7 +12,7 @@ import { Dialog } from '../api/Dialog.js';
 export declare class CdpDialog extends Dialog {
     #private;
     constructor(client: CDPSession, type: Protocol.Page.DialogType, message: string, defaultValue?: string);
-    sendCommand(options: {
+    handle(options: {
         accept: boolean;
         text?: string;
     }): Promise<void>;

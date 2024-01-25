@@ -114,13 +114,13 @@ class CdpTarget extends Target_js_1.Target {
     }
     browser() {
         if (!this.#browserContext) {
-            throw new Error('browserContext is not initialised');
+            throw new Error('browserContext is not initialized');
         }
         return this.#browserContext.browser();
     }
     browserContext() {
         if (!this.#browserContext) {
-            throw new Error('browserContext is not initialised');
+            throw new Error('browserContext is not initialized');
         }
         return this.#browserContext;
     }

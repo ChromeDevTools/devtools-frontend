@@ -48,11 +48,6 @@ class FirefoxTargetManager extends EventEmitter_js_1.EventEmitter {
      * Tracks which sessions attach to which target.
      */
     #availableTargetsBySessionId = new Map();
-    /**
-     * If a target was filtered out by `targetFilterCallback`, we still receive
-     * events about it from CDP, but we don't forward them to the rest of Puppeteer.
-     */
-    #ignoredTargets = new Set();
     #targetFilterCallback;
     #targetFactory;
     #attachedToTargetListenersBySession = new WeakMap();
@@ -115,7 +110,6 @@ class FirefoxTargetManager extends EventEmitter_js_1.EventEmitter {
         }
         const target = this.#targetFactory(event.targetInfo, undefined);
         if (this.#targetFilterCallback && !this.#targetFilterCallback(target)) {
-            this.#ignoredTargets.add(event.targetInfo.targetId);
             this.#finishInitializationIfReady(event.targetInfo.targetId);
             return;
         }

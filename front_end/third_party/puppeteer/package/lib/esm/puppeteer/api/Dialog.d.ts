@@ -50,7 +50,7 @@ export declare abstract class Dialog {
     /**
      * @internal
      */
-    protected abstract sendCommand(options: {
+    protected abstract handle(options: {
         accept: boolean;
         text?: string;
     }): Promise<void>;

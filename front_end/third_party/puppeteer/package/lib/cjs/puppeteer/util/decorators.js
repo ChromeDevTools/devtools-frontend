@@ -50,7 +50,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.guarded = exports.invokeAtMostOnceForArguments = exports.throwIfDisposed = exports.moveable = void 0;
+exports.guarded = exports.invokeAtMostOnceForArguments = exports.inertIfDisposed = exports.throwIfDisposed = exports.moveable = void 0;
 const disposable_js_1 = require("./disposable.js");
 const Mutex_js_1 = require("./Mutex.js");
 const instances = new WeakSet();
@@ -100,6 +100,15 @@ function throwIfDisposed(message = value => {
     };
 }
 exports.throwIfDisposed = throwIfDisposed;
+function inertIfDisposed(target, _) {
+    return function (...args) {
+        if (this.disposed) {
+            return;
+        }
+        return target.call(this, ...args);
+    };
+}
+exports.inertIfDisposed = inertIfDisposed;
 /**
  * The decorator only invokes the target if the target has not been invoked with
  * the same arguments before. The decorated method throws an error if it's

@@ -82,14 +82,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { delay, filter, filterAsync, first, firstValueFrom, from, fromEvent, map, merge, of, raceWith, startWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
+import { delay, filter, filterAsync, first, firstValueFrom, from, map, merge, of, raceWith, startWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { paperFormats, } from '../common/PDFOptions.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError, importFSPromises, isNumber, isString, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
-import { assert } from '../util/assert.js';
+import { debugError, fromEmitterEvent, importFSPromises, isString, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
@@ -599,10 +597,10 @@ let Page = (() => {
          * @internal
          */
         _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
-            return merge(fromEvent(networkManager, NetworkManagerEvent.Request), fromEvent(networkManager, NetworkManagerEvent.Response), fromEvent(networkManager, NetworkManagerEvent.RequestFailed)).pipe(startWith(undefined), filter(() => {
+            return merge(fromEmitterEvent(networkManager, NetworkManagerEvent.Request), fromEmitterEvent(networkManager, NetworkManagerEvent.Response), fromEmitterEvent(networkManager, NetworkManagerEvent.RequestFailed)).pipe(startWith(undefined), filter(() => {
                 return networkManager.inFlightRequestsCount() <= requestsInFlight;
-            }), switchMap(v => {
-                return of(v).pipe(delay(idleTime));
+            }), switchMap(() => {
+                return of(undefined).pipe(delay(idleTime));
             }));
         }
         /**
@@ -623,7 +621,7 @@ let Page = (() => {
                     return urlOrPredicate === frame.url();
                 };
             }
-            return await firstValueFrom(merge(fromEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timeout(ms), fromEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+            return await firstValueFrom(merge(fromEmitterEvent(this, "frameattached" /* PageEvent.FrameAttached */), fromEmitterEvent(this, "framenavigated" /* PageEvent.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed.');
             })))));
         }
@@ -994,50 +992,6 @@ let Page = (() => {
                 if (result_1)
                     await result_1;
             }
-        }
-        /**
-         * @internal
-         */
-        _getPDFOptions(options = {}, lengthUnit = 'in') {
-            const defaults = {
-                scale: 1,
-                displayHeaderFooter: false,
-                headerTemplate: '',
-                footerTemplate: '',
-                printBackground: false,
-                landscape: false,
-                pageRanges: '',
-                preferCSSPageSize: false,
-                omitBackground: false,
-                timeout: 30000,
-                tagged: false,
-            };
-            let width = 8.5;
-            let height = 11;
-            if (options.format) {
-                const format = paperFormats[options.format.toLowerCase()];
-                assert(format, 'Unknown paper format: ' + options.format);
-                width = format.width;
-                height = format.height;
-            }
-            else {
-                width = convertPrintParameterToInches(options.width, lengthUnit) ?? width;
-                height =
-                    convertPrintParameterToInches(options.height, lengthUnit) ?? height;
-            }
-            const margin = {
-                top: convertPrintParameterToInches(options.margin?.top, lengthUnit) || 0,
-                left: convertPrintParameterToInches(options.margin?.left, lengthUnit) || 0,
-                bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
-                right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
-            };
-            return {
-                ...defaults,
-                ...options,
-                width,
-                height,
-                margin,
-            };
         }
         /**
          * The page's title
@@ -1413,46 +1367,6 @@ export const supportedMetrics = new Set([
     'JSHeapUsedSize',
     'JSHeapTotalSize',
 ]);
-/**
- * @internal
- */
-export const unitToPixels = {
-    px: 1,
-    in: 96,
-    cm: 37.8,
-    mm: 3.78,
-};
-function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
-    if (typeof parameter === 'undefined') {
-        return undefined;
-    }
-    let pixels;
-    if (isNumber(parameter)) {
-        // Treat numbers as pixel values to be aligned with phantom's paperSize.
-        pixels = parameter;
-    }
-    else if (isString(parameter)) {
-        const text = parameter;
-        let unit = text.substring(text.length - 2).toLowerCase();
-        let valueText = '';
-        if (unit in unitToPixels) {
-            valueText = text.substring(0, text.length - 2);
-        }
-        else {
-            // In case of unknown unit try to parse the whole parameter as number of pixels.
-            // This is consistent with phantom's paperSize behavior.
-            unit = 'px';
-            valueText = text;
-        }
-        const value = Number(valueText);
-        assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
-        pixels = value * unitToPixels[unit];
-    }
-    else {
-        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
-    }
-    return pixels / unitToPixels[lengthUnit];
-}
 /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
 function normalizeRectangle(clip) {
     return {

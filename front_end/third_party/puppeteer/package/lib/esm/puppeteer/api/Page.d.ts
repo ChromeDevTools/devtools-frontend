@@ -20,7 +20,7 @@ import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Device } from '../common/Device.js';
 import { EventEmitter, type EventsWithWildcard, type EventType } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
-import { type ParsedPDFOptions, type PDFOptions } from '../common/PDFOptions.js';
+import type { PDFOptions } from '../common/PDFOptions.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -506,7 +506,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @deprecated We no longer support intercepting drag payloads. Use the new
      * drag APIs found on {@link ElementHandle} to drag (or just use the
-     * {@link Page.mouse}).
+     * {@link Page | Page.mouse}).
      */
     abstract isDragInterceptionEnabled(): boolean;
     /**
@@ -675,7 +675,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @deprecated We no longer support intercepting drag payloads. Use the new
      * drag APIs found on {@link ElementHandle} to drag (or just use the
-     * {@link Page.mouse}).
+     * {@link Page | Page.mouse}).
      */
     abstract setDragInterception(enabled: boolean): Promise<void>;
     /**
@@ -1675,7 +1675,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * This is either the viewport set with the previous {@link Page.setViewport}
      * call or the default viewport set via
-     * {@link BrowserConnectOptions.defaultViewport}.
+     * {@link BrowserConnectOptions | BrowserConnectOptions.defaultViewport}.
      */
     abstract viewport(): Viewport | null;
     /**
@@ -1838,10 +1838,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @internal
      */
     abstract _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
-    /**
-     * @internal
-     */
-    _getPDFOptions(options?: PDFOptions, lengthUnit?: 'in' | 'cm'): ParsedPDFOptions;
     /**
      * Generates a PDF of the page with the `print` CSS media type.
      *
@@ -2229,13 +2225,4 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
  * @internal
  */
 export declare const supportedMetrics: Set<string>;
-/**
- * @internal
- */
-export declare const unitToPixels: {
-    px: number;
-    in: number;
-    cm: number;
-    mm: number;
-};
 //# sourceMappingURL=Page.d.ts.map

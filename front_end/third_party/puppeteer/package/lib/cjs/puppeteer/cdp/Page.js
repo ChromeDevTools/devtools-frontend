@@ -78,6 +78,7 @@ const Input_js_1 = require("./Input.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const Tracing_js_1 = require("./Tracing.js");
+const utils_js_1 = require("./utils.js");
 const WebWorker_js_1 = require("./WebWorker.js");
 /**
  * @internal
@@ -517,7 +518,7 @@ class CdpPage extends Page_js_1.Page {
                 break;
         }
         this.#bindings.set(name, binding);
-        const expression = (0, util_js_1.pageBindingInitString)('exposedFun', name);
+        const expression = (0, utils_js_1.pageBindingInitString)('exposedFun', name);
         await this.#primaryTargetClient.send('Runtime.addBinding', { name });
         // TODO: investigate this as it appears to only apply to the main frame and
         // local subframes instead of the entire frame tree (including future
@@ -588,7 +589,7 @@ class CdpPage extends Page_js_1.Page {
         return result;
     }
     #handleException(exception) {
-        this.emit("pageerror" /* PageEvent.PageError */, (0, util_js_1.createClientError)(exception.exceptionDetails));
+        this.emit("pageerror" /* PageEvent.PageError */, (0, utils_js_1.createClientError)(exception.exceptionDetails));
     }
     async #onConsoleAPI(event) {
         if (event.executionContextId === 0) {
@@ -654,7 +655,7 @@ class CdpPage extends Page_js_1.Page {
                 textTokens.push(arg.toString());
             }
             else {
-                textTokens.push((0, util_js_1.valueFromRemoteObject)(remoteObject));
+                textTokens.push((0, utils_js_1.valueFromRemoteObject)(remoteObject));
             }
         }
         const stackTraceLocations = [];
@@ -816,7 +817,8 @@ class CdpPage extends Page_js_1.Page {
         }
     }
     async createPDFStream(options = {}) {
-        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, timeout: ms, tagged: generateTaggedPDF, } = this._getPDFOptions(options);
+        const { timeout: ms = this._timeoutSettings.timeout() } = options;
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, } = (0, util_js_1.parsePDFOptions)(options);
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }

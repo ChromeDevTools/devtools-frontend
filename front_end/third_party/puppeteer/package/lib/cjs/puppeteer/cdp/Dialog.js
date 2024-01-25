@@ -16,7 +16,7 @@ class CdpDialog extends Dialog_js_1.Dialog {
         super(type, message, defaultValue);
         this.#client = client;
     }
-    async sendCommand(options) {
+    async handle(options) {
         await this.#client.send('Page.handleJavaScriptDialog', {
             accept: options.accept,
             promptText: options.text,

@@ -481,8 +481,8 @@ class BidiPage extends Page_js_1.Page {
         return this.#viewport;
     }
     async pdf(options = {}) {
-        const { path = undefined } = options;
-        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, timeout: ms, } = this._getPDFOptions(options, 'cm');
+        const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
+        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, } = (0, util_js_1.parsePDFOptions)(options, 'cm');
         const pageRanges = ranges ? ranges.split(', ') : [];
         const { result } = await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.from)(this.#connection.send('browsingContext.print', {
             context: this.mainFrame()._id,

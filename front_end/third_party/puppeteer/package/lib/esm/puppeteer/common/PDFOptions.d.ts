@@ -173,7 +173,7 @@ export interface ParsedPDFOptionsInterface {
 /**
  * @internal
  */
-export type ParsedPDFOptions = Required<Omit<PDFOptions, 'path' | 'format'> & ParsedPDFOptionsInterface>;
+export type ParsedPDFOptions = Required<Omit<PDFOptions, 'path' | 'format' | 'timeout'> & ParsedPDFOptionsInterface>;
 /**
  * @internal
  */

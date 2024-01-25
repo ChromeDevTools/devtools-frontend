@@ -95,6 +95,14 @@ export function throwIfDisposed(message = value => {
         };
     };
 }
+export function inertIfDisposed(target, _) {
+    return function (...args) {
+        if (this.disposed) {
+            return;
+        }
+        return target.call(this, ...args);
+    };
+}
 /**
  * The decorator only invokes the target if the target has not been invoked with
  * the same arguments before. The decorated method throws an error if it's

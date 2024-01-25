@@ -92,6 +92,8 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /* Excluded from this release type: addPageBinding */
 
+/* Excluded from this release type: AddPreloadScriptOptions */
+
 /* Excluded from this release type: ARIAQueryHandler */
 
 /* Excluded from this release type: assert */
@@ -386,7 +388,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
     /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
-     * @deprecated Use {@link Browser.connected}.
+     * @deprecated Use {@link Browser | Browser.connected}.
      */
     isConnected(): boolean;
     /**
@@ -397,6 +399,8 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
     /* Excluded from this release type: [asyncDisposeSymbol] */
     /* Excluded from this release type: protocol */
 }
+
+/* Excluded from this release type: Browser_2 */
 
 /* Excluded from this release type: BrowserCloseCallback */
 
@@ -725,9 +729,15 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: BrowsingContext */
 
+/* Excluded from this release type: BrowsingContext_2 */
+
 /* Excluded from this release type: Callback */
 
 /* Excluded from this release type: CallbackRegistry */
+
+/* Excluded from this release type: CallFunctionOptions */
+
+/* Excluded from this release type: CaptureScreenshotOptions */
 
 /* Excluded from this release type: CdpBrowser */
 
@@ -873,6 +883,8 @@ export declare interface CommandOptions {
 }
 
 /* Excluded from this release type: Commands */
+
+/* Excluded from this release type: Commands_2 */
 
 /**
  * @public
@@ -1025,6 +1037,8 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
      */
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
 }
+
+/* Excluded from this release type: Connection_2 */
 
 /**
  * @license
@@ -1232,11 +1246,11 @@ export declare interface CoverageEntry {
     }>;
 }
 
+/* Excluded from this release type: CreateBrowsingContextOptions */
+
 /* Excluded from this release type: createCdpHandle */
 
 /* Excluded from this release type: createClientError */
-
-/* Excluded from this release type: createDebuggableDeferred */
 
 /* Excluded from this release type: createEvaluationError */
 
@@ -1345,6 +1359,10 @@ declare const customQuerySelectors: CustomQuerySelectorRegistry;
 /* Excluded from this release type: debug_2 */
 
 /* Excluded from this release type: debugError */
+
+/* Excluded from this release type: DedicatedWorkerOwnerRealm */
+
+/* Excluded from this release type: DedicatedWorkerRealm */
 
 /**
  * The default cooperative request interception resolution priority
@@ -1492,7 +1510,7 @@ export declare abstract class Dialog {
      * is not a `prompt`.
      */
     defaultValue(): string;
-    /* Excluded from this release type: sendCommand */
+    /* Excluded from this release type: handle */
     /**
      * A promise that resolves when the dialog has been accepted.
      *
@@ -2064,6 +2082,8 @@ export declare type EvaluateFunc<T extends unknown[]> = (...params: InnerParams<
  */
 export declare type EvaluateFuncWith<V, T extends unknown[]> = (...params: [V, ...InnerParams<T>]) => Awaitable<unknown>;
 
+/* Excluded from this release type: EvaluateOptions */
+
 /* Excluded from this release type: evaluationString */
 
 /**
@@ -2096,6 +2116,14 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      */
     off<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler?: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
+     * Emit an event and call any associated listeners.
+     *
+     * @param type - the event you'd like to emit
+     * @param eventData - any data you'd like to emit with the event
+     * @returns `true` if there are any listeners, `false` if there are not.
+     */
+    emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
+    /**
      * Remove an event listener.
      *
      * @deprecated please use {@link EventEmitter.off} instead.
@@ -2107,14 +2135,6 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @deprecated please use {@link EventEmitter.on} instead.
      */
     addListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
-    /**
-     * Emit an event and call any associated listeners.
-     *
-     * @param type - the event you'd like to emit
-     * @param eventData - any data you'd like to emit with the event
-     * @returns `true` if there are any listeners, `false` if there are not.
-     */
-    emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param type - the event you'd like to listen to
@@ -2137,6 +2157,7 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
+    /* Excluded from this release type: [disposeSymbol] */
 }
 
 /* Excluded from this release type: EventSubscription */
@@ -2863,6 +2884,8 @@ export declare interface FrameWaitForFunctionOptions {
     signal?: AbortSignal;
 }
 
+/* Excluded from this release type: fromEmitterEvent */
+
 /* Excluded from this release type: FunctionLocator */
 
 /**
@@ -2890,8 +2913,6 @@ export declare interface GeolocationOptions {
 /* Excluded from this release type: getFetch */
 
 /* Excluded from this release type: GetIdFn */
-
-/* Excluded from this release type: getPageContent */
 
 /* Excluded from this release type: getQueryHandlerAndSelector */
 
@@ -2926,6 +2947,8 @@ export declare type HandleFor<T> = T extends Node ? ElementHandle<T> : JSHandle<
 
 /* Excluded from this release type: HandleMapper */
 
+/* Excluded from this release type: HandleOptions */
+
 /**
  * @public
  */
@@ -2937,6 +2960,8 @@ export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
  * @public
  */
 export declare type Handler<T = unknown> = (event: T) => void;
+
+/* Excluded from this release type: HandleUserPromptOptions */
 
 /* Excluded from this release type: headersArray */
 
@@ -4267,6 +4292,10 @@ export declare interface Moveable {
 
 /* Excluded from this release type: MutationPoller */
 
+/* Excluded from this release type: Navigation */
+
+/* Excluded from this release type: NavigationInfo */
+
 /* Excluded from this release type: NETWORK_IDLE_TIME */
 
 /**
@@ -4393,7 +4422,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @deprecated We no longer support intercepting drag payloads. Use the new
      * drag APIs found on {@link ElementHandle} to drag (or just use the
-     * {@link Page.mouse}).
+     * {@link Page | Page.mouse}).
      */
     abstract isDragInterceptionEnabled(): boolean;
     /**
@@ -4549,7 +4578,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @deprecated We no longer support intercepting drag payloads. Use the new
      * drag APIs found on {@link ElementHandle} to drag (or just use the
-     * {@link Page.mouse}).
+     * {@link Page | Page.mouse}).
      */
     abstract setDragInterception(enabled: boolean): Promise<void>;
     /**
@@ -5541,7 +5570,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * This is either the viewport set with the previous {@link Page.setViewport}
      * call or the default viewport set via
-     * {@link BrowserConnectOptions.defaultViewport}.
+     * {@link BrowserConnectOptions | BrowserConnectOptions.defaultViewport}.
      */
     abstract viewport(): Viewport | null;
     /**
@@ -5692,7 +5721,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     }): Promise<string>;
     screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
     /* Excluded from this release type: _screenshot */
-    /* Excluded from this release type: _getPDFOptions */
     /**
      * Generates a PDF of the page with the `print` CSS media type.
      *
@@ -6311,6 +6339,8 @@ export declare type PaperFormat = Uppercase<LowerCasePaperFormat> | Capitalize<L
 
 /* Excluded from this release type: ParsedPDFOptionsInterface */
 
+/* Excluded from this release type: parsePDFOptions */
+
 /**
  * @license
  * Copyright 2020 Google Inc.
@@ -6481,6 +6511,8 @@ export declare const PredefinedNetworkConditions: Readonly<{
  * @public
  */
 export declare type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
+
+/* Excluded from this release type: PrintOptions */
 
 /**
  * @license
@@ -6833,6 +6865,8 @@ export declare type Quad = [Point, Point, Point, Point];
 
 /* Excluded from this release type: Realm */
 
+/* Excluded from this release type: Realm_2 */
+
 /* Excluded from this release type: RedirectInfo */
 
 /**
@@ -6845,6 +6879,8 @@ export declare function registerCustomQueryHandler(name: string, handler: Custom
 
 /* Excluded from this release type: releaseObject */
 
+/* Excluded from this release type: ReloadOptions */
+
 /**
  * @public
  */
@@ -6854,6 +6890,8 @@ export declare interface RemoteAddress {
 }
 
 /* Excluded from this release type: removeMatchingFlags */
+
+/* Excluded from this release type: Request_2 */
 
 /* Excluded from this release type: ResolvedLaunchArgs */
 
@@ -7126,9 +7164,15 @@ export declare interface SerializedAXNode {
     children?: SerializedAXNode[];
 }
 
+/* Excluded from this release type: Session */
+
 /* Excluded from this release type: setDefaultScreenshotOptions */
 
 /* Excluded from this release type: setLogCapture */
+
+/* Excluded from this release type: SetViewportOptions */
+
+/* Excluded from this release type: SharedWorkerRealm */
 
 /**
  * @public
@@ -7369,6 +7413,12 @@ export declare function unregisterCustomQueryHandler(name: string): void;
 export declare class UnsupportedOperation extends CustomError {
 }
 
+/* Excluded from this release type: UserContext */
+
+/* Excluded from this release type: UserPrompt */
+
+/* Excluded from this release type: UserPromptResult */
+
 /* Excluded from this release type: UTILITY_WORLD_NAME */
 
 /* Excluded from this release type: validateDialogType */
@@ -7601,6 +7651,8 @@ export declare abstract class WebWorker extends EventEmitter<Record<EventType, u
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
 }
+
+/* Excluded from this release type: WindowRealm */
 
 /* Excluded from this release type: withSourcePuppeteerURLIfNone */
 

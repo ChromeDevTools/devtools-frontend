@@ -107,15 +107,13 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unitToPixels = exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = void 0;
+exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
-const PDFOptions_js_1 = require("../common/PDFOptions.js");
 const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
-const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const disposable_js_1 = require("../util/disposable.js");
 const locators_js_1 = require("./locators/locators.js");
@@ -626,10 +624,10 @@ let Page = (() => {
          * @internal
          */
         _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
-            return (0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(undefined), (0, rxjs_js_1.filter)(() => {
+            return (0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(undefined), (0, rxjs_js_1.filter)(() => {
                 return networkManager.inFlightRequestsCount() <= requestsInFlight;
-            }), (0, rxjs_js_1.switchMap)(v => {
-                return (0, rxjs_js_1.of)(v).pipe((0, rxjs_js_1.delay)(idleTime));
+            }), (0, rxjs_js_1.switchMap)(() => {
+                return (0, rxjs_js_1.of)(undefined).pipe((0, rxjs_js_1.delay)(idleTime));
             }));
         }
         /**
@@ -650,7 +648,7 @@ let Page = (() => {
                     return urlOrPredicate === frame.url();
                 };
             }
-            return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(this, "frameattached" /* PageEvent.FrameAttached */), (0, rxjs_js_1.fromEvent)(this, "framenavigated" /* PageEvent.FrameNavigated */), (0, rxjs_js_1.from)(this.frames())).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.first)(), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.fromEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+            return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "frameattached" /* PageEvent.FrameAttached */), (0, util_js_1.fromEmitterEvent)(this, "framenavigated" /* PageEvent.FrameNavigated */), (0, rxjs_js_1.from)(this.frames())).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.first)(), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Page closed.');
             })))));
         }
@@ -1021,50 +1019,6 @@ let Page = (() => {
                 if (result_1)
                     await result_1;
             }
-        }
-        /**
-         * @internal
-         */
-        _getPDFOptions(options = {}, lengthUnit = 'in') {
-            const defaults = {
-                scale: 1,
-                displayHeaderFooter: false,
-                headerTemplate: '',
-                footerTemplate: '',
-                printBackground: false,
-                landscape: false,
-                pageRanges: '',
-                preferCSSPageSize: false,
-                omitBackground: false,
-                timeout: 30000,
-                tagged: false,
-            };
-            let width = 8.5;
-            let height = 11;
-            if (options.format) {
-                const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()];
-                (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
-                width = format.width;
-                height = format.height;
-            }
-            else {
-                width = convertPrintParameterToInches(options.width, lengthUnit) ?? width;
-                height =
-                    convertPrintParameterToInches(options.height, lengthUnit) ?? height;
-            }
-            const margin = {
-                top: convertPrintParameterToInches(options.margin?.top, lengthUnit) || 0,
-                left: convertPrintParameterToInches(options.margin?.left, lengthUnit) || 0,
-                bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
-                right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
-            };
-            return {
-                ...defaults,
-                ...options,
-                width,
-                height,
-                margin,
-            };
         }
         /**
          * The page's title
@@ -1440,46 +1394,6 @@ exports.supportedMetrics = new Set([
     'JSHeapUsedSize',
     'JSHeapTotalSize',
 ]);
-/**
- * @internal
- */
-exports.unitToPixels = {
-    px: 1,
-    in: 96,
-    cm: 37.8,
-    mm: 3.78,
-};
-function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
-    if (typeof parameter === 'undefined') {
-        return undefined;
-    }
-    let pixels;
-    if ((0, util_js_1.isNumber)(parameter)) {
-        // Treat numbers as pixel values to be aligned with phantom's paperSize.
-        pixels = parameter;
-    }
-    else if ((0, util_js_1.isString)(parameter)) {
-        const text = parameter;
-        let unit = text.substring(text.length - 2).toLowerCase();
-        let valueText = '';
-        if (unit in exports.unitToPixels) {
-            valueText = text.substring(0, text.length - 2);
-        }
-        else {
-            // In case of unknown unit try to parse the whole parameter as number of pixels.
-            // This is consistent with phantom's paperSize behavior.
-            unit = 'px';
-            valueText = text;
-        }
-        const value = Number(valueText);
-        (0, assert_js_1.assert)(!isNaN(value), 'Failed to parse parameter value: ' + text);
-        pixels = value * exports.unitToPixels[unit];
-    }
-    else {
-        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
-    }
-    return pixels / exports.unitToPixels[lengthUnit];
-}
 /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
 function normalizeRectangle(clip) {
     return {

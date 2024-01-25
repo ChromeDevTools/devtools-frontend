@@ -55,7 +55,7 @@ import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { createClientError, debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, NETWORK_IDLE_TIME, pageBindingInitString, timeout, validateDialogType, valueFromRemoteObject, waitForHTTP, } from '../common/util.js';
+import { debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
@@ -75,6 +75,7 @@ import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
 import { releaseObject } from './JSHandle.js';
 import { Tracing } from './Tracing.js';
+import { createClientError, pageBindingInitString, valueFromRemoteObject, } from './utils.js';
 import { CdpWebWorker } from './WebWorker.js';
 /**
  * @internal
@@ -813,7 +814,8 @@ export class CdpPage extends Page {
         }
     }
     async createPDFStream(options = {}) {
-        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, timeout: ms, tagged: generateTaggedPDF, } = this._getPDFOptions(options);
+        const { timeout: ms = this._timeoutSettings.timeout() } = options;
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, } = parsePDFOptions(options);
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }

@@ -15,6 +15,7 @@ const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
 const Binding_js_1 = require("./Binding.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
@@ -186,10 +187,10 @@ class ExecutionContext {
             })
                 .catch(rewriteError);
             if (exceptionDetails) {
-                throw (0, util_js_1.createEvaluationError)(exceptionDetails);
+                throw (0, utils_js_1.createEvaluationError)(exceptionDetails);
             }
             return returnByValue
-                ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
+                ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
                 : createCdpHandle(this._world, remoteObject);
         }
         const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
@@ -218,10 +219,10 @@ class ExecutionContext {
         }
         const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
         if (exceptionDetails) {
-            throw (0, util_js_1.createEvaluationError)(exceptionDetails);
+            throw (0, utils_js_1.createEvaluationError)(exceptionDetails);
         }
         return returnByValue
-            ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
+            ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
             : createCdpHandle(this._world, remoteObject);
         async function convertArgument(arg) {
             if (arg instanceof LazyArg_js_1.LazyArg) {

@@ -3,12 +3,13 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { map, NEVER, timer, firstValueFrom, fromEvent, filterAsync, from, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { filterAsync, firstValueFrom, from, map, NEVER, Observable, raceWith, timer, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
+import { paperFormats } from './PDFOptions.js';
 /**
  * @internal
  */
@@ -17,103 +18,6 @@ export const debugError = debug('puppeteer:error');
  * @internal
  */
 export const DEFAULT_VIEWPORT = Object.freeze({ width: 800, height: 600 });
-/**
- * @internal
- */
-export function createEvaluationError(details) {
-    let name;
-    let message;
-    if (!details.exception) {
-        name = 'Error';
-        message = details.text;
-    }
-    else if ((details.exception.type !== 'object' ||
-        details.exception.subtype !== 'error') &&
-        !details.exception.objectId) {
-        return valueFromRemoteObject(details.exception);
-    }
-    else {
-        const detail = getErrorDetails(details);
-        name = detail.name;
-        message = detail.message;
-    }
-    const messageHeight = message.split('\n').length;
-    const error = new Error(message);
-    error.name = name;
-    const stackLines = error.stack.split('\n');
-    const messageLines = stackLines.splice(0, messageHeight);
-    // The first line is this function which we ignore.
-    stackLines.shift();
-    if (details.stackTrace && stackLines.length < Error.stackTraceLimit) {
-        for (const frame of details.stackTrace.callFrames.reverse()) {
-            if (PuppeteerURL.isPuppeteerURL(frame.url) &&
-                frame.url !== PuppeteerURL.INTERNAL_URL) {
-                const url = PuppeteerURL.parse(frame.url);
-                stackLines.unshift(`    at ${frame.functionName || url.functionName} (${url.functionName} at ${url.siteString}, <anonymous>:${frame.lineNumber}:${frame.columnNumber})`);
-            }
-            else {
-                stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber}:${frame.columnNumber})`);
-            }
-            if (stackLines.length >= Error.stackTraceLimit) {
-                break;
-            }
-        }
-    }
-    error.stack = [...messageLines, ...stackLines].join('\n');
-    return error;
-}
-/**
- * @internal
- */
-export function createClientError(details) {
-    let name;
-    let message;
-    if (!details.exception) {
-        name = 'Error';
-        message = details.text;
-    }
-    else if ((details.exception.type !== 'object' ||
-        details.exception.subtype !== 'error') &&
-        !details.exception.objectId) {
-        return valueFromRemoteObject(details.exception);
-    }
-    else {
-        const detail = getErrorDetails(details);
-        name = detail.name;
-        message = detail.message;
-    }
-    const error = new Error(message);
-    error.name = name;
-    const messageHeight = error.message.split('\n').length;
-    const messageLines = error.stack.split('\n').splice(0, messageHeight);
-    const stackLines = [];
-    if (details.stackTrace) {
-        for (const frame of details.stackTrace.callFrames) {
-            // Note we need to add `1` because the values are 0-indexed.
-            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
-            if (stackLines.length >= Error.stackTraceLimit) {
-                break;
-            }
-        }
-    }
-    error.stack = [...messageLines, ...stackLines].join('\n');
-    return error;
-}
-const getErrorDetails = (details) => {
-    let name = '';
-    let message;
-    const lines = details.exception?.description?.split('\n    at ') ?? [];
-    const size = Math.min(details.stackTrace?.callFrames.length ?? 0, lines.length - 1);
-    lines.splice(-size, size);
-    if (details.exception?.className) {
-        name = details.exception.className;
-    }
-    message = lines.join('\n');
-    if (name && message.startsWith(`${name}: `)) {
-        message = message.slice(name.length + 2);
-    }
-    return { message, name };
-};
 /**
  * @internal
  */
@@ -188,31 +92,6 @@ export const getSourcePuppeteerURLIfAvailable = (object) => {
 /**
  * @internal
  */
-export function valueFromRemoteObject(remoteObject) {
-    assert(!remoteObject.objectId, 'Cannot extract value when objectId is given');
-    if (remoteObject.unserializableValue) {
-        if (remoteObject.type === 'bigint') {
-            return BigInt(remoteObject.unserializableValue.replace('n', ''));
-        }
-        switch (remoteObject.unserializableValue) {
-            case '-0':
-                return -0;
-            case 'NaN':
-                return NaN;
-            case 'Infinity':
-                return Infinity;
-            case '-Infinity':
-                return -Infinity;
-            default:
-                throw new Error('Unsupported unserializable value: ' +
-                    remoteObject.unserializableValue);
-        }
-    }
-    return remoteObject.value;
-}
-/**
- * @internal
- */
 export const isString = (obj) => {
     return typeof obj === 'string' || obj instanceof String;
 };
@@ -255,62 +134,6 @@ export function evaluationString(fun, ...args) {
         return JSON.stringify(arg);
     }
     return `(${fun})(${args.map(serializeArgument).join(',')})`;
-}
-/**
- * @internal
- */
-export function addPageBinding(type, name) {
-    // This is the CDP binding.
-    // @ts-expect-error: In a different context.
-    const callCdp = globalThis[name];
-    // Depending on the frame loading state either Runtime.evaluate or
-    // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
-    // don't re-wrap Puppeteer's binding.
-    if (callCdp[Symbol.toStringTag] === 'PuppeteerBinding') {
-        return;
-    }
-    // We replace the CDP binding with a Puppeteer binding.
-    Object.assign(globalThis, {
-        [name](...args) {
-            // This is the Puppeteer binding.
-            // @ts-expect-error: In a different context.
-            const callPuppeteer = globalThis[name];
-            callPuppeteer.args ??= new Map();
-            callPuppeteer.callbacks ??= new Map();
-            const seq = (callPuppeteer.lastSeq ?? 0) + 1;
-            callPuppeteer.lastSeq = seq;
-            callPuppeteer.args.set(seq, args);
-            callCdp(JSON.stringify({
-                type,
-                name,
-                seq,
-                args,
-                isTrivial: !args.some(value => {
-                    return value instanceof Node;
-                }),
-            }));
-            return new Promise((resolve, reject) => {
-                callPuppeteer.callbacks.set(seq, {
-                    resolve(value) {
-                        callPuppeteer.args.delete(seq);
-                        resolve(value);
-                    },
-                    reject(value) {
-                        callPuppeteer.args.delete(seq);
-                        reject(value);
-                    },
-                });
-            });
-        },
-    });
-    // @ts-expect-error: In a different context.
-    globalThis[name][Symbol.toStringTag] = 'PuppeteerBinding';
-}
-/**
- * @internal
- */
-export function pageBindingInitString(type, name) {
-    return evaluationString(addPageBinding, type, name);
 }
 /**
  * @internal
@@ -401,23 +224,6 @@ export async function getReadableFromProtocolStream(client, handle) {
 /**
  * @internal
  */
-export function getPageContent() {
-    let content = '';
-    for (const node of document.childNodes) {
-        switch (node) {
-            case document.documentElement:
-                content += document.documentElement.outerHTML;
-                break;
-            default:
-                content += new XMLSerializer().serializeToString(node);
-                break;
-        }
-    }
-    return content;
-}
-/**
- * @internal
- */
 export function validateDialogType(type) {
     let dialogType = null;
     const validDialogTypes = new Set([
@@ -462,7 +268,7 @@ export function getSourceUrlComment(url) {
 export async function waitForHTTP(networkManager, eventName, urlOrPredicate, 
 /** Time after the function will timeout */
 ms, cancelation) {
-    return await firstValueFrom(fromEvent(networkManager, eventName).pipe(filterAsync(async (http) => {
+    return await firstValueFrom(fromEmitterEvent(networkManager, eventName).pipe(filterAsync(async (http) => {
         if (isString(urlOrPredicate)) {
             return urlOrPredicate === http.url();
         }
@@ -476,4 +282,101 @@ ms, cancelation) {
  * @internal
  */
 export const NETWORK_IDLE_TIME = 500;
+/**
+ * @internal
+ */
+export function parsePDFOptions(options = {}, lengthUnit = 'in') {
+    const defaults = {
+        scale: 1,
+        displayHeaderFooter: false,
+        headerTemplate: '',
+        footerTemplate: '',
+        printBackground: false,
+        landscape: false,
+        pageRanges: '',
+        preferCSSPageSize: false,
+        omitBackground: false,
+        tagged: false,
+    };
+    let width = 8.5;
+    let height = 11;
+    if (options.format) {
+        const format = paperFormats[options.format.toLowerCase()];
+        assert(format, 'Unknown paper format: ' + options.format);
+        width = format.width;
+        height = format.height;
+    }
+    else {
+        width = convertPrintParameterToInches(options.width, lengthUnit) ?? width;
+        height =
+            convertPrintParameterToInches(options.height, lengthUnit) ?? height;
+    }
+    const margin = {
+        top: convertPrintParameterToInches(options.margin?.top, lengthUnit) || 0,
+        left: convertPrintParameterToInches(options.margin?.left, lengthUnit) || 0,
+        bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
+        right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
+    };
+    return {
+        ...defaults,
+        ...options,
+        width,
+        height,
+        margin,
+    };
+}
+/**
+ * @internal
+ */
+export const unitToPixels = {
+    px: 1,
+    in: 96,
+    cm: 37.8,
+    mm: 3.78,
+};
+function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
+    if (typeof parameter === 'undefined') {
+        return undefined;
+    }
+    let pixels;
+    if (isNumber(parameter)) {
+        // Treat numbers as pixel values to be aligned with phantom's paperSize.
+        pixels = parameter;
+    }
+    else if (isString(parameter)) {
+        const text = parameter;
+        let unit = text.substring(text.length - 2).toLowerCase();
+        let valueText = '';
+        if (unit in unitToPixels) {
+            valueText = text.substring(0, text.length - 2);
+        }
+        else {
+            // In case of unknown unit try to parse the whole parameter as number of pixels.
+            // This is consistent with phantom's paperSize behavior.
+            unit = 'px';
+            valueText = text;
+        }
+        const value = Number(valueText);
+        assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
+        pixels = value * unitToPixels[unit];
+    }
+    else {
+        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
+    }
+    return pixels / unitToPixels[lengthUnit];
+}
+/**
+ * @internal
+ */
+export function fromEmitterEvent(emitter, eventName) {
+    return new Observable(subscriber => {
+        const listener = (event) => {
+            subscriber.next(event);
+        };
+        emitter.on(eventName, listener);
+        return () => {
+            emitter.off(eventName, listener);
+        };
+    });
+}
 //# sourceMappingURL=util.js.map

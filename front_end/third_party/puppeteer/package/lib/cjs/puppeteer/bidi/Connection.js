@@ -25,6 +25,7 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     #closed = false;
     #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
     #browsingContexts = new Map();
+    #emitters = [];
     constructor(url, transport, delay = 0, timeout) {
         super();
         this.#url = url;
@@ -39,6 +40,15 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     }
     get url() {
         return this.#url;
+    }
+    pipeTo(emitter) {
+        this.#emitters.push(emitter);
+    }
+    emit(type, event) {
+        for (const emitter of this.#emitters) {
+            emitter.emit(type, event);
+        }
+        return super.emit(type, event);
     }
     send(method, params) {
         (0, assert_js_1.assert)(!this.#closed, 'Protocol error: Connection closed.');

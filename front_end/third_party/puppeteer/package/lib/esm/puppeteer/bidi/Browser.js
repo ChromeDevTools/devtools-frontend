@@ -8,6 +8,7 @@ import { UnsupportedOperation } from '../common/Errors.js';
 import { debugError } from '../common/util.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import { BrowsingContext, BrowsingContextEvent } from './BrowsingContext.js';
+import { Session } from './core/Session.js';
 import { BiDiBrowserTarget, BiDiBrowsingContextTarget, BiDiPageTarget, } from './Target.js';
 /**
  * @internal
@@ -34,42 +35,23 @@ export class BidiBrowser extends Browser {
         'cdp.Page.screencastFrame',
     ];
     static async create(opts) {
-        let browserName = '';
-        let browserVersion = '';
-        // TODO: await until the connection is established.
-        try {
-            const { result } = await opts.connection.send('session.new', {
-                capabilities: {
-                    alwaysMatch: {
-                        acceptInsecureCerts: opts.ignoreHTTPSErrors,
-                    },
-                },
-            });
-            browserName = result.capabilities.browserName ?? '';
-            browserVersion = result.capabilities.browserVersion ?? '';
-        }
-        catch (err) {
-            // Chrome does not support session.new.
-            debugError(err);
-        }
-        await opts.connection.send('session.subscribe', {
-            events: browserName.toLocaleLowerCase().includes('firefox')
-                ? BidiBrowser.subscribeModules
-                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents],
+        const session = await Session.from(opts.connection, {
+            alwaysMatch: {
+                acceptInsecureCerts: opts.ignoreHTTPSErrors,
+                webSocketUrl: true,
+            },
         });
-        const browser = new BidiBrowser({
-            ...opts,
-            browserName,
-            browserVersion,
-        });
+        await session.subscribe(session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
+            ? BidiBrowser.subscribeModules
+            : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]);
+        const browser = new BidiBrowser(session.browser, opts);
+        browser.#initialize();
         await browser.#getTree();
         return browser;
     }
-    #browserName = '';
-    #browserVersion = '';
     #process;
     #closeCallback;
-    #connection;
+    #browserCore;
     #defaultViewport;
     #defaultContext;
     #targets = new Map();
@@ -82,27 +64,36 @@ export class BidiBrowser extends Browser {
         ['browsingContext.fragmentNavigated', this.#onContextNavigation.bind(this)],
         ['browsingContext.navigationStarted', this.#onContextNavigation.bind(this)],
     ]);
-    constructor(opts) {
+    constructor(browserCore, opts) {
         super();
         this.#process = opts.process;
         this.#closeCallback = opts.closeCallback;
-        this.#connection = opts.connection;
+        this.#browserCore = browserCore;
         this.#defaultViewport = opts.defaultViewport;
-        this.#browserName = opts.browserName;
-        this.#browserVersion = opts.browserVersion;
-        this.#process?.once('close', () => {
-            this.#connection.dispose();
-            this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
-        });
         this.#defaultContext = new BidiBrowserContext(this, {
             defaultViewport: this.#defaultViewport,
             isDefault: true,
         });
         this.#browserTarget = new BiDiBrowserTarget(this.#defaultContext);
         this.#contexts.push(this.#defaultContext);
+    }
+    #initialize() {
+        this.#browserCore.once('disconnected', () => {
+            this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
+        });
+        this.#process?.once('close', async () => {
+            this.#browserCore.dispose('Browser process exited.', true);
+            this.connection.dispose();
+        });
         for (const [eventName, handler] of this.#connectionEventHandlers) {
-            this.#connection.on(eventName, handler);
+            this.connection.on(eventName, handler);
         }
+    }
+    get #browserName() {
+        return this.#browserCore.session.capabilities.browserName;
+    }
+    get #browserVersion() {
+        return this.#browserCore.session.capabilities.browserVersion;
     }
     userAgent() {
         throw new UnsupportedOperation();
@@ -121,8 +112,8 @@ export class BidiBrowser extends Browser {
         }
     }
     #onContextCreated(event) {
-        const context = new BrowsingContext(this.#connection, event, this.#browserName);
-        this.#connection.registerBrowsingContexts(context);
+        const context = new BrowsingContext(this.connection, event, this.#browserName);
+        this.connection.registerBrowsingContexts(context);
         // TODO: once more browsing context types are supported, this should be
         // updated to support those. Currently, all top-level contexts are treated
         // as pages.
@@ -137,19 +128,19 @@ export class BidiBrowser extends Browser {
         this.emit("targetcreated" /* BrowserEvent.TargetCreated */, target);
         target.browserContext().emit("targetcreated" /* BrowserContextEvent.TargetCreated */, target);
         if (context.parent) {
-            const topLevel = this.#connection.getTopLevelContext(context.parent);
+            const topLevel = this.connection.getTopLevelContext(context.parent);
             topLevel.emit(BrowsingContextEvent.Created, context);
         }
     }
     async #getTree() {
-        const { result } = await this.#connection.send('browsingContext.getTree', {});
+        const { result } = await this.connection.send('browsingContext.getTree', {});
         for (const context of result.contexts) {
             this.#onContextCreated(context);
         }
     }
     async #onContextDestroyed(event) {
-        const context = this.#connection.getBrowsingContext(event.context);
-        const topLevelContext = this.#connection.getTopLevelContext(event.context);
+        const context = this.connection.getBrowsingContext(event.context);
+        const topLevelContext = this.connection.getTopLevelContext(event.context);
         topLevelContext.emit(BrowsingContextEvent.Destroyed, context);
         const target = this.#targets.get(event.context);
         const page = await target?.page();
@@ -161,25 +152,33 @@ export class BidiBrowser extends Browser {
         }
     }
     get connection() {
-        return this.#connection;
+        // SAFETY: We only have one implementation.
+        return this.#browserCore.session.connection;
     }
     wsEndpoint() {
-        return this.#connection.url;
+        return this.connection.url;
     }
     async close() {
         for (const [eventName, handler] of this.#connectionEventHandlers) {
-            this.#connection.off(eventName, handler);
+            this.connection.off(eventName, handler);
         }
-        if (this.#connection.closed) {
+        if (this.connection.closed) {
             return;
         }
-        // `browser.close` can close connection before the response is received.
-        await this.#connection.send('browser.close', {}).catch(debugError);
-        await this.#closeCallback?.call(null);
-        this.#connection.dispose();
+        try {
+            await this.#browserCore.close();
+            await this.#closeCallback?.call(null);
+        }
+        catch (error) {
+            // Fail silently.
+            debugError(error);
+        }
+        finally {
+            this.connection.dispose();
+        }
     }
     get connected() {
-        return !this.#connection.closed;
+        return !this.#browserCore.disposed;
     }
     process() {
         return this.#process ?? null;
@@ -232,13 +231,15 @@ export class BidiBrowser extends Browser {
     }
     async disconnect() {
         try {
-            // Fail silently if the session cannot be ended.
-            await this.#connection.send('session.end', {});
+            await this.#browserCore.session.end();
         }
-        catch (e) {
-            debugError(e);
+        catch (error) {
+            // Fail silently.
+            debugError(error);
         }
-        this.#connection.dispose();
+        finally {
+            this.connection.dispose();
+        }
     }
 }
 //# sourceMappingURL=Browser.js.map

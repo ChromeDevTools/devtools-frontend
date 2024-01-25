@@ -86,7 +86,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { transposeIterableHandle } from '../common/HandleIterator.js';
 import { LazyArg } from '../common/LazyArg.js';
-import { getPageContent, importFSPromises, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { importFSPromises, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { FunctionLocator, NodeLocator, } from './locators/locators.js';
@@ -558,7 +558,20 @@ let Frame = (() => {
          * The full HTML contents of the frame, including the DOCTYPE.
          */
         async content() {
-            return await this.evaluate(getPageContent);
+            return await this.evaluate(() => {
+                let content = '';
+                for (const node of document.childNodes) {
+                    switch (node) {
+                        case document.documentElement:
+                            content += document.documentElement.outerHTML;
+                            break;
+                        default:
+                            content += new XMLSerializer().serializeToString(node);
+                            break;
+                    }
+                }
+                return content;
+            });
         }
         /**
          * @internal

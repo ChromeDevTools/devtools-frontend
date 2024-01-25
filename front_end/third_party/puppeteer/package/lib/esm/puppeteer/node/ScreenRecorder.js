@@ -46,7 +46,7 @@ import { PassThrough } from 'stream';
 import debug from 'debug';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { debugError } from '../common/util.js';
+import { debugError, fromEmitterEvent } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 const CRF_VALUE = 30;
@@ -137,7 +137,7 @@ let ScreenRecorder = (() => {
             client.once(CDPSessionEvent.Disconnected, () => {
                 void this.stop().catch(debugError);
             });
-            this.#lastFrame = lastValueFrom(fromEvent(client, 'Page.screencastFrame').pipe(tap(event => {
+            this.#lastFrame = lastValueFrom(fromEmitterEvent(client, 'Page.screencastFrame').pipe(tap(event => {
                 void client.send('Page.screencastFrameAck', {
                     sessionId: event.sessionId,
                 });

@@ -8,6 +8,7 @@ export * from './AriaQueryHandler.js';
 export * from './Binding.js';
 export * from './Browser.js';
 export * from './BrowserConnector.js';
+export * from './cdp.js';
 export * from './CDPSession.js';
 export * from './ChromeTargetManager.js';
 export * from './Connection.js';
@@ -36,6 +37,6 @@ export * from './PredefinedNetworkConditions.js';
 export * from './Target.js';
 export * from './TargetManager.js';
 export * from './Tracing.js';
+export * from './utils.js';
 export * from './WebWorker.js';
-export * from './cdp.js';
 //# sourceMappingURL=cdp.js.map

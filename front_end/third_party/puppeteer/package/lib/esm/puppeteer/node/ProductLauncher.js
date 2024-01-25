@@ -7,6 +7,7 @@ import { existsSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, TimeoutError as BrowsersTimeoutError, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, computeExecutablePath, } from '@puppeteer/browsers';
+import { firstValueFrom, from, map, race, timer, } from '../../third_party/rxjs/rxjs.js';
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import { TimeoutError } from '../common/Errors.js';
@@ -143,7 +144,10 @@ export class ProductLauncher {
             }
         }
         else {
-            await browserProcess.close();
+            // Wait for a possible graceful shutdown.
+            await firstValueFrom(race(from(browserProcess.hasClosed()), timer(5000).pipe(map(() => {
+                return from(browserProcess.close());
+            }))));
         }
     }
     /**

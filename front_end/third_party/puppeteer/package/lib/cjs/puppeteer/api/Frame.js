@@ -561,7 +561,20 @@ let Frame = (() => {
          * The full HTML contents of the frame, including the DOCTYPE.
          */
         async content() {
-            return await this.evaluate(util_js_1.getPageContent);
+            return await this.evaluate(() => {
+                let content = '';
+                for (const node of document.childNodes) {
+                    switch (node) {
+                        case document.documentElement:
+                            content += document.documentElement.outerHTML;
+                            break;
+                        default:
+                            content += new XMLSerializer().serializeToString(node);
+                            break;
+                    }
+                }
+                return content;
+            });
         }
         /**
          * @internal

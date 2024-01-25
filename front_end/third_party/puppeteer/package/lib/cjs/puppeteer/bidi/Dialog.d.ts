@@ -18,7 +18,7 @@ export declare class BidiDialog extends Dialog {
     /**
      * @internal
      */
-    sendCommand(options: {
+    handle(options: {
         accept: boolean;
         text?: string;
     }): Promise<void>;

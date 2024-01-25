@@ -5,13 +5,14 @@
  */
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
-import { PuppeteerURL, SOURCE_URL_REGEX, createEvaluationError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, valueFromRemoteObject, } from '../common/util.js';
+import { PuppeteerURL, SOURCE_URL_REGEX, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, } from '../common/util.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
 import { ARIAQueryHandler } from './AriaQueryHandler.js';
 import { Binding } from './Binding.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';
+import { createEvaluationError, valueFromRemoteObject } from './utils.js';
 /**
  * @internal
  */

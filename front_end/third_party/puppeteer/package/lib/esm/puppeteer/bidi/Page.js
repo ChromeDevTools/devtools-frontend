@@ -58,7 +58,7 @@ import { Tracing } from '../cdp/Tracing.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, NETWORK_IDLE_TIME, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
+import { debugError, evaluationString, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
@@ -455,8 +455,8 @@ export class BidiPage extends Page {
         return this.#viewport;
     }
     async pdf(options = {}) {
-        const { path = undefined } = options;
-        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, timeout: ms, } = this._getPDFOptions(options, 'cm');
+        const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
+        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, } = parsePDFOptions(options, 'cm');
         const pageRanges = ranges ? ranges.split(', ') : [];
         const { result } = await firstValueFrom(from(this.#connection.send('browsingContext.print', {
             context: this.mainFrame()._id,

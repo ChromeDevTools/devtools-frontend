@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Connection } from '../cdp/Connection.js';
-import { UnsupportedOperation } from '../common/Errors.js';
+import { ProtocolError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
 /**
  * Users should never call this directly; it's called when calling `puppeteer.connect`
@@ -52,7 +52,7 @@ async function getBiDiConnection(connectionTransport, url, options) {
         }
     }
     catch (e) {
-        if (!('name' in e && e.name === 'ProtocolError')) {
+        if (!(e instanceof ProtocolError)) {
             // Unexpected exception not related to BiDi / CDP. Rethrow.
             throw e;
         }

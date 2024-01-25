@@ -15,7 +15,6 @@ import {
   first,
   firstValueFrom,
   from,
-  fromEvent,
   map,
   merge,
   of,
@@ -47,12 +46,7 @@ import {
 } from '../common/EventEmitter.js';
 import type {FileChooser} from '../common/FileChooser.js';
 import {NetworkManagerEvent} from '../common/NetworkManagerEvents.js';
-import {
-  paperFormats,
-  type LowerCasePaperFormat,
-  type ParsedPDFOptions,
-  type PDFOptions,
-} from '../common/PDFOptions.js';
+import type {PDFOptions} from '../common/PDFOptions.js';
 import {TimeoutSettings} from '../common/TimeoutSettings.js';
 import type {
   Awaitable,
@@ -63,15 +57,14 @@ import type {
 } from '../common/types.js';
 import {
   debugError,
+  fromEmitterEvent,
   importFSPromises,
-  isNumber,
   isString,
   timeout,
   withSourcePuppeteerURLIfNone,
 } from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import type {ScreenRecorder} from '../node/ScreenRecorder.js';
-import {assert} from '../util/assert.js';
 import {guarded} from '../util/decorators.js';
 import {
   AsyncDisposableStack,
@@ -609,7 +602,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @deprecated We no longer support intercepting drag payloads. Use the new
    * drag APIs found on {@link ElementHandle} to drag (or just use the
-   * {@link Page.mouse}).
+   * {@link Page | Page.mouse}).
    */
   abstract isDragInterceptionEnabled(): boolean;
 
@@ -838,7 +831,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @deprecated We no longer support intercepting drag payloads. Use the new
    * drag APIs found on {@link ElementHandle} to drag (or just use the
-   * {@link Page.mouse}).
+   * {@link Page | Page.mouse}).
    */
   abstract setDragInterception(enabled: boolean): Promise<void>;
 
@@ -1684,25 +1677,16 @@ export abstract class Page extends EventEmitter<PageEvents> {
     requestsInFlight = 0
   ): Observable<void> {
     return merge(
-      fromEvent(
-        networkManager,
-        NetworkManagerEvent.Request as unknown as string
-      ) as Observable<void>,
-      fromEvent(
-        networkManager,
-        NetworkManagerEvent.Response as unknown as string
-      ) as Observable<void>,
-      fromEvent(
-        networkManager,
-        NetworkManagerEvent.RequestFailed as unknown as string
-      ) as Observable<void>
+      fromEmitterEvent(networkManager, NetworkManagerEvent.Request),
+      fromEmitterEvent(networkManager, NetworkManagerEvent.Response),
+      fromEmitterEvent(networkManager, NetworkManagerEvent.RequestFailed)
     ).pipe(
       startWith(undefined),
       filter(() => {
         return networkManager.inFlightRequestsCount() <= requestsInFlight;
       }),
-      switchMap(v => {
-        return of(v).pipe(delay(idleTime));
+      switchMap(() => {
+        return of(undefined).pipe(delay(idleTime));
       })
     );
   }
@@ -1732,15 +1716,15 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
     return await firstValueFrom(
       merge(
-        fromEvent(this, PageEvent.FrameAttached) as Observable<Frame>,
-        fromEvent(this, PageEvent.FrameNavigated) as Observable<Frame>,
+        fromEmitterEvent(this, PageEvent.FrameAttached),
+        fromEmitterEvent(this, PageEvent.FrameNavigated),
         from(this.frames())
       ).pipe(
         filterAsync(urlOrPredicate),
         first(),
         raceWith(
           timeout(ms),
-          fromEvent(this, PageEvent.Close).pipe(
+          fromEmitterEvent(this, PageEvent.Close).pipe(
             map(() => {
               throw new TargetCloseError('Page closed.');
             })
@@ -2057,7 +2041,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * This is either the viewport set with the previous {@link Page.setViewport}
    * call or the default viewport set via
-   * {@link BrowserConnectOptions.defaultViewport}.
+   * {@link BrowserConnectOptions | BrowserConnectOptions.defaultViewport}.
    */
   abstract viewport(): Viewport | null;
 
@@ -2498,60 +2482,6 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * @internal
    */
   abstract _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
-
-  /**
-   * @internal
-   */
-  _getPDFOptions(
-    options: PDFOptions = {},
-    lengthUnit: 'in' | 'cm' = 'in'
-  ): ParsedPDFOptions {
-    const defaults: Omit<ParsedPDFOptions, 'width' | 'height' | 'margin'> = {
-      scale: 1,
-      displayHeaderFooter: false,
-      headerTemplate: '',
-      footerTemplate: '',
-      printBackground: false,
-      landscape: false,
-      pageRanges: '',
-      preferCSSPageSize: false,
-      omitBackground: false,
-      timeout: 30000,
-      tagged: false,
-    };
-
-    let width = 8.5;
-    let height = 11;
-    if (options.format) {
-      const format =
-        paperFormats[options.format.toLowerCase() as LowerCasePaperFormat];
-      assert(format, 'Unknown paper format: ' + options.format);
-      width = format.width;
-      height = format.height;
-    } else {
-      width = convertPrintParameterToInches(options.width, lengthUnit) ?? width;
-      height =
-        convertPrintParameterToInches(options.height, lengthUnit) ?? height;
-    }
-
-    const margin = {
-      top: convertPrintParameterToInches(options.margin?.top, lengthUnit) || 0,
-      left:
-        convertPrintParameterToInches(options.margin?.left, lengthUnit) || 0,
-      bottom:
-        convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
-      right:
-        convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
-    };
-
-    return {
-      ...defaults,
-      ...options,
-      width,
-      height,
-      margin,
-    };
-  }
 
   /**
    * Generates a PDF of the page with the `print` CSS media type.
@@ -3016,50 +2946,6 @@ export const supportedMetrics = new Set<string>([
   'JSHeapUsedSize',
   'JSHeapTotalSize',
 ]);
-
-/**
- * @internal
- */
-export const unitToPixels = {
-  px: 1,
-  in: 96,
-  cm: 37.8,
-  mm: 3.78,
-};
-
-function convertPrintParameterToInches(
-  parameter?: string | number,
-  lengthUnit: 'in' | 'cm' = 'in'
-): number | undefined {
-  if (typeof parameter === 'undefined') {
-    return undefined;
-  }
-  let pixels;
-  if (isNumber(parameter)) {
-    // Treat numbers as pixel values to be aligned with phantom's paperSize.
-    pixels = parameter;
-  } else if (isString(parameter)) {
-    const text = parameter;
-    let unit = text.substring(text.length - 2).toLowerCase();
-    let valueText = '';
-    if (unit in unitToPixels) {
-      valueText = text.substring(0, text.length - 2);
-    } else {
-      // In case of unknown unit try to parse the whole parameter as number of pixels.
-      // This is consistent with phantom's paperSize behavior.
-      unit = 'px';
-      valueText = text;
-    }
-    const value = Number(valueText);
-    assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
-    pixels = value * unitToPixels[unit as keyof typeof unitToPixels];
-  } else {
-    throw new Error(
-      'page.pdf() Cannot handle parameter type: ' + typeof parameter
-    );
-  }
-  return pixels / unitToPixels[lengthUnit];
-}
 
 /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
 function normalizeRectangle<BoundingBoxType extends BoundingBox>(

@@ -24,6 +24,7 @@ __exportStar(require("./AriaQueryHandler.js"), exports);
 __exportStar(require("./Binding.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserConnector.js"), exports);
+__exportStar(require("./cdp.js"), exports);
 __exportStar(require("./CDPSession.js"), exports);
 __exportStar(require("./ChromeTargetManager.js"), exports);
 __exportStar(require("./Connection.js"), exports);
@@ -52,6 +53,6 @@ __exportStar(require("./PredefinedNetworkConditions.js"), exports);
 __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
 __exportStar(require("./Tracing.js"), exports);
+__exportStar(require("./utils.js"), exports);
 __exportStar(require("./WebWorker.js"), exports);
-__exportStar(require("./cdp.js"), exports);
 //# sourceMappingURL=cdp.js.map

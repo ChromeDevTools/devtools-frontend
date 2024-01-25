@@ -57,6 +57,7 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const Mutex_js_1 = require("../util/Mutex.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
+const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
@@ -142,7 +143,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
                         name,
                         executionContextId: context._contextId,
                     });
-                await context.evaluate(util_js_1.addPageBinding, 'internal', name);
+                await context.evaluate(utils_js_1.addPageBinding, 'internal', name);
                 this.#contextBindings.add(name);
             }
             catch (error) {

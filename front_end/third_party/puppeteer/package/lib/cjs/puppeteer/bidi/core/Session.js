@@ -1,0 +1,199 @@
+"use strict";
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Session = void 0;
+const EventEmitter_js_1 = require("../../common/EventEmitter.js");
+const util_js_1 = require("../../common/util.js");
+const decorators_js_1 = require("../../util/decorators.js");
+const disposable_js_1 = require("../../util/disposable.js");
+const Browser_js_1 = require("./Browser.js");
+// TODO: Once Chrome supports session.status properly, uncomment this block.
+// const MAX_RETRIES = 5;
+/**
+ * @internal
+ */
+let Session = (() => {
+    let _classSuper = EventEmitter_js_1.EventEmitter;
+    let _instanceExtraInitializers = [];
+    let _dispose_decorators;
+    let _send_decorators;
+    let _subscribe_decorators;
+    let _end_decorators;
+    return class Session extends _classSuper {
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _send_decorators, { kind: "method", name: "send", static: false, private: false, access: { has: obj => "send" in obj, get: obj => obj.send }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _subscribe_decorators, { kind: "method", name: "subscribe", static: false, private: false, access: { has: obj => "subscribe" in obj, get: obj => obj.subscribe }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _end_decorators, { kind: "method", name: "end", static: false, private: false, access: { has: obj => "end" in obj, get: obj => obj.end }, metadata: _metadata }, null, _instanceExtraInitializers);
+            if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        }
+        static async from(connection, capabilities) {
+            // Wait until the session is ready.
+            //
+            // TODO: Once Chrome supports session.status properly, uncomment this block
+            // and remove `getBiDiConnection` in BrowserConnector.
+            // let status = {message: '', ready: false};
+            // for (let i = 0; i < MAX_RETRIES; ++i) {
+            //   status = (await connection.send('session.status', {})).result;
+            //   if (status.ready) {
+            //     break;
+            //   }
+            //   // Backoff a little bit each time.
+            //   await new Promise(resolve => {
+            //     return setTimeout(resolve, (1 << i) * 100);
+            //   });
+            // }
+            // if (!status.ready) {
+            //   throw new Error(status.message);
+            // }
+            let result;
+            try {
+                result = (await connection.send('session.new', {
+                    capabilities,
+                })).result;
+            }
+            catch (err) {
+                // Chrome does not support session.new.
+                (0, util_js_1.debugError)(err);
+                result = {
+                    sessionId: '',
+                    capabilities: {
+                        acceptInsecureCerts: false,
+                        browserName: '',
+                        browserVersion: '',
+                        platformName: '',
+                        setWindowRect: false,
+                        webSocketUrl: '',
+                    },
+                };
+            }
+            const session = new Session(connection, result);
+            await session.#initialize();
+            return session;
+        }
+        // keep-sorted start
+        #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #disposables = new disposable_js_1.DisposableStack();
+        #info;
+        browser;
+        connection;
+        // keep-sorted end
+        constructor(connection, info) {
+            super();
+            // keep-sorted start
+            this.#info = info;
+            this.connection = connection;
+            // keep-sorted end
+        }
+        async #initialize() {
+            this.connection.pipeTo(this);
+            // SAFETY: We use `any` to allow assignment of the readonly property.
+            this.browser = await Browser_js_1.Browser.from(this);
+            const browserEmitter = this.#disposables.use(this.browser);
+            browserEmitter.once('closed', ({ reason }) => {
+                this.dispose(reason);
+            });
+        }
+        // keep-sorted start block=yes
+        get capabilities() {
+            return this.#info.capabilities;
+        }
+        get disposed() {
+            return this.ended;
+        }
+        get ended() {
+            return this.#reason !== undefined;
+        }
+        get id() {
+            return this.#info.sessionId;
+        }
+        // keep-sorted end
+        dispose(reason) {
+            this.#reason = reason;
+            this[disposable_js_1.disposeSymbol]();
+        }
+        pipeTo(emitter) {
+            this.connection.pipeTo(emitter);
+        }
+        /**
+         * Currently, there is a 1:1 relationship between the session and the
+         * session. In the future, we might support multiple sessions and in that
+         * case we always needs to make sure that the session for the right session
+         * object is used, so we implement this method here, although it's not defined
+         * in the spec.
+         */
+        async send(method, params) {
+            return await this.connection.send(method, params);
+        }
+        async subscribe(events) {
+            await this.send('session.subscribe', {
+                events,
+            });
+        }
+        async end() {
+            try {
+                await this.send('session.end', {});
+            }
+            finally {
+                this.dispose(`Session already ended.`);
+            }
+        }
+        [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _send_decorators = [(0, decorators_js_1.throwIfDisposed)(session => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return session.#reason;
+            })], _subscribe_decorators = [(0, decorators_js_1.throwIfDisposed)(session => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return session.#reason;
+            })], _end_decorators = [(0, decorators_js_1.throwIfDisposed)(session => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return session.#reason;
+            })], disposable_js_1.disposeSymbol)]() {
+            this.#reason ??=
+                'Session already destroyed, probably because the connection broke.';
+            this.emit('ended', { reason: this.#reason });
+            this.#disposables.dispose();
+            super[disposable_js_1.disposeSymbol]();
+        }
+    };
+})();
+exports.Session = Session;
+//# sourceMappingURL=Session.js.map

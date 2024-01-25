@@ -22,7 +22,7 @@ class BidiDialog extends Dialog_js_1.Dialog {
     /**
      * @internal
      */
-    async sendCommand(options) {
+    async handle(options) {
         await this.#context.connection.send('browsingContext.handleUserPrompt', {
             context: this.#context.id,
             accept: options.accept,

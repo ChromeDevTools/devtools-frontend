@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { debugError, valueFromRemoteObject } from '../common/util.js';
+import { debugError } from '../common/util.js';
+import { valueFromRemoteObject } from './utils.js';
 /**
  * @internal
  */

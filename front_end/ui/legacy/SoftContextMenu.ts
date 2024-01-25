@@ -124,8 +124,9 @@ export class SoftContextMenu {
     this.contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
     this.contextMenuElement.addEventListener('keydown', this.menuKeyDown.bind(this), false);
 
+    const menuContainsCheckbox = this.items.find(item => item.type === 'checkbox') ? true : false;
     for (let i = 0; i < this.items.length; ++i) {
-      this.contextMenuElement.appendChild(this.createMenuItem(this.items[i]));
+      this.contextMenuElement.appendChild(this.createMenuItem(this.items[i], menuContainsCheckbox));
     }
 
     this.glassPane.show(document);
@@ -209,7 +210,7 @@ export class SoftContextMenu {
     this.onMenuClosed?.();
   }
 
-  private createMenuItem(item: SoftContextMenuDescriptor): HTMLElement {
+  private createMenuItem(item: SoftContextMenuDescriptor, menuContainsCheckbox: boolean): HTMLElement {
     if (item.type === 'separator') {
       return this.createSeparator();
     }
@@ -225,11 +226,15 @@ export class SoftContextMenu {
     if (item.checked) {
       menuItemElement.setAttribute('checked', '');
     }
-    const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark');
     if (item.id !== undefined) {
       menuItemElement.setAttribute('data-action-id', item.id.toString());
     }
-    menuItemElement.appendChild(checkMarkElement);
+
+    // If the menu contains a checkbox, add checkbox space in front of the label to align the items
+    if (menuContainsCheckbox) {
+      const checkMarkElement = IconButton.Icon.create('checkmark', 'checkmark');
+      menuItemElement.appendChild(checkMarkElement);
+    }
     if (item.tooltip) {
       Tooltip.install(menuItemElement, item.tooltip);
     }

@@ -1081,6 +1081,7 @@ export enum DevtoolsExperiments {
   'ignoreListJSFramesOnTimeline' = 43,
   'contrastIssues' = 44,
   'experimentalCookieFeatures' = 45,
+  'cssTypeComponentLength' = 52,
   'stylesPaneCSSChanges' = 55,
   'evaluateExpressionsWithSourceMaps' = 58,
   'instrumentationBreakpoints' = 61,

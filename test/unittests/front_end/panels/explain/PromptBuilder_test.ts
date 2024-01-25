@@ -4,7 +4,6 @@
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
@@ -292,23 +291,6 @@ bc @ react-dom.production.min.js:73`;
     const EXAMPLE_RELATED_CODE3 = `if (10 < 120)) {
   console.log('test')
 }`;
-    const SEARCH_ANSWERS_HEADER = '### Suggestions:';
-    const EXAMPLE_SEARCH_ANSWERS1 =
-        `- This is due to this.delta not being bound to this. In order to bind set this.delta = this.delta.bind(this) in the constructor: constructor(props) { super(props); this.state = { count : 1 };...
-- In ES7+ (ES2016) you can use the experimental function bind syntax operator :: to bind. It is a syntactic sugar and will do the same as Davin Tryon's answer. You can then rewrite this.delta...
-- There is a difference of context between ES5 and ES6 class. So, there will be a little difference between the implementations as well. Here is the ES5 version: var Counter = React.createClass({...
-- You dont have to bind anything, Just use Arrow functions like this: class Counter extends React.Component { constructor(props) { super(props); this.state = { count: 1 }; } //ARROW FUNCTION...`;
-    const EXAMPLE_SEARCH_ANSWERS2 =
-        `- You have to place the hello div before the script, so that it exists when the script is loaded.
-- Let us first try to understand the root cause as to why it is happening in first place. Why do I get an error or Uncaught TypeError: Cannot set property 'innerHTML' of null? The browser always...
-- You could tell javascript to perform the action \"onload\"... Try with this: \u003cscript type =\"text/javascript\"\u003e window.onload = function what(){ document.getElementById('hello').innerHTML = 'hi';...
-- Just put your JS in window.onload window.onload = function() { what(); function what() { document.getElementById('hello').innerHTML = 'hi'; }; }`;
-    const EXAMPLE_SEARCH_ANSWERS3 =
-        `- this is the way to re export default import as default export, export {default} from './Component'
-- In your index.js. export default from './component'"
-- Unexpected token errors in ESLint parsing occur due to incompatibility between your development environment and ESLint's current parsing capabilities with the ongoing changes with JavaScripts...
-- In my case (im using Firebase Cloud Functions) i opened .eslintrc.json and changed: \"parserOptions\": { // Required for certain syntax usages \"ecmaVersion\": 2017 }, to: \"parserOptions\": { //..."`;
-
     const EXPLANATION_HEADER = '### Summary:';
     const EXAMPLE_EXPLANATION1 =
         'The error occurs because this.delta is not bound to the instance of the Counter component. The fix is it to change the code to be ` this.delta = this.delta.bind(this);`';
@@ -572,101 +554,6 @@ bc @ react-dom.production.min.js:73`;
 
       assert.deepStrictEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
-    });
-
-    it('builds a prompt with search results', async () => {
-      const API_KEY = 'Nothing to look for here';
-      Root.Runtime.Runtime.setQueryParamForTesting('aidaApiKey', API_KEY);
-
-      const ERROR_MESSAGE = 'kaboom!';
-      const ANSWER1 = 'ANSWER1';
-      const ANSWER2 = 'ANSWER2';
-      const ANSWER3 = 'ANSWER3';
-      const ANSWER4 = 'ANSWER4';
-      const ANSWER5 = 'ANSWER5';
-      const SEARCH_RESULTS = {
-        items: [
-          {pagemap: {}},
-          {
-            pagemap: {
-              question: ['foo', 'bar'],
-              answer: [{text: ANSWER1}, {text: ANSWER2}],
-            },
-          },
-          {},
-          {
-            pagemap: {
-              question: ['baz'],
-              answer: [{text: ANSWER3}, {text: ANSWER4}],
-            },
-          },
-          {
-            pagemap: {
-              question: ['qux'],
-              answer: [{text: ANSWER5}],
-            },
-          },
-          {},
-        ],
-      };
-      const SEARCH_ANSWERS = [
-        `  * ${ANSWER1}`,
-        `  * ${ANSWER2}`,
-        `  * ${ANSWER3}`,
-        `  * ${ANSWER4}`,
-      ].join('\n');
-
-      sinon.stub(window, 'fetch')
-          .withArgs(`https://customsearch.googleapis.com/customsearch/v1?cx=f499de4cd70e644b1&key=${API_KEY}&q="${
-              ERROR_MESSAGE}"`)
-          .resolves(new window.Response(
-              JSON.stringify(SEARCH_RESULTS), {status: 200, headers: {'Content-type': 'application/json'}}));
-
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const messageDetails = {
-        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
-      };
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
-          messageDetails);
-      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
-      const promptBuilder = new Explain.PromptBuilder(message);
-      const {prompt, sources} = await promptBuilder.buildPrompt();
-      assert.strictEqual(prompt, [
-        '',
-        PREAMBLE,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE1,
-        SEARCH_ANSWERS_HEADER,
-        EXAMPLE_SEARCH_ANSWERS1,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION1,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE2,
-        SEARCH_ANSWERS_HEADER,
-        EXAMPLE_SEARCH_ANSWERS2,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION2,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE3,
-        SEARCH_ANSWERS_HEADER,
-        EXAMPLE_SEARCH_ANSWERS3,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION3,
-        '',
-        MESSAGE_HEADER,
-        ERROR_MESSAGE,
-        SEARCH_ANSWERS_HEADER,
-        SEARCH_ANSWERS,
-        EXPLANATION_HEADER,
-        '',
-      ].join('\n'));
-
-      assert.deepStrictEqual(
-          sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'searchAnswers', value: SEARCH_ANSWERS}]);
     });
   });
 });

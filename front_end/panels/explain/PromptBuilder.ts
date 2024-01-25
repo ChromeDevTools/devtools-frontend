@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Formatter from '../../models/formatter/formatter.js';
@@ -17,7 +16,6 @@ export enum SourceType {
   STACKTRACE = 'stacktrace',
   NETWORK_REQUEST = 'networkRequest',
   RELATED_CODE = 'relatedCode',
-  SEARCH_ANSWERS = 'searchAnswers',
 }
 
 export interface Source {
@@ -27,38 +25,9 @@ export interface Source {
 
 export class PromptBuilder {
   #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
-  #cachedSearchResults?: string;
 
   constructor(consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage) {
     this.#consoleMessage = consoleMessage;
-  }
-
-  async getSearchAnswers(): Promise<string> {
-    if (this.#cachedSearchResults !== undefined) {
-      return this.#cachedSearchResults;
-    }
-    const apiKey = Root.Runtime.Runtime.queryParam('aidaApiKey');
-    if (!apiKey) {
-      return '';
-    }
-    const consoleMessage = this.#consoleMessage.consoleMessage().messageText;
-    const response = await fetch(`https://customsearch.googleapis.com/customsearch/v1?cx=f499de4cd70e644b1&key=${
-        apiKey}&q="${encodeURIComponent(consoleMessage)}"`);
-    const parsedResponse = await response.json();
-    const result = [];
-    for (const item of parsedResponse.items || []) {
-      if (!item.pagemap?.question?.length || !item.pagemap?.answer) {
-        continue;
-      }
-      for (let i = 0; i < Math.min(item.pagemap?.answer?.length, 3); ++i) {
-        result.push('  * ' + item.pagemap?.answer[i].text);
-      }
-      if (result.length >= 4) {
-        break;
-      }
-    }
-    this.#cachedSearchResults = result.join('\n');
-    return this.#cachedSearchResults;
   }
 
   async getNetworkRequest(): Promise<SDK.NetworkRequest.NetworkRequest|undefined> {
@@ -103,10 +72,9 @@ export class PromptBuilder {
 
   async buildPrompt(sourcesTypes: SourceType[] = Object.values(SourceType)):
       Promise<{prompt: string, sources: Source[]}> {
-    const [sourceCode, request, searchAnswers] = await Promise.all([
+    const [sourceCode, request] = await Promise.all([
       sourcesTypes.includes(SourceType.RELATED_CODE) ? this.getMessageSourceCode() : undefined,
       sourcesTypes.includes(SourceType.NETWORK_REQUEST) ? this.getNetworkRequest() : undefined,
-      sourcesTypes.includes(SourceType.SEARCH_ANSWERS) ? this.getSearchAnswers() : '',
     ]);
 
     const relatedCode = sourceCode?.text ? formatRelatedCode(sourceCode) : '';
@@ -119,7 +87,6 @@ export class PromptBuilder {
       message: [message, stacktrace].join('\n').trim(),
       relatedCode,
       relatedRequest,
-      searchAnswers,
     });
 
     const sources = [
@@ -150,25 +117,17 @@ export class PromptBuilder {
       });
     }
 
-    if (searchAnswers) {
-      sources.push({
-        type: SourceType.SEARCH_ANSWERS,
-        value: searchAnswers,
-      });
-    }
-
     return {
       prompt,
       sources,
     };
   }
 
-  formatPrompt({message, relatedCode, relatedRequest, searchAnswers}:
-                   {message: string, relatedCode: string, relatedRequest: string, searchAnswers: string}): string {
+  formatPrompt({message, relatedCode, relatedRequest}: {message: string, relatedCode: string, relatedRequest: string}):
+      string {
     const messageHeader = '### Console message:';
     const relatedCodeHeader = '### Code that generated the error:';
     const relatedRequestHeader = '### Related network request:';
-    const searchAnswersHeader = '### Suggestions:';
     const explanationHeader = '### Summary:';
 
     const preamble = `
@@ -294,9 +253,6 @@ bc @ react-dom.production.min.js:73`,
       if (relatedRequest && example.relatedRequest) {
         result.push(relatedRequestHeader, example.relatedRequest);
       }
-      if (searchAnswers) {
-        result.push(searchAnswersHeader, example.searchAnswers);
-      }
       result.push(explanationHeader, example.explanation);
       return result.join('\n');
     };
@@ -305,7 +261,7 @@ bc @ react-dom.production.min.js:73`,
 
 ${fewShotExamples.map(formatExample).join('\n\n')}
 
-${formatExample({message, relatedCode, relatedRequest, searchAnswers, explanation: ''})}`;
+${formatExample({message, relatedCode, relatedRequest, explanation: ''})}`;
   }
 }
 

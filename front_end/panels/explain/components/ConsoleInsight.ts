@@ -61,10 +61,6 @@ const UIStrings = {
    */
   relatedCode: 'Related code',
   /**
-   * @description The title of the insight source "Google search answers".
-   */
-  searchAnswers: 'Google search answers',
-  /**
    * @description The text appearing before the list of sources that DevTools
    * could collect based on a console message. If the user clicks the button
    * related to the text, these sources will be used to generate insights.
@@ -186,8 +182,6 @@ function localizeType(sourceType: SourceType): string {
       return i18nString(UIStrings.networkRequest);
     case SourceType.RELATED_CODE:
       return i18nString(UIStrings.relatedCode);
-    case SourceType.SEARCH_ANSWERS:
-      return i18nString(UIStrings.searchAnswers);
   }
 }
 

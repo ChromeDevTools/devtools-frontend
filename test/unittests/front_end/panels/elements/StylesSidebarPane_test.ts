@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
@@ -229,6 +230,7 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
   });
 
   it('parses lengths correctly', () => {
+    Root.Runtime.experiments.enableForTest('cssTypeComponentLength');
     const renderer =
         new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'width', 'calc(6em + 7em)');
     renderer.setLengthHandler(() => document.createTextNode('MATCH'));

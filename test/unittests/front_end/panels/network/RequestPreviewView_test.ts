@@ -49,7 +49,7 @@ describeWithLocale('RequestPreviewView', () => {
         () => Promise.resolve(new SDK.ContentData.ContentData(
             '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>', false, 'text/html', 'utf-16')));
     request.mimeType = SDK.MimeType.MimeType.HTML;
-    request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
+    request.setCharset('utf-16');
 
     assert.strictEqual(request.charset(), 'utf-16');
 
@@ -73,7 +73,7 @@ describeWithLocale('RequestPreviewView', () => {
             '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
             true, 'text/html', 'utf-16')));
     request.mimeType = SDK.MimeType.MimeType.HTML;
-    request.responseHeaders = [{name: 'Content-Type', value: 'text/html; charset=utf-16'}];
+    request.setCharset('utf-16');
 
     assert.strictEqual(request.charset(), 'utf-16');
 

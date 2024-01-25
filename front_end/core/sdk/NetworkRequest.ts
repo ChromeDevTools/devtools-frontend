@@ -43,7 +43,6 @@ import {Attributes, type Cookie} from './Cookie.js';
 import {CookieModel} from './CookieModel.js';
 import {CookieParser} from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
-import {parseContentType} from './MimeType.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {ServerTiming} from './ServerTiming.js';
 import {Type} from './Target.js';
@@ -277,6 +276,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #canceledInternal!: boolean;
   #preservedInternal!: boolean;
   #mimeTypeInternal!: string;
+  #charset!: string;
   #parsedURLInternal!: Common.ParsedURL.ParsedURL;
   #nameInternal!: string|undefined;
   #pathInternal!: string|undefined;
@@ -1474,12 +1474,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   charset(): string|null {
-    const contentTypeHeader = this.responseHeaderValue('content-type');
-    if (!contentTypeHeader) {
-      return null;
-    }
+    return this.#charset ?? null;
+  }
 
-    return parseContentType(contentTypeHeader)?.charset;
+  setCharset(charset: string): void {
+    this.#charset = charset;
   }
 
   addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void {

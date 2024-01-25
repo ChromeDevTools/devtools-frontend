@@ -213,6 +213,31 @@ export class NetworkManager extends SDKModel<EventTypes> {
         response.body, response.base64Encoded, request.mimeType, request.charset() ?? undefined);
   }
 
+  /**
+   * Returns the already received bytes for an in-flight request. After calling this method
+   * "dataReceived" events will contain additional data.
+   */
+  static async streamResponseBody(request: NetworkRequest): Promise<ContentDataOrError> {
+    if (request.finished) {
+      return {error: 'Streaming the response body is only available for in-flight requests.'};
+    }
+    const manager = NetworkManager.forRequest(request);
+    if (!manager) {
+      return {error: 'No network manager for request'};
+    }
+    const requestId = request.backendRequestId();
+    if (!requestId) {
+      return {error: 'No backend request id for request'};
+    }
+    const response = await manager.#networkAgent.invoke_streamResourceContent({requestId});
+    const error = response.getError();
+    if (error) {
+      return {error};
+    }
+    return new ContentDataClass(
+        response.bufferedData, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
+  }
+
   static async requestPostData(request: NetworkRequest): Promise<string|null> {
     const manager = NetworkManager.forRequest(request);
     if (!manager) {

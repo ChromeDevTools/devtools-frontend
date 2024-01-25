@@ -131,11 +131,12 @@ export const mochaHooks = {
     reports.create('json-summary').execute(context);
   },
   // In both modes, run before each test.
-  beforeEach: async function(this: Mocha.Suite) {
+  beforeEach: async function(this: Mocha.Context) {
     // Sets the timeout higher for this hook only.
     this.timeout(20000);
-    await watchForHang(resetPages);
-    await watchForHang(unregisterAllServiceWorkers);
+    const currentTest = this.currentTest?.fullTitle();
+    await watchForHang(currentTest, resetPages);
+    await watchForHang(currentTest, unregisterAllServiceWorkers);
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.

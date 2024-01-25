@@ -215,88 +215,9 @@ export const y = "";
           {forceNew: true, resourceMapping, targetManager});
     });
 
-    const PREAMBLE = `You are an expert software engineer looking at a console message in DevTools.
-
-You will follow these rules strictly:
-- Answer the question as truthfully as possible using the provided context
-- if you don't have the answer, say "I don't know" and suggest looking for this information
-  elsewhere
-- Start with the explanation immediately without repeating the given console message.
-- Always wrap code with three backticks (\`\`\`)`;
-
-    const MESSAGE_HEADER = '### Console message:';
-    const EXAMPLE_MESSAGE1 =
-        `Uncaught TypeError: Cannot read properties of undefined (reading 'setState') at home.jsx:15
-    at delta (home.jsx:15:14)
-    at Object.Dc (react-dom.production.min.js:54:317)
-    at Fc (react-dom.production.min.js:54:471)
-    at jc (react-dom.production.min.js:55:35)
-    at ai (react-dom.production.min.js:105:68)
-    at Ks (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at Pu (react-dom.production.min.js:274:42)
-    at vs (react-dom.production.min.js:52:375)
-    at Dl (react-dom.production.min.js:109:469)
-delta @ home.jsx:15
-
-
-Dc @ react-dom.production.min.js:54
-Fc @ react-dom.production.min.js:54
-jc @ react-dom.production.min.js:55
-ai @ react-dom.production.min.js:105
-Ks @ react-dom.production.min.js:106
-(anonymous) @ react-dom.production.min.js:117
-Pu @ react-dom.production.min.js:274
-vs @ react-dom.production.min.js:52
-Dl @ react-dom.production.min.js:109
-eu @ react-dom.production.min.js:74
-bc @ react-dom.production.min.js:73`;
-    const EXAMPLE_MESSAGE2 = `Uncaught TypeError: Cannot set properties of null(setting 'innerHTML')
-        at(index): 57: 49(anonymous) @(index): 57 `;
-    const EXAMPLE_MESSAGE3 = 'Uncaught SyntaxError: Unexpected token \')\' (at script.js:39:14)';
-    const RELATED_CODE_HEADER = '### Code that generated the error:';
-    const RELATED_REQUEST_HEADER = '### Related network request:';
-
-    const EXAMPLE_RELATED_CODE1 = `class Counter extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            count : 1
-        };
-
-        this.delta.bind(this);
-    }
-
-    delta() {
-        this.setState({
-            count : this.state.count++
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>{this.state.count}</h1>
-                <button onClick={this.delta}>+</button>
-            </div>
-        );
-    }
-}`;
-    const EXAMPLE_RELATED_CODE2 = `<script>
-      document.getElementById("test").innerHTML = "Element does not exist";
-    </script>
-    <div id="test"></div>`;
-
-    const EXAMPLE_RELATED_CODE3 = `if (10 < 120)) {
-  console.log('test')
-}`;
-    const EXPLANATION_HEADER = '### Summary:';
-    const EXAMPLE_EXPLANATION1 =
-        'The error occurs because this.delta is not bound to the instance of the Counter component. The fix is it to change the code to be ` this.delta = this.delta.bind(this);`';
-    const EXAMPLE_EXPLANATION2 =
-        'The error means that getElementById returns null instead of the div element. This happens because the script runs before the element is added to the DOM.';
-    const EXAMPLE_EXPLANATION3 = 'There is an extra closing `)`. Remove it to fix the issue.';
+    const PREAMBLE = 'Why does browser show an error';
+    const RELATED_CODE_PREFIX = 'For the following code in my web app';
+    const RELATED_NETWORK_REQUEST_PREFIX = 'For the following network request in my web app';
 
     it('builds a simple prompt', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
@@ -311,28 +232,8 @@ bc @ react-dom.production.min.js:73`;
       const promptBuilder = new Explain.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
-        '',
         PREAMBLE,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE1,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION1,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE2,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION2,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE3,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION3,
-        '',
-        MESSAGE_HEADER,
         ERROR_MESSAGE,
-        EXPLANATION_HEADER,
-        '',
       ].join('\n'));
       assert.deepStrictEqual(sources, [{type: 'message', value: ERROR_MESSAGE}]);
     });
@@ -366,44 +267,13 @@ bc @ react-dom.production.min.js:73`;
       const promptBuilder = new Explain.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
-        '',
         PREAMBLE,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE1,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE1,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION1,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE2,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE2,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION2,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE3,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE3,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION3,
-        '',
-        MESSAGE_HEADER,
         ERROR_MESSAGE,
-        RELATED_CODE_HEADER,
+        RELATED_CODE_PREFIX,
+        '',
         '```',
         RELATED_CODE.trim(),
         '```',
-        EXPLANATION_HEADER,
-        '',
       ].join('\n'));
 
       assert.deepStrictEqual(
@@ -444,45 +314,14 @@ bc @ react-dom.production.min.js:73`;
       const promptBuilder = new Explain.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
-        '',
         PREAMBLE,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE1,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE1,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION1,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE2,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE2,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION2,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE3,
-        RELATED_CODE_HEADER,
-        '```',
-        EXAMPLE_RELATED_CODE3,
-        '```',
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION3,
-        '',
-        MESSAGE_HEADER,
         ERROR_MESSAGE,
         STACK_TRACE,
-        RELATED_CODE_HEADER,
+        RELATED_CODE_PREFIX,
+        '',
         '```',
         RELATED_CODE.trim(),
         '```',
-        EXPLANATION_HEADER,
-        '',
       ].join('\n'));
 
       assert.deepStrictEqual(sources, [
@@ -526,30 +365,13 @@ bc @ react-dom.production.min.js:73`;
       const promptBuilder = new Explain.PromptBuilder(message);
       const {prompt, sources} = await promptBuilder.buildPrompt();
       assert.strictEqual(prompt, [
-        '',
         PREAMBLE,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE1,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION1,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE2,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION2,
-        '',
-        MESSAGE_HEADER,
-        EXAMPLE_MESSAGE3,
-        EXPLANATION_HEADER,
-        EXAMPLE_EXPLANATION3,
-        '',
-        MESSAGE_HEADER,
         ERROR_MESSAGE,
-        RELATED_REQUEST_HEADER,
-        RELATED_REQUEST,
-        EXPLANATION_HEADER,
+        RELATED_NETWORK_REQUEST_PREFIX,
         '',
+        '```',
+        RELATED_REQUEST,
+        '```',
       ].join('\n'));
 
       assert.deepStrictEqual(

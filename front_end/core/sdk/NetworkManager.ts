@@ -1027,6 +1027,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         networkRequest.setTransferSize(encodedDataLength);
       }
     }
+    networkRequest.addBlockedRequestCookiesToModel();
     this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
     MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
 

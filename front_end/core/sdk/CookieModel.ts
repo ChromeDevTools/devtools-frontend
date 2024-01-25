@@ -54,7 +54,11 @@ export class CookieModel extends SDKModel<void> {
       return [];
     }
     const normalCookies = response.cookies.map(Cookie.fromProtocolCookie);
-    return normalCookies.concat(Array.from(this.#blockedCookies.values()));
+    const blockedCookieArray = Array.from(this.#blockedCookies.values());
+    const matchesBlockedCookie = (cookie: Cookie): boolean => {
+      return blockedCookieArray.some(blockedCookie => cookie.isEqual(blockedCookie));
+    };
+    return normalCookies.filter(cookie => !matchesBlockedCookie(cookie)).concat(blockedCookieArray);
   }
 
   async deleteCookie(cookie: Cookie): Promise<void> {

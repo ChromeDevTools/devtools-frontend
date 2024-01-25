@@ -16,26 +16,28 @@ describeWithMockConnection('CookieModel', () => {
     SDK = await import('../../../../../front_end/core/sdk/sdk.js');
   });
 
+  const PROTOCOL_COOKIE = {
+    domain: '.example.com',
+    name: 'name',
+    path: '/test',
+    size: 23,
+    value: 'value',
+    expires: 42,
+    httpOnly: false,
+    secure: false,
+    session: true,
+    sameParty: false,
+    priority: Protocol.Network.CookiePriority.Medium,
+    sourcePort: 80,
+    sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
+    partitionKey: 'https://example.net',
+  };
+
   it('can retrieve cookies', async () => {
     // CDP Connection mock: for Network.getCookies, respond with a single cookie.
     setMockConnectionResponseHandler('Network.getCookies', () => {
       return {
-        cookies: [{
-          domain: '.example.com',
-          name: 'name',
-          path: '/test',
-          size: 23,
-          value: 'value',
-          expires: 42,
-          httpOnly: false,
-          secure: false,
-          session: true,
-          sameParty: false,
-          priority: Protocol.Network.CookiePriority.Medium,
-          sourcePort: 80,
-          sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
-          partitionKey: 'https://example.net',
-        }],
+        cookies: [PROTOCOL_COOKIE],
       };
     });
 
@@ -56,6 +58,48 @@ describeWithMockConnection('CookieModel', () => {
     assert.strictEqual(cookies[0].sourcePort(), 80);
     assert.strictEqual(cookies[0].sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
     assert.strictEqual(cookies[0].partitionKey(), 'https://example.net');
+  });
+
+  it('can retrieve blocked cookies without returning them twice', async () => {
+    const blockedProtocolCookie = {
+      domain: '.thirdparty.com',
+      name: 'third',
+      path: '/path',
+      size: 25,
+      value: 'blocked',
+      expires: 43,
+      httpOnly: false,
+      secure: false,
+      session: true,
+      sameParty: false,
+      priority: Protocol.Network.CookiePriority.Medium,
+      sourcePort: 80,
+      sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
+      sameSite: Protocol.Network.CookieSameSite.Lax,
+    };
+    setMockConnectionResponseHandler('Network.getCookies', () => {
+      return {
+        cookies: [PROTOCOL_COOKIE, blockedProtocolCookie],
+      };
+    });
+
+    const target = createTarget();
+    const model = new SDK.CookieModel.CookieModel(target);
+    const blockedCookie = SDK.Cookie.Cookie.fromProtocolCookie(blockedProtocolCookie);
+    model.addBlockedCookie(blockedCookie, [
+      {
+        attribute: SDK.Cookie.Attributes.SameSite,
+        uiString:
+            'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
+      },
+    ]);
+    const cookies = await model.getCookies(['https://www.google.com']);
+    assert.isArray(cookies);
+    assert.lengthOf(cookies, 2);
+    assert.strictEqual(cookies[0].domain(), '.example.com');
+    assert.strictEqual(cookies[0].name(), 'name');
+    assert.strictEqual(cookies[1].domain(), '.thirdparty.com');
+    assert.strictEqual(cookies[1].name(), 'third');
   });
 
   it('clears stored blocked cookies on primary page change', async () => {

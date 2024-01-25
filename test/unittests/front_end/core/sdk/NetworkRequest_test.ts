@@ -186,15 +186,27 @@ describe('NetworkRequest', () => {
 });
 
 describeWithMockConnection('NetworkRequest', () => {
-  it('adds blocked cookies to cookieModel', () => {
+  let networkManagerForRequestStub: sinon.SinonStub;
+  let cookie: SDK.Cookie.Cookie;
+  let addBlockedCookieSpy: sinon.SinonSpy;
+  let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+
+  beforeEach(() => {
     const target = createTarget();
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    const networkManagerForRequestStub =
-        sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
-    const cookie = new SDK.Cookie.Cookie('name', 'value');
+    networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);
+    networkManagerForRequestStub = sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
+    cookie = new SDK.Cookie.Cookie('name', 'value');
     const cookieModel = target.model(SDK.CookieModel.CookieModel);
     Platform.assertNotNullOrUndefined(cookieModel);
-    const addBlockedCookieSpy = sinon.spy(cookieModel, 'addBlockedCookie');
+    addBlockedCookieSpy = sinon.spy(cookieModel, 'addBlockedCookie');
+  });
+
+  afterEach(() => {
+    networkManagerForRequestStub.restore();
+  });
+
+  it('adds blocked response cookies to cookieModel', () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, 'url' as Platform.DevToolsPath.UrlString,
         'documentURL' as Platform.DevToolsPath.UrlString, null, null, null);
@@ -216,6 +228,30 @@ describeWithMockConnection('NetworkRequest', () => {
           attribute: null,
           uiString: 'Setting this cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
         }]));
-    networkManagerForRequestStub.restore();
+  });
+
+  it('adds blocked request cookies to cookieModel', () => {
+    const requestWillBeSentEvent = {requestId: 'requestId', request: {url: 'example.com'}} as
+        Protocol.Network.RequestWillBeSentEvent;
+    networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
+
+    const request = networkDispatcher.requestForId('requestId');
+    Platform.assertNotNullOrUndefined(request);
+    request.addExtraRequestInfo({
+      blockedRequestCookies: [{blockedReasons: [Protocol.Network.CookieBlockedReason.SameSiteLax], cookie}],
+      requestHeaders: [],
+      includedRequestCookies: [],
+      connectTiming: {requestTime: 42},
+    });
+
+    networkDispatcher.loadingFinished(
+        {requestId: 'requestId' as Protocol.Network.RequestId, timestamp: 42, encodedDataLength: 42});
+    assert.isTrue(addBlockedCookieSpy.calledOnceWith(cookie, [
+      {
+        attribute: SDK.Cookie.Attributes.SameSite,
+        uiString:
+            'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
+      },
+    ]));
   });
 });

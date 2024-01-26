@@ -72,8 +72,8 @@ export class OverviewGrid {
     this.window = new Window(this.element, this.grid.dividersLabelBarElement, calculator);
   }
 
-  enableCreateBreadcrumbsButton(): void {
-    this.window.enableCreateBreadcrumbsButton();
+  enableCreateBreadcrumbsButton(): HTMLElement {
+    return this.window.enableCreateBreadcrumbsButton();
   }
 
   set showingScreenshots(isShowing: boolean) {
@@ -212,7 +212,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.reset();
   }
 
-  enableCreateBreadcrumbsButton(): void {
+  enableCreateBreadcrumbsButton(): HTMLElement {
     this.curtainsRange = (this.createBreadcrumbButton.createChild('div') as HTMLElement);
     this.breadcrumbZoomIcon = new IconButton.Icon.Icon();
     this.breadcrumbZoomIcon.data = {
@@ -231,6 +231,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.#changeBreadcrumbButtonVisibilityOnInteraction(this.parentElement);
     this.#changeBreadcrumbButtonVisibilityOnInteraction(this.rightResizeElement);
     this.#changeBreadcrumbButtonVisibilityOnInteraction(this.leftResizeElement);
+
+    return this.breadcrumbButtonContainerElement;
   }
 
   set showingScreenshots(isShowing: boolean) {

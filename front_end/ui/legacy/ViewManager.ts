@@ -85,7 +85,8 @@ export class PreRegisteredView implements View {
   }
 
   settings(): string[]|undefined {
-    return this.viewRegistration.settings;
+    // TODO(b/320405843): remove kebab mapping here once the migration is complete
+    return this.viewRegistration.settings?.map(s => Platform.StringUtilities.toKebabCase(s));
   }
 
   tags(): string|undefined {
@@ -145,8 +146,8 @@ export class ViewManager {
     this.locationNameByViewId = new Map();
 
     // Read override setting for location
-    this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
-    const preferredExtensionLocations = Platform.StringUtilities.toKebabCaseKeys(this.locationOverrideSetting.get());
+    this.locationOverrideSetting = Common.Settings.Settings.instance().createSetting('views-location-override', {});
+    const preferredExtensionLocations = this.locationOverrideSetting.get();
 
     // Views may define their initial ordering within a location. When the user has not reordered, we use the
     // default ordering as defined by the views themselves.
@@ -245,7 +246,7 @@ export class ViewManager {
       this.locationNameByViewId.set(viewId, locationName);
 
       // Update the settings of location overwrites
-      const locations = Platform.StringUtilities.toKebabCaseKeys(this.locationOverrideSetting.get());
+      const locations = this.locationOverrideSetting.get();
       locations[viewId] = locationName;
       this.locationOverrideSetting.set(locations);
     }
@@ -594,15 +595,15 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabClosed, this.tabClosed, this);
 
-    this.closeableTabSetting = Common.Settings.Settings.instance().createSetting('closeableTabs', {});
+    this.closeableTabSetting = Common.Settings.Settings.instance().createSetting('closeable-tabs', {});
     // As we give tabs the capability to be closed we also need to add them to the setting so they are still open
     // until the user decide to close them
     this.setOrUpdateCloseableTabsSetting();
 
-    this.tabOrderSetting = Common.Settings.Settings.instance().createSetting(location + '-tabOrder', {});
+    this.tabOrderSetting = Common.Settings.Settings.instance().createSetting(location + '-tab-order', {});
     this.tabbedPaneInternal.addEventListener(TabbedPaneEvents.TabOrderChanged, this.persistTabOrder, this);
     if (restoreSelection) {
-      this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selectedTab', '');
+      this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
     }
     this.defaultTab = defaultTab;
 
@@ -618,7 +619,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     // and append the new tabs with value of true so they are shown open
     const newClosable = {
       ...defaultOptionsForTabs,
-      ...Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get()),
+      ...this.closeableTabSetting.get(),
     };
     this.closeableTabSetting.set(newClosable);
   }
@@ -642,7 +643,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     const views = this.manager.viewsForLocation(locationName);
     if (this.allowReorder) {
       let i = 0;
-      const persistedOrders = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
+      const persistedOrders = this.tabOrderSetting.get();
       const orders = new Map<string, number>();
       for (const view of views) {
         orders.set(view.viewId(), persistedOrders[view.viewId()] || (++i) * TabbedLocation.orderStep);
@@ -659,7 +660,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       }
       if (!view.isCloseable()) {
         this.appendTab(view);
-      } else if (Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get())[id]) {
+      } else if (this.closeableTabSetting.get()[id]) {
         this.appendTab(view);
       }
     }
@@ -679,10 +680,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
           void this.showView(view);
         }
       }
-    } else if (
-        this.lastSelectedTabSetting &&
-        this.tabbedPaneInternal.hasTab(Platform.StringUtilities.toKebabCase(this.lastSelectedTabSetting.get()))) {
-      this.tabbedPaneInternal.selectTab(Platform.StringUtilities.toKebabCase(this.lastSelectedTabSetting.get()));
+    } else if (this.lastSelectedTabSetting && this.tabbedPaneInternal.hasTab(this.lastSelectedTabSetting.get())) {
+      this.tabbedPaneInternal.selectTab(this.lastSelectedTabSetting.get());
     }
   }
 
@@ -724,7 +723,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     let index: number|undefined = undefined;
     const tabIds = this.tabbedPaneInternal.tabIds();
     if (this.allowReorder) {
-      const orderSetting = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
+      const orderSetting = this.tabOrderSetting.get();
       const order = orderSetting[view.viewId()];
       for (let i = 0; order && i < tabIds.length; ++i) {
         if (orderSetting[tabIds[i]] && orderSetting[tabIds[i]] > order) {
@@ -743,7 +742,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.appendTab(view, index);
 
     if (view.isCloseable()) {
-      const tabs = Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
+      const tabs = this.closeableTabSetting.get();
       const tabId = view.viewId();
       if (!tabs[tabId]) {
         tabs[tabId] = true;
@@ -787,7 +786,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
 
   private tabClosed(event: Common.EventTarget.EventTargetEvent<EventData>): void {
     const {tabId} = event.data;
-    const tabs = Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
+    const tabs = this.closeableTabSetting.get();
     if (tabs[tabId]) {
       tabs[tabId] = false;
       this.closeableTabSetting.set(tabs);
@@ -807,7 +806,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       tabOrders[tabIds[i]] = (i + 1) * TabbedLocation.orderStep;
     }
 
-    const oldTabOrder = Platform.StringUtilities.toKebabCaseKeys(this.tabOrderSetting.get());
+    const oldTabOrder = this.tabOrderSetting.get();
     const oldTabArray = Object.keys(oldTabOrder);
     oldTabArray.sort((a, b) => oldTabOrder[a] - oldTabOrder[b]);
     let lastOrder = 0;
@@ -822,7 +821,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   getCloseableTabSetting(): CloseableTabSetting {
-    return Platform.StringUtilities.toKebabCaseKeys(this.closeableTabSetting.get());
+    return this.closeableTabSetting.get();
   }
 
   static orderStep = 10;  // Keep in sync with descriptors.

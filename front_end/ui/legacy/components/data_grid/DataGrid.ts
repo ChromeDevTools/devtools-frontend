@@ -928,7 +928,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   setName(name: string): void {
     this.columnWeightsSetting =
-        Common.Settings.Settings.instance().createSetting('dataGrid-' + name + '-columnWeights', {});
+        Common.Settings.Settings.instance().createSetting('data-grid-' + name + '-column-weights', {});
     this.loadColumnWeights();
   }
 
@@ -947,7 +947,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!this.columnWeightsSetting) {
       return;
     }
-    const weights = Platform.StringUtilities.toKebabCaseKeys(this.columnWeightsSetting.get());
+    const weights = this.columnWeightsSetting.get();
     for (let i = 0; i < this.columnsArray.length; ++i) {
       const column = this.columnsArray[i];
       const weight = weights[column.id];

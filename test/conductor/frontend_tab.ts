@@ -88,13 +88,13 @@ export class DevToolsFrontendTab {
 
     if (selectedPanel.name !== DevToolsFrontendTab.DEFAULT_TAB.name) {
       await this.page.evaluate(name => {
-        globalThis.localStorage.setItem('panel-selectedTab', `"${name}"`);
+        globalThis.localStorage.setItem('panel-selected-tab', `"${name}"`);
       }, selectedPanel.name);
     }
 
     if (drawerShown) {
       await this.page.evaluate(() => {
-        globalThis.localStorage.setItem('Inspector.drawerSplitViewState', '{"horizontal" : {"showMode": "Both"}}');
+        globalThis.localStorage.setItem('inspector.drawer-split-view-state', '{"horizontal" : {"showMode": "Both"}}');
       });
     }
 

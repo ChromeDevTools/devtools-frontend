@@ -8,7 +8,7 @@ import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
-const settingName = 'mockSetting';
+const settingName = 'mock-setting';
 const settingTitle = 'Mock setting';
 const enableTitle = 'Enable mock setting';
 const disableTitle = 'Disable mock setting';

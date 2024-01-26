@@ -109,7 +109,7 @@ export async function selectMode(mode: 'navigation'|'timespan'|'snapshot') {
 }
 
 export async function selectDevice(device: 'mobile'|'desktop') {
-  await selectRadioOption(device, 'lighthouse.device_type');
+  await selectRadioOption(device, 'lighthouse.device-type');
 }
 
 export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string) {

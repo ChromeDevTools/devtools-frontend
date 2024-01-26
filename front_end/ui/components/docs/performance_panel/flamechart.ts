@@ -75,9 +75,9 @@ function renderExample2() {
   class FakeProviderWithLongTasksForStriping extends TraceHelpers.FakeFlameChartProvider {
     override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
-        entryLevels: [1, 1, 1, 2, 2, 2, 2],
-        entryStartTimes: [5, 55, 70, 5, 30, 55, 75],
-        entryTotalTimes: [45, 10, 20, 20, 20, 5, 15],
+        entryLevels: [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
+        entryStartTimes: [5, 55, 70, 5, 30, 55, 75, 5, 10, 15, 20],
+        entryTotalTimes: [45, 10, 20, 20, 20, 5, 15, 4, 4, 4, 4],
         entryDecorations: [
           [
             {
@@ -111,6 +111,28 @@ function renderExample2() {
             {
               type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
               startAtTime: TraceEngine.Types.Timing.MicroSeconds(10_000),
+            },
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+          ],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+          ],
+          [
+            {
+              type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+              startAtTime: TraceEngine.Types.Timing.MicroSeconds(1_000),
+            },
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+          [
+            {
+              type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+              startAtTime: TraceEngine.Types.Timing.MicroSeconds(1_000),
             },
             {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
             {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},

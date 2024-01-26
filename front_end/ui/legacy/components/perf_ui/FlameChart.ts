@@ -86,8 +86,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const HIDDEN_DESCENDANT_ARROW = 'data:image/jpg;base64,' +
-    'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABYSURBVHgB7c6xDYBACAVQIM5BWOUmM47iJK5CGATEhMKYK7TyinsV+YEfAKb/YS9k5pWI5J65u5rZ9txdegV5vEfEkaNUpJm11x9cJFUJIGLTBF9JgWlwJyvOFrGul+FpAAAAAElFTkSuQmCC';
 
 export class FlameChartDelegate {
   windowChanged(_startTime: number, _endTime: number, _animate: boolean): void {
@@ -1579,11 +1577,30 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             context.beginPath();
             context.rect(barX, barY, barWidth, barHeight);
             const arrowSize = barHeight;
+            // If the bar is wider than double the arrow button, draw the button. Otherwise, draw a corner triangle to indicate some entries are hidden
             if (barWidth > arrowSize * 2) {
-              const image = new Image();
-              image.src = HIDDEN_DESCENDANT_ARROW;
-              context.drawImage(image, barX + barWidth - arrowSize, barY, arrowSize, arrowSize);
+              const triangleSize = 7;
+              const triangleHorizontalPadding = 5;
+              const triangleVerrticalPadding = 6;
+              context.clip();
+              context.beginPath();
+              context.fillStyle = '#474747';
+              context.moveTo(
+                  barX + barWidth - triangleSize - triangleHorizontalPadding, barY + triangleVerrticalPadding);
+              context.lineTo(barX + barWidth - triangleHorizontalPadding, barY + triangleVerrticalPadding);
+              context.lineTo(
+                  barX + barWidth - triangleHorizontalPadding - triangleSize / 2,
+                  barY + barHeight - triangleVerrticalPadding);
+            } else {
+              const triangleSize = 8;
+              context.clip();
+              context.beginPath();
+              context.fillStyle = '#474747';
+              context.moveTo(barX + barWidth - triangleSize, barY + barHeight);
+              context.lineTo(barX + barWidth, barY + barHeight);
+              context.lineTo(barX + barWidth, barY + triangleSize);
             }
+            context.fill();
             context.restore();
             break;
           }
@@ -1958,13 +1975,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
       let text = this.dataProvider.entryTitle(entryIndex);
+      const barHeight = this.#eventBarHeight(timelineData, entryIndex);
       if (text && text.length) {
         context.font = this.#font;
         const hasArrowDecoration =
             this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
-        // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration, also substract the width of the decoration.
-        // The decoration is square, therefore it's width is equal to this.barHeight
-        const maxBarWidth = (hasArrowDecoration) ? barWidth - textPadding - this.barHeight : barWidth - 2 * textPadding;
+        // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and the bar is wide enough for the larger
+        // version of the decoration that is a square button, also substract the width of the decoration.
+        // Because the decoration is square, it's width is equal to this.barHeight
+        const maxBarWidth = (hasArrowDecoration && barWidth > barHeight * 2) ? barWidth - textPadding - this.barHeight :
+                                                                               barWidth - 2 * textPadding;
         text = UI.UIUtils.trimTextMiddle(
             context,
             text,
@@ -1972,7 +1992,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         );
       }
       const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
-      const barHeight = this.#eventBarHeight(timelineData, entryIndex);
       if (this.dataProvider.decorateEntry(
               entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixel)) {
         continue;

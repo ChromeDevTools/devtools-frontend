@@ -165,6 +165,16 @@ describe('HTMLFormatter', () => {
 `);
   });
 
+  it('formats inline <script>s with characters whose lower case representation is longer correctly', () => {
+    const formattedCode = formatHTML('<html><script>console.log(\'İ\');</script></html>');
+    assert.strictEqual(formattedCode, `<html>
+  <script>
+    console.log('İ');
+  </script>
+</html>
+`);
+  });
+
   it('formats inline <script>s with speculation rules correctly', () => {
     const formattedCode = formatHTML(
         '<html><script type="speculationrules">{"prefetch": [{"source": "list","urls": ["prefetch.html?2"]}],"prerender": [{"source": "list","urls": ["prerender.html?2"]}]}</script></html>');

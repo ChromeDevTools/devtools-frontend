@@ -71,6 +71,7 @@ devtools_module("sdk") {
     "ScreenCaptureModel.ts",
     "Script.ts",
     "SecurityOriginManager.ts",
+    "ServerSentEvents.ts",
     "ServerSentEventsProtocol.ts",
     "ServerTiming.ts",
     "ServiceWorkerCacheModel.ts",

@@ -776,6 +776,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/ScreenCaptureModel.js",
   "front_end/core/sdk/Script.js",
   "front_end/core/sdk/SecurityOriginManager.js",
+  "front_end/core/sdk/ServerSentEvents.js",
   "front_end/core/sdk/ServerSentEventsProtocol.js",
   "front_end/core/sdk/ServerTiming.js",
   "front_end/core/sdk/ServiceWorkerCacheModel.js",

@@ -43,7 +43,9 @@ import {Attributes, type Cookie} from './Cookie.js';
 import {CookieModel} from './CookieModel.js';
 import {CookieParser} from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
+import {MimeType} from './MimeType.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
+import {ServerSentEvents} from './ServerSentEvents.js';
 import {ServerTiming} from './ServerTiming.js';
 import {Type} from './Target.js';
 
@@ -233,7 +235,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #resourceTypeInternal: Common.ResourceType.ResourceType;
   #contentDataInternal: Promise<ContentDataOrError>|null;
   readonly #framesInternal: WebSocketFrame[];
-  readonly #eventSourceMessagesInternal: EventSourceMessage[];
   #responseHeaderValues: {
     [x: string]: string|undefined,
   };
@@ -307,6 +308,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #associatedData = new Map<string, object>();
   #hasOverriddenContent: boolean;
   #hasThirdPartyCookiePhaseoutIssue: boolean;
+  #serverSentEvents?: ServerSentEvents;
 
   constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -351,7 +353,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#resourceTypeInternal = Common.ResourceType.resourceTypes.Other;
     this.#contentDataInternal = null;
     this.#framesInternal = [];
-    this.#eventSourceMessagesInternal = [];
 
     this.#responseHeaderValues = {};
     this.#responseHeadersTextInternal = '';
@@ -778,6 +779,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   set mimeType(x: string) {
     this.#mimeTypeInternal = x;
+    if (x === MimeType.EVENTSTREAM && !this.#serverSentEvents) {
+      const parseFromStreamedData = this.resourceType() !== Common.ResourceType.resourceTypes.EventSource;
+      this.#serverSentEvents = new ServerSentEvents(this, parseFromStreamedData);
+    }
   }
 
   get displayName(): string {
@@ -1449,14 +1454,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.dispatchEventToListeners(Events.WebsocketFrameAdded, frame);
   }
 
-  eventSourceMessages(): EventSourceMessage[] {
-    return this.#eventSourceMessagesInternal;
+  eventSourceMessages(): readonly EventSourceMessage[] {
+    return this.#serverSentEvents?.eventSourceMessages ?? [];
   }
 
   addEventSourceMessage(time: number, eventName: string, eventId: string, data: string): void {
-    const message = {time: this.pseudoWallTime(time), eventName: eventName, eventId: eventId, data: data};
-    this.#eventSourceMessagesInternal.push(message);
-    this.dispatchEventToListeners(Events.EventSourceMessageAdded, message);
+    this.#serverSentEvents?.onProtocolEventSourceMessageReceived(eventName, data, eventId, this.pseudoWallTime(time));
   }
 
   markAsRedirect(redirectCount: number): void {
@@ -1705,12 +1708,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#hasThirdPartyCookiePhaseoutIssue;
   }
 
-  addDataReceivedEvent({timestamp, dataLength, encodedDataLength}: Protocol.Network.DataReceivedEvent): void {
+  addDataReceivedEvent({timestamp, dataLength, encodedDataLength, data}: Protocol.Network.DataReceivedEvent): void {
     this.resourceSize += dataLength;
     if (encodedDataLength !== -1) {
       this.increaseTransferSize(encodedDataLength);
     }
     this.endTime = timestamp;
+    if (data) {
+      this.#serverSentEvents?.dataReceived(data, timestamp);
+    }
   }
 }
 

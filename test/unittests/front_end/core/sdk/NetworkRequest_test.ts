@@ -9,7 +9,8 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {expectCookie} from '../../helpers/Cookies.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 describe('NetworkRequest', () => {
   it('can parse statusText from the first line of responseReceivedExtraInfo\'s headersText', () => {
@@ -253,5 +254,118 @@ describeWithMockConnection('NetworkRequest', () => {
             'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
       },
     ]));
+  });
+});
+
+describeWithMockConnection('ServerSentEvents', () => {
+  let target: SDK.Target.Target;
+  let networkManager: SDK.NetworkManager.NetworkManager;
+
+  beforeEach(() => {
+    target = createTarget();
+    networkManager = target.model(SDK.NetworkManager.NetworkManager) as SDK.NetworkManager.NetworkManager;
+  });
+
+  it('sends EventSourceMessageAdded events for EventSource text/event-stream', () => {
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/sse',
+      },
+      type: 'EventSource',
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      response: {
+        url: 'https://example.com/sse',
+        mimeType: 'text/event-stream',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    const request = networkManager.requestForId('1');
+    assertNotNullOrUndefined(request);
+
+    const networkEvents: SDK.NetworkRequest.EventSourceMessage[] = [];
+    request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, ({data}) => networkEvents.push(data));
+
+    networkManager.dispatcher.eventSourceMessageReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      timestamp: 21,
+      data: 'foo',
+      eventId: 'fooId',
+      eventName: 'fooName',
+    });
+    networkManager.dispatcher.eventSourceMessageReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      timestamp: 42,
+      data: 'bar',
+      eventId: 'barId',
+      eventName: 'barName',
+    });
+
+    assert.lengthOf(networkEvents, 2);
+    assert.deepStrictEqual(networkEvents[0], {data: 'foo', eventId: 'fooId', eventName: 'fooName', time: 21});
+    assert.deepStrictEqual(networkEvents[1], {data: 'bar', eventId: 'barId', eventName: 'barName', time: 42});
+  });
+
+  it('sends EventSourceMessageAdded events for raw text/event-stream', async () => {
+    setMockConnectionResponseHandler('Network.streamResourceContent', () => ({
+                                                                        getError() {
+                                                                          return undefined;
+                                                                        },
+                                                                        bufferedData: '',
+                                                                      }));
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/sse',
+      },
+      type: 'Fetch',
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      response: {
+        url: 'https://example.com/sse',
+        mimeType: 'text/event-stream',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    const request = networkManager.requestForId('1');
+    assertNotNullOrUndefined(request);
+
+    const networkEvents: SDK.NetworkRequest.EventSourceMessage[] = [];
+    const {promise: twoEventsReceivedPromise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, ({data}) => {
+      networkEvents.push(data);
+      if (networkEvents.length === 2) {
+        resolve();
+      }
+    });
+
+    const message = `
+id: fooId
+event: fooName
+data: foo
+
+id: barId
+event: barName
+data: bar\n\n`;
+
+    // Send `message` piecemeal via dataReceived events.
+    let time = 0;
+    for (const c of message) {
+      networkManager.dispatcher.dataReceived({
+        requestId: '1' as Protocol.Network.RequestId,
+        dataLength: 1,
+        encodedDataLength: 1,
+        timestamp: time++,
+        data: window.btoa(c),
+      });
+    }
+
+    await twoEventsReceivedPromise;
+
+    // Omit time from expectation as the dataReceived loop is racing against the text decoder.
+    assert.lengthOf(networkEvents, 2);
+    assert.deepInclude(networkEvents[0], {data: 'foo', eventId: 'fooId', eventName: 'fooName'});
+    assert.deepInclude(networkEvents[1], {data: 'bar', eventId: 'barId', eventName: 'barName'});
   });
 });

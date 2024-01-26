@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as VisualLogging from '../../../front_end/ui/visual_logging/visual_logging.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Actions from './recorder-actions/recorder-actions.js';
@@ -16,6 +17,7 @@ export class RecorderPanel extends UI.Panel.Panel {
 
   constructor() {
     super(RecorderPanel.panelName);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('chrome-recorder')}`);
     this.#controller = new RecorderController();
     this.contentElement.append(this.#controller);
     this.contentElement.style.minWidth = '400px';

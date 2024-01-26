@@ -2,21 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as VisualLogging from '../../../../front_end/ui/visual_logging/visual_logging.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
-
 import type * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
-import stepViewStyles from './stepView.css.js';
-
 import {type StepEditedEvent} from './StepEditor.js';
-
+import stepViewStyles from './stepView.css.js';
 import {
   TimelineSection,
   type TimelineSectionData,
@@ -303,6 +301,11 @@ export class StepView extends HTMLElement {
   #extensionConverters?: Converters.Converter.Converter[];
   #isSelected = false;
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
+
+  constructor() {
+    super();
+    this.setAttribute('jslog', `${VisualLogging.section().context('step-view')}`);
+  }
 
   set data(data: StepViewData) {
     const prevState = this.#state;
@@ -641,6 +644,7 @@ export class StepView extends HTMLElement {
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#actionsMenuButton = node as Buttons.Button.Button;
         })}
+        .jslogContext=${'step-actions'}
         .data=${
           {
             variant: Buttons.Button.Variant.TOOLBAR,
@@ -671,6 +675,7 @@ export class StepView extends HTMLElement {
                 item => {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                       .value=${item.id}
+                      jslog=${VisualLogging.action().track({click: true}).context(item.id)} 
                     >
                       ${item.label}
                     </${Menus.Menu.MenuItem.litTagName}>
@@ -785,7 +790,7 @@ export class StepView extends HTMLElement {
           </g>
           <path @click=${this.#onBreakpointClick.bind(
             this,
-          )} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
+          )} jslog=${VisualLogging.action().track({click: true}).context('breakpoint')} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
         </svg>
         <div class="summary">
           <div class="title-container ${isExpandable ? 'action' : ''}"
@@ -794,6 +799,7 @@ export class StepView extends HTMLElement {
               isExpandable && this.#onToggleShowDetailsKeydown.bind(this)
             }
             tabindex="0"
+            jslog=${VisualLogging.action().track({click: true}).context('show-steps')} 
             aria-role=${isExpandable ? 'button' : ''}
             aria-label=${isExpandable ? 'Show details for step' : ''}
           >

@@ -4,14 +4,14 @@
 
 import '../../../ui/legacy/legacy.js';
 
+import * as VisualLogging from '../../../../front_end/ui/visual_logging/visual_logging.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as PublicExtensions from '../../../models/extensions/extensions.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
-import type * as PublicExtensions from '../../../models/extensions/extensions.js';
-import * as Extensions from '../extensions/extensions.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Extensions from '../extensions/extensions.js';
 
 import extensionViewStyles from './extensionView.css.js';
 
@@ -51,6 +51,12 @@ export class ExtensionView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-recorder-extension-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #descriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
+
+  constructor() {
+    super();
+
+    this.setAttribute('jslog', `${VisualLogging.section().context('extension-view')}`);
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [extensionViewStyles];
@@ -96,6 +102,7 @@ export class ExtensionView extends HTMLElement {
             </div>
             <${Buttons.Button.Button.litTagName}
               title=${i18nString(UIStrings.closeView)}
+              .jslogContext=${'close-view'}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,

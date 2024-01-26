@@ -6,6 +6,7 @@
 
 import '../../../ui/legacy/legacy.js';
 
+import * as VisualLogging from '../../../../front_end/ui/visual_logging/visual_logging.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -142,6 +143,11 @@ export class CreateRecordingView extends HTMLElement {
   #error?: Error;
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
 
+  constructor() {
+    super();
+    this.setAttribute('jslog', `${VisualLogging.section().context('create-recording-view')}`);
+  }
+
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [
       createRecordingViewStyles,
@@ -260,6 +266,7 @@ export class CreateRecordingView extends HTMLElement {
             <h1>${i18nString(UIStrings.createRecording)}</h1>
             <${Buttons.Button.Button.litTagName}
               title=${i18nString(UIStrings.cancelRecording)}
+              .jslogContext=${'cancel-recording'}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,
@@ -277,12 +284,15 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#defaultRecordingName}
             @focus=${this.#onInputFocus}
             @keydown=${this.#onKeyDown}
+            jslog=${VisualLogging.textField().track({keydown: true}).context('user-flow-name')}
             class="devtools-text-input"
             id="user-flow-name"
           />
           <label class="row-label" for="selector-attribute">
             <span>${i18nString(UIStrings.selectorAttribute)}</span>
-            <x-link class="link" href="https://g.co/devtools/recorder#selector">
+            <x-link
+              class="link" href="https://g.co/devtools/recorder#selector"
+              jslog=${VisualLogging.link().track({click: true}).context('recorder-selector-help')}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>
             </x-link>
@@ -291,12 +301,15 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#recorderSettings?.selectorAttribute}
             placeholder="data-testid"
             @keydown=${this.#onKeyDown}
+            jslog=${VisualLogging.textField().track({keydown: true}).context('selector-attribute')}
             class="devtools-text-input"
             id="selector-attribute"
           />
           <label class="row-label">
             <span>${i18nString(UIStrings.selectorTypes)}</span>
-            <x-link class="link" href="https://g.co/devtools/recorder#selector">
+            <x-link
+              class="link" href="https://g.co/devtools/recorder#selector" 
+              jslog=${VisualLogging.link().track({click: true}).context('recorder-selector-help')}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>
             </x-link>
@@ -310,6 +323,7 @@ export class CreateRecordingView extends HTMLElement {
                     <input
                       @keydown=${this.#onKeyDown}
                       .value=${selectorType}
+                      jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${selectorType}`)}
                       checked=${LitHtml.Directives.ifDefined(
                         checked ? checked : undefined,
                       )}
@@ -336,6 +350,7 @@ export class CreateRecordingView extends HTMLElement {
               @click=${this.startRecording}
               .label=${i18nString(UIStrings.startRecording)}
               .shape=${'circle'}
+              jslog=${VisualLogging.action().track({click: true}).context('start-recording')}
               title=${Models.Tooltip.getTooltipForActions(
                 i18nString(UIStrings.startRecording),
                 Actions.RecorderActions.StartRecording,

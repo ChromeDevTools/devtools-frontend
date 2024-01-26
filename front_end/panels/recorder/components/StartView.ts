@@ -4,6 +4,7 @@
 
 import '../../../ui/legacy/legacy.js';
 
+import * as VisualLogging from '../../../../front_end/ui/visual_logging/visual_logging.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -65,6 +66,11 @@ export class CreateRecordingEvent extends Event {
 export class StartView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-start-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
+
+  constructor() {
+    super();
+    this.setAttribute('jslog', `${VisualLogging.section().context('start-view')}`);
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [startViewStyles];

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as VisualLogging from '../../../../front_end/ui/visual_logging/visual_logging.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -335,6 +336,11 @@ export class RecordingView extends HTMLElement {
 
   #onCopyBound = this.#onCopy.bind(this);
 
+  constructor() {
+    super();
+    this.setAttribute('jslog', `${VisualLogging.section().context('recording-list-view')}`);
+  }
+
   set data(data: RecordingViewData) {
     this.#isRecording = data.isRecording;
     this.#replayState = data.replayState;
@@ -492,6 +498,7 @@ export class RecordingView extends HTMLElement {
           recorderSettings: this.#recorderSettings,
         } as StepViewData
       }
+      jslog=${VisualLogging.action().track({click: true}).context('step')}
       ></${StepView.litTagName}>
     `;
     // clang-format on
@@ -773,6 +780,7 @@ export class RecordingView extends HTMLElement {
             value=${
               this.#settings.timeout || Models.RecordingPlayer.defaultTimeout
             }
+            jslog=${VisualLogging.textField().track({keydown: true}).context('timeout')}
             class="devtools-text-input"
             type="number">
         </label>
@@ -798,6 +806,7 @@ export class RecordingView extends HTMLElement {
             @click=${isEditable && this.#onToggleReplaySettings}
             tabindex="0"
             role="button"
+            jslog=${VisualLogging.action().track({click: true}).context('replay-settings')}
             aria-label=${i18nString(UIStrings.editReplaySettings)}>
             <span>${i18nString(UIStrings.replaySettings)}</span>
             ${
@@ -878,6 +887,7 @@ export class RecordingView extends HTMLElement {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
+                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${converter.getFormatName()}`)}
                   >
                     ${converter.getFormatName()}
                   </${Menus.Menu.MenuItem.litTagName}>`;
@@ -886,6 +896,7 @@ export class RecordingView extends HTMLElement {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
+                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${converter.getFormatName()}`)}
                   >
                     ${converter.getFormatName()}
                   </${Menus.Menu.MenuItem.litTagName}>`;
@@ -904,6 +915,7 @@ export class RecordingView extends HTMLElement {
                   } as Buttons.Button.ButtonData
                 }
                 @click=${this.showCodeToggle}
+                .jslogContext=${'show-code'}
               ></${Buttons.Button.Button.litTagName}>
             </div>
             <div class="text-editor">
@@ -936,8 +948,8 @@ export class RecordingView extends HTMLElement {
   #renderReplayOrAbortButton(): LitHtml.TemplateResult {
     if (this.#replayState.isPlaying) {
       return LitHtml.html`
-        <${Buttons.Button.Button.litTagName} @click=${this.#handleAbortReplay} .iconName=${'pause'} .variant=${
-          Buttons.Button.Variant.SECONDARY}>
+        <${Buttons.Button.Button.litTagName} .jslogContext=${'abort-replay'} @click=${
+          this.#handleAbortReplay} .iconName=${'pause'} .variant=${Buttons.Button.Variant.SECONDARY}>
           ${i18nString(UIStrings.cancelReplay)}
         </${Buttons.Button.Button.litTagName}>`;
     }
@@ -952,6 +964,7 @@ export class RecordingView extends HTMLElement {
         }
         .disabled=${this.#replayState.isPlaying}
         @startreplay=${this.#handleTogglePlaying}
+        jslog=${VisualLogging.action().track({click: true}).context('replay')}
         >
       </${ReplayButton.litTagName}>`;
     // clang-format on
@@ -1078,6 +1091,7 @@ export class RecordingView extends HTMLElement {
               ),
             } as Buttons.Button.ButtonData
           }
+          .jslogContext=${'show-code'}
         >
           ${i18nString(UIStrings.showCode)}
         </${Buttons.Button.Button.litTagName}>
@@ -1094,6 +1108,7 @@ export class RecordingView extends HTMLElement {
                 <div class="steps">
                   <${StepView.litTagName}
                     @click=${this.#onStepClick}
+                    jslog=${VisualLogging.action().track({click: true}).context('step')}
                     @mouseover=${this.#onStepHover}
                     .data=${
                       {
@@ -1135,6 +1150,7 @@ export class RecordingView extends HTMLElement {
                         title: i18nString(UIStrings.addAssertion),
                       } as Buttons.Button.ButtonData
                     }
+                    .jslogContext=${'add-assertion'}
                     @click=${this.#dispatchAddAssertionEvent}
                   >${i18nString(UIStrings.addAssertion)}</devtools-button>` : undefined}
                   ${
@@ -1185,6 +1201,7 @@ export class RecordingView extends HTMLElement {
                     title: i18nString(UIStrings.editTitle),
                   } as Buttons.Button.ButtonData
                 }
+                .jslogContext=${'edit-title'}
               ></${Buttons.Button.Button.litTagName}>
             </div>
           </div>
@@ -1203,6 +1220,7 @@ export class RecordingView extends HTMLElement {
             ? LitHtml.html`<div class="actions">
                 <${Buttons.Button.Button.litTagName}
                   @click=${this.#handleMeasurePerformanceClickEvent}
+                  .jslogContext=${'measure-performance'}
                   .data=${
                     {
                       disabled: this.#replayState.isPlaying,
@@ -1233,6 +1251,7 @@ export class RecordingView extends HTMLElement {
       <div class="footer">
         <div class="controls">
           <devtools-control-button
+            jslog=${VisualLogging.toggle().track({click: true}).context('toggle-recording')}
             @click=${this.#dispatchRecordingFinished}
             .disabled=${this.#recordingTogglingInProgress}
             .shape=${'square'}

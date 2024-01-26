@@ -71,6 +71,14 @@ const UIStrings = {
    */
   editLogpoint: 'Edit logpoint',
   /**
+   *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints.
+   */
+  disableAllBreakpoints: 'Disable all breakpoints',
+  /**
+   *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints.
+   */
+  enableAllBreakpoints: 'Enable all breakpoints',
+  /**
    *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
    */
   removeBreakpoint: 'Remove breakpoint',
@@ -858,34 +866,47 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
+    const items = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
+    const otherItems = items.filter(item => item !== breakpointItem);
+
     const menu = new UI.ContextMenu.ContextMenu(event);
     const editBreakpointText = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
         i18nString(UIStrings.editLogpoint) :
         i18nString(UIStrings.editCondition);
-    menu.revealSection().appendItem(editBreakpointText, () => {
+    menu.revealSection().appendItem(i18nString(UIStrings.revealLocation), () => {
+      void this.#controller.jumpToSource(breakpointItem);
+    }, {jslogContext: 'jump-to-breakpoint'});
+
+    menu.editSection().appendItem(editBreakpointText, () => {
       Host.userMetrics.breakpointEditDialogRevealedFrom(
           Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
       void this.#controller.breakpointEdited(breakpointItem, false /* editButtonClicked */);
     }, {disabled: !editable, jslogContext: 'edit-breakpoint'});
 
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
+    menu.defaultSection().appendItem(
+        i18nString(UIStrings.enableAllBreakpoints),
+        items.forEach.bind(items, item => this.#controller.breakpointStateChanged(item, true)), {
+          disabled: items.every(item => item.status === BreakpointStatus.ENABLED),
+          jslogContext: 'enable-all-breakpoints',
+        });
+    menu.defaultSection().appendItem(
+        i18nString(UIStrings.disableAllBreakpoints),
+        items.forEach.bind(items, item => this.#controller.breakpointStateChanged(item, false)), {
+          disabled: items.every(item => item.status === BreakpointStatus.DISABLED),
+          jslogContext: 'disable-all-breakpoints',
+        });
+
+    menu.footerSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromContextMenu);
       void this.#controller.breakpointsRemoved([breakpointItem]);
     }, {jslogContext: 'remove-breakpoint'});
-    const otherItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems)
-                           .flat()
-                           .filter(item => item !== breakpointItem);
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
+    menu.footerSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
       void this.#controller.breakpointsRemoved(otherItems);
     }, {disabled: otherItems.length === 0, jslogContext: 'remove-other-breakpoints'});
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
+    menu.footerSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
       const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
       void this.#controller.breakpointsRemoved(breakpointItems);
     }, {jslogContext: 'remove-all-breakpoints'});
-
-    menu.editSection().appendItem(i18nString(UIStrings.revealLocation), () => {
-      void this.#controller.jumpToSource(breakpointItem);
-    }, {jslogContext: 'jump-to-breakpoint'});
 
     void menu.show();
   }

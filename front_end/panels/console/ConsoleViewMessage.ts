@@ -629,7 +629,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
     if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace &&
-        Common.Settings.Settings.instance().moduleSetting('consoleTraceExpand').get()) {
+        Common.Settings.Settings.instance().moduleSetting('console-trace-expand').get()) {
       this.expandTrace(true);
     }
 
@@ -1025,7 +1025,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return;
     }
 
-    if (Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled').get()) {
       if (!this.timestampElement) {
         this.timestampElement = document.createElement('span');
         this.timestampElement.classList.add('console-timestamp');

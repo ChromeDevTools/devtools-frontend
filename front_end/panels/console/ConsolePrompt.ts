@@ -68,7 +68,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     super();
     this.addCompletionsFromHistory = true;
     this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
-        Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []));
+        Common.Settings.Settings.instance().createLocalSetting('console-history', []));
 
     this.initialText = '';
     this.eagerPreviewElement = document.createElement('div');
@@ -91,7 +91,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 
-    this.eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('consoleEagerEval');
+    this.eagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
     this.eagerPreviewElement.classList.toggle('hidden', !this.eagerEvalSetting.get());
 
@@ -102,7 +102,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#argumentHintsState = argumentHints[0];
 
     const autocompleteOnEnter = TextEditor.Config.DynamicSetting.bool(
-        'consoleAutocompleteOnEnter', [], TextEditor.Config.conservativeCompletion);
+        'console-autocomplete-on-enter', [], TextEditor.Config.conservativeCompletion);
 
     const extensions = [
       CodeMirror.keymap.of(this.editorKeymap()),
@@ -307,7 +307,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         scrollIntoView: true,
       });
       Common.Settings.Settings.instance()
-          .createSetting('disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced)
+          .createSetting('disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced)
           .set(true);
       this.#selfXssWarningShown = false;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInConsole);

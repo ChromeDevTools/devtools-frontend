@@ -393,16 +393,16 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.filterStatusText = new UI.Toolbar.ToolbarText();
     this.filterStatusText.element.classList.add('dimmed');
     this.showSettingsPaneSetting =
-        Common.Settings.Settings.instance().createSetting('consoleShowSettingsToolbar', false);
+        Common.Settings.Settings.instance().createSetting('console-show-settings-toolbar', false);
     this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.consoleSettings), 'gear-filled');
     this.showSettingsPaneButton.element.setAttribute(
         'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('console-settings')}`);
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
-    this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('consoleGroupSimilar');
+    this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('console-group-similar');
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
 
-    this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('consoleShowsCorsErrors');
+    this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('console-shows-cors-errors');
     this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
@@ -440,12 +440,12 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendToolbarItem(this.filterStatusText);
     toolbar.appendToolbarItem(this.showSettingsPaneButton);
 
-    const monitoringXHREnabledSetting = Common.Settings.Settings.instance().moduleSetting('monitoringXHREnabled');
-    this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled');
+    const monitoringXHREnabledSetting = Common.Settings.Settings.instance().moduleSetting('monitoring-xhr-enabled');
+    this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('console-timestamps-enabled');
     this.consoleHistoryAutocompleteSetting =
-        Common.Settings.Settings.instance().moduleSetting('consoleHistoryAutocomplete');
+        Common.Settings.Settings.instance().moduleSetting('console-history-autocomplete');
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
-        'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
 
     const settingsPane = new UI.Widget.HBox();
     settingsPane.show(this.contentsElement);
@@ -477,11 +477,11 @@ export class ConsoleView extends UI.Widget.VBox implements
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarRight, monitoringXHREnabledSetting, i18nString(UIStrings.logXMLHttpRequests));
     ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, 'consoleEagerEval', i18nString(UIStrings.eagerlyEvaluateTextInThePrompt));
+        settingsToolbarRight, 'console-eager-eval', i18nString(UIStrings.eagerlyEvaluateTextInThePrompt));
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarRight, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory));
     ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, 'consoleUserActivationEval', i18nString(UIStrings.treatEvaluationAsUserActivation));
+        settingsToolbarRight, 'console-user-activation-eval', i18nString(UIStrings.treatEvaluationAsUserActivation));
 
     if (!this.showSettingsPaneSetting.get()) {
       settingsPane.element.classList.add('hidden');
@@ -1619,9 +1619,9 @@ export class ConsoleViewFilter {
     this.filterChanged = filterChangedCallback;
 
     this.messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
-    this.hideNetworkMessagesSetting = Common.Settings.Settings.instance().moduleSetting('hideNetworkMessages');
+    this.hideNetworkMessagesSetting = Common.Settings.Settings.instance().moduleSetting('hide-network-messages');
     this.filterByExecutionContextSetting =
-        Common.Settings.Settings.instance().moduleSetting('selectedContextFilterEnabled');
+        Common.Settings.Settings.instance().moduleSetting('selected-context-filter-enabled');
 
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.hideNetworkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
@@ -1634,7 +1634,7 @@ export class ConsoleViewFilter {
     this.textFilterUI = new UI.Toolbar.ToolbarInput(
         i18nString(UIStrings.filter), '', 1, 1, i18nString(UIStrings.egEventdCdnUrlacom),
         this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
-    this.textFilterSetting = Common.Settings.Settings.instance().createSetting('console.textFilter', '');
+    this.textFilterSetting = Common.Settings.Settings.instance().createSetting('console.text-filter', '');
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
@@ -1690,7 +1690,7 @@ export class ConsoleViewFilter {
 
   static levelFilterSetting(): Common.Settings.Setting<LevelsMask> {
     return Common.Settings.Settings.instance().createSetting(
-        'messageLevelFilters', ConsoleFilter.defaultLevelsFilterValue());
+        'message-level-filters', ConsoleFilter.defaultLevelsFilterValue());
   }
 
   private updateCurrentFilter(): void {

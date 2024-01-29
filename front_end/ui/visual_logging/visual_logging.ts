@@ -77,8 +77,7 @@ export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null
 export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
 export const section = LoggingConfig.makeConfigStringBuilder.bind(null, 'Section');
-export const stylePropertiesSectionSeparator =
-    LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSectionSeparator');
+export const sectionHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'SectionHeader');
 export const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
 export const tableCell = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableCell');
 export const tableHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableHeader');

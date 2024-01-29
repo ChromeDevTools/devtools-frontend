@@ -339,7 +339,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       // clang-format off
       render(html`
         <details open>
-          <summary class="header" @keydown=${this.#onSummaryKeyDown}>
+          <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader().context('grid-settings').track({click: true})}>
             ${i18nString(UIStrings.grid)}
           </summary>
           <div class="content-section" jslog=${VisualLogging.section().context('grid-settings')}>
@@ -365,7 +365,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
         ${flexContainerElements !== undefined ?
           html`
           <details open>
-            <summary class="header" @keydown=${this.#onSummaryKeyDown}>
+            <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader().context('flexbox-overlays').track({click: true})}>
               ${i18nString(UIStrings.flexbox)}
             </summary>
             ${flexContainerElements ?

@@ -544,7 +544,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   constructor() {
     super();
     this.#controller = BreakpointsSidebarController.instance();
-    this.setAttribute('jslog', `${VisualLogging.pane().context('debugger-breakpoints')}`);
+    this.setAttribute('jslog', `${VisualLogging.section().context('sources.js-breakpoints')}`);
     void this.#controller.update();
   }
 

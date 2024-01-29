@@ -16,7 +16,7 @@ export class ObjectEventListenersSidebarPane extends UI.ThrottledWidget.Throttle
 
   constructor() {
     super();
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-global-listeners')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section().context('sources.global-listeners')}`);
 
     this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(
         this.update.bind(this), /* enableDefaultTreeFocus */ true);

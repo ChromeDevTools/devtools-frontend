@@ -222,7 +222,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
           additionalContent: this.#renderHeaderOverridesLink(),
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response,
-          loggingContext: 'details-response-headers',
+          loggingContext: 'response-headers',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.responseHeaders)}
       >
@@ -231,7 +231,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           <${ResponseHeaderSection.litTagName} .data=${{
             request: this.#request,
             toReveal: this.#toReveal,
-          } as ResponseHeaderSectionData}></${ResponseHeaderSection.litTagName}>
+          } as ResponseHeaderSectionData} jslog=${VisualLogging.section().context('request-headers')}></${ResponseHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
     `;
@@ -326,7 +326,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           headerCount: this.#request.requestHeaders().length,
           checked: requestHeadersText? this.#showRequestHeadersText : undefined,
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request,
-          loggingContext: 'details-request-headers',
+          loggingContext: 'request-headers',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.requestHeaders)}
       >
@@ -335,7 +335,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           <${RequestHeaderSection.litTagName} .data=${{
             request: this.#request,
             toReveal: this.#toReveal,
-          } as RequestHeaderSectionData}></${RequestHeaderSection.litTagName}>
+          } as RequestHeaderSectionData} jslog=${VisualLogging.section().context('request-headers')}></${RequestHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
     `;
@@ -433,15 +433,17 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           name: 'general',
           title: i18nString(UIStrings.general),
           forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.General,
-          loggingContext: 'details-general',
+          loggingContext: 'general',
         } as CategoryData}
         aria-label=${i18nString(UIStrings.general)}
       >
+      <div jslog=${VisualLogging.section().context('general')}>
         ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url())}
         ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod) : LitHtml.nothing}
         ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, statusClasses) : LitHtml.nothing}
         ${this.#request.remoteAddress()? this.#renderGeneralRow(i18nString(UIStrings.remoteAddress), this.#request.remoteAddress()) : LitHtml.nothing}
         ${this.#request.referrerPolicy()? this.#renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(this.#request.referrerPolicy())) : LitHtml.nothing}
+      </div>
       </${Category.litTagName}>
     `;
     // clang-format on
@@ -520,7 +522,7 @@ export class Category extends HTMLElement {
         <summary
           class="header"
           @keydown=${this.#onSummaryKeyDown}
-          jslog=${VisualLogging.action().track({click: true}).context(this.#loggingContext)}
+          jslog=${VisualLogging.sectionHeader().track({click: true}).context(this.#loggingContext)}
         >
           <div class="header-grid-container">
             <div>

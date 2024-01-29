@@ -1676,7 +1676,7 @@ export class SectionBlock {
   static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('pseudotype')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     separatorElement.textContent = i18nString(UIStrings.pseudoSElement, {PH1: pseudoTypeString});
@@ -1688,8 +1688,7 @@ export class SectionBlock {
       node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute(
-        'jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('inherited-pseudotype')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('inherited-pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
@@ -1712,7 +1711,7 @@ export class SectionBlock {
   static createKeyframesBlock(keyframesName: string): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('keyframes')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('keyframes')}`);
     separatorElement.textContent = `@keyframes ${keyframesName}`;
     return new SectionBlock(separatorElement);
   }
@@ -1727,8 +1726,7 @@ export class SectionBlock {
   static createPositionFallbackBlock(positionFallbackName: string): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute(
-        'jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('position-fallback')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('position-fallback')}`);
     separatorElement.textContent = `@position-fallback ${positionFallbackName}`;
     return new SectionBlock(separatorElement);
   }
@@ -1736,7 +1734,7 @@ export class SectionBlock {
   static async createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('inherited')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('inherited')}`);
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFroms));
     const link = await Common.Linkifier.Linkifier.linkify(node, {
       preventKeyboardFocus: true,
@@ -1749,7 +1747,7 @@ export class SectionBlock {
   static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator layer-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('layer')}`);
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context('layer')}`);
     UI.UIUtils.createTextChild(separatorElement.createChild('div'), i18nString(UIStrings.layer));
     const layers = rule.layers;
     if (!layers.length && rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent) {

@@ -30,7 +30,7 @@ enum VisualElements {
   TextField = 8,
   /* 9 used to be ShowAllStyleProperties, but free to grab now */
   Section = 10,
-  StylePropertiesSectionSeparator = 11,
+  SectionHeader = 11,
   /* 12 used to be StylesPane, but free to grab now */
   StylesSelector = 13,
   TreeItemExpand = 14,

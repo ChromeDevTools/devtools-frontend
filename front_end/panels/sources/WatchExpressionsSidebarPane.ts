@@ -121,7 +121,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update, this);
 
     this.contentElement.classList.add('watch-expressions');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-watch')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section().context('sources.watch')}`);
     this.contentElement.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.hideOverflow();

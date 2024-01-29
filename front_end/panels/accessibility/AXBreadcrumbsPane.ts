@@ -58,6 +58,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     this.element.classList.add('ax-subpane');
     this.element.tabIndex = -1;
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('accessibility-tree')}`);
 
     this.axSidebarView = axSidebarView;
     this.preselectedBreadcrumb = null;

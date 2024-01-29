@@ -382,7 +382,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         case Protocol.Runtime.ConsoleAPICalledEventType.Clear:
           messageElement = document.createElement('span');
           messageElement.classList.add('console-info');
-          if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+          if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
             messageElement.textContent = i18nString(UIStrings.consoleclearWasPreventedDueTo);
           } else {
             messageElement.textContent = i18nString(UIStrings.consoleWasCleared);

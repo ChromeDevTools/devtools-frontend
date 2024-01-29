@@ -56,16 +56,16 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         this.clearCacheIfNeeded.bind(this), this);
     Common.Settings.Settings.instance()
-        .moduleSetting('skipStackFramesPattern')
+        .moduleSetting('skip-stack-frames-pattern')
         .addChangeListener(this.patternChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('skipContentScripts')
+        .moduleSetting('skip-content-scripts')
         .addChangeListener(this.patternChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
+        .moduleSetting('automatically-ignore-list-known-third-party-scripts')
         .addChangeListener(this.patternChanged.bind(this));
     Common.Settings.Settings.instance()
-        .moduleSetting('enableIgnoreListing')
+        .moduleSetting('enable-ignore-listing')
         .addChangeListener(this.patternChanged.bind(this));
 
     this.#listeners = new Set();
@@ -124,7 +124,8 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   private getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
-    return Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
+    return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as
+        Common.Settings.RegExpSetting;
   }
 
   private setIgnoreListPatterns(debuggerModel: SDK.DebuggerModel.DebuggerModel): Promise<boolean> {
@@ -259,42 +260,42 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   get enableIgnoreListing(): boolean {
-    return Common.Settings.Settings.instance().moduleSetting('enableIgnoreListing').get();
+    return Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing').get();
   }
 
   set enableIgnoreListing(value: boolean) {
-    Common.Settings.Settings.instance().moduleSetting('enableIgnoreListing').set(value);
+    Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing').set(value);
   }
 
   get skipContentScripts(): boolean {
-    return this.enableIgnoreListing && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get();
+    return this.enableIgnoreListing && Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').get();
   }
 
   get automaticallyIgnoreListKnownThirdPartyScripts(): boolean {
     return this.enableIgnoreListing &&
-        Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts').get();
+        Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').get();
   }
 
   ignoreListContentScripts(): void {
     if (!this.enableIgnoreListing) {
       this.enableIgnoreListing = true;
     }
-    Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(true);
+    Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(true);
   }
 
   unIgnoreListContentScripts(): void {
-    Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(false);
+    Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(false);
   }
 
   ignoreListThirdParty(): void {
     if (!this.enableIgnoreListing) {
       this.enableIgnoreListing = true;
     }
-    Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts').set(true);
+    Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').set(true);
   }
 
   unIgnoreListThirdParty(): void {
-    Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts').set(false);
+    Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts').set(false);
   }
 
   ignoreListURL(url: Platform.DevToolsPath.UrlString): void {

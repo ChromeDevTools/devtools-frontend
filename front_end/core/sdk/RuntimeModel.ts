@@ -66,12 +66,12 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     this.#executionContextComparatorInternal = ExecutionContext.comparator;
     this.#hasSideEffectSupportInternal = null;
 
-    if (Common.Settings.Settings.instance().moduleSetting('customFormatters').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('custom-formatters').get()) {
       void this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
     }
 
     Common.Settings.Settings.instance()
-        .moduleSetting('customFormatters')
+        .moduleSetting('custom-formatters')
         .addChangeListener(this.customFormattersStateChanged.bind(this));
   }
 

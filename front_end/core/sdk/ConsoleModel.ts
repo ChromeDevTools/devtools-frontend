@@ -318,7 +318,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   private clearIfNecessary(): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
       this.clear();
     }
     ++this.#pageLoadSequenceNumber;
@@ -326,7 +326,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private primaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
-    if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
       const {frame} = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
         Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: frame.url}));

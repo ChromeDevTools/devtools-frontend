@@ -118,15 +118,15 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
-    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showPaintRects');
+    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-paint-rects');
     this.#showLayoutShiftRegionsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('showLayoutShiftRegions');
-    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showAdHighlights');
-    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showDebugBorders');
-    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showFPSCounter');
+        Common.Settings.Settings.instance().moduleSetting<boolean>('show-layout-shift-regions');
+    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-ad-highlights');
+    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-debug-borders');
+    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-fps-counter');
     this.#showScrollBottleneckRectsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('showScrollBottleneckRects');
-    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showWebVitals');
+        Common.Settings.Settings.instance().moduleSetting<boolean>('show-scroll-bottleneck-rects');
+    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-web-vitals');
 
     this.#registeredListeners = [];
     this.#showViewportSizeOnResize = true;
@@ -552,7 +552,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
-    const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
+    const showRulers = Common.Settings.Settings.instance().moduleSetting('show-metrics-rulers').get();
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
       showInfo: mode === 'all' || mode === 'container-outline',
       showRulers: showRulers,

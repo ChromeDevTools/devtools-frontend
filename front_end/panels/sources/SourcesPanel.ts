@@ -290,7 +290,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.setTarget(UI.Context.Context.instance().flavor(SDK.Target.Target));
     Common.Settings.Settings.instance()
-        .moduleSetting('breakpointsActive')
+        .moduleSetting('breakpoints-active')
         .addChangeListener(this.breakpointsActiveStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.onCurrentTargetChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
@@ -801,12 +801,12 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   toggleBreakpointsActive(): void {
     Common.Settings.Settings.instance()
-        .moduleSetting('breakpointsActive')
-        .set(!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get());
+        .moduleSetting('breakpoints-active')
+        .set(!Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get());
   }
 
   private breakpointsActiveStateChanged(): void {
-    const active = Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get();
+    const active = Common.Settings.Settings.instance().moduleSetting('breakpoints-active').get();
     this.toggleBreakpointsActiveAction.setToggled(!active);
     this.sourcesViewInternal.toggleBreakpointsActiveState(active);
   }
@@ -839,7 +839,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     debugToolbarDrawer.classList.add('scripts-debug-toolbar-drawer');
 
     const label = i18nString(UIStrings.pauseOnCaughtExceptions);
-    const setting = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException');
+    const setting = Common.Settings.Settings.instance().moduleSetting('pause-on-caught-exception');
     debugToolbarDrawer.appendChild(UI.SettingsUI.createSettingCheckbox(label, setting, true));
 
     return debugToolbarDrawer;

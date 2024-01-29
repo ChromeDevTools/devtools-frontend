@@ -414,7 +414,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.panelToolbar.appendSeparator();
     const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
+        Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
         i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
 

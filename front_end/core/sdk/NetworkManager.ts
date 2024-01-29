@@ -134,7 +134,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
     target.registerFetchDispatcher(this.fetchDispatcher);
-    if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
 
@@ -148,7 +148,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
 
     Common.Settings.Settings.instance()
-        .moduleSetting('cacheDisabled')
+        .moduleSetting('cache-disabled')
         .addChangeListener(this.cacheDisabledSettingChanged, this);
   }
 
@@ -296,7 +296,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
 
   override dispose(): void {
     Common.Settings.Settings.instance()
-        .moduleSetting('cacheDisabled')
+        .moduleSetting('cache-disabled')
         .removeChangeListener(this.cacheDisabledSettingChanged, this);
   }
 
@@ -1218,7 +1218,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this.#updatingInterceptionPatternsPromise = null;
 
     // TODO(allada) Remove these and merge it with request interception.
-    this.#blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('requestBlockingEnabled');
+    this.#blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
     this.#blockedPatternsSetting = Common.Settings.Settings.instance().createSetting('networkBlockedPatterns', []);
     this.#effectiveBlockedURLs = [];
     this.updateBlockedPatterns();
@@ -1508,8 +1508,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private async updateInterceptionPatterns(): Promise<void> {
-    if (!Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
-      Common.Settings.Settings.instance().moduleSetting('cacheDisabled').set(true);
+    if (!Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
+      Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
     const promises = ([] as Promise<unknown>[]);
@@ -1572,7 +1572,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       headers['User-Agent'] = currentUserAgent;
     }
 
-    if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
       headers['Cache-Control'] = 'no-cache';
     }
 

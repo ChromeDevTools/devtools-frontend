@@ -461,7 +461,7 @@ export class ConsoleView extends UI.Widget.VBox implements
         settingsToolbarLeft, this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title(),
         i18nString(UIStrings.hideNetwork));
     ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, 'preserveConsoleLog', i18nString(UIStrings.doNotClearLogOnPageReload),
+        settingsToolbarLeft, 'preserve-console-log', i18nString(UIStrings.doNotClearLogOnPageReload),
         i18nString(UIStrings.preserveLog));
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarLeft, this.filter.filterByExecutionContextSetting,
@@ -625,7 +625,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   modelRemoved(model: SDK.ConsoleModel.ConsoleModel): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get() &&
+    if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get() &&
         model.target().outermostTarget() === model.target()) {
       this.consoleCleared();
     }

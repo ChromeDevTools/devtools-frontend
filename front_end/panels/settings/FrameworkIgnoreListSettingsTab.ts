@@ -99,7 +99,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     this.contentElement.createChild('div', 'intro').textContent = i18nString(UIStrings.debuggerWillSkipThroughThe);
 
     const enabledSetting =
-        Common.Settings.Settings.instance().moduleSetting('enableIgnoreListing') as Common.Settings.Setting<boolean>;
+        Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing') as Common.Settings.Setting<boolean>;
     const enableIgnoreListing = this.contentElement.createChild('div', 'ignore-list-global-enable');
     enableIgnoreListing.appendChild(
         UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting, true));
@@ -113,12 +113,13 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     const ignoreListContentScripts = generalExclusionGroup.createChild('div', 'ignore-list-option');
     ignoreListContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.ignoreListContentScripts),
-        Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
+        Common.Settings.Settings.instance().moduleSetting('skip-content-scripts'), true));
 
     const automaticallyIgnoreList = generalExclusionGroup.createChild('div', 'ignore-list-option');
     automaticallyIgnoreList.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
-        Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts'), true));
+        Common.Settings.Settings.instance().moduleSetting('automatically-ignore-list-known-third-party-scripts'),
+        true));
 
     const automaticallyIgnoreLink =
         UI.XLink.XLink.create('http://goo.gle/skip-third-party', undefined, undefined, undefined, 'learn-more');
@@ -146,7 +147,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     customExclusionGroup.appendChild(addPatternButton);
     this.setting =
-        Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
+        Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
     this.setting.addChangeListener(this.settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);

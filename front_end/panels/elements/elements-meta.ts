@@ -478,7 +478,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   order: 1,
   title: i18nLazyString(UIStrings.showUserAgentShadowDOM),
-  settingName: 'showUAShadowDOM',
+  settingName: 'show-ua-shadow-dom',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
@@ -488,7 +488,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   order: 2,
   title: i18nLazyString(UIStrings.wordWrap),
-  settingName: 'domWordWrap',
+  settingName: 'dom-word-wrap',
   settingType: Common.Settings.SettingType.BOOLEAN,
   options: [
     {
@@ -508,7 +508,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   order: 3,
   title: i18nLazyString(UIStrings.showHtmlComments),
-  settingName: 'showHTMLComments',
+  settingName: 'show-html-comments',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -528,7 +528,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   order: 4,
   title: i18nLazyString(UIStrings.revealDomNodeOnHover),
-  settingName: 'highlightNodeOnHoverInOverlay',
+  settingName: 'highlight-node-on-hover-in-overlay',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
@@ -538,13 +538,13 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   order: 5,
   title: i18nLazyString(UIStrings.showDetailedInspectTooltip),
-  settingName: 'showDetailedInspectTooltip',
+  settingName: 'show-detailed-inspect-tooltip',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'showEventListenersForAncestors',
+  settingName: 'show-event-listeners-for-ancestors',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
@@ -552,7 +552,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ADORNER,
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'adornerSettings',
+  settingName: 'adorner-settings',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });
@@ -561,7 +561,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.showCSSDocumentationTooltip),
-  settingName: 'showCSSPropertyDocumentationOnHover',
+  settingName: 'show-css-property-documentation-on-hover',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });

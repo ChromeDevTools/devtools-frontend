@@ -48,7 +48,9 @@ export class CSSPropertyDocsView extends HTMLElement {
 
   #dontShowChanged(e: Event): void {
     const showDocumentation = !(e.target as HTMLInputElement).checked;
-    Common.Settings.Settings.instance().moduleSetting('showCSSPropertyDocumentationOnHover').set(showDocumentation);
+    Common.Settings.Settings.instance()
+        .moduleSetting('show-css-property-documentation-on-hover')
+        .set(showDocumentation);
   }
 
   #render(): void {

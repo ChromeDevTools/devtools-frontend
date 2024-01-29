@@ -224,7 +224,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   constructor() {
     super('elements');
 
-    this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elementsPanelSplitViewState', 325, 325);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elements-panel-split-view-state', 325, 325);
     this.splitWidget.addEventListener(
         UI.SplitWidget.Events.SidebarSizeChanged, this.updateTreeOutlineVisibleWidth.bind(this));
     this.splitWidget.show(this.element);
@@ -255,11 +255,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.domTreeContainer.id = 'elements-content';
     this.domTreeContainer.tabIndex = -1;
     // FIXME: crbug.com/425984
-    if (Common.Settings.Settings.instance().moduleSetting('domWordWrap').get()) {
+    if (Common.Settings.Settings.instance().moduleSetting('dom-word-wrap').get()) {
       this.domTreeContainer.classList.add('elements-wrap');
     }
     Common.Settings.Settings.instance()
-        .moduleSetting('domWordWrap')
+        .moduleSetting('dom-word-wrap')
         .addChangeListener(this.domWordWrapSettingChanged.bind(this));
 
     crumbsContainer.id = 'elements-crumbs';
@@ -279,7 +279,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.metricsWidget = new MetricsSidebarPane();
 
     Common.Settings.Settings.instance()
-        .moduleSetting('sidebarPosition')
+        .moduleSetting('sidebar-position')
         .addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
 
@@ -288,7 +288,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.NameChanged, event => this.targetNameChanged(event.data));
     Common.Settings.Settings.instance()
-        .moduleSetting('showUAShadowDOM')
+        .moduleSetting('show-ua-shadow-dom')
         .addChangeListener(this.showUAShadowDOMChanged.bind(this));
     Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this.extensionSidebarPaneAdded, this);
@@ -297,7 +297,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.pendingNodeReveal = false;
 
     this.adornerManager = new ElementsComponents.AdornerManager.AdornerManager(
-        Common.Settings.Settings.instance().moduleSetting('adornerSettings'));
+        Common.Settings.Settings.instance().moduleSetting('adorner-settings'));
     this.adornerSettingsPane = null;
     this.adornersByName = new Map();
   }
@@ -367,7 +367,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     let treeOutline: ElementsTreeOutline|null = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
       treeOutline = new ElementsTreeOutline(true, true);
-      treeOutline.setWordWrap(Common.Settings.Settings.instance().moduleSetting('domWordWrap').get());
+      treeOutline.setWordWrap(Common.Settings.Settings.instance().moduleSetting('dom-word-wrap').get());
       treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this.selectedNodeChanged, this);
       treeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, this.updateBreadcrumbIfNeeded, this);
       new ElementsTreeElementHighlighter(treeOutline, new Common.Throttler.Throttler(100));
@@ -684,7 +684,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.searchConfig = searchConfig;
 
-    const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get();
+    const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get();
     const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then(resultCounts => {
@@ -922,7 +922,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       Promise<void> {
     this.omitDefaultSelection = true;
 
-    const node = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get() ?
+    const node = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ?
         nodeToReveal :
         this.leaveUserAgentShadowDOM(nodeToReveal);
     if (!omitHighlight) {
@@ -1070,7 +1070,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     };
 
     this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
-        () => UI.ViewManager.ViewManager.instance().showView('elements'), 'Styles-pane-sidebar', true, true);
+        () => UI.ViewManager.ViewManager.instance().showView('elements'), 'styles-pane-sidebar', true, true);
     const tabbedPane = this.sidebarPaneView.tabbedPane();
     if (this.splitMode !== _splitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());

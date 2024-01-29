@@ -176,7 +176,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   constructor() {
     super();
     this.#settings = this.#makeSettings();
-    this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
+    this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
     this.#domModels = [];
     this.#shadow.adoptedStyleSheets = [
       Input.checkboxStyles,

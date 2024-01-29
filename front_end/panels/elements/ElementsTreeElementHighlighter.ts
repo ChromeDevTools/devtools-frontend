@@ -36,7 +36,7 @@ export class ElementsTreeElementHighlighter {
   }
 
   private highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('highlightNodeOnHoverInOverlay').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
       return;
     }
 

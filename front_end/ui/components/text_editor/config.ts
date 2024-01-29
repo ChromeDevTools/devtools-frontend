@@ -281,7 +281,7 @@ function getIndentUnit(indent: string): CM.Extension {
 
 export const indentUnit = new DynamicSetting<string>('textEditorIndent', getIndentUnit);
 
-export const domWordWrap = DynamicSetting.bool('domWordWrap', CM.EditorView.lineWrapping);
+export const domWordWrap = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
 
 function detectLineSeparator(text: string): CM.Extension {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {

@@ -59,6 +59,7 @@ devtools_module("components") {
     "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../controllers:bundle",
     "../converters:bundle",
     "../extensions:bundle",

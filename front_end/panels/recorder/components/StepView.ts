@@ -675,7 +675,7 @@ export class StepView extends HTMLElement {
                 item => {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                       .value=${item.id}
-                      jslog=${VisualLogging.action().track({click: true}).context(item.id)} 
+                      jslog=${VisualLogging.action().track({click: true}).context(`${item.label}`)} 
                     >
                       ${item.label}
                     </${Menus.Menu.MenuItem.litTagName}>

@@ -29,6 +29,7 @@ devtools_module("recorder") {
     "../../ui/components/dialogs:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/menus:bundle",
+    "../../ui/visual_logging:bundle",
     "./components:bundle",
     "./controllers:bundle",
     "./converters:bundle",

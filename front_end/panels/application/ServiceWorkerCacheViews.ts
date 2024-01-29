@@ -410,9 +410,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     request.endTime = entry.responseTime;
 
     let header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
-    let mimeType: string = SDK.MimeType.MimeType.PLAIN;
+    let mimeType: string = Platform.MimeType.MimeType.PLAIN;
     if (header) {
-      const result = SDK.MimeType.parseContentType(header.value);
+      const result = Platform.MimeType.parseContentType(header.value);
       if (result.mimeType) {
         mimeType = result.mimeType;
       }

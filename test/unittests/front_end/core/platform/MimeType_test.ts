@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 describe('parseContentType', () => {
   interface ContentTypeTest {
@@ -165,7 +165,7 @@ describe('parseContentType', () => {
 
   for (const test of TEST_CASES) {
     it(`parses '${test.contentType}'`, () => {
-      const {mimeType, charset} = SDK.MimeType.parseContentType(test.contentType);
+      const {mimeType, charset} = Platform.MimeType.parseContentType(test.contentType);
       assert.strictEqual(mimeType, test.expectedMimeType ?? null);
       assert.strictEqual(charset, test.expectedCharset ?? null);
     });

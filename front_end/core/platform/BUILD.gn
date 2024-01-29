@@ -39,6 +39,7 @@ devtools_pre_built("dcheck") {
 devtools_module("platform") {
   sources = [
     "DevToolsPath.ts",
+    "MimeType.ts",
     "Timing.ts",
     "UIString.ts",
     "UserVisibleError.ts",

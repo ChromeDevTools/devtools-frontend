@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 describe('ContentData', () => {
   const {ContentData} = SDK.ContentData;
   type ContentDataOrError = SDK.ContentData.ContentDataOrError;
-  const {MimeType} = SDK.MimeType;
+  const {MimeType} = Platform.MimeType;
 
   it('throws an error when trying to encode text content into base64', () => {
     const contentData = new ContentData('a simple text', false, MimeType.HTML);

@@ -43,7 +43,6 @@ import {Attributes, type Cookie} from './Cookie.js';
 import {CookieModel} from './CookieModel.js';
 import {CookieParser} from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
-import {MimeType} from './MimeType.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {ServerSentEvents} from './ServerSentEvents.js';
 import {ServerTiming} from './ServerTiming.js';
@@ -779,7 +778,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   set mimeType(x: string) {
     this.#mimeTypeInternal = x;
-    if (x === MimeType.EVENTSTREAM && !this.#serverSentEvents) {
+    if (x === Platform.MimeType.MimeType.EVENTSTREAM && !this.#serverSentEvents) {
       const parseFromStreamedData = this.resourceType() !== Common.ResourceType.resourceTypes.EventSource;
       this.#serverSentEvents = new ServerSentEvents(this, parseFromStreamedData);
     }

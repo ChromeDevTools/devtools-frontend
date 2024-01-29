@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-
-import {isTextType} from './MimeType.js';
+import * as Platform from '../platform/platform.js';
 
 /**
  * This class is a small wrapper around either raw binary or text data.
@@ -74,7 +73,7 @@ export class ContentData {
   }
 
   get isTextContent(): boolean {
-    return isTextType(this.mimeType);
+    return Platform.MimeType.isTextType(this.mimeType);
   }
 
   get isEmpty(): boolean {

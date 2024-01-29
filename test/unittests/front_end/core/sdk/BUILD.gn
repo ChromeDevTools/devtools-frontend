@@ -26,7 +26,6 @@ ts_library("sdk") {
     "DebuggerModel_test.ts",
     "EmulationModel_test.ts",
     "FrameManager_test.ts",
-    "MimeType_test.ts",
     "NetworkManager_test.ts",
     "NetworkRequest_test.ts",
     "OverlayColorGenerator_test.ts",

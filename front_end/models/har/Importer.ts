@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -74,7 +75,7 @@ export class Importer {
 
     // Response data.
     if (entry.response.content.mimeType && entry.response.content.mimeType !== 'x-unknown') {
-      request.mimeType = (entry.response.content.mimeType as SDK.MimeType.MimeType);
+      request.mimeType = (entry.response.content.mimeType as Platform.MimeType.MimeType);
     }
     request.responseHeaders = entry.response.headers;
     request.statusCode = entry.response.status;
@@ -109,7 +110,7 @@ export class Importer {
 
     const contentText = entry.response.content.text;
     const isBase64 = entry.response.content.encoding === 'base64';
-    const {mimeType, charset} = SDK.MimeType.parseContentType(entry.response.content.mimeType);
+    const {mimeType, charset} = Platform.MimeType.parseContentType(entry.response.content.mimeType);
 
     request.setContentDataProvider(
         async () => new SDK.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));

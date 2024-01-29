@@ -43,7 +43,6 @@ import * as Platform from '../platform/platform.js';
 
 import {ContentData as ContentDataClass, type ContentDataOrError} from './ContentData.js';
 import {Cookie} from './Cookie.js';
-import {parseContentType} from './MimeType.js';
 import {
   type BlockedCookieWithReason,
   Events as NetworkRequestEvents,
@@ -1778,7 +1777,7 @@ export class InterceptedRequest {
   getMimeTypeAndCharset(): {mimeType: string|null, charset: string|null} {
     for (const header of this.responseHeaders ?? []) {
       if (header.name.toLowerCase() === 'content-type') {
-        return parseContentType(header.value);
+        return Platform.MimeType.parseContentType(header.value);
       }
     }
 

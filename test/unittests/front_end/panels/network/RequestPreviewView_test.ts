@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
@@ -31,7 +31,7 @@ describeWithLocale('RequestPreviewView', () => {
         'http://devtools-frontend.test/content' as Platform.DevToolsPath.UrlString,
         '' as Platform.DevToolsPath.UrlString, null, null, null);
     request.setContentDataProvider(contentData);
-    request.mimeType = SDK.MimeType.MimeType.HTML;
+    request.mimeType = Platform.MimeType.MimeType.HTML;
     const component = renderPreviewView(request);
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
@@ -48,7 +48,7 @@ describeWithLocale('RequestPreviewView', () => {
     request.setContentDataProvider(
         () => Promise.resolve(new SDK.ContentData.ContentData(
             '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>', false, 'text/html', 'utf-16')));
-    request.mimeType = SDK.MimeType.MimeType.HTML;
+    request.mimeType = Platform.MimeType.MimeType.HTML;
     request.setCharset('utf-16');
 
     assert.strictEqual(request.charset(), 'utf-16');
@@ -72,7 +72,7 @@ describeWithLocale('RequestPreviewView', () => {
         () => Promise.resolve(new SDK.ContentData.ContentData(
             '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
             true, 'text/html', 'utf-16')));
-    request.mimeType = SDK.MimeType.MimeType.HTML;
+    request.mimeType = Platform.MimeType.MimeType.HTML;
     request.setCharset('utf-16');
 
     assert.strictEqual(request.charset(), 'utf-16');

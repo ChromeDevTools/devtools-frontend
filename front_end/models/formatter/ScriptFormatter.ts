@@ -61,7 +61,7 @@ export interface FormattedContent {
 export async function format(
     contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
     indent: string =
-        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get()): Promise<FormattedContent> {
+        Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get()): Promise<FormattedContent> {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
     return formatScriptContent(mimeType, content, indent);
   }
@@ -72,7 +72,7 @@ export async function format(
 export async function formatScriptContent(
     mimeType: string, content: string,
     indent: string =
-        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get()): Promise<FormattedContent> {
+        Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get()): Promise<FormattedContent> {
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
 
   const pool = formatterWorkerPool();

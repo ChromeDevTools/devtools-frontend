@@ -74,7 +74,7 @@ export class DynamicSetting<T> {
   static none: readonly DynamicSetting<unknown>[] = [];
 }
 
-export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', [], CM.keymap.of([{
+export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
   key: 'Tab',
   run: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentMore(view) : false,
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
@@ -161,7 +161,7 @@ function announceSelectedCompletionInfo(view: CM.EditorView): void {
 }
 
 export const autocompletion = new DynamicSetting<boolean>(
-    'textEditorAutocompletion',
+    'text-editor-autocompletion',
     (activateOnTyping: boolean): CM.Extension =>
         [CM.autocompletion({
           activateOnTyping,
@@ -187,9 +187,9 @@ export const autocompletion = new DynamicSetting<boolean>(
            {key: 'Enter', run: acceptCompletionIfNotConservative},
          ]))]);
 
-export const bracketMatching = DynamicSetting.bool('textEditorBracketMatching', CM.bracketMatching());
+export const bracketMatching = DynamicSetting.bool('text-editor-bracket-matching', CM.bracketMatching());
 
-export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [
+export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
   CM.foldGutter({
     markerDOM(open: boolean): HTMLElement {
       const iconName = open ? 'triangle-down' : 'triangle-right';
@@ -210,10 +210,10 @@ export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [
 const deriveIndentUnit = CM.Prec.highest(CM.indentUnit.compute([], (state: CM.EditorState) => {
   const lines = state.doc.iterLines(1, Math.min(state.doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING));
   const indentUnit = TextUtils.TextUtils.detectIndentation(lines);
-  return indentUnit ?? Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+  return indentUnit ?? Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
 }));
 
-export const autoDetectIndent = DynamicSetting.bool('textEditorAutoDetectIndent', deriveIndentUnit);
+export const autoDetectIndent = DynamicSetting.bool('text-editor-auto-detect-indent', deriveIndentUnit);
 
 function matcher(decorator: CM.MatchDecorator): CM.Extension {
   return CM.ViewPlugin.define(
@@ -279,7 +279,7 @@ function getIndentUnit(indent: string): CM.Extension {
   return value;
 }
 
-export const indentUnit = new DynamicSetting<string>('textEditorIndent', getIndentUnit);
+export const indentUnit = new DynamicSetting<string>('text-editor-indent', getIndentUnit);
 
 export const domWordWrap = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
 

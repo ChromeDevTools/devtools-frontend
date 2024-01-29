@@ -1507,7 +1507,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableTabMovesFocus),
-  settingName: 'textEditorTabMovesFocus',
+  settingName: 'text-editor-tab-moves-focus',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
@@ -1526,7 +1526,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.detectIndentation),
-  settingName: 'textEditorAutoDetectIndent',
+  settingName: 'text-editor-auto-detect-indent',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1545,7 +1545,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.autocompletion),
-  settingName: 'textEditorAutocompletion',
+  settingName: 'text-editor-autocompletion',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1563,7 +1563,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   title: i18nLazyString(UIStrings.bracketMatching),
-  settingName: 'textEditorBracketMatching',
+  settingName: 'text-editor-bracket-matching',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1582,7 +1582,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.codeFolding),
-  settingName: 'textEditorCodeFolding',
+  settingName: 'text-editor-code-folding',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [

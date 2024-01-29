@@ -216,7 +216,7 @@ export class RecorderController extends LitElement {
       this.#setCurrentPage(Pages.AllRecordingsPage);
     }
 
-    const textEditorIndent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    const textEditorIndent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
     this.#builtInConverters = Object.freeze([
       new Converters.JSONConverter.JSONConverter(textEditorIndent),
       new Converters.PuppeteerReplayConverter.PuppeteerReplayConverter(textEditorIndent),

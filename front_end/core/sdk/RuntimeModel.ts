@@ -326,7 +326,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       return;
     }
 
-    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
     void object
         .callFunctionJSON(toStringForClipboard, [{
                             value: {

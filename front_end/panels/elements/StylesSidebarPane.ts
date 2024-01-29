@@ -258,7 +258,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerCSSFiles([stylesSidebarPaneStyles]);
-    Common.Settings.Settings.instance().moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
+    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
 
     this.currentToolbarPane = null;
     this.animatedToolbarPane = null;
@@ -497,7 +497,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     ruleText: string,
   } {
     const selectorText = section.headerText();
-    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
 
     const style = section.style();
     const lines: string[] = [];

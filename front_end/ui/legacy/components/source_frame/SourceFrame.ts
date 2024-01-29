@@ -224,13 +224,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
     Common.Settings.Settings.instance()
-        .moduleSetting('textEditorIndent')
+        .moduleSetting('text-editor-indent')
         .addChangeListener(this.#textEditorIndentChanged, this);
   }
 
   override disposeView(): void {
     Common.Settings.Settings.instance()
-        .moduleSetting('textEditorIndent')
+        .moduleSetting('text-editor-indent')
         .removeChangeListener(this.#textEditorIndentChanged, this);
   }
 

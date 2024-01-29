@@ -32,7 +32,7 @@ import {
   ColorMatch,
   ColorMatcher,
   Renderer,
-  type RenderingContext,
+  RenderingContext,
   VariableMatch,
   VariableMatcher,
 } from './PropertyParser.js';
@@ -240,7 +240,9 @@ export class ColorRenderer extends ColorMatch {
     if (node.name === 'ColorLiteral' || (node.name === 'ValueName' && Common.Color.Nicknames.has(this.text))) {
       valueChild.appendChild(document.createTextNode(this.text));
     } else {
-      Renderer.renderInto(children(node), context, valueChild);
+      const {ast, matchedResult, cssControls} = context;
+      const childContext = new RenderingContext(ast, matchedResult, cssControls, {readonly: true});
+      Renderer.renderInto(children(node), childContext, valueChild);
     }
     return valueChild;
   }
@@ -837,8 +839,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return container;
   }
 
-  private processAngle(angleText: string): Text|InlineEditor.CSSAngle.CSSAngle {
-    if (!this.editable()) {
+  private processAngle(angleText: string, readonly: boolean): Text|InlineEditor.CSSAngle.CSSAngle {
+    if (!this.editable() || readonly) {
       return document.createTextNode(angleText);
     }
     const cssAngle = new InlineEditor.CSSAngle.CSSAngle();

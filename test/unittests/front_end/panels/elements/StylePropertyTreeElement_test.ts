@@ -837,5 +837,29 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       assertNotNullOrUndefined(varSwatches);
       assert.lengthOf(varSwatches, 2);
     });
+
+    it('does not render an angle swatch for hues', () => {
+      const property = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'color', 'hsl(165deg 50% 25%)', true, false, true, false, '', undefined);
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesPane: stylesSidebarPane,
+        matchedStyles: mockMatchedStyles,
+        property,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: true,
+      });
+
+      stylePropertyTreeElement.updateTitle();
+
+      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, property.value);
+      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+      assertNotNullOrUndefined(colorSwatch);
+      assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HEX), '#206050');
+
+      const angleSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
+      assert.isNull(angleSwatch);
+    });
   });
 });

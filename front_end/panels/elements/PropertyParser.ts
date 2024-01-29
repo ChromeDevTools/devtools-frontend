@@ -82,7 +82,8 @@ export abstract class TreeWalker {
 
 export class RenderingContext {
   constructor(
-      readonly ast: SyntaxTree, readonly matchedResult: BottomUpTreeMatching, readonly cssControls?: CSSControlMap) {
+      readonly ast: SyntaxTree, readonly matchedResult: BottomUpTreeMatching, readonly cssControls?: CSSControlMap,
+      readonly options: {readonly: boolean} = {readonly: false}) {
   }
   addControl(cssType: string, control: HTMLElement): void {
     if (this.cssControls) {
@@ -343,10 +344,12 @@ export class Renderer extends TreeWalker {
   #output: Node[] = [];
   readonly #context: RenderingContext;
 
-  constructor(ast: SyntaxTree, matchedResult: BottomUpTreeMatching, cssControls: CSSControlMap) {
+  constructor(ast: SyntaxTree, matchedResult: BottomUpTreeMatching, cssControls: CSSControlMap, options: {
+    readonly: boolean,
+  }) {
     super(ast);
     this.#matchedResult = matchedResult;
-    this.#context = new RenderingContext(this.ast, this.#matchedResult, cssControls);
+    this.#context = new RenderingContext(this.ast, this.#matchedResult, cssControls, options);
   }
 
   static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext):
@@ -356,7 +359,8 @@ export class Renderer extends TreeWalker {
     }
     const cssControls = new CSSControlMap();
     const renderers = nodeOrNodes.map(
-        node => this.walkExcludingSuccessors(context.ast.subtree(node), context.matchedResult, cssControls));
+        node => this.walkExcludingSuccessors(
+            context.ast.subtree(node), context.matchedResult, cssControls, context.options));
     const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing);
     return {nodes, cssControls};
   }
@@ -484,8 +488,10 @@ export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
   }
 }
 
+type LegacyRegexHandler = (text: string, readonly: boolean) => Node|null;
+
 class LegacyRegexMatch implements Match {
-  readonly processor: (text: string) => Node | null;
+  readonly processor: LegacyRegexHandler;
   readonly #matchedText: string;
   readonly #suffix: string;
   get text(): string {
@@ -494,21 +500,21 @@ class LegacyRegexMatch implements Match {
   get type(): string {
     return `${this.processor}`;
   }
-  constructor(matchedText: string, suffix: string, processor: (text: string) => Node | null) {
+  constructor(matchedText: string, suffix: string, processor: LegacyRegexHandler) {
     this.#matchedText = matchedText;
     this.#suffix = suffix;
     this.processor = processor;
   }
-  render(): Node[] {
-    const rendered = this.processor(this.#matchedText);
+  render(_node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
+    const rendered = this.processor(this.#matchedText, context.options.readonly);
     return rendered ? [rendered, document.createTextNode(this.#suffix)] : [];
   }
 }
 
 export class LegacyRegexMatcher implements Matcher {
   readonly regexp: RegExp;
-  readonly processor: (text: string) => Node | null;
-  constructor(regexp: RegExp, processor: (text: string) => Node | null) {
+  readonly processor: LegacyRegexHandler;
+  constructor(regexp: RegExp, processor: LegacyRegexHandler) {
     this.regexp = new RegExp(regexp);
     this.processor = processor;
   }

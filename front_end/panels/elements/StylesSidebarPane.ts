@@ -2211,7 +2211,7 @@ export class StylesSidebarPropertyRenderer {
   private shadowHandler: ((arg0: string, arg1: string) => Node)|null;
   private gridHandler: ((arg0: string, arg1: string) => Node)|null;
   private varHandler: ((arg0: string) => Node)|null;
-  private angleHandler: ((arg0: string) => Node)|null;
+  private angleHandler: ((arg0: string, readonly: boolean) => Node)|null;
   private lengthHandler: ((arg0: string) => Node)|null;
   private animationNameHandler: ((data: string) => Node)|null;
   private animationHandler: ((data: string) => Node)|null;
@@ -2273,7 +2273,7 @@ export class StylesSidebarPropertyRenderer {
     this.animationHandler = handler;
   }
 
-  setAngleHandler(handler: (arg0: string) => Node): void {
+  setAngleHandler(handler: (arg0: string, readonly: boolean) => Node): void {
     this.angleHandler = handler;
   }
 

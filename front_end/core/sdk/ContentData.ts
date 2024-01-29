@@ -66,7 +66,7 @@ export class ContentData {
       throw new Error('Cannot interpret binary data as text');
     }
 
-    const charset = this.#charset ?? 'utf-8';
+    const charset = this.#charset || 'utf-8';
     const binaryString = window.atob(this.#contentAsBase64 as string);
     const bytes = Uint8Array.from(binaryString, m => m.codePointAt(0) as number);
     this.#contentAsText = new TextDecoder(charset).decode(bytes);

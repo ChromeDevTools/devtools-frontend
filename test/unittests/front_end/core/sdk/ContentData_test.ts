@@ -29,6 +29,13 @@ describe('ContentData', () => {
     assert.throws(() => contentData.text);
   });
 
+  it('treats an empty string for charset as utf-8', () => {
+    const contentData = new ContentData(
+        'PCFET0NUWVBFIGh0bWw+CjxwPknDsXTDq3Juw6J0acO0bsOgbGl6w6Z0acO4buKYg/CdjIY8L3A+Cg==', true, MimeType.HTML, '');
+
+    assert.strictEqual(contentData.text, '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>\n');
+  });
+
   it('converts to a data URL', () => {
     const textContent = new ContentData('a simple text', false, MimeType.HTML);
     assert.strictEqual(textContent.asDataUrl(), 'data:text/html,a simple text');

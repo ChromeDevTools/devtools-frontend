@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -123,7 +124,7 @@ const UIStrings = {
   /**
    * @description Explanation text for the 'Emulate a focused page' setting in the Rendering tool.
    */
-  emulatesAFocusedPage: 'Emulates a focused page.',
+  emulatesAFocusedPage: 'Keep page focused. Commonly used for debugging disappearing elements.',
   /**
    * @description The name of a checkbox setting in the Rendering tool. This setting enables auto dark mode emulation.
    */
@@ -243,7 +244,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
     this.#appendCheckbox(
         i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
-        Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'));
+        Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'),
+        {toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab});
     this.#appendCheckbox(
         i18nString(UIStrings.emulateAutoDarkMode), i18nString(UIStrings.emulatesAutoDarkMode),
         Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode'));
@@ -299,10 +301,11 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
-  #appendCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
-      UI.UIUtils.CheckboxLabel {
+  #appendCheckbox(
+      label: string, subtitle: string, setting: Common.Settings.Setting<boolean>,
+      metric?: UI.SettingsUI.UserMetricOptions): UI.UIUtils.CheckboxLabel {
     const checkbox = UI.UIUtils.CheckboxLabel.create(label, false, subtitle, setting.name);
-    UI.SettingsUI.bindCheckbox(checkbox.checkboxElement, setting);
+    UI.SettingsUI.bindCheckbox(checkbox.checkboxElement, setting, metric);
     this.contentElement.appendChild(checkbox);
     return checkbox;
   }

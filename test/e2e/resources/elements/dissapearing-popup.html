@@ -1,0 +1,37 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<style>
+  .hide {
+    display: none;
+  }
+</style>
+
+<input id="query" type="text">
+<p id="result" class="hide">dissappearing popup</p>
+
+<script>
+  const query = document.querySelector('#query');
+  const result = document.querySelector('#result');
+
+  query.addEventListener('input', ()=> {
+    if (document.hasFocus()) {
+      result.classList.remove('hide');
+    }
+  })
+
+  query.addEventListener('focus', ()=> {
+    if (document.hasFocus() && query.value) {
+      result.classList.remove('hide');
+    }
+  })
+
+  query.addEventListener('blur', (event) => {
+    result.classList.add('hide');
+  });
+
+  query.value = 'ta';
+
+</script>

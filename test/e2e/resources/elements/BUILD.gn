@@ -32,6 +32,7 @@ copy_to_gen("elements") {
     "css-variables-many.html",
     "css-variables.html",
     "css-webkit-region.html",
+    "dissapearing-popup.html",
     "element-breadcrumbs.html",
     "element-reveal-inline-issue.html",
     "elements-panel-styles.css",

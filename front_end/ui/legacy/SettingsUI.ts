@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Settings from '../components/settings/settings.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
@@ -132,7 +133,8 @@ const createSettingSelect = function(
   }
 };
 
-export const bindCheckbox = function(inputElement: Element, setting: Common.Settings.Setting<boolean>): void {
+export const bindCheckbox = function(
+    inputElement: Element, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
   const input = (inputElement as HTMLInputElement);
   function settingChanged(): void {
     if (input.checked !== setting.get()) {
@@ -146,7 +148,20 @@ export const bindCheckbox = function(inputElement: Element, setting: Common.Sett
     if (setting.get() !== input.checked) {
       setting.set(input.checked);
     }
+
+    if (setting.get() && metric?.enable) {
+      Host.userMetrics.actionTaken(metric.enable);
+    }
+
+    if (!setting.get() && metric?.disable) {
+      Host.userMetrics.actionTaken(metric.disable);
+    }
+
+    if (metric?.toggle) {
+      Host.userMetrics.actionTaken(metric.toggle);
+    }
   }
+
   input.addEventListener('change', inputChanged, false);
 };
 
@@ -183,4 +198,14 @@ export const createControlForSetting = function(
 
 export interface SettingUI {
   settingElement(): Element|null;
+}
+
+/**
+ * Track toggle action as a whole or
+ * track on and off action separately.
+ */
+export interface UserMetricOptions {
+  toggle?: Host.UserMetrics.Action;
+  enable?: Host.UserMetrics.Action;
+  disable?: Host.UserMetrics.Action;
 }

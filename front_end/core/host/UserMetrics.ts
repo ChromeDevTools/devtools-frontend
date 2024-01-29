@@ -1181,11 +1181,6 @@ export enum IssueResourceOpened {
   HeavyAdElement = 5,
   ContentSecurityPolicyDirective = 6,
   ContentSecurityPolicyElement = 7,
-  CrossOriginEmbedderPolicyLearnMore = 8,
-  MixedContentLearnMore = 9,
-  SameSiteCookieLearnMore = 10,
-  HeavyAdLearnMore = 11,
-  ContentSecurityPolicyLearnMore = 12,
   MaxValue = 13,
 }
 

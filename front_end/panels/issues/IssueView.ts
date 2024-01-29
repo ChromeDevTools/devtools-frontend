@@ -454,9 +454,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       linkIcon.data = {iconName: 'open-externally', color: 'var(--icon-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
-      link.addEventListener('x-link-invoke', () => {
-        Host.userMetrics.issuesPanelResourceOpened(this.#issue.getCategory(), AffectedItem.LearnMore);
-      });
 
       const linkListItem = linkList.createChild('li');
       linkListItem.appendChild(link);

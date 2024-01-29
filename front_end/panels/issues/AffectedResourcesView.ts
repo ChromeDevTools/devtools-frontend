@@ -41,7 +41,6 @@ export const enum AffectedItem {
   Cookie = 'Cookie',
   Directive = 'Directive',
   Element = 'Element',
-  LearnMore = 'LearnMore',
   Request = 'Request',
   Source = 'Source',
 }

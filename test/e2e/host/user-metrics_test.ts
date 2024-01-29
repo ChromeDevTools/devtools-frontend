@@ -539,43 +539,6 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  // TODO(crbug/1520446): Flaky timeouts
-  it.skipOnPlatforms(['mac'], '[crbug.com/1520446] Learn More" link is clicked', async () => {
-    const {browser} = getBrowserAndPages();
-
-    await goToResource('elements/element-reveal-inline-issue.html');
-    await click('.issue');
-
-    await waitFor('.link-list x-link');
-    await scrollElementIntoView('.link-list x-link');
-    await click('.link-list x-link');
-
-    try {
-      await assertHistogramEventsInclude([
-        {
-          actionName: 'DevTools.IssueCreated',
-          actionCode: 1,  // ContentSecurityPolicyIssue
-        },
-        {
-          actionName: 'DevTools.IssueCreated',
-          actionCode: 1,  // ContentSecurityPolicyIssue
-        },
-        {
-          actionName: 'DevTools.IssuesPanelIssueExpanded',
-          actionCode: 4,  // ContentSecurityPolicy
-        },
-        {
-          actionName: 'DevTools.IssuesPanelResourceOpened',
-          actionCode: 12,  // ContentSecurityPolicyLearnMore
-        },
-      ]);
-    } finally {
-      const target = await browser.waitForTarget(target => target.url().includes('web.dev'));
-      const page = await target.page();
-      await page?.close();
-    }
-  });
-
   it('dispatches events when Quirks Mode issues are created', async () => {
     await goToResource('elements/quirks-mode-iframes.html');
     await waitFor('.issue');

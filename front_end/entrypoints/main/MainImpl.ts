@@ -320,7 +320,7 @@ export class MainImpl {
 
     // Font Editor
     Root.Runtime.experiments.register(
-        'fontEditor', 'Enable new Font Editor tool within the Styles Pane.', undefined,
+        'fontEditor', 'Enable new Font Editor tool within the Styles tab.', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-89/#font');
 
     // Contrast issues reported via the Issues panel.
@@ -333,8 +333,8 @@ export class MainImpl {
 
     // CSS <length> authoring tool.
     Root.Runtime.experiments.register(
-        'cssTypeComponentLength', 'Enable CSS <length> authoring tool in the Styles pane', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-96/#length', 'https://g.co/devtools/length-feedback');
+        'cssTypeComponentLengthDeprecate', 'Deprecate CSS <length> authoring tool in the Styles tab', undefined,
+        'https://goo.gle/devtools-deprecate-length-tools', 'https://crbug.com/1522657');
 
     // Integrate CSS changes in the Styles pane.
     Root.Runtime.experiments.register(
@@ -402,7 +402,7 @@ export class MainImpl {
     }
 
     Root.Runtime.experiments.enableExperimentsByDefault([
-      'cssTypeComponentLength',
+      'cssTypeComponentLengthDeprecate',
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,

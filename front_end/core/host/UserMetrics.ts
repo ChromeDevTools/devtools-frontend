@@ -1081,7 +1081,6 @@ export enum DevtoolsExperiments {
   'ignoreListJSFramesOnTimeline' = 43,
   'contrastIssues' = 44,
   'experimentalCookieFeatures' = 45,
-  'cssTypeComponentLength' = 52,
   'stylesPaneCSSChanges' = 55,
   'evaluateExpressionsWithSourceMaps' = 58,
   'instrumentationBreakpoints' = 61,
@@ -1102,9 +1101,10 @@ export enum DevtoolsExperiments {
   'autofillView' = 82,
   'sourcesFrameIndentationMarkersTemporarilyDisable' = 83,
   'heapSnapshotTreatBackingStoreAsContainingObject' = 84,
+  'cssTypeComponentLengthDeprecate' = 85,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 85,
+  'MaxValue' = 86,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

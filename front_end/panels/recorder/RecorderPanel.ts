@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as VisualLogging from '../../../front_end/ui/visual_logging/visual_logging.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type * as Actions from './recorder-actions/recorder-actions.js';
 import {RecorderController} from './RecorderController.js';

@@ -31,7 +31,7 @@ const UIStrings = {
    *@example {allow pasting} PH1
    */
   selfXssWarning:
-      'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below to allow pasting.',
+      'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below and hit Enter to allow pasting.',
   /**
    *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
@@ -63,6 +63,27 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
   #selfXssWarningShown = false;
+  #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
+
+  #getJavaScriptCompletionExtensions(): CodeMirror.Extension {
+    if (this.#selfXssWarningShown) {
+      // No (JavaScript) completions at all while showing the self-XSS warning.
+      return [];
+    }
+    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
+      return [
+        CodeMirror.javascript.javascript(),
+        TextEditor.JavaScript.completion(),
+      ];
+    }
+    return [CodeMirror.javascript.javascriptLanguage];
+  }
+
+  #updateJavaScriptCompletionCompartment(): void {
+    const extensions = this.#getJavaScriptCompletionExtensions();
+    const effects = this.#javaScriptCompletionCompartment.reconfigure(extensions);
+    this.editor.dispatch({effects});
+  }
 
   constructor() {
     super();
@@ -119,15 +140,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
       CodeMirror.EditorView.lineWrapping,
       CodeMirror.autocompletion({aboveCursor: true}),
+      this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
-    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
-      extensions.push(
-          CodeMirror.javascript.javascript(),
-          TextEditor.JavaScript.completion(),
-      );
-    } else {
-      extensions.push(CodeMirror.javascript.javascriptLanguage);
-    }
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
@@ -297,6 +311,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         i18nString(UIStrings.selfXssWarning, {PH1: i18nString(UIStrings.allowPasting)}));
     this.#selfXssWarningShown = true;
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
+    this.#updateJavaScriptCompletionCompartment();
   }
 
   private async handleEnter(forceEvaluate?: boolean): Promise<void> {
@@ -311,6 +326,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           .set(true);
       this.#selfXssWarningShown = false;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInConsole);
+      this.#updateJavaScriptCompletionCompartment();
       return;
     }
 

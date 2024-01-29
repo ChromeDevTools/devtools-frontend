@@ -102,6 +102,10 @@ export class HeapSnapshotEdge implements HeapSnapshotItem {
     return this.edges[this.edgeIndex + this.snapshot.edgeTypeOffset];
   }
 
+  isInternal(): boolean {
+    throw new Error('Not implemented');
+  }
+
   isInvisible(): boolean {
     throw new Error('Not implemented');
   }
@@ -2477,11 +2481,14 @@ export class JSHeapSnapshot extends HeapSnapshot {
   }
 
   override calculateDistances(): void {
+    const pendingEphemeronEdges = new Set<string>();
+    const ephemeronNameRegex =
+        /^\d+ \/ part of key \(.*? @(?<keyId>\d+)\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\)$/;
     function filter(node: HeapSnapshotNode, edge: HeapSnapshotEdge): boolean {
-      if (node.isHidden()) {
-        return edge.name() !== 'sloppy_function_map' || node.rawName() !== 'system / NativeContext';
+      if (node.isHidden() && edge.name() === 'sloppy_function_map' && node.rawName() === 'system / NativeContext') {
+        return false;
       }
-      if (node.isArray()) {
+      if (node.isArray() && node.rawName() === '(map descriptors)') {
         // DescriptorArrays are fixed arrays used to hold instance descriptors.
         // The format of the these objects is:
         //   [0]: Number of descriptors
@@ -2495,11 +2502,35 @@ export class JSHeapSnapshot extends HeapSnapshot {
         // links may not be valid for all the maps. We just skip
         // all the descriptor links when calculating distances.
         // For more details see http://crbug.com/413608
-        if (node.rawName() !== '(map descriptors)') {
-          return true;
-        }
         const index = parseInt(edge.name(), 10);
         return index < 2 || (index % 3) !== 1;
+      }
+      if (edge.isInternal()) {
+        // Snapshots represent WeakMap values as being referenced by two edges:
+        // one from the WeakMap, and a second from the corresponding key. To
+        // avoid the case described in crbug.com/1290800, we should set the
+        // distance of that value to the greater of (WeakMap+1, key+1). This
+        // part of the filter skips the first edge in the matched pair of edges,
+        // so that the distance gets set based on the second, which should be
+        // greater or equal due to traversal order.
+        const match = edge.name().match(ephemeronNameRegex);
+        if (match) {
+          const nodeId = node.id().toString(10);
+          const targetNodeId = edge.node().id().toString(10);
+          if (!pendingEphemeronEdges.has(nodeId + ' ' + targetNodeId)) {
+            const {keyId, tableId} = match.groups as {keyId: string, tableId: string};
+            let otherNodeId: string = '';
+            if (keyId === nodeId) {
+              otherNodeId = tableId;
+            } else if (tableId === nodeId) {
+              otherNodeId = keyId;
+            } else {
+              throw new Error('Invalid IDs in WeakMap edge');
+            }
+            pendingEphemeronEdges.add(otherNodeId + ' ' + targetNodeId);
+            return false;
+          }
+        }
       }
       return true;
     }
@@ -2902,7 +2933,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.rawType() === this.snapshot.edgeWeakType;
   }
 
-  isInternal(): boolean {
+  override isInternal(): boolean {
     return this.rawType() === this.snapshot.edgeInternalType;
   }
 

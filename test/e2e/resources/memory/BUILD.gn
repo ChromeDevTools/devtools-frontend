@@ -16,5 +16,6 @@ copy_to_gen("memory") {
     "event-listeners.html",
     "multiple-retainers.html",
     "set.html",
+    "weakmap.html",
   ]
 }

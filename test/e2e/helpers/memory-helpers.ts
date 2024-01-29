@@ -308,3 +308,9 @@ export async function getSizesFromSelectedRow() {
   assert.isTrue(retainedSize >= shallowSize);
   return {shallowSize, retainedSize};
 }
+
+export async function getDistanceFromCategoryRow(text: string) {
+  const row = await waitFor(`//td[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+  const numericColumns = await $$('.numeric-column', row);
+  return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
+}

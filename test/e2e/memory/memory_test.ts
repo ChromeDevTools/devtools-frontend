@@ -29,6 +29,7 @@ import {
   findSearchResult,
   focusTableRow,
   getDataGridRows,
+  getDistanceFromCategoryRow,
   getSizesFromSelectedRow,
   navigateToMemoryTab,
   setClassFilter,
@@ -451,5 +452,17 @@ describe('The Memory Panel', async function() {
     assert.strictEqual(sizes.sizesForBackingStorage.shallowSize, 0);
     // The backing storage retains 100 strings, which occupy at least 16 bytes each.
     assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= 1600);
+  });
+
+  it('Computes distances for WeakMap values correctly', async () => {
+    await goToResource('memory/weakmap.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setClassFilter('CustomClass');
+    assert.strictEqual(5, await getDistanceFromCategoryRow('CustomClass1'));
+    assert.strictEqual(6, await getDistanceFromCategoryRow('CustomClass2'));
+    assert.strictEqual(2, await getDistanceFromCategoryRow('CustomClass3'));
+    assert.strictEqual(8, await getDistanceFromCategoryRow('CustomClass4'));
   });
 });

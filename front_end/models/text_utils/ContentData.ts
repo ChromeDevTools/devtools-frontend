@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
+
+import { contentAsDataURL, type DeferredContent } from './ContentProvider.js';
 
 /**
  * This class is a small wrapper around either raw binary or text data.
@@ -85,16 +86,16 @@ export class ContentData {
     // To keep with existing behavior we prefer to return the content
     // encoded if that is how this ContentData was constructed with.
     if (this.#contentAsBase64 !== undefined) {
-      return TextUtils.ContentProvider.contentAsDataURL(
+      return contentAsDataURL(
           this.#contentAsBase64, this.mimeType ?? '', true, this.#charset ?? null);
     }
-    return TextUtils.ContentProvider.contentAsDataURL(this.text, this.mimeType ?? '', false);
+    return contentAsDataURL(this.text, this.mimeType ?? '', false);
   }
 
   /**
    * @deprecated Used during migration from `DeferredContent` to `ContentData`.
    */
-  asDeferedContent(): TextUtils.ContentProvider.DeferredContent {
+  asDeferedContent(): DeferredContent {
     // To keep with existing behavior we prefer to return the content
     // encoded if that is how this ContentData was constructed with.
     if (this.#contentAsBase64 !== undefined) {
@@ -110,7 +111,7 @@ export class ContentData {
   /**
    * @deprecated Used during migration from `DeferredContent` to `ContentData`.
    */
-  static asDeferredContent(contentDataOrError: ContentDataOrError): TextUtils.ContentProvider.DeferredContent {
+  static asDeferredContent(contentDataOrError: ContentDataOrError): DeferredContent {
     if (ContentData.isError(contentDataOrError)) {
       return {error: contentDataOrError.error, content: null, isEncoded: false};
     }

@@ -38,7 +38,6 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {ContentData as ContentDataClass, type ContentDataOrError} from './ContentData.js';
 import {Attributes, type Cookie} from './Cookie.js';
 import {CookieModel} from './CookieModel.js';
 import {CookieParser} from './CookieParser.js';
@@ -232,7 +231,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #webBundleInfoInternal: WebBundleInfo|null;
   #webBundleInnerRequestInfoInternal: WebBundleInnerRequestInfo|null;
   #resourceTypeInternal: Common.ResourceType.ResourceType;
-  #contentDataInternal: Promise<ContentDataOrError>|null;
+  #contentDataInternal: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   readonly #framesInternal: WebSocketFrame[];
   #responseHeaderValues: {
     [x: string]: string|undefined,
@@ -301,7 +300,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #serverTimingsInternal?: ServerTiming[]|null;
   #queryStringInternal?: string|null;
   #parsedQueryParameters?: NameValue[];
-  #contentDataProvider?: (() => Promise<ContentDataOrError>);
+  #contentDataProvider?: (() => Promise<TextUtils.ContentData.ContentDataOrError>);
   #isSameSiteInternal: boolean|null;
   #wasIntercepted: boolean;
   #associatedData = new Map<string, object>();
@@ -1309,7 +1308,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return values.join(', ');
   }
 
-  contentData(): Promise<ContentDataOrError> {
+  contentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.#contentDataInternal) {
       return this.#contentDataInternal;
     }
@@ -1321,7 +1320,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#contentDataInternal;
   }
 
-  setContentDataProvider(dataProvider: () => Promise<ContentDataOrError>): void {
+  setContentDataProvider(dataProvider: () => Promise<TextUtils.ContentData.ContentDataOrError>): void {
     console.assert(!this.#contentDataInternal, 'contentData can only be set once.');
     this.#contentDataProvider = dataProvider;
   }
@@ -1335,7 +1334,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return ContentDataClass.asDeferredContent(await this.contentData());
+    return TextUtils.ContentData.ContentData.asDeferredContent(await this.contentData());
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
@@ -1345,7 +1344,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
 
     const contentData = await this.contentData();
-    if (ContentDataClass.isError(contentData) || !contentData.isTextContent) {
+    if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
     return TextUtils.TextUtils.performSearchInContent(contentData.text, query, caseSensitive, isRegex);
@@ -1405,7 +1404,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
     const contentData = await this.contentData();
-    if (ContentDataClass.isError(contentData)) {
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;
     }
     let imageSrc = contentData.asDataUrl();

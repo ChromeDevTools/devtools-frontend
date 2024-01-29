@@ -521,7 +521,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
       networkManager: SDK.NetworkManager.NetworkManager, frameId: Protocol.Page.FrameId,
       requestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString): void {
     const request = SDK.NetworkRequest.NetworkRequest.create(requestId, url, url, frameId, null, null, undefined);
-    const dataProvider = () => Promise.resolve(new SDK.ContentData.ContentData('content', false, request.mimeType));
+    const dataProvider = () =>
+        Promise.resolve(new TextUtils.ContentData.ContentData('content', false, request.mimeType));
     request.setContentDataProvider(dataProvider);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, {request, originalRequest: null});
     request.finished = true;

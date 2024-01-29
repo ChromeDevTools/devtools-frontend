@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 
 describe('ContentData', () => {
-  const {ContentData} = SDK.ContentData;
-  type ContentDataOrError = SDK.ContentData.ContentDataOrError;
+  const {ContentData} = TextUtils.ContentData;
+  type ContentDataOrError = TextUtils.ContentData.ContentDataOrError;
   const {MimeType} = Platform.MimeType;
 
   it('throws an error when trying to encode text content into base64', () => {

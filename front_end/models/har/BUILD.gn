@@ -19,6 +19,7 @@ devtools_module("har") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../text_utils:bundle",
   ]
 }
 

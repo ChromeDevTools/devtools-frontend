@@ -41,7 +41,6 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {ContentData as ContentDataClass, type ContentDataOrError} from './ContentData.js';
 import {Cookie} from './Cookie.js';
 import {
   type BlockedCookieWithReason,
@@ -182,7 +181,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return TextUtils.TextUtils.performSearchInSearchMatches(response.result || [], query, caseSensitive, isRegex);
   }
 
-  static async requestContentData(request: NetworkRequest): Promise<ContentDataOrError> {
+  static async requestContentData(request: NetworkRequest): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       return {error: i18nString(UIStrings.noContentForWebSocket)};
     }
@@ -208,7 +207,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (error) {
       return {error};
     }
-    return new ContentDataClass(
+    return new TextUtils.ContentData.ContentData(
         response.body, response.base64Encoded, request.mimeType, request.charset() ?? undefined);
   }
 
@@ -216,7 +215,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
    * Returns the already received bytes for an in-flight request. After calling this method
    * "dataReceived" events will contain additional data.
    */
-  static async streamResponseBody(request: NetworkRequest): Promise<ContentDataOrError> {
+  static async streamResponseBody(request: NetworkRequest): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (request.finished) {
       return {error: 'Streaming the response body is only available for in-flight requests.'};
     }
@@ -233,7 +232,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (error) {
       return {error};
     }
-    return new ContentDataClass(
+    return new TextUtils.ContentData.ContentData(
         response.bufferedData, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
   }
 
@@ -1753,7 +1752,7 @@ export class InterceptedRequest {
     void this.#fetchAgent.invoke_failRequest({requestId: this.requestId, errorReason});
   }
 
-  async responseBody(): Promise<ContentDataOrError> {
+  async responseBody(): Promise<TextUtils.ContentData.ContentDataOrError> {
     const response = await this.#fetchAgent.invoke_getResponseBody({requestId: this.requestId});
     const error = response.getError();
     if (error) {
@@ -1761,7 +1760,7 @@ export class InterceptedRequest {
     }
 
     const {mimeType, charset} = this.getMimeTypeAndCharset();
-    return new ContentDataClass(
+    return new TextUtils.ContentData.ContentData(
         response.body, response.base64Encoded, mimeType ?? 'application/octet-stream', charset ?? undefined);
   }
 

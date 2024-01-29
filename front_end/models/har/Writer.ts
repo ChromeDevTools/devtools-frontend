@@ -35,7 +35,8 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {type EntryDTO, Log} from './Log.js';
 
@@ -104,9 +105,9 @@ export class Writer {
       return false;
     }
 
-    function contentLoaded(entry: EntryDTO, contentDataOrError: SDK.ContentData.ContentDataOrError): void {
+    function contentLoaded(entry: EntryDTO, contentDataOrError: TextUtils.ContentData.ContentDataOrError): void {
       progress.incrementWorked();
-      const contentData = SDK.ContentData.ContentData.asDeferredContent(contentDataOrError);
+      const contentData = TextUtils.ContentData.ContentData.asDeferredContent(contentDataOrError);
       let encoded: true|boolean = contentData.isEncoded;
       if (contentData.content !== null) {
         let content: string = contentData.content;

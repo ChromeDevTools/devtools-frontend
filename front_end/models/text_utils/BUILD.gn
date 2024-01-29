@@ -9,6 +9,7 @@ import("../visibility.gni")
 devtools_module("text_utils") {
   sources = [
     "CodeMirrorUtils.ts",
+    "ContentData.ts",
     "ContentProvider.ts",
     "StaticContentProvider.ts",
     "Text.ts",
@@ -37,11 +38,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/models/text_utils/*",
-    "../../../test/unittests/front_end/panels/coverage/*",
-    "../../../test/unittests/front_end/panels/search/*",
+    "../../../test/unittests/*",
     "../../core/sdk/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/test_runner/*",

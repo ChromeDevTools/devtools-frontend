@@ -868,7 +868,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private static async copyResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const contentData = await request.contentData();
     let content: string;
-    if (SDK.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
       content = '';
     } else if (!contentData.isTextContent) {
       content = contentData.asDataUrl() ?? '';

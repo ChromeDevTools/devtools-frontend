@@ -33,7 +33,6 @@ devtools_module("sdk") {
     "Connections.ts",
     "ConsoleModel.ts",
     "ConsoleModelTypes.ts",
-    "ContentData.ts",
     "Cookie.ts",
     "CookieModel.ts",
     "CookieParser.ts",

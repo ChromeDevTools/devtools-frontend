@@ -8,6 +8,7 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
@@ -17,7 +18,8 @@ const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.Net
   const request = SDK.NetworkRequest.NetworkRequest.create(
       requestId, 'p0.com' as Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
   request.setIssueTime(startTime, startTime);
-  request.setContentDataProvider(() => Promise.resolve(new SDK.ContentData.ContentData('', false, request.mimeType)));
+  request.setContentDataProvider(
+      () => Promise.resolve(new TextUtils.ContentData.ContentData('', false, request.mimeType)));
   return request;
 };
 

@@ -6,6 +6,7 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import type * as Search from '../../../../../front_end/panels/search/search.js';
@@ -23,7 +24,7 @@ describeWithLocale('NetworkSearchScope', () => {
     fakeRequest1.setResourceType(Common.ResourceType.resourceTypes.Script);
     fakeRequest1.mimeType = 'text/javascript';
     fakeRequest1.setContentDataProvider(
-        async () => new SDK.ContentData.ContentData(
+        async () => new TextUtils.ContentData.ContentData(
             'This is the response body of request 1.\nAnd a second line.\n', false, fakeRequest1.mimeType));
 
     const fakeRequest2 = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
@@ -34,7 +35,7 @@ describeWithLocale('NetworkSearchScope', () => {
     fakeRequest2.setResourceType(Common.ResourceType.resourceTypes.Script);
     fakeRequest2.mimeType = 'text/javascript';
     fakeRequest2.setContentDataProvider(
-        async () => new SDK.ContentData.ContentData(
+        async () => new TextUtils.ContentData.ContentData(
             'This is the first line.\nAnd another line in the response body of request 2.\n', false,
             fakeRequest2.mimeType));
 

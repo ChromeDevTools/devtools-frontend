@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 
 import {type HAREntry, type HARLog, type HARPage, type HARTimings} from './HARFormat.js';
 
@@ -113,7 +114,8 @@ export class Importer {
     const {mimeType, charset} = Platform.MimeType.parseContentType(entry.response.content.mimeType);
 
     request.setContentDataProvider(
-        async () => new SDK.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));
+        async () =>
+            new TextUtils.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));
 
     // Timing data.
     Importer.setupTiming(request, issueTime, entry.time, entry.timings);

@@ -35,7 +35,6 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
-import {ContentData} from './ContentData.js';
 import {Events, type NetworkRequest} from './NetworkRequest.js';
 import {type ResourceTreeFrame, type ResourceTreeModel} from './ResourceTreeModel.js';
 
@@ -231,7 +230,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     }|null = null;
     if (this.request) {
       const contentData = await this.request.contentData();
-      if (!ContentData.isError(contentData)) {
+      if (!TextUtils.ContentData.ContentData.isError(contentData)) {
         const {isEncoded, content} = contentData.asDeferedContent();
         this.#contentInternal = content;
         this.#contentEncodedInternal = isEncoded;

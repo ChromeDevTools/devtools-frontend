@@ -10,6 +10,7 @@ import * as Persistence from '../../../../../front_end/models/persistence/persis
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
@@ -335,7 +336,7 @@ describeWithMockConnection('InterceptedRequest', () => {
         fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
         filteredResponseHeaders);
     interceptedRequest.responseBody = async () => {
-      return new SDK.ContentData.ContentData(responseBody, false, 'text/html');
+      return new TextUtils.ContentData.ContentData(responseBody, false, 'text/html');
     };
 
     assert.isTrue(fulfillRequestSpy.notCalled);
@@ -570,7 +571,7 @@ describeWithMockConnection('InterceptedRequest', () => {
     const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
         fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest);
     interceptedRequest.responseBody = async () => {
-      return new SDK.ContentData.ContentData('interceptedRequest content', false, 'text/html');
+      return new TextUtils.ContentData.ContentData('interceptedRequest content', false, 'text/html');
     };
 
     assert.isTrue(continueRequestSpy.notCalled);
@@ -630,7 +631,7 @@ describeWithMockConnection('InterceptedRequest', () => {
           [{name: 'content-type', value: 'text/html; charset-utf-16'}]);
       interceptedRequest.responseBody = async () => {
         // Very simple HTML doc base64 encoded.
-        return new SDK.ContentData.ContentData(
+        return new TextUtils.ContentData.ContentData(
             '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
             true, 'text/html', 'utf-16');
       };

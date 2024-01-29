@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -433,12 +434,12 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   private async requestContent(request: SDK.NetworkRequest.NetworkRequest):
-      Promise<SDK.ContentData.ContentDataOrError> {
+      Promise<TextUtils.ContentData.ContentDataOrError> {
     const response = await this.cache.requestCachedResponse(request.url(), request.requestHeaders());
     if (!response) {
       return {error: 'No cached response found'};
     }
-    return new SDK.ContentData.ContentData(
+    return new TextUtils.ContentData.ContentData(
         response.body, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
   }
 

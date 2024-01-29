@@ -6,13 +6,14 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
-async function contentData(): Promise<SDK.ContentData.ContentData> {
+async function contentData(): Promise<TextUtils.ContentData.ContentData> {
   const content = '<style> p { color: red; }</style><link rel="stylesheet" ref="http://devtools-frontend.test/style">';
-  return new SDK.ContentData.ContentData(content, false, 'text/css');
+  return new TextUtils.ContentData.ContentData(content, false, 'text/css');
 }
 
 function renderPreviewView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestPreviewView.RequestPreviewView {
@@ -46,7 +47,7 @@ describeWithLocale('RequestPreviewView', () => {
         'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
         '' as Platform.DevToolsPath.UrlString, null, null, null);
     request.setContentDataProvider(
-        () => Promise.resolve(new SDK.ContentData.ContentData(
+        () => Promise.resolve(new TextUtils.ContentData.ContentData(
             '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>', false, 'text/html', 'utf-16')));
     request.mimeType = Platform.MimeType.MimeType.HTML;
     request.setCharset('utf-16');
@@ -69,7 +70,7 @@ describeWithLocale('RequestPreviewView', () => {
         '' as Platform.DevToolsPath.UrlString, null, null, null);
     // UTF-16 + base64 encoded "<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>".
     request.setContentDataProvider(
-        () => Promise.resolve(new SDK.ContentData.ContentData(
+        () => Promise.resolve(new TextUtils.ContentData.ContentData(
             '//48ACEARABPAEMAVABZAFAARQAgAGgAdABtAGwAPgAKADwAcAA+AEkA8QB0AOsAcgBuAOIAdABpAPQAbgDgAGwAaQB6AOYAdABpAPgAbgADJjTYBt88AC8AcAA+AAoA',
             true, 'text/html', 'utf-16')));
     request.mimeType = Platform.MimeType.MimeType.HTML;

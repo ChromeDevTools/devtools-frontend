@@ -16,6 +16,7 @@ devtools_module("ui_utils") {
   ]
 
   deps = [
+    "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",

@@ -77,8 +77,8 @@ describeWithMockConnection('MainMenuItem', () => {
 });
 
 describeWithRealConnection('MainImpl', () => {
-  it('calls refetchColors on ColorThemeChanged', async () => {
-    const colorFetchSpy = sinon.spy(UI.Utils.DynamicTheming, 'refetchColors');
+  it('calls fetchColors on ColorThemeChanged', async () => {
+    const colorFetchSpy = sinon.spy(UI.Utils.DynamicTheming, 'fetchColors');
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);

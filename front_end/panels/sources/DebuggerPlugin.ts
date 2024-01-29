@@ -580,7 +580,7 @@ export class DebuggerPlugin extends Plugin {
     }
 
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-        Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get() &&
+        Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get() &&
         !Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile =
@@ -1015,7 +1015,7 @@ export class DebuggerPlugin extends Plugin {
     if (!this.editor) {
       return null;
     }
-    if (!Common.Settings.Settings.instance().moduleSetting('inlineVariableValues').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('inline-variable-values').get()) {
       return null;
     }
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
@@ -1524,7 +1524,7 @@ export class DebuggerPlugin extends Plugin {
     if (this.sourceMapInfobar) {
       return;
     }
-    if (!Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
       return;
     }
     if (!this.scriptHasSourceMap()) {

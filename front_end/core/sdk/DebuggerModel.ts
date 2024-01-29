@@ -225,9 +225,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
 
     this.#sourceMapManagerInternal.setEnabled(
-        Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get());
+        Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get());
     Common.Settings.Settings.instance()
-        .moduleSetting('jsSourceMapsEnabled')
+        .moduleSetting('js-source-maps-enabled')
         .addChangeListener(event => this.#sourceMapManagerInternal.setEnabled((event.data as boolean)));
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);

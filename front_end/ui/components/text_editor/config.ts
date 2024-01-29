@@ -257,7 +257,7 @@ const showTrailingWhitespace = matcher(new CM.MatchDecorator({
   boundary: /\S/,
 }));
 
-export const showWhitespace = new DynamicSetting<string>('showWhitespacesInEditor', value => {
+export const showWhitespace = new DynamicSetting<string>('show-whitespaces-in-editor', value => {
   if (value === 'all') {
     return showAllWhitespace;
   }
@@ -267,7 +267,7 @@ export const showWhitespace = new DynamicSetting<string>('showWhitespacesInEdito
   return empty;
 });
 
-export const allowScrollPastEof = DynamicSetting.bool('allowScrollPastEof', CM.scrollPastEnd());
+export const allowScrollPastEof = DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
 
 const cachedIndentUnit: {[indent: string]: CM.Extension} = Object.create(null);
 

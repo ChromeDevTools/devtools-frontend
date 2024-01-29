@@ -1435,13 +1435,13 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'navigatorGroupByFolder',
+  settingName: 'navigator-group-by-folder',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'navigatorGroupByAuthored',
+  settingName: 'navigator-group-by-authored',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
@@ -1450,7 +1450,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.searchInAnonymousAndContent),
-  settingName: 'searchInAnonymousAndContentScripts',
+  settingName: 'search-in-anonymous-and-content-scripts',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   options: [
@@ -1469,7 +1469,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.automaticallyRevealFilesIn),
-  settingName: 'autoRevealInNavigator',
+  settingName: 'auto-reveal-in-navigator',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1488,7 +1488,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableJavascriptSourceMaps),
-  settingName: 'jsSourceMapsEnabled',
+  settingName: 'js-source-maps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1601,7 +1601,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.showWhitespaceCharacters),
-  settingName: 'showWhitespacesInEditor',
+  settingName: 'show-whitespaces-in-editor',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'original',
   options: [
@@ -1627,7 +1627,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.displayVariableValuesInlineWhile),
-  settingName: 'inlineVariableValues',
+  settingName: 'inline-variable-values',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1646,7 +1646,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
-  settingName: 'autoFocusOnDebuggerPausedEnabled',
+  settingName: 'auto-focus-on-debugger-paused-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1665,7 +1665,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableCssSourceMaps),
-  settingName: 'cssSourceMapsEnabled',
+  settingName: 'css-source-maps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1684,7 +1684,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.allowScrollingPastEndOfFile),
-  settingName: 'allowScrollPastEof',
+  settingName: 'allow-scroll-past-eof',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [
@@ -1703,7 +1703,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.Local,
   title: i18nLazyString(UIStrings.wasmAutoStepping),
-  settingName: 'wasmAutoStepping',
+  settingName: 'wasm-auto-stepping',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [

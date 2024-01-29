@@ -107,9 +107,10 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#isTrackingRequestPending = false;
     this.#stylePollingThrottler = new Common.Throttler.Throttler(StylePollingInterval);
 
-    this.#sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('cssSourceMapsEnabled').get());
+    this.#sourceMapManager.setEnabled(
+        Common.Settings.Settings.instance().moduleSetting('css-source-maps-enabled').get());
     Common.Settings.Settings.instance()
-        .moduleSetting('cssSourceMapsEnabled')
+        .moduleSetting('css-source-maps-enabled')
         .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
   }
 

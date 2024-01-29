@@ -213,7 +213,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
         this.contentElement, {'sources.rename': this.renameShortcut.bind(this)});
 
-    this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
+    this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
       this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;

@@ -5,10 +5,12 @@
 const {assert} = chai;
 
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 describe('DynamicTheming', () => {
-  it('refetchColors updates color node url', () => {
+  it('fetchColors updates color node url', () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
     const originalColorHref = 'devtools://theme/colors.css?sets=ui,chrome';
 
     const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
@@ -18,7 +20,7 @@ describe('DynamicTheming', () => {
     colorsLink.rel = 'stylesheet';
     doc.head.appendChild(colorsLink);
 
-    void UI.Utils.DynamicTheming.refetchColors(doc);
+    void UI.Utils.DynamicTheming.fetchColors(doc);
 
     const colorNode = doc.body.querySelector(COLORS_CSS_SELECTOR);
     assertNotNullOrUndefined(colorNode);

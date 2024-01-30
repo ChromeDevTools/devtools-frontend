@@ -242,7 +242,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
-    const navigatorMenuButton = new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true);
+    const navigatorMenuButton =
+        new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true, 'more-options');
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
     tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
     tabbedPane.addEventListener(

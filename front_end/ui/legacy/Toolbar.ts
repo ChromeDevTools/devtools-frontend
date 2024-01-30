@@ -827,6 +827,9 @@ export class ToolbarMenuButton extends ToolbarButton {
   private triggerTimeout?: number;
   constructor(contextMenuHandler: (arg0: ContextMenu) => void, useSoftMenu?: boolean, jslogContext?: string) {
     super('', 'dots-vertical', undefined, jslogContext);
+    if (jslogContext) {
+      this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context(jslogContext)}`);
+    }
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
     ARIAUtils.markAsMenuButton(this.element);

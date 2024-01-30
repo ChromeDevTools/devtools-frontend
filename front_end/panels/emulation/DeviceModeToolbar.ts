@@ -352,7 +352,7 @@ export class DeviceModeToolbar {
     toolbar.appendToolbarItem(this.deviceScaleItem);
 
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    this.uaItem = new UI.Toolbar.ToolbarMenuButton(this.appendUserAgentMenuItems.bind(this));
+    this.uaItem = new UI.Toolbar.ToolbarMenuButton(this.appendUserAgentMenuItems.bind(this), undefined, 'device-type');
     this.uaItem.setVisible(this.showUserAgentTypeSetting.get());
     setTitleForButton(this.uaItem, i18nString(UIStrings.deviceType));
     this.uaItem.setGlyph('');

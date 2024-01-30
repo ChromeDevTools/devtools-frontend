@@ -52,7 +52,8 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.menuElement.tabIndex = -1;
     this.menuElement.appendChild(IconButton.Icon.create('dots-vertical'));
     this.menuElement.addEventListener('click', this.handleContextMenuEvent.bind(this));
-    this.menuElement.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('dots-menu')}`);
+    this.menuElement.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('profile-options')}`);
     UI.Tooltip.Tooltip.install(this.menuElement, i18nString(UIStrings.profileOptions));
 
     this.titleElement.textContent = profile.title;

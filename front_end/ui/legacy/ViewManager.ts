@@ -636,7 +636,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   enableMoreTabsButton(): ToolbarMenuButton {
-    const moreTabsButton = new ToolbarMenuButton(this.appendTabsToMenu.bind(this));
+    const moreTabsButton = new ToolbarMenuButton(this.appendTabsToMenu.bind(this), undefined, 'more-tabs');
     this.tabbedPaneInternal.leftToolbar().appendToolbarItem(moreTabsButton);
     this.tabbedPaneInternal.disableOverflowMenu();
     return moreTabsButton;

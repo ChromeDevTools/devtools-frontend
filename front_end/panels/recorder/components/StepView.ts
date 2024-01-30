@@ -644,7 +644,7 @@ export class StepView extends HTMLElement {
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#actionsMenuButton = node as Buttons.Button.Button;
         })}
-        .jslogContext=${'step-actions'}
+        jslog=${VisualLogging.dropDown().context('step-actions').track({click: true})}
         .data=${
           {
             variant: Buttons.Button.Variant.TOOLBAR,

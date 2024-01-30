@@ -135,6 +135,36 @@ def generate_dom_pinned_properties(options):
     ])
 
 
+def generate_protocol_resources(options):
+    print('generating protocol resources')
+    subprocess.check_call([
+        os.path.join(options.devtools_dir, 'scripts', 'deps',
+                     'generate_protocol_resources.py')
+    ],
+                          cwd=options.devtools_dir)
+
+
+def run_git_cl_format(options):
+    print('running `git cl format` to format generated TS files')
+    subprocess.check_call(['git', 'cl', 'format'], cwd=options.devtools_dir)
+
+
+def run_eslint(options):
+    print('running eslint with --fix for generated files')
+    result = subprocess.check_output(
+        ['git', 'diff', '--diff-filter=d', '--name-only'],
+        cwd=options.devtools_dir).strip()
+    generated_source_files = []
+    for line in result.split(b'\n'):
+        if line.endswith(b'.js') or line.endswith(b'.ts'):
+            generated_source_files.append(line)
+    subprocess.check_call([
+        node_path(options),
+        os.path.join(options.devtools_dir, 'scripts', 'test',
+                     'run_lint_check_js.mjs')
+    ] + generated_source_files,
+                          cwd=options.devtools_dir)
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
@@ -144,3 +174,6 @@ if __name__ == '__main__':
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)
+    generate_protocol_resources(OPTIONS)
+    run_git_cl_format(OPTIONS)
+    run_eslint(OPTIONS)

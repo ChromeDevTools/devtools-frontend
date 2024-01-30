@@ -266,7 +266,7 @@ export class CreateRecordingView extends HTMLElement {
             <h1>${i18nString(UIStrings.createRecording)}</h1>
             <${Buttons.Button.Button.litTagName}
               title=${i18nString(UIStrings.cancelRecording)}
-              .jslogContext=${'cancel-recording'}
+              jslog=${VisualLogging.close().track({click: true})}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,

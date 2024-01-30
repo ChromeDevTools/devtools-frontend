@@ -589,6 +589,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'cross');
     this.closeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePalettePanel.bind(this, false));
     this.closeButton.element.addEventListener('keydown', this.onCloseBtnKeydown.bind(this));
+    this.closeButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     toolbar.appendToolbarItem(this.closeButton);
     for (const palette of this.palettes.values()) {
       this.palettePanel.appendChild(this.createPreviewPaletteElement(palette));

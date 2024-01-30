@@ -12,6 +12,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type InsightProvider} from '../InsightProvider.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
@@ -547,6 +548,7 @@ export class ConsoleInsight extends HTMLElement {
                   title: i18nString(UIStrings.closeInsight),
                 } as Buttons.Button.ButtonData
               }
+              jslog=${VisualLogging.close().track({click: true})}
               @click=${this.#onClose}
             ></${Buttons.Button.Button.litTagName}>
           </div>

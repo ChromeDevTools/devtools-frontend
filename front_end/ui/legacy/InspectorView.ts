@@ -33,6 +33,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import {type ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -169,6 +170,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerTabbedPane.setMinimumSize(0, 27);
     this.drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
+    closeDrawerButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this.closeDrawer, this);
     this.drawerTabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,

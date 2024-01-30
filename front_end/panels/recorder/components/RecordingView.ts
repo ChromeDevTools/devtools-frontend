@@ -915,7 +915,7 @@ export class RecordingView extends HTMLElement {
                   } as Buttons.Button.ButtonData
                 }
                 @click=${this.showCodeToggle}
-                .jslogContext=${'show-code'}
+                jslog=${VisualLogging.close().track({click: true})}
               ></${Buttons.Button.Button.litTagName}>
             </div>
             <div class="text-editor">

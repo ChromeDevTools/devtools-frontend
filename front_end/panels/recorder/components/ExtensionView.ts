@@ -102,7 +102,7 @@ export class ExtensionView extends HTMLElement {
             </div>
             <${Buttons.Button.Button.litTagName}
               title=${i18nString(UIStrings.closeView)}
-              .jslogContext=${'close-view'}
+              jslog=${VisualLogging.close().track({click: true})}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,

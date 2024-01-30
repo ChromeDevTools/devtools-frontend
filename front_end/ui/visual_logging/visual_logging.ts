@@ -28,11 +28,11 @@ export function registerLoggable(loggable: Loggable, config: string, parent: Log
  * Ideally the `action`s context should match the ID of an `UI.ActionRegistration.Action`.
  */
 export const action = LoggingConfig.makeConfigStringBuilder.bind(null, 'Action');
-
 export const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 export const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 export const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
 export const canvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'Canvas');
+export const close = LoggingConfig.makeConfigStringBuilder.bind(null, 'Close');
 export const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 export const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
 export const cssAngleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssAngleEditor');

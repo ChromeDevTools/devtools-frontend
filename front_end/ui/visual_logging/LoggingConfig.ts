@@ -23,7 +23,7 @@ enum VisualElements {
   TreeItem = 1,
   Close = 2,
   Counter = 3,
-  /* 4 used to be AccessibilityPane, but free to grab now */
+  Drawer = 4,
   /* 5 used to be AccessibilitySourceOrder, but free to grab now */
   Toggle = 6,
   Tree = 7,

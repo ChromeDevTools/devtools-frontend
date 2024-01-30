@@ -43,6 +43,7 @@ export const cssGridEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'C
 export const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssShadowEditor');
 export const deviceModeRuler = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeviceModeRuler');
 export const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
+export const drawer = LoggingConfig.makeConfigStringBuilder.bind(null, 'Drawer');
 export const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
 export const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 export const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');

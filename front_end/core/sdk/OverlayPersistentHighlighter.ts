@@ -56,7 +56,7 @@ export class OverlayPersistentHighlighter {
     this.#callbacks = callbacks;
 
     this.#persistentHighlightSetting =
-        Common.Settings.Settings.instance().createLocalSetting('persistentHighlightSetting', []);
+        Common.Settings.Settings.instance().createLocalSetting('persistent-highlight-setting', []);
 
     this.#gridHighlights = new Map();
 

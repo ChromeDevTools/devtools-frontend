@@ -114,7 +114,8 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
     this.#registrationsInternal = new Map();
     this.#enabled = false;
     void this.enable();
-    this.#forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
+    this.#forceUpdateSetting =
+        Common.Settings.Settings.instance().createSetting('service-worker-update-on-reload', false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
     }

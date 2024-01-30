@@ -16,13 +16,13 @@ type PersistentHighlighterCallbacks = SDKModule.OverlayPersistentHighlighter.Per
 
 function resetSavedSetting(forcedState: Array<PersistentHighlightSettingItem> = []): void {
   const setting = Common.Settings.Settings.instance().createLocalSetting<PersistentHighlightSettingItem[]>(
-      'persistentHighlightSetting', []);
+      'persistent-highlight-setting', []);
   setting.set(forcedState);
 }
 
 function assertSavedSettingState(expected: unknown): void {
   const setting = Common.Settings.Settings.instance().createLocalSetting<PersistentHighlightSettingItem[]>(
-      'persistentHighlightSetting', []);
+      'persistent-highlight-setting', []);
   assert.deepEqual(setting.get(), expected);
 }
 

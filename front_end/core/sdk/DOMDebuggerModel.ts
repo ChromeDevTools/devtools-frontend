@@ -38,7 +38,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, this.nodeRemoved, this);
 
     this.#domBreakpointsInternal = [];
-    this.#domBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('domBreakpoints', []);
+    this.#domBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('dom-breakpoints', []);
     if (this.#domModel.existingDocument()) {
       void this.documentUpdated();
     }
@@ -524,7 +524,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   readonly #eventListenerBreakpointsInternal: DOMEventListenerBreakpoint[];
 
   constructor() {
-    this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhrBreakpoints', []);
+    this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhr-breakpoints', []);
     this.#xhrBreakpointsInternal = new Map();
     for (const breakpoint of this.#xhrBreakpointsSetting.get()) {
       this.#xhrBreakpointsInternal.set(breakpoint.url, breakpoint.enabled);

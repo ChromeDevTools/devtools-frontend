@@ -140,7 +140,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     void this.#networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
 
-    this.#bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
+    this.#bypassServiceWorkerSetting =
+        Common.Settings.Settings.instance().createSetting('bypass-service-worker', false);
     if (this.#bypassServiceWorkerSetting.get()) {
       this.bypassServiceWorkerChanged();
     }
@@ -1218,7 +1219,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
     // TODO(allada) Remove these and merge it with request interception.
     this.#blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
-    this.#blockedPatternsSetting = Common.Settings.Settings.instance().createSetting('networkBlockedPatterns', []);
+    this.#blockedPatternsSetting = Common.Settings.Settings.instance().createSetting('network-blocked-patterns', []);
     this.#effectiveBlockedURLs = [];
     this.updateBlockedPatterns();
 

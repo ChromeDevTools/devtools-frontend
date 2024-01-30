@@ -360,7 +360,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 }
 
 export function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('loadThroughTarget', true);
+  return Common.Settings.Settings.instance().createSetting('load-through-target', true);
 }
 
 export const enum Events {

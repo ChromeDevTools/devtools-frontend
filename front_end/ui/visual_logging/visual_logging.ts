@@ -35,6 +35,7 @@ export const canvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'Canvas')
 export const close = LoggingConfig.makeConfigStringBuilder.bind(null, 'Close');
 export const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 export const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
+export const counter = LoggingConfig.makeConfigStringBuilder.bind(null, 'Counter');
 export const cssAngleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssAngleEditor');
 export const cssColorMix = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssColorMix');
 export const cssFlexboxEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssFlexboxEditor');

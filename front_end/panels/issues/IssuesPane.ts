@@ -264,6 +264,7 @@ export class IssuesPane extends UI.Widget.VBox {
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
     };
     issueCounter.id = 'console-issues-counter';
+    issueCounter.setAttribute('jslog', `${VisualLogging.counter().context('issues')}`);
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(issueCounter);
     rightToolbar.appendToolbarItem(issuesToolbarItem);
 

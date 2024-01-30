@@ -423,8 +423,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendSeparator();
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this.issueCounter.id = 'console-issues-counter';
-    this.issueCounter.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context(this.issueCounter.id)}`);
+    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter().track({click: true}).context('issues')}`);
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: (): void => {

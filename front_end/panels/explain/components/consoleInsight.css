@@ -104,7 +104,7 @@ main {
 
   margin: 20px 0 0;
   color: var(--sys-color-on-surface);
-  font-size: 12px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
@@ -118,21 +118,21 @@ footer {
   display: flex;
   flex-direction: row;
   color: var(--sys-color-on-surface);
-  font-size: 12px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-top: 8px;
-}
-
-footer > div:nth-child(1) {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+  margin-top: 10px;
 }
 
 footer > .filler {
   flex: 1;
+}
+
+footer .rating {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 textarea {
@@ -198,14 +198,6 @@ details {
 details[open] {
   height: calc(var(--list-height) + var(--collapsed-height) + /* margin */ 8px);
   transition: height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
-}
-
-.refine-container {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-  margin-bottom: 12px;
-  gap: 8px;
 }
 
 h2 {

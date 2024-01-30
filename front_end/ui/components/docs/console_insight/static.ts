@@ -59,5 +59,6 @@ Images: ![https://example.com](https://example.com)
 `;
       },
     });
+component.actionName = 'Explain this error';
 void component.update();
 document.getElementById('container')?.appendChild(component);

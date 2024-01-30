@@ -61,13 +61,6 @@ const UIStrings = {
    */
   relatedCode: 'Related code',
   /**
-   * @description The text appearing before the list of sources that DevTools
-   * could collect based on a console message. If the user clicks the button
-   * related to the text, these sources will be used to generate insights.
-   */
-  refineButtonHint:
-      'Click this button to send the following data to the AI model running on Google\'s servers, so it can generate a more accurate and relevant response:',
-  /**
    * @description The title that is shown while the insight is being generated.
    */
   generating: 'Generating…',
@@ -88,16 +81,6 @@ const UIStrings = {
    * @description The title of the list of source data that was used to generate the insight.
    */
   sources: 'Sources',
-  /**
-   * @description The title of the button that allows the user to include more
-   * sources for the generation of the console insight.
-   */
-  refine: 'Give context to personalize insight',
-  /**
-   * @description The title of the button that is shown while the console
-   * insight is being re-generated.
-   */
-  refining: 'Personalizing insight…',
   /**
    * @description The title of the button that allows submitting positive
    * feedback about the console insight.
@@ -134,17 +117,25 @@ const UIStrings = {
    */
   error: 'Something went wrong…',
   /**
-   * @description Title of the info icon button that shows more details about
-   * how refining a console insight will work. It shows a tooltip with
-   * additional info when hovered or pressed.
-   */
-  refineInfo: 'Learn how personalizing of insights works',
-
-  /**
    * @description Label for screenreaders that is added to the end of the link
    * title to indicate that the link will be opened in a new tab.
    */
   opensInNewTab: '(opens in a new tab)',
+  /**
+   * @description The legal disclaimer for using the Console Insights feature.
+   */
+  disclaimer:
+      'The following data will be sent to Google servers to generate tailored tips and suggestions. It may be stored, reviewed by humans, or used to train AI models.',
+  /**
+   * @description The title of the button that records the consent of the user
+   * to send the data to the backend.
+   */
+  consentButton: 'Continue',
+  /**
+   * @description The title of a link that allows the user to learn more about
+   * the feature.
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -186,6 +177,7 @@ function localizeType(sourceType: SourceType): string {
 }
 
 const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedback';
+const DOGFOODINFO_URL = 'http://go/console-insights-experiment';
 
 function buildRatingFormLink(
     rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,
@@ -217,24 +209,25 @@ function buildRatingFormLink(
 const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
-  REFINING = 'refining',
   ERROR = 'error',
+  CONSENT = 'consent',
 }
 
 type StateData = {
   type: State.LOADING,
+  consentGiven: boolean,
 }|{
-  type: State.REFINING | State.INSIGHT,
+  type: State.INSIGHT,
   explanation: string,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
   sources: Source[],
-  refined: boolean,
 }|{
   type: State.ERROR,
   error: string,
+}|{
+  type: State.CONSENT,
+  sources: Source[],
 };
-
-let nextInstanceId = 0;
 
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
@@ -243,8 +236,7 @@ export class ConsoleInsight extends HTMLElement {
   // Flip to false to enable non-dogfood branding. Note that rating is not
   // implemented.
   #dogfood = true;
-  // Flip to false to enable a refine button.
-  readonly #refinedByDefault = false;
+  #actionName = '';
 
   #promptBuilder: PublicPromptBuilder;
   #insightProvider: PublicInsightProvider;
@@ -253,16 +245,13 @@ export class ConsoleInsight extends HTMLElement {
   // Main state.
   #state: StateData = {
     type: State.LOADING,
+    consentGiven: false,
   };
 
   // Rating sub-form state.
   #ratingFormOpened = false;
   #selectedRating?: boolean;
   #selectedRatingReasons = new Set<string>();
-
-  #popover: UI.PopoverHelper.PopoverHelper;
-  #id: number;
-  #popoverInitiatedViaKeyboard = false;
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -281,11 +270,7 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.tabIndex = 0;
-    this.#id = nextInstanceId++;
     this.focus();
-    this.#popover = new UI.PopoverHelper.PopoverHelper(this, this.#onPopoverRequest.bind(this));
-    this.#popover.setTimeout(300);
-    this.#popover.setHasPadding(true);
     // Measure the height of the element after an animation. `--actual-height` can
     // be used as the `from` value for the subsequent animation.
     this.addEventListener('animationend', () => {
@@ -293,100 +278,9 @@ export class ConsoleInsight extends HTMLElement {
     });
   }
 
-  #onPopoverRequest(event: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
-    const hoveredNode = event.composedPath()[0] as Element;
-    if (!hoveredNode || !hoveredNode.isSelfOrDescendant(this.#shadow.querySelector('.info'))) {
-      return null;
-    }
-
-    const trapFocus = this.#popoverInitiatedViaKeyboard || event.type !== 'mousemove';
-
-    return {
-      box: hoveredNode.boxInWindow(),
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-        const {sources} = await this.#promptBuilder.buildPrompt();
-
-        const dialogId = `dialog-${this.#id}`;
-
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.fontSize = '13px';
-        container.style.lineHeight = '20px';
-        container.setAttribute('aria-modal', 'true');
-        container.tabIndex = -1;
-        container.role = 'dialog';
-
-        if (trapFocus) {
-          container.addEventListener('keydown', event => {
-            const keyboardEvent = event as KeyboardEvent;
-
-            if (keyboardEvent.key === 'Tab') {
-              const focusableElements = getFocusableElements(popover);
-              const focusedElement = getFocusedElement(popover);
-              // Trap focus for the tab navigation inside the dialog.
-              if (focusedElement) {
-                const focusedItemIdx = focusableElements.indexOf(focusedElement);
-                if (event.shiftKey && focusedItemIdx === 0) {
-                  focusableElements.at(-1)?.focus();
-                  event.preventDefault();
-                } else if (!event.shiftKey && focusedItemIdx === focusableElements.length - 1) {
-                  focusableElements.at(0)?.focus();
-                  event.preventDefault();
-                }
-              }
-            } else if (keyboardEvent.key === 'Escape') {
-              event.consume(true);
-              // Restore focus to the info icon.
-              this.#popover.hidePopover();
-              (this.#shadow.querySelector('.info') as HTMLElement)?.focus();
-            }
-          });
-        }
-
-        const doc = document.createElement('div');
-        doc.role = 'document';
-        doc.tabIndex = 0;
-        doc.setAttribute('aria-describedby', dialogId);
-        container.append(doc);
-
-        const text = document.createElement('p');
-        text.id = dialogId;
-        text.innerText = i18nString(UIStrings.refineButtonHint);
-        text.style.margin = '0';
-        doc.append(text);
-
-        const list = document.createElement('devtools-console-insight-sources-list');
-        list.sources = sources;
-        doc.append(list);
-
-        popover.contentElement.append(container);
-        popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
-
-        if (trapFocus) {
-          const origShow = popover.show;
-          popover.show = (document: Document): void => {
-            origShow.call(popover, document);
-            (popover.contentElement.querySelector('[role=document]') as HTMLElement)?.focus();
-          };
-          const origHide = popover.hide;
-          popover.hide = (): void => {
-            origHide.call(popover);
-            (this.#shadow.querySelector('.info') as HTMLElement)?.focus();
-          };
-        }
-        return true;
-      },
-    };
-  }
-
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.classList.add('opening');
-  }
-
-  disonnectedCallback(): void {
-    this.#popover.dispose();
   }
 
   set dogfood(value: boolean) {
@@ -398,6 +292,11 @@ export class ConsoleInsight extends HTMLElement {
     return this.#dogfood;
   }
 
+  set actionName(value: string) {
+    this.#actionName = value;
+    this.#render();
+  }
+
   #transitionTo(newState: StateData): void {
     const previousState = this.#state;
     this.#state = newState;
@@ -407,33 +306,12 @@ export class ConsoleInsight extends HTMLElement {
     this.#render();
   }
 
-  async update(includeContext = this.#refinedByDefault): Promise<void> {
-    this.#transitionTo(
-        this.#state.type === State.INSIGHT ? {
-          ...this.#state,
-          type: State.REFINING,
-        } :
-                                             {
-                                               type: State.LOADING,
-                                             });
-    try {
-      const requestedSources = includeContext ? undefined : [SourceType.MESSAGE];
-      const {prompt, sources} = await this.#promptBuilder.buildPrompt(requestedSources);
-      const explanation = await this.#insightProvider.getInsights(prompt);
-      this.#transitionTo({
-        type: State.INSIGHT,
-        tokens: Marked.Marked.lexer(explanation),
-        explanation,
-        sources,
-        refined: includeContext,
-      });
-    } catch (err) {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
-      this.#transitionTo({
-        type: State.ERROR,
-        error: err.message,
-      });
-    }
+  async update(): Promise<void> {
+    const {sources} = await this.#promptBuilder.buildPrompt();
+    this.#transitionTo({
+      type: State.CONSENT,
+      sources,
+    });
   }
 
   #onClose(): void {
@@ -495,38 +373,26 @@ export class ConsoleInsight extends HTMLElement {
     this.#render();
   }
 
-  #onRefine(): void {
-    if (this.#state.type !== State.INSIGHT) {
-      throw new Error('Unexpected state');
-    }
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRefined);
-    void this.update(true);
-  }
-
-  #onInfoKeyDown(event: Event): void {
-    if (event instanceof KeyboardEvent) {
-      switch (event.key) {
-        case 'Escape':
-          event.consume(true);
-          this.#popover.hidePopover();
-          break;
-        case 'Enter':
-        case ' ':
-          event.consume(true);
-          this.#popoverInitiatedViaKeyboard = true;
-          try {
-            event.target?.dispatchEvent(new MouseEvent('mousedown', {
-              bubbles: true,
-              composed: true,
-              cancelable: true,
-              clientX: (event.target as HTMLElement).getBoundingClientRect().x,
-              clientY: (event.target as HTMLElement).getBoundingClientRect().y,
-            }));
-          } finally {
-            this.#popoverInitiatedViaKeyboard = false;
-          }
-          break;
-      }
+  async #onConsent(): Promise<void> {
+    this.#transitionTo({
+      type: State.LOADING,
+      consentGiven: true,
+    });
+    try {
+      const {prompt, sources} = await this.#promptBuilder.buildPrompt();
+      const explanation = await this.#insightProvider.getInsights(prompt);
+      this.#transitionTo({
+        type: State.INSIGHT,
+        tokens: Marked.Marked.lexer(explanation),
+        explanation,
+        sources,
+      });
+    } catch (err) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
+      this.#transitionTo({
+        type: State.ERROR,
+        error: err.message,
+      });
     }
   }
 
@@ -545,7 +411,6 @@ export class ConsoleInsight extends HTMLElement {
               </svg>
             </div>
           </main>`;
-      case State.REFINING:
       case State.INSIGHT:
         return html`
         <main>
@@ -557,40 +422,20 @@ export class ConsoleInsight extends HTMLElement {
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </details>
-          ${!this.#state.refined ? html`<div class="refine-container">
-            <${Buttons.Button.Button.litTagName}
-                class="refine-button"
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.TONAL,
-                    size: Buttons.Button.Size.MEDIUM,
-                    iconName: 'spark',
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${this.#onRefine}
-              >
-              ${this.#state.type === State.REFINING ? i18nString(UIStrings.refining) : i18nString(UIStrings.refine)}
-            </${Buttons.Button.Button.litTagName}>
-            <${Buttons.Button.Button.litTagName}
-              class="info"
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ROUND,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'info',
-                  title: i18nString(UIStrings.refineInfo),
-                } as Buttons.Button.ButtonData
-              }
-              @keydown=${this.#onInfoKeyDown}
-            ></${Buttons.Button.Button.litTagName}>
-          </div>
-          ` : ''}
         </main>`;
       case State.ERROR:
         return html`
         <main>
           <div class="error">${this.#state.error}</div>
         </main>`;
+      case State.CONSENT:
+        return html`
+          <main>
+            <p>${i18nString(UIStrings.disclaimer)} <x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link></p>
+            <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
+            </${ConsoleInsightSourcesList.litTagName}>
+          </main>
+        `;
     }
     // clang-format on
   }
@@ -601,10 +446,33 @@ export class ConsoleInsight extends HTMLElement {
       case State.LOADING:
       case State.ERROR:
         return LitHtml.nothing;
-      case State.INSIGHT:
-      case State.REFINING:
+      case State.CONSENT:
         return html`<footer>
-        <div>
+          <div class="filler">
+          </div>
+          <div>
+            <${Buttons.Button.Button.litTagName}
+              class="consent-button"
+              @click=${this.#onConsent}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.PRIMARY,
+                  iconName: 'lightbulb-spark',
+                } as Buttons.Button.ButtonData
+              }
+            >
+              ${UIStrings.consentButton}
+            </${Buttons.Button.Button.litTagName}>
+          </div>
+        </footer>`;
+      case State.INSIGHT:
+        return html`<footer>
+        ${this.#dogfood ? html`<div class="dogfood-feedback">
+            <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
+            <span>${i18nString(UIStrings.dogfood)} - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
+        </div>`: ''}
+        <div class="filler"></div>
+        <div class="rating">
           <${Buttons.Button.Button.litTagName}
             data-rating=${'true'}
             .data=${
@@ -632,12 +500,7 @@ export class ConsoleInsight extends HTMLElement {
             @click=${this.#onRating}
           ></${Buttons.Button.Button.litTagName}>
         </div>
-        <div class="filler"></div>
-        ${this.#dogfood ? html`<div class="dogfood-feedback">
-            <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
-            <span>${i18nString(UIStrings.dogfood)} - </span>
-            <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>
-        </div>`: ''}
+
       </footer>`;
     }
     // clang-format on
@@ -648,10 +511,11 @@ export class ConsoleInsight extends HTMLElement {
       case State.LOADING:
         return i18nString(UIStrings.generating);
       case State.INSIGHT:
-      case State.REFINING:
         return i18nString(UIStrings.insight);
       case State.ERROR:
         return i18nString(UIStrings.error);
+      case State.CONSENT:
+        return this.#actionName;
     }
   }
 
@@ -668,9 +532,6 @@ export class ConsoleInsight extends HTMLElement {
     render(html`
       <div class=${topWrapper}>
         <header>
-          <div>
-            <${IconButton.Icon.Icon.litTagName} name="spark"></${IconButton.Icon.Icon.litTagName}>
-          </div>
           <div class="filler">
             <h2>
               ${this.#getHeader()}
@@ -824,50 +685,4 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
     }
     return super.templateForToken(token);
   }
-}
-
-function getFocusedElement(popover: UI.GlassPane.GlassPane): HTMLElement|undefined {
-  const root = popover.contentElement.getComponentRoot();
-  if (!(root instanceof ShadowRoot)) {
-    throw new Error('Expected a shadow root');
-  }
-  let focusedElement = root.activeElement;
-  while (focusedElement && focusedElement.shadowRoot?.activeElement) {
-    focusedElement = focusedElement.shadowRoot?.activeElement;
-  }
-  return focusedElement as HTMLElement | undefined;
-}
-
-function getFocusableElements(popover: UI.GlassPane.GlassPane): HTMLElement[] {
-  const root = popover.contentElement.getComponentRoot();
-  if (!(root instanceof ShadowRoot)) {
-    throw new Error('Expected a shadow root');
-  }
-
-  const focusableSelectors = [
-    'x-link',
-    '[role=document]',
-  ];
-
-  const result: HTMLElement[] = [];
-
-  function walk(root: Node): void {
-    const iter = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-    do {
-      const currentNode = iter.currentNode as HTMLElement;
-      if (currentNode.shadowRoot) {
-        walk(currentNode.shadowRoot);
-      }
-      if (currentNode instanceof ShadowRoot) {
-        continue;
-      }
-      if (currentNode !== root && focusableSelectors.some(selector => currentNode.matches(selector))) {
-        result.push(currentNode);
-      }
-    } while (iter.nextNode());
-  }
-
-  walk(root.host);
-
-  return result;
 }

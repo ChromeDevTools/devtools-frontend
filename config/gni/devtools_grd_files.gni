@@ -166,6 +166,7 @@ grd_files_release_sources = [
   "front_end/Images/layers.svg",
   "front_end/Images/left-panel-close.svg",
   "front_end/Images/left-panel-open.svg",
+  "front_end/Images/lightbulb-spark.svg",
   "front_end/Images/lighthouse_logo.svg",
   "front_end/Images/list.svg",
   "front_end/Images/match-whole-word.svg",

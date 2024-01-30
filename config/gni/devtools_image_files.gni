@@ -169,6 +169,7 @@ devtools_svg_sources = [
   "layers.svg",
   "left-panel-close.svg",
   "left-panel-open.svg",
+  "lightbulb-spark.svg",
   "lighthouse_logo.svg",
   "list.svg",
   "match-whole-word.svg",

@@ -169,7 +169,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        flameChartView.getMainFlameChart().setSelectedEntry(node?.id);
 
        // Dispatch a shortcut keydown event that applies 'Hide Children' Context menu action
-       const event = new KeyboardEvent('keydown', {key: 'c'});
+       const event = new KeyboardEvent('keydown', {code: 'KeyC'});
        flameChartView.getMainFlameChart().getCanvas().dispatchEvent(event);
 
        const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
@@ -240,213 +240,222 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        assert.isUndefined(decorationsForEntry);
      });
 
-  it('When an entry has no children, correctly show only Hide as a possible Context Menu action', async function() {
-    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
-    const mockViewDelegate = new MockViewDelegate();
+  describe('Context Menu Actions', async function() {
+    let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
 
-    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(performanceModel, traceParsedData);
+    this.beforeEach(async () => {
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
 
-    // Find the Main track to later collapse entries of
-    const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
-      return group.name === 'Main — http://127.0.0.1:8080/';
+      flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.setModel(performanceModel, traceParsedData);
+
+      // Find the Main track to later collapse entries of
+      const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
+        return group.name === 'Main — http://127.0.0.1:8080/';
+      });
+      if (!mainTrack) {
+        throw new Error('Could not find main track');
+      }
     });
-    if (!mainTrack) {
-      throw new Error('Could not find main track');
-    }
 
-    /** Part of this stack looks roughly like so (with some events omitted):
-     * =============== foo ===============
-     * =============== foo ===============
-     * =============== foo ===============
-     * =============== foo ===============
-     * =============== foo ===============
-     * =============== foo ===============
-     * =============== foo ===============
-     * == now ==      == updateCounters ==  <-- ID=245
-     *
-     * In this test we want to test that the Context Menu option available
-     * for an entry with no children and a parent is to hide given entry only.
-     * Since there are no children to hide, we don't want to show 'hide children' option.
-     *
-     * To chieve that, we will dispatch the context menu on the 'updateCounters' function that does not have children.
-     * The ID of 'updateCounters' is 245.
-     **/
+    it('When an entry has no children, correctly show only Hide as a possible Context Menu action', async function() {
+      /** Part of this stack looks roughly like so (with some events omitted):
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * == now ==      == updateCounters ==  <-- ID=245
+       *
+       * In this test we want to test that the Context Menu option available
+       * for an entry with no children and a parent is to hide given entry only.
+       * Since there are no children to hide, we don't want to show 'hide children' option.
+       *
+       * To chieve that, we will dispatch the context menu on the 'updateCounters' function that does not have children.
+       * The ID of 'updateCounters' is 245.
+       **/
 
-    const iDOfNodeWithNoChildren = 245;
-    // Highlight the node to make the Context Menu dispatch on this node
-    flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
+      const iDOfNodeWithNoChildren = 245;
+      // Highlight the node to make the Context Menu dispatch on this node
+      flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
 
-    // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
-    flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+      // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+      flameChartView.getMainFlameChart().onContextMenu(new Event(''));
 
-    assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
-    assert.strictEqual(
-        flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
-        'Hide function');
-    assert.strictEqual(
-        flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
-        'Reset trace');
+      assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
+      assert.strictEqual(
+          flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
+          'Hide function');
+      assert.strictEqual(
+          flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
+          'Reset trace');
+    });
+
+    it('When an entry has children, correctly show only Hide and Hide Children as possible Context Menu actions',
+       async function() {
+         /** Part of this stack looks roughly like so (with some events omitted):
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * ===== wait =====   ===== wait =====  <-- ID=204
+          * = now =  = now =   = now =  = now =
+          *
+          * In this test we want to test that the Context Menu option available
+          * for an entry with children and a parent is to hide given entry, and hide children only.
+          * Since there are no repeating children to hide, we don't want to show 'hide repeating children' option.
+          *
+          * To chieve that, we will dispatch the context menu on the 'wait' function that has only non-repeating children.
+          * The ID of the first 'wait' is 204.
+          **/
+
+         const iDOfNodeWithNoChildren = 204;
+         // Highlight the node to make the Context Menu dispatch on this node
+         flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
+
+         // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+         flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+         assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 3);
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
+             'Hide function');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
+             'Hide children');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
+             'Reset trace');
+       });
+
+    it('When an entry has repeating children, correctly show only Hide, Hide Children and Hide repeating children as possible Context Menu actions',
+       async function() {
+         /** Part of this stack looks roughly like so (with some events omitted):
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo =============== <-- ID=200
+          * =============== foo ===============
+          * =============== foo ===============
+          * ===== wait =====   ===== wait =====
+          * = now =  = now =   = now =  = now =
+          *
+          * In this test we want to test that the Context Menu option available
+          * for an entry with children repeating children and a parent is to hide given entry, hide children and hide repeating children.
+          *
+          * To chieve that, we will dispatch the context menu on the 'foo' function that has child 'foo' calls.
+          * The ID of the a matching 'foo' is 200.
+          **/
+
+         const iDOfNodeWithNoChildren = 200;
+         // Highlight the node to make the Context Menu dispatch on this node
+         flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
+
+         // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+         flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+         assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 4);
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
+             'Hide function');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
+             'Hide children');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
+             'Hide repeating children');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(3)?.buildDescriptor().label,
+             'Reset trace');
+       });
+
+    it('When an entry does not have a parent and has children, correctly show only Hide Children as a possible Context Menu action',
+       async function() {
+         /** Part of this stack looks roughly like so (with some events omitted):
+          * =============== Task ============== <-- ID=62
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * =============== foo ===============
+          * ===== wait =====   ===== wait =====
+          * = now =  = now =   = now =  = now =
+          *
+          * In this test we want to test that the Context Menu option available for an entry with no parent is only to hide children.
+          * If an entry has no parent, we don't want to show an option to hide the entry since when an entry is hidden,
+          * it is indicated by adding a decoration to the parent and if there is no parent, there is no way to show it is hidden.
+          *
+          * To chieve that, we will dispatch the context menu on the 'Task' function that is on the top of the stack and has no parent.
+          * The ID of the a matching 'Task' is 62.
+          **/
+
+         const iDOfNodeWithNoChildren = 62;
+         // Highlight the node to make the Context Menu dispatch on this node
+         flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
+
+         // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+         flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+         assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
+             'Hide children');
+         assert.strictEqual(
+             flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
+             'Reset trace');
+       });
+
+    it('Reset Trace Context Menu action is disabled before some action has been applied', async function() {
+      /** Part of this stack looks roughly like so (with some events omitted):
+       * =============== Task ============== <-- ID=62
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * =============== foo ===============
+       * ===== wait =====   ===== wait =====
+       * = now =  = now =   = now =  = now =
+       *
+       * In this test we want to test that the Reset Trace Context Menu option is disabled by default and enabled after some action has been applied.
+       *
+       * To chieve that, we will first check if Reset Trace is disabled and then dispatch a Context Menu action on "Task" entry and then check if Reset Trace is enabled.
+       * The ID of the a matching 'Task' is 62.
+       **/
+
+      const iDOfNode = 62;
+      // Highlight the node to make the Context Menu dispatch on this node
+      flameChartView.getMainFlameChart().highlightEntry(iDOfNode);
+
+      // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
+      flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+      assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
+      assert.strictEqual(
+          flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
+          'Reset trace');
+      // Check that Reset Trace is disabled
+      assert.strictEqual(
+          flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().enabled,
+          false);
+
+      flameChartView.getMainFlameChart().modifyTree(
+          TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, iDOfNode);
+      flameChartView.getMainFlameChart().highlightEntry(iDOfNode);
+      flameChartView.getMainFlameChart().onContextMenu(new Event(''));
+
+      // Check that Reset Trace is enabled
+      assert.strictEqual(
+          flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().enabled,
+          true);
+    });
   });
-
-  it('When an entry has children, correctly show only Hide and Hide Children as possible Context Menu actions',
-     async function() {
-       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
-       const mockViewDelegate = new MockViewDelegate();
-
-       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-       flameChartView.setModel(performanceModel, traceParsedData);
-
-       // Find the Main track to later collapse entries of
-       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
-         return group.name === 'Main — http://127.0.0.1:8080/';
-       });
-       if (!mainTrack) {
-         throw new Error('Could not find main track');
-       }
-
-       /** Part of this stack looks roughly like so (with some events omitted):
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * ===== wait =====   ===== wait =====  <-- ID=204
-        * = now =  = now =   = now =  = now =
-        *
-        * In this test we want to test that the Context Menu option available
-        * for an entry with children and a parent is to hide given entry, and hide children only.
-        * Since there are no repeating children to hide, we don't want to show 'hide repeating children' option.
-        *
-        * To chieve that, we will dispatch the context menu on the 'wait' function that has only non-repeating children.
-        * The ID of the first 'wait' is 204.
-        **/
-
-       const iDOfNodeWithNoChildren = 204;
-       // Highlight the node to make the Context Menu dispatch on this node
-       flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
-
-       // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
-       flameChartView.getMainFlameChart().onContextMenu(new Event(''));
-
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 3);
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
-           'Hide function');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
-           'Hide children');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
-           'Reset trace');
-     });
-
-  it('When an entry has repeating children, correctly show only Hide, Hide Children and Hide repeating children as possible Context Menu actions',
-     async function() {
-       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
-       const mockViewDelegate = new MockViewDelegate();
-
-       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-       flameChartView.setModel(performanceModel, traceParsedData);
-
-       // Find the Main track to later collapse entries of
-       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
-         return group.name === 'Main — http://127.0.0.1:8080/';
-       });
-       if (!mainTrack) {
-         throw new Error('Could not find main track');
-       }
-
-       /** Part of this stack looks roughly like so (with some events omitted):
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo =============== <-- ID=200
-        * =============== foo ===============
-        * =============== foo ===============
-        * ===== wait =====   ===== wait =====
-        * = now =  = now =   = now =  = now =
-        *
-        * In this test we want to test that the Context Menu option available
-        * for an entry with children repeating children and a parent is to hide given entry, hide children and hide repeating children.
-        *
-        * To chieve that, we will dispatch the context menu on the 'foo' function that has child 'foo' calls.
-        * The ID of the a matching 'foo' is 200.
-        **/
-
-       const iDOfNodeWithNoChildren = 200;
-       // Highlight the node to make the Context Menu dispatch on this node
-       flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
-
-       // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
-       flameChartView.getMainFlameChart().onContextMenu(new Event(''));
-
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 4);
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
-           'Hide function');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
-           'Hide children');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(2)?.buildDescriptor().label,
-           'Hide repeating children');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(3)?.buildDescriptor().label,
-           'Reset trace');
-     });
-
-  it('When an entry does not have a parent and has children, correctly show only Hide Children as a possible Context Menu action',
-     async function() {
-       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'recursive-blocking-js.json.gz');
-       const mockViewDelegate = new MockViewDelegate();
-
-       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-       flameChartView.setModel(performanceModel, traceParsedData);
-
-       // Find the Main track to later collapse entries of
-       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
-         return group.name === 'Main — http://127.0.0.1:8080/';
-       });
-       if (!mainTrack) {
-         throw new Error('Could not find main track');
-       }
-
-       /** Part of this stack looks roughly like so (with some events omitted):
-        * =============== Task ============== <-- ID=62
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * =============== foo ===============
-        * ===== wait =====   ===== wait =====
-        * = now =  = now =   = now =  = now =
-        *
-        * In this test we want to test that the Context Menu option available for an entry with no parent is only to hide children.
-        * If an entry has no parent, we don't want to show an option to hide the entry since when an entry is hidden,
-        * it is indicated by adding a decoration to the parent and if there is no parent, there is no way to show it is hidden.
-        *
-        * To chieve that, we will dispatch the context menu on the 'Task' function that is on the top of the stack and has no parent.
-        * The ID of the a matching 'Task' is 62.
-        **/
-
-       const iDOfNodeWithNoChildren = 62;
-       // Highlight the node to make the Context Menu dispatch on this node
-       flameChartView.getMainFlameChart().highlightEntry(iDOfNodeWithNoChildren);
-
-       // The mouse event passed to the Context Menu is used to indicate where the menu should appear. Since we don't need it to actually appear for this test, pass an empty event.
-       flameChartView.getMainFlameChart().onContextMenu(new Event(''));
-
-       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 2);
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
-           'Hide children');
-       assert.strictEqual(
-           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(1)?.buildDescriptor().label,
-           'Reset trace');
-     });
 });

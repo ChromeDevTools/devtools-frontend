@@ -48,6 +48,7 @@ export interface PossibleFilterActions {
   [FilterApplyAction.MERGE_FUNCTION]: boolean;
   [FilterApplyAction.COLLAPSE_FUNCTION]: boolean;
   [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: boolean;
+  [FilterUndoAction.UNDO_ALL_ACTIONS]: boolean;
 }
 
 /**
@@ -104,16 +105,20 @@ export class EntriesFilter {
         [FilterApplyAction.MERGE_FUNCTION]: false,
         [FilterApplyAction.COLLAPSE_FUNCTION]: false,
         [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: false,
+        [FilterUndoAction.UNDO_ALL_ACTIONS]: false,
       };
     }
     const entryParent = entryNode.parent;
-    const allDescendants = this.#findAllDescendantsOfNode(entryNode);
-    const allRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode);
+    const allVisibleDescendants =
+        this.#findAllDescendantsOfNode(entryNode).filter(descendant => !this.#invisibleEntries.includes(descendant));
+    const allVisibleRepeatingDescendants = this.#findAllRepeatingDescendantsOfNext(entryNode).filter(
+        descendant => !this.#invisibleEntries.includes(descendant));
     // If there are children to hide, indicate action as possible
     const possibleActions: PossibleFilterActions = {
       [FilterApplyAction.MERGE_FUNCTION]: entryParent !== null,
-      [FilterApplyAction.COLLAPSE_FUNCTION]: allDescendants.length > 0,
-      [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: allRepeatingDescendants.length > 0,
+      [FilterApplyAction.COLLAPSE_FUNCTION]: allVisibleDescendants.length > 0,
+      [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: allVisibleRepeatingDescendants.length > 0,
+      [FilterUndoAction.UNDO_ALL_ACTIONS]: this.#invisibleEntries.length > 0,
     };
     return possibleActions;
   }

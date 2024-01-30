@@ -55,7 +55,7 @@ export class EmulationModel extends SDKModel<void> {
       void this.overrideEmulateTouch(settingValue === 'force');
     });
 
-    const idleDetectionSetting = Common.Settings.Settings.instance().moduleSetting('emulation.idleDetection');
+    const idleDetectionSetting = Common.Settings.Settings.instance().moduleSetting('emulation.idle-detection');
     idleDetectionSetting.addChangeListener(async () => {
       const settingValue = idleDetectionSetting.get();
       if (settingValue === 'none') {

@@ -237,7 +237,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.emulateIdleDetectorState),
-  settingName: 'emulation.idleDetection',
+  settingName: 'emulation.idle-detection',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'none',
   options: [

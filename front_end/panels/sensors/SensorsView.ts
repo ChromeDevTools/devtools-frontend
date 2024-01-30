@@ -209,7 +209,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.element.setAttribute('jslog', `${VisualLogging.panel().context('sensors')}`);
     this.contentElement.classList.add('sensors-view');
 
-    this.LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');
+    this.LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
     this.Location = SDK.EmulationModel.Location.parseSetting(this.LocationSetting.get());
     this.LocationOverrideEnabled = false;
 
@@ -218,7 +218,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.createPanelSeparator();
 
     this.deviceOrientationSetting =
-        Common.Settings.Settings.instance().createSetting('emulation.deviceOrientationOverride', '');
+        Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
     this.deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.deviceOrientationSetting.get());
     this.deviceOrientationOverrideEnabled = false;
 
@@ -752,7 +752,7 @@ export class SensorsView extends UI.Widget.VBox {
   private appendIdleEmulator(): void {
     const container = this.contentElement.createChild('div', 'idle-section');
     const control = UI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().moduleSetting('emulation.idleDetection'),
+        Common.Settings.Settings.instance().moduleSetting('emulation.idle-detection'),
         i18nString(UIStrings.forcesSelectedIdleStateEmulation));
 
     if (control) {

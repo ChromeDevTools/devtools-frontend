@@ -13,8 +13,7 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
     const breakpoints: SDK.DOMDebuggerModel.CSPViolationBreakpoint[] =
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     super(breakpoints, 'sources.csp-violation-breakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
-    this.contentElement.setAttribute(
-        'jslog', `${VisualLogging.section().context('sources.csp-violation-breakpoints')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.csp-violation-breakpoints')}`);
   }
 
   protected override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):

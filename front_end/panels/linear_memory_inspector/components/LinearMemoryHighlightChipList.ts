@@ -100,7 +100,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
     return html`
       <div class=${LitHtml.Directives.classMap(classMap)}>
         <button class="jump-to-highlight-button" title=${i18nString(UIStrings.jumpToAddress)}
-            jslog=${VisualLogging.action().track({click:true}).context('linear-memory-inspector.jump-to-highlight')}
+            jslog=${VisualLogging.action('linear-memory-inspector.jump-to-highlight').track({click:true})}
             @click=${():void => this.#onJumpToHighlightClick(highlightInfo.startAddress)}>
           <span class="source-code">
             <span class="value">${expressionName}</span><span class="separator">: </span><span>${expressionType}</span>
@@ -108,7 +108,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
         </button>
         <div class="delete-highlight-container">
           <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
-              jslog=${VisualLogging.action().track({click:true}).context('linear-memory-inspector.delete-highlight')}
+              jslog=${VisualLogging.action('linear-memory-inspector.delete-highlight').track({click:true})}
               @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
             <${IconButton.Icon.Icon.litTagName} .data=${{
               iconName: 'cross',

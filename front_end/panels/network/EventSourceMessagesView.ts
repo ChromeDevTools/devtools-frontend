@@ -48,7 +48,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     super();
 
     this.element.classList.add('event-source-messages-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('event-stream')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('event-stream')}`);
     this.request = request;
 
     const columns = ([

@@ -52,7 +52,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         UI.Toolbar.ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated, this.onSetCompactLayout, this);
 
     this.consoleCounter = new IconButton.IconButton.IconButton();
-    this.consoleCounter.setAttribute('jslog', `${VisualLogging.counter().context('console').track({click: true})}`);
+    this.consoleCounter.setAttribute('jslog', `${VisualLogging.counter('console').track({click: true})}`);
     countersWrapper.appendChild(this.consoleCounter);
     this.consoleCounter.data = {
       clickHandler: Common.Console.Console.instance().show.bind(Common.Console.Console.instance()),
@@ -65,7 +65,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this.issueCounter.classList.add('main-toolbar');
-    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter().context('issue').track({click: true})}`);
+    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issue').track({click: true})}`);
     countersWrapper.appendChild(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: (): void => {

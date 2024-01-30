@@ -279,7 +279,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     toolbar.appendToolbarItem(
         new UI.Toolbar.ToolbarSettingCheckbox(this.groupComputedStylesSetting, undefined, i18nString(UIStrings.group)));
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('computed')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('computed')}`);
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 

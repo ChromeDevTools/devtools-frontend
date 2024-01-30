@@ -338,7 +338,7 @@ export class RecordingView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section().context('recording-list-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('recording-list-view')}`);
   }
 
   set data(data: RecordingViewData) {
@@ -498,7 +498,7 @@ export class RecordingView extends HTMLElement {
           recorderSettings: this.#recorderSettings,
         } as StepViewData
       }
-      jslog=${VisualLogging.action().track({click: true}).context('step')}
+      jslog=${VisualLogging.action('step').track({click: true})}
       ></${StepView.litTagName}>
     `;
     // clang-format on
@@ -780,7 +780,7 @@ export class RecordingView extends HTMLElement {
             value=${
               this.#settings.timeout || Models.RecordingPlayer.defaultTimeout
             }
-            jslog=${VisualLogging.textField().track({keydown: true}).context('timeout')}
+            jslog=${VisualLogging.textField('timeout').track({keydown: true})}
             class="devtools-text-input"
             type="number">
         </label>
@@ -806,7 +806,7 @@ export class RecordingView extends HTMLElement {
             @click=${isEditable && this.#onToggleReplaySettings}
             tabindex="0"
             role="button"
-            jslog=${VisualLogging.action().track({click: true}).context('replay-settings')}
+            jslog=${VisualLogging.action('replay-settings').track({click: true})}
             aria-label=${i18nString(UIStrings.editReplaySettings)}>
             <span>${i18nString(UIStrings.replaySettings)}</span>
             ${
@@ -964,7 +964,7 @@ export class RecordingView extends HTMLElement {
         }
         .disabled=${this.#replayState.isPlaying}
         @startreplay=${this.#handleTogglePlaying}
-        jslog=${VisualLogging.action().track({click: true}).context('replay')}
+        jslog=${VisualLogging.action('replay').track({click: true})}
         >
       </${ReplayButton.litTagName}>`;
     // clang-format on
@@ -1108,7 +1108,7 @@ export class RecordingView extends HTMLElement {
                 <div class="steps">
                   <${StepView.litTagName}
                     @click=${this.#onStepClick}
-                    jslog=${VisualLogging.action().track({click: true}).context('step')}
+                    jslog=${VisualLogging.action('step').track({click: true})}
                     @mouseover=${this.#onStepHover}
                     .data=${
                       {
@@ -1251,7 +1251,7 @@ export class RecordingView extends HTMLElement {
       <div class="footer">
         <div class="controls">
           <devtools-control-button
-            jslog=${VisualLogging.toggle().track({click: true}).context('toggle-recording')}
+            jslog=${VisualLogging.toggle('toggle-recording').track({click: true})}
             @click=${this.#dispatchRecordingFinished}
             .disabled=${this.#recordingTogglingInProgress}
             .shape=${'square'}

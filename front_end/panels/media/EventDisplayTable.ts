@@ -77,7 +77,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
   constructor() {
     super();
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('events')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('events')}`);
 
     // Set up element styles.
 

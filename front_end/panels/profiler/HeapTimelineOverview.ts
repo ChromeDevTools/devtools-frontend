@@ -29,7 +29,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     super();
     this.element.id = 'heap-recording-view';
     this.element.classList.add('heap-tracking-overview');
-    this.element.setAttribute('jslog', `${VisualLogging.section().context('heap-tracking-overview')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.section('heap-tracking-overview')}`);
 
     this.overviewCalculator = new OverviewCalculator();
     this.overviewContainer = this.element.createChild('div', 'heap-overview-container');

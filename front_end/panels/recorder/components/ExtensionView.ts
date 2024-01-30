@@ -55,7 +55,7 @@ export class ExtensionView extends HTMLElement {
   constructor() {
     super();
 
-    this.setAttribute('jslog', `${VisualLogging.section().context('extension-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('extension-view')}`);
   }
 
   connectedCallback(): void {

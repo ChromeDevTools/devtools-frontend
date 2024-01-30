@@ -137,7 +137,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('layers-3d-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-3d-view')}`);
 
     this.contentElement.classList.add('layers-3d-view');
     this.failBanner = new UI.Widget.VBox();
@@ -158,7 +158,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.canvasElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.canvasElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
     this.canvasElement.setAttribute(
-        'jslog', `${VisualLogging.canvas().track({click: true, drag: true}).context('layers-canvas')}`);
+        'jslog', `${VisualLogging.canvas('layers-canvas').track({click: true, drag: true})}`);
     UI.ARIAUtils.setLabel(this.canvasElement, i18nString(UIStrings.dLayersView));
 
     this.lastSelection = {};

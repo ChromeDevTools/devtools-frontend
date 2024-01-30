@@ -162,7 +162,7 @@ export class CSSLength extends HTMLElement {
         <div class="unit-dropdown">
           <span class="icon"></span>
           <select
-            jslog=${VisualLogging.dropDown().track({change: true}).context('unit')}
+            jslog=${VisualLogging.dropDown('unit').track({change: true})}
             @mouseup=${this.onUnitMouseup}
             @change=${this.onUnitChange}>
             ${options}

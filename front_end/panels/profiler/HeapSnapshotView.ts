@@ -348,7 +348,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.constructorsWidget = this.constructorsDataGrid.asWidget();
     this.constructorsWidget.setMinimumSize(50, 25);
     this.constructorsWidget.element.setAttribute(
-        'jslog', `${VisualLogging.section().context('heap-snapshot.constructors-view')}`);
+        'jslog', `${VisualLogging.section('heap-snapshot.constructors-view')}`);
 
     this.diffDataGrid = new HeapSnapshotDiffDataGrid(heapProfilerModel, this);
     this.diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this.selectionChanged, this);
@@ -375,7 +375,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.retainmentWidget.setMinimumSize(50, 21);
     this.retainmentWidget.element.classList.add('retaining-paths-view');
     this.retainmentWidget.element.setAttribute(
-        'jslog', `${VisualLogging.section().context('heap-snapshot.retaining-paths-view')}`);
+        'jslog', `${VisualLogging.section('heap-snapshot.retaining-paths-view')}`);
 
     let splitWidgetResizer;
     if (this.allocationStackView) {
@@ -1797,7 +1797,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('profiler.heap-snapshot-statistics-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('profiler.heap-snapshot-statistics-view')}`);
     this.pieChart = new PerfUI.PieChart.PieChart();
     this.setTotalAndRecords(0, []);
     this.pieChart.classList.add('heap-snapshot-stats-pie-chart');

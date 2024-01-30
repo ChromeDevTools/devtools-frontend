@@ -95,7 +95,7 @@ export class RecordingListView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section().context('recording-list-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('recording-list-view')}`);
   }
 
   connectedCallback(): void {

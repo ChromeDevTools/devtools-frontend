@@ -79,7 +79,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super();
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('devices')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('devices')}`);
 
     this.element.classList.add('settings-tab-container');
     this.element.classList.add('devices-settings-tab');

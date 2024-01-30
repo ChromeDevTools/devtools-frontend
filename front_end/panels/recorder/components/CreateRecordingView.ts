@@ -145,7 +145,7 @@ export class CreateRecordingView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section().context('create-recording-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('create-recording-view')}`);
   }
 
   connectedCallback(): void {
@@ -284,7 +284,7 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#defaultRecordingName}
             @focus=${this.#onInputFocus}
             @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('user-flow-name')}
+            jslog=${VisualLogging.textField('user-flow-name').track({keydown: true})}
             class="devtools-text-input"
             id="user-flow-name"
           />
@@ -292,7 +292,7 @@ export class CreateRecordingView extends HTMLElement {
             <span>${i18nString(UIStrings.selectorAttribute)}</span>
             <x-link
               class="link" href="https://g.co/devtools/recorder#selector"
-              jslog=${VisualLogging.link().track({click: true}).context('recorder-selector-help')}>
+              jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>
             </x-link>
@@ -301,7 +301,7 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#recorderSettings?.selectorAttribute}
             placeholder="data-testid"
             @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('selector-attribute')}
+            jslog=${VisualLogging.textField('selector-attribute').track({keydown: true})}
             class="devtools-text-input"
             id="selector-attribute"
           />
@@ -309,7 +309,7 @@ export class CreateRecordingView extends HTMLElement {
             <span>${i18nString(UIStrings.selectorTypes)}</span>
             <x-link
               class="link" href="https://g.co/devtools/recorder#selector" 
-              jslog=${VisualLogging.link().track({click: true}).context('recorder-selector-help')}>
+              jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>
             </x-link>
@@ -350,7 +350,7 @@ export class CreateRecordingView extends HTMLElement {
               @click=${this.startRecording}
               .label=${i18nString(UIStrings.startRecording)}
               .shape=${'circle'}
-              jslog=${VisualLogging.action().track({click: true}).context('start-recording')}
+              jslog=${VisualLogging.action('start-recording').track({click: true})}
               title=${Models.Tooltip.getTooltipForActions(
                 i18nString(UIStrings.startRecording),
                 Actions.RecorderActions.StartRecording,

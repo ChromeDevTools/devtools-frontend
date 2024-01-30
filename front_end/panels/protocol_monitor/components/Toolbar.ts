@@ -74,7 +74,7 @@ export class Toolbar extends LitElement {
           .iconUrl=${copyIconUrl}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${this.#handleCopy}
-          jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.copy-command')}
+          jslog=${VisualLogging.action('protocol-monitor.copy-command').track({click: true})}
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .size=${Buttons.Button.Size.SMALL}
@@ -82,7 +82,7 @@ export class Toolbar extends LitElement {
           .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
           @click=${this.#handleSend}
-          jslog=${VisualLogging.action().track({click: true}).context('protocol-monitor.send-command')}
+          jslog=${VisualLogging.action('protocol-monitor.send-command').track({click: true})}
         ></${Buttons.Button.Button.litTagName}>
       </div>
     `;

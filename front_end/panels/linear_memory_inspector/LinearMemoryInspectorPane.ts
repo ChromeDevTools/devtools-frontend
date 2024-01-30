@@ -27,7 +27,7 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
 
   constructor() {
     super(false);
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context('linear-memory-inspector')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('linear-memory-inspector')}`);
     const placeholder = document.createElement('div');
     placeholder.textContent = i18nString(UIStrings.noOpenInspections);
     placeholder.style.display = 'flex';

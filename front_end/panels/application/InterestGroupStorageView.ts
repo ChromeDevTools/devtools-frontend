@@ -45,7 +45,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
 
   constructor(detailsGetter: InterestGroupDetailsGetter) {
     super(/* isVertical */ false, /* secondIsSidebar: */ true);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('interest-groups')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('interest-groups')}`);
     this.detailsGetter = detailsGetter;
 
     const topPanel = new UI.Widget.VBox();

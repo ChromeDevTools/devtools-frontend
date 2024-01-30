@@ -74,8 +74,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.doubleclickToZoomImageClickTo));
     element.createChild('div', 'time').textContent = frameTime;
     element.tabIndex = 0;
-    element.setAttribute(
-        'jslog', `${VisualLogging.preview().track({click: true, dblclick: true}).context('film-strip')}`);
+    element.setAttribute('jslog', `${VisualLogging.preview('film-strip').track({click: true, dblclick: true})}`);
     element.setAttribute('aria-label', i18nString(UIStrings.screenshotForSSelectToView, {PH1: frameTime}));
     UI.ARIAUtils.markAsButton(element);
     const imageElement = (element.createChild('div', 'thumbnail').createChild('img') as HTMLImageElement);

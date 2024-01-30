@@ -43,7 +43,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.contentElement.className = 'styles-element-state-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('element-states')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-states')}`);
     const inputs: HTMLInputElement[] = [];
     this.inputs = inputs;
     this.inputStates = new WeakMap();
@@ -178,8 +178,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.setToggleWithDot(true);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.button.element.classList.add('monospace');
-    this.button.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('element-states')}`);
+    this.button.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('element-states').track({click: true})}`);
     this.view = new ElementStatePaneWidget();
   }
   static instance(opts: {

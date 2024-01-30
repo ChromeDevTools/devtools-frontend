@@ -63,7 +63,7 @@ export class HeadersView extends UI.View.SimpleView {
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super(i18n.i18n.lockedString('HeadersView'));
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('headers-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('headers-view')}`);
     this.#uiSourceCode = uiSourceCode;
     this.#uiSourceCode.addEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
@@ -371,7 +371,7 @@ export class HeadersViewComponent extends HTMLElement {
       )}
       <${Buttons.Button.Button.litTagName}
           .variant=${Buttons.Button.Variant.SECONDARY}
-          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.add-override-rule')}
+          .jslog=${VisualLogging.action('headers-view.add-override-rule').track({click: true})}
           class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
       </${Buttons.Button.Button.litTagName}>
@@ -379,7 +379,7 @@ export class HeadersViewComponent extends HTMLElement {
         <x-link
             href="https://goo.gle/devtools-override"
             class="link"
-            jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>${i18nString(UIStrings.learnMore)}</x-link>
+            jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -413,7 +413,7 @@ export class HeadersViewComponent extends HTMLElement {
         .iconWidth=${'14px'}
         .iconHeight=${'14px'}
         .variant=${Buttons.Button.Variant.ROUND}
-        .jslog=${VisualLogging.action().track({click: true}).context('headers-view.remove-apply-to-section')}
+        .jslog=${VisualLogging.action('headers-view.remove-apply-to-section').track({click: true})}
         class="remove-block inline-button"
       ></${Buttons.Button.Button.litTagName}>
       </div>
@@ -434,7 +434,7 @@ export class HeadersViewComponent extends HTMLElement {
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
-          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.add-header')}
+          .jslog=${VisualLogging.action('headers-view.add-header').track({click: true})}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
@@ -443,7 +443,7 @@ export class HeadersViewComponent extends HTMLElement {
           .iconUrl=${trashIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
-          .jslog=${VisualLogging.action().track({click: true}).context('headers-view.remove-header')}
+          .jslog=${VisualLogging.action('headers-view.remove-header').track({click: true})}
           class="remove-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
       </div>

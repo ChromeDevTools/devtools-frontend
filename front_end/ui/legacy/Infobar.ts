@@ -124,7 +124,7 @@ export class Infobar {
     // @ts-ignore This is a custom element defined in UIUitls.js that has a `setTabbable` that TS doesn't
     //            know about.
     this.closeButton.setTabbable(true);
-    this.closeButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('close')}`);
+    this.closeButton.setAttribute('jslog', `${VisualLogging.action('close').track({click: true})}`);
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
 

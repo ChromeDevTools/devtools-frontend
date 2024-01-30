@@ -179,7 +179,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('layers-details')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-details')}`);
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
@@ -246,7 +246,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       PH5: scrollRect.rect.y,
     });
     element.addEventListener('click', this.onScrollRectClicked.bind(this, index), false);
-    element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('layers.select-object')}`);
+    element.setAttribute('jslog', `${VisualLogging.action('layers.select-object').track({click: true})}`);
   }
 
   private formatStickyAncestorLayer(title: string, layer: SDK.LayerTreeBase.Layer|null): string {
@@ -352,7 +352,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       }
     });
     this.paintProfilerLink.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true, keydown: 'Enter'}).context('layers.paint-profiler')}`);
+        'jslog', `${VisualLogging.action('layers.paint-profiler').track({click: true, keydown: 'Enter'})}`);
   }
 
   private createRow(title: string): HTMLElement {

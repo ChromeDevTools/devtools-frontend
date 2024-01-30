@@ -760,7 +760,9 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       <button
         title="${title}" aria-label="${title}"
         data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
-        jslog="${VisualLogging.action().track({click: true}).context('css-overview.contrast')}">
+        jslog="${VisualLogging.action('css-overview.contrast').track({
+      click: true,
+    })}">
         Text
       </button>
       <div class="block-title">
@@ -810,7 +812,9 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button title=${color} data-type="color" data-color="${color}"
         data-section="${section}" class="block" $="color"
-        jslog="${VisualLogging.action().track({click: true}).context('css-overview.color')}"></button>
+        jslog="${VisualLogging.action('css-overview.color').track({
+      click: true,
+    })}"></button>
       <div class="block-title color-text">${color}</div>
     </li>`;
 

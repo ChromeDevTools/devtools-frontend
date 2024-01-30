@@ -304,7 +304,7 @@ export class StepView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section().context('step-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('step-view')}`);
   }
 
   set data(data: StepViewData) {
@@ -644,7 +644,7 @@ export class StepView extends HTMLElement {
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#actionsMenuButton = node as Buttons.Button.Button;
         })}
-        jslog=${VisualLogging.dropDown().context('step-actions').track({click: true})}
+        jslog=${VisualLogging.dropDown('step-actions').track({click: true})}
         .data=${
           {
             variant: Buttons.Button.Variant.TOOLBAR,
@@ -790,7 +790,7 @@ export class StepView extends HTMLElement {
           </g>
           <path @click=${this.#onBreakpointClick.bind(
             this,
-          )} jslog=${VisualLogging.action().track({click: true}).context('breakpoint')} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
+          )} jslog=${VisualLogging.action('breakpoint').track({click: true})} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
         </svg>
         <div class="summary">
           <div class="title-container ${isExpandable ? 'action' : ''}"
@@ -799,7 +799,7 @@ export class StepView extends HTMLElement {
               isExpandable && this.#onToggleShowDetailsKeydown.bind(this)
             }
             tabindex="0"
-            jslog=${VisualLogging.action().track({click: true}).context('show-steps')} 
+            jslog=${VisualLogging.action('show-steps').track({click: true})}
             aria-role=${isExpandable ? 'button' : ''}
             aria-label=${isExpandable ? 'Show details for step' : ''}
           >

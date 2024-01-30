@@ -322,7 +322,7 @@ export class Editor<T> {
       jslogContext: 'cancel',
       primary: true,
     });
-    this.cancelButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('cancel')}`);
+    this.cancelButton.setAttribute('jslog', `${VisualLogging.action('cancel').track({click: true})}`);
     buttonsRow.appendChild(this.cancelButton);
 
     this.errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');

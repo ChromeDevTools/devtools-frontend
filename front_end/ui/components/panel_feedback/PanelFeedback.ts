@@ -77,14 +77,14 @@ export class PanelFeedback extends HTMLElement {
             color: 'var(--icon-primary)',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}> ${i18nString(UIStrings.previewFeature)}
         </h2>
-        <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl} jslog=${VisualLogging.link().track({click: true}).context('feedback')}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>
+        <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl} jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>
         <div class="video">
           <div class="thumbnail">
             <img src=${videoThumbnailUrl} role="presentation" />
           </div>
           <div class="video-description">
             <h3>${i18nString(UIStrings.videoAndDocumentation)}</h3>
-            <x-link class="quick-start-link" href=${this.#props.quickStartUrl} jslog=${VisualLogging.link().track({click: true}).context('css-overview.quick-start')}>${this.#props.quickStartLinkText}</x-link>
+            <x-link class="quick-start-link" href=${this.#props.quickStartUrl} jslog=${VisualLogging.link('css-overview.quick-start').track({click: true})}>${this.#props.quickStartLinkText}</x-link>
           </div>
         </div>
       </div>

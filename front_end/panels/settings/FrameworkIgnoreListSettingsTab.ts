@@ -90,7 +90,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('blackbox')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('blackbox')}`);
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);

@@ -64,7 +64,7 @@ export class FontView extends UI.View.SimpleView {
     super(i18nString(UIStrings.font));
     this.registerRequiredCSS(fontViewStyles);
     this.element.classList.add('font-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('font-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('font-view')}`);
     this.url = contentProvider.contentURL();
     UI.ARIAUtils.setLabel(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this.url}));
     this.mimeType = mimeType;

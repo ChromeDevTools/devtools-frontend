@@ -311,7 +311,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       // clang-format off
       LitHtml.render(LitHtml.html`
         <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.#frame.displayName()} as ReportView.ReportView.ReportData}
-        jslog=${VisualLogging.pane().context('frames')}>
+        jslog=${VisualLogging.pane('frames')}>
           ${this.#renderDocumentSection()}
           ${this.#renderIsolationSection()}
           ${this.#renderApiAvailabilitySection()}
@@ -349,7 +349,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     <div class="span-cols">
         ${i18nString(UIStrings.originTrialsExplanation)}
         <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-        jslog=${VisualLogging.link().track({click: true}).context('learn-more.origin-trials')}>${i18nString(UIStrings.learnMore)}</x-link>
+        jslog=${VisualLogging.link('learn-more.origin-trials').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
     </div>
     ${this.#originTrialTreeView}
     <${ReportView.ReportView.ReportSectionDivider.litTagName}></${ReportView.ReportView.ReportSectionDivider.litTagName}>
@@ -497,7 +497,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
                 @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
                 @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
                 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
-                jslog=${VisualLogging.action().track({click: true}).context('reveal-in-elements')}
+                jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
               >
                 <${IconButton.Icon.Icon.litTagName} .data=${{
                   iconName: 'code-circle',
@@ -511,7 +511,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
                 @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
                 @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
                 @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
-                jslog=${VisualLogging.action().track({click: true}).context('reveal-in-elements')}
+                jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
               >
                 &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
               </button>
@@ -533,7 +533,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         <${ReportView.ReportView.ReportKey.litTagName} title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
           i18nString(UIStrings.creationStackTrace)}</${ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}
-        jslog=${VisualLogging.section().context('frame-creation-stack-trace')}
+        jslog=${VisualLogging.section('frame-creation-stack-trace')}
         >
           <${StackTrace.litTagName} .data=${{
             frame: this.#frame,
@@ -593,14 +593,14 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.adStatus)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}
-      jslog=${VisualLogging.section().context('ad-status')}>
+      jslog=${VisualLogging.section('ad-status')}>
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
           {rows, title: i18nString(UIStrings.adStatus)} as ExpandableList.ExpandableList.ExpandableListData}></${
         ExpandableList.ExpandableList.ExpandableList.litTagName}></${ReportView.ReportView.ReportValue.litTagName}>
       ${this.#target ? LitHtml.html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creatorAdScript)}</${
           ReportView.ReportView.ReportKey.litTagName}>
-        <${ReportView.ReportView.ReportValue.litTagName} class="ad-script-link">${adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('ad-script')}`)}</${
+        <${ReportView.ReportView.ReportValue.litTagName} class="ad-script-link">${adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({click: true})}`)}</${
           ReportView.ReportView.ReportValue.litTagName}>
       ` : LitHtml.nothing}
     `;
@@ -718,7 +718,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           }<x-link
             class="link"
             href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only"
-            jslog=${VisualLogging.link().track({click: true}).context('learn-more.csp-report-only')}
+            jslog=${VisualLogging.link('learn-more.csp-report-only').track({click: true})}
           ><${
             IconButton.Icon.Icon.litTagName} .data=${{
               iconName: 'help',
@@ -770,8 +770,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <div class="span-cols">
         ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
         <x-link href="https://web.dev/why-coop-coep/" class="link" jslog=${
-        VisualLogging.link().track({click: true}).context('learn-more.coop-coep')}>${
-        i18nString(UIStrings.learnMore)}</x-link>
+        VisualLogging.link('learn-more.coop-coep').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
       </div>
       ${this.#renderSharedArrayBufferAvailability()}
       ${this.#renderMeasureMemoryAvailability()}
@@ -843,7 +842,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         <${ReportView.ReportView.ReportValue.litTagName}>
           <span title=${tooltipText}>${
           availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/" jslog=${
-          VisualLogging.link().track({click: true}).context('learn-more.monitor-memory-usage')}>${
+          VisualLogging.link('learn-more.monitor-memory-usage').track({click: true})}>${
           i18nString(UIStrings.learnMore)}</x-link>
         </${ReportView.ReportView.ReportValue.litTagName}>
       `;

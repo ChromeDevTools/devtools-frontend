@@ -259,7 +259,7 @@ export class LinearMemoryViewer extends HTMLElement {
       const isSelectableCell = i < this.#memory.length;
       const byteValue = isSelectableCell ? html`${toHexString({number: this.#memory[i], pad: 2, prefix: false})}` : '';
       const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, actualIndex) : '';
-      const jslog = VisualLogging.tableCell().track({click: true}).context('linear-memory-inspector.byte-cell');
+      const jslog = VisualLogging.tableCell('linear-memory-inspector.byte-cell').track({click: true});
       cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte} jslog=${jslog}>${byteValue}</span>`);
     }
     return html`${cells}`;
@@ -281,7 +281,7 @@ export class LinearMemoryViewer extends HTMLElement {
       const isSelectableCell = i < this.#memory.length;
       const value = isSelectableCell ? html`${this.#toAscii(this.#memory[i])}` : '';
       const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, i + this.#memoryOffset) : '';
-      const jslog = VisualLogging.tableCell().track({click: true}).context('linear-memory-inspector.text-cell');
+      const jslog = VisualLogging.tableCell('linear-memory-inspector.text-cell').track({click: true});
       cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte} jslog=${jslog}>${value}</span>`);
     }
     return html`${cells}`;

@@ -83,7 +83,7 @@ export class UISourceCodeFrame extends
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super(() => this.workingCopy());
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('source-code-frame')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('source-code-frame')}`);
     this.uiSourceCodeInternal = uiSourceCode;
 
     this.muteSourceCodeEvents = false;

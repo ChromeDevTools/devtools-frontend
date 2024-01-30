@@ -65,7 +65,7 @@ export class HideIssuesMenu extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <button class="hide-issues-menu-btn" @click=${this.onMenuOpen.bind(this)} title=${i18nString(UIStrings.tooltipTitle)}>
-        <${IconButton.Icon.Icon.litTagName} name="dots-vertical" jslog=${VisualLogging.dropDown().track({click: true}).context('hide-issues')}></${IconButton.Icon.Icon.litTagName}>
+        <${IconButton.Icon.Icon.litTagName} name="dots-vertical" jslog=${VisualLogging.dropDown('hide-issues').track({click: true})}></${IconButton.Icon.Icon.litTagName}>
       </button>
     `, this.#shadow, {host: this});
   }

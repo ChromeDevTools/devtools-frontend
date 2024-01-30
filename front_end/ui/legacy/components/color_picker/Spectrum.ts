@@ -278,8 +278,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.contentElement.setAttribute('jslog', `${VisualLogging.colorPicker()}`);
     this.colorElement = this.contentElement.createChild('div', 'spectrum-color');
     this.colorElement.tabIndex = 0;
-    this.colorElement.setAttribute(
-        'jslog', `${VisualLogging.canvas().track({click: true, drag: true}).context('color-canvas')}`);
+    this.colorElement.setAttribute('jslog', `${VisualLogging.canvas('color-canvas').track({click: true, drag: true})}`);
     this.setDefaultFocusedElement(this.colorElement);
     this.colorElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionColor.bind(this)));
     const swatchAriaText = i18nString(UIStrings.pressArrowKeysMessage);
@@ -310,15 +309,14 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.swatch = new Swatch(toolsContainer);
 
     this.hueElement = toolsContainer.createChild('div', 'spectrum-hue');
-    this.hueElement.setAttribute('jslog', `${VisualLogging.slider().track({click: true, drag: true}).context('hue')}`);
+    this.hueElement.setAttribute('jslog', `${VisualLogging.slider('hue').track({click: true, drag: true})}`);
     this.hueElement.tabIndex = 0;
     this.hueElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionHue.bind(this)));
     UI.ARIAUtils.setLabel(this.hueElement, i18nString(UIStrings.changeHue));
     UI.ARIAUtils.markAsSlider(this.hueElement, 0, 360);
     this.hueSlider = this.hueElement.createChild('div', 'spectrum-slider');
     this.alphaElement = toolsContainer.createChild('div', 'spectrum-alpha');
-    this.alphaElement.setAttribute(
-        'jslog', `${VisualLogging.slider().track({click: true, drag: true}).context('alpha')}`);
+    this.alphaElement.setAttribute('jslog', `${VisualLogging.slider('alpha').track({click: true, drag: true})}`);
     this.alphaElement.tabIndex = 0;
     this.alphaElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionAlpha.bind(this)));
     UI.ARIAUtils.setLabel(this.alphaElement, i18nString(UIStrings.changeAlpha));
@@ -348,7 +346,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.hexContainer = toolsContainer.createChild('div', 'spectrum-text spectrum-text-hex source-code');
     UI.ARIAUtils.markAsPoliteLiveRegion(this.hexContainer, true);
     this.hexValue = UI.UIUtils.createInput('spectrum-text-value');
-    this.hexValue.setAttribute('jslog', `${VisualLogging.value().track({keydown: true}).context('hex')}`);
+    this.hexValue.setAttribute('jslog', `${VisualLogging.value('hex').track({keydown: true})}`);
     this.hexContainer.appendChild(this.hexValue);
     this.hexValue.maxLength = 9;
     this.hexValue.addEventListener('keydown', this.inputChanged.bind(this), false);
@@ -361,7 +359,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     UI.ARIAUtils.setLabel(this.hexValue, label.textContent);
 
     const displaySwitcher = toolsContainer.createChild('button', 'spectrum-display-switcher spectrum-switcher');
-    displaySwitcher.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context('color-format')}`);
+    displaySwitcher.setAttribute('jslog', `${VisualLogging.dropDown('color-format').track({click: true})}`);
     appendSwitcherIcon(displaySwitcher);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     displaySwitcher.tabIndex = 0;
@@ -394,7 +392,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.element.classList.add('flex-none');
     this.palettes = new Map();
     this.palettePanel = this.contentElement.createChild('div', 'palette-panel');
-    this.palettePanel.setAttribute('jslog', `${VisualLogging.section().context('palette-panel')}`);
+    this.palettePanel.setAttribute('jslog', `${VisualLogging.section('palette-panel')}`);
     this.palettePanelShowing = false;
     this.paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
     this.paletteContainer = this.paletteSectionContainer.createChild('div', 'spectrum-palette');
@@ -406,8 +404,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         this.paletteDragEnd.bind(this), 'default');
     const paletteSwitcher =
         this.paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
-    paletteSwitcher.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('palette-switcher')}`);
+    paletteSwitcher.setAttribute('jslog', `${VisualLogging.dropDown('palette-switcher').track({click: true})}`);
     appendSwitcherIcon(paletteSwitcher);
     UI.UIUtils.setTitle(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     UI.ARIAUtils.markAsButton(paletteSwitcher);
@@ -1618,7 +1615,7 @@ export class Swatch {
   private readonly swatchCopyIcon: IconButton.Icon.Icon;
   constructor(parentElement: HTMLElement) {
     const swatchElement = parentElement.createChild('span', 'swatch');
-    swatchElement.setAttribute('jslog', `${VisualLogging.action().context('copy-color').track({click: true})}`);
+    swatchElement.setAttribute('jslog', `${VisualLogging.action('copy-color').track({click: true})}`);
     this.swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
     this.swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay') as HTMLElement;
     UI.ARIAUtils.markAsButton(this.swatchOverlayElement);

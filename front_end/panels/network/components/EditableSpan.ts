@@ -99,7 +99,7 @@ export class EditableSpan extends HTMLElement {
         class="editable"
         tabindex="0"
         .innerText=${this.#value}
-        jslog=${VisualLogging.textField().track({keydown: true}).context('header-editor')}
+        jslog=${VisualLogging.textField('header-editor').track({keydown: true})}
     </span>`, this.#shadow, {host: this});
     // clang-format on
   }

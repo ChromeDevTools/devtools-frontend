@@ -544,7 +544,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   constructor() {
     super();
     this.#controller = BreakpointsSidebarController.instance();
-    this.setAttribute('jslog', `${VisualLogging.section().context('sources.js-breakpoints')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('sources.js-breakpoints')}`);
     void this.#controller.update();
   }
 
@@ -602,7 +602,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             aria-checked=${this.#pauseOnUncaughtExceptions}
             data-first-pause>
           <label class='checkbox-label'>
-            <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnUncaughtExceptions} @change=${this.#onPauseOnUncaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('pause-uncaught')}>
+            <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnUncaughtExceptions} @change=${this.#onPauseOnUncaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-uncaught').track({ change: true })}>
             <span>${i18nString(UIStrings.pauseOnUncaughtExceptions)}</span>
           </label>
         </div>
@@ -614,7 +614,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               aria-checked=${pauseOnCaughtIsChecked}
               data-last-pause>
             <label class='checkbox-label'>
-              <input data-pause-on-caught-checkbox type='checkbox' tabindex=-1 ?checked=${pauseOnCaughtIsChecked} ?disabled=${pauseOnCaughtExceptionIsDisabled} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('pause-caught')}>
+              <input data-pause-on-caught-checkbox type='checkbox' tabindex=-1 ?checked=${pauseOnCaughtIsChecked} ?disabled=${pauseOnCaughtExceptionIsDisabled} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-caught').track({ change: true })}>
               <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
             </label>
         </div>
@@ -727,7 +727,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         i18nString(UIStrings.editCondition);
     // clang-format off
     return LitHtml.html`
-    <button data-edit-breakpoint @click=${clickHandler} title=${title} jslog=${VisualLogging.action().track({click: true}).context('edit-breakpoint')}>
+    <button data-edit-breakpoint @click=${clickHandler} title=${title} jslog=${VisualLogging.action('edit-breakpoint').track({click: true})}>
       <${IconButton.Icon.Icon.litTagName} name="edit"></${IconButton.Icon.Icon.litTagName}>
     </button>
       `;
@@ -743,7 +743,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     };
     // clang-format off
     return LitHtml.html`
-    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText} jslog=${VisualLogging.action().track({click: true}).context('remove-breakpoint')}>
+    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText} jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
       <${IconButton.Icon.Icon.litTagName} name="bin"></${IconButton.Icon.Icon.litTagName}>
     </button>
       `;
@@ -857,7 +857,9 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             .checked=${checked}
             @change=${groupCheckboxToggled}
             tabindex=-1
-            jslog=${VisualLogging.toggle().track({change: true}).context('breakpoint-group')}>
+            jslog=${VisualLogging.toggle('breakpoint-group').track({
+      change: true,
+    })}>
     `;
   }
 
@@ -957,9 +959,9 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               .checked=${breakpointItem.status === BreakpointStatus.ENABLED}
               @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}
               tabindex=-1
-              jslog=${VisualLogging.toggle().track({change: true}).context('breakpoint')}>
+              jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
       </label>
-      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${codeSnippetTooltip} jslog=${VisualLogging.action().track({click: true}).context('sources.jump-to-breakpoint')}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${codeSnippetTooltip} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}

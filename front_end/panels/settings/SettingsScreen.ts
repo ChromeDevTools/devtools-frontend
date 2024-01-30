@@ -112,7 +112,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   private constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context('settings')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('settings')}`);
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
@@ -275,7 +275,7 @@ export class GenericSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('preferences')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
 
     // GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     const explicitSectionOrder: Common.Settings.SettingCategory[] = [
@@ -412,7 +412,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     const filterSection = this.appendSection();
     filterSection.classList.add('experiments-filter');
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('experiments')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
 
     const labelElement = filterSection.createChild('label');
     labelElement.textContent = i18nString(UIStrings.filterExperimentsLabel);

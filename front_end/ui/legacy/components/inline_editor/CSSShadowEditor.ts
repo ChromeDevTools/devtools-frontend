@@ -80,7 +80,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     const yField = this.contentElement.createChild('div', 'shadow-editor-field');
     this.yInput = this.createTextInput(yField, i18nString(UIStrings.yOffset), 'yOffset');
     this.xySlider = (xField.createChild('canvas', 'shadow-editor-2D-slider') as HTMLCanvasElement);
-    this.xySlider.setAttribute('jslog', `${VisualLogging.slider().track({click: true, drag: true}).context('xy')}`);
+    this.xySlider.setAttribute('jslog', `${VisualLogging.slider('xy').track({click: true, drag: true})}`);
     this.xySlider.width = canvasSize;
     this.xySlider.height = canvasSize;
     this.xySlider.tabIndex = -1;

@@ -397,7 +397,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.consoleSettings), 'gear-filled');
     this.showSettingsPaneButton.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('console-settings')}`);
+        'jslog', `${VisualLogging.toggleSubpane('console-settings').track({click: true})}`);
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('console-group-similar');
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
@@ -423,7 +423,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendSeparator();
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this.issueCounter.id = 'console-issues-counter';
-    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter().track({click: true}).context('issues')}`);
+    this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issues').track({click: true})}`);
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: (): void => {
@@ -1655,8 +1655,7 @@ export class ConsoleViewFilter {
     this.levelMenuButton.turnIntoSelect();
     this.levelMenuButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.showLevelContextMenu.bind(this));
     UI.ARIAUtils.markAsMenuButton(this.levelMenuButton.element);
-    this.levelMenuButton.element.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('log-level')}`);
+    this.levelMenuButton.element.setAttribute('jslog', `${VisualLogging.dropDown('log-level').track({click: true})}`);
 
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));

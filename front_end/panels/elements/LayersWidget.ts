@@ -37,7 +37,7 @@ export class LayersWidget extends UI.Widget.Widget {
     super(true);
 
     this.contentElement.className = 'styles-layers-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('css-layers')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('css-layers')}`);
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.cssLayersTitle));
 
     this.contentElement.appendChild(this.layerTreeComponent);
@@ -138,8 +138,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.setVisible(false);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.button.element.classList.add('monospace');
-    this.button.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('css-layers')}`);
+    this.button.element.setAttribute('jslog', `${VisualLogging.toggleSubpane('css-layers').track({click: true})}`);
   }
 
   static instance(opts: {

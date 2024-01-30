@@ -141,11 +141,11 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         <main>
           <div class="top-right-corner">
             <label class="checkbox-label">
-              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
               <span>${i18nString(UIStrings.autoShow)}</span>
             </label>
           </div>
-          <div class="placeholder-container" jslog=${VisualLogging.pane().context('autofill-empty')}>
+          <div class="placeholder-container" jslog=${VisualLogging.pane('autofill-empty')}>
             <div class="placeholder">${i18nString(UIStrings.noDataAvailable)}</h1>
           </div>
         </main>
@@ -158,11 +158,11 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // clang-format off
     LitHtml.render(LitHtml.html`
       <main>
-        <div class="content-container" jslog=${VisualLogging.pane().context('autofill')}>
+        <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
             <div class="label-container">
               <label class="checkbox-label">
-                <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle().track({ change: true }).context('auto-open')}>
+                <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
                 <span>${i18nString(UIStrings.autoShow)}</span>
               </label>
             </div>

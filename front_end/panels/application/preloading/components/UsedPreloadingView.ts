@@ -320,7 +320,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.preloadedURLs)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}
-      jslog=${VisualLogging.section().context('preloaded-urls')}>
+      jslog=${VisualLogging.section('preloaded-urls')}>
         <${MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}
           .data=${data as MismatchedPreloadingGrid.MismatchedPreloadingGridData}></${
           MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}>
@@ -405,12 +405,12 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
           <div class="reveal-links">
             <button class="link devtools-link" @click=${revealRuleSetView}
-            jslog=${VisualLogging.action().track({click: true}).context('view-all-rules')}>
+            jslog=${VisualLogging.action('view-all-rules').track({click: true})}>
               ${i18nString(UIStrings.viewAllRules)}
             </button>
            ・
             <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
-            jslog=${VisualLogging.action().track({click: true}).context('view-all-speculations')}>
+            jslog=${VisualLogging.action('view-all-speculations').track({click: true})}>
              ${i18nString(UIStrings.viewAllSpeculations)}
             </button>
           </div>

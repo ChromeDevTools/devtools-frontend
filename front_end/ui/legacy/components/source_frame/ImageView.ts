@@ -102,7 +102,7 @@ export class ImageView extends UI.View.SimpleView {
     this.registerRequiredCSS(imageViewStyles);
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('image-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('image-view')}`);
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
     this.mimeType = mimeType;

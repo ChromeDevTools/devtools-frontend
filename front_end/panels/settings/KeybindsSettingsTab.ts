@@ -88,7 +88,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('keybinds')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('keybinds')}`);
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
@@ -359,7 +359,7 @@ export class ShortcutListItem {
   private setupEditor(): void {
     this.addShortcutLinkContainer = this.element.createChild('div', 'keybinds-shortcut devtools-link');
     const addShortcutLink = this.addShortcutLinkContainer.createChild('span', 'devtools-link') as HTMLDivElement;
-    addShortcutLink.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('add-shortcut')}`);
+    addShortcutLink.setAttribute('jslog', `${VisualLogging.action('add-shortcut').track({click: true})}`);
     addShortcutLink.textContent = i18nString(UIStrings.addAShortcut);
     addShortcutLink.tabIndex = 0;
     UI.ARIAUtils.markAsLink(addShortcutLink);

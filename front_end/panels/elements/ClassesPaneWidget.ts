@@ -48,7 +48,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.contentElement.className = 'styles-element-classes-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('elements-classes')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('elements-classes')}`);
     const container = this.contentElement.createChild('div', 'title-container');
     this.input = container.createChild('div', 'new-class-input monospace');
     this.setDefaultFocusedElement(this.input);
@@ -268,7 +268,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.setText('.cls');
     this.button.element.classList.add('monospace');
     this.button.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('elements-classes')}`);
+        'jslog', `${VisualLogging.toggleSubpane('elements-classes').track({click: true})}`);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.view = new ClassesPaneWidget();
   }

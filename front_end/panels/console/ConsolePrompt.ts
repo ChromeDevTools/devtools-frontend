@@ -150,7 +150,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Record the console tool load time after the console prompt constructor is complete.
     Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
 
-    this.element.setAttribute('jslog', `${VisualLogging.action().track({keydown: 'Enter'}).context('console-prompt')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.action('console-prompt').track({keydown: 'Enter'})}`);
   }
 
   private eagerSettingChanged(): void {

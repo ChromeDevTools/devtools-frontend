@@ -186,8 +186,11 @@ export interface ConfigStringBuilder {
   toString: () => string;
 }
 
-export function makeConfigStringBuilder(veName: VisualElementName): ConfigStringBuilder {
+export function makeConfigStringBuilder(veName: VisualElementName, context?: string): ConfigStringBuilder {
   const components: string[] = [veName];
+  if (typeof context !== 'undefined') {
+    components.push(`context: ${context}`);
+  }
   return {
     context: function(value: string|number|undefined): ConfigStringBuilder {
       if (typeof value !== 'undefined') {

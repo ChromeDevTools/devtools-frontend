@@ -41,7 +41,7 @@ export class ElementsPanelLink extends HTMLElement {
       LitHtml.render(LitHtml.html`
       <span
         class="element-reveal-icon"
-        jslog=${VisualLogging.link().track({click: true}).context('elements-panel-link')}
+        jslog=${VisualLogging.link('elements-panel-link').track({click: true})}
         @click=${this.#onElementRevealIconClick}
         @mouseenter=${this.#onElementRevealIconMouseEnter}
         @mouseleave=${this.#onElementRevealIconMouseLeave}></span>

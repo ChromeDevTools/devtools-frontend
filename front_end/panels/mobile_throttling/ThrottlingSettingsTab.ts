@@ -89,7 +89,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('throttling-conditions')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('throttling-conditions')}`);
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);

@@ -113,7 +113,7 @@ class CookiePreviewWidget extends UI.Widget.VBox {
     this.value = value;
 
     this.contentElement.classList.add('cookie-preview-widget');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section().context('cookie-preview')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('cookie-preview')}`);
     this.contentElement.appendChild(value);
   }
 
@@ -175,7 +175,7 @@ export class CookieItemsView extends StorageItemsView {
     super(i18nString(UIStrings.cookies), 'cookiesPanel');
 
     this.element.classList.add('storage-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('cookies-data')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('cookies-data')}`);
 
     this.model = model;
     this.cookieDomain = cookieDomain;

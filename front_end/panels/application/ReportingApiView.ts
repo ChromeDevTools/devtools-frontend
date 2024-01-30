@@ -16,7 +16,7 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
 
   constructor(endpointsGrid: ApplicationComponents.EndpointsGrid.EndpointsGrid) {
     super(/* isVertical: */ false, /* secondIsSidebar: */ true);
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('reporting-api')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('reporting-api')}`);
     this.endpointsGrid = endpointsGrid;
     this.endpoints = new Map();
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

@@ -258,7 +258,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       const sourceAnchor = linkifier.linkifyScriptLocation(
           target || null, sourceLocation.scriptId || null, sourceLocation.url as Platform.DevToolsPath.UrlString,
           sourceLocation.lineNumber, {columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0});
-      sourceAnchor.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('source-location')}`);
+      sourceAnchor.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
       sourceCodeLocation.appendChild(sourceAnchor);
     }
     element.appendChild(sourceCodeLocation);

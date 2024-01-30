@@ -54,7 +54,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   constructor(mainContainer: MainView) {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('player-list')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('player-list')}`);
 
     this.playerEntryFragments = new Map();
     this.playerEntriesWithHostnameFrameTitle = new Set();
@@ -77,7 +77,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     </div>
     `;
     const element = entry.element();
-    element.setAttribute('jslog', `${VisualLogging.item().track({click: true}).context('player')}`);
+    element.setAttribute('jslog', `${VisualLogging.item('player').track({click: true})}`);
     element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
     element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
 

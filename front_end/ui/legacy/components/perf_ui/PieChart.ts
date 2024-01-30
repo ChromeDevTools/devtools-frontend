@@ -98,14 +98,14 @@ export class PieChart extends HTMLElement {
           `}
           <div class="pie-chart-foreground">
             <div class="pie-chart-total ${this.totalSelected ? 'selected' : ''}" @click=${this.selectTotal}
-                jslog=${VisualLogging.pieChartTotal().track({click: true}).context('select-total')}
+                jslog=${VisualLogging.pieChartTotal('select-total').track({click: true})}
                 tabIndex=${this.totalSelected && !this.showLegend ? '1' : '-1'}>
               ${this.total ? this.formatter(this.total) : ''}
             </div>
           </div>
         </div>
         ${this.showLegend ? html`
-        <div class="pie-chart-legend" jslog=${VisualLogging.section().context('legend')}>
+        <div class="pie-chart-legend" jslog=${VisualLogging.section('legend')}>
           ${this.slices.map((slice, index): LitHtml.TemplateResult => {
             const selected = this.sliceSelected === index;
             return html`
@@ -118,7 +118,7 @@ export class PieChart extends HTMLElement {
               </div>`;
           })}
           <div class="pie-chart-legend-row ${this.totalSelected ? 'selected' : ''}"
-              jslog=${VisualLogging.pieChartTotal().track({click: true}).context('select-total')}
+              jslog=${VisualLogging.pieChartTotal('select-total').track({click: true})}
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? '0' : '-1'}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
             <div class="pie-chart-swatch"></div>

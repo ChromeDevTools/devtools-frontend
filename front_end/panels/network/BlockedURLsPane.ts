@@ -67,7 +67,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context('network.blocked-urls')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('network.blocked-urls')}`);
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(

@@ -69,7 +69,7 @@ export class StartView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section().context('start-view')}`);
+    this.setAttribute('jslog', `${VisualLogging.section('start-view')}`);
   }
 
   connectedCallback(): void {

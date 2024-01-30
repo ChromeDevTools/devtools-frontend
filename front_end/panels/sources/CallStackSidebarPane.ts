@@ -110,7 +110,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private constructor() {
     super(i18nString(UIStrings.callStack), true, 'sources.callstack');
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section().context('sources.callstack')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.callstack')}`);
     ({element: this.ignoreListMessageElement, checkbox: this.ignoreListCheckboxElement} =
          this.createIgnoreListMessageElementAndCheckbox());
     this.contentElement.appendChild(this.ignoreListMessageElement);

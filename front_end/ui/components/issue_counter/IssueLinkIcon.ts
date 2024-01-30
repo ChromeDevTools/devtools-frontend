@@ -148,7 +148,7 @@ export class IssueLinkIcon extends HTMLElement {
       LitHtml.render(LitHtml.html`
       <button class=${LitHtml.Directives.classMap({'link': Boolean(this.#issue)})}
               title=${this.#getTooltip()}
-              jslog=${VisualLogging.link().track({click: true}).context('issue-link')}
+              jslog=${VisualLogging.link('issue-link').track({click: true})}
               @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} name=${this.#getIconName()}></${IconButton.Icon.Icon.litTagName}>
       </span>`,

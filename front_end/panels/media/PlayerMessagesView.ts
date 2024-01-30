@@ -257,7 +257,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   constructor() {
     super();
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('messages')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('messages')}`);
 
     this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');

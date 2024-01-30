@@ -43,7 +43,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
   constructor() {
     super();
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('timeline')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('timeline')}`);
 
     this.normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
 

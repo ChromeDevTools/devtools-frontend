@@ -121,7 +121,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.#request = request;
-    this.setAttribute('jslog', `${VisualLogging.pane().context('headers')}`);
+    this.setAttribute('jslog', `${VisualLogging.pane('headers')}`);
   }
 
   override wasShown(): void {
@@ -231,7 +231,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           <${ResponseHeaderSection.litTagName} .data=${{
             request: this.#request,
             toReveal: this.#toReveal,
-          } as ResponseHeaderSectionData} jslog=${VisualLogging.section().context('response-headers')}></${ResponseHeaderSection.litTagName}>
+          } as ResponseHeaderSectionData} jslog=${VisualLogging.section('response-headers')}></${ResponseHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
     `;
@@ -272,7 +272,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <x-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link"
-          jslog=${VisualLogging.link().track({click: true}).context('devtools-override')}
+          jslog=${VisualLogging.link('devtools-override').track({click: true})}
       >
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
             iconName: 'help',
@@ -286,7 +286,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           @click=${revealHeadersFile}
           class="link devtools-link"
           title=${UIStrings.revealHeaderOverrides}
-          jslog=${VisualLogging.link().track({click: true}).context('reveal-header-overrides')}
+          jslog=${VisualLogging.link('reveal-header-overrides').track({click: true})}
       >
         ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
       </x-link>
@@ -335,7 +335,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           <${RequestHeaderSection.litTagName} .data=${{
             request: this.#request,
             toReveal: this.#toReveal,
-          } as RequestHeaderSectionData} jslog=${VisualLogging.section().context('request-headers')}></${RequestHeaderSection.litTagName}>
+          } as RequestHeaderSectionData} jslog=${VisualLogging.section('request-headers')}></${RequestHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
     `;
@@ -382,7 +382,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
             .size=${Buttons.Button.Size.SMALL}
             .variant=${Buttons.Button.Variant.SECONDARY}
             @click=${showMore}
-            jslog=${VisualLogging.action().track({click: true}).context('raw-headers-show-more')}
+            jslog=${VisualLogging.action('raw-headers-show-more').track({click: true})}
           >${i18nString(UIStrings.showMore)}</${Buttons.Button.Button.litTagName}>
         ` : LitHtml.nothing}
       </div>
@@ -437,7 +437,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         } as CategoryData}
         aria-label=${i18nString(UIStrings.general)}
       >
-      <div jslog=${VisualLogging.section().context('general')}>
+      <div jslog=${VisualLogging.section('general')}>
         ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url())}
         ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod) : LitHtml.nothing}
         ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, statusClasses) : LitHtml.nothing}
@@ -537,7 +537,7 @@ export class Category extends HTMLElement {
                     type="checkbox"
                     .checked=${this.#checked}
                     @change=${this.#onCheckboxToggle}
-                    jslog=${VisualLogging.toggle().track({change: true}).context('raw-headers')}
+                    jslog=${VisualLogging.toggle('raw-headers').track({change: true})}
                 />${i18nString(UIStrings.raw)}</label>
               ` : LitHtml.nothing}
             </div>

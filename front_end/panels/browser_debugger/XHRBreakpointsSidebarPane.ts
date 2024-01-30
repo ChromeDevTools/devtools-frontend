@@ -82,7 +82,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     this.#breakpoints = new UI.ListModel.ListModel();
     this.#list = new UI.ListControl.ListControl(this.#breakpoints, this, UI.ListControl.ListMode.NonViewport);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section().context('source.xhr-breakpoints')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.section('source.xhr-breakpoints')}`);
     this.contentElement.appendChild(this.#list.element);
     this.#list.element.classList.add('breakpoint-list', 'hidden');
     UI.ARIAUtils.markAsList(this.#list.element);

@@ -55,7 +55,7 @@ export class ReportsGridStatusHeader extends HTMLElement {
     render(html`
       ${i18nString(UIStrings.status)}
       <x-link href="https://web.dev/reporting-api/#report-status"
-      jslog=${VisualLogging.link().track({click: true}).context('report-status')}>
+      jslog=${VisualLogging.link('report-status').track({click: true})}>
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
           iconName: 'help',
           color: 'var(--icon-link)',
@@ -151,7 +151,7 @@ export class ReportsGrid extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="reporting-container" jslog=${VisualLogging.section().context('reports')}>
+      <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
         ${this.#reports.length > 0 ? html`
           <${DataGrid.DataGridController.DataGridController.litTagName} .data=${

@@ -2574,8 +2574,7 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     this.items = items;
 
     this.filterElement = document.createElement('div');
-    this.filterElement.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('request-types')}`);
+    this.filterElement.setAttribute('jslog', `${VisualLogging.dropDown('request-types').track({click: true})}`);
 
     this.typesCountAdorner = new Adorners.Adorner.Adorner();
     this.selectedTypesCount = document.createElement('span');
@@ -2799,8 +2798,7 @@ export class MoreFiltersDropDownUI extends
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
-    this.filterElement.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true}).context('more-filters')}`);
+    this.filterElement.setAttribute('jslog', `${VisualLogging.dropDown('more-filters').track({click: true})}`);
 
     this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
     this.activeFiltersCount = document.createElement('span');

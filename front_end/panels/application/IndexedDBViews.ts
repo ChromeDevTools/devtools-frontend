@@ -184,14 +184,18 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
           aria-label=${i18nString(UIStrings.deleteDatabase)}
           .variant=${Buttons.Button.Variant.SECONDARY}
           @click=${this.deleteDatabase}
-          jslog=${VisualLogging.action().track({click: true}).context('delete-database')}>
+          jslog=${VisualLogging.action('delete-database').track({
+      click: true,
+    })}>
         ${i18nString(UIStrings.deleteDatabase)}
       </${Buttons.Button.Button.litTagName}>&nbsp;
       <${Buttons.Button.Button.litTagName}
           aria-label=${i18nString(UIStrings.refreshDatabase)}
           .variant=${Buttons.Button.Variant.SECONDARY}
           @click=${this.refreshDatabaseButtonClicked}
-          jslog=${VisualLogging.action().track({click: true}).context('refresh-database')}>
+          jslog=${VisualLogging.action('refresh-database').track({
+      click: true,
+    })}>
         ${i18nString(UIStrings.refreshDatabase)}
       </${Buttons.Button.Button.litTagName}>
       </${ReportView.ReportView.ReportSection.litTagName}>
@@ -279,26 +283,24 @@ export class IDBDataView extends UI.View.SimpleView {
     this.refreshObjectStoreCallback = refreshObjectStoreCallback;
 
     this.element.classList.add('indexed-db-data-view', 'storage-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane().context('indexed-db-data-view')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('indexed-db-data-view')}`);
 
     this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
-    this.refreshButton.element.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('refresh')}`);
+    this.refreshButton.element.setAttribute('jslog', `${VisualLogging.action('refresh').track({click: true})}`);
 
     this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'bin');
     this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.deleteButtonClicked(null);
     });
     this.deleteSelectedButton.element.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('delete-selected')}`);
+        'jslog', `${VisualLogging.action('delete-selected').track({click: true})}`);
 
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void this.clearButtonClicked();
     }, this);
-    this.clearButton.element.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('clear-all')}`);
+    this.clearButton.element.setAttribute('jslog', `${VisualLogging.action('clear-all').track({click: true})}`);
 
     const refreshIcon = UI.UIUtils.createIconLabel({
       title: i18nString(UIStrings.dataMayBeStale),

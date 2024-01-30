@@ -131,7 +131,7 @@ export class CoverageView extends UI.Widget.VBox {
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context('coverage')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('coverage')}`);
 
     this.model = null;
     this.decorationManager = null;

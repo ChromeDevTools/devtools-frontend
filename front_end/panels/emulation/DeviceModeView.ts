@@ -196,7 +196,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
   private createResizer(element: Element, widthFactor: number, heightFactor: number): UI.ResizerWidget.ResizerWidget {
     const resizer = new UI.ResizerWidget.ResizerWidget();
-    element.setAttribute('jslog', `${VisualLogging.slider().context('device-mode-resizer').track({drag: true})}`);
+    element.setAttribute('jslog', `${VisualLogging.slider('device-mode-resizer').track({drag: true})}`);
     resizer.addElement((element as HTMLElement));
     let cursor: 'nwse-resize'|'nesw-resize'|('ew-resize' | 'ns-resize') = widthFactor ? 'ew-resize' : 'ns-resize';
     if (widthFactor * heightFactor > 0) {

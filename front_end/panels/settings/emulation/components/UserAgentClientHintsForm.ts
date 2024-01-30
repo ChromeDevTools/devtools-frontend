@@ -482,7 +482,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           .value=${platform}
           placeholder=${i18nString(UIStrings.platformPlaceholder)}
           aria-label=${i18nString(UIStrings.platformLabel)}
-          jslog=${VisualLogging.textField().track({keydown: true}).context('platform')}
+          jslog=${VisualLogging.textField('platform').track({
+      keydown: true,
+    })}
         />
         <input
           class="input-field half-row"
@@ -491,7 +493,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           .value=${platformVersion}
           placeholder=${i18nString(UIStrings.platformVersion)}
           aria-label=${i18nString(UIStrings.platformVersion)}
-          jslog=${VisualLogging.textField().track({keydown: true}).context('platform-version')}
+          jslog=${VisualLogging.textField('platform-version').track({
+      keydown: true,
+    })}
         />
       </div>
     `;
@@ -510,7 +514,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
     const mobileCheckboxInput = this.#showMobileCheckbox ? LitHtml.html`
       <label class="mobile-checkbox-container">
         <input type="checkbox" @input=${handleMobileChange} .checked=${mobile}
-          jslog=${VisualLogging.toggle().track({click: true}).context('mobile')}
+          jslog=${VisualLogging.toggle('mobile').track({
+      click: true,
+    })}
         />
         ${i18nString(UIStrings.mobileCheckboxLabel)}
       </label>
@@ -525,7 +531,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @input=${handleDeviceModelChange}
           .value=${model}
           placeholder=${i18nString(UIStrings.deviceModel)}
-          jslog=${VisualLogging.textField().track({keydown: true}).context('model')}
+          jslog=${VisualLogging.textField('model').track({
+      keydown: true,
+    })}
         />
         ${mobileCheckboxInput}
       </div>
@@ -573,7 +581,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
       })}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('brand-name')}
+            jslog=${VisualLogging.textField('brand-name').track({
+        keydown: true,
+      })}
           />
           <input
             class="input-field"
@@ -584,7 +594,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
       })}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('brand-version')}
+            jslog=${VisualLogging.textField('brand-version').track({
+        keydown: true,
+      })}
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
@@ -656,7 +668,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <div
           class="full-row brand-row"
           aria-label=${i18nString(UIStrings.brandProperties)}
-          jslog=${VisualLogging.section().context('full-version')}
+          jslog=${VisualLogging.section('full-version')}
           role="group">
           <input
             class="input-field fvl-brand-name-input"
@@ -668,7 +680,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
       })}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('brand-name')}
+            jslog=${VisualLogging.textField('brand-name').track({
+        keydown: true,
+      })}
           />
           <input
             class="input-field"
@@ -679,7 +693,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
       })}
-            jslog=${VisualLogging.textField().track({keydown: true}).context('brand-version')}
+            jslog=${VisualLogging.textField('brand-version').track({
+        keydown: true,
+      })}
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
@@ -782,7 +798,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
            class="link"
            @keypress=${this.#handleLinkPress}
            aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)}
-           jslog=${VisualLogging.link().track({click: true}).context('learn-more')}
+           jslog=${VisualLogging.link('learn-more').track({click: true})}
           >
             ${i18nString(UIStrings.learnMore)}
           </x-link>

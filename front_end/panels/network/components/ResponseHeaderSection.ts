@@ -482,7 +482,7 @@ export class ResponseHeaderSection extends HTMLElement {
             @headerremoved=${this.#onHeaderRemoved}
             @enableheaderediting=${this.#onEnableHeaderEditingClick}
             data-index=${index}
-            jslog=${VisualLogging.value().context('response-header')}
+            jslog=${VisualLogging.value('response-header')}
         ></${HeaderSectionRow.litTagName}>
       `)}
       ${this.#headersAreOverrideable ? html`
@@ -491,7 +491,7 @@ export class ResponseHeaderSection extends HTMLElement {
           .variant=${Buttons.Button.Variant.SECONDARY}
           .iconUrl=${plusIconUrl}
           @click=${this.#onAddHeaderClick}
-          jslog=${VisualLogging.action().track({click: true}).context('add-header')}>
+          jslog=${VisualLogging.action('add-header').track({click: true})}>
           ${i18nString(UIStrings.addHeader)}
         </${Buttons.Button.Button.litTagName}>
       ` : LitHtml.nothing}

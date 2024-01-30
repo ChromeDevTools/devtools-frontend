@@ -171,3 +171,19 @@ describe('parseContentType', () => {
     });
   }
 });
+
+describe('isTextType', () => {
+  const TEST_CASES = new Map<string, boolean>([
+    ['text/html', true],
+    ['application/pdf', false],
+    ['application/json', true],
+    ['image/svg+xml', true],
+    ['application/manifest+json', true],
+  ]);
+
+  it('determines if a mime type has text content', () => {
+    for (const [mimeType, expectedResult] of TEST_CASES) {
+      assert.strictEqual(Platform.MimeType.isTextType(mimeType), expectedResult);
+    }
+  });
+});

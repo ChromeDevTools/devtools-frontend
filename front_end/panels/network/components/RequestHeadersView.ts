@@ -231,7 +231,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
           <${ResponseHeaderSection.litTagName} .data=${{
             request: this.#request,
             toReveal: this.#toReveal,
-          } as ResponseHeaderSectionData} jslog=${VisualLogging.section().context('request-headers')}></${ResponseHeaderSection.litTagName}>
+          } as ResponseHeaderSectionData} jslog=${VisualLogging.section().context('response-headers')}></${ResponseHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
     `;

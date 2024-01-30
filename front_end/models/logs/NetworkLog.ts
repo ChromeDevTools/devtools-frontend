@@ -72,9 +72,9 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.initiatorData = new WeakMap();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     const recordLogSetting: Common.Settings.Setting<boolean> =
-        Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
+        Common.Settings.Settings.instance().moduleSetting('network-log.record-log');
     recordLogSetting.addChangeListener(() => {
-      const preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
+      const preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log');
       if (!preserveLogSetting.get() && recordLogSetting.get()) {
         this.reset(true);
       }
@@ -326,7 +326,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   private willReloadPage(): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get()) {
+    if (!Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get()) {
       this.reset(true);
     }
   }
@@ -347,7 +347,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       return;
     }
 
-    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get();
+    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get();
 
     const oldRequests = this.requestsInternal;
     const oldManagerRequests =

@@ -979,7 +979,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
-    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get();
+    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get();
     if (!preserveLog) {
       this.reset();
     }

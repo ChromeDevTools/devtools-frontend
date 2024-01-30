@@ -26,9 +26,16 @@ export declare abstract class BidiTarget extends Target {
 /**
  * @internal
  */
-export declare class BiDiBrowserTarget extends BidiTarget {
+export declare class BiDiBrowserTarget extends Target {
+    #private;
+    constructor(browser: BidiBrowser);
     url(): string;
     type(): TargetType;
+    asPage(): Promise<Page>;
+    browser(): BidiBrowser;
+    browserContext(): BidiBrowserContext;
+    opener(): never;
+    createCDPSession(): Promise<CDPSession>;
 }
 /**
  * @internal

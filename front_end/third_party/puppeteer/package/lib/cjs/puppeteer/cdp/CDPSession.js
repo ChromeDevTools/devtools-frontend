@@ -108,6 +108,12 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
     id() {
         return this.#sessionId;
     }
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors() {
+        return this.#callbacks.getPendingProtocolErrors();
+    }
 }
 exports.CdpCDPSession = CdpCDPSession;
 //# sourceMappingURL=CDPSession.js.map

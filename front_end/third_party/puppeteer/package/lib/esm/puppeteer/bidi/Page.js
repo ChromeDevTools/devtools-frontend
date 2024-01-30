@@ -48,7 +48,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { first, firstValueFrom, forkJoin, from, map, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { firstValueFrom, from, map, raceWith, zip, } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -58,7 +58,7 @@ import { Tracing } from '../cdp/Tracing.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
+import { debugError, evaluationString, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
@@ -395,13 +395,22 @@ export class BidiPage extends Page {
     async reload(options = {}) {
         const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
         const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-        const response = await firstValueFrom(this._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
+        const result$ = zip(from(this.#connection.send('browsingContext.reload', {
             context: this.mainFrame()._id,
             wait: readiness,
-        }), networkIdle)
-            .pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow())))
-            .pipe(rewriteNavigationError(this.url(), ms)));
-        return this.getNavigationResponse(response?.result.navigation);
+        })), ...(networkIdle !== null
+            ? [
+                this.waitForNetworkIdle$({
+                    timeout: ms,
+                    concurrency: networkIdle === 'networkidle2' ? 2 : 0,
+                    idleTime: NETWORK_IDLE_TIME,
+                }),
+            ]
+            : [])).pipe(map(([{ result }]) => {
+            return result;
+        }), raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow())), rewriteNavigationError(this.url(), ms));
+        const result = await firstValueFrom(result$);
+        return this.getNavigationResponse(result.navigation);
     }
     setDefaultNavigationTimeout(timeout) {
         this._timeoutSettings.setDefaultNavigationTimeout(timeout);
@@ -537,30 +546,6 @@ export class BidiPage extends Page {
             ...(box ? { clip: { type: 'box', ...box } } : {}),
         });
         return data;
-    }
-    async waitForRequest(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
-    }
-    async waitForResponse(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
-    }
-    async waitForNetworkIdle(options = {}) {
-        const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
-        await firstValueFrom(this._waitForNetworkIdle(this.#networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))));
-    }
-    /** @internal */
-    _waitWithNetworkIdle(observableInput, networkIdle) {
-        const delay = networkIdle
-            ? this._waitForNetworkIdle(this.#networkManager, NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
-            : from(Promise.resolve());
-        return forkJoin([
-            from(observableInput).pipe(first()),
-            delay.pipe(first()),
-        ]).pipe(map(([response]) => {
-            return response;
-        }));
     }
     async createCDPSession() {
         const { sessionId } = await this.mainFrame()

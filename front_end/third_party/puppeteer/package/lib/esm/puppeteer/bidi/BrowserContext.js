@@ -5,6 +5,8 @@
  */
 import { BrowserContext } from '../api/BrowserContext.js';
 import { UnsupportedOperation } from '../common/Errors.js';
+import { debugError } from '../common/util.js';
+import { UserContext } from './core/UserContext.js';
 /**
  * @internal
  */
@@ -12,13 +14,13 @@ export class BidiBrowserContext extends BrowserContext {
     #browser;
     #connection;
     #defaultViewport;
-    #isDefault = false;
-    constructor(browser, options) {
+    #userContext;
+    constructor(browser, userContext, options) {
         super();
         this.#browser = browser;
+        this.#userContext = userContext;
         this.#connection = this.#browser.connection;
         this.#defaultViewport = options.defaultViewport;
-        this.#isDefault = options.isDefault;
     }
     targets() {
         return this.#browser.targets().filter(target => {
@@ -59,10 +61,25 @@ export class BidiBrowserContext extends BrowserContext {
         return page;
     }
     async close() {
-        if (this.#isDefault) {
+        if (!this.isIncognito()) {
             throw new Error('Default context cannot be closed!');
         }
-        await this.#browser._closeContext(this);
+        // TODO: Remove once we have adopted the new browsing contexts.
+        for (const target of this.targets()) {
+            const page = await target?.page();
+            try {
+                await page?.close();
+            }
+            catch (error) {
+                debugError(error);
+            }
+        }
+        try {
+            await this.#userContext.remove();
+        }
+        catch (error) {
+            debugError(error);
+        }
     }
     browser() {
         return this.#browser;
@@ -76,7 +93,7 @@ export class BidiBrowserContext extends BrowserContext {
         });
     }
     isIncognito() {
-        return !this.#isDefault;
+        return this.#userContext.id !== UserContext.DEFAULT;
     }
     overridePermissions() {
         throw new UnsupportedOperation();

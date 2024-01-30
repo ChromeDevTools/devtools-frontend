@@ -251,7 +251,7 @@ class ProductLauncher {
     /**
      * @internal
      */
-    resolveExecutablePath() {
+    resolveExecutablePath(headless) {
         let executablePath = this.puppeteer.configuration.executablePath;
         if (executablePath) {
             if (!(0, fs_1.existsSync)(executablePath)) {
@@ -259,9 +259,12 @@ class ProductLauncher {
             }
             return executablePath;
         }
-        function productToBrowser(product) {
+        function productToBrowser(product, headless) {
             switch (product) {
                 case 'chrome':
+                    if (headless === true) {
+                        return browsers_1.Browser.CHROMEHEADLESSSHELL;
+                    }
                     return browsers_1.Browser.CHROME;
                 case 'firefox':
                     return browsers_1.Browser.FIREFOX;
@@ -270,7 +273,7 @@ class ProductLauncher {
         }
         executablePath = (0, browsers_1.computeExecutablePath)({
             cacheDir: this.puppeteer.defaultDownloadPath,
-            browser: productToBrowser(this.product),
+            browser: productToBrowser(this.product, headless),
             buildId: this.puppeteer.browserRevision,
         });
         if (!(0, fs_1.existsSync)(executablePath)) {

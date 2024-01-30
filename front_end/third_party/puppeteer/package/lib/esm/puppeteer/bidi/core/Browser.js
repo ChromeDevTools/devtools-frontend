@@ -96,6 +96,7 @@ let Browser = (() => {
     let _close_decorators;
     let _addPreloadScript_decorators;
     let _removePreloadScript_decorators;
+    let _createUserContext_decorators;
     return class Browser extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -103,6 +104,7 @@ let Browser = (() => {
             __esDecorate(this, null, _close_decorators, { kind: "method", name: "close", static: false, private: false, access: { has: obj => "close" in obj, get: obj => obj.close }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _addPreloadScript_decorators, { kind: "method", name: "addPreloadScript", static: false, private: false, access: { has: obj => "addPreloadScript" in obj, get: obj => obj.addPreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _createUserContext_decorators, { kind: "method", name: "createUserContext", static: false, private: false, access: { has: obj => "createUserContext" in obj, get: obj => obj.createUserContext }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static async from(session) {
@@ -122,7 +124,7 @@ let Browser = (() => {
             // keep-sorted start
             this.session = session;
             // keep-sorted end
-            this.#userContexts.set('', UserContext.create(this, ''));
+            this.#userContexts.set(UserContext.DEFAULT, UserContext.create(this, UserContext.DEFAULT));
         }
         async #initialize() {
             const sessionEmitter = this.#disposables.use(new EventEmitter(this.session));
@@ -178,7 +180,7 @@ let Browser = (() => {
         }
         get defaultUserContext() {
             // SAFETY: A UserContext is always created for the default context.
-            return this.#userContexts.get('');
+            return this.#userContexts.get(UserContext.DEFAULT);
         }
         get disconnected() {
             return this.#reason !== undefined;
@@ -218,6 +220,21 @@ let Browser = (() => {
                 script,
             });
         }
+        static userContextId = 0;
+        async createUserContext() {
+            // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
+            // TODO: Call `createUserContext` once available.
+            // Generating a monotonically increasing context id.
+            const context = `${++Browser.userContextId}`;
+            const userContext = UserContext.create(this, context);
+            this.#userContexts.set(userContext.id, userContext);
+            const userContextEmitter = this.#disposables.use(new EventEmitter(userContext));
+            userContextEmitter.once('closed', () => {
+                userContextEmitter.removeAllListeners();
+                this.#userContexts.delete(context);
+            });
+            return userContext;
+        }
         [(_dispose_decorators = [inertIfDisposed], _close_decorators = [throwIfDisposed(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
@@ -225,6 +242,9 @@ let Browser = (() => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _removePreloadScript_decorators = [throwIfDisposed(browser => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return browser.#reason;
+            })], _createUserContext_decorators = [throwIfDisposed(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], disposeSymbol)]() {

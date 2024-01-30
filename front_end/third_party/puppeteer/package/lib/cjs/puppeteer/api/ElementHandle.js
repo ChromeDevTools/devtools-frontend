@@ -91,6 +91,7 @@ const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
+const disposable_js_1 = require("../util/disposable.js");
 const ElementHandleSymbol_js_1 = require("./ElementHandleSymbol.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 /**
@@ -1180,26 +1181,62 @@ let ElementHandle = (() => {
             return point;
         }
         async screenshot(options = {}) {
-            const { scrollIntoView = true } = options;
-            let clip = await this.#nonEmptyVisibleBoundingBox();
-            const page = this.frame.page();
-            if (scrollIntoView) {
-                await this.scrollIntoViewIfNeeded();
-                // We measure again just in case.
-                clip = await this.#nonEmptyVisibleBoundingBox();
-            }
-            const [pageLeft, pageTop] = await this.evaluate(() => {
-                if (!window.visualViewport) {
-                    throw new Error('window.visualViewport is not supported.');
+            const env_6 = { stack: [], error: void 0, hasError: false };
+            try {
+                const { scrollIntoView = true } = options;
+                let clip = await this.#nonEmptyVisibleBoundingBox();
+                const page = this.frame.page();
+                // If the element is larger than the viewport, `captureBeyondViewport` will
+                // _not_ affect element rendering, so we need to adjust the viewport to
+                // properly render the element.
+                const viewport = page.viewport() ?? {
+                    width: clip.width,
+                    height: clip.height,
+                };
+                const stack = __addDisposableResource(env_6, new disposable_js_1.AsyncDisposableStack(), true);
+                if (clip.width > viewport.width || clip.height > viewport.height) {
+                    await this.frame.page().setViewport({
+                        ...viewport,
+                        width: Math.max(viewport.width, Math.ceil(clip.width)),
+                        height: Math.max(viewport.height, Math.ceil(clip.height)),
+                    });
+                    stack.defer(async () => {
+                        try {
+                            await this.frame.page().setViewport(viewport);
+                        }
+                        catch (error) {
+                            (0, util_js_1.debugError)(error);
+                        }
+                    });
                 }
-                return [
-                    window.visualViewport.pageLeft,
-                    window.visualViewport.pageTop,
-                ];
-            });
-            clip.x += pageLeft;
-            clip.y += pageTop;
-            return await page.screenshot({ ...options, clip });
+                // Only scroll the element into view if the user wants it.
+                if (scrollIntoView) {
+                    await this.scrollIntoViewIfNeeded();
+                    // We measure again just in case.
+                    clip = await this.#nonEmptyVisibleBoundingBox();
+                }
+                const [pageLeft, pageTop] = await this.evaluate(() => {
+                    if (!window.visualViewport) {
+                        throw new Error('window.visualViewport is not supported.');
+                    }
+                    return [
+                        window.visualViewport.pageLeft,
+                        window.visualViewport.pageTop,
+                    ];
+                });
+                clip.x += pageLeft;
+                clip.y += pageTop;
+                return await page.screenshot({ ...options, clip });
+            }
+            catch (e_6) {
+                env_6.error = e_6;
+                env_6.hasError = true;
+            }
+            finally {
+                const result_1 = __disposeResources(env_6);
+                if (result_1)
+                    await result_1;
+            }
         }
         async #nonEmptyVisibleBoundingBox() {
             const box = await this.boundingBox();
@@ -1245,12 +1282,12 @@ let ElementHandle = (() => {
          * (full intersection). Defaults to 1.
          */
         async isIntersectingViewport(options = {}) {
-            const env_6 = { stack: [], error: void 0, hasError: false };
+            const env_7 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
                 // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
-                const target = __addDisposableResource(env_6, handle && (await handle.#getOwnerSVGElement()), false);
+                const target = __addDisposableResource(env_7, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {
                     const visibleRatio = await new Promise(resolve => {
                         const observer = new IntersectionObserver(entries => {
@@ -1262,12 +1299,12 @@ let ElementHandle = (() => {
                     return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
                 }, options.threshold ?? 0);
             }
-            catch (e_6) {
-                env_6.error = e_6;
-                env_6.hasError = true;
+            catch (e_7) {
+                env_7.error = e_7;
+                env_7.hasError = true;
             }
             finally {
-                __disposeResources(env_6);
+                __disposeResources(env_7);
             }
         }
         /**

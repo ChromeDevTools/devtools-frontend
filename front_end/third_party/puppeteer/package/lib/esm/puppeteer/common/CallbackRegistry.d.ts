@@ -17,6 +17,10 @@ export declare class CallbackRegistry {
     _reject(callback: Callback, errorMessage: string | ProtocolError, originalMessage?: string): void;
     resolve(id: number, value: unknown): void;
     clear(): void;
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors(): Error[];
 }
 /**
  * @internal

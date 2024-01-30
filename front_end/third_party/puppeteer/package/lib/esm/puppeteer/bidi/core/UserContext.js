@@ -50,15 +50,16 @@ let UserContext = (() => {
     let _instanceExtraInitializers = [];
     let _dispose_decorators;
     let _createBrowsingContext_decorators;
-    let _close_decorators;
+    let _remove_decorators;
     return class UserContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createBrowsingContext_decorators, { kind: "method", name: "createBrowsingContext", static: false, private: false, access: { has: obj => "createBrowsingContext" in obj, get: obj => obj.createBrowsingContext }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, null, _close_decorators, { kind: "method", name: "close", static: false, private: false, access: { has: obj => "close" in obj, get: obj => obj.close }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _remove_decorators, { kind: "method", name: "remove", static: false, private: false, access: { has: obj => "remove" in obj, get: obj => obj.remove }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
+        static DEFAULT = 'default';
         static create(browser, id) {
             const context = new UserContext(browser, id);
             context.#initialize();
@@ -69,8 +70,6 @@ let UserContext = (() => {
         // Note these are only top-level contexts.
         #browsingContexts = new Map();
         #disposables = new DisposableStack();
-        // @ts-expect-error -- TODO: This will be used once the WebDriver BiDi
-        // protocol supports it.
         #id;
         browser;
         // keep-sorted end
@@ -114,6 +113,9 @@ let UserContext = (() => {
         get disposed() {
             return this.closed;
         }
+        get id() {
+            return this.#id;
+        }
         // keep-sorted end
         dispose(reason) {
             this.#reason = reason;
@@ -130,13 +132,9 @@ let UserContext = (() => {
             // We use an array to avoid the promise from being awaited.
             return browsingContext;
         }
-        async close() {
+        async remove() {
             try {
-                const promises = [];
-                for (const browsingContext of this.#browsingContexts.values()) {
-                    promises.push(browsingContext.close());
-                }
-                await Promise.all(promises);
+                // TODO: Call `removeUserContext` once available.
             }
             finally {
                 this.dispose('User context already closed.');
@@ -145,7 +143,7 @@ let UserContext = (() => {
         [(_dispose_decorators = [inertIfDisposed], _createBrowsingContext_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
-            })], _close_decorators = [throwIfDisposed(context => {
+            })], _remove_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], disposeSymbol)]() {

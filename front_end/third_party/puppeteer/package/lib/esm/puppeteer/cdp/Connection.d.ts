@@ -63,6 +63,10 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
      * @returns The CDP session that is created
      */
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors(): Error[];
 }
 /**
  * @internal

@@ -53,9 +53,8 @@ export class BidiBrowser extends Browser {
     #closeCallback;
     #browserCore;
     #defaultViewport;
-    #defaultContext;
     #targets = new Map();
-    #contexts = [];
+    #browserContexts = new WeakMap();
     #browserTarget;
     #connectionEventHandlers = new Map([
         ['browsingContext.contextCreated', this.#onContextCreated.bind(this)],
@@ -70,18 +69,14 @@ export class BidiBrowser extends Browser {
         this.#closeCallback = opts.closeCallback;
         this.#browserCore = browserCore;
         this.#defaultViewport = opts.defaultViewport;
-        this.#defaultContext = new BidiBrowserContext(this, {
-            defaultViewport: this.#defaultViewport,
-            isDefault: true,
-        });
-        this.#browserTarget = new BiDiBrowserTarget(this.#defaultContext);
-        this.#contexts.push(this.#defaultContext);
+        this.#browserTarget = new BiDiBrowserTarget(this);
+        this.#createBrowserContext(this.#browserCore.defaultUserContext);
     }
     #initialize() {
         this.#browserCore.once('disconnected', () => {
             this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
         });
-        this.#process?.once('close', async () => {
+        this.#process?.once('close', () => {
             this.#browserCore.dispose('Browser process exited.', true);
             this.connection.dispose();
         });
@@ -97,6 +92,13 @@ export class BidiBrowser extends Browser {
     }
     userAgent() {
         throw new UnsupportedOperation();
+    }
+    #createBrowserContext(userContext) {
+        const browserContext = new BidiBrowserContext(this, userContext, {
+            defaultViewport: this.#defaultViewport,
+        });
+        this.#browserContexts.set(userContext, browserContext);
+        return browserContext;
     }
     #onContextDomLoaded(event) {
         const target = this.#targets.get(event.context);
@@ -184,37 +186,22 @@ export class BidiBrowser extends Browser {
         return this.#process ?? null;
     }
     async createIncognitoBrowserContext(_options) {
-        // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        const context = new BidiBrowserContext(this, {
-            defaultViewport: this.#defaultViewport,
-            isDefault: false,
-        });
-        this.#contexts.push(context);
-        return context;
+        const userContext = await this.#browserCore.createUserContext();
+        return this.#createBrowserContext(userContext);
     }
     async version() {
         return `${this.#browserName}/${this.#browserVersion}`;
     }
     browserContexts() {
-        // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        return this.#contexts;
-    }
-    async _closeContext(browserContext) {
-        this.#contexts = this.#contexts.filter(c => {
-            return c !== browserContext;
+        return [...this.#browserCore.userContexts].map(context => {
+            return this.#browserContexts.get(context);
         });
-        for (const target of browserContext.targets()) {
-            const page = await target?.page();
-            await page?.close().catch(error => {
-                debugError(error);
-            });
-        }
     }
     defaultBrowserContext() {
-        return this.#defaultContext;
+        return this.#browserContexts.get(this.#browserCore.defaultUserContext);
     }
     newPage() {
-        return this.#defaultContext.newPage();
+        return this.defaultBrowserContext().newPage();
     }
     targets() {
         return [this.#browserTarget, ...Array.from(this.#targets.values())];
@@ -240,6 +227,11 @@ export class BidiBrowser extends Browser {
         finally {
             this.connection.dispose();
         }
+    }
+    get debugInfo() {
+        return {
+            pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
+        };
     }
 }
 //# sourceMappingURL=Browser.js.map

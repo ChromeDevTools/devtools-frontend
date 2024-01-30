@@ -5,6 +5,7 @@
  */
 /// <reference types="node" />
 import type { ChildProcess } from 'child_process';
+import type { DebugInfo } from '../api/Browser.js';
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type Permission, type TargetFilterCallback, type WaitForTargetOptions } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import type { Page } from '../api/Page.js';
@@ -40,6 +41,7 @@ export declare class CdpBrowser extends BrowserBase {
     close(): Promise<void>;
     disconnect(): Promise<void>;
     get connected(): boolean;
+    get debugInfo(): DebugInfo;
 }
 /**
  * @internal

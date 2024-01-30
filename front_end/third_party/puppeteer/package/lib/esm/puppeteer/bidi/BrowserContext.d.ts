@@ -10,20 +10,20 @@ import type { Target } from '../api/Target.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { BidiBrowser } from './Browser.js';
 import type { BidiConnection } from './Connection.js';
+import { UserContext } from './core/UserContext.js';
 import type { BidiPage } from './Page.js';
 /**
  * @internal
  */
 export interface BidiBrowserContextOptions {
     defaultViewport: Viewport | null;
-    isDefault: boolean;
 }
 /**
  * @internal
  */
 export declare class BidiBrowserContext extends BrowserContext {
     #private;
-    constructor(browser: BidiBrowser, options: BidiBrowserContextOptions);
+    constructor(browser: BidiBrowser, userContext: UserContext, options: BidiBrowserContextOptions);
     targets(): Target[];
     waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     get connection(): BidiConnection;

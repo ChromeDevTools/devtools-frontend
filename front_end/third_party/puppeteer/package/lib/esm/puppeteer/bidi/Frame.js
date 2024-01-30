@@ -38,10 +38,10 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { first, firstValueFrom, forkJoin, from, map, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { first, firstValueFrom, forkJoin, from, map, merge, raceWith, zip, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { fromEmitterEvent, timeout, UTILITY_WORLD_NAME } from '../common/util.js';
+import { fromEmitterEvent, NETWORK_IDLE_TIME, timeout, UTILITY_WORLD_NAME, } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { ExposeableFunction } from './ExposedFunction.js';
@@ -111,28 +111,42 @@ let BidiFrame = (() => {
         async goto(url, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-            const response = await firstValueFrom(this.#page
-                ._waitWithNetworkIdle(this.#context.connection.send('browsingContext.navigate', {
+            const result$ = zip(from(this.#context.connection.send('browsingContext.navigate', {
                 context: this.#context.id,
                 url,
                 wait: readiness,
-            }), networkIdle)
-                .pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())))
-                .pipe(rewriteNavigationError(url, ms)));
-            return this.#page.getNavigationResponse(response?.result.navigation);
+            })), ...(networkIdle !== null
+                ? [
+                    this.#page.waitForNetworkIdle$({
+                        timeout: ms,
+                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
+                        idleTime: NETWORK_IDLE_TIME,
+                    }),
+                ]
+                : [])).pipe(map(([{ result }]) => {
+                return result;
+            }), raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())), rewriteNavigationError(url, ms));
+            const result = await firstValueFrom(result$);
+            return this.#page.getNavigationResponse(result.navigation);
         }
         async setContent(html, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
-            await firstValueFrom(this.#page
-                ._waitWithNetworkIdle(forkJoin([
+            const result$ = zip(forkJoin([
                 fromEmitterEvent(this.#context, waitEvent).pipe(first()),
                 from(this.setFrameContent(html)),
             ]).pipe(map(() => {
                 return null;
-            })), networkIdle)
-                .pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())))
-                .pipe(rewriteNavigationError('setContent', ms)));
+            })), ...(networkIdle !== null
+                ? [
+                    this.#page.waitForNetworkIdle$({
+                        timeout: ms,
+                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
+                        idleTime: NETWORK_IDLE_TIME,
+                    }),
+                ]
+                : [])).pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())), rewriteNavigationError('setContent', ms));
+            await firstValueFrom(result$);
         }
         context() {
             return this.#context;
@@ -140,7 +154,7 @@ let BidiFrame = (() => {
         async waitForNavigation(options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitUntilEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
-            const navigatedObservable = merge(forkJoin([
+            const navigation$ = merge(forkJoin([
                 fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe(first()),
                 fromEmitterEvent(this.#context, waitUntilEvent).pipe(first()),
             ]), fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe(map(result => {
@@ -149,10 +163,19 @@ let BidiFrame = (() => {
                 }
                 return { result };
             }));
-            const response = await firstValueFrom(this.#page
-                ._waitWithNetworkIdle(navigatedObservable, networkIdle)
-                .pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow()))));
-            return this.#page.getNavigationResponse(response?.result.navigation);
+            const result$ = zip(navigation$, ...(networkIdle !== null
+                ? [
+                    this.#page.waitForNetworkIdle$({
+                        timeout: ms,
+                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
+                        idleTime: NETWORK_IDLE_TIME,
+                    }),
+                ]
+                : [])).pipe(map(([{ result }]) => {
+                return result;
+            }), raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())));
+            const result = await firstValueFrom(result$);
+            return this.#page.getNavigationResponse(result.navigation);
         }
         waitForDevicePrompt() {
             throw new UnsupportedOperation();

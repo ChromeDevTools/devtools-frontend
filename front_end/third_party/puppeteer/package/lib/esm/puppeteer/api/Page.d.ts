@@ -10,11 +10,10 @@ import type { Protocol } from 'devtools-protocol';
 import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
-import type { BidiNetworkManager } from '../bidi/NetworkManager.js';
 import type { Accessibility } from '../cdp/Accessibility.js';
 import type { Coverage } from '../cdp/Coverage.js';
 import type { DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
-import type { NetworkManager as CdpNetworkManager, Credentials, NetworkConditions } from '../cdp/NetworkManager.js';
+import type { Credentials, NetworkConditions } from '../cdp/NetworkManager.js';
 import type { Tracing } from '../cdp/Tracing.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Device } from '../common/Device.js';
@@ -22,7 +21,7 @@ import { EventEmitter, type EventsWithWildcard, type EventType } from '../common
 import type { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
+import type { Awaitable, AwaitablePredicate, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { ScreenRecorder } from '../node/ScreenRecorder.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
@@ -54,6 +53,23 @@ export interface Metrics {
     TaskDuration?: number;
     JSHeapUsedSize?: number;
     JSHeapTotalSize?: number;
+}
+/**
+ * @public
+ */
+export interface WaitForNetworkIdleOptions extends WaitTimeoutOptions {
+    /**
+     * Time (in milliseconds) the network should be idle.
+     *
+     * @defaultValue `500`
+     */
+    idleTime?: number;
+    /**
+     * Maximum number concurrent of network connections to be considered inactive.
+     *
+     * @defaultValue `0`
+     */
+    concurrency?: number;
 }
 /**
  * @public
@@ -1331,9 +1347,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   `0` to disable the timeout. The default value can be changed by using the
      *   {@link Page.setDefaultTimeout} method.
      */
-    abstract waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPRequest>;
+    waitForRequest(urlOrPredicate: string | AwaitablePredicate<HTTPRequest>, options?: WaitTimeoutOptions): Promise<HTTPRequest>;
     /**
      * @param urlOrPredicate - A URL or predicate to wait for.
      * @param options - Optional waiting parameters
@@ -1361,21 +1375,18 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   pass `0` to disable the timeout. The default value can be changed by using
      *   the {@link Page.setDefaultTimeout} method.
      */
-    abstract waitForResponse(urlOrPredicate: string | ((res: HTTPResponse) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPResponse>;
+    waitForResponse(urlOrPredicate: string | AwaitablePredicate<HTTPResponse>, options?: WaitTimeoutOptions): Promise<HTTPResponse>;
     /**
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when network is idle
+     * Waits for the network to be idle.
+     *
+     * @param options - Options to configure waiting behavior.
+     * @returns A promise which resolves once the network is idle.
      */
-    abstract waitForNetworkIdle(options?: {
-        idleTime?: number;
-        timeout?: number;
-    }): Promise<void>;
+    waitForNetworkIdle(options?: WaitForNetworkIdleOptions): Promise<void>;
     /**
      * @internal
      */
-    _waitForNetworkIdle(networkManager: BidiNetworkManager | CdpNetworkManager, idleTime: number, requestsInFlight?: number): Observable<void>;
+    waitForNetworkIdle$(options?: WaitForNetworkIdleOptions): Observable<void>;
     /**
      * Waits for a frame matching the given conditions to appear.
      *

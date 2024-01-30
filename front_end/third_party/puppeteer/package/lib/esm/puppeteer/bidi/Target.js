@@ -38,12 +38,32 @@ export class BidiTarget extends Target {
 /**
  * @internal
  */
-export class BiDiBrowserTarget extends BidiTarget {
+export class BiDiBrowserTarget extends Target {
+    #browser;
+    constructor(browser) {
+        super();
+        this.#browser = browser;
+    }
     url() {
         return '';
     }
     type() {
         return TargetType.BROWSER;
+    }
+    asPage() {
+        throw new UnsupportedOperation();
+    }
+    browser() {
+        return this.#browser;
+    }
+    browserContext() {
+        return this.#browser.defaultBrowserContext();
+    }
+    opener() {
+        throw new UnsupportedOperation();
+    }
+    createCDPSession() {
+        throw new UnsupportedOperation();
     }
 }
 /**

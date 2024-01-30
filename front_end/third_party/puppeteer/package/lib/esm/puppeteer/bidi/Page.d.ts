@@ -6,9 +6,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import type { Readable } from 'stream';
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
-import type { Observable, ObservableInput } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
@@ -24,11 +22,9 @@ import type { BidiBrowserContext } from './BrowserContext.js';
 import { type BrowsingContext } from './BrowsingContext.js';
 import type { BidiConnection } from './Connection.js';
 import { BidiFrame } from './Frame.js';
-import type { BidiHTTPRequest } from './HTTPRequest.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
-import type { BiDiNetworkIdle } from './lifecycle.js';
 import type { BiDiPageTarget } from './Target.js';
 /**
  * @internal
@@ -87,22 +83,6 @@ export declare class BidiPage extends Page {
     pdf(options?: PDFOptions): Promise<Buffer>;
     createPDFStream(options?: PDFOptions | undefined): Promise<Readable>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
-    waitForRequest(urlOrPredicate: string | ((req: BidiHTTPRequest) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<BidiHTTPRequest>;
-    waitForResponse(urlOrPredicate: string | ((res: BidiHTTPResponse) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<BidiHTTPResponse>;
-    waitForNetworkIdle(options?: {
-        idleTime?: number;
-        timeout?: number;
-    }): Promise<void>;
-    /** @internal */
-    _waitWithNetworkIdle(observableInput: ObservableInput<{
-        result: Bidi.BrowsingContext.NavigateResult;
-    } | null>, networkIdle: BiDiNetworkIdle): Observable<{
-        result: Bidi.BrowsingContext.NavigateResult;
-    } | null>;
     createCDPSession(): Promise<CDPSession>;
     bringToFront(): Promise<void>;
     evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;

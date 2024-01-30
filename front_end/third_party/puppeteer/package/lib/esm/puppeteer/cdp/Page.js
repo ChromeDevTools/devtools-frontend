@@ -55,7 +55,7 @@ import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
+import { debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
@@ -682,18 +682,6 @@ export class CdpPage extends Page {
     }
     async createCDPSession() {
         return await this.target().createCDPSession();
-    }
-    async waitForRequest(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#frameManager.networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#sessionCloseDeferred);
-    }
-    async waitForResponse(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#frameManager.networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#sessionCloseDeferred);
-    }
-    async waitForNetworkIdle(options = {}) {
-        const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
-        await firstValueFrom(this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#sessionCloseDeferred.valueOrThrow()))));
     }
     async goBack(options = {}) {
         return await this.#go(-1, options);

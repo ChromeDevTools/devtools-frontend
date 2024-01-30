@@ -11,9 +11,7 @@ import type FS from 'fs/promises';
 import type { Readable } from 'stream';
 import { Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
-import type { Deferred } from '../util/Deferred.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
-import type { NetworkManagerEvents } from './NetworkManagerEvents.js';
 import type { ParsedPDFOptions, PDFOptions } from './PDFOptions.js';
 /**
  * @internal
@@ -103,14 +101,6 @@ export declare const SOURCE_URL_REGEX: RegExp;
  * @internal
  */
 export declare function getSourceUrlComment(url: string): string;
-/**
- * @internal
- */
-export declare function waitForHTTP<T extends {
-    url(): string;
-}>(networkManager: EventEmitter<NetworkManagerEvents>, eventName: EventType, urlOrPredicate: string | ((res: T) => boolean | Promise<boolean>), 
-/** Time after the function will timeout */
-ms: number, cancelation: Deferred<never>): Promise<T>;
 /**
  * @internal
  */

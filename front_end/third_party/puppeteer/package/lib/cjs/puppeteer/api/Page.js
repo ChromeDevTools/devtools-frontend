@@ -111,7 +111,6 @@ exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = 
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
-const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -198,11 +197,27 @@ let Page = (() => {
          */
         _timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
         #requestHandlers = new WeakMap();
+        #requestsInFlight = 0;
+        #inflight$;
         /**
          * @internal
          */
         constructor() {
             super();
+            this.#inflight$ = (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */).pipe((0, rxjs_js_1.takeUntil)((0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */)), (0, rxjs_js_1.mergeMap)(request => {
+                return (0, rxjs_js_1.concat)((0, rxjs_js_1.of)(1), (0, rxjs_js_1.race)((0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.filter)(response => {
+                    return response.request()._requestId === request._requestId;
+                })), (0, util_js_1.fromEmitterEvent)(this, "requestfailed" /* PageEvent.RequestFailed */).pipe((0, rxjs_js_1.filter)(failure => {
+                    return failure._requestId === request._requestId;
+                })), (0, util_js_1.fromEmitterEvent)(this, "requestfinished" /* PageEvent.RequestFinished */).pipe((0, rxjs_js_1.filter)(success => {
+                    return success._requestId === request._requestId;
+                }))).pipe((0, rxjs_js_1.map)(() => {
+                    return -1;
+                })));
+            }));
+            this.#inflight$.subscribe(count => {
+                this.#requestsInFlight += count;
+            });
         }
         /**
          * Listen to page events.
@@ -621,14 +636,105 @@ let Page = (() => {
             return await this.mainFrame().waitForNavigation(options);
         }
         /**
+         * @param urlOrPredicate - A URL or predicate to wait for
+         * @param options - Optional waiting parameters
+         * @returns Promise which resolves to the matched request
+         * @example
+         *
+         * ```ts
+         * const firstRequest = await page.waitForRequest(
+         *   'https://example.com/resource'
+         * );
+         * const finalRequest = await page.waitForRequest(
+         *   request => request.url() === 'https://example.com'
+         * );
+         * return finalRequest.response()?.ok();
+         * ```
+         *
+         * @remarks
+         * Optional Waiting Parameters have:
+         *
+         * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
+         *   `0` to disable the timeout. The default value can be changed by using the
+         *   {@link Page.setDefaultTimeout} method.
+         */
+        waitForRequest(urlOrPredicate, options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            if (typeof urlOrPredicate === 'string') {
+                const url = urlOrPredicate;
+                urlOrPredicate = (request) => {
+                    return request.url() === url;
+                };
+            }
+            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+                throw new Errors_js_1.TargetCloseError('Page closed!');
+            }))));
+            return (0, rxjs_js_1.firstValueFrom)(observable$);
+        }
+        /**
+         * @param urlOrPredicate - A URL or predicate to wait for.
+         * @param options - Optional waiting parameters
+         * @returns Promise which resolves to the matched response.
+         * @example
+         *
+         * ```ts
+         * const firstResponse = await page.waitForResponse(
+         *   'https://example.com/resource'
+         * );
+         * const finalResponse = await page.waitForResponse(
+         *   response =>
+         *     response.url() === 'https://example.com' && response.status() === 200
+         * );
+         * const finalResponse = await page.waitForResponse(async response => {
+         *   return (await response.text()).includes('<html>');
+         * });
+         * return finalResponse.ok();
+         * ```
+         *
+         * @remarks
+         * Optional Parameter have:
+         *
+         * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+         *   pass `0` to disable the timeout. The default value can be changed by using
+         *   the {@link Page.setDefaultTimeout} method.
+         */
+        waitForResponse(urlOrPredicate, options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            if (typeof urlOrPredicate === 'string') {
+                const url = urlOrPredicate;
+                urlOrPredicate = (response) => {
+                    return response.url() === url;
+                };
+            }
+            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+                throw new Errors_js_1.TargetCloseError('Page closed!');
+            }))));
+            return (0, rxjs_js_1.firstValueFrom)(observable$);
+        }
+        /**
+         * Waits for the network to be idle.
+         *
+         * @param options - Options to configure waiting behavior.
+         * @returns A promise which resolves once the network is idle.
+         */
+        waitForNetworkIdle(options = {}) {
+            return (0, rxjs_js_1.firstValueFrom)(this.waitForNetworkIdle$(options));
+        }
+        /**
          * @internal
          */
-        _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
-            return (0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, util_js_1.fromEmitterEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(undefined), (0, rxjs_js_1.filter)(() => {
-                return networkManager.inFlightRequestsCount() <= requestsInFlight;
-            }), (0, rxjs_js_1.switchMap)(() => {
-                return (0, rxjs_js_1.of)(undefined).pipe((0, rxjs_js_1.delay)(idleTime));
-            }));
+        waitForNetworkIdle$(options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout(), idleTime = util_js_1.NETWORK_IDLE_TIME, concurrency = 0, } = options;
+            return this.#inflight$.pipe((0, rxjs_js_1.startWith)(this.#requestsInFlight), (0, rxjs_js_1.switchMap)(() => {
+                if (this.#requestsInFlight > concurrency) {
+                    return rxjs_js_1.EMPTY;
+                }
+                else {
+                    return (0, rxjs_js_1.timer)(idleTime);
+                }
+            }), (0, rxjs_js_1.map)(() => { }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+                throw new Errors_js_1.TargetCloseError('Page closed!');
+            }))));
         }
         /**
          * Waits for a frame matching the given conditions to appear.

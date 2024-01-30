@@ -42,11 +42,9 @@ import {
   evaluationString,
   getReadableAsBuffer,
   getReadableFromProtocolStream,
-  NETWORK_IDLE_TIME,
   parsePDFOptions,
   timeout,
   validateDialogType,
-  waitForHTTP,
 } from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {assert} from '../util/assert.js';
@@ -908,54 +906,6 @@ export class CdpPage extends Page {
 
   override async createCDPSession(): Promise<CDPSession> {
     return await this.target().createCDPSession();
-  }
-
-  override async waitForRequest(
-    urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>),
-    options: {timeout?: number} = {}
-  ): Promise<HTTPRequest> {
-    const {timeout = this._timeoutSettings.timeout()} = options;
-    return await waitForHTTP(
-      this.#frameManager.networkManager,
-      NetworkManagerEvent.Request,
-      urlOrPredicate,
-      timeout,
-      this.#sessionCloseDeferred
-    );
-  }
-
-  override async waitForResponse(
-    urlOrPredicate:
-      | string
-      | ((res: HTTPResponse) => boolean | Promise<boolean>),
-    options: {timeout?: number} = {}
-  ): Promise<HTTPResponse> {
-    const {timeout = this._timeoutSettings.timeout()} = options;
-    return await waitForHTTP(
-      this.#frameManager.networkManager,
-      NetworkManagerEvent.Response,
-      urlOrPredicate,
-      timeout,
-      this.#sessionCloseDeferred
-    );
-  }
-
-  override async waitForNetworkIdle(
-    options: {idleTime?: number; timeout?: number} = {}
-  ): Promise<void> {
-    const {
-      idleTime = NETWORK_IDLE_TIME,
-      timeout: ms = this._timeoutSettings.timeout(),
-    } = options;
-
-    await firstValueFrom(
-      this._waitForNetworkIdle(
-        this.#frameManager.networkManager,
-        idleTime
-      ).pipe(
-        raceWith(timeout(ms), from(this.#sessionCloseDeferred.valueOrThrow()))
-      )
-    );
   }
 
   override async goBack(

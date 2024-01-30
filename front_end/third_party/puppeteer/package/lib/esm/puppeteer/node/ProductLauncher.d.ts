@@ -104,6 +104,6 @@ export declare abstract class ProductLauncher {
     /**
      * @internal
      */
-    protected resolveExecutablePath(): string;
+    protected resolveExecutablePath(headless?: boolean | 'new'): string;
 }
 //# sourceMappingURL=ProductLauncher.d.ts.map

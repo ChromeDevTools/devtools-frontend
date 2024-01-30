@@ -191,6 +191,17 @@ export class Connection extends EventEmitter {
     async createSession(targetInfo) {
         return await this._createSession(targetInfo, false);
     }
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors() {
+        const result = [];
+        result.push(...this.#callbacks.getPendingProtocolErrors());
+        for (const session of this.#sessions.values()) {
+            result.push(...session.getPendingProtocolErrors());
+        }
+        return result;
+    }
 }
 /**
  * @internal

@@ -232,6 +232,11 @@ export class CdpBrowser extends BrowserBase {
     #getVersion() {
         return this.#connection.send('Browser.getVersion');
     }
+    get debugInfo() {
+        return {
+            pendingProtocolErrors: this.#connection.getPendingProtocolErrors(),
+        };
+    }
 }
 /**
  * @internal

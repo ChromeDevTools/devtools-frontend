@@ -56,9 +56,8 @@ class BidiBrowser extends Browser_js_1.Browser {
     #closeCallback;
     #browserCore;
     #defaultViewport;
-    #defaultContext;
     #targets = new Map();
-    #contexts = [];
+    #browserContexts = new WeakMap();
     #browserTarget;
     #connectionEventHandlers = new Map([
         ['browsingContext.contextCreated', this.#onContextCreated.bind(this)],
@@ -73,18 +72,14 @@ class BidiBrowser extends Browser_js_1.Browser {
         this.#closeCallback = opts.closeCallback;
         this.#browserCore = browserCore;
         this.#defaultViewport = opts.defaultViewport;
-        this.#defaultContext = new BrowserContext_js_1.BidiBrowserContext(this, {
-            defaultViewport: this.#defaultViewport,
-            isDefault: true,
-        });
-        this.#browserTarget = new Target_js_1.BiDiBrowserTarget(this.#defaultContext);
-        this.#contexts.push(this.#defaultContext);
+        this.#browserTarget = new Target_js_1.BiDiBrowserTarget(this);
+        this.#createBrowserContext(this.#browserCore.defaultUserContext);
     }
     #initialize() {
         this.#browserCore.once('disconnected', () => {
             this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
         });
-        this.#process?.once('close', async () => {
+        this.#process?.once('close', () => {
             this.#browserCore.dispose('Browser process exited.', true);
             this.connection.dispose();
         });
@@ -100,6 +95,13 @@ class BidiBrowser extends Browser_js_1.Browser {
     }
     userAgent() {
         throw new Errors_js_1.UnsupportedOperation();
+    }
+    #createBrowserContext(userContext) {
+        const browserContext = new BrowserContext_js_1.BidiBrowserContext(this, userContext, {
+            defaultViewport: this.#defaultViewport,
+        });
+        this.#browserContexts.set(userContext, browserContext);
+        return browserContext;
     }
     #onContextDomLoaded(event) {
         const target = this.#targets.get(event.context);
@@ -187,37 +189,22 @@ class BidiBrowser extends Browser_js_1.Browser {
         return this.#process ?? null;
     }
     async createIncognitoBrowserContext(_options) {
-        // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        const context = new BrowserContext_js_1.BidiBrowserContext(this, {
-            defaultViewport: this.#defaultViewport,
-            isDefault: false,
-        });
-        this.#contexts.push(context);
-        return context;
+        const userContext = await this.#browserCore.createUserContext();
+        return this.#createBrowserContext(userContext);
     }
     async version() {
         return `${this.#browserName}/${this.#browserVersion}`;
     }
     browserContexts() {
-        // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        return this.#contexts;
-    }
-    async _closeContext(browserContext) {
-        this.#contexts = this.#contexts.filter(c => {
-            return c !== browserContext;
+        return [...this.#browserCore.userContexts].map(context => {
+            return this.#browserContexts.get(context);
         });
-        for (const target of browserContext.targets()) {
-            const page = await target?.page();
-            await page?.close().catch(error => {
-                (0, util_js_1.debugError)(error);
-            });
-        }
     }
     defaultBrowserContext() {
-        return this.#defaultContext;
+        return this.#browserContexts.get(this.#browserCore.defaultUserContext);
     }
     newPage() {
-        return this.#defaultContext.newPage();
+        return this.defaultBrowserContext().newPage();
     }
     targets() {
         return [this.#browserTarget, ...Array.from(this.#targets.values())];
@@ -243,6 +230,11 @@ class BidiBrowser extends Browser_js_1.Browser {
         finally {
             this.connection.dispose();
         }
+    }
+    get debugInfo() {
+        return {
+            pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
+        };
     }
 }
 exports.BidiBrowser = BidiBrowser;

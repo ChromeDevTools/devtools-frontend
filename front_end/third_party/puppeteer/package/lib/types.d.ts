@@ -92,8 +92,6 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /* Excluded from this release type: addPageBinding */
 
-/* Excluded from this release type: AddPreloadScriptOptions */
-
 /* Excluded from this release type: ARIAQueryHandler */
 
 /* Excluded from this release type: assert */
@@ -132,55 +130,14 @@ export declare type AwaitableIterable<T> = Iterable<T> | AsyncIterable<T>;
 /**
  * @public
  */
+export declare type AwaitablePredicate<T> = (value: T) => Awaitable<boolean>;
+
+/**
+ * @public
+ */
 export declare type AwaitedLocator<T> = T extends Locator<infer S> ? S : never;
 
 declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
-
-/* Excluded from this release type: BidiBrowser */
-
-/* Excluded from this release type: BidiBrowserContext */
-
-/* Excluded from this release type: BidiBrowserContextOptions */
-
-/* Excluded from this release type: BidiBrowserOptions */
-
-/* Excluded from this release type: BiDiBrowsingContextTarget */
-
-/* Excluded from this release type: BidiConnection */
-
-/* Excluded from this release type: BidiEvents */
-
-/* Excluded from this release type: BidiFrame */
-
-/* Excluded from this release type: BidiHTTPRequest */
-
-/* Excluded from this release type: BidiHTTPResponse */
-
-/* Excluded from this release type: BidiJSHandle */
-
-/* Excluded from this release type: BidiKeyboard */
-
-/* Excluded from this release type: BidiMouse */
-
-/* Excluded from this release type: BidiMouseClickOptions */
-
-/* Excluded from this release type: BidiMouseMoveOptions */
-
-/* Excluded from this release type: BiDiNetworkIdle */
-
-/* Excluded from this release type: BidiNetworkManager */
-
-/* Excluded from this release type: BidiPage */
-
-/* Excluded from this release type: BiDiPageTarget */
-
-/* Excluded from this release type: BidiRealm */
-
-/* Excluded from this release type: BidiTarget */
-
-/* Excluded from this release type: BidiTouchMoveOptions */
-
-/* Excluded from this release type: BidiTouchscreen */
 
 /* Excluded from this release type: Binding */
 
@@ -398,9 +355,18 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
     /* Excluded from this release type: [disposeSymbol] */
     /* Excluded from this release type: [asyncDisposeSymbol] */
     /* Excluded from this release type: protocol */
+    /**
+     * Get debug information from Puppeteer.
+     *
+     * @remarks
+     *
+     * Currently, includes pending protocol calls. In the future, we might add more info.
+     *
+     * @public
+     * @experimental
+     */
+    abstract get debugInfo(): DebugInfo;
 }
-
-/* Excluded from this release type: Browser_2 */
 
 /* Excluded from this release type: BrowserCloseCallback */
 
@@ -727,17 +693,9 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: BrowserWebSocketTransport */
 
-/* Excluded from this release type: BrowsingContext */
-
-/* Excluded from this release type: BrowsingContext_2 */
-
 /* Excluded from this release type: Callback */
 
 /* Excluded from this release type: CallbackRegistry */
-
-/* Excluded from this release type: CallFunctionOptions */
-
-/* Excluded from this release type: CaptureScreenshotOptions */
 
 /* Excluded from this release type: CdpBrowser */
 
@@ -882,10 +840,6 @@ export declare interface CommandOptions {
     timeout: number;
 }
 
-/* Excluded from this release type: Commands */
-
-/* Excluded from this release type: Commands_2 */
-
 /**
  * @public
  */
@@ -985,6 +939,18 @@ export declare interface Configuration {
      */
     skipDownload?: boolean;
     /**
+     * Tells Puppeteer to not Chrome download during installation.
+     *
+     * Can be overridden by `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
+     */
+    skipChromeDownload?: boolean;
+    /**
+     * Tells Puppeteer to not chrome-headless-shell download during installation.
+     *
+     * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESSS_HELL_DOWNLOAD`.
+     */
+    skipChromeHeadlessShellDownload?: boolean;
+    /**
      * Tells Puppeteer to log at the given level.
      *
      * @defaultValue `warn`
@@ -1036,9 +1002,8 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
      * @returns The CDP session that is created
      */
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
+    /* Excluded from this release type: getPendingProtocolErrors */
 }
-
-/* Excluded from this release type: Connection_2 */
 
 /**
  * @license
@@ -1246,8 +1211,6 @@ export declare interface CoverageEntry {
     }>;
 }
 
-/* Excluded from this release type: CreateBrowsingContextOptions */
-
 /* Excluded from this release type: createCdpHandle */
 
 /* Excluded from this release type: createClientError */
@@ -1360,9 +1323,13 @@ declare const customQuerySelectors: CustomQuerySelectorRegistry;
 
 /* Excluded from this release type: debugError */
 
-/* Excluded from this release type: DedicatedWorkerOwnerRealm */
-
-/* Excluded from this release type: DedicatedWorkerRealm */
+/**
+ * @public
+ * @experimental
+ */
+export declare interface DebugInfo {
+    pendingProtocolErrors: Error[];
+}
 
 /**
  * The default cooperative request interception resolution priority
@@ -2081,8 +2048,6 @@ export declare type EvaluateFunc<T extends unknown[]> = (...params: InnerParams<
  * @public
  */
 export declare type EvaluateFuncWith<V, T extends unknown[]> = (...params: [V, ...InnerParams<T>]) => Awaitable<unknown>;
-
-/* Excluded from this release type: EvaluateOptions */
 
 /* Excluded from this release type: evaluationString */
 
@@ -2947,8 +2912,6 @@ export declare type HandleFor<T> = T extends Node ? ElementHandle<T> : JSHandle<
 
 /* Excluded from this release type: HandleMapper */
 
-/* Excluded from this release type: HandleOptions */
-
 /**
  * @public
  */
@@ -2960,8 +2923,6 @@ export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
  * @public
  */
 export declare type Handler<T = unknown> = (event: T) => void;
-
-/* Excluded from this release type: HandleUserPromptOptions */
 
 /* Excluded from this release type: headersArray */
 
@@ -4001,8 +3962,6 @@ export declare interface LocatorScrollOptions extends ActionOptions {
  */
 export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 
-/* Excluded from this release type: MAIN_SANDBOX */
-
 /* Excluded from this release type: MAIN_WORLD */
 
 /* Excluded from this release type: MappedLocator */
@@ -4291,10 +4250,6 @@ export declare interface Moveable {
 }
 
 /* Excluded from this release type: MutationPoller */
-
-/* Excluded from this release type: Navigation */
-
-/* Excluded from this release type: NavigationInfo */
 
 /* Excluded from this release type: NETWORK_IDLE_TIME */
 
@@ -5229,9 +5184,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   `0` to disable the timeout. The default value can be changed by using the
      *   {@link Page.setDefaultTimeout} method.
      */
-    abstract waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPRequest>;
+    waitForRequest(urlOrPredicate: string | AwaitablePredicate<HTTPRequest>, options?: WaitTimeoutOptions): Promise<HTTPRequest>;
     /**
      * @param urlOrPredicate - A URL or predicate to wait for.
      * @param options - Optional waiting parameters
@@ -5259,18 +5212,15 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   pass `0` to disable the timeout. The default value can be changed by using
      *   the {@link Page.setDefaultTimeout} method.
      */
-    abstract waitForResponse(urlOrPredicate: string | ((res: HTTPResponse) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPResponse>;
+    waitForResponse(urlOrPredicate: string | AwaitablePredicate<HTTPResponse>, options?: WaitTimeoutOptions): Promise<HTTPResponse>;
     /**
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when network is idle
+     * Waits for the network to be idle.
+     *
+     * @param options - Options to configure waiting behavior.
+     * @returns A promise which resolves once the network is idle.
      */
-    abstract waitForNetworkIdle(options?: {
-        idleTime?: number;
-        timeout?: number;
-    }): Promise<void>;
-    /* Excluded from this release type: _waitForNetworkIdle */
+    waitForNetworkIdle(options?: WaitForNetworkIdleOptions): Promise<void>;
+    /* Excluded from this release type: waitForNetworkIdle$ */
     /**
      * Waits for a frame matching the given conditions to appear.
      *
@@ -6512,8 +6462,6 @@ export declare const PredefinedNetworkConditions: Readonly<{
  */
 export declare type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
 
-/* Excluded from this release type: PrintOptions */
-
 /**
  * @license
  * Copyright 2020 Google Inc.
@@ -6655,8 +6603,6 @@ declare const puppeteer: PuppeteerNode;
 export default puppeteer;
 
 /* Excluded from this release type: PUPPETEER_REVISIONS */
-
-/* Excluded from this release type: PUPPETEER_SANDBOX */
 
 /* Excluded from this release type: PUPPETEER_WORLD */
 
@@ -6865,8 +6811,6 @@ export declare type Quad = [Point, Point, Point, Point];
 
 /* Excluded from this release type: Realm */
 
-/* Excluded from this release type: Realm_2 */
-
 /* Excluded from this release type: RedirectInfo */
 
 /**
@@ -6879,8 +6823,6 @@ export declare function registerCustomQueryHandler(name: string, handler: Custom
 
 /* Excluded from this release type: releaseObject */
 
-/* Excluded from this release type: ReloadOptions */
-
 /**
  * @public
  */
@@ -6890,8 +6832,6 @@ export declare interface RemoteAddress {
 }
 
 /* Excluded from this release type: removeMatchingFlags */
-
-/* Excluded from this release type: Request_2 */
 
 /* Excluded from this release type: ResolvedLaunchArgs */
 
@@ -6920,10 +6860,6 @@ export declare interface ResponseForRequest {
 /* Excluded from this release type: RETRY_DELAY */
 
 /* Excluded from this release type: rewriteError */
-
-/* Excluded from this release type: Sandbox */
-
-/* Excluded from this release type: SandboxChart */
 
 /**
  * @public
@@ -7164,15 +7100,9 @@ export declare interface SerializedAXNode {
     children?: SerializedAXNode[];
 }
 
-/* Excluded from this release type: Session */
-
 /* Excluded from this release type: setDefaultScreenshotOptions */
 
 /* Excluded from this release type: setLogCapture */
-
-/* Excluded from this release type: SetViewportOptions */
-
-/* Excluded from this release type: SharedWorkerRealm */
 
 /**
  * @public
@@ -7413,12 +7343,6 @@ export declare function unregisterCustomQueryHandler(name: string): void;
 export declare class UnsupportedOperation extends CustomError {
 }
 
-/* Excluded from this release type: UserContext */
-
-/* Excluded from this release type: UserPrompt */
-
-/* Excluded from this release type: UserPromptResult */
-
 /* Excluded from this release type: UTILITY_WORLD_NAME */
 
 /* Excluded from this release type: validateDialogType */
@@ -7480,7 +7404,23 @@ export declare interface Viewport {
  */
 export declare type VisibilityOption = 'hidden' | 'visible' | null;
 
-/* Excluded from this release type: waitForHTTP */
+/**
+ * @public
+ */
+export declare interface WaitForNetworkIdleOptions extends WaitTimeoutOptions {
+    /**
+     * Time (in milliseconds) the network should be idle.
+     *
+     * @defaultValue `500`
+     */
+    idleTime?: number;
+    /**
+     * Maximum number concurrent of network connections to be considered inactive.
+     *
+     * @defaultValue `0`
+     */
+    concurrency?: number;
+}
 
 /**
  * @public
@@ -7651,8 +7591,6 @@ export declare abstract class WebWorker extends EventEmitter<Record<EventType, u
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
 }
-
-/* Excluded from this release type: WindowRealm */
 
 /* Excluded from this release type: withSourcePuppeteerURLIfNone */
 

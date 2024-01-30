@@ -8,6 +8,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowserContext = void 0;
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const Errors_js_1 = require("../common/Errors.js");
+const util_js_1 = require("../common/util.js");
+const UserContext_js_1 = require("./core/UserContext.js");
 /**
  * @internal
  */
@@ -15,13 +17,13 @@ class BidiBrowserContext extends BrowserContext_js_1.BrowserContext {
     #browser;
     #connection;
     #defaultViewport;
-    #isDefault = false;
-    constructor(browser, options) {
+    #userContext;
+    constructor(browser, userContext, options) {
         super();
         this.#browser = browser;
+        this.#userContext = userContext;
         this.#connection = this.#browser.connection;
         this.#defaultViewport = options.defaultViewport;
-        this.#isDefault = options.isDefault;
     }
     targets() {
         return this.#browser.targets().filter(target => {
@@ -62,10 +64,25 @@ class BidiBrowserContext extends BrowserContext_js_1.BrowserContext {
         return page;
     }
     async close() {
-        if (this.#isDefault) {
+        if (!this.isIncognito()) {
             throw new Error('Default context cannot be closed!');
         }
-        await this.#browser._closeContext(this);
+        // TODO: Remove once we have adopted the new browsing contexts.
+        for (const target of this.targets()) {
+            const page = await target?.page();
+            try {
+                await page?.close();
+            }
+            catch (error) {
+                (0, util_js_1.debugError)(error);
+            }
+        }
+        try {
+            await this.#userContext.remove();
+        }
+        catch (error) {
+            (0, util_js_1.debugError)(error);
+        }
     }
     browser() {
         return this.#browser;
@@ -79,7 +96,7 @@ class BidiBrowserContext extends BrowserContext_js_1.BrowserContext {
         });
     }
     isIncognito() {
-        return !this.#isDefault;
+        return this.#userContext.id !== UserContext_js_1.UserContext.DEFAULT;
     }
     overridePermissions() {
         throw new Errors_js_1.UnsupportedOperation();

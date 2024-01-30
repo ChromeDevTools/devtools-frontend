@@ -421,13 +421,22 @@ class BidiPage extends Page_js_1.Page {
     async reload(options = {}) {
         const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
         const [readiness, networkIdle] = (0, lifecycle_js_1.getBiDiReadinessState)(waitUntil);
-        const response = await (0, rxjs_js_1.firstValueFrom)(this._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
+        const result$ = (0, rxjs_js_1.zip)((0, rxjs_js_1.from)(this.#connection.send('browsingContext.reload', {
             context: this.mainFrame()._id,
             wait: readiness,
-        }), networkIdle)
-            .pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow())))
-            .pipe((0, lifecycle_js_1.rewriteNavigationError)(this.url(), ms)));
-        return this.getNavigationResponse(response?.result.navigation);
+        })), ...(networkIdle !== null
+            ? [
+                this.waitForNetworkIdle$({
+                    timeout: ms,
+                    concurrency: networkIdle === 'networkidle2' ? 2 : 0,
+                    idleTime: util_js_1.NETWORK_IDLE_TIME,
+                }),
+            ]
+            : [])).pipe((0, rxjs_js_1.map)(([{ result }]) => {
+            return result;
+        }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow())), (0, lifecycle_js_1.rewriteNavigationError)(this.url(), ms));
+        const result = await (0, rxjs_js_1.firstValueFrom)(result$);
+        return this.getNavigationResponse(result.navigation);
     }
     setDefaultNavigationTimeout(timeout) {
         this._timeoutSettings.setDefaultNavigationTimeout(timeout);
@@ -563,30 +572,6 @@ class BidiPage extends Page_js_1.Page {
             ...(box ? { clip: { type: 'box', ...box } } : {}),
         });
         return data;
-    }
-    async waitForRequest(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await (0, util_js_1.waitForHTTP)(this.#networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
-    }
-    async waitForResponse(urlOrPredicate, options = {}) {
-        const { timeout = this._timeoutSettings.timeout() } = options;
-        return await (0, util_js_1.waitForHTTP)(this.#networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
-    }
-    async waitForNetworkIdle(options = {}) {
-        const { idleTime = util_js_1.NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
-        await (0, rxjs_js_1.firstValueFrom)(this._waitForNetworkIdle(this.#networkManager, idleTime).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow()))));
-    }
-    /** @internal */
-    _waitWithNetworkIdle(observableInput, networkIdle) {
-        const delay = networkIdle
-            ? this._waitForNetworkIdle(this.#networkManager, util_js_1.NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
-            : (0, rxjs_js_1.from)(Promise.resolve());
-        return (0, rxjs_js_1.forkJoin)([
-            (0, rxjs_js_1.from)(observableInput).pipe((0, rxjs_js_1.first)()),
-            delay.pipe((0, rxjs_js_1.first)()),
-        ]).pipe((0, rxjs_js_1.map)(([response]) => {
-            return response;
-        }));
     }
     async createCDPSession() {
         const { sessionId } = await this.mainFrame()

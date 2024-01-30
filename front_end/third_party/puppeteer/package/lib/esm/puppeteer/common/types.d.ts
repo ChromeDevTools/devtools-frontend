@@ -9,6 +9,10 @@ import type { LazyArg } from './LazyArg.js';
 /**
  * @public
  */
+export type AwaitablePredicate<T> = (value: T) => Awaitable<boolean>;
+/**
+ * @public
+ */
 export interface Moveable {
     /**
      * Moves the resource when 'using'.

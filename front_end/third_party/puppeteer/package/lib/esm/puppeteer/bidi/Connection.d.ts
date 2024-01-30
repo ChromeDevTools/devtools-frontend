@@ -53,5 +53,6 @@ export declare class BidiConnection extends EventEmitter<BidiEvents> implements 
      * Unbinds the connection and closes the transport.
      */
     dispose(): void;
+    getPendingProtocolErrors(): Error[];
 }
 //# sourceMappingURL=Connection.d.ts.map

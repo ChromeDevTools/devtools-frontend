@@ -82,12 +82,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { delay, filter, filterAsync, first, firstValueFrom, from, map, merge, of, raceWith, startWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
+import { concat, EMPTY, filter, filterAsync, first, firstValueFrom, from, map, merge, mergeMap, of, race, raceWith, startWith, switchMap, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
-import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError, fromEmitterEvent, importFSPromises, isString, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { debugError, fromEmitterEvent, importFSPromises, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
@@ -171,11 +170,27 @@ let Page = (() => {
          */
         _timeoutSettings = new TimeoutSettings();
         #requestHandlers = new WeakMap();
+        #requestsInFlight = 0;
+        #inflight$;
         /**
          * @internal
          */
         constructor() {
             super();
+            this.#inflight$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), mergeMap(request => {
+                return concat(of(1), race(fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filter(response => {
+                    return response.request()._requestId === request._requestId;
+                })), fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */).pipe(filter(failure => {
+                    return failure._requestId === request._requestId;
+                })), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */).pipe(filter(success => {
+                    return success._requestId === request._requestId;
+                }))).pipe(map(() => {
+                    return -1;
+                })));
+            }));
+            this.#inflight$.subscribe(count => {
+                this.#requestsInFlight += count;
+            });
         }
         /**
          * Listen to page events.
@@ -594,14 +609,105 @@ let Page = (() => {
             return await this.mainFrame().waitForNavigation(options);
         }
         /**
+         * @param urlOrPredicate - A URL or predicate to wait for
+         * @param options - Optional waiting parameters
+         * @returns Promise which resolves to the matched request
+         * @example
+         *
+         * ```ts
+         * const firstRequest = await page.waitForRequest(
+         *   'https://example.com/resource'
+         * );
+         * const finalRequest = await page.waitForRequest(
+         *   request => request.url() === 'https://example.com'
+         * );
+         * return finalRequest.response()?.ok();
+         * ```
+         *
+         * @remarks
+         * Optional Waiting Parameters have:
+         *
+         * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
+         *   `0` to disable the timeout. The default value can be changed by using the
+         *   {@link Page.setDefaultTimeout} method.
+         */
+        waitForRequest(urlOrPredicate, options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            if (typeof urlOrPredicate === 'string') {
+                const url = urlOrPredicate;
+                urlOrPredicate = (request) => {
+                    return request.url() === url;
+                };
+            }
+            const observable$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+                throw new TargetCloseError('Page closed!');
+            }))));
+            return firstValueFrom(observable$);
+        }
+        /**
+         * @param urlOrPredicate - A URL or predicate to wait for.
+         * @param options - Optional waiting parameters
+         * @returns Promise which resolves to the matched response.
+         * @example
+         *
+         * ```ts
+         * const firstResponse = await page.waitForResponse(
+         *   'https://example.com/resource'
+         * );
+         * const finalResponse = await page.waitForResponse(
+         *   response =>
+         *     response.url() === 'https://example.com' && response.status() === 200
+         * );
+         * const finalResponse = await page.waitForResponse(async response => {
+         *   return (await response.text()).includes('<html>');
+         * });
+         * return finalResponse.ok();
+         * ```
+         *
+         * @remarks
+         * Optional Parameter have:
+         *
+         * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+         *   pass `0` to disable the timeout. The default value can be changed by using
+         *   the {@link Page.setDefaultTimeout} method.
+         */
+        waitForResponse(urlOrPredicate, options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout() } = options;
+            if (typeof urlOrPredicate === 'string') {
+                const url = urlOrPredicate;
+                urlOrPredicate = (response) => {
+                    return response.url() === url;
+                };
+            }
+            const observable$ = fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filterAsync(urlOrPredicate), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+                throw new TargetCloseError('Page closed!');
+            }))));
+            return firstValueFrom(observable$);
+        }
+        /**
+         * Waits for the network to be idle.
+         *
+         * @param options - Options to configure waiting behavior.
+         * @returns A promise which resolves once the network is idle.
+         */
+        waitForNetworkIdle(options = {}) {
+            return firstValueFrom(this.waitForNetworkIdle$(options));
+        }
+        /**
          * @internal
          */
-        _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
-            return merge(fromEmitterEvent(networkManager, NetworkManagerEvent.Request), fromEmitterEvent(networkManager, NetworkManagerEvent.Response), fromEmitterEvent(networkManager, NetworkManagerEvent.RequestFailed)).pipe(startWith(undefined), filter(() => {
-                return networkManager.inFlightRequestsCount() <= requestsInFlight;
-            }), switchMap(() => {
-                return of(undefined).pipe(delay(idleTime));
-            }));
+        waitForNetworkIdle$(options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout(), idleTime = NETWORK_IDLE_TIME, concurrency = 0, } = options;
+            return this.#inflight$.pipe(startWith(this.#requestsInFlight), switchMap(() => {
+                if (this.#requestsInFlight > concurrency) {
+                    return EMPTY;
+                }
+                else {
+                    return timer(idleTime);
+                }
+            }), map(() => { }), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
+                throw new TargetCloseError('Page closed!');
+            }))));
         }
         /**
          * Waits for a frame matching the given conditions to appear.

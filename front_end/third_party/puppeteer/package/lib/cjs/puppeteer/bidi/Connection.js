@@ -167,6 +167,9 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
         this.unbind();
         this.#transport.close();
     }
+    getPendingProtocolErrors() {
+        return this.#callbacks.getPendingProtocolErrors();
+    }
 }
 exports.BidiConnection = BidiConnection;
 /**

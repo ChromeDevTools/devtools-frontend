@@ -28,7 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
+exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
@@ -303,23 +303,6 @@ function getSourceUrlComment(url) {
     return `//# sourceURL=${url}`;
 }
 exports.getSourceUrlComment = getSourceUrlComment;
-/**
- * @internal
- */
-async function waitForHTTP(networkManager, eventName, urlOrPredicate, 
-/** Time after the function will timeout */
-ms, cancelation) {
-    return await (0, rxjs_js_1.firstValueFrom)(fromEmitterEvent(networkManager, eventName).pipe((0, rxjs_js_1.filterAsync)(async (http) => {
-        if ((0, exports.isString)(urlOrPredicate)) {
-            return urlOrPredicate === http.url();
-        }
-        if (typeof urlOrPredicate === 'function') {
-            return !!(await urlOrPredicate(http));
-        }
-        return false;
-    }), (0, rxjs_js_1.raceWith)(timeout(ms), (0, rxjs_js_1.from)(cancelation.valueOrThrow()))));
-}
-exports.waitForHTTP = waitForHTTP;
 /**
  * @internal
  */

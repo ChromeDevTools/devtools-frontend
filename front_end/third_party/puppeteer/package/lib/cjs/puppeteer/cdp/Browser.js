@@ -235,6 +235,11 @@ class CdpBrowser extends Browser_js_1.Browser {
     #getVersion() {
         return this.#connection.send('Browser.getVersion');
     }
+    get debugInfo() {
+        return {
+            pendingProtocolErrors: this.#connection.getPendingProtocolErrors(),
+        };
+    }
 }
 exports.CdpBrowser = CdpBrowser;
 /**

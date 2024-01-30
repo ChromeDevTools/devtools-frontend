@@ -42,12 +42,32 @@ exports.BidiTarget = BidiTarget;
 /**
  * @internal
  */
-class BiDiBrowserTarget extends BidiTarget {
+class BiDiBrowserTarget extends Target_js_1.Target {
+    #browser;
+    constructor(browser) {
+        super();
+        this.#browser = browser;
+    }
     url() {
         return '';
     }
     type() {
         return Target_js_1.TargetType.BROWSER;
+    }
+    asPage() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    browser() {
+        return this.#browser;
+    }
+    browserContext() {
+        return this.#browser.defaultBrowserContext();
+    }
+    opener() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    createCDPSession() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BiDiBrowserTarget = BiDiBrowserTarget;

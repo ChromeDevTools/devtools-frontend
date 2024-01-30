@@ -34,15 +34,17 @@ export declare class UserContext extends EventEmitter<{
     };
 }> {
     #private;
+    static DEFAULT: string;
     static create(browser: Browser, id: string): UserContext;
     readonly browser: Browser;
     private constructor();
     get browsingContexts(): Iterable<BrowsingContext>;
     get closed(): boolean;
     get disposed(): boolean;
+    get id(): string;
     private dispose;
     createBrowsingContext(type: Bidi.BrowsingContext.CreateType, options?: CreateBrowsingContextOptions): Promise<BrowsingContext>;
-    close(): Promise<void>;
+    remove(): Promise<void>;
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=UserContext.d.ts.map

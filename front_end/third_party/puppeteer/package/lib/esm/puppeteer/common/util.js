@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { filterAsync, firstValueFrom, from, map, NEVER, Observable, raceWith, timer, } from '../../third_party/rxjs/rxjs.js';
+import { map, NEVER, Observable, timer } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -261,22 +261,6 @@ export const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  */
 export function getSourceUrlComment(url) {
     return `//# sourceURL=${url}`;
-}
-/**
- * @internal
- */
-export async function waitForHTTP(networkManager, eventName, urlOrPredicate, 
-/** Time after the function will timeout */
-ms, cancelation) {
-    return await firstValueFrom(fromEmitterEvent(networkManager, eventName).pipe(filterAsync(async (http) => {
-        if (isString(urlOrPredicate)) {
-            return urlOrPredicate === http.url();
-        }
-        if (typeof urlOrPredicate === 'function') {
-            return !!(await urlOrPredicate(http));
-        }
-        return false;
-    }), raceWith(timeout(ms), from(cancelation.valueOrThrow()))));
 }
 /**
  * @internal

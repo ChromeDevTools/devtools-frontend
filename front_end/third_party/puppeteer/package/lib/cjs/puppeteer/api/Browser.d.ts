@@ -122,6 +122,13 @@ export interface BrowserEvents extends Record<EventType, unknown> {
     [BrowserEvent.TargetDiscovered]: Protocol.Target.TargetInfo;
 }
 /**
+ * @public
+ * @experimental
+ */
+export interface DebugInfo {
+    pendingProtocolErrors: Error[];
+}
+/**
  * {@link Browser} represents a browser instance that is either:
  *
  * - connected to via {@link Puppeteer.connect} or
@@ -315,5 +322,16 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * @internal
      */
     abstract get protocol(): ProtocolType;
+    /**
+     * Get debug information from Puppeteer.
+     *
+     * @remarks
+     *
+     * Currently, includes pending protocol calls. In the future, we might add more info.
+     *
+     * @public
+     * @experimental
+     */
+    abstract get debugInfo(): DebugInfo;
 }
 //# sourceMappingURL=Browser.d.ts.map

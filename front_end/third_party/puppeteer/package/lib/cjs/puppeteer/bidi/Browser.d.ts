@@ -6,13 +6,12 @@
 /// <reference types="node" />
 import type { ChildProcess } from 'child_process';
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { Browser, type BrowserCloseCallback, type BrowserContextOptions } from '../api/Browser.js';
+import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type DebugInfo } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiConnection } from './Connection.js';
-import type { Browser as BrowserCore } from './core/Browser.js';
 import { type BidiTarget } from './Target.js';
 /**
  * @internal
@@ -33,7 +32,7 @@ export declare class BidiBrowser extends Browser {
     static readonly subscribeModules: string[];
     static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
-    constructor(browserCore: BrowserCore, opts: BidiBrowserOptions);
+    private constructor();
     userAgent(): never;
     get connection(): BidiConnection;
     wsEndpoint(): string;
@@ -43,12 +42,12 @@ export declare class BidiBrowser extends Browser {
     createIncognitoBrowserContext(_options?: BrowserContextOptions): Promise<BidiBrowserContext>;
     version(): Promise<string>;
     browserContexts(): BidiBrowserContext[];
-    _closeContext(browserContext: BidiBrowserContext): Promise<void>;
     defaultBrowserContext(): BidiBrowserContext;
     newPage(): Promise<Page>;
     targets(): Target[];
     _getTargetById(id: string): BidiTarget;
     target(): Target;
     disconnect(): Promise<void>;
+    get debugInfo(): DebugInfo;
 }
 //# sourceMappingURL=Browser.d.ts.map

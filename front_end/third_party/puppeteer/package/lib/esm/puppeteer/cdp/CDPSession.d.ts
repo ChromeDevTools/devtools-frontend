@@ -58,5 +58,9 @@ export declare class CdpCDPSession extends CDPSession {
      * Returns the session's id.
      */
     id(): string;
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors(): Error[];
 }
 //# sourceMappingURL=CDPSession.d.ts.map

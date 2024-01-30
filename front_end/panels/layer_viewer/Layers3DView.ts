@@ -667,7 +667,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
       return;
     }
 
-    const drawChrome = !Common.Settings.Settings.instance().moduleSetting('frameViewerHideChromeWindow').get() &&
+    const drawChrome = !Common.Settings.Settings.instance().moduleSetting('frame-viewer-hide-chrome-window').get() &&
         this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(undefined) < 0;
     const z = (this.maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);
@@ -832,13 +832,13 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private initToolbar(): void {
     this.panelToolbar = this.transformController.toolbar();
     this.contentElement.appendChild(this.panelToolbar.element);
-    this.showPaintsSetting =
-        this.createVisibilitySetting(i18nString(UIStrings.paints), 'frameViewerShowPaints', false, this.panelToolbar);
+    this.showPaintsSetting = this.createVisibilitySetting(
+        i18nString(UIStrings.paints), 'frame-viewer-show-paints', false, this.panelToolbar);
     this.showSlowScrollRectsSetting = this.createVisibilitySetting(
-        i18nString(UIStrings.slowScrollRects), 'frameViewerShowSlowScrollRects', true, this.panelToolbar);
+        i18nString(UIStrings.slowScrollRects), 'frame-viewer-show-slow-scroll-rects', true, this.panelToolbar);
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('frameViewerHideChromeWindow')
+        .moduleSetting('frame-viewer-hide-chrome-window')
         .addChangeListener(this.update, this);
   }
 

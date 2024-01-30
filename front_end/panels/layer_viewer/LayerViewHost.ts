@@ -108,7 +108,7 @@ export class LayerViewHost {
     this.selectedObject = null;
     this.hoveredObject = null;
     this.showInternalLayersSettingInternal =
-        Common.Settings.Settings.instance().createSetting('layersShowInternalLayers', false);
+        Common.Settings.Settings.instance().createSetting('layers-show-internal-layers', false);
     this.snapshotLayers = new Map();
   }
 

@@ -227,7 +227,7 @@ export class ResponseHeaderSection extends HTMLElement {
         throw 'Type mismatch after parsing';
       }
       this.#headersAreOverrideable =
-          Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').get();
+          Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get();
       for (const header of this.#headerEditors) {
         header.valueEditable = this.#headersAreOverrideable;
       }
@@ -507,7 +507,7 @@ export class ResponseHeaderSection extends HTMLElement {
     const requestUrl = this.#request.url();
     const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistanceManager.project()) {
-      Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
+      Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
       await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async(): Promise<void> => {

@@ -80,7 +80,7 @@ UI.ViewManager.registerViewExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERSISTENCE,
   title: i18nLazyString(UIStrings.enableLocalOverrides),
-  settingName: 'persistenceNetworkOverridesEnabled',
+  settingName: 'persistence-network-overrides-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
   tags: [

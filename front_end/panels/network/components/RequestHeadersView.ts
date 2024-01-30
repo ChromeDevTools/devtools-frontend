@@ -163,7 +163,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     this.#workspace.addEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .moduleSetting('persistence-network-overrides-enabled')
         .addChangeListener(this.render, this);
   }
 
@@ -173,7 +173,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     this.#workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .moduleSetting('persistence-network-overrides-enabled')
         .removeChangeListener(this.render, this);
   }
 
@@ -244,7 +244,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     }
 
     const overridesSetting: Common.Settings.Setting<boolean> =
-        Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled');
+        Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled');
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const fileIcon = html`

@@ -96,7 +96,7 @@ export class UISourceCodeFrame extends
     this.boundOnBindingChanged = this.onBindingChanged.bind(this);
 
     Common.Settings.Settings.instance()
-        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .moduleSetting('persistence-network-overrides-enabled')
         .addChangeListener(this.onNetworkPersistenceChanged, this);
 
     this.errorPopoverHelper =
@@ -418,7 +418,7 @@ export class UISourceCodeFrame extends
     this.textEditor.editor.destroy();
     this.detach();
     Common.Settings.Settings.instance()
-        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .moduleSetting('persistence-network-overrides-enabled')
         .removeChangeListener(this.onNetworkPersistenceChanged, this);
   }
 

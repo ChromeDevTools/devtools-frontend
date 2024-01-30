@@ -509,7 +509,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     try {
       // This setting is set during the test to work around the fact that Puppeteer cannot
       // send trusted change and input events.
-      Common.Settings.Settings.instance().settingForTest('untrustedRecorderEvents');
+      Common.Settings.Settings.instance().settingForTest('untrusted-recorder-events');
       return true;
     } catch {
     }

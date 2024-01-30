@@ -26,7 +26,7 @@ export class RecordingStorage {
 
   constructor() {
     this.#recordingsSetting = Common.Settings.Settings.instance().createSetting(
-        'recorder_recordings_ng',
+        'recorder-recordings-ng',
         [],
     );
   }

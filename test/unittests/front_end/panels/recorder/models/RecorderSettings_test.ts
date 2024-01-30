@@ -42,7 +42,7 @@ describeWithEnvironment('RecorderSettings', () => {
     const value = 'custom-selector';
     recorderSettings.selectorAttribute = value;
     assert.strictEqual(
-        Common.Settings.Settings.instance().settingForTest('recorderSelectorAttribute').get(),
+        Common.Settings.Settings.instance().settingForTest('recorder-selector-attribute').get(),
         value,
     );
   });
@@ -50,7 +50,7 @@ describeWithEnvironment('RecorderSettings', () => {
   it('should save speed attribute change', () => {
     recorderSettings.speed = Models.RecordingPlayer.PlayRecordingSpeed.ExtremelySlow;
     assert.strictEqual(
-        Common.Settings.Settings.instance().settingForTest('recorderPanelReplaySpeed').get(),
+        Common.Settings.Settings.instance().settingForTest('recorder-panel-replay-speed').get(),
         Models.RecordingPlayer.PlayRecordingSpeed.ExtremelySlow,
     );
   });
@@ -59,7 +59,7 @@ describeWithEnvironment('RecorderSettings', () => {
     const selectorType = Models.Schema.SelectorType.CSS;
     recorderSettings.setSelectorByType(selectorType, false);
     assert.isFalse(
-        Common.Settings.Settings.instance().settingForTest(`recorder${selectorType}SelectorEnabled`).get(),
+        Common.Settings.Settings.instance().settingForTest(`recorder-${selectorType}-selector-enabled`).get(),
     );
   });
 });

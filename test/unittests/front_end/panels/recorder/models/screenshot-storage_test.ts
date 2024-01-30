@@ -37,7 +37,7 @@ describeWithEnvironment('ScreenshotStorage', () => {
   it('should load previous screenshots from settings', () => {
     const imageData = 'data:image/jpeg;base64,...' as Recorder.ScreenshotStorage.Screenshot;
     const setting = Common.Settings.Settings.instance().createSetting<Recorder.ScreenshotStorage.ScreenshotMetaData[]>(
-        'recorder_screenshots', []);
+        'recorder-screenshots', []);
     setting.set([{recordingName: 'recording-1', index: 1, data: imageData}]);
 
     const screenshotStorage = Recorder.ScreenshotStorage.ScreenshotStorage.instance({forceNew: true});
@@ -53,7 +53,7 @@ describeWithEnvironment('ScreenshotStorage', () => {
     instance.storeScreenshotForSection('recording-1', 1, imageData);
 
     const setting = Common.Settings.Settings.instance().createSetting<Recorder.ScreenshotStorage.ScreenshotMetaData[]>(
-        'recorder_screenshots', []);
+        'recorder-screenshots', []);
     const value = setting.get();
     assert.strictEqual(value.length, 1);
     assert.strictEqual(value[0].index, 1);

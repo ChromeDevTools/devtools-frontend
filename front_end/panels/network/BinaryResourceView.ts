@@ -95,7 +95,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
           this.binaryResourceViewFactory.createUtf8View.bind(this.binaryResourceViewFactory),
           this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory)),
     ];
-    this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binaryViewType', 'hex');
+    this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binary-view-type', 'hex');
     this.binaryViewTypeCombobox =
         new UI.Toolbar.ToolbarComboBox(this.binaryViewTypeChanged.bind(this), i18nString(UIStrings.binaryViewType));
     for (const viewObject of this.binaryViewObjects) {
@@ -125,7 +125,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     const binaryViewObject = this.binaryViewObjects.find(filter);
     console.assert(
         Boolean(binaryViewObject),
-        `No binary view found for binary view type found in setting 'binaryViewType': ${
+        `No binary view found for binary view type found in setting 'binary-view-type': ${
             this.binaryViewTypeSetting.get()}`);
     return binaryViewObject || null;
   }

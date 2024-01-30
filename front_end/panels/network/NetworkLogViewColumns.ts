@@ -190,7 +190,7 @@ export class NetworkLogViewColumns {
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     this.networkLogView = networkLogView;
 
-    this.persistantSettings = Common.Settings.Settings.instance().createSetting('networkLogColumns', {});
+    this.persistantSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
 
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(this.updateRowsSize, this);
@@ -293,7 +293,7 @@ export class NetworkLogViewColumns {
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.dataGridInternal.markColumnAsSortedBy(_initialSortColumn, DataGrid.DataGrid.Order.Ascending);
 
-    this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'network-panel-split-view-waterfall', 200);
     const widget = this.dataGridInternal.asWidget();
     widget.setMinimumSize(150, 0);
     this.splitWidget.setMainWidget(widget);

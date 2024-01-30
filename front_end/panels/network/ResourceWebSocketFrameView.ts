@@ -158,7 +158,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   private currentSelectedNode?: ResourceWebSocketFrameNode|null;
 
   private messageFilterSetting: Common.Settings.Setting<string> =
-      Common.Settings.Settings.instance().createSetting('networkWebSocketMessageFilter', '');
+      Common.Settings.Settings.instance().createSetting('network-web-socket-message-filter', '');
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();

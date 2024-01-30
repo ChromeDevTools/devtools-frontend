@@ -481,18 +481,18 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
 
-    this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('networkInvertFilter', false);
-    this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
+    this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('network-invert-filter', false);
+    this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('network-hide-data-url', false);
     this.networkHideChromeExtensions =
-        Common.Settings.Settings.instance().createSetting('networkHideChromeExtensions', false);
+        Common.Settings.Settings.instance().createSetting('network-hide-chrome-extensions', false);
     this.networkShowBlockedCookiesOnlySetting =
-        Common.Settings.Settings.instance().createSetting('networkShowBlockedCookiesOnlySetting', false);
+        Common.Settings.Settings.instance().createSetting('network-show-blocked-cookies-only-setting', false);
     this.networkOnlyBlockedRequestsSetting =
-        Common.Settings.Settings.instance().createSetting('networkOnlyBlockedRequests', false);
+        Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false);
     this.networkOnlyThirdPartySetting =
-        Common.Settings.Settings.instance().createSetting('networkOnlyThirdPartySetting', false);
+        Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
     this.networkResourceTypeFiltersSetting =
-        Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {});
+        Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {});
 
     this.rawRowHeight = 0;
     this.progressBarContainer = progressBarContainer;
@@ -634,7 +634,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this.handleDrop.bind(this));
 
     Common.Settings.Settings.instance()
-        .moduleSetting('networkColorCodeResourceTypes')
+        .moduleSetting('network-color-code-resource-types')
         .addChangeListener(this.invalidateAllItems.bind(this, false), this);
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this, {scoped: true});
@@ -653,7 +653,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.filterBar = filterBar;
 
-    this.textFilterSetting = Common.Settings.Settings.instance().createSetting('networkTextFilter', '');
+    this.textFilterSetting = Common.Settings.Settings.instance().createSetting('network-text-filter', '');
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
@@ -2786,15 +2786,15 @@ export class MoreFiltersDropDownUI extends
   constructor() {
     super();
 
-    this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
+    this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('network-hide-data-url', false);
     this.networkHideChromeExtensionsSetting =
-        Common.Settings.Settings.instance().createSetting('networkHideChromeExtensions', false);
+        Common.Settings.Settings.instance().createSetting('network-hide-chrome-extensions', false);
     this.networkShowBlockedCookiesOnlySetting =
-        Common.Settings.Settings.instance().createSetting('networkShowBlockedCookiesOnlySetting', false);
+        Common.Settings.Settings.instance().createSetting('network-show-blocked-cookies-only-setting', false);
     this.networkOnlyBlockedRequestsSetting =
-        Common.Settings.Settings.instance().createSetting('networkOnlyBlockedRequests', false);
+        Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false);
     this.networkOnlyThirdPartySetting =
-        Common.Settings.Settings.instance().createSetting('networkOnlyThirdPartySetting', false);
+        Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');

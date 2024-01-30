@@ -35,7 +35,7 @@ describeWithMockConnection('NetworkLogView', () => {
     beforeEach(() => {
       const dummyStorage = new Common.Settings.SettingsStorage({});
 
-      for (const settingName of ['networkColorCodeResourceTypes', 'network.group-by-frame']) {
+      for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame']) {
         Common.Settings.registerSettingExtension({
           settingName,
           settingType: Common.Settings.SettingType.BOOLEAN,
@@ -866,7 +866,7 @@ function setupRequestTypesDropdown() {
                                                                   title: category.title(),
                                                                 }));
 
-  const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
+  const setting = Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {all: true});
   const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, setting);
   return dropdown;
 }

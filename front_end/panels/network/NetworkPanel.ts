@@ -198,10 +198,11 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.displayScreenshotDelay = displayScreenshotDelay;
     this.networkLogShowOverviewSetting =
-        Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);
-    this.networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
+        Common.Settings.Settings.instance().createSetting('network-log-show-overview', true);
+    this.networkLogLargeRowsSetting =
+        Common.Settings.Settings.instance().createSetting('network-log-large-rows', false);
     this.networkRecordFilmStripSetting =
-        Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
+        Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false);
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('network.toggle-recording');
     this.networkItemView = null;
     this.filmStripView = null;
@@ -216,7 +217,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.panelToolbar.element.setAttribute('jslog', `${VisualLogging.section().context('network-toolbar')}`);
     this.rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
 
-    this.filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+    this.filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     this.filterBar.show(panel.contentElement);
     this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.Changed, this.handleFilterChanged.bind(this));
 
@@ -224,7 +225,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.settingsPane.element.classList.add('network-settings-pane');
     this.settingsPane.show(panel.contentElement);
     this.showSettingsPaneSetting =
-        Common.Settings.Settings.instance().createSetting('networkShowSettingsToolbar', false);
+        Common.Settings.Settings.instance().createSetting('network-show-settings-toolbar', false);
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
 
@@ -243,14 +244,14 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.calculator = new NetworkTransferTimeCalculator();
 
-    this.splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'networkPanelSplitViewState');
+    this.splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'network-panel-split-view-state');
     this.splitWidget.hideMain();
     this.splitWidget.show(panel.contentElement);
 
     panel.setDefaultFocusedChild(this.filterBar);
 
     const initialSidebarWidth = 225;
-    const splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'networkPanelSidebarState', initialSidebarWidth);
+    const splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'network-panel-sidebar-state', initialSidebarWidth);
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
@@ -301,8 +302,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
 
-    this.preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
-    this.recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
+    this.preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log');
+    this.recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.record-log');
     this.recordLogSetting.addChangeListener(({data}) => this.toggleRecord(data));
 
     this.throttlingSelect = this.createThrottlingConditionsSelect();

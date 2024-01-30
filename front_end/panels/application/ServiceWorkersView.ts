@@ -243,12 +243,13 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this.toolbar.appendToolbarItem(
         MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
     const updateOnReloadSetting =
-        Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
+        Common.Settings.Settings.instance().createSetting('service-worker-update-on-reload', false);
     updateOnReloadSetting.setTitle(i18nString(UIStrings.updateOnReload));
     const forceUpdate =
         new UI.Toolbar.ToolbarSettingCheckbox(updateOnReloadSetting, i18nString(UIStrings.onPageReloadForceTheService));
     this.toolbar.appendToolbarItem(forceUpdate);
-    const bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
+    const bypassServiceWorkerSetting =
+        Common.Settings.Settings.instance().createSetting('bypass-service-worker', false);
     bypassServiceWorkerSetting.setTitle(i18nString(UIStrings.bypassForNetwork));
     const fallbackToNetwork = new UI.Toolbar.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, i18nString(UIStrings.bypassTheServiceWorkerAndLoad));
@@ -509,11 +510,11 @@ export class Section {
     this.registration = registration;
     this.fingerprint = null;
     this.pushNotificationDataSetting = Common.Settings.Settings.instance().createLocalSetting(
-        'pushData', i18nString(UIStrings.testPushMessageFromDevtools));
+        'push-data', i18nString(UIStrings.testPushMessageFromDevtools));
     this.syncTagNameSetting =
-        Common.Settings.Settings.instance().createLocalSetting('syncTagName', 'test-tag-from-devtools');
+        Common.Settings.Settings.instance().createLocalSetting('sync-tag-name', 'test-tag-from-devtools');
     this.periodicSyncTagNameSetting =
-        Common.Settings.Settings.instance().createLocalSetting('periodicSyncTagName', 'test-tag-from-devtools');
+        Common.Settings.Settings.instance().createLocalSetting('periodic-sync-tag-name', 'test-tag-from-devtools');
 
     this.toolbar = section.createToolbar();
     this.toolbar.renderAsLinks();

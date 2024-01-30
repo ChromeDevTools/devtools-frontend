@@ -89,7 +89,7 @@ class CookiePreviewWidget extends UI.Widget.VBox {
     super();
     this.setMinimumSize(230, 45);
     this.cookie = null;
-    this.showDecodedSetting = Common.Settings.Settings.instance().createSetting('cookieViewShowDecoded', false);
+    this.showDecodedSetting = Common.Settings.Settings.instance().createSetting('cookie-view-show-decoded', false);
 
     const header = document.createElement('div');
     header.classList.add('cookie-preview-widget-header');

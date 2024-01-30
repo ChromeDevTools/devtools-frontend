@@ -193,7 +193,10 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.settings = new Map();
     for (const type of AllStorageTypes) {
-      this.settings.set(type, Common.Settings.Settings.instance().createSetting('clear-storage-' + type, true));
+      this.settings.set(
+          type,
+          Common.Settings.Settings.instance().createSetting(
+              'clear-storage-' + Platform.StringUtilities.toKebabCase(type), true));
     }
 
     this.includeThirdPartyCookiesSetting =

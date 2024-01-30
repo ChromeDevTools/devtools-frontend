@@ -58,7 +58,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   constructor(resourcesPanel: ResourcesPanel, categoryName: string, settingsKey: string, settingsDefault = false) {
     super(resourcesPanel, categoryName, false);
     this.expandedSetting =
-        Common.Settings.Settings.instance().createSetting('resources' + settingsKey + 'Expanded', settingsDefault);
+        Common.Settings.Settings.instance().createSetting('resources-' + settingsKey + '-expanded', settingsDefault);
     this.categoryName = categoryName;
     this.categoryLink = null;
   }

@@ -525,7 +525,8 @@ export class RequestView extends UI.Widget.VBox {
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.element.setAttribute('jslog', `${VisualLogging.section().context('network-item-preview')}`);
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
-    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('cacheStorageViewTab', 'preview');
+    this.resourceViewTabSetting =
+        Common.Settings.Settings.instance().createSetting('cache-storage-view-tab', 'preview');
 
     this.tabbedPane.appendTab(
         'headers', i18nString(UIStrings.headers),

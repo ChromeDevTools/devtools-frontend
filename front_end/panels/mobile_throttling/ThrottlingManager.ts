@@ -107,9 +107,10 @@ export class ThrottlingManager {
     this.cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     this.cpuThrottlingControls = new Set();
     this.cpuThrottlingRates = ThrottlingPresets.cpuThrottlingPresets;
-    this.customNetworkConditionsSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
+    this.customNetworkConditionsSetting =
+        Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
     this.currentNetworkThrottlingConditionsSetting = Common.Settings.Settings.instance().createSetting(
-        'preferredNetworkCondition', SDK.NetworkManager.NoThrottlingConditions);
+        'preferred-network-condition', SDK.NetworkManager.NoThrottlingConditions);
 
     this.currentNetworkThrottlingConditionsSetting.setSerializer(new SDK.NetworkManager.ConditionsSerializer());
 

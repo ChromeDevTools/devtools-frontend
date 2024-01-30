@@ -67,7 +67,7 @@ UI.ViewManager.registerViewExtension({
     return new MobileThrottling.ThrottlingSettingsTab.ThrottlingSettingsTab();
   },
   settings: [
-    'customNetworkConditions',
+    'custom-network-conditions',
   ],
 });
 
@@ -129,7 +129,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'customNetworkConditions',
+  settingName: 'custom-network-conditions',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });

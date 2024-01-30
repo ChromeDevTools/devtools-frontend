@@ -107,7 +107,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this.list.show(this.contentElement);
 
-    this.customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
+    this.customSetting = Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
     this.customSetting.addChangeListener(this.conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);

@@ -128,7 +128,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#webPlatformExperimentalFeaturesEnabledInternal =
         window.visualViewport ? 'segments' in window.visualViewport : false;
 
-    this.#scaleSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.deviceScale', 1);
+    this.#scaleSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.device-scale', 1);
     // We've used to allow zero before.
     if (!this.#scaleSettingInternal.get()) {
       this.#scaleSettingInternal.set(1);
@@ -136,7 +136,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#scaleSettingInternal.addChangeListener(this.scaleSettingChanged, this);
     this.#scaleInternal = 1;
 
-    this.#widthSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceWidth', 400);
+    this.#widthSetting = Common.Settings.Settings.instance().createSetting('emulation.device-width', 400);
     if (this.#widthSetting.get() < MinDeviceSize) {
       this.#widthSetting.set(MinDeviceSize);
     }
@@ -145,7 +145,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     this.#widthSetting.addChangeListener(this.widthSettingChanged, this);
 
-    this.#heightSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceHeight', 0);
+    this.#heightSetting = Common.Settings.Settings.instance().createSetting('emulation.device-height', 0);
     if (this.#heightSetting.get() && this.#heightSetting.get() < MinDeviceSize) {
       this.#heightSetting.set(MinDeviceSize);
     }
@@ -154,18 +154,18 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     this.#heightSetting.addChangeListener(this.heightSettingChanged, this);
 
-    this.#uaSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.deviceUA', UA.Mobile);
+    this.#uaSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.device-ua', UA.Mobile);
     this.#uaSettingInternal.addChangeListener(this.uaSettingChanged, this);
     this.#deviceScaleFactorSettingInternal =
-        Common.Settings.Settings.instance().createSetting('emulation.deviceScaleFactor', 0);
+        Common.Settings.Settings.instance().createSetting('emulation.device-scale-factor', 0);
     this.#deviceScaleFactorSettingInternal.addChangeListener(this.deviceScaleFactorSettingChanged, this);
 
     this.#deviceOutlineSettingInternal =
-        Common.Settings.Settings.instance().moduleSetting('emulation.showDeviceOutline');
+        Common.Settings.Settings.instance().moduleSetting('emulation.show-device-outline');
     this.#deviceOutlineSettingInternal.addChangeListener(this.deviceOutlineSettingChanged, this);
 
     this.#toolbarControlsEnabledSettingInternal = Common.Settings.Settings.instance().createSetting(
-        'emulation.toolbarControlsEnabled', true, Common.Settings.SettingStorageType.Session);
+        'emulation.toolbar-controls-enabled', true, Common.Settings.SettingStorageType.Session);
 
     this.#typeInternal = Type.None;
     this.#deviceInternal = null;
@@ -393,7 +393,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   enabledSetting(): Common.Settings.Setting<boolean> {
-    return Common.Settings.Settings.instance().createSetting('emulation.showDeviceMode', false);
+    return Common.Settings.Settings.instance().createSetting('emulation.show-device-mode', false);
   }
 
   scaleSetting(): Common.Settings.Setting<number> {

@@ -101,7 +101,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
       Common.Settings.Settings.instance()
-          .moduleSetting('disablePausedStateOverlay')
+          .moduleSetting('disable-paused-state-overlay')
           .addChangeListener(this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(
           DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
@@ -294,7 +294,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     const message = this.#debuggerModel && this.#debuggerModel.isPaused() &&
-            !Common.Settings.Settings.instance().moduleSetting('disablePausedStateOverlay').get() ?
+            !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get() ?
         i18nString(UIStrings.pausedInDebugger) :
         undefined;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({message});

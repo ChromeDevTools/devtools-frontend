@@ -410,6 +410,8 @@ export class MainImpl {
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       'evaluateExpressionsWithSourceMaps',
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocolMonitor'] : []),
+      ...(Root.Runtime.Runtime.queryParam('enableAida') === 'true' ? [Root.Runtime.ExperimentName.CONSOLE_INSIGHTS] :
+                                                                     []),
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

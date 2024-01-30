@@ -802,7 +802,7 @@
       this.releaseControl();
     });
 
-    Common.Settings.moduleSetting('activeKeybindSet').set('vsCode');
+    Common.Settings.moduleSetting('active-keybind-set').set('vsCode');
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {

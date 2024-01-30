@@ -155,7 +155,7 @@ export class MainImpl {
     this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
 
-    Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
+    Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync-preferences').get());
     if (Root.Runtime.Runtime.queryParam('veLogging')) {
       void VisualLogging.startLogging();
     }
@@ -442,7 +442,7 @@ export class MainImpl {
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
 
     const defaultThemeSetting = 'systemPreferred';
-    const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
+    const themeSetting = Common.Settings.Settings.instance().createSetting('ui-theme', defaultThemeSetting);
     UI.UIUtils.initializeUIUtils(document);
 
     // Initialize theme support and apply it.

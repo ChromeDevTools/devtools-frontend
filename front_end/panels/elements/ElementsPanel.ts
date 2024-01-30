@@ -1112,7 +1112,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }  // We can't reparent extension iframes.
 
-    const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
+    const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
     let splitMode = _splitMode.Horizontal;
     if (position === 'right' ||
         (position === 'auto' && UI.InspectorView.InspectorView.instance().element.offsetWidth > 680)) {

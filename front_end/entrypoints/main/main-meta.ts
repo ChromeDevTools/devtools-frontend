@@ -575,7 +575,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.theme),
-  settingName: 'uiTheme',
+  settingName: 'ui-theme',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'systemPreferred',
   reloadRequired: false,
@@ -606,7 +606,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.panelLayout),
-  settingName: 'sidebarPosition',
+  settingName: 'sidebar-position',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'auto',
   options: [
@@ -651,7 +651,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
   titleMac: i18nLazyString(UIStrings.enableShortcutToSwitchPanels),
-  settingName: 'shortcutPanelSwitch',
+  settingName: 'shortcut-panel-switch',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
@@ -687,7 +687,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'activeKeybindSet',
+  settingName: 'active-keybind-set',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'devToolsDefault',
   options: [
@@ -720,7 +720,7 @@ function createOptionForLocale(localeString: string): Common.Settings.SettingExt
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SYNC,
   // This name must be kept in sync with DevToolsSettings::kSyncDevToolsPreferencesFrontendName.
-  settingName: 'sync_preferences',
+  settingName: 'sync-preferences',
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableSync),
   defaultValue: false,
@@ -729,7 +729,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'userShortcuts',
+  settingName: 'user-shortcuts',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
 });
@@ -738,7 +738,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   storageType: Common.Settings.SettingStorageType.Local,
   title: i18nLazyString(UIStrings.searchAsYouTypeSetting),
-  settingName: 'searchAsYouType',
+  settingName: 'search-as-you-type',
   settingType: Common.Settings.SettingType.BOOLEAN,
   order: 3,
   defaultValue: true,

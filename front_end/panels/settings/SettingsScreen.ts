@@ -349,7 +349,7 @@ export class GenericSettingsTab extends SettingsTab {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
       this.syncSection.data = {
         syncInfo,
-        syncSetting: Common.Settings.moduleSetting('sync_preferences') as Common.Settings.Setting<boolean>,
+        syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
       };
     });
   }

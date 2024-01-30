@@ -36,12 +36,12 @@ export class ShortcutRegistry {
     this.consumePrefix = null;
     this.devToolsDefaultShortcutActions = new Set();
     this.disabledDefaultShortcutsForAction = new Platform.MapUtilities.Multimap();
-    this.keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
+    this.keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('active-keybind-set');
     this.keybindSetSetting.addChangeListener(event => {
       Host.userMetrics.keybindSetSettingChanged(event.data);
       this.registerBindings();
     });
-    this.userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('userShortcuts');
+    this.userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
     this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
 
     this.registerBindings();

@@ -280,7 +280,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.callstackPane = CallStackSidebarPane.instance();
 
     Common.Settings.Settings.instance()
-        .moduleSetting('sidebarPosition')
+        .moduleSetting('sidebar-position')
         .addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
 
@@ -429,7 +429,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   override onResize(): void {
-    if (Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get() === 'auto') {
+    if (Common.Settings.Settings.instance().moduleSetting('sidebar-position').get() === 'auto') {
       this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
     }  // Do not force layout.
   }
@@ -1072,7 +1072,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private updateSidebarPosition(): void {
     let vertically;
-    const position = Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get();
+    const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
     if (position === 'right') {
       vertically = false;
     } else if (position === 'bottom') {

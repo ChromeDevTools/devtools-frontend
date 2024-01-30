@@ -90,11 +90,3 @@ document.querySelector('test').style = 'black';
 component.actionName = 'Explain this error';
 void component.update();
 document.getElementById('container')?.appendChild(component);
-
-const button = document.createElement('button');
-button.innerText = 'Toogle dogfood';
-button.style.margin = '10px';
-button.onclick = () => {
-  component.dogfood = !component.dogfood;
-};
-document.getElementById('container')?.append(button);

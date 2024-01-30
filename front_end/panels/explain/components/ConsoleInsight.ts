@@ -21,31 +21,6 @@ import listStyles from './consoleInsightSourcesList.css.js';
 
 const UIStrings = {
   /**
-   * @description The title of the button that allows providing the feebdack that a
-   * console message insight was inaccruate.
-   */
-  inaccurate: 'Inaccurate',
-  /**
-   * @description The title of the button that allows providing the feebdack that a
-   *console message insight was irrelevant.
-   */
-  irrelevant: 'Irrelevant',
-  /**
-   * @description The title of the button that allows providing the feebdack that a
-   *console message insight was inappropriate.
-   */
-  inappropriate: 'Inappropriate',
-  /**
-   * @description The title of the button that allows providing the feebdack that a
-   *console message insight was helpful.
-   */
-  notHelpful: 'Not helpful',
-  /**
-   * @description The title of the button that allows providing the feebdack that a
-   *console message insight was not good for an unknown "other" reason.
-   */
-  other: 'Other',
-  /**
    * @description The title of the insight source "Console message".
    */
   consoleMessage: 'Console message',
@@ -70,10 +45,6 @@ const UIStrings = {
    * insight.
    */
   insight: 'Insight',
-  /**
-   * @description The title of the a button that closes the rating form.
-   */
-  close: 'Close',
   /**
    * @description The title of the a button that closes the insight pane.
    */
@@ -101,19 +72,6 @@ const UIStrings = {
    */
   dogfood: 'Dogfood',
   /**
-   * @description The title of the rating form that asks for the reason for the rating.
-   */
-  reason: 'Why did you choose this rating? (optional)',
-  /**
-   * @description The placeholder for the textarea for providing additional
-   * feedback.
-   */
-  additionalFeedback: 'Provide additional feedback (optional)',
-  /**
-   * @description The title of the button that submits the feedback.
-   */
-  submit: 'Submit',
-  /**
    * @description The text of the header inside the console insight pane when there was an error generating an insight.
    */
   error: 'Something went wrong…',
@@ -140,7 +98,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 const {render, html, Directives} = LitHtml;
 
@@ -154,15 +111,6 @@ export class CloseEvent extends Event {
 
 type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'>;
 type PublicInsightProvider = Pick<InsightProvider, 'getInsights'>;
-
-// key => localized string.
-const negativeRatingReasons: Array<[string, () => Platform.UIString.LocalizedString]> = [
-  ['inaccurate', i18nLazyString(UIStrings.inaccurate)],
-  ['irrelevant', i18nLazyString(UIStrings.irrelevant)],
-  ['inapproprate', i18nLazyString(UIStrings.inappropriate)],
-  ['not-helpful', i18nLazyString(UIStrings.notHelpful)],
-  ['other', i18nLazyString(UIStrings.other)],
-];
 
 function localizeType(sourceType: SourceType): string {
   switch (sourceType) {
@@ -234,9 +182,6 @@ export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  // Flip to false to enable non-dogfood branding. Note that rating is not
-  // implemented.
-  #dogfood = true;
   #actionName = '';
 
   #promptBuilder: PublicPromptBuilder;
@@ -250,9 +195,7 @@ export class ConsoleInsight extends HTMLElement {
   };
 
   // Rating sub-form state.
-  #ratingFormOpened = false;
   #selectedRating?: boolean;
-  #selectedRatingReasons = new Set<string>();
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -284,15 +227,6 @@ export class ConsoleInsight extends HTMLElement {
     this.classList.add('opening');
   }
 
-  set dogfood(value: boolean) {
-    this.#dogfood = value;
-    this.#render();
-  }
-
-  get dogfood(): boolean {
-    return this.#dogfood;
-  }
-
   set actionName(value: string) {
     this.#actionName = value;
     this.#render();
@@ -320,20 +254,6 @@ export class ConsoleInsight extends HTMLElement {
     this.classList.add('closing');
   }
 
-  #onCloseRating(): void {
-    this.#ratingFormOpened = false;
-    this.#selectedRating = undefined;
-    this.#selectedRatingReasons.clear();
-    this.#render();
-  }
-
-  #onSubmit(): void {
-    if (this.#dogfood) {
-      this.#openFeedbackFrom();
-    }
-    this.#onCloseRating();
-  }
-
   #openFeedbackFrom(): void {
     if (this.#state.type !== State.INSIGHT) {
       throw new Error('Unexpected state');
@@ -355,23 +275,7 @@ export class ConsoleInsight extends HTMLElement {
     } else {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
-    if (this.#dogfood) {
-      this.#openFeedbackFrom();
-      return;
-    }
-    this.#ratingFormOpened = true;
-
-    this.#render();
-  }
-
-  #onReason(event: Event): void {
-    const target = event.target as Buttons.Button.Button;
-    if (!target.active) {
-      this.#selectedRatingReasons.add(target.dataset.reason as string);
-    } else {
-      this.#selectedRatingReasons.delete(target.dataset.reason as string);
-    }
-    this.#render();
+    this.#openFeedbackFrom();
   }
 
   async #onConsent(): Promise<void> {
@@ -468,10 +372,10 @@ export class ConsoleInsight extends HTMLElement {
         </footer>`;
       case State.INSIGHT:
         return html`<footer>
-        ${this.#dogfood ? html`<div class="dogfood-feedback">
-            <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
-            <span>${i18nString(UIStrings.dogfood)} - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
-        </div>`: ''}
+        <div class="dogfood-feedback">
+          <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
+          <span>${i18nString(UIStrings.dogfood)} - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
+        </div>
         <div class="filler"></div>
         <div class="rating">
           <${Buttons.Button.Button.litTagName}
@@ -521,17 +425,9 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #render(): void {
-    const topWrapper = Directives.classMap({
-      wrapper: true,
-      top: this.#ratingFormOpened,
-    });
-    const bottomWrapper = Directives.classMap({
-      wrapper: true,
-      bottom: this.#ratingFormOpened,
-    });
     // clang-format off
     render(html`
-      <div class=${topWrapper}>
+      <div class="wrapper">
         <header>
           <div class="filler">
             <h2>
@@ -556,67 +452,6 @@ export class ConsoleInsight extends HTMLElement {
         ${this.#renderMain()}
         ${this.#renderFooter()}
       </div>
-      ${this.#ratingFormOpened ? html`
-        <div class=${bottomWrapper}>
-          <header>
-            <div class="filler">${i18nString(UIStrings.reason)}</div>
-            <div>
-              <${Buttons.Button.Button.litTagName}
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.ROUND,
-                    size: Buttons.Button.Size.SMALL,
-                    iconName: 'cross',
-                    title: i18nString(UIStrings.close),
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${this.#onCloseRating}
-              ></${Buttons.Button.Button.litTagName}>
-            </div>
-          </header>
-          <main>
-            ${!this.#selectedRating ? html`
-                <div class="buttons">
-                  ${Directives.repeat(negativeRatingReasons, ([key, label]) => {
-                    return html`
-                      <${Buttons.Button.Button.litTagName}
-                        data-reason=${key}
-                        @click=${this.#onReason}
-                        .data=${
-                          {
-                            variant: Buttons.Button.Variant.SECONDARY,
-                            size: Buttons.Button.Size.MEDIUM,
-                            active: this.#selectedRatingReasons.has(key),
-                          } as Buttons.Button.ButtonData
-                        }
-                      >
-                        ${label()}
-                      </${Buttons.Button.Button.litTagName}>
-                    `;
-                  })}
-                </div>
-            ` : ''}
-            <textarea placeholder=${i18nString(UIStrings.additionalFeedback)}></textarea>
-          </main>
-          <footer>
-            <div class="filler"></div>
-            <div>
-              <${Buttons.Button.Button.litTagName}
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.PRIMARY,
-                    size: Buttons.Button.Size.MEDIUM,
-                    title: i18nString(UIStrings.submit),
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${this.#onSubmit}
-              >
-                ${i18nString(UIStrings.submit)}
-              </${Buttons.Button.Button.litTagName}>
-            </div>
-          </footer>
-        </div>
-      ` : ''}
     `, this.#shadow, {
       host: this,
     });

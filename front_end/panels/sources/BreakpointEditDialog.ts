@@ -181,7 +181,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     header.appendChild(closeIcon);
 
     this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
-        Common.Settings.Settings.instance().createLocalSetting('breakpointConditionHistory', []));
+        Common.Settings.Settings.instance().createLocalSetting('breakpoint-condition-history', []));
     this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
     const linkWrapper = this.contentElement.appendChild(document.createElement('div'));

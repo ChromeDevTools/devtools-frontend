@@ -109,7 +109,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     // to an e2e test or no longer accesses this variable directly.
     this.watchExpressions = [];
     this.watchExpressionsSetting =
-        Common.Settings.Settings.instance().createLocalSetting<string[]>('watchExpressions', []);
+        Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
 
     this.addButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.addWatchExpression), 'plus', undefined, 'add-watch-expression');

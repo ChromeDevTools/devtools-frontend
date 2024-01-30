@@ -1540,7 +1540,7 @@ export class DebuggerPlugin extends Plugin {
     if (!resource) {
       this.sourceMapInfobar = UI.Infobar.Infobar.create(
           UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapSkipped), [],
-          Common.Settings.Settings.instance().createSetting('sourceMapSkippedInfobarDisabled', false));
+          Common.Settings.Settings.instance().createSetting('source-map-skipped-infobar-disabled', false));
       if (!this.sourceMapInfobar) {
         return;
       }
@@ -1549,7 +1549,7 @@ export class DebuggerPlugin extends Plugin {
     } else if (resource.success) {
       this.sourceMapInfobar = UI.Infobar.Infobar.create(
           UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapLoaded), [],
-          Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));
+          Common.Settings.Settings.instance().createSetting('source-map-infobar-disabled', false));
       if (!this.sourceMapInfobar) {
         return;
       }

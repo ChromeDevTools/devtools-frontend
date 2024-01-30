@@ -84,7 +84,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.sourceViewByUISourceCode = new Map();
 
     this.editorContainer = new TabbedEditorContainer(
-        this, Common.Settings.Settings.instance().createLocalSetting('previouslyViewedFiles', []),
+        this, Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []),
         this.placeholderElement(), this.focusedPlaceholderElement);
     this.editorContainer.show(this.searchableViewInternal.element);
     this.editorContainer.addEventListener(TabbedEditorContainerEvents.EditorSelected, this.editorSelected, this);

@@ -18,11 +18,13 @@ const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
 const DRAG_LOG_INTERVAL = 500;
+const CLICK_LOG_INTERVAL = 500;
 
 let processingThrottler: Common.Throttler.Throttler|null;
 let keyboardLogThrottler: Common.Throttler.Throttler;
 let hoverLogThrottler: Common.Throttler.Throttler;
 let dragLogThrottler: Common.Throttler.Throttler;
+let clickLogThrottler: Common.Throttler.Throttler;
 
 const mutationObservers = new WeakMap<Node, MutationObserver>();
 const documents: Document[] = [];
@@ -48,12 +50,14 @@ export async function startLogging(options?: {
   keyboardLogThrottler?: Common.Throttler.Throttler,
   hoverLogThrottler?: Common.Throttler.Throttler,
   dragLogThrottler?: Common.Throttler.Throttler,
+  clickLogThrottler?: Common.Throttler.Throttler,
 }): Promise<void> {
   logging = true;
   processingThrottler = options?.processingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
   keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   hoverLogThrottler = options?.hoverLogThrottler || new Common.Throttler.Throttler(HOVER_LOG_INTERVAL);
   dragLogThrottler = options?.dragLogThrottler || new Common.Throttler.Throttler(DRAG_LOG_INTERVAL);
+  clickLogThrottler = options?.clickLogThrottler || new Common.Throttler.Throttler(CLICK_LOG_INTERVAL);
   await addDocument(document);
 }
 
@@ -141,11 +145,16 @@ async function process(): Promise<void> {
     }
     if (!loggingState.processed) {
       if (loggingState.config.track?.has('click')) {
-        element.addEventListener('click', e => logClick(e.currentTarget as Element, e), {capture: true});
+        element.addEventListener('click', e => {
+          const loggable = e.currentTarget as Element;
+          void clickLogThrottler.schedule(async () => logClick(loggable, e));
+        }, {capture: true});
       }
       if (loggingState.config.track?.has('dblclick')) {
-        element.addEventListener(
-            'dblclick', e => logClick(e.currentTarget as Element, e, {doubleClick: true}), {capture: true});
+        element.addEventListener('dblclick', e => {
+          const loggable = e.currentTarget as Element;
+          void clickLogThrottler.schedule(async () => logClick(loggable, e, {doubleClick: true}));
+        }, {capture: true});
       }
       const trackHover = loggingState.config.track?.has('hover');
       if (trackHover) {

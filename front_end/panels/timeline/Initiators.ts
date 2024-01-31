@@ -36,7 +36,7 @@ export function eventInitiatorPairsToDraw(
       continue;
     }
 
-    if (!TraceEngine.Types.TraceEvents.isRendererEvent(currentEvent)) {
+    if (!TraceEngine.Types.TraceEvents.isSyntheticTraceEntry(currentEvent)) {
       // If the current event is not a renderer, we have no
       // concept of a parent event, so we can bail.
       currentEvent = null;

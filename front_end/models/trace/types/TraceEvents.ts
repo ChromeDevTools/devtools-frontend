@@ -1199,7 +1199,7 @@ export interface SyntheticInteractionPair extends SyntheticEventPair<TraceEventE
  * An event created synthetically in the frontend that has a self time
  * (the time spent running the task itself).
  */
-export interface SyntheticEventWithSelfTime extends TraceEventData {
+export interface SyntheticTraceEntry extends TraceEventData {
   selfTime?: MicroSeconds;
 }
 
@@ -1207,7 +1207,7 @@ export interface SyntheticEventWithSelfTime extends TraceEventData {
  * A profile call created in the frontend from samples disguised as a
  * trace event.
  */
-export interface SyntheticProfileCall extends SyntheticEventWithSelfTime {
+export interface SyntheticProfileCall extends SyntheticTraceEntry {
   callFrame: Protocol.Runtime.CallFrame;
   nodeId: Protocol.integer;
 }
@@ -1216,16 +1216,14 @@ export interface SyntheticProfileCall extends SyntheticEventWithSelfTime {
  * A trace event augmented synthetically in the frontend to contain
  * its self time.
  */
-export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticEventWithSelfTime;
-
-export type SyntheticTraceEntry = SyntheticRendererEvent|SyntheticProfileCall;
+export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticTraceEntry;
 
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionPair {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
 }
 
-export function isRendererEvent(event: TraceEventData): event is SyntheticTraceEntry {
+export function isSyntheticTraceEntry(event: TraceEventData): event is SyntheticTraceEntry {
   return isTraceEventRendererEvent(event) || isProfileCall(event);
 }
 

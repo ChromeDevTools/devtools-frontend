@@ -69,7 +69,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const selectedFilterSetting =
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // @ts-expect-error
-        Common.Settings.Settings.instance().createSetting<string>('console.sidebarSelectedFilter', null);
+        Common.Settings.Settings.instance().createSetting<string>('console.sidebar-selected-filter', null);
 
     const consoleAPIParsedFilters = [{
       key: FilterType.Source,

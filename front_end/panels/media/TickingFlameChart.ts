@@ -210,7 +210,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
     // Chart settings.
     this.chartGroupExpansionSetting =
-        Common.Settings.Settings.instance().createSetting('mediaFlameChartGroupExpansion', {});
+        Common.Settings.Settings.instance().createSetting('media-flame-chart-group-expansion', {});
 
     // Create the chart.
     this.chart =

@@ -77,7 +77,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
-    this.searchableViewInternal = new UI.SearchableView.SearchableView(this, this, 'sourcesViewSearchConfig');
+    this.searchableViewInternal = new UI.SearchableView.SearchableView(this, this, 'sources-view-search-config');
     this.searchableViewInternal.setMinimalSearchQuerySize(0);
     this.searchableViewInternal.show(this.element);
 

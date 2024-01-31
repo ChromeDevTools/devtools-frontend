@@ -257,10 +257,10 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
     this.showInheritedComputedStylePropertiesSetting =
-        Common.Settings.Settings.instance().createSetting('showInheritedComputedStyleProperties', false);
+        Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
 
-    this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('groupComputedStyles', false);
+    this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
     this.groupComputedStylesSetting.addChangeListener(() => {
       this.update();
     });

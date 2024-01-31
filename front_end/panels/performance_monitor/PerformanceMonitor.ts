@@ -449,7 +449,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
     this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
-        'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
+        'perfmon-active-indicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     this.enabledCharts = new Set(this.enabledChartsSetting.get());
   }
 

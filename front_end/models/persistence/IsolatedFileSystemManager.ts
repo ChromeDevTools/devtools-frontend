@@ -114,7 +114,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
     this.workspaceFolderExcludePatternSettingInternal = Common.Settings.Settings.instance().createRegExpSetting(
-        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
+        'workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
     this.fileSystemRequestResolve = null;
     this.fileSystemsLoadedPromise = this.requestFileSystems();

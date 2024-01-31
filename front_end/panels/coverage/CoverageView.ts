@@ -156,7 +156,8 @@ export class CoverageView extends UI.Widget.VBox {
     for (const type of coverageTypes) {
       this.coverageTypeComboBox.addOption(this.coverageTypeComboBox.createOption(type.label, `${type.value}`));
     }
-    this.coverageTypeComboBoxSetting = Common.Settings.Settings.instance().createSetting('coverageViewCoverageType', 0);
+    this.coverageTypeComboBoxSetting =
+        Common.Settings.Settings.instance().createSetting('coverage-view-coverage-type', 0);
     this.coverageTypeComboBox.setSelectedIndex(this.coverageTypeComboBoxSetting.get());
     this.coverageTypeComboBox.setEnabled(true);
     toolbar.appendToolbarItem(this.coverageTypeComboBox);
@@ -218,7 +219,7 @@ export class CoverageView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this.filterByTypeComboBox);
 
     toolbar.appendSeparator();
-    this.showContentScriptsSetting = Common.Settings.Settings.instance().createSetting('showContentScripts', false);
+    this.showContentScriptsSetting = Common.Settings.Settings.instance().createSetting('show-content-scripts', false);
     this.showContentScriptsSetting.addChangeListener(this.onFilterChanged, this);
     this.contentScriptsCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         this.showContentScriptsSetting, i18nString(UIStrings.includeExtensionContentScripts),

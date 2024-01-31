@@ -87,7 +87,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     this.embedderPathInternal = embedderPath;
     this.domFileSystem = domFileSystem;
     this.excludedFoldersSetting =
-        Common.Settings.Settings.instance().createLocalSetting('workspaceExcludedFolders', {});
+        Common.Settings.Settings.instance().createLocalSetting('workspace-excluded-folders', {});
     this.excludedFoldersInternal = new Set(this.excludedFoldersSetting.get()[path] || []);
     this.excludedEmbedderFolders = [];
 

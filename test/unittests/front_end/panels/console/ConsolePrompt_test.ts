@@ -88,7 +88,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
   it('allows user to enable pasting by typing \'allow pasting\'', async () => {
     const setting = Common.Settings.Settings.instance().createSetting(
-        'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
     assert.isFalse(setting.get());
     const enterBinding = keyBinding.find(b => b.key === 'Enter');
     assertNotNullOrUndefined(enterBinding);

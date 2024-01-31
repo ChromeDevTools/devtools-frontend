@@ -205,7 +205,7 @@ describeWithMockConnection('ConsoleView', () => {
       SDK.ConsoleModel.ConsoleModel.requestClearMessages();
 
       const selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
-          'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
+          'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
 
       for (let i = 0; i < 5; i++) {
         assert.isFalse(selfXssWarningDisabledSetting.get());

@@ -68,7 +68,7 @@ describeWithEnvironment('SourceFrame', () => {
   it('shows self-XSS warning which the user can disable', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SELF_XSS_WARNING);
     const setting = Common.Settings.Settings.instance().createSetting(
-        'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
     assert.isFalse(setting.get());
 
     const sourceFrame = await createSourceFrame('Example');

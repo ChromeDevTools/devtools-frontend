@@ -251,7 +251,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   initialize(nodeFormatter: Formatter): void {
     this.nodeFormatter = nodeFormatter;
 
-    this.viewType = Common.Settings.Settings.instance().createSetting('profileView', ViewTypes.Heavy);
+    this.viewType = Common.Settings.Settings.instance().createSetting('profile-view', ViewTypes.Heavy);
     const viewTypes = [ViewTypes.Flame, ViewTypes.Heavy, ViewTypes.Tree];
 
     const optionNames = new Map([

@@ -1204,8 +1204,8 @@ export class HeapSnapshotProfileType extends
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this.reportHeapSnapshotProgress, this);
-    this.exposeInternals = Common.Settings.Settings.instance().createSetting('exposeInternals', false);
-    this.captureNumericValue = Common.Settings.Settings.instance().createSetting('captureNumericValue', false);
+    this.exposeInternals = Common.Settings.Settings.instance().createSetting('expose-internals', false);
+    this.captureNumericValue = Common.Settings.Settings.instance().createSetting('capture-numeric-value', false);
     this.customContentInternal = null;
   }
 
@@ -1367,7 +1367,7 @@ export class TrackingHeapSnapshotProfileType extends
   constructor() {
     super(TrackingHeapSnapshotProfileType.TypeId, i18nString(UIStrings.allocationInstrumentationOn));
     this.recordAllocationStacksSettingInternal =
-        Common.Settings.Settings.instance().createSetting('recordAllocationStacks', false);
+        Common.Settings.Settings.instance().createSetting('record-allocation-stacks', false);
     this.customContentInternal = null;
     this.recording = false;
   }

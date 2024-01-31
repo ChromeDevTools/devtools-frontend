@@ -17,7 +17,7 @@ body.platform-linux {
 
 body.platform-mac {
   color: rgb(48 57 66);
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 body.platform-windows {

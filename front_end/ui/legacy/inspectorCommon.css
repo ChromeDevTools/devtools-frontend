@@ -103,7 +103,7 @@ body {
 }
 
 .platform-mac {
-  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  --default-font-family: system-ui, sans-serif;
 }
 
 .platform-windows {
@@ -118,9 +118,9 @@ body {
 .platform-mac,
 :host-context(.platform-mac) {
   --monospace-font-size: 11px;
-  --monospace-font-family: menlo, monospace;
+  --monospace-font-family: monospace;
   --source-code-font-size: 11px;
-  --source-code-font-family: menlo, monospace;
+  --source-code-font-family: monospace;
 }
 
 .platform-windows,

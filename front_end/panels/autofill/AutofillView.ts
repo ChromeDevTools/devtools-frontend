@@ -103,7 +103,8 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
-    this.#autoOpenViewSetting = Common.Settings.Settings.instance().createSetting('autoOpenAutofillViewOnEvent', true);
+    this.#autoOpenViewSetting =
+        Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }

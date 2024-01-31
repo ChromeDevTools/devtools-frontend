@@ -21,7 +21,8 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.AddressFormFilled, this.#addressFormFilled, this,
         {scoped: true});
-    this.#autoOpenViewSetting = Common.Settings.Settings.instance().createSetting('autoOpenAutofillViewOnEvent', true);
+    this.#autoOpenViewSetting =
+        Common.Settings.Settings.instance().createSetting('auto-open-autofill-view-on-event', true);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): AutofillManager {

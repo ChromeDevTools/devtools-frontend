@@ -32,7 +32,7 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
   private bucketTreeElements: Set<StorageBucketsTreeElement> = new Set();
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.storageBuckets), 'StorageBuckets');
+    super(storagePanel, i18nString(UIStrings.storageBuckets), 'storage-buckets');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
     this.setLink(
@@ -134,7 +134,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
       bucketInfo: Protocol.Storage.StorageBucketInfo) {
     const {bucket} = bucketInfo;
     const {origin} = SDK.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
-    super(resourcesPanel, `${bucket.name} - ${origin}`, `StorageBucket_${bucket.name}_${bucket.storageKey}`);
+    super(resourcesPanel, `${bucket.name} - ${origin}`, `storage-bucket-${bucket.name}-${bucket.storageKey}`);
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
     const icon = IconButton.Icon.create('database');

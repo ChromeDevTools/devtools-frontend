@@ -37,7 +37,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
   private storageBucket?: Protocol.Storage.StorageBucket;
 
   constructor(resourcesPanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
-    super(resourcesPanel, i18nString(UIStrings.cacheStorage), 'CacheStorage');
+    super(resourcesPanel, i18nString(UIStrings.cacheStorage), 'cache-storage');
     const icon = IconButton.Icon.create('database');
     this.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cache/?utm_source=devtools' as

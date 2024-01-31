@@ -315,7 +315,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const storageSectionTitle = i18nString(UIStrings.storage);
     const storageTreeElement = this.addSidebarSection(storageSectionTitle);
     this.localStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'LocalStorage');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'local-storage');
     this.localStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/localstorage/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -324,7 +324,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.sessionStorage), 'SessionStorage');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.sessionStorage), 'session-storage');
     this.sessionStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/sessionstorage/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -338,7 +338,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         Platform.DevToolsPath.UrlString);
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.databasesListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.webSql), 'Databases');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.webSql), 'databases');
     this.databasesListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/websql/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -347,7 +347,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     storageTreeElement.appendChild(this.databasesListTreeElement);
     this.cookieListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.cookies), 'Cookies');
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.cookies), 'cookies');
     this.cookieListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cookies/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -1262,7 +1262,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
   private idbDatabaseTreeElements: IDBDatabaseTreeElement[];
   private storageBucket?: Protocol.Storage.StorageBucket;
   constructor(storagePanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
-    super(storagePanel, i18nString(UIStrings.indexeddb), 'IndexedDB');
+    super(storagePanel, i18nString(UIStrings.indexeddb), 'indexed-db');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
@@ -2227,7 +2227,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   }
 
   windowOpened(targetInfo: Protocol.Target.TargetInfo): void {
-    const categoryKey = 'OpenedWindows';
+    const categoryKey = 'opened-windows';
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
@@ -2243,7 +2243,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   }
 
   workerCreated(targetInfo: Protocol.Target.TargetInfo): void {
-    const categoryKey = targetInfo.type === 'service_worker' ? 'Service Workers' : 'Web Workers';
+    const categoryKey = targetInfo.type === 'service_worker' ? 'service-workers' : 'web-workers';
     const categoryName = targetInfo.type === 'service_worker' ? i18n.i18n.lockedString('Service workers') :
                                                                 i18nString(UIStrings.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);

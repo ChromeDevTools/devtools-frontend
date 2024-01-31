@@ -324,6 +324,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #createToolbar(): void {
     this.#topToolbarContainer = this.contentElement.createChild('div', 'webauthn-toolbar-container');
+    this.#topToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.#topToolbar = new UI.Toolbar.Toolbar('webauthn-toolbar', this.#topToolbarContainer);
     const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
     this.#enableCheckbox =

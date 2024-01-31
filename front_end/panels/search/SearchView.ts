@@ -165,6 +165,7 @@ export class SearchView extends UI.Widget.VBox {
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this.searchPanelElement);
+    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.matchCaseButton = SearchView.appendToolbarToggle(toolbar, 'Aa', i18nString(UIStrings.matchCase), 'match-case');
     this.regexButton =
         SearchView.appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression), 'use-regex');

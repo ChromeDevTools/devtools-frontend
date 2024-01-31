@@ -223,6 +223,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   #createToolbars(): {toolbarContainer: Element} {
     const toolbarContainer = this.contentElement.createChild('div', 'issues-toolbar-container');
+    toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     new UI.Toolbar.Toolbar('issues-toolbar-left', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('issues-toolbar-right', toolbarContainer);
 

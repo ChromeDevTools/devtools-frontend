@@ -37,6 +37,7 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
     this.#tabbedPane.setAllowTabReorder(true, true);
     this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this.#tabClosed, this);
     this.#tabbedPane.show(this.contentElement);
+    this.#tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar()}`);
   }
 
   static instance(): LinearMemoryInspectorPane {

@@ -137,6 +137,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.decorationManager = null;
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
+    toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);
     toolbar.makeWrappable(true);
 

@@ -214,7 +214,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
     this.panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
     this.panelToolbar.makeWrappable(true);
-    this.panelToolbar.element.setAttribute('jslog', `${VisualLogging.section('network-toolbar')}`);
+    this.panelToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('network-main')}`);
     this.rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
 
     this.filterBar = new UI.FilterBar.FilterBar('network-panel', true);

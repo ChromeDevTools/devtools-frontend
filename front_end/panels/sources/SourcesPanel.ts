@@ -42,6 +42,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
@@ -242,6 +243,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
+    tabbedPane.element.setAttribute('jslog', `${VisualLogging.toolbar('navigator')}`);
     const navigatorMenuButton =
         new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true, 'more-options');
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
@@ -814,6 +816,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private createDebugToolbar(): UI.Toolbar.Toolbar {
     const debugToolbar = new UI.Toolbar.Toolbar('scripts-debug-toolbar');
+    debugToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('debug')}`);
 
     const longResumeButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'play');

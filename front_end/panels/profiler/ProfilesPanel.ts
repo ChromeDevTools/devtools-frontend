@@ -35,6 +35,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import heapProfilerStyles from './heapProfiler.css.js';
 import {
@@ -141,6 +142,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
     const toolbarContainerLeft = document.createElement('div');
     toolbarContainerLeft.classList.add('profiles-toolbar');
+    toolbarContainerLeft.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
     toolbar.makeWrappable(true);

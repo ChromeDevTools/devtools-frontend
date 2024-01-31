@@ -199,6 +199,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.recordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('background-service.toggle-recording');
 
     this.toolbar = new UI.Toolbar.Toolbar('background-service-toolbar', this.contentElement);
+    this.toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     void this.setupToolbar();
 
     /**

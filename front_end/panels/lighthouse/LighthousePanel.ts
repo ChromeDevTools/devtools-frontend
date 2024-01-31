@@ -5,18 +5,17 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
+  type AuditProgressChangedEvent,
   Events,
   LighthouseController,
-  type AuditProgressChangedEvent,
   type PageAuditabilityChangedEvent,
   type PageWarningsChangedEvent,
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
-
 import {ProtocolService} from './LighthouseProtocolService.js';
-
 import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
@@ -206,6 +205,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
   private renderToolbar(): void {
     const lighthouseToolbarContainer = this.element.createChild('div', 'lighthouse-toolbar-container');
+    lighthouseToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     const toolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
 

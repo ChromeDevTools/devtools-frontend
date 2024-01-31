@@ -47,6 +47,7 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
@@ -348,6 +349,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemorySetting.addChangeListener(this.onModeChanged, this);
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
+    timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
     this.panelToolbar.makeWrappable(true);
     this.panelRightToolbar = new UI.Toolbar.Toolbar('', timelineToolbarContainer);

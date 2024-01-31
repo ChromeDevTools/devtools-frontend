@@ -44,6 +44,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this.contextSelector.toolbarItem());
+    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     // Create content container
     this.contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');

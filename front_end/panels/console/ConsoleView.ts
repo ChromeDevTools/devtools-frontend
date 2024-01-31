@@ -421,6 +421,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendToolbarItem(this.filter.levelMenuButton);
     toolbar.appendToolbarItem(this.progressToolbarItem);
     toolbar.appendSeparator();
+    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this.issueCounter.id = 'console-issues-counter';
     this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issues').track({click: true})}`);

@@ -94,6 +94,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
+    this.toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.revert'));
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);

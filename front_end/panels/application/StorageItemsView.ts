@@ -57,6 +57,7 @@ export class StorageItemsView extends UI.Widget.VBox {
         'jslog', `${VisualLogging.action('storage-items-view.refresh').track({click: true})}`);
 
     this.mainToolbar = new UI.Toolbar.Toolbar('top-resources-toolbar', this.element);
+    this.mainToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     this.filterItem = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), '', 0.4);
     this.filterItem.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.filterChanged, this);

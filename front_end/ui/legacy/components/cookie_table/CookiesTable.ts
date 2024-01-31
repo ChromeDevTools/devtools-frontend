@@ -775,24 +775,21 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
         }
       }
     }
-    // When CookiesTable gets created in Application panel instead of Network Panel, `this.blockedReasons` only contains reasons for blocked cookies in responses.
-    // We want to show the warning icon for blocked cookies in requests as well.
-    if (columnId === SDK.Cookie.Attributes.Name &&
-        IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(this.cookie)) {
+
+    if (blockedReasonString) {
       const infoElement = new IconButton.Icon.Icon();
-      infoElement.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-      infoElement.onclick = (): Promise<void> => IssuesManager.RelatedIssue.reveal(this.cookie);
-      infoElement.style.cursor = 'pointer';
-      infoElement.title = blockedReasonString;
-      cell.insertBefore(infoElement, cell.firstChild);
-    } else if (blockedReasonString) {
-      const infoElement = new IconButton.Icon.Icon();
-      infoElement.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};
-      cell.classList.add('flagged-cookie-attribute-cell');
+      if (columnId === SDK.Cookie.Attributes.Name &&
+          IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(this.cookie)) {
+        infoElement.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+        infoElement.onclick = (): Promise<void> => IssuesManager.RelatedIssue.reveal(this.cookie);
+        infoElement.style.cursor = 'pointer';
+      } else {
+        infoElement.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};
+        cell.classList.add('flagged-cookie-attribute-cell');
+      }
       infoElement.title = blockedReasonString;
       cell.insertBefore(infoElement, cell.firstChild);
     }
-
     return cell;
   }
 }

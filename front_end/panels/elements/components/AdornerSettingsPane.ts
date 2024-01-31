@@ -94,6 +94,7 @@ export class AdornerSettingsPane extends HTMLElement {
             class="adorner-status"
             type="checkbox" name=${adorner}
             .checked=${isEnabled}
+            jslog=${VisualLogging.toggle(adorner).track({change: true})}
             data-adorner=${adorner}>
           <span class="adorner-name">${adorner}</span>
         </label>
@@ -104,7 +105,7 @@ export class AdornerSettingsPane extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="adorner-settings-pane" tabindex="-1">
+      <div class="adorner-settings-pane" tabindex="-1" jslog=${VisualLogging.pane('adorner-settings')}>
         <div class="settings-title">${i18nString(UIStrings.settingsTitle)}</div>
         <div class="setting-list" @change=${this.#onChange}>
           ${settingTemplates}

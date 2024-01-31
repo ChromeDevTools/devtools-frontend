@@ -57,6 +57,7 @@ export const contentAsDataURL = function(
     return null;
   }
 
+  content = contentEncoded ? content : encodeURIComponent(content);
   return 'data:' + mimeType + (charset ? ';charset=' + charset : '') + (contentEncoded ? ';base64' : '') + ',' +
       content;
 };

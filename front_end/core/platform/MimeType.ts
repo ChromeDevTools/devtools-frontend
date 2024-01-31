@@ -23,6 +23,7 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
   'application/vnd.dart',
   'application/xml',
   'application/x-aspx',
+  'application/x-javascript',
   'application/x-jsp',
   'application/x-httpd-php',
 ]);

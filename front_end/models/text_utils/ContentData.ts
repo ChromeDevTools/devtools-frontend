@@ -30,12 +30,18 @@ export class ContentData {
   #contentAsText?: string;
 
   constructor(data: string, isBase64: boolean, mimeType: string, charset?: string) {
-    this.mimeType = mimeType;
     this.#charset = charset;
     if (isBase64) {
       this.#contentAsBase64 = data;
     } else {
       this.#contentAsText = data;
+    }
+
+    this.mimeType = mimeType;
+    if (!this.mimeType) {
+      // Tests or broken requests might pass an empty/undefined mime type. Fallback to
+      // "default" mime types.
+      this.mimeType = isBase64 ? 'application/octet-stream' : 'text/plain';
     }
   }
 
@@ -96,12 +102,18 @@ export class ContentData {
    * @deprecated Used during migration from `DeferredContent` to `ContentData`.
    */
   asDeferedContent(): DeferredContent {
-    // To keep with existing behavior we prefer to return the content
-    // encoded if that is how this ContentData was constructed with.
+    // To prevent encoding mistakes, we'll return text content already decoded.
+    if (this.isTextContent) {
+      return {content: this.text, isEncoded: false};
+    }
+    if (this.#contentAsText !== undefined) {
+      // Unknown text mime type, this should not really happen.
+      return {content: this.#contentAsText, isEncoded: false};
+    }
     if (this.#contentAsBase64 !== undefined) {
       return {content: this.#contentAsBase64, isEncoded: true};
     }
-    return {content: this.text, isEncoded: false};
+    throw new Error('Unreachable');
   }
 
   static isError(contentDataOrError: ContentDataOrError): contentDataOrError is {error: string} {

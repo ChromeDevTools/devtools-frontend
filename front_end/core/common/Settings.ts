@@ -1235,8 +1235,11 @@ export class VersionController {
   updateVersionFrom36To37(): void {
     const updateStorage = (storage: SettingsStorage): void => {
       for (const key of storage.keys()) {
-        storage.set(Settings.normalizeSettingName(key), storage.get(key));
-        removeSetting({name: key, storage});
+        const normalizedKey = Settings.normalizeSettingName(key);
+        if (normalizedKey !== key) {
+          storage.set(normalizedKey, storage.get(key));
+          removeSetting({name: key, storage});
+        }
       }
     };
     updateStorage(Settings.instance().globalStorage);

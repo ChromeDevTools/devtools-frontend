@@ -473,6 +473,18 @@ describe('VersionController', () => {
       assert.deepEqual(settings.syncedStorage.keys(), ['synced-setting']);
     });
 
+    it('keeps kebab case settings as is', () => {
+      const versionController = new VersionController();
+      settings.globalStorage.set('setting', '123');
+      settings.localStorage.set('another-setting', '456');
+
+      versionController.updateVersionFrom36To37();
+
+      assert.deepEqual(settings.globalStorage.keys(), ['setting']);
+      assert.strictEqual(settings.globalStorage.get('setting'), '123');
+      assert.strictEqual(settings.localStorage.get('another-setting'), '456');
+    });
+
     it('update data grid column weights value', () => {
       const versionController = new VersionController();
       settings.globalStorage.set('dataGrid-foo-columnWeights', JSON.stringify({

@@ -219,6 +219,10 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.experiment;
   }
 
+  setting(): string|undefined {
+    return this.actionRegistration.setting;
+  }
+
   condition(): string|undefined {
     return this.actionRegistration.condition;
   }
@@ -247,9 +251,15 @@ export function reset(): void {
 
 export function getRegisteredActionExtensions(): Array<Action> {
   return Array.from(registeredActions.values())
-      .filter(
-          action => Root.Runtime.Runtime.isDescriptorEnabled(
-              {experiment: action.experiment(), condition: action.condition()}))
+      .filter(action => {
+        const settingName = action.setting();
+        if (settingName && !Common.Settings.moduleSetting(settingName).get()) {
+          return false;
+        }
+
+        return Root.Runtime.Runtime.isDescriptorEnabled(
+            {experiment: action.experiment(), condition: action.condition()});
+      })
       .sort((firstAction, secondAction) => {
         const order1 = firstAction.order() || 0;
         const order2 = secondAction.order() || 0;
@@ -519,6 +529,13 @@ export interface ActionRegistration {
    * experiment will enable and disable the action respectively.
    */
   experiment?: Root.Runtime.ExperimentName;
+  /**
+   * The name of the setting an action is associated with. Enabling and
+   * disabling the declared setting will enable and disable the action
+   * respectively. Note that changing the setting requires a reload for it to
+   * apply to action registration.
+   */
+  setting?: string;
   /**
    * A condition represented as a string the action's availability depends on. Conditions come
    * from the queryParamsObject defined in Runtime and just as the experiment field, they determine the availability

@@ -188,7 +188,7 @@ export class CookieItemsView extends StorageItemsView {
     this.cookiesTable.setMinimumSize(0, 50);
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(
-        /* isVertical: */ false, /* secondIsSidebar: */ true, 'cookieItemsSplitViewState');
+        /* isVertical: */ false, /* secondIsSidebar: */ true, 'cookie-items-split-view-state');
     this.splitWidget.show(this.element);
 
     this.previewPanel = new UI.Widget.VBox();

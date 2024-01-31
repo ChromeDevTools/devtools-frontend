@@ -331,7 +331,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.find), i18nString(UIStrings.find));
     this.searchableViewInternal.show(this.element);
 
-    this.splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'heapSnapshotSplitViewState', 200, 200);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'heap-snapshot-split-view-state', 200, 200);
     this.splitWidget.show(this.searchableViewInternal.element);
 
     const heapProfilerModel = profile.heapProfilerModel();
@@ -1129,7 +1129,7 @@ export class AllocationPerspective extends Perspective {
   constructor() {
     super(i18nString(UIStrings.allocation));
     this.allocationSplitWidget =
-        new UI.SplitWidget.SplitWidget(false, true, 'heapSnapshotAllocationSplitViewState', 200, 200);
+        new UI.SplitWidget.SplitWidget(false, true, 'heap-snapshot-allocation-split-view-state', 200, 200);
     this.allocationSplitWidget.setSidebarWidget(new UI.Widget.VBox());
   }
 

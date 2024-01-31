@@ -157,8 +157,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.canvasElement.addEventListener('mouseleave', this.onMouseMove.bind(this), false);
     this.canvasElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.canvasElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    this.canvasElement.setAttribute(
-        'jslog', `${VisualLogging.canvas('layers-canvas').track({click: true, drag: true})}`);
+    this.canvasElement.setAttribute('jslog', `${VisualLogging.canvas('layers').track({click: true, drag: true})}`);
     UI.ARIAUtils.setLabel(this.canvasElement, i18nString(UIStrings.dLayersView));
 
     this.lastSelection = {};

@@ -129,7 +129,7 @@ export function buildStackTraceRows(
         revealBreakpoint: previousStackFrameWasBreakpointCondition,
       });
       if (link) {
-        link.setAttribute('jslog', `${VisualLogging.link('stack-trace-link').track({click: true})}`);
+        link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({click: true})}`);
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
         // Note: This has always checked whether the call frame location *in the generated

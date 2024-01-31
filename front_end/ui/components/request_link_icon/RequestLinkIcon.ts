@@ -183,7 +183,7 @@ export class RequestLinkIcon extends HTMLElement {
       LitHtml.render(LitHtml.html`
       <button class=${LitHtml.Directives.classMap({'link': Boolean(this.#request)})}
               title=${this.#getTooltip()}
-              jslog=${VisualLogging.link('request-link').track({click: true})}
+              jslog=${VisualLogging.link('request').track({click: true})}
               @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} name="arrow-up-down-circle"></${IconButton.Icon.Icon.litTagName}>
         ${this.#maybeRenderURL()}

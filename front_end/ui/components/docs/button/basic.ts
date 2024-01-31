@@ -263,23 +263,6 @@ for (const roundIcon of roundIcons) {
   appendButton(smallRoundButton);
 }
 
-// Tiny Round Buttons
-const tinyRoundIcons = [
-  {iconName: plusIcon},
-  {iconName: minusIcon},
-];
-for (const roundIcon of tinyRoundIcons) {
-  const tinyRoundButton = new Buttons.Button.Button();
-  tinyRoundButton.data = {
-    variant: Buttons.Button.Variant.ROUND,
-    size: Buttons.Button.Size.TINY,
-    ...roundIcon,
-  };
-  tinyRoundButton.title = 'Tiny Round Button';
-  tinyRoundButton.onclick = () => alert('clicked');
-  appendButton(tinyRoundButton);
-}
-
 // Small Disabled Round Button
 const smallRoundButtonDisabled = new Buttons.Button.Button();
 smallRoundButtonDisabled.data = {

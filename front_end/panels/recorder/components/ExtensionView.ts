@@ -106,7 +106,7 @@ export class ExtensionView extends HTMLElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,
-                  size: Buttons.Button.Size.TINY,
+                  size: Buttons.Button.Size.SMALL,
                   iconName: 'cross',
                 } as Buttons.Button.ButtonData
               }

@@ -28,9 +28,6 @@ export const enum Variant {
 export const enum Size {
   SMALL = 'SMALL',
   MEDIUM = 'MEDIUM',
-  // The 'tiny' size only has an effect on buttons of type 'round', for other
-  // button types 'tiny' buttons look just like 'small' buttons.
-  TINY = 'TINY',
 }
 
 type ButtonType = 'button'|'submit'|'reset';
@@ -257,8 +254,7 @@ export class Button extends HTMLElement {
       'text-with-icon': hasIcon && !this.#isEmpty,
       'only-icon': hasIcon && this.#isEmpty,
       'only-text': !hasIcon && !this.#isEmpty,
-      small: Boolean(this.#props.size === Size.SMALL || this.#props.size === Size.TINY),
-      tiny: Boolean(this.#props.size === Size.TINY),
+      small: Boolean(this.#props.size === Size.SMALL),
       active: this.#props.active,
     };
     const spinnerClasses = {

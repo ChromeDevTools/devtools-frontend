@@ -91,11 +91,6 @@ button {
 
   &.round {
     border-radius: 100%;
-
-    &.tiny {
-      --button-height: 18px;
-      --button-width: 18px;
-    }
   }
 
   &.primary {

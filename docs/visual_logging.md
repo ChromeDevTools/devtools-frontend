@@ -55,21 +55,21 @@ These are all bound versions of `LoggingConfig.makeConfigStringBuilder` and are
 used in the legacy UI as:
 
 ```
-this.element.setAttribute('jslog', `${VisualLogging.panel().context(name)}`);
+this.element.setAttribute('jslog', `${VisualLogging.panel(context)}`);
 ```
 
 or
 
 ```
-button.element.setAttribute('jslog', `${VisualLogging.dropDown()
-    .track({click: true}).context('rendering-emulations')}`);
+button.element.setAttribute('jslog', `${VisualLogging.dropDown('rendering-emulations')
+    .track({click: true})}`);
 ```
 
 In LitHTML, the usage is:
 
 ```
-Lit.html`<td jslog=${VisualLogging.tableCell()
-        .track({click: true}).context(col.id)}>
+Lit.html`<td jslog=${VisualLogging.tableCell(/* context */ col.id)
+        .track({click: true})}>
 ```
 
 ### `jslog` Builder API
@@ -86,10 +86,10 @@ this element. Called with tracking options, an object with the following boolean
 If a string is provided, it will be used as the key code to track. Otherwise, all keydown
 events will be tracked.
 
-The `context()` method sets the context for the visual logging element. The context
-can be a string or a number. If a string is given, it is be first considered
-to refer to a context provider (see below). If no context provider is registered
-with this name, SHA-1 hash is computed and the first 32 bits
+The builder function accepts a `context` parameter, which sets the context for the visual
+logging element. The context can be a string or a number. If a string is given, it is be
+first considered to refer to a context provider (see below). If no context provider is
+registered with this name, SHA-1 hash is computed and the first 32 bits
 (little endian) is logged. Number will be logged as is.
 
 The `parent()` method sets the custom parent provider for the visual logging element

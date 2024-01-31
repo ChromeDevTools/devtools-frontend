@@ -30,7 +30,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStr
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getGroupIssuesByKindSetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('groupIssuesByKind', false);
+  return Common.Settings.Settings.instance().createSetting('group-issues-by-kind', false);
 }
 
 export function issueKindViewSortPriority(a: IssueKindView, b: IssueKindView): number {

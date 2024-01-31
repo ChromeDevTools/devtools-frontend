@@ -158,7 +158,7 @@ export function defaultHideIssueByCodeSetting(): HideIssueMenuSetting {
 
 export function getHideIssueByCodeSetting(): Common.Settings.Setting<HideIssueMenuSetting> {
   return Common.Settings.Settings.instance().createSetting(
-      'HideIssueByCodeSetting-Experiment-2021', defaultHideIssueByCodeSetting());
+      'hide-issue-by-code-setting-experiment-2021', defaultHideIssueByCodeSetting());
 }
 
 /**
@@ -195,7 +195,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this.#onFrameAddedToTarget, this);
 
-    // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
+    // issueFilter uses the 'show-third-party-issues' setting. Clients of IssuesManager need
     // a full update when the setting changes to get an up-to-date issues list.
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
     this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());

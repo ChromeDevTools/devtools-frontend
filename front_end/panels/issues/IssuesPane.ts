@@ -165,7 +165,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
 }
 
 export function getGroupIssuesByCategorySetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('groupIssuesByCategory', false);
+  return Common.Settings.Settings.instance().createSetting('group-issues-by-category', false);
 }
 
 export class IssuesPane extends UI.Widget.VBox {

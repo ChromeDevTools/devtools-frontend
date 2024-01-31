@@ -21,7 +21,7 @@ body.platform-mac {
 }
 
 body.platform-windows {
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 .fill {

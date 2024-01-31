@@ -72,7 +72,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.sortItems();
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
 
-    this.dataGrid.setName('EventSourceMessagesView');
+    this.dataGrid.setName('event-source-messages-view');
     this.dataGrid.asWidget().show(this.element);
   }
 

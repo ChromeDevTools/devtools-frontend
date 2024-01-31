@@ -135,7 +135,7 @@ export class SharedStorageItemsView extends StorageItemsView {
       void this.#previewEntry(null);
     });
     this.dataGrid.setStriped(true);
-    this.dataGrid.setName('SharedStorageItemsView');
+    this.dataGrid.setName('shared-storage-items-view');
 
     const dataGridWidget = this.dataGrid.asWidget();
     dataGridWidget.setMinimumSize(0, 100);

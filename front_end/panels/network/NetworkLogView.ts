@@ -1106,7 +1106,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
     });
     this.dataGrid.setStickToBottom(true);
-    this.dataGrid.setName('networkLog');
+    this.dataGrid.setName('network-log');
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this.dataGrid.element.classList.add('network-log-grid');
     this.dataGrid.element.addEventListener('mousedown', this.dataGridMouseDown.bind(this), true);

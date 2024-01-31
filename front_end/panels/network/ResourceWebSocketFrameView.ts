@@ -200,7 +200,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
 
-    this.dataGrid.setName('ResourceWebSocketFrameView');
+    this.dataGrid.setName('resource-web-socket-frame-view');
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
       void this.onFrameSelected(event);
     }, this);

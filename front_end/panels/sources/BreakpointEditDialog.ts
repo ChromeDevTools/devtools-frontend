@@ -105,12 +105,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.tabIndex = -1;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
+    this.element.setAttribute('jslog', `${VisualLogging.pane('edit-breakpoint')}`);
     const header = this.contentElement.createChild('div', 'dialog-header');
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', header);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-    this.typeSelector =
-        new UI.Toolbar.ToolbarComboBox(this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType));
+    this.typeSelector = new UI.Toolbar.ToolbarComboBox(
+        this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType), undefined, 'type');
     this.typeSelector.createOption(
         i18nString(UIStrings.breakpoint), SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
     const conditionalOption = this.typeSelector.createOption(
@@ -161,6 +162,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
     editorWrapper.classList.add('condition-editor');
+    editorWrapper.setAttribute('jslog', `${VisualLogging.textField()}`);
 
     this.editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: content,
@@ -186,7 +188,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const linkWrapper = this.contentElement.appendChild(document.createElement('div'));
     linkWrapper.classList.add('link-wrapper');
-    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href='https://goo.gle/devtools-loc'>${
+    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href="https://goo.gle/devtools-loc"
+                                          jslog="${VisualLogging.link('learn-more')}">${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
     const linkIcon = new IconButton.Icon.Icon();
     linkIcon.name = 'open-externally';

@@ -123,8 +123,7 @@ class LinearEasingPresentation {
   #drawControlPoint(parentElement: Element, controlX: number, controlY: number, index: number): void {
     const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
     circle.setAttribute(
-        'jslog',
-        `${VisualLogging.controlPoint().context('bezier.linear-control-circle').track({drag: true, dblclick: true})}`);
+        'jslog', `${VisualLogging.controlPoint('bezier.linear-control-circle').track({drag: true, dblclick: true})}`);
     circle.setAttribute('data-point-index', String(index));
     circle.setAttribute('cx', String(controlX));
     circle.setAttribute('cy', String(controlY));

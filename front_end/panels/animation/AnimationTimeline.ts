@@ -135,11 +135,11 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     super(true);
 
     this.element.classList.add('animations-timeline');
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context('animations')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('animations')}`);
 
     this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
     this.#timelineControlsResizer.setAttribute(
-        'jslog', `${VisualLogging.resizer().context('animations.timeline-controls').track({drag: true})}`);
+        'jslog', `${VisualLogging.resizer('animations.timeline-controls').track({drag: true})}`);
 
     this.#gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
     this.#grid = UI.UIUtils.createSVGChild(this.#gridWrapper, 'svg', 'animation-timeline-grid');
@@ -327,7 +327,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     this.#gridHeader = container.createChild('div', 'animation-grid-header');
     this.#gridHeader.setAttribute(
-        'jslog', `${VisualLogging.timeline().context('animations.grid-header').track({drag: true, click: true})}`);
+        'jslog', `${VisualLogging.timeline('animations.grid-header').track({drag: true, click: true})}`);
     UI.UIUtils.installDragHandle(
         this.#gridHeader, this.scrubberDragStart.bind(this), this.scrubberDragMove.bind(this),
         this.scrubberDragEnd.bind(this), null);

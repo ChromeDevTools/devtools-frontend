@@ -182,7 +182,7 @@ export class AnimationUI {
     circle.setAttribute('cy', Options.AnimationHeight.toString());
     circle.style.stroke = this.#color;
     circle.setAttribute('r', (Options.AnimationMargin / 2).toString());
-    circle.setAttribute('jslog', `${VisualLogging.controlPoint().context('animations.keyframe').track({drag: true})}`);
+    circle.setAttribute('jslog', `${VisualLogging.controlPoint('animations.keyframe').track({drag: true})}`);
     circle.tabIndex = 0;
     UI.ARIAUtils.setLabel(
         circle,

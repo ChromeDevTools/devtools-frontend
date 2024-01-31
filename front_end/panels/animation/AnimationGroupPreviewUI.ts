@@ -20,13 +20,12 @@ export class AnimationGroupPreviewUI {
   constructor(model: AnimationGroup) {
     this.#model = model;
     this.element = document.createElement('div');
-    this.element.setAttribute(
-        'jslog', `${VisualLogging.item().context('animations.buffer-preview').track({click: true})}`);
+    this.element.setAttribute('jslog', `${VisualLogging.item('animations.buffer-preview').track({click: true})}`);
     this.element.classList.add('animation-buffer-preview');
     this.element.createChild('div', 'animation-paused fill');
     this.#removeButtonInternal = this.element.createChild('button', 'animation-remove-button');
     this.#removeButtonInternal.setAttribute(
-        'jslog', `${VisualLogging.action().context('animations.remove-preview').track({click: true})}`);
+        'jslog', `${VisualLogging.action('animations.remove-preview').track({click: true})}`);
     this.#removeButtonInternal.appendChild(IconButton.Icon.create('cross'));
     this.#replayOverlayElement = this.element.createChild('div', 'animation-buffer-preview-animation');
     this.#svg = UI.UIUtils.createSVGChild(this.element, 'svg');

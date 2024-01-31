@@ -8,18 +8,18 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
-import animationTimelineStyles from './animationTimeline.css.js';
-
 import {
-  AnimationModel,
-  Events,
   type AnimationEffect,
   type AnimationGroup,
   type AnimationImpl,
+  AnimationModel,
+  Events,
 } from './AnimationModel.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
+import animationTimelineStyles from './animationTimeline.css.js';
 import {AnimationUI} from './AnimationUI.js';
 
 const UIStrings = {
@@ -119,7 +119,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   readonly #animationsMap: Map<string, AnimationImpl>;
   #timelineScrubberLine?: HTMLElement;
   #pauseButton?: UI.Toolbar.ToolbarToggle;
-  #controlButton?: UI.Toolbar.ToolbarToggle;
+  #controlButton?: UI.Toolbar.ToolbarButton;
   #controlState?: ControlState;
   #redrawing?: boolean;
   #cachedTimelineWidth?: number;
@@ -135,8 +135,12 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     super(true);
 
     this.element.classList.add('animations-timeline');
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('animations')}`);
 
     this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
+    this.#timelineControlsResizer.setAttribute(
+        'jslog', `${VisualLogging.resizer().context('animations.timeline-controls').track({drag: true})}`);
+
     this.#gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
     this.#grid = UI.UIUtils.createSVGChild(this.#gridWrapper, 'svg', 'animation-timeline-grid');
 
@@ -267,7 +271,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   private createHeader(): HTMLElement {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    this.#clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
+    this.#clearButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'animations.clear');
     this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupsCleared);
       this.reset();
@@ -275,7 +280,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     topToolbar.appendToolbarItem(this.#clearButton);
     topToolbar.appendSeparator();
 
-    this.#pauseButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'pause', 'resume');
+    this.#pauseButton =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'pause', 'resume', 'animations.pause-resume-all');
     this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.togglePauseAll();
     });
@@ -291,6 +297,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       const button = (playbackRateControl.createChild('button', 'animation-playback-rate-button') as HTMLElement);
       button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
                                           i18nString(UIStrings.pause);
+      button.setAttribute(
+          'jslog',
+          `${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({click: true})}`);
       playbackRates.set(button, playbackRate);
       button.addEventListener('click', this.setPlaybackRate.bind(this, playbackRate));
       UI.ARIAUtils.markAsOption(button);
@@ -309,13 +318,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);
 
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
-    this.#controlButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'replay');
+    this.#controlButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.replayTimeline), 'replay', undefined, 'animations.play-replay-pause-animation-group');
+    this.#controlButton.element.classList.add('toolbar-state-on');
     this.#controlState = ControlState.Replay;
-    this.#controlButton.setToggled(true);
     this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this.#controlButton);
 
     this.#gridHeader = container.createChild('div', 'animation-grid-header');
+    this.#gridHeader.setAttribute(
+        'jslog', `${VisualLogging.timeline().context('animations.grid-header').track({drag: true, click: true})}`);
     UI.UIUtils.installDragHandle(
         this.#gridHeader, this.scrubberDragStart.bind(this), this.scrubberDragMove.bind(this),
         this.scrubberDragEnd.bind(this), null);
@@ -417,19 +429,19 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#controlButton.setEnabled(Boolean(this.#selectedGroup) && this.hasAnimationGroupActiveNodes());
     if (this.#selectedGroup && this.#selectedGroup.paused()) {
       this.#controlState = ControlState.Play;
-      this.#controlButton.setToggled(true);
+      this.#controlButton.element.classList.toggle('toolbar-state-on', true);
       this.#controlButton.setTitle(i18nString(UIStrings.playTimeline));
       this.#controlButton.setGlyph('play');
     } else if (
         !this.#scrubberPlayer || !this.#scrubberPlayer.currentTime ||
         typeof this.#scrubberPlayer.currentTime !== 'number' || this.#scrubberPlayer.currentTime >= this.duration()) {
       this.#controlState = ControlState.Replay;
-      this.#controlButton.setToggled(true);
+      this.#controlButton.element.classList.toggle('toolbar-state-on', true);
       this.#controlButton.setTitle(i18nString(UIStrings.replayTimeline));
       this.#controlButton.setGlyph('replay');
     } else {
       this.#controlState = ControlState.Pause;
-      this.#controlButton.setToggled(false);
+      this.#controlButton.element.classList.toggle('toolbar-state-on', false);
       this.#controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
       this.#controlButton.setGlyph('pause');
     }

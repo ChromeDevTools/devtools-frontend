@@ -67,6 +67,7 @@ devtools_module("inline_editor") {
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
     "../../../../ui/lit-html:bundle",
+    "../../../../ui/visual_logging:bundle",
   ]
 
   visibility = [ "../../../../component_docs/*" ]

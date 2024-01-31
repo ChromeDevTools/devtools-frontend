@@ -6,14 +6,13 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
-
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type AnimationImpl, type KeyframeStyle} from './AnimationModel.js';
-
-import {StepTimingFunction, type AnimationTimeline} from './AnimationTimeline.js';
+import {type AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';
 
 const UIStrings = {
   /**
@@ -75,6 +74,7 @@ export class AnimationUI {
     (this.#svg as HTMLElement).style.marginLeft = '-' + Options.AnimationMargin + 'px';
     this.#svg.addEventListener('contextmenu', this.onContextMenu.bind(this));
     this.#activeIntervalGroup = UI.UIUtils.createSVGChild(this.#svg, 'g');
+    this.#activeIntervalGroup.setAttribute('jslog', `${VisualLogging.animationClip().track({drag: true})}`);
     UI.UIUtils.installDragHandle(
         this.#activeIntervalGroup, this.mouseDown.bind(this, Events.AnimationDrag, null), this.mouseMove.bind(this),
         this.mouseUp.bind(this), '-webkit-grabbing', '-webkit-grab');
@@ -182,6 +182,7 @@ export class AnimationUI {
     circle.setAttribute('cy', Options.AnimationHeight.toString());
     circle.style.stroke = this.#color;
     circle.setAttribute('r', (Options.AnimationMargin / 2).toString());
+    circle.setAttribute('jslog', `${VisualLogging.controlPoint().context('animations.keyframe').track({drag: true})}`);
     circle.tabIndex = 0;
     UI.ARIAUtils.setLabel(
         circle,

@@ -24,18 +24,18 @@ enum VisualElements {
   Close = 2,
   Counter = 3,
   Drawer = 4,
-  /* 5 used to be AccessibilitySourceOrder, but free to grab now */
+  Resizer = 5,
   Toggle = 6,
   Tree = 7,
   TextField = 8,
-  /* 9 used to be ShowAllStyleProperties, but free to grab now */
+  AnimationClip = 9,
   Section = 10,
   SectionHeader = 11,
-  /* 12 used to be StylesPane, but free to grab now */
+  Timeline = 12,
   StylesSelector = 13,
   TreeItemExpand = 14,
   ToggleSubpane = 15,
-  /* 16 used to be ElementClassesPane, but free to grab now */
+  ControlPoint = 16,
   /* 17 used to be AddElementClassPrompt, but free to grab now */
   /* 18 used to be ElementStatesPan, but free to grab now */
   /* 19 used to be CssLayersPane, but free to grab now */

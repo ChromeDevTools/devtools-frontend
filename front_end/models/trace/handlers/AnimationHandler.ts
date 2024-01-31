@@ -8,10 +8,10 @@ import * as Types from '../types/types.js';
 import {HandlerState} from './types.js';
 
 const animations: Types.TraceEvents.TraceEventAnimation[] = [];
-const animationsSyntheticEvents: Types.TraceEvents.SyntheticNestableAsyncEvent[] = [];
+const animationsSyntheticEvents: Types.TraceEvents.SyntheticAnimationPair[] = [];
 
 export interface AnimationData {
-  animations: readonly Types.TraceEvents.SyntheticNestableAsyncEvent[];
+  animations: readonly Types.TraceEvents.SyntheticAnimationPair[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 

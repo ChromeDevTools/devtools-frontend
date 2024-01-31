@@ -29,13 +29,13 @@ export class InteractionBreakdown extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-interaction-breakdown`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent|null = null;
+  #entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
   }
 
-  set entry(entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent) {
+  set entry(entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair) {
     if (entry === this.#entry) {
       return;
     }

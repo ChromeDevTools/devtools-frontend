@@ -1158,7 +1158,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    **/
   #drawInteractionEventWithWhiskers(
       context: CanvasRenderingContext2D, entryIndex: number, entryTitle: string|null,
-      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, barX: number, barY: number,
+      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, barX: number, barY: number,
       unclippedBarXStartPixel: number, barWidth: number, barHeight: number, timeToPixelRatio: number): void {
     /**
      * An interaction is drawn with whiskers as so:

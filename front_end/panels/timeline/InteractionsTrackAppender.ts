@@ -86,7 +86,7 @@ export class InteractionsTrackAppender implements TrackAppender {
     const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#traceParsedData.UserInteractions;
 
     const addCandyStripeToLongInteraction =
-        (event: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, index: number): void => {
+        (event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, index: number): void => {
           // Each interaction that we drew that is over the INP threshold needs to be
           // candy-striped.
           const overThreshold = interactionsOverThreshold.has(event);
@@ -105,7 +105,7 @@ export class InteractionsTrackAppender implements TrackAppender {
   }
 
   #addCandyStripeAndWarningForLongInteraction(
-      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, eventIndex: number): void {
+      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, eventIndex: number): void {
     const decorationsForEvent =
         this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] || [];
     decorationsForEvent.push(
@@ -168,7 +168,7 @@ export class InteractionsTrackAppender implements TrackAppender {
  * Return the title to use for a given interaction event.
  * Exported so the title in the DetailsView can re-use the same logic
  **/
-export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent): string {
+export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair): string {
   const category = TraceEngine.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
   // Because we hide nested interactions, we do not want to show the
   // specific type of the interaction that was not hidden, so instead we

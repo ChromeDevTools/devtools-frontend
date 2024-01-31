@@ -9,7 +9,7 @@ import {type TraceEventHandlerName} from './types.js';
 
 // Each thread contains events. Events indicate the thread and process IDs, which are
 // used to store the event in the correct process thread entry below.
-const unpairedAsyncEvents: Types.TraceEvents.TraceEventNestableAsync[] = [];
+const unpairedAsyncEvents: Types.TraceEvents.TraceEventPipelineReporter[] = [];
 
 const snapshotEvents: Types.TraceEvents.TraceEventScreenshot[] = [];
 const syntheticScreenshotEvents: Types.TraceEvents.SyntheticScreenshot[] = [];
@@ -31,8 +31,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 }
 
 export async function finalize(): Promise<void> {
-  const pipelineReporterEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(unpairedAsyncEvents) as
-      Types.TraceEvents.SyntheticPipelineReporter[];
+  const pipelineReporterEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(unpairedAsyncEvents);
 
   frameSequenceToTs = Object.fromEntries(pipelineReporterEvents.map(evt => {
     const frameSequenceId = evt.args.data.beginEvent.args.chrome_frame_reporter.frame_sequence;

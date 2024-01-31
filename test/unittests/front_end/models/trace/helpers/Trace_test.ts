@@ -133,17 +133,17 @@ describeWithEnvironment('TraceModel helpers', function() {
 
   describe('extractId', () => {
     it('returns the correct id for an event', async () => {
-      const fakeEventWithId = {id: 'id'} as unknown as TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+      const fakeEventWithId = {id: 'id'} as unknown as TraceModel.Types.TraceEvents.TraceEventPairableAsync;
       const id = TraceModel.Helpers.Trace.extractId(fakeEventWithId);
       assert.strictEqual(id, fakeEventWithId.id);
 
       const fakeEventWithGlobalId2 = {id2: {global: 'globalId2'}} as unknown as
-          TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+          TraceModel.Types.TraceEvents.TraceEventPairableAsync;
       const globalId2 = TraceModel.Helpers.Trace.extractId(fakeEventWithGlobalId2);
       assert.strictEqual(globalId2, fakeEventWithGlobalId2.id2?.global);
 
       const fakeEventWithLocalId2 = {id2: {local: 'localId2'}} as unknown as
-          TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+          TraceModel.Types.TraceEvents.TraceEventPairableAsync;
       const localId2 = TraceModel.Helpers.Trace.extractId(fakeEventWithLocalId2);
       assert.strictEqual(localId2, fakeEventWithLocalId2.id2?.local);
     });
@@ -383,13 +383,13 @@ describeWithEnvironment('TraceModel helpers', function() {
     it('matches up arbitrary async events', async function() {
       const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
       const asyncEvents = events.filter(event => TraceModel.Types.TraceEvents.isTraceEventAsyncPhase(event)) as
-          TraceModel.Types.TraceEvents.TraceEventNestableAsync[];
+          TraceModel.Types.TraceEvents.TraceEventPairableAsync[];
       const synthEvents = TraceModel.Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
 
       // There's a lot of events, let's only assert one event per name
       const seen = new Set();
       // Make a readable output of each event to assert
-      const eventSummary = (e: TraceModel.Types.TraceEvents.SyntheticNestableAsyncEvent) =>
+      const eventSummary = (e: TraceModel.Types.TraceEvents.SyntheticEventPair) =>
           `@ ${(e.ts / 1000 - 1003e5).toFixed(3).padEnd(9)} for ${(e.dur / 1000).toFixed(3).padStart(8)}: ${e.name}`;
       const eventsSummary = synthEvents
                                 .filter(e => {

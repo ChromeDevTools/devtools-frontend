@@ -262,7 +262,7 @@ describe('UserInteractionsHandler', function() {
       interactionId: number,
       processingStart?: number,
       processingEnd?: number,
-    }): TraceModel.Types.TraceEvents.SyntheticInteractionEvent {
+    }): TraceModel.Types.TraceEvents.SyntheticInteractionPair {
       const event = {
         name: 'EventTiming',
         type,
@@ -273,7 +273,7 @@ describe('UserInteractionsHandler', function() {
         interactionId: options.interactionId,
       };
 
-      return event as unknown as TraceModel.Types.TraceEvents.SyntheticInteractionEvent;
+      return event as unknown as TraceModel.Types.TraceEvents.SyntheticInteractionPair;
     }
 
     const {removeNestedInteractions} = TraceModel.Handlers.ModelHandlers.UserInteractions;

@@ -12,9 +12,8 @@ import {HandlerState} from './types.js';
  * See UserTimings.md in this directory for some handy documentation on
  * UserTimings and the trace events we parse currently.
  **/
-const syntheticEvents: Types.TraceEvents.SyntheticNestableAsyncEvent[] = [];
-const performanceMeasureEvents: (Types.TraceEvents.TraceEventPerformanceMeasureBegin|
-                                 Types.TraceEvents.TraceEventPerformanceMeasureEnd)[] = [];
+let syntheticEvents: Types.TraceEvents.SyntheticEventPair<Types.TraceEvents.TraceEventPairableAsync>[] = [];
+const performanceMeasureEvents: Types.TraceEvents.TraceEventPerformanceMeasure[] = [];
 const performanceMarkEvents: Types.TraceEvents.TraceEventPerformanceMark[] = [];
 
 const consoleTimings: (Types.TraceEvents.TraceEventConsoleTimeBegin|Types.TraceEvents.TraceEventConsoleTimeEnd)[] = [];
@@ -26,7 +25,7 @@ export interface UserTimingsData {
    * Events triggered with the performance.measure() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure
    */
-  performanceMeasures: readonly Types.TraceEvents.SyntheticNestableAsyncEvent[];
+  performanceMeasures: readonly Types.TraceEvents.SyntheticUserTimingPair[];
   /**
    * Events triggered with the performance.mark() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
@@ -37,7 +36,7 @@ export interface UserTimingsData {
    * console.timeLog() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/console/time
    */
-  consoleTimings: readonly Types.TraceEvents.SyntheticNestableAsyncEvent[];
+  consoleTimings: readonly Types.TraceEvents.SyntheticConsoleTimingPair[];
   /**
    * Events triggered with the console.timeStamp() API
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
@@ -129,7 +128,7 @@ export async function finalize(): Promise<void> {
   }
 
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
-  syntheticEvents.push(...Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents));
+  syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   handlerState = HandlerState.FINALIZED;
 }
 
@@ -139,8 +138,10 @@ export function data(): UserTimingsData {
   }
 
   return {
-    performanceMeasures: syntheticEvents.filter(Types.TraceEvents.isTraceEventPerformanceMeasure),
-    consoleTimings: syntheticEvents.filter(Types.TraceEvents.isTraceEventConsoleTime),
+    performanceMeasures: syntheticEvents.filter(e => e.cat === 'blink.user_timing') as
+        Types.TraceEvents.SyntheticUserTimingPair[],
+    consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as
+        Types.TraceEvents.SyntheticConsoleTimingPair[],
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
   };

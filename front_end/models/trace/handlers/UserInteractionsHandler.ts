@@ -24,7 +24,7 @@ export interface UserInteractionsData {
   /** All the interaction events we found in the trace that had an
    * interactionId and a duration > 0
    **/
-  interactionEvents: readonly Types.TraceEvents.SyntheticInteractionEvent[];
+  interactionEvents: readonly Types.TraceEvents.SyntheticInteractionPair[];
   /** If the user rapidly generates interaction events (think typing into a
    * text box), in the UI we only really want to show the user the longest
    * interaction in that set.
@@ -39,17 +39,17 @@ export interface UserInteractionsData {
    * all the interaction events filtered down, removing any nested interactions
    * entirely.
    **/
-  interactionEventsWithNoNesting: readonly Types.TraceEvents.SyntheticInteractionEvent[];
+  interactionEventsWithNoNesting: readonly Types.TraceEvents.SyntheticInteractionPair[];
   // The longest duration interaction event. Can be null if the trace has no interaction events.
-  longestInteractionEvent: Readonly<Types.TraceEvents.SyntheticInteractionEvent>|null;
+  longestInteractionEvent: Readonly<Types.TraceEvents.SyntheticInteractionPair>|null;
   // All interactions that went over the interaction threshold (200ms, see https://web.dev/inp/)
-  interactionsOverThreshold: Readonly<Set<Types.TraceEvents.SyntheticInteractionEvent>>;
+  interactionsOverThreshold: Readonly<Set<Types.TraceEvents.SyntheticInteractionPair>>;
 }
 
-let longestInteractionEvent: Types.TraceEvents.SyntheticInteractionEvent|null = null;
+let longestInteractionEvent: Types.TraceEvents.SyntheticInteractionPair|null = null;
 
-const interactionEvents: Types.TraceEvents.SyntheticInteractionEvent[] = [];
-const interactionEventsWithNoNesting: Types.TraceEvents.SyntheticInteractionEvent[] = [];
+const interactionEvents: Types.TraceEvents.SyntheticInteractionPair[] = [];
+const interactionEventsWithNoNesting: Types.TraceEvents.SyntheticInteractionPair[] = [];
 const eventTimingEndEventsById = new Map<string, Types.TraceEvents.TraceEventEventTimingEnd>();
 const eventTimingStartEventsForInteractions: Types.TraceEvents.TraceEventEventTimingBegin[] = [];
 let handlerState = HandlerState.UNINITIALIZED;
@@ -125,7 +125,7 @@ const keyboardEventTypes = new Set([
 ]);
 
 export type InteractionCategory = 'KEYBOARD'|'POINTER'|'OTHER';
-export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionEvent): InteractionCategory {
+export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionPair): InteractionCategory {
   if (pointerEventTypes.has(interaction.type)) {
     return 'POINTER';
   }
@@ -159,20 +159,20 @@ export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticIn
  *    ====C=[pointerdown]=
  *         =D=[pointerup]=
  **/
-export function removeNestedInteractions(interactions: readonly Types.TraceEvents.SyntheticInteractionEvent[]):
-    readonly Types.TraceEvents.SyntheticInteractionEvent[] {
+export function removeNestedInteractions(interactions: readonly Types.TraceEvents.SyntheticInteractionPair[]):
+    readonly Types.TraceEvents.SyntheticInteractionPair[] {
   /**
    * Because we nest events only that are in the same category, we store the
    * longest event for a given end time by category.
    **/
   const earliestEventForEndTimePerCategory:
-      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>> = {
+      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionPair>> = {
         POINTER: new Map(),
         KEYBOARD: new Map(),
         OTHER: new Map(),
       };
 
-  function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionEvent): void {
+  function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionPair): void {
     const category = categoryOfInteraction(interaction);
     const earliestEventForEndTime = earliestEventForEndTimePerCategory[category];
     const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
@@ -236,7 +236,7 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
   return keptEvents;
 }
 
-function writeSyntheticTimespans(event: Types.TraceEvents.SyntheticInteractionEvent): void {
+function writeSyntheticTimespans(event: Types.TraceEvents.SyntheticInteractionPair): void {
   const startEvent = event.args.data.beginEvent;
   const endEvent = event.args.data.endEvent;
 
@@ -283,7 +283,7 @@ export async function finalize(): Promise<void> {
          Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp)) +
         interactionStartEvent.ts);
 
-    const interactionEvent: Types.TraceEvents.SyntheticInteractionEvent = {
+    const interactionEvent: Types.TraceEvents.SyntheticInteractionPair = {
       // Use the start event to define the common fields.
       cat: interactionStartEvent.cat,
       name: interactionStartEvent.name,

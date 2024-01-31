@@ -250,7 +250,7 @@ describeWithMockConnection('NetworkRequest', () => {
         {requestId: 'requestId' as Protocol.Network.RequestId, timestamp: 42, encodedDataLength: 42});
     assert.isTrue(addBlockedCookieSpy.calledOnceWith(cookie, [
       {
-        attribute: SDK.Cookie.Attributes.SameSite,
+        attribute: SDK.Cookie.Attribute.SameSite,
         uiString:
             'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
       },

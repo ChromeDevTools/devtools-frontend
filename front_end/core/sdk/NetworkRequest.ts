@@ -38,7 +38,7 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {Attributes, type Cookie} from './Cookie.js';
+import {Attribute, type Cookie} from './Cookie.js';
 import {CookieModel} from './CookieModel.js';
 import {CookieParser} from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
@@ -1863,15 +1863,15 @@ export const setCookieBlockedReasonToUiString = function(
   return '';
 };
 
-export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.Network.CookieBlockedReason): Attributes|
+export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.Network.CookieBlockedReason): Attribute|
     null {
       switch (blockedReason) {
         case Protocol.Network.CookieBlockedReason.SecureOnly:
-          return Attributes.Secure;
+          return Attribute.Secure;
         case Protocol.Network.CookieBlockedReason.NotOnPath:
-          return Attributes.Path;
+          return Attribute.Path;
         case Protocol.Network.CookieBlockedReason.DomainMismatch:
-          return Attributes.Domain;
+          return Attribute.Domain;
         case Protocol.Network.CookieBlockedReason.SameSiteStrict:
         case Protocol.Network.CookieBlockedReason.SameSiteLax:
         case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
@@ -1879,7 +1879,7 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteStrict:
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteLax:
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-          return Attributes.SameSite;
+          return Attribute.SameSite;
         case Protocol.Network.CookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.CookieBlockedReason.UserPreferences:
@@ -1891,11 +1891,11 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
     };
 
 export const setCookieBlockedReasonToAttribute = function(blockedReason: Protocol.Network.SetCookieBlockedReason):
-    Attributes|null {
+    Attribute|null {
       switch (blockedReason) {
         case Protocol.Network.SetCookieBlockedReason.SecureOnly:
         case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
-          return Attributes.Secure;
+          return Attribute.Secure;
         case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
         case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
         case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
@@ -1903,11 +1903,11 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason: Protoco
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax:
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
-          return Attributes.SameSite;
+          return Attribute.SameSite;
         case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
-          return Attributes.Domain;
+          return Attribute.Domain;
         case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
-          return Attributes.Name;
+          return Attribute.Name;
         case Protocol.Network.SetCookieBlockedReason.SamePartyConflictsWithOtherAttributes:
         case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:

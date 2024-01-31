@@ -6,7 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
-import {type Attributes, Cookie} from './Cookie.js';
+import {type Attribute, Cookie} from './Cookie.js';
 import {type Resource} from './Resource.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
@@ -150,5 +150,5 @@ export class CookieModel extends SDKModel<void> {
 SDKModel.register(CookieModel, {capabilities: Capability.Network, autostart: false});
 export interface BlockedReason {
   uiString: string;
-  attribute: Attributes|null;
+  attribute: Attribute|null;
 }

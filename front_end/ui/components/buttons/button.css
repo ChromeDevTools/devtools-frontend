@@ -150,19 +150,13 @@ button {
     padding: 0 calc(12px - var(--button-border-size)) 0 calc(8px - var(--button-border-size));
 
     devtools-icon {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       margin-right: 4px;
     }
 
     &.small {
       padding: 0 calc(9px - var(--button-border-size)) 0 calc(3px - var(--button-border-size));
-
-      devtools-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-      }
     }
   }
 

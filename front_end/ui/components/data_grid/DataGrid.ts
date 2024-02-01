@@ -559,6 +559,9 @@ export class DataGrid extends HTMLElement {
      @pointerdown=${this.#onResizePointerDown}
      @pointerup=${this.#onResizePointerUp}
      data-column-index=${columnIndex}
+     jslog=${VisualLogging.resizer(column.id).track({
+      drag: true,
+    })}
     ></span>`;
   }
 

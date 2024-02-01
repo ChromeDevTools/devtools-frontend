@@ -91,6 +91,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     (this.mainElement.createChild('slot') as HTMLSlotElement).name = 'insertion-point-main';
     (this.sidebarElementInternal.createChild('slot') as HTMLSlotElement).name = 'insertion-point-sidebar';
     this.resizerElementInternal = this.contentElement.createChild('div', 'shadow-split-widget-resizer');
+    this.resizerElementInternal.setAttribute('jslog', `${VisualLogging.resizer('split-view').track({drag: true})}`);
     this.resizerElementSize = null;
 
     this.resizerWidget = new SimpleResizerWidget();

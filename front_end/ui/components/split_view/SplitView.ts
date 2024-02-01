@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 // clean-css does not compile this file correctly. So as a workaround adding styles inline.
 const styles = `
@@ -183,7 +184,7 @@ export class SplitView extends HTMLElement {
         <div class="wrapper ${this.#mainAxisIdx === 1 ? 'horizontal' : ''}">
           <div class="container">
             <slot name="main"></slot>
-            <div id="resizer" @mousedown=${this.#onMouseDown}></div>
+            <div id="resizer" @mousedown=${this.#onMouseDown} jslog=${VisualLogging.resizer('split-view')}></div>
             <slot name="sidebar"></slot>
           </div>
         </div>

@@ -190,6 +190,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     this.dataGridRowForId = new Map();
     this.requestTimeForId = new Map();
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
+    topToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('top')}`);
     this.contentElement.classList.add('protocol-monitor');
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'record-start', 'record-stop', 'protocol-monitor.toggle-recording');
@@ -379,6 +380,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), filters});
     });
     const bottomToolbar = new UI.Toolbar.Toolbar('protocol-monitor-bottom-toolbar', this.contentElement);
+    bottomToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('bottom')}`);
     bottomToolbar.appendToolbarItem(splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showCDPCommandEditor), i18nString(UIStrings.hideCDPCommandEditor),
         i18nString(UIStrings.CDPCommandEditorShown), i18nString(UIStrings.CDPCommandEditorHidden),

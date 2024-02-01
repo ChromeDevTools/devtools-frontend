@@ -142,7 +142,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
     const toolbarContainerLeft = document.createElement('div');
     toolbarContainerLeft.classList.add('profiles-toolbar');
-    toolbarContainerLeft.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    toolbarContainerLeft.setAttribute('jslog', `${VisualLogging.toolbar('profiles-sidebar')}`);
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
     toolbar.makeWrappable(true);
@@ -161,6 +161,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.profileViewToolbar = new UI.Toolbar.Toolbar('', this.toolbarElement);
     this.profileViewToolbar.makeWrappable(true);
+    this.profileViewToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('profile-view')}`);
 
     this.profileGroups = {};
     this.launcherView = new ProfileLauncherView(this);

@@ -989,7 +989,7 @@
     }
 
     const captureFilmStripSetting =
-        Common.Settings.Settings.instance().createSetting('timelineCaptureFilmStrip', false);
+        Common.Settings.Settings.instance().createSetting('timeline-capture-film-strip', false);
     captureFilmStripSetting.set(true);
     test.evaluateInConsole_(performActionsInPage.toString(), function() {});
     test.invokeAsyncWithTimeline_('performActionsInPage', onTimelineDone);

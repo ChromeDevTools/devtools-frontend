@@ -333,18 +333,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.traceLoadStart = null;
 
     this.disableCaptureJSProfileSetting =
-        Common.Settings.Settings.instance().createSetting('timelineDisableJSSampling', false);
+        Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false);
     this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
     this.captureLayersAndPicturesSetting =
-        Common.Settings.Settings.instance().createSetting('timelineCaptureLayersAndPictures', false);
+        Common.Settings.Settings.instance().createSetting('timeline-capture-layers-and-pictures', false);
     this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
 
     this.showScreenshotsSetting =
-        Common.Settings.Settings.instance().createSetting('timelineShowScreenshots', isNode ? false : true);
+        Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', isNode ? false : true);
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateOverviewControls, this);
 
-    this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
+    this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onModeChanged, this);
 
@@ -540,7 +540,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private createSettingsPane(): void {
     this.showSettingsPaneSetting =
-        Common.Settings.Settings.instance().createSetting('timelineShowSettingsToolbar', false);
+        Common.Settings.Settings.instance().createSetting('timeline-show-settings-toolbar', false);
     this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.captureSettings), 'gear-filled');
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(

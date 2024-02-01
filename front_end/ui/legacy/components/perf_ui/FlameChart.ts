@@ -571,6 +571,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private deselectAllEntries(): void {
     this.selectedEntryIndex = -1;
+    this.rawTimelineData?.resetFlowData();
     this.resetCanvas();
     this.draw();
   }
@@ -652,6 +653,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         if (this.selectedEntryIndex >= 0 && level >= group.startLevel &&
             (groupIndex >= groups.length - 1 || groups[groupIndex + 1].startLevel > level)) {
           this.selectedEntryIndex = -1;
+          // Reset all flow arrows when we deselect the entry.
+          this.rawTimelineData.resetFlowData();
         }
       }
     }
@@ -2199,7 +2202,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const spread = 30;
       const lineY = distanceTime < 1 ? startY : spread + Math.max(0, startY + distanceY * (i % spread));
 
-      const p = [];
+      const p: {x: number, y: number}[] = [];
       p.push({x: startX, y: startY});
       p.push({x: startX + arrowWidth, y: startY});
       p.push({x: startX + segment + 2 * arrowWidth, y: startY});
@@ -2942,10 +2945,14 @@ export class FlameChartTimelineData {
   readonly entryDecorations: FlameChartDecoration[][];
   groups: Group[];
   markers: FlameChartMarker[];
+
+  // These four arrays are used to draw the initiator arrows, and if there are
+  // multiple arrows, they should be a chain.
   flowStartTimes: number[];
   flowStartLevels: number[];
   flowEndTimes: number[];
   flowEndLevels: number[];
+
   selectedGroup: Group|null;
   private constructor(
       entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array, entryStartTimes: number[]|Float64Array,
@@ -2985,6 +2992,13 @@ export class FlameChartTimelineData {
         [],  // entry start times: the start time of a given event,
         [],  // groups: a list of flame chart groups, which roughly correlate to each individual track
     );
+  }
+
+  resetFlowData(): void {
+    this.flowEndLevels = [];
+    this.flowEndTimes = [];
+    this.flowStartLevels = [];
+    this.flowStartTimes = [];
   }
 }
 

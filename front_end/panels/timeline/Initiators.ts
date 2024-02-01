@@ -29,7 +29,7 @@ export function eventInitiatorPairsToDraw(
     if (currentInitiator) {
       // Store the current pair, and then set the initiator to
       // be the current event, so we work back through the
-      // trace and find the initator of the initiator, and so
+      // trace and find the initiator of the initiator, and so
       // on...
       pairs.push({event: currentEvent, initiator: currentInitiator});
       currentEvent = currentInitiator;

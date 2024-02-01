@@ -200,6 +200,7 @@ devtools_svg_sources = [
   "review.svg",
   "right-panel-close.svg",
   "right-panel-open.svg",
+  "scissors.svg",
   "screen-rotation.svg",
   "search.svg",
   "securityIcons.svg",

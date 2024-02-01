@@ -24,13 +24,13 @@ import { contentAsDataURL, type DeferredContent } from './ContentProvider.js';
  */
 export class ContentData {
   readonly mimeType: string;
-  readonly #charset?: string;
+  readonly charset: string;
 
   #contentAsBase64?: string;
   #contentAsText?: string;
 
   constructor(data: string, isBase64: boolean, mimeType: string, charset?: string) {
-    this.#charset = charset;
+    this.charset = charset || 'utf-8';
     if (isBase64) {
       this.#contentAsBase64 = data;
     } else {
@@ -72,10 +72,9 @@ export class ContentData {
       throw new Error('Cannot interpret binary data as text');
     }
 
-    const charset = this.#charset || 'utf-8';
     const binaryString = window.atob(this.#contentAsBase64 as string);
     const bytes = Uint8Array.from(binaryString, m => m.codePointAt(0) as number);
-    this.#contentAsText = new TextDecoder(charset).decode(bytes);
+    this.#contentAsText = new TextDecoder(this.charset).decode(bytes);
     return this.#contentAsText;
   }
 
@@ -88,12 +87,16 @@ export class ContentData {
     return !Boolean(this.#contentAsBase64) && !Boolean(this.#contentAsText);
   }
 
+  get createdFromBase64(): boolean {
+    return this.#contentAsBase64 !== undefined;
+  }
+
   asDataUrl(): string|null {
     // To keep with existing behavior we prefer to return the content
     // encoded if that is how this ContentData was constructed with.
     if (this.#contentAsBase64 !== undefined) {
-      return contentAsDataURL(
-          this.#contentAsBase64, this.mimeType ?? '', true, this.#charset ?? null);
+      const charset = this.isTextContent ? this.charset : null;
+      return contentAsDataURL(this.#contentAsBase64, this.mimeType ?? '', true, charset);
     }
     return contentAsDataURL(this.text, this.mimeType ?? '', false);
   }

@@ -918,6 +918,7 @@ grd_files_debug_sources = [
   "front_end/models/text_utils/ContentData.js",
   "front_end/models/text_utils/ContentProvider.js",
   "front_end/models/text_utils/StaticContentProvider.js",
+  "front_end/models/text_utils/StreamingContentData.js",
   "front_end/models/text_utils/Text.js",
   "front_end/models/text_utils/TextCursor.js",
   "front_end/models/text_utils/TextRange.js",

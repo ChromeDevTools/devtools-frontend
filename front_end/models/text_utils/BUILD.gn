@@ -12,6 +12,7 @@ devtools_module("text_utils") {
     "ContentData.ts",
     "ContentProvider.ts",
     "StaticContentProvider.ts",
+    "StreamingContentData.ts",
     "Text.ts",
     "TextCursor.ts",
     "TextRange.ts",

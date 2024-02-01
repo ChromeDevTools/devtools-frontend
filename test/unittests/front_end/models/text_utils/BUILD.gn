@@ -9,6 +9,7 @@ ts_library("text_utils") {
   sources = [
     "ContentData_test.ts",
     "StaticContentProvider_test.ts",
+    "StreamingContentData_test.ts",
     "TextCursor_test.ts",
     "TextRange_test.ts",
     "TextUtils_test.ts",

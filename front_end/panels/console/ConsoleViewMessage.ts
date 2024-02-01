@@ -1273,7 +1273,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.nestingLevelMarkers = [];
     for (let i = 0; i < this.nestingLevel(); ++i) {
-      this.nestingLevelMarkers.push(this.elementInternal.createChild('div', 'nesting-level-marker'));
+      this.nestingLevelMarkers.push(this.consoleRowWrapper.createChild('div', 'nesting-level-marker'));
     }
     this.updateCloseGroupDecorations();
     elementToMessage.set(this.elementInternal, this);

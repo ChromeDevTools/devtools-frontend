@@ -1070,7 +1070,7 @@ export class DatabaseTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.sidebar.showDatabase(this.database);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.web_sql]);
+    Host.userMetrics.panelShown('web-sql');
     return false;
   }
 
@@ -1109,7 +1109,7 @@ export class DatabaseTableTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.sidebar.showDatabase(this.database, this.tableName);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.web_sql]);
+    Host.userMetrics.panelShown('web-sql');
     return false;
   }
 }
@@ -1133,7 +1133,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkersView();
     }
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.service_workers]);
+    Host.userMetrics.panelShown('service-workers');
     return false;
   }
 }
@@ -1163,7 +1163,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.app_manifest]);
+    Host.userMetrics.panelShown('app-manifest');
     return false;
   }
 
@@ -1494,7 +1494,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
+    Host.userMetrics.panelShown('indexed-db');
     return false;
   }
 
@@ -1629,7 +1629,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
+    Host.userMetrics.panelShown('indexed-db');
     return false;
   }
 
@@ -1720,7 +1720,7 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
+    Host.userMetrics.panelShown('indexed-db');
     return false;
   }
 
@@ -1751,7 +1751,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
 
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.dom_storage]);
+    Host.userMetrics.panelShown('dom-storage');
     this.resourcesPanel.showDOMStorage(this.domStorage);
     return false;
   }
@@ -2187,7 +2187,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
       this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
           UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
     }
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_details]);
+    Host.userMetrics.panelShown('frame-details');
     this.showView(this.view);
 
     this.listItemElement.classList.remove('hovered');
@@ -2356,7 +2356,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_resource]);
+    Host.userMetrics.panelShown('frame-resource');
     return false;
   }
 
@@ -2444,7 +2444,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
       this.view.update();
     }
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_window]);
+    Host.userMetrics.panelShown('frame-window');
     return false;
   }
 
@@ -2473,7 +2473,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
       this.view.update();
     }
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_worker]);
+    Host.userMetrics.panelShown('frame-worker');
     return false;
   }
 

@@ -204,7 +204,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.service_worker_cache]);
+    Host.userMetrics.panelShown('service-worker-cache');
     return false;
   }
 

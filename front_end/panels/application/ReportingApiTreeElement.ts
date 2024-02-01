@@ -40,7 +40,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
       this.view = new ReportingApiView(new ApplicationComponents.EndpointsGrid.EndpointsGrid());
     }
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.reporting_api]);
+    Host.userMetrics.panelShown('reporting-api');
     return false;
   }
 }

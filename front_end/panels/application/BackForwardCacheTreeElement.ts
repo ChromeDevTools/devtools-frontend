@@ -43,7 +43,8 @@ export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
           UI.Widget.Widget, new ApplicationComponents.BackForwardCacheView.BackForwardCacheView());
     }
     this.showView(this.view);
-    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.back_forward_cache]);
+    Host.userMetrics.panelShown('back-forward-cache');
+
     return false;
   }
 }

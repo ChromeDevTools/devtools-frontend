@@ -176,6 +176,41 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     assert.strictEqual(style.getPropertyValue('margin-left'), '30px');
   });
 
+  it('correclty computes inactive variable properties in the presence of properties that failed to parse', () => {
+    const target = createTarget();
+    const cssModel = new SDK.CSSModel.CSSModel(target);
+    const stubCSSStyle = {
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      cssProperties: [
+        {
+          name: '--a',
+          value: '5px',
+          disabled: false,
+          implicit: false,
+          longhandProperties: [],
+          range: {startLine: 1, startColumn: 4, endLine: 1, endColumn: 20},
+          text: '--a 5px;',
+        },
+        {
+          name: '--a',
+          value: '10',
+          disabled: false,
+          implicit: false,
+          parsedOk: false,
+          longhandProperties: [],
+          range: {startLine: 1, startColumn: 4, endLine: 1, endColumn: 20},
+          text: '--a 10;',
+        },
+      ],
+      shorthandEntries: [],
+      cssText: '\n    --a: 5px;\n    --a: 10\n',
+    } as Protocol.CSS.CSSStyle;
+
+    const style = new SDK.CSSStyleDeclaration.CSSStyleDeclaration(
+        cssModel, null, stubCSSStyle, SDK.CSSStyleDeclaration.Type.Regular);
+    assert.isFalse(style.hasActiveProperty('--a'));
+  });
+
   it('should use ranged declaration as the active one', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);

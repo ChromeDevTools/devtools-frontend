@@ -19,6 +19,8 @@ export const enum MimeType {
  * MIME types other than the ones with the "text" type that have text content.
  */
 const ADDITIONAL_TEXT_MIME_TYPES = new Set([
+  'application/ecmascript',
+  'application/javascript',
   'application/json',
   'application/vnd.dart',
   'application/xml',

@@ -4,7 +4,6 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {NetworkManager} from './NetworkManager.js';
 import {Events, type EventSourceMessage, type NetworkRequest} from './NetworkRequest.js';
 import {ServerSentEventsParser} from './ServerSentEventsProtocol.js';
 
@@ -35,10 +34,16 @@ export class ServerSentEvents {
     if (parseFromStreamedData) {
       this.#lastDataReceivedTime = request.pseudoWallTime(request.startTime);
       this.#parser = new ServerSentEventsParser(this.#onParserEvent.bind(this), request.charset() ?? undefined);
-      void NetworkManager.streamResponseBody(this.#request).then(contentData => {
-        if (!TextUtils.ContentData.ContentData.isError(contentData)) {
-          // Partial data is always base64 encoded.
-          void this.#parser?.addBase64Chunk(contentData.base64);
+
+      // Get the streaming content and add the already received bytes if someone else started
+      // the streaming earlier.
+      void this.#request.requestStreamingContent().then(streamingContentData => {
+        if (!TextUtils.StreamingContentData.isError(streamingContentData)) {
+          void this.#parser?.addBase64Chunk(streamingContentData.content().base64);
+          streamingContentData.addEventListener(TextUtils.StreamingContentData.Events.ChunkAdded, ({data: {chunk}}) => {
+            this.#lastDataReceivedTime = request.pseudoWallTime(request.endTime);
+            void this.#parser?.addBase64Chunk(chunk);
+          });
         }
       });
     }
@@ -46,12 +51,6 @@ export class ServerSentEvents {
 
   get eventSourceMessages(): readonly EventSourceMessage[] {
     return this.#eventSourceMessages;
-  }
-
-  /** Forwarded Network.dataReceived events */
-  dataReceived(data: string, time: number): void {
-    this.#lastDataReceivedTime = this.#request.pseudoWallTime(time);
-    void this.#parser?.addBase64Chunk(data);
   }
 
   /** Forwarded Network.eventSourceMessage received */

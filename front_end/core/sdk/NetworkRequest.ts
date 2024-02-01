@@ -200,7 +200,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkRequest.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
-    TextUtils.ContentProvider.ContentProvider {
+    TextUtils.ContentProvider.StreamingContentProvider {
   #requestIdInternal: string;
   #backendRequestIdInternal?: Protocol.Network.RequestId;
   readonly #documentURLInternal: Platform.DevToolsPath.UrlString;
@@ -232,6 +232,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #webBundleInnerRequestInfoInternal: WebBundleInnerRequestInfo|null;
   #resourceTypeInternal: Common.ResourceType.ResourceType;
   #contentDataInternal: Promise<TextUtils.ContentData.ContentDataOrError>|null;
+  #streamingContentData: Promise<TextUtils.StreamingContentData.StreamingContentDataOrError>|null;
   readonly #framesInternal: WebSocketFrame[];
   #responseHeaderValues: {
     [x: string]: string|undefined,
@@ -350,6 +351,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.#resourceTypeInternal = Common.ResourceType.resourceTypes.Other;
     this.#contentDataInternal = null;
+    this.#streamingContentData = null;
     this.#framesInternal = [];
 
     this.#responseHeaderValues = {};
@@ -1325,6 +1327,24 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#contentDataProvider = dataProvider;
   }
 
+  requestStreamingContent(): Promise<TextUtils.StreamingContentData.StreamingContentDataOrError> {
+    if (this.#streamingContentData) {
+      return this.#streamingContentData;
+    }
+
+    const contentPromise = this.finished ? this.contentData() : NetworkManager.streamResponseBody(this);
+    this.#streamingContentData = contentPromise.then(contentData => {
+      if (TextUtils.ContentData.ContentData.isError(contentData)) {
+        return contentData;
+      }
+      // Note that this is save: "streamResponseBody()" always creates base64-based ContentData and
+      // for "contentData()" we'll never call "addChunk".
+      return TextUtils.StreamingContentData.StreamingContentData.from(contentData);
+    });
+
+    return this.#streamingContentData;
+  }
+
   contentURL(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
@@ -1713,7 +1733,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
     this.endTime = timestamp;
     if (data) {
-      this.#serverSentEvents?.dataReceived(data, timestamp);
+      void this.#streamingContentData?.then(contentData => {
+        if (!TextUtils.StreamingContentData.isError(contentData)) {
+          contentData.addChunk(data);
+        }
+      });
     }
   }
 }

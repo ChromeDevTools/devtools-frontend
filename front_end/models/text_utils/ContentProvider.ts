@@ -31,6 +31,8 @@
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 
+import {type StreamingContentDataOrError} from './StreamingContentData.js';
+
 export interface ContentProvider {
   contentURL(): Platform.DevToolsPath.UrlString;
   contentType(): Common.ResourceType.ResourceType;
@@ -74,3 +76,11 @@ export type DeferredContent = {
   error: string,
   isEncoded: boolean,
 };
+
+// Some ContentProvider like NetworkRequests might never actually be able to return
+// a fully completed "requestContent" as the request keeps on going indefinitely.
+// Such proivders can implement the "StreamingContentProvider" addition, which allows
+// for partial/streaming content.
+export interface StreamingContentProvider extends ContentProvider {
+  requestStreamingContent(): Promise<StreamingContentDataOrError>;
+}

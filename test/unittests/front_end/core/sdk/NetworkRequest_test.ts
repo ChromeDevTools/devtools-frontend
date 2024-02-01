@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import {expectCookie} from '../../helpers/Cookies.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
@@ -367,5 +368,107 @@ data: bar\n\n`;
     assert.lengthOf(networkEvents, 2);
     assert.deepInclude(networkEvents[0], {data: 'foo', eventId: 'fooId', eventName: 'fooName'});
     assert.deepInclude(networkEvents[1], {data: 'bar', eventId: 'barId', eventName: 'barName'});
+  });
+});
+
+describeWithMockConnection('requestStreamingContent', () => {
+  let target: SDK.Target.Target;
+  let networkManager: SDK.NetworkManager.NetworkManager;
+
+  beforeEach(() => {
+    target = createTarget();
+    networkManager = target.model(SDK.NetworkManager.NetworkManager) as SDK.NetworkManager.NetworkManager;
+  });
+
+  it('retrieves the full response body for finished requests', () => {
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/index.html',
+      },
+      type: 'Document',
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      response: {
+        url: 'https://example.com/index.html',
+        mimeType: 'text/html',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    networkManager.dispatcher.loadingFinished({
+      requestId: '1' as Protocol.Network.RequestId,
+    } as Protocol.Network.LoadingFinishedEvent);
+    const request = networkManager.requestForId('1');
+    assertNotNullOrUndefined(request);
+
+    const responseBodySpy = sinon.spy(target.networkAgent(), 'invoke_getResponseBody');
+
+    void request.requestStreamingContent();
+
+    assert.isTrue(responseBodySpy.calledOnce);
+  });
+
+  it('streams the full response body for in-flight requests', () => {
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/index.html',
+      },
+      type: 'Document',
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      response: {
+        url: 'https://example.com/index.html',
+        mimeType: 'text/html',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    const request = networkManager.requestForId('1');
+    assertNotNullOrUndefined(request);
+
+    const responseBodySpy = sinon.spy(target.networkAgent(), 'invoke_streamResourceContent');
+
+    void request.requestStreamingContent();
+
+    assert.isTrue(responseBodySpy.calledOnce);
+  });
+
+  it('sends ChunkAdded events when new data is received', async () => {
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/index.html',
+      },
+      type: 'Document',
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      response: {
+        url: 'https://example.com/index.html',
+        mimeType: 'text/html',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    const request = networkManager.requestForId('1');
+    assertNotNullOrUndefined(request);
+
+    sinon.stub(SDK.NetworkManager.NetworkManager, 'streamResponseBody')
+        .returns(Promise.resolve(new TextUtils.ContentData.ContentData('Zm9v', true, 'text/html')));
+
+    const maybeStreamingContent = await request.requestStreamingContent();
+    assert.isFalse(TextUtils.StreamingContentData.isError(maybeStreamingContent));
+    const streamingContent = maybeStreamingContent as TextUtils.StreamingContentData.StreamingContentData;
+    const eventPromise = streamingContent.once(TextUtils.StreamingContentData.Events.ChunkAdded);
+
+    networkManager.dispatcher.dataReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      data: 'YmFy',
+      dataLength: 4,
+      encodedDataLength: 4,
+      timestamp: 42,
+    });
+
+    const {chunk} = await eventPromise;
+    assert.strictEqual(chunk, 'YmFy');
+    assert.strictEqual(streamingContent.content().text, 'foobar');
   });
 });

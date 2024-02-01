@@ -187,7 +187,7 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
     this.advancedSearchConfig = Common.Settings.Settings.instance().createLocalSetting(
-        settingKey + 'SearchConfig', new Workspace.SearchConfig.SearchConfig('', true, false).toPlainObject());
+        settingKey + '-search-config', new Workspace.SearchConfig.SearchConfig('', true, false).toPlainObject());
 
     this.load();
     this.searchScope = null;

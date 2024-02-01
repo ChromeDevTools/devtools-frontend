@@ -66,7 +66,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('console-pins')}`);
 
     this.pins = new Set();
-    this.pinsSetting = Common.Settings.Settings.instance().createLocalSetting('consolePins', []);
+    this.pinsSetting = Common.Settings.Settings.instance().createLocalSetting('console-pins', []);
     for (const expression of this.pinsSetting.get()) {
       this.addPin(expression);
     }

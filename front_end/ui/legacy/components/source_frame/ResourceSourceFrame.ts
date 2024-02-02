@@ -34,7 +34,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as FormatterActions from '../../../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
-import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
@@ -51,12 +51,28 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ResourceSourceFrame extends SourceFrameImpl {
   private readonly resourceInternal: TextUtils.ContentProvider.ContentProvider;
+  readonly #givenContentType: string;
 
   constructor(
-      resource: TextUtils.ContentProvider.ContentProvider, private readonly givenContentType: string,
-      options?: SourceFrameOptions) {
-    super(() => resource.requestContent(), options);
+      resource: TextUtils.ContentProvider.ContentProvider, givenContentType: string, options?: SourceFrameOptions) {
+    const isStreamingProvider = TextUtils.ContentProvider.isStreamingContentProvider(resource);
+    /* eslint-disable @typescript-eslint/explicit-function-return-type */
+    const lazyContent = isStreamingProvider ?
+        () => resource.requestStreamingContent().then(TextUtils.StreamingContentData.asDeferredContent.bind(null)) :
+        () => resource.requestContent();
+    super(lazyContent, options);
+    /* eslint-enable @typescript-eslint/explicit-function-return-type */
+    this.#givenContentType = givenContentType;
     this.resourceInternal = resource;
+    if (isStreamingProvider) {
+      void resource.requestStreamingContent().then(streamingContent => {
+        if (!TextUtils.StreamingContentData.isError(streamingContent)) {
+          streamingContent.addEventListener(TextUtils.StreamingContentData.Events.ChunkAdded, () => {
+            void this.setDeferredContent(Promise.resolve(streamingContent.content().asDeferedContent()));
+          });
+        }
+      });
+    }
   }
 
   static createSearchableView(resource: TextUtils.ContentProvider.ContentProvider, contentType: string):
@@ -65,7 +81,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 
   protected override getContentType(): string {
-    return this.givenContentType;
+    return this.#givenContentType;
   }
 
   get resource(): TextUtils.ContentProvider.ContentProvider {

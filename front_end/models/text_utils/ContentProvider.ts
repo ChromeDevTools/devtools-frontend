@@ -84,3 +84,7 @@ export type DeferredContent = {
 export interface StreamingContentProvider extends ContentProvider {
   requestStreamingContent(): Promise<StreamingContentDataOrError>;
 }
+
+export const isStreamingContentProvider = function(provider: ContentProvider): provider is StreamingContentProvider {
+  return 'requestStreamingContent' in provider;
+};

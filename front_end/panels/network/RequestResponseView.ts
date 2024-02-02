@@ -67,8 +67,8 @@ export class RequestResponseView extends UI.Widget.VBox {
       return sourceView;
     }
 
-    const contentData = await request.contentData();
-    if (TextUtils.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
+    const contentData = await request.requestStreamingContent();
+    if (TextUtils.StreamingContentData.isError(contentData) || !contentData.isTextContent) {
       requestToSourceView.delete(request);
       return null;
     }
@@ -83,7 +83,7 @@ export class RequestResponseView extends UI.Widget.VBox {
     }
 
     const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
-        mimeType, request.resourceType().isFromSourceMap(), TextUtils.TextUtils.isMinified(contentData.text));
+        mimeType, request.resourceType().isFromSourceMap(), TextUtils.TextUtils.isMinified(contentData.content().text));
 
     Host.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
@@ -109,13 +109,13 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   async createPreview(): Promise<UI.Widget.Widget> {
-    const contentData = await this.request.contentData();
-    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+    const contentData = await this.request.requestStreamingContent();
+    if (TextUtils.StreamingContentData.isError(contentData)) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }
 
     const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
-    if (contentData.isEmpty || !sourceView || this.request.statusCode === 204) {
+    if (contentData.content().isEmpty || !sourceView || this.request.statusCode === 204) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
     }
 

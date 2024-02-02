@@ -6,7 +6,19 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("source_frame") {
   testonly = true
-  sources = [ "SourceFrame_test.ts" ]
+  sources = [
+    "ResourceSourceFrame_test.ts",
+    "SourceFrame_test.ts",
+  ]
 
-  deps = [ "../../../../helpers" ]
+  deps = [
+    "../../../../../../../front_end/core/common:bundle",
+    "../../../../../../../front_end/core/platform:bundle",
+    "../../../../../../../front_end/core/root:bundle",
+    "../../../../../../../front_end/models/text_utils:bundle",
+    "../../../../../../../front_end/third_party/codemirror.next:bundle",
+    "../../../../../../../front_end/ui/legacy:bundle",
+    "../../../../../../../front_end/ui/legacy/components/source_frame:bundle",
+    "../../../../helpers",
+  ]
 }

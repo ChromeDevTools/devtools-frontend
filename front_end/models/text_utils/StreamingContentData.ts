@@ -51,6 +51,10 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
     return new StreamingContentData(content.mimeType, content.charset, content);
   }
 
+  get isTextContent(): boolean {
+    return Platform.MimeType.isTextType(this.#mimeType);
+  }
+
   /** @param chunk base64 encoded data */
   addChunk(chunk: string): void {
     if (this.#disallowStreaming) {

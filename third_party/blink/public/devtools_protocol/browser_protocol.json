@@ -12771,6 +12771,23 @@
                     ]
                 },
                 {
+                    "id": "CookieExemptionReason",
+                    "description": "Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the request.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "None",
+                        "UserSetting",
+                        "TPCDMetadata",
+                        "TPCDDeprecationTrial",
+                        "TPCDHeuristics",
+                        "EnterprisePolicy",
+                        "StorageAccess",
+                        "TopLevelStorageAccess",
+                        "CorsOptIn"
+                    ]
+                },
+                {
                     "id": "BlockedSetCookieWithReason",
                     "description": "A cookie which was not stored from a response with the corresponding reason.",
                     "experimental": true,
@@ -12798,23 +12815,47 @@
                     ]
                 },
                 {
-                    "id": "BlockedCookieWithReason",
-                    "description": "A cookie with was not sent with a request with the corresponding reason.",
+                    "id": "ExemptedSetCookieWithReason",
+                    "description": "A cookie should have been blocked by 3PCD but is exempted and stored from a response with the\ncorresponding reason. A cookie could only have at most one exemption reason.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
                         {
+                            "name": "exemptionReason",
+                            "description": "The reason the cookie was exempted.",
+                            "$ref": "CookieExemptionReason"
+                        },
+                        {
+                            "name": "cookie",
+                            "description": "The cookie object representing the cookie.",
+                            "$ref": "Cookie"
+                        }
+                    ]
+                },
+                {
+                    "id": "AssociatedCookie",
+                    "description": "A cookie associated with the request which may or may not be sent with it.\nIncludes the cookies itself and reasons for blocking or exemption.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "cookie",
+                            "description": "The cookie object representing the cookie which was not sent.",
+                            "$ref": "Cookie"
+                        },
+                        {
                             "name": "blockedReasons",
-                            "description": "The reason(s) the cookie was blocked.",
+                            "description": "The reason(s) the cookie was blocked. If empty means the cookie is included.",
                             "type": "array",
                             "items": {
                                 "$ref": "CookieBlockedReason"
                             }
                         },
                         {
-                            "name": "cookie",
-                            "description": "The cookie object representing the cookie which was not sent.",
-                            "$ref": "Cookie"
+                            "name": "exemptionReason",
+                            "description": "The reason the cookie should have been blocked by 3PCD but is exempted. A cookie could\nonly have at most one exemption reason.",
+                            "optional": true,
+                            "$ref": "CookieExemptionReason"
                         }
                     ]
                 },
@@ -13633,7 +13674,7 @@
                 },
                 {
                     "name": "deleteCookies",
-                    "description": "Deletes browser cookies with matching name and url or domain/path pair.",
+                    "description": "Deletes browser cookies with matching name and url or domain/path/partitionKey pair.",
                     "parameters": [
                         {
                             "name": "name",
@@ -13655,6 +13696,12 @@
                         {
                             "name": "path",
                             "description": "If specified, deletes only cookies with the exact path.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "partitionKey",
+                            "description": "If specified, deletes only cookies with the the given name and partitionKey where domain\nmatches provided URL.",
                             "optional": true,
                             "type": "string"
                         }
@@ -14805,10 +14852,10 @@
                         },
                         {
                             "name": "associatedCookies",
-                            "description": "A list of cookies potentially associated to the requested URL. This includes both cookies sent with\nthe request and the ones not sent; the latter are distinguished by having blockedReason field set.",
+                            "description": "A list of cookies potentially associated to the requested URL. This includes both cookies sent with\nthe request and the ones not sent; the latter are distinguished by having blockedReasons field set.",
                             "type": "array",
                             "items": {
-                                "$ref": "BlockedCookieWithReason"
+                                "$ref": "AssociatedCookie"
                             }
                         },
                         {
@@ -14886,6 +14933,15 @@
                             "description": "True if partitioned cookies are enabled, but the partition key is not serializeable to string.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "exemptedCookies",
+                            "description": "A list of cookies which should have been blocked by 3PCD but are exempted and stored from\nthe response with the corresponding reason.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ExemptedSetCookieWithReason"
+                            }
                         }
                     ]
                 },
@@ -20240,6 +20296,18 @@
                     ]
                 },
                 {
+                    "id": "InterestGroupAuctionFetchType",
+                    "description": "Enum of network fetches auctions can do.",
+                    "type": "string",
+                    "enum": [
+                        "bidderJs",
+                        "bidderWasm",
+                        "sellerJs",
+                        "bidderTrustedSignals",
+                        "sellerTrustedSignals"
+                    ]
+                },
+                {
                     "id": "InterestGroupAd",
                     "description": "Ad advertising element inside an interest group.",
                     "type": "object",
@@ -21274,7 +21342,7 @@
                 },
                 {
                     "name": "setInterestGroupAuctionTracking",
-                    "description": "Enables/Disables issuing of interestGroupAuctionEvent events.",
+                    "description": "Enables/Disables issuing of interestGroupAuctionEventOccurred and\ninterestGroupAuctionNetworkRequestCreated.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -21629,6 +21697,28 @@
                             "description": "Set for started and configResolved",
                             "optional": true,
                             "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "name": "interestGroupAuctionNetworkRequestCreated",
+                    "description": "Specifies which auctions a particular network fetch may be related to, and\nin what role. Note that it is not ordered with respect to\nNetwork.requestWillBeSent (but will happen before loadingFinished\nloadingFailed).",
+                    "parameters": [
+                        {
+                            "name": "type",
+                            "$ref": "InterestGroupAuctionFetchType"
+                        },
+                        {
+                            "name": "requestId",
+                            "$ref": "Network.RequestId"
+                        },
+                        {
+                            "name": "auctions",
+                            "description": "This is the set of the auctions using the worklet that issued this\nrequest.  In the case of trusted signals, it's possible that only some of\nthem actually care about the keys being queried.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "InterestGroupAuctionId"
+                            }
                         }
                     ]
                 },
@@ -22688,7 +22778,6 @@
         },
         {
             "domain": "Tracing",
-            "experimental": true,
             "dependencies": [
                 "IO"
             ],
@@ -22696,6 +22785,7 @@
                 {
                     "id": "MemoryDumpConfig",
                     "description": "Configuration for memory dump. Used only when \"memory-infra\" category is enabled.",
+                    "experimental": true,
                     "type": "object"
                 },
                 {
@@ -22705,6 +22795,7 @@
                         {
                             "name": "recordMode",
                             "description": "Controls how the trace buffer stores data.",
+                            "experimental": true,
                             "optional": true,
                             "type": "string",
                             "enum": [
@@ -22717,24 +22808,28 @@
                         {
                             "name": "traceBufferSizeInKb",
                             "description": "Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value\nof 200 MB would be used.",
+                            "experimental": true,
                             "optional": true,
                             "type": "number"
                         },
                         {
                             "name": "enableSampling",
                             "description": "Turns on JavaScript stack sampling.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         },
                         {
                             "name": "enableSystrace",
                             "description": "Turns on system tracing.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         },
                         {
                             "name": "enableArgumentFilter",
                             "description": "Turns on argument filter.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         },
@@ -22759,6 +22854,7 @@
                         {
                             "name": "syntheticDelays",
                             "description": "Configuration to synthesize the delays in tracing.",
+                            "experimental": true,
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -22768,6 +22864,7 @@
                         {
                             "name": "memoryDumpConfig",
                             "description": "Configuration for memory dump triggers. Used only when \"memory-infra\" category is enabled.",
+                            "experimental": true,
                             "optional": true,
                             "$ref": "MemoryDumpConfig"
                         }
@@ -22776,6 +22873,7 @@
                 {
                     "id": "StreamFormat",
                     "description": "Data format of a trace. Can be either the legacy JSON format or the\nprotocol buffer format. Note that the JSON format will be deprecated soon.",
+                    "experimental": true,
                     "type": "string",
                     "enum": [
                         "json",
@@ -22785,6 +22883,7 @@
                 {
                     "id": "StreamCompression",
                     "description": "Compression type to use for traces returned via streams.",
+                    "experimental": true,
                     "type": "string",
                     "enum": [
                         "none",
@@ -22794,6 +22893,7 @@
                 {
                     "id": "MemoryDumpLevelOfDetail",
                     "description": "Details exposed when memory request explicitly declared.\nKeep consistent with memory_dump_request_args.h and\nmemory_instrumentation.mojom",
+                    "experimental": true,
                     "type": "string",
                     "enum": [
                         "background",
@@ -22804,6 +22904,7 @@
                 {
                     "id": "TracingBackend",
                     "description": "Backend type to use for tracing. `chrome` uses the Chrome-integrated\ntracing service and is supported on all platforms. `system` is only\nsupported on Chrome OS and uses the Perfetto system tracing service.\n`auto` chooses `system` when the perfettoConfig provided to Tracing.start\nspecifies at least one non-Chrome data source; otherwise uses `chrome`.",
+                    "experimental": true,
                     "type": "string",
                     "enum": [
                         "auto",
@@ -22820,6 +22921,7 @@
                 {
                     "name": "getCategories",
                     "description": "Gets supported tracing categories.",
+                    "experimental": true,
                     "returns": [
                         {
                             "name": "categories",
@@ -22834,6 +22936,7 @@
                 {
                     "name": "recordClockSyncMarker",
                     "description": "Record a clock sync marker in the trace.",
+                    "experimental": true,
                     "parameters": [
                         {
                             "name": "syncId",
@@ -22845,6 +22948,7 @@
                 {
                     "name": "requestMemoryDump",
                     "description": "Request a global memory dump.",
+                    "experimental": true,
                     "parameters": [
                         {
                             "name": "deterministic",
@@ -22879,6 +22983,7 @@
                         {
                             "name": "categories",
                             "description": "Category/tag filter",
+                            "experimental": true,
                             "deprecated": true,
                             "optional": true,
                             "type": "string"
@@ -22886,6 +22991,7 @@
                         {
                             "name": "options",
                             "description": "Tracing options",
+                            "experimental": true,
                             "deprecated": true,
                             "optional": true,
                             "type": "string"
@@ -22893,6 +22999,7 @@
                         {
                             "name": "bufferUsageReportingInterval",
                             "description": "If set, the agent will issue bufferUsage events at this interval, specified in milliseconds",
+                            "experimental": true,
                             "optional": true,
                             "type": "number"
                         },
@@ -22915,6 +23022,7 @@
                         {
                             "name": "streamCompression",
                             "description": "Compression format to use. This only applies when using `ReturnAsStream`\ntransfer mode (defaults to `none`)",
+                            "experimental": true,
                             "optional": true,
                             "$ref": "StreamCompression"
                         },
@@ -22926,12 +23034,14 @@
                         {
                             "name": "perfettoConfig",
                             "description": "Base64-encoded serialized perfetto.protos.TraceConfig protobuf message\nWhen specified, the parameters `categories`, `options`, `traceConfig`\nare ignored.",
+                            "experimental": true,
                             "optional": true,
                             "type": "binary"
                         },
                         {
                             "name": "tracingBackend",
                             "description": "Backend type (defaults to `auto`)",
+                            "experimental": true,
                             "optional": true,
                             "$ref": "TracingBackend"
                         }
@@ -22941,6 +23051,7 @@
             "events": [
                 {
                     "name": "bufferUsage",
+                    "experimental": true,
                     "parameters": [
                         {
                             "name": "percentFull",
@@ -22965,6 +23076,7 @@
                 {
                     "name": "dataCollected",
                     "description": "Contains a bucket of collected trace events. When tracing is stopped collected events will be\nsent as a sequence of dataCollected events followed by tracingComplete event.",
+                    "experimental": true,
                     "parameters": [
                         {
                             "name": "value",
@@ -25036,6 +25148,15 @@
                     ]
                 },
                 {
+                    "id": "AccountUrlType",
+                    "description": "The URLs that each account has",
+                    "type": "string",
+                    "enum": [
+                        "TermsOfService",
+                        "PrivacyPolicy"
+                    ]
+                },
+                {
                     "id": "Account",
                     "description": "Corresponds to IdentityRequestAccount",
                     "type": "object",
@@ -25166,6 +25287,23 @@
                         {
                             "name": "dialogButton",
                             "$ref": "DialogButton"
+                        }
+                    ]
+                },
+                {
+                    "name": "openUrl",
+                    "parameters": [
+                        {
+                            "name": "dialogId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "accountIndex",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "accountUrlType",
+                            "$ref": "AccountUrlType"
                         }
                     ]
                 },

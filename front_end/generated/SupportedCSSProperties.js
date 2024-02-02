@@ -2836,6 +2836,16 @@ export const generatedProperties = [
   "name": "position-fallback-bounds"
  },
  {
+  "keywords": [
+   "normal",
+   "most-width",
+   "most-height",
+   "most-block-size",
+   "most-inline-size"
+  ],
+  "name": "position-try-order"
+ },
+ {
   "name": "prefix"
  },
  {
@@ -3681,6 +3691,12 @@ export const generatedProperties = [
  },
  {
   "name": "view-timeline-name"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "view-transition-class"
  },
  {
   "keywords": [
@@ -5236,6 +5252,15 @@ export const generatedPropertyValues = {
    "normal"
   ]
  },
+ "position-try-order": {
+  "values": [
+   "normal",
+   "most-width",
+   "most-height",
+   "most-block-size",
+   "most-inline-size"
+  ]
+ },
  "quotes": {
   "values": [
    "auto",
@@ -5725,6 +5750,11 @@ export const generatedPropertyValues = {
    "text-top",
    "text-bottom",
    "middle"
+  ]
+ },
+ "view-transition-class": {
+  "values": [
+   "none"
   ]
  },
  "view-transition-name": {

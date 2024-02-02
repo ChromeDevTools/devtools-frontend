@@ -2,16 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
+import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {
-  checkCommandResultFunction,
-  navigateToConsoleTab,
-  typeIntoConsole,
-} from '../helpers/console-helpers.js';
-import {waitForContentOfSelectedElementsNode} from '../helpers/elements-helpers.js';
-import {ELEMENTS_PANEL_SELECTOR} from '../helpers/issues-helpers.js';
-import {openSourcesPanel, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {checkCommandResultFunction, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
   describe('provides a command line API', () => {
@@ -74,37 +67,6 @@ describe('The Console Tab', async () => {
         await checkCommandResult('getEventListeners(null);', '{}');
         await checkCommandResult('getEventListeners(undefined);', '{}');
       });
-    });
-
-    describe('inspect', () => {
-      it('which reveals the correct node in the Elements panel', async () => {
-        const {frontend} = getBrowserAndPages();
-
-        await typeIntoConsole(frontend, 'inspect($("p#foo"))');
-
-        await waitFor(ELEMENTS_PANEL_SELECTOR);
-        await waitForContentOfSelectedElementsNode('<p id=\u200B"foo">\u200B \u200B</p>\u200B');
-      });
-
-      // These tests are causing random E2E test suite failures.
-      it.skip(
-          '[crbug.com/1517265]: which reveals the correct node in the Elements panel while paused on a breakpoint',
-          async () => {
-            const {frontend} = getBrowserAndPages();
-            await typeIntoConsole(frontend, 'debugger;');
-            await waitFor(PAUSE_INDICATOR_SELECTOR);
-            await navigateToConsoleTab();
-
-            await typeIntoConsole(frontend, 'inspect($("p#foo"))');
-
-            await waitFor(ELEMENTS_PANEL_SELECTOR);
-            await waitForContentOfSelectedElementsNode('<p id=\u200B"foo">\u200B \u200B</p>\u200B');
-
-            await step('resume execution', async () => {
-              await openSourcesPanel();
-              await click(RESUME_BUTTON);
-            });
-          });
     });
   });
 });

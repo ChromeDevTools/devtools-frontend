@@ -58,6 +58,10 @@ const UIStrings = {
    */
   logXmlhttprequests: 'Log XMLHttpRequests',
   /**
+   *@description Title of a setting under the Console category
+   */
+  timestamps: 'Timestamps',
+  /**
    *@description Title of a setting under the Console category that can be invoked through the Command Menu
    */
   showTimestamps: 'Show timestamps',
@@ -286,7 +290,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
   storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.showTimestamps),
+  title: i18nLazyString(UIStrings.timestamps),
   settingName: 'console-timestamps-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,

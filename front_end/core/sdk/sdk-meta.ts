@@ -292,9 +292,13 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Console category in Settings
    */
-  enableCustomFormatters: 'Enable custom formatters',
+  customFormatters: 'Custom formatters',
   /**
-   *@description Text to enable blocking of network requests
+   *@description Title of a setting under the Network category
+   */
+  networkRequestBlocking: 'Network request blocking',
+  /**
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
    */
   enableNetworkRequestBlocking: 'Enable network request blocking',
   /**
@@ -1012,7 +1016,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
-  title: i18nLazyString(UIStrings.enableCustomFormatters),
+  title: i18nLazyString(UIStrings.customFormatters),
   settingName: 'custom-formatters',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
@@ -1020,7 +1024,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nLazyString(UIStrings.enableNetworkRequestBlocking),
+  title: i18nLazyString(UIStrings.networkRequestBlocking),
   settingName: 'request-blocking-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,

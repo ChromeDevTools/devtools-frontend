@@ -14,9 +14,13 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-scroller': {
-    lineHeight: '1.2em',
+    lineHeight: '1.4em',
     fontFamily: 'var(--source-code-font-family)',
     fontSize: 'var(--source-code-font-size)',
+  },
+
+  '.cm-content': {
+    lineHeight: '1.4em',
   },
 
   '.cm-panels': {

@@ -191,11 +191,11 @@ export class RecordingListView extends HTMLElement {
                           ? LitHtml.html`
                               <${Buttons.Button.Button.litTagName}
                                 title=${i18nString(UIStrings.playRecording)}
-                                .jslogContext=${'play-recording'}
                                 .data=${
                                   {
                                     variant: Buttons.Button.Variant.ROUND,
                                     iconName: 'play',
+                                     jslogContext: 'play-recording',
                                   } as Buttons.Button.ButtonData
                                 }
                                 @click=${this.#onPlayRecordingClick.bind(
@@ -210,11 +210,11 @@ export class RecordingListView extends HTMLElement {
                       <${Buttons.Button.Button.litTagName}
                         class="delete-recording-button"
                         title=${i18nString(UIStrings.deleteRecording)}
-                        .jslogContext=${'delete-recording'}
                         .data=${
                           {
                             variant: Buttons.Button.Variant.ROUND,
                             iconName: 'bin',
+                            jslogContext: 'delete-recording',
                           } as Buttons.Button.ButtonData
                         }
                         @click=${this.#onDeleteClick.bind(

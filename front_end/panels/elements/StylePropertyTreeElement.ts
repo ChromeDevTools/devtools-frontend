@@ -1124,7 +1124,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.updateState();
     if (this.isExpandable()) {
       this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
-      this.expandElement.setAttribute('jslog', `${VisualLogging.treeItemExpand().track({click: true})}`);
+      this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 
     const propertyRenderer =

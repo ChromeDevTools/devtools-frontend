@@ -502,7 +502,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
             this.dispatchEvent(new ItemMouseOutEvent(node));
           }}
         >
-          <span class="arrow-icon" @click=${this.#onArrowClick(node)} jslog=${VisualLogging.treeItemExpand().track({click: true})}>
+          <span class="arrow-icon" @click=${this.#onArrowClick(node)} jslog=${VisualLogging.expand().track({click: true})}>
           </span>
           <span class="tree-node-key" data-node-key=${node.treeNodeData}>${renderedNodeKey}</span>
         </span>

@@ -496,7 +496,7 @@ export class AXBreadcrumb {
     if (!this.axNodeInternal.ignored() && this.axNodeInternal.hasOnlyUnloadedChildren()) {
       this.nodeElementInternal.classList.add('children-unloaded');
       UI.ARIAUtils.setExpanded(this.nodeElementInternal, false);
-      VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.treeItemExpand()}`, this.elementInternal);
+      VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.expand()}`, this.elementInternal);
     }
 
     if (!this.axNodeInternal.isDOMNode()) {
@@ -518,7 +518,7 @@ export class AXBreadcrumb {
     this.nodeElementInternal.classList.add('parent');
     UI.ARIAUtils.setExpanded(this.nodeElementInternal, true);
     this.childrenGroupElement.appendChild(breadcrumb.element());
-    VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.treeItemExpand()}`, this.elementInternal);
+    VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.expand()}`, this.elementInternal);
   }
 
   hasExpandedChildren(): number {

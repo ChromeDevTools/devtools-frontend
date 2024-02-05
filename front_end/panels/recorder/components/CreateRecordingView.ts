@@ -350,7 +350,7 @@ export class CreateRecordingView extends HTMLElement {
               @click=${this.startRecording}
               .label=${i18nString(UIStrings.startRecording)}
               .shape=${'circle'}
-              jslog=${VisualLogging.action('start-recording').track({click: true})}
+              jslog=${VisualLogging.action(Actions.RecorderActions.StartRecording).track({click: true})}
               title=${Models.Tooltip.getTooltipForActions(
                 i18nString(UIStrings.startRecording),
                 Actions.RecorderActions.StartRecording,

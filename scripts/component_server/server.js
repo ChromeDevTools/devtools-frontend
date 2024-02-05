@@ -186,6 +186,9 @@ function createServerIndexFile(componentNames) {
 
 async function getExamplesForPath(filePath) {
   const componentDirectory = path.join(componentDocsBaseFolder, filePath);
+  if (!await checkFileExists(componentDirectory)) {
+    return null;
+  }
   const allFiles = await fs.promises.readdir(componentDirectory);
   const htmlExampleFiles = allFiles.filter(file => {
     return path.extname(file) === '.html';
@@ -272,7 +275,11 @@ async function requestHandler(request, response) {
   } else if (filePath.startsWith('/front_end/ui/components/docs') && path.extname(filePath) === '') {
     // This means it's a component path like /breadcrumbs.
     const componentHtml = await getExamplesForPath(filePath);
-    respondWithHtml(response, componentHtml);
+    if (componentHtml !== null) {
+      respondWithHtml(response, componentHtml);
+    } else {
+      send404(response, '404, not a valid component');
+    }
     return;
   } else if (tracesMode) {
     return handleTracesModeRequest(request, response, filePath);

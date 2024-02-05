@@ -390,7 +390,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unk
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     void (async(): Promise<void> => {
-      const profileViewId = 'live_heap_profile';
+      const profileViewId = 'live-heap-profile';
       await UI.ViewManager.ViewManager.instance().showView(profileViewId);
       const view = UI.ViewManager.ViewManager.instance().view(profileViewId);
       if (view) {

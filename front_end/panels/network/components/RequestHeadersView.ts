@@ -216,7 +216,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <${Category.litTagName}
         @togglerawevent=${toggleShowRaw}
         .data=${{
-          name: 'responseHeaders',
+          name: 'response-headers',
           title: i18nString(UIStrings.responseHeaders),
           headerCount: this.#request.sortedResponseHeaders.length,
           checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
@@ -321,7 +321,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <${Category.litTagName}
         @togglerawevent=${toggleShowRaw}
         .data=${{
-          name: 'requestHeaders',
+          name: 'request-headers',
           title: i18nString(UIStrings.requestHeaders),
           headerCount: this.#request.requestHeaders().length,
           checked: requestHeadersText? this.#showRequestHeadersText : undefined,

@@ -141,10 +141,9 @@ export class RequestPayloadView extends UI.Widget.VBox {
     root.makeDense();
     this.element.appendChild(root.element);
 
-    this.queryStringCategory = new Category(root, 'queryString', '', 'query-string');
-    this.formDataCategory = new Category(root, 'formData', '', 'form-data');
-    this.requestPayloadCategory =
-        new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload), 'request-payload');
+    this.queryStringCategory = new Category(root, 'query-string');
+    this.formDataCategory = new Category(root, 'form-data');
+    this.requestPayloadCategory = new Category(root, 'request-payload', i18nString(UIStrings.requestPayload));
   }
 
   override wasShown(): void {
@@ -512,16 +511,14 @@ export class Category extends UI.TreeOutline.TreeElement {
   private readonly expandedSetting: Common.Settings.Setting<boolean>;
   override expanded: boolean;
 
-  constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string, jslogContext?: string) {
+  constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
     super(title || '', true);
     this.toggleOnClick = true;
     this.hidden = true;
     this.expandedSetting =
         Common.Settings.Settings.instance().createSetting('request-info-' + name + '-category-expanded', true);
     this.expanded = this.expandedSetting.get();
-    if (jslogContext) {
-      this.listItemElement.setAttribute('jslog', `${VisualLogging.section().context(jslogContext)}`);
-    }
+    this.listItemElement.setAttribute('jslog', `${VisualLogging.section().context(name)}`);
     root.appendChild(this);
   }
 

@@ -273,6 +273,11 @@ export class SuggestionInput extends LitElement {
     this.mimeType = '';
     this.autocomplete = true;
     this.addEventListener('blur', this.#handleBlurEvent);
+    let jslog = VisualLogging.value().track({keydown: true});
+    if (this.jslogContext) {
+      jslog = jslog.context(this.jslogContext);
+    }
+    this.setAttribute('jslog', jslog.toString());
   }
 
   #cachedEditableContent?: EditableContent;
@@ -336,10 +341,6 @@ export class SuggestionInput extends LitElement {
   }
 
   protected override render(): LitHtml.TemplateResult {
-    let jslog = VisualLogging.textField().track({keydown: true});
-    if (this.jslogContext) {
-      jslog = jslog.context(this.jslogContext);
-    }
     // clang-format off
     return html`<devtools-editable-content
         ?disabled=${this.disabled}
@@ -356,7 +357,6 @@ export class SuggestionInput extends LitElement {
         inputmode="text"
         placeholder=${this.placeholder}
         spellcheck="false"
-        jslog=${jslog}
       ></devtools-editable-content>
       <devtools-suggestion-box
         @suggestioninit=${this.#handleSuggestionInitEvent}

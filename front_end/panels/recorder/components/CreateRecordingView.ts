@@ -90,6 +90,10 @@ const UIStrings = {
    */
   includeNecessarySelectors:
       'You must choose CSS, Pierce, or XPath as one of your options. Only these selectors are guaranteed to be recorded since ARIA and text selectors may not be unique.',
+  /**
+   * @description Title of a link to the developer documentation.
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/CreateRecordingView.ts',
@@ -292,6 +296,7 @@ export class CreateRecordingView extends HTMLElement {
             <span>${i18nString(UIStrings.selectorAttribute)}</span>
             <x-link
               class="link" href="https://g.co/devtools/recorder#selector"
+              title=${i18nString(UIStrings.learnMore)}
               jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>
@@ -308,7 +313,8 @@ export class CreateRecordingView extends HTMLElement {
           <label class="row-label">
             <span>${i18nString(UIStrings.selectorTypes)}</span>
             <x-link
-              class="link" href="https://g.co/devtools/recorder#selector" 
+              class="link" href="https://g.co/devtools/recorder#selector"
+              title=${i18nString(UIStrings.learnMore)}
               jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
               <${IconButton.Icon.Icon.litTagName} name="help">
               </${IconButton.Icon.Icon.litTagName}>

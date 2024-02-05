@@ -91,7 +91,7 @@ async function createRecording(name: string, selectorAttribute?: string) {
   await input.type(name);
   if (selectorAttribute) {
     const input = await waitForAria(
-        'SELECTOR ATTRIBUTE https://g.co/devtools/recorder#selector',
+        'SELECTOR ATTRIBUTE Learn more',
     );
     await input.type(selectorAttribute);
   }

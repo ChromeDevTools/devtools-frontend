@@ -218,7 +218,7 @@ export class ThreadAppender implements TrackAppender {
       traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry,
       action: TraceEngine.EntriesFilter.FilterAction): void {
     if (this.#entriesFilter) {
-      this.#entriesFilter.applyAction({type: action, entry: traceEvent});
+      this.#entriesFilter.applyFilterAction({type: action, entry: traceEvent});
     } else {
       console.warn('Could not modify tree because entriesFilter does not exist');
     }

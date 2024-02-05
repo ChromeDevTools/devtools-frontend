@@ -829,38 +829,37 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     this.contextMenu = new UI.ContextMenu.ContextMenu(_event, {useSoftMenu: true});
-    if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION]) {
+    if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
-        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.selectedEntryIndex);
+        this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
       });
       item.setShortcut('H');
     }
 
-    if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
+    if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideChildren), () => {
-        this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
+        this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
       });
       item.setShortcut('C');
     }
 
-    if (possibleActions?.[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
+    if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
-        this.modifyTree(
-            TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
+        this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
       });
       item.setShortcut('R');
     }
 
     if (this.entryHasDecoration(this.selectedEntryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW)) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetChildren), () => {
-        this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, this.selectedEntryIndex);
+        this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
       });
       item.setShortcut('U');
     }
 
     this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetTrace), () => {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
-    }, {disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS]});
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
+    }, {disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS]});
 
     void this.contextMenu.show();
   }
@@ -879,22 +878,20 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
 
-    if (keyboardEvent.code === 'KeyH' && possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION]) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, this.selectedEntryIndex);
+    if (keyboardEvent.code === 'KeyH' && possibleActions[TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION]) {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
       handled = true;
     } else if (
-        keyboardEvent.code === 'KeyC' &&
-        possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION]) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
+        keyboardEvent.code === 'KeyC' && possibleActions[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION]) {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
       handled = true;
     } else if (
         keyboardEvent.code === 'KeyR' &&
-        possibleActions[TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]) {
-      this.modifyTree(
-          TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
+        possibleActions[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS]) {
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
       handled = true;
     } else if (keyboardEvent.code === 'KeyU') {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, this.selectedEntryIndex);
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
       handled = true;
     }
 
@@ -2665,7 +2662,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // Check if the button that resets children of the entry is clicked. We need to check it even if the entry
     // clicked is not selected to avoid needing to double click
     if (this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex)) {
-      this.modifyTree(TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entryIndex);
+      this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, entryIndex);
     }
     if (this.selectedEntryIndex === entryIndex) {
       return;

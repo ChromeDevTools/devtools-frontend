@@ -76,7 +76,7 @@ describe('EntriesFilter', function() {
           entry.dur === 827;
     });
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
     assert.strictEqual(stack.invisibleEntries().length, 1);
@@ -112,7 +112,7 @@ describe('EntriesFilter', function() {
           entry.dur === 827;
     });
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
 
     // Get the parent of basicTwo, which is basicStackOne.
@@ -151,7 +151,7 @@ describe('EntriesFilter', function() {
           entry.dur === 827;
     });
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, entry: entryTwo});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: entryTwo});
     // basicTwo is marked as modified.
     assert.isTrue(stack.isEntryModified(entryTwo));
   });
@@ -204,8 +204,8 @@ describe('EntriesFilter', function() {
        const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
 
        // Collapse all foo calls after the first one.
-       stack.applyAction({
-         type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS,
+       stack.applyFilterAction({
+         type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS,
          entry: firstFooCallEntry,
        });
 
@@ -234,7 +234,7 @@ describe('EntriesFilter', function() {
        });
 
        // Merge second foo2 entry.
-       stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: foo2Calls[1]});
+       stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: foo2Calls[1]});
        // First foo2 entry should be in the modifiedVisibleEntries array.
        assert.isTrue(stack.isEntryModified(foo2Calls[0]));
      });
@@ -279,7 +279,7 @@ describe('EntriesFilter', function() {
       return endTime <= basicTwoCallEndTime;
     });
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.
     assert.isFalse(stack.invisibleEntries().includes(basicTwoCallEntry), 'entryTwo is not visible');
@@ -339,8 +339,8 @@ describe('EntriesFilter', function() {
     });
 
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction(
-        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+    stack.applyFilterAction(
+        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
@@ -413,8 +413,8 @@ describe('EntriesFilter', function() {
     });
 
     // Collapse all repeating descendants of the first fibonacci call:
-    stack.applyAction(
-        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: fibonacciCalls[0]});
+    stack.applyFilterAction(
+        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: fibonacciCalls[0]});
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
     const allFibExceptFirstInStackAreHidden = fibonacciCalls.every((fibCall, i) => {
@@ -432,11 +432,11 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicStackOne' &&
           entry.dur === 827;
     });
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION, entry: basicStackOne});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: basicStackOne});
     assert.isTrue(stack.invisibleEntries().includes(basicStackOne), 'entrybasicStackOneTwo is visble');
 
     // Collapse basicTwo():
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
     // basicThree and first fibnacci should now be hidden:
     const basicThree = findFirstEntry(mainThread.entries, entry => {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicThree' &&
@@ -447,7 +447,7 @@ describe('EntriesFilter', function() {
 
     // Apply UNDO_ALL_ACTIONS to bring back all of the hidden entries:
     // UNDO_ALL_ACTIONS can be called on any visible entry
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS, entry: basicTwoCallEntry});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS, entry: basicTwoCallEntry});
     // If the length of invisibleEntries list is 0, all of the entries added earlier were removed and are now visible.
     assert.strictEqual(stack.invisibleEntries().length, 0);
   });
@@ -513,8 +513,8 @@ describe('EntriesFilter', function() {
     });
 
     const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    stack.applyAction(
-        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+    stack.applyFilterAction(
+        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
     // but all foo() calls below it in the stack should now be invisible.
@@ -536,7 +536,7 @@ describe('EntriesFilter', function() {
 
     // Reset all children after second foo2 call
     assert.strictEqual(foo2Calls.length, 3);
-    stack.applyAction({type: TraceEngine.EntriesFilter.FilterUndoAction.RESET_CHILDREN, entry: foo2Calls[1]});
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, entry: foo2Calls[1]});
 
     // All foo and foo2 calls except the second foo cll should now be visible
     allFoo2InStackAreVisible = foo2Calls.every(fooCall => {
@@ -589,8 +589,8 @@ describe('EntriesFilter', function() {
     // Before applying any action on a node, there should be no entries hidden under it
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 0);
 
-    stack.applyAction(
-        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+    stack.applyFilterAction(
+        {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
     // There should be 3 foo() entries hidden under the first foo call entry
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 3);

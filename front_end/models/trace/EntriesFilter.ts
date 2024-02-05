@@ -2,53 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
-
 import * as Helpers from './helpers/helpers.js';
 import * as Types from './types/types.js';
 
 type EntryToNodeMap = Map<Types.TraceEvents.SyntheticTraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
 
-export type FilterAction = FilterApplyAction|FilterUndoAction;
-
-export const enum FilterApplyAction {
+export const enum FilterAction {
   MERGE_FUNCTION = 'MERGE_FUNCTION',
   COLLAPSE_FUNCTION = 'COLLAPSE_FUNCTION',
   COLLAPSE_REPEATING_DESCENDANTS = 'COLLAPSE_REPEATING_DESCENDANTS',
-}
-
-export const enum FilterUndoAction {
   RESET_CHILDREN = 'RESET_CHILDREN',
   UNDO_ALL_ACTIONS = 'UNDO_ALL_ACTIONS',
 }
 
-const filterApplyActionSet: Set<FilterApplyAction> = new Set([
-  FilterApplyAction.MERGE_FUNCTION,
-  FilterApplyAction.COLLAPSE_FUNCTION,
-  FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS,
-]);
-
-const filterUndoActionSet: Set<FilterUndoAction> = new Set([
-  FilterUndoAction.RESET_CHILDREN,
-  FilterUndoAction.UNDO_ALL_ACTIONS,
-]);
-
-// Object passed from the frontend that can be either Undo or Apply filter action.
 export interface UserFilterAction {
   type: FilterAction;
   entry: Types.TraceEvents.SyntheticTraceEntry;
 }
 
-export interface UserApplyFilterAction {
-  type: FilterApplyAction;
-  entry: Types.TraceEvents.SyntheticTraceEntry;
-}
-
 // Object used to indicate to the Context Menu if an action is possible on the selected entry.
 export interface PossibleFilterActions {
-  [FilterApplyAction.MERGE_FUNCTION]: boolean;
-  [FilterApplyAction.COLLAPSE_FUNCTION]: boolean;
-  [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: boolean;
-  [FilterUndoAction.UNDO_ALL_ACTIONS]: boolean;
+  [FilterAction.MERGE_FUNCTION]: boolean;
+  [FilterAction.COLLAPSE_FUNCTION]: boolean;
+  [FilterAction.COLLAPSE_REPEATING_DESCENDANTS]: boolean;
+  [FilterAction.UNDO_ALL_ACTIONS]: boolean;
 }
 
 /**
@@ -81,19 +58,6 @@ export class EntriesFilter {
   }
 
   /**
-   * Applies an action to hide entries or removes entries
-   * from hidden entries array depending on the type of action.
-   **/
-  applyAction(action: UserFilterAction): void {
-    if (/* FilterApplyActions */ this.#isUserApplyFilterAction(action)) {
-      this.#applyFilterAction(action);
-
-    } else if (/* FilterUndoActions */ this.#isFilterUndoAction(action.type)) {
-      this.#applyUndoAction(action);
-    }
-  }
-
-  /**
    * Checks which actions can be applied on an entry. This allows us to only show possible actions in the Context Menu.
    * For example, if an entry has no children, COLLAPSE_FUNCTION will not change the FlameChart, therefore there is no need to show this action as an option.
    **/
@@ -102,10 +66,10 @@ export class EntriesFilter {
     if (!entryNode) {
       // Invalid node was given, return no possible actions.
       return {
-        [FilterApplyAction.MERGE_FUNCTION]: false,
-        [FilterApplyAction.COLLAPSE_FUNCTION]: false,
-        [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: false,
-        [FilterUndoAction.UNDO_ALL_ACTIONS]: false,
+        [FilterAction.MERGE_FUNCTION]: false,
+        [FilterAction.COLLAPSE_FUNCTION]: false,
+        [FilterAction.COLLAPSE_REPEATING_DESCENDANTS]: false,
+        [FilterAction.UNDO_ALL_ACTIONS]: false,
       };
     }
     const entryParent = entryNode.parent;
@@ -115,10 +79,10 @@ export class EntriesFilter {
         descendant => !this.#invisibleEntries.includes(descendant));
     // If there are children to hide, indicate action as possible
     const possibleActions: PossibleFilterActions = {
-      [FilterApplyAction.MERGE_FUNCTION]: entryParent !== null,
-      [FilterApplyAction.COLLAPSE_FUNCTION]: allVisibleDescendants.length > 0,
-      [FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS]: allVisibleRepeatingDescendants.length > 0,
-      [FilterUndoAction.UNDO_ALL_ACTIONS]: this.#invisibleEntries.length > 0,
+      [FilterAction.MERGE_FUNCTION]: entryParent !== null,
+      [FilterAction.COLLAPSE_FUNCTION]: allVisibleDescendants.length > 0,
+      [FilterAction.COLLAPSE_REPEATING_DESCENDANTS]: allVisibleRepeatingDescendants.length > 0,
+      [FilterAction.UNDO_ALL_ACTIONS]: this.#invisibleEntries.length > 0,
     };
     return possibleActions;
   }
@@ -136,30 +100,17 @@ export class EntriesFilter {
   }
 
   /**
-   * If undo action is UNDO_ALL_ACTIONS, assign invisibleEntries array to an empty one.
-   * **/
-  #applyUndoAction(action: UserFilterAction): void {
-    switch (action.type) {
-      case FilterUndoAction.UNDO_ALL_ACTIONS: {
-        this.#invisibleEntries = [];
-        this.#modifiedVisibleEntries = [];
-        break;
-      }
-      case FilterUndoAction.RESET_CHILDREN: {
-        this.#makeEntryChildrenVisible(action.entry);
-        break;
-      }
-    }
-  }
-
-  /**
    * Returns the set of entries that are invisible given the set of applied actions.
    **/
   invisibleEntries(): Types.TraceEvents.TraceEventData[] {
     return this.#invisibleEntries;
   }
 
-  #applyFilterAction(action: UserApplyFilterAction): Types.TraceEvents.TraceEventData[] {
+  /**
+   * Applies an action to hide entries or removes entries
+   * from hidden entries array depending on the action.
+   **/
+  applyFilterAction(action: UserFilterAction): Types.TraceEvents.TraceEventData[] {
     // We apply new user action to the set of all entries, and mark
     // any that should be hidden by adding them to this set.
     // Another approach would be to use splice() to remove items from the
@@ -168,7 +119,7 @@ export class EntriesFilter {
     const entriesToHide = new Set<Types.TraceEvents.TraceEventData>();
 
     switch (action.type) {
-      case FilterApplyAction.MERGE_FUNCTION: {
+      case FilterAction.MERGE_FUNCTION: {
         // The entry that was clicked on is merged into its parent. All its
         // children remain visible, so we just have to hide the entry that was
         // selected.
@@ -181,8 +132,7 @@ export class EntriesFilter {
         }
         break;
       }
-
-      case FilterApplyAction.COLLAPSE_FUNCTION: {
+      case FilterAction.COLLAPSE_FUNCTION: {
         // The entry itself remains visible, but all of its descendants are hidden.
         const entryNode = this.#entryToNode.get(action.entry);
         if (!entryNode) {
@@ -197,8 +147,7 @@ export class EntriesFilter {
         }
         break;
       }
-
-      case FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS: {
+      case FilterAction.COLLAPSE_REPEATING_DESCENDANTS: {
         const entryNode = this.#entryToNode.get(action.entry);
         if (!entryNode) {
           // Invalid node was given, just ignore and move on.
@@ -209,6 +158,15 @@ export class EntriesFilter {
         if (entriesToHide.size > 0) {
           this.#modifiedVisibleEntries.push(action.entry);
         }
+        break;
+      }
+      case FilterAction.UNDO_ALL_ACTIONS: {
+        this.#invisibleEntries = [];
+        this.#modifiedVisibleEntries = [];
+        break;
+      }
+      case FilterAction.RESET_CHILDREN: {
+        this.#makeEntryChildrenVisible(action.entry);
         break;
       }
       default:
@@ -325,13 +283,5 @@ export class EntriesFilter {
 
   isEntryModified(event: Types.TraceEvents.TraceEventData): boolean {
     return this.#modifiedVisibleEntries.includes(event);
-  }
-
-  #isUserApplyFilterAction(action: UserFilterAction): action is UserApplyFilterAction {
-    return filterApplyActionSet.has(action.type as FilterApplyAction);
-  }
-
-  #isFilterUndoAction(action: FilterAction): action is FilterUndoAction {
-    return filterUndoActionSet.has(action as FilterUndoAction);
   }
 }

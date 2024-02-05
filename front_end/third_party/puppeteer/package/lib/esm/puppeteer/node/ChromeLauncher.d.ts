@@ -24,7 +24,7 @@ export declare class ChromeLauncher extends ProductLauncher {
         isTemp: boolean;
     }): Promise<void>;
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
-    executablePath(channel?: ChromeReleaseChannel, headless?: boolean | 'new'): string;
+    executablePath(channel?: ChromeReleaseChannel, headless?: boolean | 'shell'): string;
 }
 /**
  * Extracts all features from the given command-line flag

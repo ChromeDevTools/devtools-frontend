@@ -10,12 +10,13 @@ const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const disposable_js_1 = require("../util/disposable.js");
 /**
- * {@link BrowserContext} represents individual sessions within a
+ * {@link BrowserContext} represents individual user contexts within a
  * {@link Browser | browser}.
  *
  * When a {@link Browser | browser} is launched, it has a single
  * {@link BrowserContext | browser context} by default. Others can be created
- * using {@link Browser.createIncognitoBrowserContext}.
+ * using {@link Browser.createBrowserContext}. Each context has isolated storage
+ * (cookies/localStorage/etc.)
  *
  * {@link BrowserContext} {@link EventEmitter | emits} various events which are
  * documented in the {@link BrowserContextEvent} enum.
@@ -24,11 +25,11 @@ const disposable_js_1 = require("../util/disposable.js");
  * `window.open`, the popup will belong to the parent {@link Page.browserContext
  * | page's browser context}.
  *
- * @example Creating an incognito {@link BrowserContext | browser context}:
+ * @example Creating a new {@link BrowserContext | browser context}:
  *
  * ```ts
- * // Create a new incognito browser context
- * const context = await browser.createIncognitoBrowserContext();
+ * // Create a new browser context
+ * const context = await browser.createBrowserContext();
  * // Create a new page inside context.
  * const page = await context.newPage();
  * // ... do stuff with page ...

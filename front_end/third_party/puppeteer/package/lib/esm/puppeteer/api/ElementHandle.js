@@ -84,11 +84,10 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
-import { debugError, isString, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { isString, withSourcePuppeteerURLIfNone } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { throwIfDisposed } from '../util/decorators.js';
-import { AsyncDisposableStack } from '../util/disposable.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
 import { JSHandle } from './JSHandle.js';
 /**
@@ -125,7 +124,7 @@ import { JSHandle } from './JSHandle.js';
  * @public
  */
 let ElementHandle = (() => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5;
     let _classSuper = JSHandle;
     let _instanceExtraInitializers = [];
     let _getProperty_decorators;
@@ -133,11 +132,9 @@ let ElementHandle = (() => {
     let _jsonValue_decorators;
     let _$_decorators;
     let _$$_decorators;
-    let _$x_decorators;
     let _waitForSelector_decorators;
     let _isVisible_decorators;
     let _isHidden_decorators;
-    let _waitForXPath_decorators;
     let _toElement_decorators;
     let _clickablePoint_decorators;
     let _hover_decorators;
@@ -168,43 +165,39 @@ let ElementHandle = (() => {
             _jsonValue_decorators = [throwIfDisposed(), (_c = ElementHandle).bindIsolatedHandle.bind(_c)];
             _$_decorators = [throwIfDisposed(), (_d = ElementHandle).bindIsolatedHandle.bind(_d)];
             _$$_decorators = [throwIfDisposed(), (_e = ElementHandle).bindIsolatedHandle.bind(_e)];
-            _$x_decorators = [throwIfDisposed(), (_f = ElementHandle).bindIsolatedHandle.bind(_f)];
-            _waitForSelector_decorators = [throwIfDisposed(), (_g = ElementHandle).bindIsolatedHandle.bind(_g)];
-            _isVisible_decorators = [throwIfDisposed(), (_h = ElementHandle).bindIsolatedHandle.bind(_h)];
-            _isHidden_decorators = [throwIfDisposed(), (_j = ElementHandle).bindIsolatedHandle.bind(_j)];
-            _waitForXPath_decorators = [throwIfDisposed(), (_k = ElementHandle).bindIsolatedHandle.bind(_k)];
-            _toElement_decorators = [throwIfDisposed(), (_l = ElementHandle).bindIsolatedHandle.bind(_l)];
-            _clickablePoint_decorators = [throwIfDisposed(), (_m = ElementHandle).bindIsolatedHandle.bind(_m)];
-            _hover_decorators = [throwIfDisposed(), (_o = ElementHandle).bindIsolatedHandle.bind(_o)];
-            _click_decorators = [throwIfDisposed(), (_p = ElementHandle).bindIsolatedHandle.bind(_p)];
-            _drag_decorators = [throwIfDisposed(), (_q = ElementHandle).bindIsolatedHandle.bind(_q)];
-            _dragEnter_decorators = [throwIfDisposed(), (_r = ElementHandle).bindIsolatedHandle.bind(_r)];
-            _dragOver_decorators = [throwIfDisposed(), (_s = ElementHandle).bindIsolatedHandle.bind(_s)];
-            _drop_decorators = [throwIfDisposed(), (_t = ElementHandle).bindIsolatedHandle.bind(_t)];
-            _dragAndDrop_decorators = [throwIfDisposed(), (_u = ElementHandle).bindIsolatedHandle.bind(_u)];
-            _select_decorators = [throwIfDisposed(), (_v = ElementHandle).bindIsolatedHandle.bind(_v)];
-            _tap_decorators = [throwIfDisposed(), (_w = ElementHandle).bindIsolatedHandle.bind(_w)];
-            _touchStart_decorators = [throwIfDisposed(), (_x = ElementHandle).bindIsolatedHandle.bind(_x)];
-            _touchMove_decorators = [throwIfDisposed(), (_y = ElementHandle).bindIsolatedHandle.bind(_y)];
-            _touchEnd_decorators = [throwIfDisposed(), (_z = ElementHandle).bindIsolatedHandle.bind(_z)];
-            _focus_decorators = [throwIfDisposed(), (_0 = ElementHandle).bindIsolatedHandle.bind(_0)];
-            _type_decorators = [throwIfDisposed(), (_1 = ElementHandle).bindIsolatedHandle.bind(_1)];
-            _press_decorators = [throwIfDisposed(), (_2 = ElementHandle).bindIsolatedHandle.bind(_2)];
-            _boundingBox_decorators = [throwIfDisposed(), (_3 = ElementHandle).bindIsolatedHandle.bind(_3)];
-            _boxModel_decorators = [throwIfDisposed(), (_4 = ElementHandle).bindIsolatedHandle.bind(_4)];
-            _screenshot_decorators = [throwIfDisposed(), (_5 = ElementHandle).bindIsolatedHandle.bind(_5)];
-            _isIntersectingViewport_decorators = [throwIfDisposed(), (_6 = ElementHandle).bindIsolatedHandle.bind(_6)];
-            _scrollIntoView_decorators = [throwIfDisposed(), (_7 = ElementHandle).bindIsolatedHandle.bind(_7)];
+            _waitForSelector_decorators = [throwIfDisposed(), (_f = ElementHandle).bindIsolatedHandle.bind(_f)];
+            _isVisible_decorators = [throwIfDisposed(), (_g = ElementHandle).bindIsolatedHandle.bind(_g)];
+            _isHidden_decorators = [throwIfDisposed(), (_h = ElementHandle).bindIsolatedHandle.bind(_h)];
+            _toElement_decorators = [throwIfDisposed(), (_j = ElementHandle).bindIsolatedHandle.bind(_j)];
+            _clickablePoint_decorators = [throwIfDisposed(), (_k = ElementHandle).bindIsolatedHandle.bind(_k)];
+            _hover_decorators = [throwIfDisposed(), (_l = ElementHandle).bindIsolatedHandle.bind(_l)];
+            _click_decorators = [throwIfDisposed(), (_m = ElementHandle).bindIsolatedHandle.bind(_m)];
+            _drag_decorators = [throwIfDisposed(), (_o = ElementHandle).bindIsolatedHandle.bind(_o)];
+            _dragEnter_decorators = [throwIfDisposed(), (_p = ElementHandle).bindIsolatedHandle.bind(_p)];
+            _dragOver_decorators = [throwIfDisposed(), (_q = ElementHandle).bindIsolatedHandle.bind(_q)];
+            _drop_decorators = [throwIfDisposed(), (_r = ElementHandle).bindIsolatedHandle.bind(_r)];
+            _dragAndDrop_decorators = [throwIfDisposed(), (_s = ElementHandle).bindIsolatedHandle.bind(_s)];
+            _select_decorators = [throwIfDisposed(), (_t = ElementHandle).bindIsolatedHandle.bind(_t)];
+            _tap_decorators = [throwIfDisposed(), (_u = ElementHandle).bindIsolatedHandle.bind(_u)];
+            _touchStart_decorators = [throwIfDisposed(), (_v = ElementHandle).bindIsolatedHandle.bind(_v)];
+            _touchMove_decorators = [throwIfDisposed(), (_w = ElementHandle).bindIsolatedHandle.bind(_w)];
+            _touchEnd_decorators = [throwIfDisposed(), (_x = ElementHandle).bindIsolatedHandle.bind(_x)];
+            _focus_decorators = [throwIfDisposed(), (_y = ElementHandle).bindIsolatedHandle.bind(_y)];
+            _type_decorators = [throwIfDisposed(), (_z = ElementHandle).bindIsolatedHandle.bind(_z)];
+            _press_decorators = [throwIfDisposed(), (_0 = ElementHandle).bindIsolatedHandle.bind(_0)];
+            _boundingBox_decorators = [throwIfDisposed(), (_1 = ElementHandle).bindIsolatedHandle.bind(_1)];
+            _boxModel_decorators = [throwIfDisposed(), (_2 = ElementHandle).bindIsolatedHandle.bind(_2)];
+            _screenshot_decorators = [throwIfDisposed(), (_3 = ElementHandle).bindIsolatedHandle.bind(_3)];
+            _isIntersectingViewport_decorators = [throwIfDisposed(), (_4 = ElementHandle).bindIsolatedHandle.bind(_4)];
+            _scrollIntoView_decorators = [throwIfDisposed(), (_5 = ElementHandle).bindIsolatedHandle.bind(_5)];
             __esDecorate(this, null, _getProperty_decorators, { kind: "method", name: "getProperty", static: false, private: false, access: { has: obj => "getProperty" in obj, get: obj => obj.getProperty }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getProperties_decorators, { kind: "method", name: "getProperties", static: false, private: false, access: { has: obj => "getProperties" in obj, get: obj => obj.getProperties }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$_decorators, { kind: "method", name: "$", static: false, private: false, access: { has: obj => "$" in obj, get: obj => obj.$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _$$_decorators, { kind: "method", name: "$$", static: false, private: false, access: { has: obj => "$$" in obj, get: obj => obj.$$ }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, null, _$x_decorators, { kind: "method", name: "$x", static: false, private: false, access: { has: obj => "$x" in obj, get: obj => obj.$x }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForSelector_decorators, { kind: "method", name: "waitForSelector", static: false, private: false, access: { has: obj => "waitForSelector" in obj, get: obj => obj.waitForSelector }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isVisible_decorators, { kind: "method", name: "isVisible", static: false, private: false, access: { has: obj => "isVisible" in obj, get: obj => obj.isVisible }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isHidden_decorators, { kind: "method", name: "isHidden", static: false, private: false, access: { has: obj => "isHidden" in obj, get: obj => obj.isHidden }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, null, _waitForXPath_decorators, { kind: "method", name: "waitForXPath", static: false, private: false, access: { has: obj => "waitForXPath" in obj, get: obj => obj.waitForXPath }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _toElement_decorators, { kind: "method", name: "toElement", static: false, private: false, access: { has: obj => "toElement" in obj, get: obj => obj.toElement }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _clickablePoint_decorators, { kind: "method", name: "clickablePoint", static: false, private: false, access: { has: obj => "clickablePoint" in obj, get: obj => obj.clickablePoint }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _hover_decorators, { kind: "method", name: "hover", static: false, private: false, access: { has: obj => "hover" in obj, get: obj => obj.hover }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -487,24 +480,6 @@ let ElementHandle = (() => {
             }
         }
         /**
-         * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
-         *
-         * Example: `await elementHandle.$$('xpath/' + xpathExpression)`
-         *
-         * The method evaluates the XPath expression relative to the elementHandle.
-         * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-         * automatically.
-         *
-         * If there are no such elements, the method will resolve to an empty array.
-         * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
-         */
-        async $x(expression) {
-            if (expression.startsWith('//')) {
-                expression = `.${expression}`;
-            }
-            return await this.$$(`xpath/${expression}`);
-        }
-        /**
          * Wait for an element matching the given selector to appear in the current
          * element.
          *
@@ -565,74 +540,6 @@ let ElementHandle = (() => {
          */
         async isHidden() {
             return await this.#checkVisibility(false);
-        }
-        /**
-         * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
-         * prefix.
-         *
-         * Example: `await elementHandle.waitForSelector('xpath/' + xpathExpression)`
-         *
-         * The method evaluates the XPath expression relative to the elementHandle.
-         *
-         * Wait for the `xpath` within the element. If at the moment of calling the
-         * method the `xpath` already exists, the method will return immediately. If
-         * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-         * function will throw.
-         *
-         * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-         * automatically.
-         *
-         * @example
-         * This method works across navigation.
-         *
-         * ```ts
-         * import puppeteer from 'puppeteer';
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .waitForXPath('//img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
-         * ```
-         *
-         * @param xpath - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-         * element to wait for
-         * @param options - Optional waiting parameters
-         * @returns Promise which resolves when element specified by xpath string is
-         * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-         * not found in DOM, otherwise resolves to `ElementHandle`.
-         * @remarks
-         * The optional Argument `options` have properties:
-         *
-         * - `visible`: A boolean to wait for element to be present in DOM and to be
-         *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-         *   properties. Defaults to `false`.
-         *
-         * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-         *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-         *   Defaults to `false`.
-         *
-         * - `timeout`: A number which is maximum time to wait for in milliseconds.
-         *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The
-         *   default value can be changed by using the {@link Page.setDefaultTimeout}
-         *   method.
-         */
-        async waitForXPath(xpath, options = {}) {
-            if (xpath.startsWith('//')) {
-                xpath = `.${xpath}`;
-            }
-            return await this.waitForSelector(`xpath/${xpath}`, options);
         }
         /**
          * Converts the current handle to the given element type.
@@ -1178,62 +1085,27 @@ let ElementHandle = (() => {
             return point;
         }
         async screenshot(options = {}) {
-            const env_6 = { stack: [], error: void 0, hasError: false };
-            try {
-                const { scrollIntoView = true } = options;
-                let clip = await this.#nonEmptyVisibleBoundingBox();
-                const page = this.frame.page();
-                // If the element is larger than the viewport, `captureBeyondViewport` will
-                // _not_ affect element rendering, so we need to adjust the viewport to
-                // properly render the element.
-                const viewport = page.viewport() ?? {
-                    width: clip.width,
-                    height: clip.height,
-                };
-                const stack = __addDisposableResource(env_6, new AsyncDisposableStack(), true);
-                if (clip.width > viewport.width || clip.height > viewport.height) {
-                    await this.frame.page().setViewport({
-                        ...viewport,
-                        width: Math.max(viewport.width, Math.ceil(clip.width)),
-                        height: Math.max(viewport.height, Math.ceil(clip.height)),
-                    });
-                    stack.defer(async () => {
-                        try {
-                            await this.frame.page().setViewport(viewport);
-                        }
-                        catch (error) {
-                            debugError(error);
-                        }
-                    });
+            const { scrollIntoView = true } = options;
+            let clip = await this.#nonEmptyVisibleBoundingBox();
+            const page = this.frame.page();
+            // Only scroll the element into view if the user wants it.
+            if (scrollIntoView) {
+                await this.scrollIntoViewIfNeeded();
+                // We measure again just in case.
+                clip = await this.#nonEmptyVisibleBoundingBox();
+            }
+            const [pageLeft, pageTop] = await this.evaluate(() => {
+                if (!window.visualViewport) {
+                    throw new Error('window.visualViewport is not supported.');
                 }
-                // Only scroll the element into view if the user wants it.
-                if (scrollIntoView) {
-                    await this.scrollIntoViewIfNeeded();
-                    // We measure again just in case.
-                    clip = await this.#nonEmptyVisibleBoundingBox();
-                }
-                const [pageLeft, pageTop] = await this.evaluate(() => {
-                    if (!window.visualViewport) {
-                        throw new Error('window.visualViewport is not supported.');
-                    }
-                    return [
-                        window.visualViewport.pageLeft,
-                        window.visualViewport.pageTop,
-                    ];
-                });
-                clip.x += pageLeft;
-                clip.y += pageTop;
-                return await page.screenshot({ ...options, clip });
-            }
-            catch (e_6) {
-                env_6.error = e_6;
-                env_6.hasError = true;
-            }
-            finally {
-                const result_1 = __disposeResources(env_6);
-                if (result_1)
-                    await result_1;
-            }
+                return [
+                    window.visualViewport.pageLeft,
+                    window.visualViewport.pageTop,
+                ];
+            });
+            clip.x += pageLeft;
+            clip.y += pageTop;
+            return await page.screenshot({ ...options, clip });
         }
         async #nonEmptyVisibleBoundingBox() {
             const box = await this.boundingBox();
@@ -1279,12 +1151,12 @@ let ElementHandle = (() => {
          * (full intersection). Defaults to 1.
          */
         async isIntersectingViewport(options = {}) {
-            const env_7 = { stack: [], error: void 0, hasError: false };
+            const env_6 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
                 // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
-                const target = __addDisposableResource(env_7, handle && (await handle.#getOwnerSVGElement()), false);
+                const target = __addDisposableResource(env_6, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {
                     const visibleRatio = await new Promise(resolve => {
                         const observer = new IntersectionObserver(entries => {
@@ -1296,12 +1168,12 @@ let ElementHandle = (() => {
                     return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
                 }, options.threshold ?? 0);
             }
-            catch (e_7) {
-                env_7.error = e_7;
-                env_7.hasError = true;
+            catch (e_6) {
+                env_6.error = e_6;
+                env_6.hasError = true;
             }
             finally {
-                __disposeResources(env_7);
+                __disposeResources(env_6);
             }
         }
         /**

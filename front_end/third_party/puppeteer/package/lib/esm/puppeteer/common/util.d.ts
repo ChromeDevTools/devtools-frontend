@@ -6,9 +6,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 /// <reference types="node" />
-/// <reference types="node" />
 import type FS from 'fs/promises';
-import type { Readable } from 'stream';
 import { Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
@@ -76,11 +74,14 @@ export declare function importFSPromises(): Promise<typeof FS>;
 /**
  * @internal
  */
-export declare function getReadableAsBuffer(readable: Readable, path?: string): Promise<Buffer | null>;
+export declare function getReadableAsBuffer(readable: ReadableStream<Uint8Array>, path?: string): Promise<Buffer | null>;
 /**
  * @internal
  */
-export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
+/**
+ * @internal
+ */
+export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<ReadableStream<Uint8Array>>;
 /**
  * @internal
  */

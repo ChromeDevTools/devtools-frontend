@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.networkConditions = exports.PredefinedNetworkConditions = void 0;
+exports.PredefinedNetworkConditions = void 0;
 /**
  * A list of network conditions to be used with
  * {@link Page.emulateNetworkConditions}.
@@ -40,10 +40,4 @@ exports.PredefinedNetworkConditions = Object.freeze({
         latency: 150 * 3.75,
     },
 });
-/**
- * @deprecated Import {@link PredefinedNetworkConditions}.
- *
- * @public
- */
-exports.networkConditions = exports.PredefinedNetworkConditions;
 //# sourceMappingURL=PredefinedNetworkConditions.js.map

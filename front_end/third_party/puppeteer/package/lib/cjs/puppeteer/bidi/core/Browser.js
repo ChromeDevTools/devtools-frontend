@@ -139,7 +139,17 @@ let Browser = (() => {
                     // TODO: Create a SharedWorkerRealm.
                 }
             });
+            await this.#syncUserContexts();
             await this.#syncBrowsingContexts();
+        }
+        async #syncUserContexts() {
+            const { result: { userContexts }, } = await this.session.send('browser.getUserContexts', {});
+            for (const context of userContexts) {
+                if (context.userContext === UserContext_js_1.UserContext.DEFAULT) {
+                    continue;
+                }
+                this.#userContexts.set(context.userContext, UserContext_js_1.UserContext.create(this, context.userContext));
+            }
         }
         async #syncBrowsingContexts() {
             // In case contexts are created or destroyed during `getTree`, we use this
@@ -223,12 +233,8 @@ let Browser = (() => {
                 script,
             });
         }
-        static userContextId = 0;
         async createUserContext() {
-            // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-            // TODO: Call `createUserContext` once available.
-            // Generating a monotonically increasing context id.
-            const context = `${++Browser.userContextId}`;
+            const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {});
             const userContext = UserContext_js_1.UserContext.create(this, context);
             this.#userContexts.set(userContext.id, userContext);
             const userContextEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(userContext));

@@ -4,7 +4,6 @@ import type { ChildProcess } from 'child_process';
 import { PassThrough } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
-import type { Readable } from 'stream';
 
 /**
  * The Accessibility class provides methods for inspecting the browser's
@@ -219,7 +218,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      */
     abstract process(): ChildProcess | null;
     /**
-     * Creates a new incognito {@link BrowserContext | browser context}.
+     * Creates a new {@link BrowserContext | browser context}.
      *
      * This won't share cookies/cache with other {@link BrowserContext | browser contexts}.
      *
@@ -229,15 +228,15 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * import puppeteer from 'puppeteer';
      *
      * const browser = await puppeteer.launch();
-     * // Create a new incognito browser context.
-     * const context = await browser.createIncognitoBrowserContext();
+     * // Create a new browser context.
+     * const context = await browser.createBrowserContext();
      * // Create a new page in a pristine context.
      * const page = await context.newPage();
      * // Do stuff
      * await page.goto('https://example.com');
      * ```
      */
-    abstract createIncognitoBrowserContext(options?: BrowserContextOptions): Promise<BrowserContext>;
+    abstract createBrowserContext(options?: BrowserContextOptions): Promise<BrowserContext>;
     /**
      * Gets a list of open {@link BrowserContext | browser contexts}.
      *
@@ -411,12 +410,13 @@ export declare interface BrowserConnectOptions {
 }
 
 /**
- * {@link BrowserContext} represents individual sessions within a
+ * {@link BrowserContext} represents individual user contexts within a
  * {@link Browser | browser}.
  *
  * When a {@link Browser | browser} is launched, it has a single
  * {@link BrowserContext | browser context} by default. Others can be created
- * using {@link Browser.createIncognitoBrowserContext}.
+ * using {@link Browser.createBrowserContext}. Each context has isolated storage
+ * (cookies/localStorage/etc.)
  *
  * {@link BrowserContext} {@link EventEmitter | emits} various events which are
  * documented in the {@link BrowserContextEvent} enum.
@@ -425,11 +425,11 @@ export declare interface BrowserConnectOptions {
  * `window.open`, the popup will belong to the parent {@link Page.browserContext
  * | page's browser context}.
  *
- * @example Creating an incognito {@link BrowserContext | browser context}:
+ * @example Creating a new {@link BrowserContext | browser context}:
  *
  * ```ts
- * // Create a new incognito browser context
- * const context = await browser.createIncognitoBrowserContext();
+ * // Create a new browser context
+ * const context = await browser.createBrowserContext();
  * // Create a new page inside context.
  * const page = await context.newPage();
  * // ... do stuff with page ...
@@ -474,8 +474,9 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
     /**
      * Whether this {@link BrowserContext | browser context} is incognito.
      *
-     * The {@link Browser.defaultBrowserContext | default browser context} is the
-     * only non-incognito browser context.
+     * In Chrome, the
+     * {@link Browser.defaultBrowserContext | default browser context} is the only
+     * non-incognito browser context.
      */
     abstract isIncognito(): boolean;
     /**
@@ -547,7 +548,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
 /**
  * @public
  */
-declare const enum BrowserContextEvent {
+export declare const enum BrowserContextEvent {
     /**
      * Emitted when the url of a target inside the browser context changes.
      * Contains a {@link Target} instance.
@@ -568,8 +569,6 @@ declare const enum BrowserContextEvent {
      */
     TargetDestroyed = "targetdestroyed"
 }
-export { BrowserContextEvent as BrowserContextEmittedEvents }
-export { BrowserContextEvent }
 
 /**
  * @public
@@ -600,7 +599,7 @@ export declare interface BrowserContextOptions {
  *
  * @public
  */
-declare const enum BrowserEvent {
+export declare const enum BrowserEvent {
     /**
      * Emitted when Puppeteer gets disconnected from the browser instance. This
      * might happen because either:
@@ -613,7 +612,7 @@ declare const enum BrowserEvent {
      * Emitted when the URL of a target changes. Contains a {@link Target}
      * instance.
      *
-     * @remarks Note that this includes target changes in incognito browser
+     * @remarks Note that this includes target changes in all browser
      * contexts.
      */
     TargetChanged = "targetchanged",
@@ -624,7 +623,7 @@ declare const enum BrowserEvent {
      *
      * Contains a {@link Target} instance.
      *
-     * @remarks Note that this includes target creations in incognito browser
+     * @remarks Note that this includes target creations in all browser
      * contexts.
      */
     TargetCreated = "targetcreated",
@@ -632,14 +631,12 @@ declare const enum BrowserEvent {
      * Emitted when a target is destroyed, for example when a page is closed.
      * Contains a {@link Target} instance.
      *
-     * @remarks Note that this includes target destructions in incognito browser
+     * @remarks Note that this includes target destructions in all browser
      * contexts.
      */
     TargetDestroyed = "targetdestroyed",
     /* Excluded from this release type: TargetDiscovered */
 }
-export { BrowserEvent as BrowserEmittedEvents }
-export { BrowserEvent }
 
 /**
  * @public
@@ -662,13 +659,18 @@ export declare interface BrowserLaunchArgumentOptions {
      * Whether to run the browser in headless mode.
      *
      * @remarks
-     * In the future `headless: true` will be equivalent to `headless: 'new'`.
-     * You can read more about the change {@link https://developer.chrome.com/articles/new-headless/ | here}.
-     * Consider opting in early by setting the value to `"new"`.
+     *
+     * - `true` launches the browser in the
+     *   {@link https://developer.chrome.com/articles/new-headless/ | new headless}
+     *   mode.
+     *
+     * - `'shell'` launches
+     *   {@link https://developer.chrome.com/blog/chrome-headless-shell | shell}
+     *   known as the old headless mode.
      *
      * @defaultValue `true`
      */
-    headless?: boolean | 'new';
+    headless?: boolean | 'shell';
     /**
      * Path to a user data directory.
      * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
@@ -847,8 +849,6 @@ export declare interface CommonEventEmitter<Events extends Record<EventType, unk
     on<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     off<Key extends keyof Events>(type: Key, handler?: Handler<Events[Key]>): this;
     emit<Key extends keyof Events>(type: Key, event: Events[Key]): boolean;
-    addListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
-    removeListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     once<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     listenerCount(event: keyof Events): number;
     removeAllListeners(event?: keyof Events): this;
@@ -875,7 +875,13 @@ export declare interface Configuration {
      * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
      * is inferred.
      *
-     * @defaultValue A compatible-revision of the browser.
+     * Use a specific browser version (e.g., 119.0.6045.105). If you use an alias
+     * such `stable` or `canary` it will only work during the installation of
+     * Puppeteer and it will fail when launching the browser.
+     *
+     * @example 119.0.6045.105
+     * @defaultValue The pinned browser version supported by the current Puppeteer
+     * version.
      */
     browserRevision?: string;
     /**
@@ -899,14 +905,6 @@ export declare interface Configuration {
      * depending on the product.
      */
     downloadBaseUrl?: string;
-    /**
-     * Specifies the path for the downloads folder.
-     *
-     * Can be overridden by `PUPPETEER_DOWNLOAD_PATH`.
-     *
-     * @defaultValue `<cacheDirectory>`
-     */
-    downloadPath?: string;
     /**
      * Specifies an executable path to be used in
      * {@link PuppeteerNode.launch | puppeteer.launch}.
@@ -1093,7 +1091,7 @@ export declare interface ConsoleMessageLocation {
  * The supported types for console messages.
  * @public
  */
-export declare type ConsoleMessageType = 'log' | 'debug' | 'info' | 'error' | 'warning' | 'dir' | 'dirxml' | 'table' | 'trace' | 'clear' | 'startGroup' | 'startGroupCollapsed' | 'endGroup' | 'assert' | 'profile' | 'profileEnd' | 'count' | 'timeEnd' | 'verbose';
+export declare type ConsoleMessageType = 'log' | 'debug' | 'info' | 'error' | 'warn' | 'dir' | 'dirxml' | 'table' | 'trace' | 'clear' | 'startGroup' | 'startGroupCollapsed' | 'endGroup' | 'assert' | 'profile' | 'profileEnd' | 'count' | 'timeEnd' | 'verbose';
 
 /**
  * @public
@@ -1107,6 +1105,169 @@ export declare interface ContinueRequestOverrides {
     postData?: string;
     headers?: Record<string, string>;
 }
+
+/**
+ * Represents a cookie object.
+ *
+ * @public
+ */
+export declare interface Cookie {
+    /**
+     * Cookie name.
+     */
+    name: string;
+    /**
+     * Cookie value.
+     */
+    value: string;
+    /**
+     * Cookie domain.
+     */
+    domain: string;
+    /**
+     * Cookie path.
+     */
+    path: string;
+    /**
+     * Cookie expiration date as the number of seconds since the UNIX epoch. Set to `-1` for
+     * session cookies
+     */
+    expires: number;
+    /**
+     * Cookie size.
+     */
+    size: number;
+    /**
+     * True if cookie is http-only.
+     */
+    httpOnly: boolean;
+    /**
+     * True if cookie is secure.
+     */
+    secure: boolean;
+    /**
+     * True in case of session cookie.
+     */
+    session: boolean;
+    /**
+     * Cookie SameSite type.
+     */
+    sameSite?: CookieSameSite;
+    /**
+     * Cookie Priority. Supported only in Chrome.
+     */
+    priority?: CookiePriority;
+    /**
+     * True if cookie is SameParty. Supported only in Chrome.
+     */
+    sameParty?: boolean;
+    /**
+     * Cookie source scheme type. Supported only in Chrome.
+     */
+    sourceScheme?: CookieSourceScheme;
+    /**
+     * Cookie partition key. The site of the top-level URL the browser was visiting at the
+     * start of the request to the endpoint that set the cookie. Supported only in Chrome.
+     */
+    partitionKey?: string;
+    /**
+     * True if cookie partition key is opaque. Supported only in Chrome.
+     */
+    partitionKeyOpaque?: boolean;
+}
+
+/**
+ * Cookie parameter object
+ *
+ * @public
+ */
+export declare interface CookieParam {
+    /**
+     * Cookie name.
+     */
+    name: string;
+    /**
+     * Cookie value.
+     */
+    value: string;
+    /**
+     * The request-URI to associate with the setting of the cookie. This value can affect
+     * the default domain, path, and source scheme values of the created cookie.
+     */
+    url?: string;
+    /**
+     * Cookie domain.
+     */
+    domain?: string;
+    /**
+     * Cookie path.
+     */
+    path?: string;
+    /**
+     * True if cookie is secure.
+     */
+    secure?: boolean;
+    /**
+     * True if cookie is http-only.
+     */
+    httpOnly?: boolean;
+    /**
+     * Cookie SameSite type.
+     */
+    sameSite?: CookieSameSite;
+    /**
+     * Cookie expiration date, session cookie if not set
+     */
+    expires?: number;
+    /**
+     * Cookie Priority. Supported only in Chrome.
+     */
+    priority?: CookiePriority;
+    /**
+     * True if cookie is SameParty. Supported only in Chrome.
+     */
+    sameParty?: boolean;
+    /**
+     * Cookie source scheme type. Supported only in Chrome.
+     */
+    sourceScheme?: CookieSourceScheme;
+    /**
+     * Cookie partition key. The site of the top-level URL the browser was visiting at the
+     * start of the request to the endpoint that set the cookie. If not set, the cookie will
+     * be set as not partitioned.
+     */
+    partitionKey?: string;
+}
+
+/**
+ * Represents the cookie's 'Priority' status:
+ * https://tools.ietf.org/html/draft-west-cookie-priority-00
+ *
+ * @public
+ */
+export declare type CookiePriority = 'Low' | 'Medium' | 'High';
+
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * Represents the cookie's 'SameSite' status:
+ * https://tools.ietf.org/html/draft-west-first-party-cookies
+ *
+ * @public
+ */
+export declare type CookieSameSite = 'Strict' | 'Lax' | 'None';
+
+/**
+ * Represents the source scheme of the origin that originally set the cookie. A value of
+ * "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
+ * This is a temporary ability and it will be removed in the future.
+ *
+ * @public
+ */
+export declare type CookieSourceScheme = 'Unset' | 'NonSecure' | 'Secure';
 
 /**
  * The Coverage class provides methods to gather information about parts of
@@ -1254,21 +1415,6 @@ export declare interface CSSCoverageOptions {
 }
 
 /**
- * @license
- * Copyright 2018 Google Inc.
- * SPDX-License-Identifier: Apache-2.0
- */
-/**
- * @deprecated Do not use.
- *
- * @public
- */
-export declare class CustomError extends Error {
-    /* Excluded from this release type: __constructor */
-    /* Excluded from this release type: [Symbol.toStringTag] */
-}
-
-/**
  * @public
  */
 export declare interface CustomQueryHandler {
@@ -1361,6 +1507,29 @@ defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
 /**
  * @public
  */
+export declare interface DeleteCookiesRequest {
+    /**
+     * Name of the cookies to remove.
+     */
+    name: string;
+    /**
+     * If specified, deletes all the cookies with the given name where domain and path match
+     * provided URL.
+     */
+    url?: string;
+    /**
+     * If specified, deletes only cookies with the exact domain.
+     */
+    domain?: string;
+    /**
+     * If specified, deletes only cookies with the exact path.
+     */
+    path?: string;
+}
+
+/**
+ * @public
+ */
 export declare interface Device {
     userAgent: string;
     viewport: Viewport;
@@ -1427,13 +1596,6 @@ export declare class DeviceRequestPromptDevice {
 }
 
 /* Excluded from this release type: DeviceRequestPromptManager */
-
-/**
- * @deprecated Import {@link KnownDevices}
- *
- * @public
- */
-export declare const devices: Readonly<Record<"Blackberry PlayBook" | "Blackberry PlayBook landscape" | "BlackBerry Z30" | "BlackBerry Z30 landscape" | "Galaxy Note 3" | "Galaxy Note 3 landscape" | "Galaxy Note II" | "Galaxy Note II landscape" | "Galaxy S III" | "Galaxy S III landscape" | "Galaxy S5" | "Galaxy S5 landscape" | "Galaxy S8" | "Galaxy S8 landscape" | "Galaxy S9+" | "Galaxy S9+ landscape" | "Galaxy Tab S4" | "Galaxy Tab S4 landscape" | "iPad" | "iPad landscape" | "iPad (gen 6)" | "iPad (gen 6) landscape" | "iPad (gen 7)" | "iPad (gen 7) landscape" | "iPad Mini" | "iPad Mini landscape" | "iPad Pro" | "iPad Pro landscape" | "iPad Pro 11" | "iPad Pro 11 landscape" | "iPhone 4" | "iPhone 4 landscape" | "iPhone 5" | "iPhone 5 landscape" | "iPhone 6" | "iPhone 6 landscape" | "iPhone 6 Plus" | "iPhone 6 Plus landscape" | "iPhone 7" | "iPhone 7 landscape" | "iPhone 7 Plus" | "iPhone 7 Plus landscape" | "iPhone 8" | "iPhone 8 landscape" | "iPhone 8 Plus" | "iPhone 8 Plus landscape" | "iPhone SE" | "iPhone SE landscape" | "iPhone X" | "iPhone X landscape" | "iPhone XR" | "iPhone XR landscape" | "iPhone 11" | "iPhone 11 landscape" | "iPhone 11 Pro" | "iPhone 11 Pro landscape" | "iPhone 11 Pro Max" | "iPhone 11 Pro Max landscape" | "iPhone 12" | "iPhone 12 landscape" | "iPhone 12 Pro" | "iPhone 12 Pro landscape" | "iPhone 12 Pro Max" | "iPhone 12 Pro Max landscape" | "iPhone 12 Mini" | "iPhone 12 Mini landscape" | "iPhone 13" | "iPhone 13 landscape" | "iPhone 13 Pro" | "iPhone 13 Pro landscape" | "iPhone 13 Pro Max" | "iPhone 13 Pro Max landscape" | "iPhone 13 Mini" | "iPhone 13 Mini landscape" | "JioPhone 2" | "JioPhone 2 landscape" | "Kindle Fire HDX" | "Kindle Fire HDX landscape" | "LG Optimus L70" | "LG Optimus L70 landscape" | "Microsoft Lumia 550" | "Microsoft Lumia 950" | "Microsoft Lumia 950 landscape" | "Nexus 10" | "Nexus 10 landscape" | "Nexus 4" | "Nexus 4 landscape" | "Nexus 5" | "Nexus 5 landscape" | "Nexus 5X" | "Nexus 5X landscape" | "Nexus 6" | "Nexus 6 landscape" | "Nexus 6P" | "Nexus 6P landscape" | "Nexus 7" | "Nexus 7 landscape" | "Nokia Lumia 520" | "Nokia Lumia 520 landscape" | "Nokia N9" | "Nokia N9 landscape" | "Pixel 2" | "Pixel 2 landscape" | "Pixel 2 XL" | "Pixel 2 XL landscape" | "Pixel 3" | "Pixel 3 landscape" | "Pixel 4" | "Pixel 4 landscape" | "Pixel 4a (5G)" | "Pixel 4a (5G) landscape" | "Pixel 5" | "Pixel 5 landscape" | "Moto G4" | "Moto G4 landscape", Device>>;
 
 /* Excluded from this release type: DevToolsTarget */
 
@@ -1637,19 +1799,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
-     *
-     * Example: `await elementHandle.$$('xpath/' + xpathExpression)`
-     *
-     * The method evaluates the XPath expression relative to the elementHandle.
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-     * automatically.
-     *
-     * If there are no such elements, the method will resolve to an empty array.
-     * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
-     */
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    /**
      * Wait for an element matching the given selector to appear in the current
      * element.
      *
@@ -1697,73 +1846,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link ElementHandle.waitForSelector}.
      */
     isHidden(): Promise<boolean>;
-    /**
-     * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
-     * prefix.
-     *
-     * Example: `await elementHandle.waitForSelector('xpath/' + xpathExpression)`
-     *
-     * The method evaluates the XPath expression relative to the elementHandle.
-     *
-     * Wait for the `xpath` within the element. If at the moment of calling the
-     * method the `xpath` already exists, the method will return immediately. If
-     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
-     *
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-     * automatically.
-     *
-     * @example
-     * This method works across navigation.
-     *
-     * ```ts
-     * import puppeteer from 'puppeteer';
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   let currentURL;
-     *   page
-     *     .waitForXPath('//img')
-     *     .then(() => console.log('First URL with image: ' + currentURL));
-     *   for (currentURL of [
-     *     'https://example.com',
-     *     'https://google.com',
-     *     'https://bbc.com',
-     *   ]) {
-     *     await page.goto(currentURL);
-     *   }
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @param xpath - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-     * element to wait for
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when element specified by xpath string is
-     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-     * not found in DOM, otherwise resolves to `ElementHandle`.
-     * @remarks
-     * The optional Argument `options` have properties:
-     *
-     * - `visible`: A boolean to wait for element to be present in DOM and to be
-     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     *   properties. Defaults to `false`.
-     *
-     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-     *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-     *   Defaults to `false`.
-     *
-     * - `timeout`: A number which is maximum time to wait for in milliseconds.
-     *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The
-     *   default value can be changed by using the {@link Page.setDefaultTimeout}
-     *   method.
-     */
-    waitForXPath(xpath: string, options?: {
-        visible?: boolean;
-        hidden?: boolean;
-        timeout?: number;
-    }): Promise<ElementHandle<Node> | null>;
     /**
      * Converts the current handle to the given element type.
      *
@@ -2013,33 +2095,6 @@ export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable
 /* Excluded from this release type: ErrorLike */
 
 /**
- * @deprecated Import error classes directly.
- *
- * Puppeteer methods might throw errors if they are unable to fulfill a request.
- * For example, `page.waitForSelector(selector[, options])` might fail if the
- * selector doesn't match any nodes during the given timeframe.
- *
- * For certain types of errors Puppeteer uses specific error classes. These
- * classes are available via `puppeteer.errors`.
- *
- * @example
- * An example of handling a timeout error:
- *
- * ```ts
- * try {
- *   await page.waitForSelector('.foo');
- * } catch (e) {
- *   if (e instanceof TimeoutError) {
- *     // Do something if this is a timeout.
- *   }
- * }
- * ```
- *
- * @public
- */
-export declare const errors: PuppeteerErrors;
-
-/**
  * @public
  */
 export declare type EvaluateFunc<T extends unknown[]> = (...params: InnerParams<T>) => Awaitable<unknown>;
@@ -2088,18 +2143,6 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @returns `true` if there are any listeners, `false` if there are not.
      */
     emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
-    /**
-     * Remove an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.off} instead.
-     */
-    removeListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
-    /**
-     * Add an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.on} instead.
-     */
-    addListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param type - the event you'd like to listen to
@@ -2460,17 +2503,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: string | Func, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
-     *
-     * Example: `await frame.$$('xpath/' + xpathExpression)`
-     *
-     * This method evaluates the given XPath expression and returns the results.
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-     * automatically.
-     * @param expression - the XPath expression to evaluate.
-     */
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    /**
      * Waits for an element matching the given selector to appear in the frame.
      *
      * This method works across navigations.
@@ -2506,29 +2538,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
-    /**
-     * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
-     *
-     * Example: `await frame.waitForSelector('xpath/' + xpathExpression)`
-     *
-     * The method evaluates the XPath expression relative to the Frame.
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-     * automatically.
-     *
-     * Wait for the `xpath` to appear in page. If at the moment of calling the
-     * method the `xpath` already exists, the method will return immediately. If
-     * the xpath doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
-     *
-     * For a code example, see the example for {@link Frame.waitForSelector}. That
-     * function behaves identically other than taking a CSS selector rather than
-     * an XPath.
-     *
-     * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visibility of the element and how
-     * long to wait before timing out.
-     */
-    waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
      * @example
      * The `waitForFunction` can be used to observe viewport size change:
@@ -2718,27 +2727,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      */
     type(selector: string, text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
-     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
-     *
-     * Causes your script to wait for the given number of milliseconds.
-     *
-     * @remarks
-     * It's generally recommended to not wait for a number of seconds, but instead
-     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-     *
-     * @example
-     *
-     * Wait for 1 second:
-     *
-     * ```ts
-     * await frame.waitForTimeout(1000);
-     * ```
-     *
-     * @param milliseconds - the number of milliseconds to wait.
-     */
-    waitForTimeout(milliseconds: number): Promise<void>;
-    /**
      * The frame's title.
      */
     title(): Promise<string>;
@@ -2874,8 +2862,6 @@ export declare interface GeolocationOptions {
 /* Excluded from this release type: getCapturedLogs */
 
 /* Excluded from this release type: getFeatures */
-
-/* Excluded from this release type: getFetch */
 
 /* Excluded from this release type: GetIdFn */
 
@@ -3311,13 +3297,6 @@ export declare interface InterceptResolutionState {
     action: InterceptResolutionAction;
     priority?: number;
 }
-
-/**
- * @public
- *
- * @deprecated please use {@link InterceptResolutionAction} instead.
- */
-export declare type InterceptResolutionStrategy = InterceptResolutionAction;
 
 /**
  * @public
@@ -3895,23 +3874,19 @@ export declare type LocatorClickOptions = ClickOptions & ActionOptions;
  *
  * @public
  */
-declare enum LocatorEvent {
+export declare enum LocatorEvent {
     /**
      * Emitted every time before the locator performs an action on the located element(s).
      */
     Action = "action"
 }
-export { LocatorEvent as LocatorEmittedEvents }
-export { LocatorEvent }
 
 /**
  * @public
  */
-declare interface LocatorEvents extends Record<EventType, unknown> {
+export declare interface LocatorEvents extends Record<EventType, unknown> {
     [LocatorEvent.Action]: undefined;
 }
-export { LocatorEvents as LocatorEventObject }
-export { LocatorEvents }
 
 /**
  * @public
@@ -4261,16 +4236,6 @@ export declare interface NetworkConditions {
     upload: number;
     latency: number;
 }
-
-/**
- * @deprecated Import {@link PredefinedNetworkConditions}.
- *
- * @public
- */
-export declare const networkConditions: Readonly<{
-    'Slow 3G': NetworkConditions;
-    'Fast 3G': NetworkConditions;
-}>;
 
 /* Excluded from this release type: NetworkEventManager */
 
@@ -4846,22 +4811,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * The method evaluates the XPath expression relative to the page document as
-     * its context node. If there are no such elements, the method resolves to an
-     * empty array.
-     *
-     * @remarks
-     * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
-     *
-     * @param expression - Expression to evaluate
-     */
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    /**
      * If no URLs are specified, this method returns cookies for the current page
      * URL. If URLs are specified, only cookies for those URLs are returned.
      */
-    abstract cookies(...urls: string[]): Promise<Protocol.Network.Cookie[]>;
-    abstract deleteCookie(...cookies: Protocol.Network.DeleteCookiesRequest[]): Promise<void>;
+    abstract cookies(...urls: string[]): Promise<Cookie[]>;
+    abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     /**
      * @example
      *
@@ -4869,7 +4823,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * await page.setCookie(cookieObject1, cookieObject2);
      * ```
      */
-    abstract setCookie(...cookies: Protocol.Network.CookieParam[]): Promise<void>;
+    abstract setCookie(...cookies: CookieParam[]): Promise<void>;
     /**
      * Adds a `<script>` tag into the page with the desired URL or content.
      *
@@ -5687,7 +5641,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust | `-webkit-print-color-adjust`}
      * property to force rendering of exact colors.
      */
-    abstract createPDFStream(options?: PDFOptions): Promise<Readable>;
+    abstract createPDFStream(options?: PDFOptions): Promise<ReadableStream<Uint8Array>>;
     /**
      * {@inheritDoc Page.createPDFStream}
      */
@@ -5840,28 +5794,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     type(selector: string, text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
-     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
-     *
-     * Causes your script to wait for the given number of milliseconds.
-     *
-     * @remarks
-     *
-     * It's generally recommended to not wait for a number of seconds, but instead
-     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-     *
-     * @example
-     *
-     * Wait for 1 second:
-     *
-     * ```ts
-     * await page.waitForTimeout(1000);
-     * ```
-     *
-     * @param milliseconds - the number of milliseconds to wait.
-     */
-    waitForTimeout(milliseconds: number): Promise<void>;
-    /**
      * Wait for the `selector` to appear in page. If at the moment of calling the
      * method the `selector` already exists, the method will return immediately. If
      * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
@@ -5914,58 +5846,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   by using the {@link Page.setDefaultTimeout} method.
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
-    /**
-     * Wait for the `xpath` to appear in page. If at the moment of calling the
-     * method the `xpath` already exists, the method will return immediately. If
-     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
-     *
-     * @example
-     * This method works across navigation
-     *
-     * ```ts
-     * import puppeteer from 'puppeteer';
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   let currentURL;
-     *   page
-     *     .waitForXPath('//img')
-     *     .then(() => console.log('First URL with image: ' + currentURL));
-     *   for (currentURL of [
-     *     'https://example.com',
-     *     'https://google.com',
-     *     'https://bbc.com',
-     *   ]) {
-     *     await page.goto(currentURL);
-     *   }
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @param xpath - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-     * element to wait for
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when element specified by xpath string is
-     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-     * not found in DOM, otherwise resolves to `ElementHandle`.
-     * @remarks
-     * The optional Argument `options` have properties:
-     *
-     * - `visible`: A boolean to wait for element to be present in DOM and to be
-     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     *   properties. Defaults to `false`.
-     *
-     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-     *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-     *   Defaults to `false`.
-     *
-     * - `timeout`: A number which is maximum time to wait for in milliseconds.
-     *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-     *   value can be changed by using the {@link Page.setDefaultTimeout} method.
-     */
-    waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
      * Waits for the provided function, `pageFunction`, to return a truthy value when
      * evaluated in the page's context.
@@ -6062,7 +5942,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
  *
  * @public
  */
-declare const enum PageEvent {
+export declare const enum PageEvent {
     /**
      * Emitted when the page closes.
      */
@@ -6208,8 +6088,6 @@ declare const enum PageEvent {
      */
     WorkerDestroyed = "workerdestroyed"
 }
-export { PageEvent as PageEmittedEvents }
-export { PageEvent }
 
 /**
  * Denotes the objects received by callback functions for page events.
@@ -6219,7 +6097,7 @@ export { PageEvent }
  *
  * @public
  */
-declare interface PageEvents extends Record<EventType, unknown> {
+export declare interface PageEvents extends Record<EventType, unknown> {
     [PageEvent.Close]: undefined;
     [PageEvent.Console]: ConsoleMessage;
     [PageEvent.Dialog]: Dialog;
@@ -6243,8 +6121,6 @@ declare interface PageEvents extends Record<EventType, unknown> {
     [PageEvent.WorkerCreated]: WebWorker;
     [PageEvent.WorkerDestroyed]: WebWorker;
 }
-export { PageEvents as PageEventObject }
-export { PageEvents }
 
 /* Excluded from this release type: PageTarget */
 
@@ -6398,10 +6274,22 @@ export declare interface PDFOptions {
     omitBackground?: boolean;
     /**
      * Generate tagged (accessible) PDF.
-     * @defaultValue `false`
+     * @defaultValue `true`
      * @experimental
      */
     tagged?: boolean;
+    /**
+     * Generate document outline.
+     *
+     * @remarks
+     * If this is enabled the PDF will also be tagged (accessible)
+     * Currently only works in old Headless (headless = 'shell')
+     * crbug/840455#c47
+     *
+     * @defaultValue `false`
+     * @experimental
+     */
+    outline?: boolean;
     /**
      * Timeout in milliseconds. Pass `0` to disable timeout.
      * @defaultValue `30_000`
@@ -6507,7 +6395,7 @@ export { Protocol }
  *
  * @public
  */
-export declare class ProtocolError extends CustomError {
+export declare class ProtocolError extends PuppeteerError {
     #private;
     set code(code: number | undefined);
     /**
@@ -6607,13 +6495,18 @@ export default puppeteer;
 /* Excluded from this release type: PUPPETEER_WORLD */
 
 /**
- * @deprecated Do not use.
+ * @license
+ * Copyright 2018 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * The base class for all Puppeteer-specific errors
  *
  * @public
  */
-export declare interface PuppeteerErrors {
-    TimeoutError: typeof TimeoutError;
-    ProtocolError: typeof ProtocolError;
+export declare class PuppeteerError extends Error {
+    /* Excluded from this release type: __constructor */
+    /* Excluded from this release type: [Symbol.toStringTag] */
 }
 
 /**
@@ -7232,7 +7125,7 @@ export declare enum TargetType {
  *
  * @public
  */
-export declare class TimeoutError extends CustomError {
+export declare class TimeoutError extends PuppeteerError {
 }
 
 /* Excluded from this release type: TimeoutSettings */
@@ -7340,7 +7233,7 @@ export declare function unregisterCustomQueryHandler(name: string): void;
  *
  * @public
  */
-export declare class UnsupportedOperation extends CustomError {
+export declare class UnsupportedOperation extends PuppeteerError {
 }
 
 /* Excluded from this release type: UTILITY_WORLD_NAME */

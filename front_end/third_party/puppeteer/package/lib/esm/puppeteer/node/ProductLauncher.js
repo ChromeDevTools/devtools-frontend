@@ -236,7 +236,7 @@ export class ProductLauncher {
         function productToBrowser(product, headless) {
             switch (product) {
                 case 'chrome':
-                    if (headless === true) {
+                    if (headless === 'shell') {
                         return InstalledBrowser.CHROMEHEADLESSSHELL;
                     }
                     return InstalledBrowser.CHROME;

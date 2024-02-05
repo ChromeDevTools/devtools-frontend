@@ -49,7 +49,6 @@ export declare class Browser extends EventEmitter<{
     close(): Promise<void>;
     addPreloadScript(functionDeclaration: string, options?: AddPreloadScriptOptions): Promise<string>;
     removePreloadScript(script: string): Promise<void>;
-    static userContextId: number;
     createUserContext(): Promise<UserContext>;
     [disposeSymbol](): void;
 }

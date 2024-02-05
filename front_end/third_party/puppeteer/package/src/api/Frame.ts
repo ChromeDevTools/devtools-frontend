@@ -624,23 +624,6 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   }
 
   /**
-   * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
-   *
-   * Example: `await frame.$$('xpath/' + xpathExpression)`
-   *
-   * This method evaluates the given XPath expression and returns the results.
-   * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-   * automatically.
-   * @param expression - the XPath expression to evaluate.
-   */
-  @throwIfDetached
-  async $x(expression: string): Promise<Array<ElementHandle<Node>>> {
-    // eslint-disable-next-line rulesdir/use-using -- This is cached.
-    const document = await this.#document();
-    return await document.$x(expression);
-  }
-
-  /**
    * Waits for an element matching the given selector to appear in the frame.
    *
    * This method works across navigations.
@@ -687,39 +670,6 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
       updatedSelector,
       options
     )) as ElementHandle<NodeFor<Selector>> | null;
-  }
-
-  /**
-   * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
-   *
-   * Example: `await frame.waitForSelector('xpath/' + xpathExpression)`
-   *
-   * The method evaluates the XPath expression relative to the Frame.
-   * If `xpath` starts with `//` instead of `.//`, the dot will be appended
-   * automatically.
-   *
-   * Wait for the `xpath` to appear in page. If at the moment of calling the
-   * method the `xpath` already exists, the method will return immediately. If
-   * the xpath doesn't appear after the `timeout` milliseconds of waiting, the
-   * function will throw.
-   *
-   * For a code example, see the example for {@link Frame.waitForSelector}. That
-   * function behaves identically other than taking a CSS selector rather than
-   * an XPath.
-   *
-   * @param xpath - the XPath expression to wait for.
-   * @param options - options to configure the visibility of the element and how
-   * long to wait before timing out.
-   */
-  @throwIfDetached
-  async waitForXPath(
-    xpath: string,
-    options: WaitForSelectorOptions = {}
-  ): Promise<ElementHandle<Node> | null> {
-    if (xpath.startsWith('//')) {
-      xpath = `.${xpath}`;
-    }
-    return await this.waitForSelector(`xpath/${xpath}`, options);
   }
 
   /**
@@ -1149,32 +1099,6 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
     using handle = await this.$(selector);
     assert(handle, `No element found for selector: ${selector}`);
     await handle.type(text, options);
-  }
-
-  /**
-   * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
-   *
-   * Causes your script to wait for the given number of milliseconds.
-   *
-   * @remarks
-   * It's generally recommended to not wait for a number of seconds, but instead
-   * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-   * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-   *
-   * @example
-   *
-   * Wait for 1 second:
-   *
-   * ```ts
-   * await frame.waitForTimeout(1000);
-   * ```
-   *
-   * @param milliseconds - the number of milliseconds to wait.
-   */
-  async waitForTimeout(milliseconds: number): Promise<void> {
-    return await new Promise(resolve => {
-      setTimeout(resolve, milliseconds);
-    });
   }
 
   /**

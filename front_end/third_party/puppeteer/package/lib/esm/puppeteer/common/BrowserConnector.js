@@ -8,7 +8,6 @@ import { _connectToCdpBrowser } from '../cdp/BrowserConnector.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { getFetch } from './fetch.js';
 const getWebSocketTransportClass = async () => {
     return isNode
         ? (await import('../node/NodeWebSocketTransport.js')).NodeWebSocketTransport
@@ -64,9 +63,8 @@ async function getConnectionTransport(options) {
 }
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);
-    const fetch = await getFetch();
     try {
-        const result = await fetch(endpointURL.toString(), {
+        const result = await globalThis.fetch(endpointURL.toString(), {
             method: 'GET',
         });
         if (!result.ok) {

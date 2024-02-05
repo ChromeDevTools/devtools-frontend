@@ -5,13 +5,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TimeoutError = exports.CustomError = void 0;
+exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TimeoutError = exports.PuppeteerError = void 0;
 /**
- * @deprecated Do not use.
+ * The base class for all Puppeteer-specific errors
  *
  * @public
  */
-class CustomError extends Error {
+class PuppeteerError extends Error {
     /**
      * @internal
      */
@@ -26,7 +26,7 @@ class CustomError extends Error {
         return this.constructor.name;
     }
 }
-exports.CustomError = CustomError;
+exports.PuppeteerError = PuppeteerError;
 /**
  * TimeoutError is emitted whenever certain operations are terminated due to
  * timeout.
@@ -37,7 +37,7 @@ exports.CustomError = CustomError;
  *
  * @public
  */
-class TimeoutError extends CustomError {
+class TimeoutError extends PuppeteerError {
 }
 exports.TimeoutError = TimeoutError;
 /**
@@ -45,7 +45,7 @@ exports.TimeoutError = TimeoutError;
  *
  * @public
  */
-class ProtocolError extends CustomError {
+class ProtocolError extends PuppeteerError {
     #code;
     #originalMessage = '';
     set code(code) {
@@ -76,7 +76,7 @@ exports.ProtocolError = ProtocolError;
  *
  * @public
  */
-class UnsupportedOperation extends CustomError {
+class UnsupportedOperation extends PuppeteerError {
 }
 exports.UnsupportedOperation = UnsupportedOperation;
 /**
@@ -85,33 +85,4 @@ exports.UnsupportedOperation = UnsupportedOperation;
 class TargetCloseError extends ProtocolError {
 }
 exports.TargetCloseError = TargetCloseError;
-/**
- * @deprecated Import error classes directly.
- *
- * Puppeteer methods might throw errors if they are unable to fulfill a request.
- * For example, `page.waitForSelector(selector[, options])` might fail if the
- * selector doesn't match any nodes during the given timeframe.
- *
- * For certain types of errors Puppeteer uses specific error classes. These
- * classes are available via `puppeteer.errors`.
- *
- * @example
- * An example of handling a timeout error:
- *
- * ```ts
- * try {
- *   await page.waitForSelector('.foo');
- * } catch (e) {
- *   if (e instanceof TimeoutError) {
- *     // Do something if this is a timeout.
- *   }
- * }
- * ```
- *
- * @public
- */
-exports.errors = Object.freeze({
-    TimeoutError,
-    ProtocolError,
-});
 //# sourceMappingURL=Errors.js.map

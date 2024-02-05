@@ -34,5 +34,6 @@ export declare class BidiBrowserContext extends BrowserContext {
     isIncognito(): boolean;
     overridePermissions(): never;
     clearPermissionOverrides(): never;
+    get id(): string | undefined;
 }
 //# sourceMappingURL=BrowserContext.d.ts.map

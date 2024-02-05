@@ -46,6 +46,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Binding = void 0;
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const JSHandle_js_1 = require("../api/JSHandle.js");
 const util_js_1 = require("../common/util.js");
 const disposable_js_1 = require("../util/disposable.js");

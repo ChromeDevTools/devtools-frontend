@@ -45,7 +45,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RETRY_DELAY = exports.RaceLocator = exports.NodeLocator = exports.MappedLocator = exports.FilteredLocator = exports.DelegatedLocator = exports.FunctionLocator = exports.Locator = exports.LocatorEmittedEvents = exports.LocatorEvent = void 0;
+exports.RETRY_DELAY = exports.RaceLocator = exports.NodeLocator = exports.MappedLocator = exports.FilteredLocator = exports.DelegatedLocator = exports.FunctionLocator = exports.Locator = exports.LocatorEvent = void 0;
 const rxjs_js_1 = require("../../../third_party/rxjs/rxjs.js");
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const util_js_1 = require("../../common/util.js");
@@ -60,7 +60,7 @@ var LocatorEvent;
      * Emitted every time before the locator performs an action on the located element(s).
      */
     LocatorEvent["Action"] = "action";
-})(LocatorEvent || (exports.LocatorEmittedEvents = exports.LocatorEvent = LocatorEvent = {}));
+})(LocatorEvent || (exports.LocatorEvent = LocatorEvent = {}));
 /**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the

@@ -262,7 +262,7 @@ class ProductLauncher {
         function productToBrowser(product, headless) {
             switch (product) {
                 case 'chrome':
-                    if (headless === true) {
+                    if (headless === 'shell') {
                         return browsers_1.Browser.CHROMEHEADLESSSHELL;
                     }
                     return browsers_1.Browser.CHROME;

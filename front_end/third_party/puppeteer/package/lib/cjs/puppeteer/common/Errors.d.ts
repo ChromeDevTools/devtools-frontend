@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
- * @deprecated Do not use.
+ * The base class for all Puppeteer-specific errors
  *
  * @public
  */
-export declare class CustomError extends Error {
+export declare class PuppeteerError extends Error {
     /**
      * @internal
      */
@@ -28,14 +28,14 @@ export declare class CustomError extends Error {
  *
  * @public
  */
-export declare class TimeoutError extends CustomError {
+export declare class TimeoutError extends PuppeteerError {
 }
 /**
  * ProtocolError is emitted whenever there is an error from the protocol.
  *
  * @public
  */
-export declare class ProtocolError extends CustomError {
+export declare class ProtocolError extends PuppeteerError {
     #private;
     set code(code: number | undefined);
     /**
@@ -56,46 +56,11 @@ export declare class ProtocolError extends CustomError {
  *
  * @public
  */
-export declare class UnsupportedOperation extends CustomError {
+export declare class UnsupportedOperation extends PuppeteerError {
 }
 /**
  * @internal
  */
 export declare class TargetCloseError extends ProtocolError {
 }
-/**
- * @deprecated Do not use.
- *
- * @public
- */
-export interface PuppeteerErrors {
-    TimeoutError: typeof TimeoutError;
-    ProtocolError: typeof ProtocolError;
-}
-/**
- * @deprecated Import error classes directly.
- *
- * Puppeteer methods might throw errors if they are unable to fulfill a request.
- * For example, `page.waitForSelector(selector[, options])` might fail if the
- * selector doesn't match any nodes during the given timeframe.
- *
- * For certain types of errors Puppeteer uses specific error classes. These
- * classes are available via `puppeteer.errors`.
- *
- * @example
- * An example of handling a timeout error:
- *
- * ```ts
- * try {
- *   await page.waitForSelector('.foo');
- * } catch (e) {
- *   if (e instanceof TimeoutError) {
- *     // Do something if this is a timeout.
- *   }
- * }
- * ```
- *
- * @public
- */
-export declare const errors: PuppeteerErrors;
 //# sourceMappingURL=Errors.d.ts.map

@@ -27,7 +27,7 @@ export declare class CdpBrowser extends BrowserBase {
     process(): ChildProcess | null;
     _targetManager(): TargetManager;
     _getIsPageTargetCallback(): IsPageTargetCallback | undefined;
-    createIncognitoBrowserContext(options?: BrowserContextOptions): Promise<CdpBrowserContext>;
+    createBrowserContext(options?: BrowserContextOptions): Promise<CdpBrowserContext>;
     browserContexts(): CdpBrowserContext[];
     defaultBrowserContext(): CdpBrowserContext;
     _disposeContext(contextId?: string): Promise<void>;

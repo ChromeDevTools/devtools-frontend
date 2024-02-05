@@ -4,29 +4,6 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
@@ -512,16 +489,12 @@ class BidiPage extends Page_js_1.Page {
     }
     async createPDFStream(options) {
         const buffer = await this.pdf(options);
-        try {
-            const { Readable } = await Promise.resolve().then(() => __importStar(require('stream')));
-            return Readable.from(buffer);
-        }
-        catch (error) {
-            if (error instanceof TypeError) {
-                throw new Error('Can only pass a file path in a Node-like environment.');
-            }
-            throw error;
-        }
+        return new ReadableStream({
+            start(controller) {
+                controller.enqueue(buffer);
+                controller.close();
+            },
+        });
     }
     async _screenshot(options) {
         const { clip, type, captureBeyondViewport, quality } = options;
@@ -612,6 +585,26 @@ class BidiPage extends Page_js_1.Page {
             cacheDisabled: !enabled,
         });
     }
+    async cookies(...urls) {
+        const normalizedUrls = (urls.length ? urls : [this.url()]).map(url => {
+            return new URL(url);
+        });
+        const bidiCookies = await this.#connection.send('storage.getCookies', {
+            partition: {
+                type: 'context',
+                context: this.mainFrame()._id,
+            },
+        });
+        return bidiCookies.result.cookies
+            .map(cookie => {
+            return bidiToPuppeteerCookie(cookie);
+        })
+            .filter(cookie => {
+            return normalizedUrls.some(url => {
+                return testUrlMatchCookie(cookie, url);
+            });
+        });
+    }
     isServiceWorkerBypassed() {
         throw new Errors_js_1.UnsupportedOperation();
     }
@@ -639,11 +632,55 @@ class BidiPage extends Page_js_1.Page {
     emulateNetworkConditions() {
         throw new Errors_js_1.UnsupportedOperation();
     }
-    cookies() {
-        throw new Errors_js_1.UnsupportedOperation();
-    }
-    setCookie() {
-        throw new Errors_js_1.UnsupportedOperation();
+    async setCookie(...cookies) {
+        const pageURL = this.url();
+        const pageUrlStartsWithHTTP = pageURL.startsWith('http');
+        for (const cookie of cookies) {
+            let cookieUrl = cookie.url || '';
+            if (!cookieUrl && pageUrlStartsWithHTTP) {
+                cookieUrl = pageURL;
+            }
+            (0, assert_js_1.assert)(cookieUrl !== 'about:blank', `Blank page can not have cookie "${cookie.name}"`);
+            (0, assert_js_1.assert)(!String.prototype.startsWith.call(cookieUrl || '', 'data:'), `Data URL page can not have cookie "${cookie.name}"`);
+            const normalizedUrl = URL.canParse(cookieUrl)
+                ? new URL(cookieUrl)
+                : undefined;
+            const domain = cookie.domain ?? normalizedUrl?.hostname;
+            (0, assert_js_1.assert)(domain !== undefined, `At least one of the url and domain needs to be specified`);
+            const bidiCookie = {
+                domain: domain,
+                name: cookie.name,
+                value: {
+                    type: 'string',
+                    value: cookie.value,
+                },
+                ...(cookie.path !== undefined ? { path: cookie.path } : {}),
+                ...(cookie.httpOnly !== undefined ? { httpOnly: cookie.httpOnly } : {}),
+                ...(cookie.secure !== undefined ? { secure: cookie.secure } : {}),
+                ...(cookie.sameSite !== undefined
+                    ? { sameSite: convertCookiesSameSiteCdpToBiDi(cookie.sameSite) }
+                    : {}),
+                ...(cookie.expires !== undefined ? { expiry: cookie.expires } : {}),
+                // Chrome-specific properties.
+                ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
+            };
+            // TODO: delete cookie before setting them.
+            // await this.deleteCookie(bidiCookie);
+            const partition = cookie.partitionKey !== undefined
+                ? {
+                    type: 'storageKey',
+                    sourceOrigin: cookie.partitionKey,
+                    userContext: this.#browserContext.id,
+                }
+                : {
+                    type: 'context',
+                    context: this.mainFrame()._id,
+                };
+            await this.#connection.send('storage.setCookie', {
+                cookie: bidiCookie,
+                partition,
+            });
+        }
     }
     deleteCookie() {
         throw new Errors_js_1.UnsupportedOperation();
@@ -714,5 +751,106 @@ function getStackTraceLocations(stackTrace) {
 }
 function evaluationExpression(fun, ...args) {
     return `() => {${(0, util_js_1.evaluationString)(fun, ...args)}}`;
+}
+/**
+ * Check domains match.
+ * According to cookies spec, this check should match subdomains as well, but CDP
+ * implementation does not do that, so this method matches only the exact domains, not
+ * what is written in the spec:
+ * https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.3
+ */
+function testUrlMatchCookieHostname(cookie, normalizedUrl) {
+    const cookieDomain = cookie.domain.toLowerCase();
+    const urlHostname = normalizedUrl.hostname.toLowerCase();
+    return cookieDomain === urlHostname;
+}
+/**
+ * Check paths match.
+ * Spec: https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.4
+ */
+function testUrlMatchCookiePath(cookie, normalizedUrl) {
+    const uriPath = normalizedUrl.pathname;
+    const cookiePath = cookie.path;
+    if (uriPath === cookiePath) {
+        // The cookie-path and the request-path are identical.
+        return true;
+    }
+    if (uriPath.startsWith(cookiePath)) {
+        // The cookie-path is a prefix of the request-path.
+        if (cookiePath.endsWith('/')) {
+            // The last character of the cookie-path is %x2F ("/").
+            return true;
+        }
+        if (uriPath[cookiePath.length] === '/') {
+            // The first character of the request-path that is not included in the cookie-path
+            // is a %x2F ("/") character.
+            return true;
+        }
+    }
+    return false;
+}
+/**
+ * Checks the cookie matches the URL according to the spec:
+ */
+function testUrlMatchCookie(cookie, url) {
+    const normalizedUrl = new URL(url);
+    (0, assert_js_1.assert)(cookie !== undefined);
+    if (!testUrlMatchCookieHostname(cookie, normalizedUrl)) {
+        return false;
+    }
+    return testUrlMatchCookiePath(cookie, normalizedUrl);
+}
+function bidiToPuppeteerCookie(bidiCookie) {
+    return {
+        name: bidiCookie.name,
+        // Presents binary value as base64 string.
+        value: bidiCookie.value.value,
+        domain: bidiCookie.domain,
+        path: bidiCookie.path,
+        size: bidiCookie.size,
+        httpOnly: bidiCookie.httpOnly,
+        secure: bidiCookie.secure,
+        sameSite: convertCookiesSameSiteBiDiToCdp(bidiCookie.sameSite),
+        expires: bidiCookie.expiry ?? -1,
+        session: bidiCookie.expiry === undefined || bidiCookie.expiry <= 0,
+        // Extending with CDP-specific properties with `goog:` prefix.
+        ...cdpSpecificCookiePropertiesFromBidiToPuppeteer(bidiCookie, 'sameParty', 'sourceScheme', 'partitionKey', 'partitionKeyOpaque', 'priority'),
+    };
+}
+const CDP_SPECIFIC_PREFIX = 'goog:';
+/**
+ * Gets CDP-specific properties from the BiDi cookie and returns them as a new object.
+ */
+function cdpSpecificCookiePropertiesFromBidiToPuppeteer(bidiCookie, ...propertyNames) {
+    const result = {};
+    for (const property of propertyNames) {
+        if (bidiCookie[CDP_SPECIFIC_PREFIX + property] !== undefined) {
+            result[property] = bidiCookie[CDP_SPECIFIC_PREFIX + property];
+        }
+    }
+    return result;
+}
+/**
+ * Gets CDP-specific properties from the cookie, adds CDP-specific prefixes and returns
+ * them as a new object which can be used in BiDi.
+ */
+function cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookieParam, ...propertyNames) {
+    const result = {};
+    for (const property of propertyNames) {
+        if (cookieParam[property] !== undefined) {
+            result[CDP_SPECIFIC_PREFIX + property] = cookieParam[property];
+        }
+    }
+    return result;
+}
+function convertCookiesSameSiteBiDiToCdp(sameSite) {
+    return sameSite === 'strict' ? 'Strict' : sameSite === 'lax' ? 'Lax' : 'None';
+}
+function convertCookiesSameSiteCdpToBiDi(sameSite) {
+    return sameSite === 'Strict'
+        ? "strict" /* Bidi.Network.SameSite.Strict */
+        : sameSite === 'Lax'
+            ? "lax" /* Bidi.Network.SameSite.Lax */
+            : "none" /* Bidi.Network.SameSite.None */;
 }
 //# sourceMappingURL=Page.js.map

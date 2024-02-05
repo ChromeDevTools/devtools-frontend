@@ -24,6 +24,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBidiHandle = exports.BidiRealm = void 0;
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");

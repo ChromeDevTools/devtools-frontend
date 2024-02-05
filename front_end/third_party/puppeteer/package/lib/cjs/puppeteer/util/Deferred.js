@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Deferred = void 0;
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const Errors_js_1 = require("../common/Errors.js");
 /**
  * Creates and returns a deferred object along with the resolve/reject functions.

@@ -59,8 +59,8 @@ function getHeadlessEnvVar(headless) {
         case '1':
         case 'true':
             return true;
-        case 'new':
-            return 'new';
+        case 'shell':
+            return 'shell';
         case '0':
         case 'false':
             return false;
@@ -137,7 +137,7 @@ async function runFiles(files, opts = {
             result.title = recording.title;
             const { default: puppeteer } = await import('puppeteer');
             browser = await puppeteer.launch({
-                headless: opts.headless ? 'new' : false,
+                headless: opts.headless,
             });
             const page = await browser.newPage();
             const extension = new Extension(browser, page);
@@ -192,7 +192,7 @@ yargs(hideBin(process.argv))
     .option('headless', {
     type: 'string',
     description: "Run using the browser's headless mode.",
-    choices: ['new', 'true', '1', '0', 'false'],
+    choices: ['shell', 'true', '1', '0', 'false'],
 })
     .option('extension', {
     alias: 'ext',

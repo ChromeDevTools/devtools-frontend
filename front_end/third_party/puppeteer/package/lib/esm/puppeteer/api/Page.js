@@ -82,7 +82,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { concat, EMPTY, filter, filterAsync, first, firstValueFrom, from, map, merge, mergeMap, of, race, raceWith, startWith, switchMap, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
+import { concat, EMPTY, filter, filterAsync, first, firstValueFrom, from, map, merge, mergeMap, mergeScan, of, raceWith, ReplaySubject, startWith, switchMap, take, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
@@ -170,27 +170,25 @@ let Page = (() => {
          */
         _timeoutSettings = new TimeoutSettings();
         #requestHandlers = new WeakMap();
-        #requestsInFlight = 0;
-        #inflight$;
+        #inflight$ = new ReplaySubject(1);
         /**
          * @internal
          */
         constructor() {
             super();
-            this.#inflight$ = fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), mergeMap(request => {
-                return concat(of(1), race(fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(filter(response => {
-                    return response.request()._requestId === request._requestId;
-                })), fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */).pipe(filter(failure => {
-                    return failure._requestId === request._requestId;
-                })), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */).pipe(filter(success => {
-                    return success._requestId === request._requestId;
-                }))).pipe(map(() => {
+            fromEmitterEvent(this, "request" /* PageEvent.Request */)
+                .pipe(mergeMap(originalRequest => {
+                return concat(of(1), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
+                    return response.request();
+                }))).pipe(filter(request => {
+                    return request._requestId === originalRequest._requestId;
+                }), take(1), map(() => {
                     return -1;
                 })));
-            }));
-            this.#inflight$.subscribe(count => {
-                this.#requestsInFlight += count;
-            });
+            }), mergeScan((acc, addend) => {
+                return of(acc + addend);
+            }, 0), takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0))
+                .subscribe(this.#inflight$);
         }
         /**
          * Listen to page events.
@@ -461,19 +459,6 @@ let Page = (() => {
             return await this.mainFrame().$$eval(selector, pageFunction, ...args);
         }
         /**
-         * The method evaluates the XPath expression relative to the page document as
-         * its context node. If there are no such elements, the method resolves to an
-         * empty array.
-         *
-         * @remarks
-         * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
-         *
-         * @param expression - Expression to evaluate
-         */
-        async $x(expression) {
-            return await this.mainFrame().$x(expression);
-        }
-        /**
          * Adds a `<script>` tag into the page with the desired URL or content.
          *
          * @remarks
@@ -698,13 +683,11 @@ let Page = (() => {
          */
         waitForNetworkIdle$(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), idleTime = NETWORK_IDLE_TIME, concurrency = 0, } = options;
-            return this.#inflight$.pipe(startWith(this.#requestsInFlight), switchMap(() => {
-                if (this.#requestsInFlight > concurrency) {
+            return this.#inflight$.pipe(switchMap(inflight => {
+                if (inflight > concurrency) {
                     return EMPTY;
                 }
-                else {
-                    return timer(idleTime);
-                }
+                return timer(idleTime);
             }), map(() => { }), raceWith(timeout(ms), fromEmitterEvent(this, "close" /* PageEvent.Close */).pipe(map(() => {
                 throw new TargetCloseError('Page closed!');
             }))));
@@ -1249,30 +1232,6 @@ let Page = (() => {
             return this.mainFrame().type(selector, text, options);
         }
         /**
-         * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
-         *
-         * Causes your script to wait for the given number of milliseconds.
-         *
-         * @remarks
-         *
-         * It's generally recommended to not wait for a number of seconds, but instead
-         * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-         * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-         *
-         * @example
-         *
-         * Wait for 1 second:
-         *
-         * ```ts
-         * await page.waitForTimeout(1000);
-         * ```
-         *
-         * @param milliseconds - the number of milliseconds to wait.
-         */
-        waitForTimeout(milliseconds) {
-            return this.mainFrame().waitForTimeout(milliseconds);
-        }
-        /**
          * Wait for the `selector` to appear in page. If at the moment of calling the
          * method the `selector` already exists, the method will return immediately. If
          * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
@@ -1326,60 +1285,6 @@ let Page = (() => {
          */
         async waitForSelector(selector, options = {}) {
             return await this.mainFrame().waitForSelector(selector, options);
-        }
-        /**
-         * Wait for the `xpath` to appear in page. If at the moment of calling the
-         * method the `xpath` already exists, the method will return immediately. If
-         * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-         * function will throw.
-         *
-         * @example
-         * This method works across navigation
-         *
-         * ```ts
-         * import puppeteer from 'puppeteer';
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .waitForXPath('//img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
-         * ```
-         *
-         * @param xpath - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-         * element to wait for
-         * @param options - Optional waiting parameters
-         * @returns Promise which resolves when element specified by xpath string is
-         * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-         * not found in DOM, otherwise resolves to `ElementHandle`.
-         * @remarks
-         * The optional Argument `options` have properties:
-         *
-         * - `visible`: A boolean to wait for element to be present in DOM and to be
-         *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-         *   properties. Defaults to `false`.
-         *
-         * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-         *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-         *   Defaults to `false`.
-         *
-         * - `timeout`: A number which is maximum time to wait for in milliseconds.
-         *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-         *   value can be changed by using the {@link Page.setDefaultTimeout} method.
-         */
-        waitForXPath(xpath, options) {
-            return this.mainFrame().waitForXPath(xpath, options);
         }
         /**
          * Waits for the provided function, `pageFunction`, to return a truthy value when

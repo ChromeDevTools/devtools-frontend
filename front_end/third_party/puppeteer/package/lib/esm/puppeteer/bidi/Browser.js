@@ -70,7 +70,9 @@ export class BidiBrowser extends Browser {
         this.#browserCore = browserCore;
         this.#defaultViewport = opts.defaultViewport;
         this.#browserTarget = new BiDiBrowserTarget(this);
-        this.#createBrowserContext(this.#browserCore.defaultUserContext);
+        for (const context of this.#browserCore.userContexts) {
+            this.#createBrowserContext(context);
+        }
     }
     #initialize() {
         this.#browserCore.once('disconnected', () => {
@@ -104,6 +106,7 @@ export class BidiBrowser extends Browser {
         const target = this.#targets.get(event.context);
         if (target) {
             this.emit("targetchanged" /* BrowserEvent.TargetChanged */, target);
+            target.browserContext().emit("targetchanged" /* BrowserContextEvent.TargetChanged */, target);
         }
     }
     #onContextNavigation(event) {
@@ -116,10 +119,11 @@ export class BidiBrowser extends Browser {
     #onContextCreated(event) {
         const context = new BrowsingContext(this.connection, event, this.#browserName);
         this.connection.registerBrowsingContexts(context);
-        // TODO: once more browsing context types are supported, this should be
-        // updated to support those. Currently, all top-level contexts are treated
-        // as pages.
-        const browserContext = this.browserContexts().at(-1);
+        const browserContext = event.userContext === 'default'
+            ? this.defaultBrowserContext()
+            : this.browserContexts().find(browserContext => {
+                return browserContext.id === event.userContext;
+            });
         if (!browserContext) {
             throw new Error('Missing browser contexts');
         }
@@ -185,7 +189,7 @@ export class BidiBrowser extends Browser {
     process() {
         return this.#process ?? null;
     }
-    async createIncognitoBrowserContext(_options) {
+    async createBrowserContext(_options) {
         const userContext = await this.#browserCore.createUserContext();
         return this.#createBrowserContext(userContext);
     }

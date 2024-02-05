@@ -30,13 +30,4 @@ export declare const PredefinedNetworkConditions: Readonly<{
     'Slow 3G': NetworkConditions;
     'Fast 3G': NetworkConditions;
 }>;
-/**
- * @deprecated Import {@link PredefinedNetworkConditions}.
- *
- * @public
- */
-export declare const networkConditions: Readonly<{
-    'Slow 3G': NetworkConditions;
-    'Fast 3G': NetworkConditions;
-}>;
 //# sourceMappingURL=PredefinedNetworkConditions.d.ts.map

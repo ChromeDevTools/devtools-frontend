@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.devices = exports.KnownDevices = void 0;
+exports.KnownDevices = void 0;
 const knownDevices = [
     {
         name: 'Blackberry PlayBook',
@@ -1414,10 +1414,4 @@ for (const device of knownDevices) {
  * @public
  */
 exports.KnownDevices = Object.freeze(knownDevicesByName);
-/**
- * @deprecated Import {@link KnownDevices}
- *
- * @public
- */
-exports.devices = exports.KnownDevices;
 //# sourceMappingURL=Device.js.map

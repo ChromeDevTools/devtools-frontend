@@ -78,22 +78,6 @@ export class EventEmitter {
         return this.listenerCount(type) > 0;
     }
     /**
-     * Remove an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.off} instead.
-     */
-    removeListener(type, handler) {
-        return this.off(type, handler);
-    }
-    /**
-     * Add an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.on} instead.
-     */
-    addListener(type, handler) {
-        return this.on(type, handler);
-    }
-    /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param type - the event you'd like to listen to
      * @param handler - the handler function to run when the event occurs

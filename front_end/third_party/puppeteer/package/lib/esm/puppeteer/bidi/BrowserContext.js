@@ -38,6 +38,7 @@ export class BidiBrowserContext extends BrowserContext {
     async newPage() {
         const { result } = await this.#connection.send('browsingContext.create', {
             type: "tab" /* Bidi.BrowsingContext.CreateType.Tab */,
+            userContext: this.#userContext.id,
         });
         const target = this.#browser._getTargetById(result.context);
         // TODO: once BiDi has some concept matching BrowserContext, the newly
@@ -63,16 +64,6 @@ export class BidiBrowserContext extends BrowserContext {
     async close() {
         if (!this.isIncognito()) {
             throw new Error('Default context cannot be closed!');
-        }
-        // TODO: Remove once we have adopted the new browsing contexts.
-        for (const target of this.targets()) {
-            const page = await target?.page();
-            try {
-                await page?.close();
-            }
-            catch (error) {
-                debugError(error);
-            }
         }
         try {
             await this.#userContext.remove();
@@ -100,6 +91,12 @@ export class BidiBrowserContext extends BrowserContext {
     }
     clearPermissionOverrides() {
         throw new UnsupportedOperation();
+    }
+    get id() {
+        if (this.#userContext.id === 'default') {
+            return undefined;
+        }
+        return this.#userContext.id;
     }
 }
 //# sourceMappingURL=BrowserContext.js.map

@@ -34,7 +34,6 @@ const BrowserConnector_js_2 = require("../cdp/BrowserConnector.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
-const fetch_js_1 = require("./fetch.js");
 const getWebSocketTransportClass = async () => {
     return environment_js_1.isNode
         ? (await Promise.resolve().then(() => __importStar(require('../node/NodeWebSocketTransport.js')))).NodeWebSocketTransport
@@ -91,9 +90,8 @@ async function getConnectionTransport(options) {
 }
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);
-    const fetch = await (0, fetch_js_1.getFetch)();
     try {
-        const result = await fetch(endpointURL.toString(), {
+        const result = await globalThis.fetch(endpointURL.toString(), {
             method: 'GET',
         });
         if (!result.ok) {

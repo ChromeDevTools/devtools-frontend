@@ -91,7 +91,7 @@ export class CdpBrowser extends BrowserBase {
     _getIsPageTargetCallback() {
         return this.#isPageTargetCallback;
     }
-    async createIncognitoBrowserContext(options = {}) {
+    async createBrowserContext(options = {}) {
         const { proxyServer, proxyBypassList } = options;
         const { browserContextId } = await this.#connection.send('Target.createBrowserContext', {
             proxyServer,

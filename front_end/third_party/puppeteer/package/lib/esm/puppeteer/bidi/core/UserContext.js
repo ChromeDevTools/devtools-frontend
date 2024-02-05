@@ -90,6 +90,9 @@ let UserContext = (() => {
                 if (info.parent) {
                     return;
                 }
+                if (info.userContext !== this.#id) {
+                    return;
+                }
                 const browsingContext = BrowsingContext.from(this, undefined, info.context, info.url);
                 this.#browsingContexts.set(browsingContext.id, browsingContext);
                 const browsingContextEmitter = this.#disposables.use(new EventEmitter(browsingContext));
@@ -126,6 +129,7 @@ let UserContext = (() => {
                 type,
                 ...options,
                 referenceContext: options.referenceContext?.id,
+                userContext: this.#id,
             });
             const browsingContext = this.#browsingContexts.get(contextId);
             assert(browsingContext, 'The WebDriver BiDi implementation is failing to create a browsing context correctly.');
@@ -134,7 +138,9 @@ let UserContext = (() => {
         }
         async remove() {
             try {
-                // TODO: Call `removeUserContext` once available.
+                await this.#session.send('browser.removeUserContext', {
+                    userContext: this.#id,
+                });
             }
             finally {
                 this.dispose('User context already closed.');

@@ -20,8 +20,6 @@ export interface CommonEventEmitter<Events extends Record<EventType, unknown>> {
     on<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     off<Key extends keyof Events>(type: Key, handler?: Handler<Events[Key]>): this;
     emit<Key extends keyof Events>(type: Key, event: Events[Key]): boolean;
-    addListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
-    removeListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     once<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
     listenerCount(event: keyof Events): number;
     removeAllListeners(event?: keyof Events): this;
@@ -74,18 +72,6 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @returns `true` if there are any listeners, `false` if there are not.
      */
     emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
-    /**
-     * Remove an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.off} instead.
-     */
-    removeListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
-    /**
-     * Add an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.on} instead.
-     */
-    addListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param type - the event you'd like to listen to

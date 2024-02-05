@@ -30,9 +30,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
-const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
-const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
 const PDFOptions_js_1 = require("./PDFOptions.js");
@@ -197,13 +195,18 @@ exports.importFSPromises = importFSPromises;
  */
 async function getReadableAsBuffer(readable, path) {
     const buffers = [];
+    const reader = readable.getReader();
     if (path) {
         const fs = await importFSPromises();
         const fileHandle = await fs.open(path, 'w+');
         try {
-            for await (const chunk of readable) {
-                buffers.push(chunk);
-                await fileHandle.writeFile(chunk);
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                buffers.push(value);
+                await fileHandle.writeFile(value);
             }
         }
         finally {
@@ -211,14 +214,19 @@ async function getReadableAsBuffer(readable, path) {
         }
     }
     else {
-        for await (const chunk of readable) {
-            buffers.push(chunk);
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+            buffers.push(value);
         }
     }
     try {
         return Buffer.concat(buffers);
     }
     catch (error) {
+        (0, exports.debugError)(error);
         return null;
     }
 }
@@ -226,34 +234,28 @@ exports.getReadableAsBuffer = getReadableAsBuffer;
 /**
  * @internal
  */
+/**
+ * @internal
+ */
 async function getReadableFromProtocolStream(client, handle) {
-    // TODO: Once Node 18 becomes the lowest supported version, we can migrate to
-    // ReadableStream.
-    if (!environment_js_1.isNode) {
-        throw new Error('Cannot create a stream outside of Node.js environment.');
-    }
-    const { Readable } = await Promise.resolve().then(() => __importStar(require('stream')));
-    let eof = false;
-    return new Readable({
-        async read(size) {
+    return new ReadableStream({
+        async pull(controller) {
+            function getUnit8Array(data, isBase64) {
+                if (isBase64) {
+                    return Uint8Array.from(atob(data), m => {
+                        return m.codePointAt(0);
+                    });
+                }
+                const encoder = new TextEncoder();
+                return encoder.encode(data);
+            }
+            const { data, base64Encoded, eof } = await client.send('IO.read', {
+                handle,
+            });
+            controller.enqueue(getUnit8Array(data, base64Encoded ?? false));
             if (eof) {
-                return;
-            }
-            try {
-                const response = await client.send('IO.read', { handle, size });
-                this.push(response.data, response.base64Encoded ? 'base64' : undefined);
-                if (response.eof) {
-                    eof = true;
-                    await client.send('IO.close', { handle });
-                    this.push(null);
-                }
-            }
-            catch (error) {
-                if ((0, ErrorLike_js_1.isErrorLike)(error)) {
-                    this.destroy(error);
-                    return;
-                }
-                throw error;
+                await client.send('IO.close', { handle });
+                controller.close();
             }
         },
     });
@@ -321,7 +323,8 @@ function parsePDFOptions(options = {}, lengthUnit = 'in') {
         pageRanges: '',
         preferCSSPageSize: false,
         omitBackground: false,
-        tagged: false,
+        outline: false,
+        tagged: true,
     };
     let width = 8.5;
     let height = 11;
@@ -342,6 +345,10 @@ function parsePDFOptions(options = {}, lengthUnit = 'in') {
         bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
         right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
     };
+    // Quirk https://bugs.chromium.org/p/chromium/issues/detail?id=840455#c44
+    if (options.outline) {
+        options.tagged = true;
+    }
     return {
         ...defaults,
         ...options,

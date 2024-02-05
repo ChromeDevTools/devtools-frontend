@@ -197,27 +197,25 @@ let Page = (() => {
          */
         _timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
         #requestHandlers = new WeakMap();
-        #requestsInFlight = 0;
-        #inflight$;
+        #inflight$ = new rxjs_js_1.ReplaySubject(1);
         /**
          * @internal
          */
         constructor() {
             super();
-            this.#inflight$ = (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */).pipe((0, rxjs_js_1.takeUntil)((0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */)), (0, rxjs_js_1.mergeMap)(request => {
-                return (0, rxjs_js_1.concat)((0, rxjs_js_1.of)(1), (0, rxjs_js_1.race)((0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.filter)(response => {
-                    return response.request()._requestId === request._requestId;
-                })), (0, util_js_1.fromEmitterEvent)(this, "requestfailed" /* PageEvent.RequestFailed */).pipe((0, rxjs_js_1.filter)(failure => {
-                    return failure._requestId === request._requestId;
-                })), (0, util_js_1.fromEmitterEvent)(this, "requestfinished" /* PageEvent.RequestFinished */).pipe((0, rxjs_js_1.filter)(success => {
-                    return success._requestId === request._requestId;
-                }))).pipe((0, rxjs_js_1.map)(() => {
+            (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */)
+                .pipe((0, rxjs_js_1.mergeMap)(originalRequest => {
+                return (0, rxjs_js_1.concat)((0, rxjs_js_1.of)(1), (0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "requestfailed" /* PageEvent.RequestFailed */), (0, util_js_1.fromEmitterEvent)(this, "requestfinished" /* PageEvent.RequestFinished */), (0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.map)(response => {
+                    return response.request();
+                }))).pipe((0, rxjs_js_1.filter)(request => {
+                    return request._requestId === originalRequest._requestId;
+                }), (0, rxjs_js_1.take)(1), (0, rxjs_js_1.map)(() => {
                     return -1;
                 })));
-            }));
-            this.#inflight$.subscribe(count => {
-                this.#requestsInFlight += count;
-            });
+            }), (0, rxjs_js_1.mergeScan)((acc, addend) => {
+                return (0, rxjs_js_1.of)(acc + addend);
+            }, 0), (0, rxjs_js_1.takeUntil)((0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */)), (0, rxjs_js_1.startWith)(0))
+                .subscribe(this.#inflight$);
         }
         /**
          * Listen to page events.
@@ -488,19 +486,6 @@ let Page = (() => {
             return await this.mainFrame().$$eval(selector, pageFunction, ...args);
         }
         /**
-         * The method evaluates the XPath expression relative to the page document as
-         * its context node. If there are no such elements, the method resolves to an
-         * empty array.
-         *
-         * @remarks
-         * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
-         *
-         * @param expression - Expression to evaluate
-         */
-        async $x(expression) {
-            return await this.mainFrame().$x(expression);
-        }
-        /**
          * Adds a `<script>` tag into the page with the desired URL or content.
          *
          * @remarks
@@ -725,13 +710,11 @@ let Page = (() => {
          */
         waitForNetworkIdle$(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), idleTime = util_js_1.NETWORK_IDLE_TIME, concurrency = 0, } = options;
-            return this.#inflight$.pipe((0, rxjs_js_1.startWith)(this.#requestsInFlight), (0, rxjs_js_1.switchMap)(() => {
-                if (this.#requestsInFlight > concurrency) {
+            return this.#inflight$.pipe((0, rxjs_js_1.switchMap)(inflight => {
+                if (inflight > concurrency) {
                     return rxjs_js_1.EMPTY;
                 }
-                else {
-                    return (0, rxjs_js_1.timer)(idleTime);
-                }
+                return (0, rxjs_js_1.timer)(idleTime);
             }), (0, rxjs_js_1.map)(() => { }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Page closed!');
             }))));
@@ -1276,30 +1259,6 @@ let Page = (() => {
             return this.mainFrame().type(selector, text, options);
         }
         /**
-         * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
-         *
-         * Causes your script to wait for the given number of milliseconds.
-         *
-         * @remarks
-         *
-         * It's generally recommended to not wait for a number of seconds, but instead
-         * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-         * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-         *
-         * @example
-         *
-         * Wait for 1 second:
-         *
-         * ```ts
-         * await page.waitForTimeout(1000);
-         * ```
-         *
-         * @param milliseconds - the number of milliseconds to wait.
-         */
-        waitForTimeout(milliseconds) {
-            return this.mainFrame().waitForTimeout(milliseconds);
-        }
-        /**
          * Wait for the `selector` to appear in page. If at the moment of calling the
          * method the `selector` already exists, the method will return immediately. If
          * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
@@ -1353,60 +1312,6 @@ let Page = (() => {
          */
         async waitForSelector(selector, options = {}) {
             return await this.mainFrame().waitForSelector(selector, options);
-        }
-        /**
-         * Wait for the `xpath` to appear in page. If at the moment of calling the
-         * method the `xpath` already exists, the method will return immediately. If
-         * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-         * function will throw.
-         *
-         * @example
-         * This method works across navigation
-         *
-         * ```ts
-         * import puppeteer from 'puppeteer';
-         * (async () => {
-         *   const browser = await puppeteer.launch();
-         *   const page = await browser.newPage();
-         *   let currentURL;
-         *   page
-         *     .waitForXPath('//img')
-         *     .then(() => console.log('First URL with image: ' + currentURL));
-         *   for (currentURL of [
-         *     'https://example.com',
-         *     'https://google.com',
-         *     'https://bbc.com',
-         *   ]) {
-         *     await page.goto(currentURL);
-         *   }
-         *   await browser.close();
-         * })();
-         * ```
-         *
-         * @param xpath - A
-         * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-         * element to wait for
-         * @param options - Optional waiting parameters
-         * @returns Promise which resolves when element specified by xpath string is
-         * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-         * not found in DOM, otherwise resolves to `ElementHandle`.
-         * @remarks
-         * The optional Argument `options` have properties:
-         *
-         * - `visible`: A boolean to wait for element to be present in DOM and to be
-         *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-         *   properties. Defaults to `false`.
-         *
-         * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-         *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-         *   Defaults to `false`.
-         *
-         * - `timeout`: A number which is maximum time to wait for in milliseconds.
-         *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-         *   value can be changed by using the {@link Page.setDefaultTimeout} method.
-         */
-        waitForXPath(xpath, options) {
-            return this.mainFrame().waitForXPath(xpath, options);
         }
         /**
          * Waits for the provided function, `pageFunction`, to return a truthy value when

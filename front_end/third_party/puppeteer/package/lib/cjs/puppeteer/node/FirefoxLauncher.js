@@ -31,6 +31,8 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
             ...(protocol === 'webDriverBiDi'
                 ? {}
                 : {
+                    // Do not close the window when the last tab gets closed
+                    'browser.tabs.closeWindowWithLastTab': false,
                     // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
                     'fission.bfcacheInParent': false,
                 }),

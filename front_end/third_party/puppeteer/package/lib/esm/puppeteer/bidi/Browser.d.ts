@@ -39,7 +39,7 @@ export declare class BidiBrowser extends Browser {
     close(): Promise<void>;
     get connected(): boolean;
     process(): ChildProcess | null;
-    createIncognitoBrowserContext(_options?: BrowserContextOptions): Promise<BidiBrowserContext>;
+    createBrowserContext(_options?: BrowserContextOptions): Promise<BidiBrowserContext>;
     version(): Promise<string>;
     browserContexts(): BidiBrowserContext[];
     defaultBrowserContext(): BidiBrowserContext;

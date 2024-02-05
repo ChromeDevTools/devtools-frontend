@@ -80,6 +80,14 @@ const JSHandle_js_1 = require("./JSHandle.js");
 const Tracing_js_1 = require("./Tracing.js");
 const utils_js_1 = require("./utils.js");
 const WebWorker_js_1 = require("./WebWorker.js");
+function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'warning':
+            return 'warn';
+        default:
+            return method;
+    }
+}
 /**
  * @internal
  */
@@ -399,7 +407,7 @@ class CdpPage extends Page_js_1.Page {
             });
         }
         if (source !== 'worker') {
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(level, text, [], [{ url, lineNumber }]));
+            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }]));
         }
     }
     mainFrame() {
@@ -466,7 +474,7 @@ class CdpPage extends Page_js_1.Page {
         const originalCookies = (await this.#primaryTargetClient.send('Network.getCookies', {
             urls: urls.length ? urls : [this.url()],
         })).cookies;
-        const unsupportedCookieAttributes = ['priority'];
+        const unsupportedCookieAttributes = ['sourcePort'];
         const filterUnsupportedAttributes = (cookie) => {
             for (const attr of unsupportedCookieAttributes) {
                 delete cookie[attr];
@@ -616,7 +624,7 @@ class CdpPage extends Page_js_1.Page {
         const values = event.args.map(arg => {
             return (0, ExecutionContext_js_1.createCdpHandle)(context._world, arg);
         });
-        this.#addConsoleMessage(event.type, values, event.stackTrace);
+        this.#addConsoleMessage(convertConsoleMessageLevel(event.type), values, event.stackTrace);
     }
     async #onBindingCalled(event) {
         let payload;
@@ -668,7 +676,7 @@ class CdpPage extends Page_js_1.Page {
                 });
             }
         }
-        const message = new ConsoleMessage_js_1.ConsoleMessage(eventType, textTokens.join(' '), args, stackTraceLocations);
+        const message = new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(eventType), textTokens.join(' '), args, stackTraceLocations);
         this.emit("console" /* PageEvent.Console */, message);
     }
     #onDialog(event) {
@@ -806,7 +814,7 @@ class CdpPage extends Page_js_1.Page {
     }
     async createPDFStream(options = {}) {
         const { timeout: ms = this._timeoutSettings.timeout() } = options;
-        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, } = (0, util_js_1.parsePDFOptions)(options);
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, tagged: generateTaggedPDF, outline: generateDocumentOutline, } = (0, util_js_1.parsePDFOptions)(options);
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }
@@ -827,6 +835,7 @@ class CdpPage extends Page_js_1.Page {
             pageRanges,
             preferCSSPageSize,
             generateTaggedPDF,
+            generateDocumentOutline,
         });
         const result = await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.from)(printCommandPromise).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms))));
         if (omitBackground) {

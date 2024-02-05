@@ -58,11 +58,6 @@ export var LocatorEvent;
      */
     LocatorEvent["Action"] = "action";
 })(LocatorEvent || (LocatorEvent = {}));
-export { 
-/**
- * @deprecated Use {@link LocatorEvent}.
- */
-LocatorEvent as LocatorEmittedEvents, };
 /**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the

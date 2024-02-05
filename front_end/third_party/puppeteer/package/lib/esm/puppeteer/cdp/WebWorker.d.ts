@@ -7,12 +7,11 @@ import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Realm } from '../api/Realm.js';
 import { WebWorker } from '../api/WebWorker.js';
-import type { ConsoleMessageType } from '../common/ConsoleMessage.js';
 import { CdpJSHandle } from './JSHandle.js';
 /**
  * @internal
  */
-export type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, handles: CdpJSHandle[], trace?: Protocol.Runtime.StackTrace) => void;
+export type ConsoleAPICalledCallback = (eventType: string, handles: CdpJSHandle[], trace?: Protocol.Runtime.StackTrace) => void;
 /**
  * @internal
  */

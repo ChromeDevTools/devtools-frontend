@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /// <reference types="node" />
-/// <reference types="node" />
-import type { Readable } from 'stream';
 import type Protocol from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
@@ -14,6 +12,7 @@ import { Page, type GeolocationOptions, type MediaFeature, type NewDocumentScrip
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { Tracing } from '../cdp/Tracing.js';
+import type { Cookie, CookieParam } from '../common/Cookie.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Awaitable } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -81,7 +80,7 @@ export declare class BidiPage extends Page {
     setViewport(viewport: Viewport): Promise<void>;
     viewport(): Viewport | null;
     pdf(options?: PDFOptions): Promise<Buffer>;
-    createPDFStream(options?: PDFOptions | undefined): Promise<Readable>;
+    createPDFStream(options?: PDFOptions | undefined): Promise<ReadableStream<Uint8Array>>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     createCDPSession(): Promise<CDPSession>;
     bringToFront(): Promise<void>;
@@ -92,6 +91,7 @@ export declare class BidiPage extends Page {
     }): Promise<void>;
     isDragInterceptionEnabled(): boolean;
     setCacheEnabled(enabled?: boolean): Promise<void>;
+    cookies(...urls: string[]): Promise<Cookie[]>;
     isServiceWorkerBypassed(): never;
     target(): BiDiPageTarget;
     waitForFileChooser(): never;
@@ -101,8 +101,7 @@ export declare class BidiPage extends Page {
     setBypassServiceWorker(): never;
     setOfflineMode(): never;
     emulateNetworkConditions(): never;
-    cookies(): never;
-    setCookie(): never;
+    setCookie(...cookies: CookieParam[]): Promise<void>;
     deleteCookie(): never;
     removeExposedFunction(): never;
     authenticate(): never;

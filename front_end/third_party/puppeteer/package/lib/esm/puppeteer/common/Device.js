@@ -1411,10 +1411,4 @@ for (const device of knownDevices) {
  * @public
  */
 export const KnownDevices = Object.freeze(knownDevicesByName);
-/**
- * @deprecated Import {@link KnownDevices}
- *
- * @public
- */
-export const devices = KnownDevices;
 //# sourceMappingURL=Device.js.map

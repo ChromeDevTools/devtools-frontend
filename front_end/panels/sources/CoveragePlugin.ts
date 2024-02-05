@@ -51,7 +51,8 @@ export class CoveragePlugin extends Plugin {
     super(uiSourceCode);
     this.originalSourceCode = this.uiSourceCode;
     this.#transformer = transformer;
-    this.infoInToolbar = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clickToShowCoveragePanel));
+    this.infoInToolbar = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.clickToShowCoveragePanel), undefined, undefined, 'debugger.show-coverage');
     this.infoInToolbar.setSecondary();
     this.infoInToolbar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void UI.ViewManager.ViewManager.instance().showView('coverage');

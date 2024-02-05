@@ -92,7 +92,8 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     this.#breakpointElements = new Map();
 
-    this.#addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addXhrfetchBreakpoint), 'plus');
+    this.#addButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.addXhrfetchBreakpoint), 'plus', undefined, 'sources.add-xhr-fetch-breakpoint');
     this.#addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void this.addButtonClicked();
     });
@@ -116,7 +117,9 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
   private emptyElementContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this),
+        {jslogContext: 'sources.add-xhr-fetch-breakpoint'});
     void contextMenu.show();
   }
 
@@ -293,9 +296,13 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     }
     const removeAllTitle = i18nString(UIStrings.removeAllBreakpoints);
 
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this));
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this));
-    contextMenu.defaultSection().appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this),
+        {jslogContext: 'sources.add-xhr-fetch-breakpoint'});
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this)),
+        {jslogContext: 'sources.remove-xhr-fetch-breakpoint'};
+    contextMenu.defaultSection().appendItem(
+        removeAllTitle, removeAllBreakpoints.bind(this), {jslogContext: 'sources.remove-all-xhr-fetch-breakpoints'});
     void contextMenu.show();
   }
 

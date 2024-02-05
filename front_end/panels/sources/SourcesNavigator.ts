@@ -340,8 +340,8 @@ export class SnippetsNavigatorView extends NavigatorView {
   `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    const newButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newSnippet), 'plus', i18nString(UIStrings.newSnippet));
+    const newButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.newSnippet), 'plus', i18nString(UIStrings.newSnippet), 'sources.new-snippet');
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.create(
           Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString);

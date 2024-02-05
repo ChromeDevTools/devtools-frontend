@@ -850,7 +850,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       item.setShortcut('R');
     }
 
-    if (this.entryHasDecoration(this.selectedEntryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW)) {
+    if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetChildren), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
       });

@@ -503,7 +503,7 @@ export class ThreadAppender implements TrackAppender {
       // stack.
       const skipEventDueToIgnoreListing = entryIsIgnoreListed && parentIsIgnoredListed;
       if (entryIsVisible && !skipEventDueToIgnoreListing) {
-        this.#appendEntryAtLevel(entry, startingLevel, this.#entriesFilter?.isEntryModified(entry));
+        this.#appendEntryAtLevel(entry, startingLevel);
         nextLevel++;
       }
 
@@ -513,17 +513,15 @@ export class ThreadAppender implements TrackAppender {
     return maxDepthInTree;
   }
 
-  #appendEntryAtLevel(entry: TraceEngine.Types.TraceEvents.TraceEventData, level: number, childrenCollapsed?: boolean):
-      void {
+  #appendEntryAtLevel(entry: TraceEngine.Types.TraceEvents.TraceEventData, level: number): void {
     this.#ensureTrackHeaderAppended(level);
     const index = this.#compatibilityBuilder.appendEventAtLevel(entry, level, this);
-    this.#addDecorationsToEntry(entry, index, childrenCollapsed);
+    this.#addDecorationsToEntry(entry, index);
   }
 
-  #addDecorationsToEntry(
-      entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number, childrenCollapsed?: boolean): void {
+  #addDecorationsToEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number): void {
     const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
-    if (childrenCollapsed) {
+    if (this.#entriesFilter?.isEntryModified(entry)) {
       addDecorationToEvent(
           flameChartData, index, {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW});
     }

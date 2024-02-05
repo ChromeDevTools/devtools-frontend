@@ -269,7 +269,7 @@ abstract class SettingsTab extends UI.Widget.VBox {
 }
 
 export class GenericSettingsTab extends SettingsTab {
-  private readonly syncSection: PanelComponents.SyncSection.SyncSection = new PanelComponents.SyncSection.SyncSection();
+  private readonly syncSection = new PanelComponents.SyncSection.SyncSection();
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
 
   constructor() {

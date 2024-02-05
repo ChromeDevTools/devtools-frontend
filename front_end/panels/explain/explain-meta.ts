@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -19,15 +20,22 @@ const UIStrings = {
    *@description Message to offer insights for a console message
    */
   explainThisMessage: 'Explain this message',
+  /**
+   * @description The setting title to enable the console insights feature via
+   * the settings tab.
+   */
+  enableConsoleInsights: 'Enable Console Insights',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+const setting = 'console-insights-enabled';
 
 if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   const Console = await import('../console/console.js');
 
   UI.ActionRegistration.registerActionExtension({
-    experiment: Root.Runtime.ExperimentName.CONSOLE_INSIGHTS,
+    setting,
     actionId: 'explain.console-message.hover',
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
@@ -41,7 +49,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   });
 
   UI.ActionRegistration.registerActionExtension({
-    experiment: Root.Runtime.ExperimentName.CONSOLE_INSIGHTS,
+    setting,
     actionId: 'explain.console-message.context.error',
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
@@ -55,7 +63,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   });
 
   UI.ActionRegistration.registerActionExtension({
-    experiment: Root.Runtime.ExperimentName.CONSOLE_INSIGHTS,
+    setting,
     actionId: 'explain.console-message.context.warning',
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
@@ -69,7 +77,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   });
 
   UI.ActionRegistration.registerActionExtension({
-    experiment: Root.Runtime.ExperimentName.CONSOLE_INSIGHTS,
+    setting,
     actionId: 'explain.console-message.context.other',
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
@@ -80,5 +88,14 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     contextTypes() {
       return [];
     },
+  });
+
+  Common.Settings.registerSettingExtension({
+    category: Common.Settings.SettingCategory.CONSOLE,
+    settingName: setting,
+    settingType: Common.Settings.SettingType.BOOLEAN,
+    title: i18nLazyString(UIStrings.enableConsoleInsights),
+    defaultValue: true,
+    reloadRequired: true,
   });
 }

@@ -391,16 +391,6 @@ export class MainImpl {
         'Enable Autofill view',
     );
 
-    if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
-      Root.Runtime.experiments.register(
-          Root.Runtime.ExperimentName.CONSOLE_INSIGHTS,
-          'Enable Console Insights. This implies consent to collect and process data',
-          false,
-          'http://go/console-insights-experiment',
-          'http://go/console-insights-experiment-general-feedback',
-      );
-    }
-
     Root.Runtime.experiments.enableExperimentsByDefault([
       'cssTypeComponentLengthDeprecate',
       'setAllBreakpointsEagerly',
@@ -410,8 +400,6 @@ export class MainImpl {
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       'evaluateExpressionsWithSourceMaps',
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocolMonitor'] : []),
-      ...(Root.Runtime.Runtime.queryParam('enableAida') === 'true' ? [Root.Runtime.ExperimentName.CONSOLE_INSIGHTS] :
-                                                                     []),
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

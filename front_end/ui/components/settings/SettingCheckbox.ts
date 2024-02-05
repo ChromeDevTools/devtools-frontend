@@ -83,6 +83,10 @@ export class SettingCheckbox extends HTMLElement {
 
   #checkboxChanged(e: Event): void {
     this.#setting?.set((e.target as HTMLInputElement).checked);
+    this.dispatchEvent(new CustomEvent('change', {
+      bubbles: true,
+      composed: false,
+    }));
   }
 }
 

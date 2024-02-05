@@ -9,6 +9,7 @@ import type * as Console from '../../../front_end/panels/console/console.js';
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('ConsoleInsight', async function() {
   const CLICK_TARGET_SELECTOR = '.console-message-text';
@@ -25,11 +26,7 @@ describe('ConsoleInsight', async function() {
     await frontend.goto(frontend.url() + '&enableAida=true', {
       waitUntil: 'networkidle0',
     });
-    await frontend.evaluate(`(async () => {
-      const Root = await import('./core/root/root.js');
-      Root.Runtime.experiments.setEnabled('consoleInsights', true);
-    })()`);
-    await frontend.goto(frontend.url() + '&enableAida=true');
+    await togglePreferenceInSettingsTab('Enable Console Insights');
   }
 
   it('shows an insight for a console message', async () => {

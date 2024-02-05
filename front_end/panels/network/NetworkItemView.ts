@@ -189,6 +189,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.EventSource, i18nString(UIStrings.eventstream),
           new EventSourceMessagesView(request));
+
+      this.responseView = new RequestResponseView(request);
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.Response, i18nString(UIStrings.response), this.responseView,
+          i18nString(UIStrings.rawResponseData));
     } else {
       this.responseView = new RequestResponseView(request);
       const previewView = new RequestPreviewView(request);

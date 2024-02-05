@@ -85,8 +85,8 @@ describeWithEnvironment('NetworkItemView', () => {
 
     networkItemView.detach();
 
-    assert(headersIcon.iconName, OVERRIDEN_ICON_NAME);
-    assert(responseIcon.iconName, OVERRIDEN_ICON_NAME);
+    assert.strictEqual(headersIcon.iconName, OVERRIDEN_ICON_NAME);
+    assert.strictEqual(responseIcon.iconName, OVERRIDEN_ICON_NAME);
   });
 
   it('shows indicator for overriden headers', () => {
@@ -100,7 +100,7 @@ describeWithEnvironment('NetworkItemView', () => {
 
     networkItemView.detach();
 
-    assert(headersIcon.iconName, OVERRIDEN_ICON_NAME);
+    assert.strictEqual(headersIcon.iconName, OVERRIDEN_ICON_NAME);
     assert.isUndefined(responseIcon);
   });
 
@@ -115,7 +115,7 @@ describeWithEnvironment('NetworkItemView', () => {
     networkItemView.detach();
 
     assert.isUndefined(headersIcon);
-    assert(responseIcon, OVERRIDEN_ICON_NAME);
+    assert.strictEqual(responseIcon.iconName, OVERRIDEN_ICON_NAME);
   });
 
   it('does not show indicator for unoverriden request', () => {
@@ -127,5 +127,15 @@ describeWithEnvironment('NetworkItemView', () => {
 
     assert.isUndefined(headersIcon);
     assert.isUndefined(responseIcon);
+  });
+
+  it('shows the Response and EventSource tab for text/event-stream requests', () => {
+    request.mimeType = 'text/event-stream';
+    const networkItemView = renderNetworkItemView(request);
+
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.EventSource));
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.Response));
+
+    networkItemView.detach();
   });
 });

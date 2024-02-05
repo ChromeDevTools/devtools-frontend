@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
@@ -16,7 +17,7 @@ describe('DomState', () => {
     renderElementIntoDOM(container);
   });
 
-  const el = (id: string, d: Document = document) => d.getElementById(id) as Element;
+  const el = (id: string, d: Document|ShadowRoot = document) => d.getElementById(id) as Element;
 
   it('gets loggable elements and their parents', () => {
     container.innerHTML = `
@@ -114,8 +115,45 @@ describe('DomState', () => {
     const {loggables} = VisualLogging.DomState.getDomState([document]);
     assert.sameDeepMembers(loggables, [
       {element: el('1'), parent: undefined},
-      {element: shadow.getElementById('1311') as Element, parent: el('1')},
+      {element: el('1311', shadow) as Element, parent: el('1')},
       {element: el('12'), parent: el('1')},
+    ]);
+  });
+
+  it('walks slots in the assigned order', () => {
+    class TestComponent extends HTMLElement {
+      private render() {
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.innerHTML = `
+          <div jslog="TreeItem" id="c1"><slot id="slot-1" name="slot-1"></slot></div>
+          <div jslog="TreeItem" id="c2"><slot id="slot-2" name="slot-2"></slot></div>`;
+      }
+
+      connectedCallback() {
+        this.render();
+      }
+    }
+    ComponentHelpers.CustomElements.defineComponent('ve-test-component', class extends TestComponent {});
+
+    container.innerHTML = `
+      <div id="0" jslog="TreeItem">
+        <ve-test-component id="1" jslog="TreeItem">
+          <div jslog="TreeItem" id="11" slot="slot-1">
+            <div id="111" jslog="TreeItem"></div>
+          </div>
+          <div id="12" slot="slot-2" jslog="TreeItem">
+        </ve-test-component>
+      </div>`;
+    const {loggables} = VisualLogging.DomState.getDomState([document]);
+    const shadow = el('1').shadowRoot as ShadowRoot;
+    assert.sameDeepMembers(loggables, [
+      {element: el('0'), parent: undefined},
+      {element: el('1'), parent: el('0')},
+      {element: el('c1', shadow), parent: el('1')},
+      {element: el('11'), parent: el('c1', shadow)},
+      {element: el('111'), parent: el('11')},
+      {element: el('c2', shadow), parent: el('1')},
+      {element: el('12'), parent: el('c2', shadow)},
     ]);
   });
 

@@ -670,7 +670,7 @@ export class CookiesTable extends UI.Widget.VBox {
 
   private isValidCookieData(data: {[x: string]: string}): boolean {
     return (Boolean(data.name) || Boolean(data.value)) && this.isValidDomain(data.domain) &&
-        this.isValidPath(data.path) && this.isValidDate(data.expires);
+        this.isValidPath(data.path) && this.isValidDate(data.expires) && this.isValidPartitionKey(data.partitionKey);
   }
 
   private isValidDomain(domain: string): boolean {
@@ -688,6 +688,14 @@ export class CookiesTable extends UI.Widget.VBox {
 
   private isValidDate(date: string): boolean {
     return date === '' || date === expiresSessionValue() || !isNaN(Date.parse(date));
+  }
+
+  private isValidPartitionKey(partitionKey: string): boolean {
+    if (!partitionKey) {
+      return true;
+    }
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(partitionKey);
+    return parsedURL !== null;
   }
 
   private refresh(): void {

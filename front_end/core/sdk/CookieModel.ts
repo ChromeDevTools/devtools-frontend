@@ -141,9 +141,13 @@ export class CookieModel extends SDKModel<void> {
     const networkAgent = this.target().networkAgent();
     this.#blockedCookies.clear();
     this.#cookieToBlockedReasons.clear();
-    await Promise.all(cookies.map(
-        cookie => networkAgent.invoke_deleteCookies(
-            {name: cookie.name(), url: undefined, domain: cookie.domain(), path: cookie.path()})));
+    await Promise.all(cookies.map(cookie => networkAgent.invoke_deleteCookies({
+      name: cookie.name(),
+      url: undefined,
+      domain: cookie.domain(),
+      path: cookie.path(),
+      partitionKey: cookie.partitionKey(),
+    })));
   }
 }
 

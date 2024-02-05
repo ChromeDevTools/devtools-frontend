@@ -30,6 +30,23 @@ describeWithMockConnection('CookieModel', () => {
     priority: Protocol.Network.CookiePriority.Medium,
     sourcePort: 80,
     sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
+    partitionKey: '',
+  };
+
+  const PROTOCOL_COOKIE_PARTITIONED = {
+    domain: '.example.com',
+    name: 'name',
+    path: '/test',
+    size: 23,
+    value: 'value',
+    expires: 42,
+    httpOnly: false,
+    secure: false,
+    session: true,
+    sameParty: false,
+    priority: Protocol.Network.CookiePriority.Medium,
+    sourcePort: 80,
+    sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
     partitionKey: 'https://example.net',
   };
 
@@ -37,7 +54,7 @@ describeWithMockConnection('CookieModel', () => {
     // CDP Connection mock: for Network.getCookies, respond with a single cookie.
     setMockConnectionResponseHandler('Network.getCookies', () => {
       return {
-        cookies: [PROTOCOL_COOKIE],
+        cookies: [PROTOCOL_COOKIE_PARTITIONED],
       };
     });
 
@@ -123,5 +140,47 @@ describeWithMockConnection('CookieModel', () => {
       type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
     });
     assert.strictEqual(cookieModel.getCookieToBlockedReasonsMap().size, 0);
+  });
+
+  it('can delete cookie', async () => {
+    let cookieArray = [PROTOCOL_COOKIE, PROTOCOL_COOKIE_PARTITIONED];
+
+    // CDP Connection mock.
+    setMockConnectionResponseHandler('Network.getCookies', () => {
+      return {
+        cookies: cookieArray,
+      };
+    });
+
+    // CDP Connection mock: simplified implementation for Network.deleteCookies, which deletes the matching cookie from `cookies`.
+    setMockConnectionResponseHandler('Network.deleteCookies', cookieToDelete => {
+      cookieArray = cookieArray.filter(cookie => {
+        return !(
+            cookie.name === cookieToDelete.name && cookie.domain === cookieToDelete.domain &&
+            cookie.path === cookieToDelete.path && cookie.partitionKey === cookieToDelete.partitionKey);
+      });
+
+      const response = {
+        getError() {
+          return undefined;
+        },
+      };
+      return Promise.resolve(response);
+    });
+
+    const target = createTarget();
+    const model = new SDK.CookieModel.CookieModel(target);
+    const cookies = await model.getCookies(['https://www.example.com']);
+    assert.isArray(cookies);
+    assert.lengthOf(cookies, 2);
+
+    await model.deleteCookie(SDK.Cookie.Cookie.fromProtocolCookie(PROTOCOL_COOKIE));
+
+    const cookies2 = await model.getCookies(['https://www.example.com']);
+    assert.isArray(cookies2);
+    assert.lengthOf(cookies2, 1);
+    assert.strictEqual(cookies2[0].domain(), '.example.com');
+    assert.strictEqual(cookies2[0].name(), 'name');
+    assert.strictEqual(cookies2[0].partitionKey(), 'https://example.net');
   });
 });

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -593,7 +594,7 @@ export class StepView extends HTMLElement {
     if (this.#step) {
       for (const converter of this.#builtInConverters || []) {
         actions.push({
-          id: COPY_ACTION_PREFIX + converter.getId(),
+          id: COPY_ACTION_PREFIX + Platform.StringUtilities.toKebabCase(converter.getId()),
           label: converter.getFormatName(),
           group: 'copy',
           groupTitle: i18nString(UIStrings.copyAs),
@@ -601,7 +602,7 @@ export class StepView extends HTMLElement {
       }
       for (const converter of this.#extensionConverters || []) {
         actions.push({
-          id: COPY_ACTION_PREFIX + converter.getId(),
+          id: COPY_ACTION_PREFIX + Platform.StringUtilities.toKebabCase(converter.getId()),
           label: converter.getFormatName(),
           group: 'copy',
           groupTitle: i18nString(UIStrings.copyAs),
@@ -675,7 +676,7 @@ export class StepView extends HTMLElement {
                 item => {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                       .value=${item.id}
-                      jslog=${VisualLogging.action().track({click: true}).context(`${item.label}`)} 
+                      jslog=${VisualLogging.action().track({click: true}).context(`${item.id}`)}
                     >
                       ${item.label}
                     </${Menus.Menu.MenuItem.litTagName}>

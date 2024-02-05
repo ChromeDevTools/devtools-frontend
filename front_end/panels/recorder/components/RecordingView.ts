@@ -338,7 +338,6 @@ export class RecordingView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section('recording-list-view')}`);
   }
 
   set data(data: RecordingViewData) {
@@ -498,7 +497,7 @@ export class RecordingView extends HTMLElement {
           recorderSettings: this.#recorderSettings,
         } as StepViewData
       }
-      jslog=${VisualLogging.action('step').track({click: true})}
+      jslog=${VisualLogging.section('step').track({click: true})}
       ></${StepView.litTagName}>
     `;
     // clang-format on
@@ -1108,7 +1107,6 @@ export class RecordingView extends HTMLElement {
                 <div class="steps">
                   <${StepView.litTagName}
                     @click=${this.#onStepClick}
-                    jslog=${VisualLogging.action('step').track({click: true})}
                     @mouseover=${this.#onStepHover}
                     .data=${
                       {

@@ -95,7 +95,6 @@ export class RecordingListView extends HTMLElement {
 
   constructor() {
     super();
-    this.setAttribute('jslog', `${VisualLogging.section('recording-list-view')}`);
   }
 
   connectedCallback(): void {
@@ -178,9 +177,9 @@ export class RecordingListView extends HTMLElement {
                       this,
                       recording.storageName,
                     )}
-                    jslog=${VisualLogging.action()
-                      .track({ click: true, keydown: true })
-                      .context('open-recording')}>
+                    jslog=${VisualLogging.item()
+                      .track({ click: true })
+                      .context('recording')}>
                     <div class="icon">
                       <${IconButton.Icon.Icon.litTagName} name="flow">
                       </${IconButton.Icon.Icon.litTagName}>

@@ -799,7 +799,7 @@ export class StepView extends HTMLElement {
               isExpandable && this.#onToggleShowDetailsKeydown.bind(this)
             }
             tabindex="0"
-            jslog=${VisualLogging.action('show-steps').track({click: true})}
+            jslog=${VisualLogging.sectionHeader().track({click: true})}
             aria-role=${isExpandable ? 'button' : ''}
             aria-label=${isExpandable ? 'Show details for step' : ''}
           >
@@ -807,6 +807,7 @@ export class StepView extends HTMLElement {
               isExpandable
                 ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
                     class="chevron"
+                    jslog=${VisualLogging.expand().track({click: true})}
                     name="triangle-down">
                   </${IconButton.Icon.Icon.litTagName}>`
                 : ''

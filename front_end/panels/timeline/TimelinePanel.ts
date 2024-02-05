@@ -65,6 +65,8 @@ import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 // COHERENT BEGIN
 import * as Protocol from '../../generated/protocol.js';
 import { ToolbarCheckbox, ToolbarComboBox } from '../../ui/legacy/Toolbar.js';
+import { InspectorBackend } from '../../core/protocol_client/protocol_client.js';
+import * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 // COHERENT END
 
 const UIStrings = {
@@ -465,19 +467,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this._traceLevelsDefinitions = [];
     this._traceSystemsDefinitions = [];
-    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
-    if (UIDevtoolsUtils.isUiDevTools()) {
-      this._controller = new UIDevtoolsController(mainTarget, this);
-    } else {
-      this._controller = new TimelineController(mainTarget, this);
-    }
 
-    this._controller?._tracingManager?.fetchTraceSystemsAndLevels().then((res) => {
+    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
+    this.fetchTraceSystemsAndLevels(mainTarget.tracingAgent()).then((res) => {
       this._traceSystemsDefinitions = res.systems;
       this._traceLevelsDefinitions = res.levels;
-
-      this._controller?.dispose();
-      this._controller = null;
 
       // setup the trace systems
       {
@@ -521,6 +515,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     return timelinePanelInstance;
   }
+
+    // COHERENT_BEGIN
+    async fetchTraceSystemsAndLevels(agent : ProtocolProxyApi.TracingApi) : Promise<Protocol.Tracing.GetTraceSystemsAndLevelsResponse> {
+      const response = await agent.invoke_getTraceSystemsAndLevels();
+      return response;
+    }
+    // COHERENT_END
 
   searchableView(): UI.SearchableView.SearchableView|null {
     return this._searchableView;

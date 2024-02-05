@@ -60,13 +60,6 @@ export class TracingManager extends SDKModel {
     this.finishing = false;
   }
 
-  // COHERENT_BEGIN
-  async fetchTraceSystemsAndLevels() : Promise<Protocol.Tracing.GetTraceSystemsAndLevelsResponse> {
-    const response = await this.tracingAgent.invoke_getTraceSystemsAndLevels();
-    return response;
-  }
-  // COHERENT_END
-
   // TODO(petermarshall): Use the traceConfig argument instead of deprecated
   // categories + options.
   async start(client: TracingManagerClient, categoryFilter: string, options: string):

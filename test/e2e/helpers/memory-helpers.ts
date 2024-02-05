@@ -296,8 +296,7 @@ export async function expandFocusedRow() {
   await waitFor('.selected.data-grid-data-grid-node.expanded');
 }
 
-export async function getSizesFromSelectedRow() {
-  const row = await waitFor('.selected.data-grid-data-grid-node');
+async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
   const numericData = await $$('.numeric-column>.profile-multiple-values>span', row);
   assert.strictEqual(numericData.length, 4);
   function readNumber(e: Element) {
@@ -309,8 +308,22 @@ export async function getSizesFromSelectedRow() {
   return {shallowSize, retainedSize};
 }
 
+export async function getSizesFromSelectedRow() {
+  const row = await waitFor('.selected.data-grid-data-grid-node');
+  return await getSizesFromRow(row);
+}
+
+async function getCategoryRow(text: string) {
+  return await waitFor(`//td[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+}
+
+export async function getSizesFromCategoryRow(text: string) {
+  const row = await getCategoryRow(text);
+  return await getSizesFromRow(row);
+}
+
 export async function getDistanceFromCategoryRow(text: string) {
-  const row = await waitFor(`//td[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+  const row = await getCategoryRow(text);
   const numericColumns = await $$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
 }

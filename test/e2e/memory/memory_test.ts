@@ -30,6 +30,7 @@ import {
   focusTableRow,
   getDataGridRows,
   getDistanceFromCategoryRow,
+  getSizesFromCategoryRow,
   getSizesFromSelectedRow,
   navigateToMemoryTab,
   setClassFilter,
@@ -454,7 +455,7 @@ describe('The Memory Panel', async function() {
     assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= 1600);
   });
 
-  it('Computes distances for WeakMap values correctly', async () => {
+  it('Computes distances and sizes for WeakMap values correctly', async () => {
     await goToResource('memory/weakmap.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();
@@ -464,5 +465,10 @@ describe('The Memory Panel', async function() {
     assert.strictEqual(6, await getDistanceFromCategoryRow('CustomClass2'));
     assert.strictEqual(2, await getDistanceFromCategoryRow('CustomClass3'));
     assert.strictEqual(8, await getDistanceFromCategoryRow('CustomClass4'));
+    assert.isTrue((await getSizesFromCategoryRow('CustomClass1Key')).retainedSize >= 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow('CustomClass2Key')).retainedSize >= 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow('CustomClass3Key')).retainedSize < 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow('CustomClass4Key')).retainedSize < 2 ** 15);
+    assert.isTrue((await getSizesFromCategoryRow('CustomClass4Retainer')).retainedSize >= 2 ** 15);
   });
 });

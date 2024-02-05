@@ -569,7 +569,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     menuSection.appendCheckboxItem(
         menuItem, toggleExperiment, Root.Runtime.experiments.isEnabled(experiment), false,
-        IconButton.Icon.create('experiment'));
+        IconButton.Icon.create('experiment'), undefined, Platform.StringUtilities.toKebabCase(experiment));
   }
 
   private populateNavigatorMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -577,7 +577,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     contextMenu.appendItemsAtLocation('navigatorMenu');
     contextMenu.viewSection().appendCheckboxItem(
         i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
-        groupByFolderSetting.get());
+        groupByFolderSetting.get(), undefined, undefined, undefined, groupByFolderSetting.name);
 
     this.addExperimentMenuItem(
         contextMenu.viewSection(), Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING,

@@ -216,7 +216,7 @@ export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #actionName = '';
+  #actionTitle = '';
 
   #promptBuilder: PublicPromptBuilder;
   #insightProvider: PublicInsightProvider;
@@ -229,12 +229,12 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRating?: boolean;
 
   constructor(
-      promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionName?: string,
+      promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionTitle?: string,
       syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation) {
     super();
     this.#promptBuilder = promptBuilder;
     this.#insightProvider = insightProvider;
-    this.#actionName = actionName ?? '';
+    this.#actionTitle = actionTitle ?? '';
     this.#state = {
       type: State.NOT_LOGGED_IN,
     };
@@ -279,11 +279,7 @@ export class ConsoleInsight extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.classList.add('opening');
-  }
-
-  set actionName(value: string) {
-    this.#actionName = value;
-    this.#render();
+    void this.#generateInsightIfNeeded();
   }
 
   #transitionTo(newState: StateData): void {
@@ -295,7 +291,7 @@ export class ConsoleInsight extends HTMLElement {
     this.#render();
   }
 
-  async update(): Promise<void> {
+  async #generateInsightIfNeeded(): Promise<void> {
     if (this.#state.type !== State.LOADING) {
       return;
     }
@@ -525,7 +521,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.ERROR:
         return i18nString(UIStrings.error);
       case State.CONSENT:
-        return this.#actionName;
+        return this.#actionTitle;
     }
   }
 
@@ -579,9 +575,11 @@ class ConsoleInsightSourcesList extends HTMLElement {
      render(html`
       <ul>
         ${Directives.repeat(this.#sources, item => item.value, item => {
-          const icon = new IconButton.Icon.Icon();
-          icon.data = {iconName: 'open-externally', color: 'var(--sys-color-primary)', width: '14px', height: '14px'};
-          return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
+          return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>
+            ${localizeType(item.type)}
+            <${IconButton.Icon.Icon.litTagName} name="open-externally">
+            </${IconButton.Icon.Icon.litTagName}>
+          </x-link></li>`;
         })}
       </ul>
     `, this.#shadow, {

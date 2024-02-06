@@ -59,10 +59,8 @@ Images: ![https://example.com](https://example.com)
 `;
       },
     },
-    '', {
+    'Explain this error', {
       isSyncActive: true,
       accountEmail: 'some-email',
     });
-component.actionName = 'Explain this error';
-await component.update();
 document.getElementById('container')?.appendChild(component);

@@ -158,6 +158,12 @@ textarea {
 .link {
   color: var(--sys-color-primary);
   text-decoration-line: underline;
+
+  devtools-icon {
+    color: var(--sys-color-primary);
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .loader {

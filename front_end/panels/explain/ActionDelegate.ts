@@ -30,7 +30,6 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           const insightProvider = new InsightProvider();
           void ConsoleInsight.create(promptBuilder, insightProvider, action?.title()).then(insight => {
             consoleViewMessage.setInsight(insight);
-            return insight.update();
           });
           return true;
         }

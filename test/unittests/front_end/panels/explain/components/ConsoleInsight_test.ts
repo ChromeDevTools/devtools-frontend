@@ -55,13 +55,17 @@ describeWithLocale('ConsoleInsight', () => {
       };
     }
 
+    async function drainMicroTasks() {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+
     it('shows the consent flow for signed-in users', async () => {
       const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
         isSyncActive: true,
         accountEmail: 'some-email',
       });
       renderElementIntoDOM(component);
-      await component.update();
+      await drainMicroTasks();
       // Consent button is present.
       assert(component.shadowRoot!.querySelector('.consent-button'));
     });
@@ -72,7 +76,7 @@ describeWithLocale('ConsoleInsight', () => {
         accountEmail: 'some-email',
       });
       renderElementIntoDOM(component);
-      await component.update();
+      await drainMicroTasks();
       dispatchClickEvent(component.shadowRoot!.querySelector('.consent-button')!, {
         bubbles: true,
         composed: true,
@@ -88,7 +92,7 @@ describeWithLocale('ConsoleInsight', () => {
         isSyncActive: false,
       });
       renderElementIntoDOM(component);
-      await component.update();
+      await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
       assert.strictEqual(content, 'This feature is only available if you are logged into your Chrome account.');
     });
@@ -99,7 +103,7 @@ describeWithLocale('ConsoleInsight', () => {
         accountEmail: 'some-email',
       });
       renderElementIntoDOM(component);
-      await component.update();
+      await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
       assert.strictEqual(content, 'This feature is only available if have sync enabled for your Chrome account.');
     });

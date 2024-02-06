@@ -272,10 +272,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(
         i18nString(UIStrings.showNavigator), i18nString(UIStrings.hideNavigator), i18nString(UIStrings.navigatorShown),
-        i18nString(UIStrings.navigatorHidden));
+        i18nString(UIStrings.navigatorHidden), 'navigator');
     this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showDebugger), i18nString(UIStrings.hideDebugger), i18nString(UIStrings.debuggerShown),
-        i18nString(UIStrings.debuggerHidden));
+        i18nString(UIStrings.debuggerHidden), 'debugger');
     this.editorView.setMainWidget(this.sourcesViewInternal);
 
     this.threadsSidebarPane = null;

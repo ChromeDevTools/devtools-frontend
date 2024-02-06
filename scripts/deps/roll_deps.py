@@ -138,6 +138,7 @@ def generate_dom_pinned_properties(options):
 def generate_protocol_resources(options):
     print('generating protocol resources')
     subprocess.check_call([
+        node_path(options),
         os.path.join(options.devtools_dir, 'scripts', 'deps',
                      'generate_protocol_resources.py')
     ],

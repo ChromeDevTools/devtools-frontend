@@ -242,7 +242,7 @@ export class ElementsTreeOutline extends
             return true;
           },
         };
-      });
+      }, 'elements.issue');
       this.#popupHelper.setTimeout(300);
       this.#popupHelper.setHasPadding(true);
     }

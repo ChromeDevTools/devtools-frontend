@@ -389,7 +389,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
 
       return null;
-    });
+    }, 'elements.css-property-doc');
 
     this.#hintPopoverHelper.setDisableOnClick(true);
     this.#hintPopoverHelper.setTimeout(300);
@@ -413,7 +413,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         }
       }
       return null;
-    });
+    }, 'elements.css-var');
     this.#evaluatedCSSVarPopoverHelper.setDisableOnClick(true);
     this.#evaluatedCSSVarPopoverHelper.setTimeout(500, 200);
   }

@@ -37,7 +37,7 @@ enum VisualElements {
   ToggleSubpane = 15,
   ControlPoint = 16,
   Toolbar = 17,
-  /* 18 used to be ElementStatesPan, but free to grab now */
+  Popover = 18,
   /* 19 used to be CssLayersPane, but free to grab now */
   DropDown = 20,
   /* 21 used to be StylesMetricsPane, but free to grab now */

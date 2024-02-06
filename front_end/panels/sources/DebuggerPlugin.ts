@@ -397,7 +397,8 @@ export class DebuggerPlugin extends Plugin {
     void this.callFrameChanged();
 
     this.popoverHelper?.dispose();
-    this.popoverHelper = new UI.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this));
+    this.popoverHelper =
+        new UI.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this), 'sources.object-properties');
     this.popoverHelper.setDisableOnClick(true);
     this.popoverHelper.setTimeout(250, 250);
     this.popoverHelper.setHasPadding(true);

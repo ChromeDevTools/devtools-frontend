@@ -99,8 +99,8 @@ export class UISourceCodeFrame extends
         .moduleSetting('persistence-network-overrides-enabled')
         .addChangeListener(this.onNetworkPersistenceChanged, this);
 
-    this.errorPopoverHelper =
-        new UI.PopoverHelper.PopoverHelper(this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this));
+    this.errorPopoverHelper = new UI.PopoverHelper.PopoverHelper(
+        this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this), 'sources.error');
     this.errorPopoverHelper.setHasPadding(true);
 
     this.errorPopoverHelper.setTimeout(100, 100);

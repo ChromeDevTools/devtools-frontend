@@ -26,11 +26,14 @@ export class GlassPane {
   private marginBehavior: MarginBehavior;
   #ignoreLeftMargin: boolean = false;
 
-  constructor() {
+  constructor(jslog?: string) {
     this.widgetInternal = new Widget(true);
     this.widgetInternal.markAsRoot();
     this.element = this.widgetInternal.element;
     this.contentElement = this.widgetInternal.contentElement;
+    if (jslog) {
+      this.contentElement.setAttribute('jslog', jslog);
+    }
     this.arrowElement = document.createElement('span');
     this.arrowElement.classList.add('arrow', 'hidden');
     if (this.element.shadowRoot) {

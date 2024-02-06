@@ -81,6 +81,7 @@ export const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, '
 export const pieChart = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChart');
 export const pieChartSlice = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChartSlice');
 export const pieChartTotal = LoggingConfig.makeConfigStringBuilder.bind(null, 'PieChartTotal');
+export const popover = LoggingConfig.makeConfigStringBuilder.bind(null, 'Popover');
 export const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
 export const resizer = LoggingConfig.makeConfigStringBuilder.bind(null, 'Resizer');
 export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null, 'ResponsivePresets');

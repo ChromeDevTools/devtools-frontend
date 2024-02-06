@@ -79,7 +79,7 @@ export class ValueInterpreterSettings extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="settings" jslog=${VisualLogging.section('settings')}>
+      <div class="settings" jslog=${VisualLogging.pane('settings')}>
        ${[...GROUP_TO_TYPES.keys()].map(group => {
         return html`
           <div class="value-types-selection">

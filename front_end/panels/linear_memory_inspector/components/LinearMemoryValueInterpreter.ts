@@ -95,7 +95,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.#renderEndiannessSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}"
               title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}
-              jslog=${VisualLogging.action('linear-memory-inspector.toggle-value-settings').track({click: true})}>
+              jslog=${VisualLogging.toggleSubpane('linear-memory-inspector.toggle-value-settings').track({click: true})}>
             <${IconButton.Icon.Icon.litTagName} name=${this.#showSettings ? 'gear-filled' : 'gear'}></${IconButton.Icon.Icon.litTagName}>
           </button>
         </div>
@@ -139,7 +139,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
       <select class="chrome-select"
-        jslog=${VisualLogging.toggle('linear-memory-inspector.endianess').track({change: true})}
+        jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
         style="border: none; background-color: transparent; cursor: pointer;"
         data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {

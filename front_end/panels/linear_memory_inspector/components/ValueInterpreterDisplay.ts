@@ -189,7 +189,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           data-mode-settings="true"
           class="chrome-select"
           style="border: none; background-color: transparent; cursor: pointer; color: var(--sys-color-token-subtle);"
-          jslog=${VisualLogging.toggle('linear-memory-inspector.value-type-mode').track({change: true})}
+          jslog=${VisualLogging.dropDown('linear-memory-inspector.value-type-mode').track({change: true})}
           @change=${this.#onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`

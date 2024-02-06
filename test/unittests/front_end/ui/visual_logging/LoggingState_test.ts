@@ -69,10 +69,54 @@ describe('LoggingState', () => {
   it('uses a custom parent provider', async () => {
     const provider = sinon.stub();
     const customParent = document.createElement('div');
+    customParent.setAttribute('jslog', '<not important>');
     VisualLogging.LoggingState.getOrCreateLoggingState(customParent, {ve: 1, context: '123'});
     provider.returns(customParent);
     VisualLogging.LoggingState.registerParentProvider('custom', provider);
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom'});
+    assertNotNullOrUndefined(state);
+    assert.isTrue(provider.calledOnceWith(element));
+    assert.strictEqual(123, await state.parent?.context(element));
+  });
+
+  it('walks the DOM upwards to find the parent loggable', async () => {
+    const provider = sinon.stub();
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div id="loggable" jslog="Pane">
+        <div id="providedByParentProvider"></div>
+      </div>
+    `;
+    VisualLogging.LoggingState.getOrCreateLoggingState(
+        container.querySelector('#loggable') as Element, {ve: 1, context: '123'});
+    provider.returns(container.querySelector('#providedByParentProvider'));
+    VisualLogging.LoggingState.registerParentProvider('custom2', provider);
+
+    const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom2'});
+    assertNotNullOrUndefined(state);
+    assert.isTrue(provider.calledOnceWith(element));
+    assert.strictEqual(123, await state.parent?.context(element));
+  });
+
+  it('walks across shadow roots to find the parent loggable', async () => {
+    const provider = sinon.stub();
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div id="loggable" jslog="Pane">
+        <div id="shadow"></div>
+      </div>
+    `;
+    const shadow = container.querySelector('#shadow')?.attachShadow({mode: 'open'});
+    const shadowContent = document.createElement('div');
+    shadowContent.innerHTML = '<div id="providedByParentProvider"></div>';
+    shadow?.appendChild(shadowContent);
+
+    VisualLogging.LoggingState.getOrCreateLoggingState(
+        container.querySelector('#loggable') as Element, {ve: 1, context: '123'});
+    provider.returns(shadowContent.querySelector('#providedByParentProvider'));
+    VisualLogging.LoggingState.registerParentProvider('custom3', provider);
+
+    const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom3'});
     assertNotNullOrUndefined(state);
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, await state.parent?.context(element));

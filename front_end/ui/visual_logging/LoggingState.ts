@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {type Loggable} from './Loggable.js';
-import {type LoggingConfig} from './LoggingConfig.js';
+import {type LoggingConfig, needsLogging} from './LoggingConfig.js';
 
 export interface LoggingState {
   impressionLogged: boolean;
@@ -28,6 +28,9 @@ export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfi
   }
   if (config.parent && parentProviders.has(config.parent) && loggable instanceof Element) {
     parent = parentProviders.get(config.parent)?.(loggable);
+    while (parent instanceof Element && !needsLogging(parent)) {
+      parent = parent.parentElementOrShadowHost() ?? undefined;
+    }
   }
 
   const loggableState = {

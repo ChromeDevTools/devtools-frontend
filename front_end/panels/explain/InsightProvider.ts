@@ -63,7 +63,10 @@ export class InsightProvider {
                   }
                   text.push(result.codeChunk.code);
                 } else if ('error' in result) {
-                  throw new Error(`${result['error']}: ${result['detail']}`);
+                  if (result['detail'][0].error.code === 403) {
+                    throw new Error('Server responded: permission denied');
+                  }
+                  throw new Error(`Server responded: ${JSON.stringify(result)}`);
                 } else {
                   throw new Error('Unknown chunk result');
                 }

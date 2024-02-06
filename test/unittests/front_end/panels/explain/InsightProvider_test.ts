@@ -114,4 +114,65 @@ describe('InsightProvider', () => {
     const result = await provider.getInsights('foo');
     assert.strictEqual(result, 'hello \n`````\nbrave new World()\n`````\n');
   });
+
+  it('throws a readable error on 403', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake((request, cb) => {
+          cb({
+            response: JSON.stringify([{
+              'error': 'Got error response from AIDA',
+              'detail': [
+                {
+                  'error': {
+                    'code': 403,
+                    'message': 'The caller does not have permission',
+                    'status': 'PERMISSION_DENIED',
+                    'details': [
+                      {
+                        '@type': 'type.googleapis.com/google.rpc.DebugInfo',
+                        'detail': 'DETAILS',
+                      },
+                    ],
+                  },
+                },
+              ],
+            }]),
+          });
+        });
+    const provider = new Explain.InsightProvider();
+    try {
+      await provider.getInsights('foo');
+      expect.fail('provider.getInsights did not throw');
+    } catch (err) {
+      expect(err.message).equals('Server responded: permission denied');
+    }
+  });
+
+  it('throws an error with all details for other codes', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake((request, cb) => {
+          cb({
+            response: JSON.stringify([{
+              'error': 'Got error response from AIDA',
+              'detail': [
+                {
+                  'error': {
+                    'code': 418,
+                    'message': 'I am a teapot',
+                  },
+                },
+              ],
+            }]),
+          });
+        });
+    const provider = new Explain.InsightProvider();
+    try {
+      await provider.getInsights('foo');
+      expect.fail('provider.getInsights did not throw');
+    } catch (err) {
+      expect(err.message)
+          .equals(
+              'Server responded: {"error":"Got error response from AIDA","detail":[{"error":{"code":418,"message":"I am a teapot"}}]}');
+    }
+  });
 });

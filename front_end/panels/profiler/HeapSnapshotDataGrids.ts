@@ -673,10 +673,10 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
     this.snapshot = snapshot;
-    const node =
-        new HeapSnapshotModel.HeapSnapshotModel.Node(-1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
+    const node = new HeapSnapshotModel.HeapSnapshotModel.Node(
+        nodeId ?? -1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
     this.setRootNode(this.createRootNode(snapshot, node));
     void (this.rootNode() as HeapSnapshotGridNode).sort();
   }
@@ -742,8 +742,8 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     this.resetSortingCache();
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
-    await super.setDataSource(snapshot, nodeIndex);
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
+    await super.setDataSource(snapshot, nodeIndex, nodeId);
     this.rootNode().expand();
   }
 }

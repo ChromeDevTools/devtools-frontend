@@ -773,7 +773,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   setSelectedNodeForDetailsView(nodeItem: HeapSnapshotGridNode|null): void {
     const dataSource = nodeItem && nodeItem.retainersDataSource();
     if (dataSource) {
-      void this.retainmentDataGrid.setDataSource(dataSource.snapshot, dataSource.snapshotNodeIndex);
+      void this.retainmentDataGrid.setDataSource(
+          dataSource.snapshot, dataSource.snapshotNodeIndex, dataSource.snapshotNodeId);
       if (this.allocationStackView) {
         void this.allocationStackView.setAllocatedObject(dataSource.snapshot, dataSource.snapshotNodeIndex);
       }

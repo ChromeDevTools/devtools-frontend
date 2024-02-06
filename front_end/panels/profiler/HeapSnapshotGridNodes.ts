@@ -160,6 +160,7 @@ export class HeapSnapshotGridNode extends
   retainersDataSource(): {
     snapshot: HeapSnapshotProxy,
     snapshotNodeIndex: number,
+    snapshotNodeId: number|undefined,
   }|null {
     return null;
   }
@@ -542,10 +543,12 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
   override retainersDataSource(): {
     snapshot: HeapSnapshotProxy,
     snapshotNodeIndex: number,
+    snapshotNodeId: number|undefined,
   }|null {
     return this.snapshotNodeIndex === undefined ? null : {
       snapshot: (this.dataGridInternal.snapshot as HeapSnapshotProxy),
       snapshotNodeIndex: this.snapshotNodeIndex,
+      snapshotNodeId: this.snapshotNodeId,
     };
   }
 
@@ -742,9 +745,11 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   override retainersDataSource(): {
     snapshot: HeapSnapshotProxy,
     snapshotNodeIndex: number,
+    snapshotNodeId: number|undefined,
   }|null {
-    return this.snapshotNodeIndex === undefined ? null :
-                                                  {snapshot: this.snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
+    return this.snapshotNodeIndex === undefined ?
+        null :
+        {snapshot: this.snapshot, snapshotNodeIndex: this.snapshotNodeIndex, snapshotNodeId: this.snapshotNodeId};
   }
 
   override createProvider(): HeapSnapshotProviderProxy {
@@ -813,7 +818,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
         break;
     }
     if (this.cycledWithAncestorGridNode) {
-      div.classList.add('cycled-ancessor-node');
+      div.classList.add('cycled-ancestor-node');
     }
     div.prepend(UI.Fragment.html`<span class="property-name ${nameClass}">${name}</span>
   <span class="grayed">${this.edgeNodeSeparator()}</span>`);
@@ -903,10 +908,13 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   override retainersDataSource(): {
     snapshot: HeapSnapshotProxy,
     snapshotNodeIndex: number,
+    snapshotNodeId: number|undefined,
   }|null {
-    return this.snapshotNodeIndex === undefined ?
-        null :
-        {snapshot: this.baseSnapshotOrSnapshot, snapshotNodeIndex: this.snapshotNodeIndex};
+    return this.snapshotNodeIndex === undefined ? null : {
+      snapshot: this.baseSnapshotOrSnapshot,
+      snapshotNodeIndex: this.snapshotNodeIndex,
+      snapshotNodeId: this.snapshotNodeId,
+    };
   }
 
   override createProvider(): HeapSnapshotProviderProxy {

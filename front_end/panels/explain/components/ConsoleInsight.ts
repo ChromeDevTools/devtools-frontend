@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -95,6 +96,22 @@ const UIStrings = {
    * the feature.
    */
   learnMore: 'Learn more',
+  /**
+   * @description The title of the message when the console insight is not available for some reason.
+   */
+  notAvailable: 'Console Insights is not available',
+  /**
+   * @description The error message when the user is not logged in into Chrome.
+   */
+  notLoggedIn: 'This feature is only available if you are logged into your Chrome account.',
+  /**
+   * @description The error message when the user is not logged in into Chrome.
+   */
+  syncIsOff: 'This feature is only available if have sync enabled for your Chrome account.',
+  /**
+   * @description The title of the button that opens Chrome settings.
+   */
+  goToSettings: 'Go to settings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -160,6 +177,8 @@ const enum State {
   LOADING = 'loading',
   ERROR = 'error',
   CONSENT = 'consent',
+  NOT_LOGGED_IN = 'not-logged-in',
+  SYNC_IS_OFF = 'sync-is-off',
 }
 
 type StateData = {
@@ -176,9 +195,24 @@ type StateData = {
 }|{
   type: State.CONSENT,
   sources: Source[],
+}|{
+  type: State.NOT_LOGGED_IN,
+}|{
+  type: State.SYNC_IS_OFF,
 };
 
 export class ConsoleInsight extends HTMLElement {
+  static async create(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionTitle?: string):
+      Promise<ConsoleInsight> {
+    const syncData = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(resolve => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
+        resolve(syncInfo);
+      });
+    });
+
+    return new ConsoleInsight(promptBuilder, insightProvider, actionTitle, syncData);
+  }
+
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
@@ -189,18 +223,35 @@ export class ConsoleInsight extends HTMLElement {
   #renderer = new MarkdownRenderer();
 
   // Main state.
-  #state: StateData = {
-    type: State.LOADING,
-    consentGiven: false,
-  };
+  #state: StateData;
 
   // Rating sub-form state.
   #selectedRating?: boolean;
 
-  constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
+  constructor(
+      promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionName?: string,
+      syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation) {
     super();
     this.#promptBuilder = promptBuilder;
     this.#insightProvider = insightProvider;
+    this.#actionName = actionName ?? '';
+    this.#state = {
+      type: State.NOT_LOGGED_IN,
+    };
+    if (syncInfo?.accountEmail && syncInfo.isSyncActive) {
+      this.#state = {
+        type: State.LOADING,
+        consentGiven: false,
+      };
+    } else if (!syncInfo?.accountEmail) {
+      this.#state = {
+        type: State.NOT_LOGGED_IN,
+      };
+    } else if (!syncInfo?.isSyncActive) {
+      this.#state = {
+        type: State.SYNC_IS_OFF,
+      };
+    }
     this.#render();
     // Stop keyboard event propagation to avoid Console acting on the events
     // inside the insight component.
@@ -211,6 +262,9 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.addEventListener('keypress', e => {
+      e.stopPropagation();
+    });
+    this.addEventListener('click', e => {
       e.stopPropagation();
     });
     this.tabIndex = 0;
@@ -242,6 +296,12 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   async update(): Promise<void> {
+    if (this.#state.type !== State.LOADING) {
+      return;
+    }
+    if (this.#state.consentGiven) {
+      return;
+    }
     const {sources} = await this.#promptBuilder.buildPrompt();
     this.#transitionTo({
       type: State.CONSENT,
@@ -301,6 +361,19 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
+  #onGoToSettings(): void {
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (rootTarget === null) {
+      return;
+    }
+    const url = 'chrome://settings' as Platform.DevToolsPath.UrlString;
+    void rootTarget.targetAgent().invoke_createTarget({url}).then(result => {
+      if (result.getError()) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url);
+      }
+    });
+  }
+
   #renderMain(): LitHtml.TemplateResult {
     // clang-format off
     switch (this.#state.type) {
@@ -341,6 +414,16 @@ export class ConsoleInsight extends HTMLElement {
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
         `;
+      case State.NOT_LOGGED_IN:
+        return html`
+          <main>
+            <div class="error">${i18nString(UIStrings.notLoggedIn)}</div>
+          </main>`;
+      case State.SYNC_IS_OFF:
+        return html`
+          <main>
+            <div class="error">${i18nString(UIStrings.syncIsOff)}</div>
+          </main>`;
     }
     // clang-format on
   }
@@ -351,6 +434,24 @@ export class ConsoleInsight extends HTMLElement {
       case State.LOADING:
       case State.ERROR:
         return LitHtml.nothing;
+      case State.NOT_LOGGED_IN:
+      case State.SYNC_IS_OFF:
+        return html`<footer>
+        <div class="filler">
+        </div>
+        <div>
+          <${Buttons.Button.Button.litTagName}
+            @click=${this.#onGoToSettings}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.PRIMARY,
+              } as Buttons.Button.ButtonData
+            }
+          >
+            ${UIStrings.goToSettings}
+          </${Buttons.Button.Button.litTagName}>
+        </div>
+      </footer>`;
       case State.CONSENT:
         return html`<footer>
           <div class="filler">
@@ -413,6 +514,10 @@ export class ConsoleInsight extends HTMLElement {
 
   #getHeader(): string {
     switch (this.#state.type) {
+      case State.SYNC_IS_OFF:
+        return i18nString(UIStrings.notAvailable);
+      case State.NOT_LOGGED_IN:
+        return i18nString(UIStrings.notAvailable);
       case State.LOADING:
         return i18nString(UIStrings.generating);
       case State.INSIGHT:

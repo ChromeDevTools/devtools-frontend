@@ -55,8 +55,11 @@ describeWithLocale('ConsoleInsight', () => {
       };
     }
 
-    it('shows the consent flow by default', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider());
+    it('shows the consent flow for signed-in users', async () => {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+        isSyncActive: true,
+        accountEmail: 'some-email',
+      });
       renderElementIntoDOM(component);
       await component.update();
       // Consent button is present.
@@ -64,7 +67,10 @@ describeWithLocale('ConsoleInsight', () => {
     });
 
     it('consent can be accepted', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider());
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+        isSyncActive: true,
+        accountEmail: 'some-email',
+      });
       renderElementIntoDOM(component);
       await component.update();
       dispatchClickEvent(component.shadowRoot!.querySelector('.consent-button')!, {
@@ -75,6 +81,27 @@ describeWithLocale('ConsoleInsight', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
       // Rating buttons are shown.
       assert(component.shadowRoot!.querySelector('.rating'));
+    });
+
+    it('report if the user is not logged in', async () => {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+        isSyncActive: false,
+      });
+      renderElementIntoDOM(component);
+      await component.update();
+      const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
+      assert.strictEqual(content, 'This feature is only available if you are logged into your Chrome account.');
+    });
+
+    it('report if the sync is not enabled', async () => {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+        isSyncActive: false,
+        accountEmail: 'some-email',
+      });
+      renderElementIntoDOM(component);
+      await component.update();
+      const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
+      assert.strictEqual(content, 'This feature is only available if have sync enabled for your Chrome account.');
     });
   });
 });

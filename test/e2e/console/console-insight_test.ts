@@ -15,12 +15,15 @@ describe('ConsoleInsight', async function() {
   const CLICK_TARGET_SELECTOR = '.console-message-text';
   const EXPLAIN_LABEL = 'Explain this error';
 
-  async function mockAida(response: unknown) {
+  async function setupMocks(aidaResponse: unknown) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
     await frontend.evaluateOnNewDocument(`
       globalThis.doAidaConversationForTesting = (data, cb) => {
-        cb({"response": JSON.stringify(${JSON.stringify(response)})});
+        cb({"response": JSON.stringify(${JSON.stringify(aidaResponse)})});
+      }
+      globalThis.getSyncInformation = (cb) => {
+        cb({"isSyncActive": true, "accountEmail": "some-email"});
       }
     `);
     await frontend.goto(frontend.url() + '&enableAida=true', {
@@ -31,7 +34,7 @@ describe('ConsoleInsight', async function() {
 
   it('shows an insight for a console message', async () => {
     const {target} = getBrowserAndPages();
-    await mockAida([
+    await setupMocks([
       {'textChunk': {'text': 'test'}},
     ]);
     await click(CONSOLE_TAB_SELECTOR);
@@ -44,7 +47,7 @@ describe('ConsoleInsight', async function() {
 
   it('does not show context menu if AIDA is not available', async () => {
     const {target} = getBrowserAndPages();
-    await mockAida(null);
+    await setupMocks(null);
     await click(CONSOLE_TAB_SELECTOR);
     await target.evaluate(() => {
       console.error(new Error('Unexpected error'));

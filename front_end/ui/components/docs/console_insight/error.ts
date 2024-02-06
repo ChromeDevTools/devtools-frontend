@@ -21,7 +21,11 @@ const component = new ConsoleInsight(
       async getInsights() {
         throw new Error('Could not connect to the server');
       },
+    },
+    '', {
+      isSyncActive: true,
+      accountEmail: 'some-email',
     });
 component.actionName = 'Explain this error';
-void component.update();
+await component.update();
 document.getElementById('container')?.appendChild(component);

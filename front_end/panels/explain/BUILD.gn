@@ -25,6 +25,7 @@ devtools_module("explain") {
   deps = [
     ":css_files",
     "../../core/host:bundle",
+    "../../core/sdk:bundle",
     "../../models/logs:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",

@@ -69,7 +69,7 @@ Response status: 404`,
     {
       async getInsights() {
         await new Promise(resolve => setTimeout(resolve, 2000));
-          return `Some text with \`code\`. Some code:
+        return `Some text with \`code\`. Some code:
 \`\`\`ts
 console.log('test');
 document.querySelector('test').style = 'black';
@@ -86,7 +86,11 @@ document.querySelector('test').style = 'black';
 \`\`\`
 `;
       },
+    },
+    '', {
+      isSyncActive: true,
+      accountEmail: 'some-email',
     });
 component.actionName = 'Explain this error';
-void component.update();
+await component.update();
 document.getElementById('container')?.appendChild(component);

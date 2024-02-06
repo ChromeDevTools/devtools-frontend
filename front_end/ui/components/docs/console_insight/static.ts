@@ -58,7 +58,11 @@ Links: [https://example.com](https://example.com)
 Images: ![https://example.com](https://example.com)
 `;
       },
+    },
+    '', {
+      isSyncActive: true,
+      accountEmail: 'some-email',
     });
 component.actionName = 'Explain this error';
-void component.update();
+await component.update();
 document.getElementById('container')?.appendChild(component);

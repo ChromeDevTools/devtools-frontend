@@ -544,6 +544,12 @@ function initializeInspectorFrontendHost(): void {
             doAidaConversationForTesting: typeof InspectorFrontendHostInstance['doAidaConversation'],
           }).doAidaConversationForTesting;
     }
+    if ('getSyncInformationForTesting' in globalThis) {
+      InspectorFrontendHostInstance['getSyncInformation'] =
+          (globalThis as unknown as {
+            getSyncInformationForTesting: typeof InspectorFrontendHostInstance['getSyncInformation'],
+          }).getSyncInformationForTesting;
+    }
   } else {
     // Otherwise add stubs for missing methods that are declared in the interface.
     proto = InspectorFrontendHostStub.prototype;

@@ -872,7 +872,7 @@ export class RecordingView extends HTMLElement {
           <div slot="main">
             ${this.#renderSections()}
           </div>
-          <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({keydown: true})}>
+          <div slot="sidebar" jslog=${VisualLogging.pane('source-code')}>
             <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
               <${Menus.SelectMenu.SelectMenu.litTagName}
                 @selectmenuselected=${this.#onCodeFormatChange}
@@ -920,7 +920,7 @@ export class RecordingView extends HTMLElement {
                 jslog=${VisualLogging.close().track({click: true})}
               ></${Buttons.Button.Button.litTagName}>
             </div>
-            <div class="text-editor">
+            <div class="text-editor" jslog=${VisualLogging.textField().track({keydown: true})}>
               <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
           this.#editorState
         }></${TextEditor.TextEditor.TextEditor.litTagName}>

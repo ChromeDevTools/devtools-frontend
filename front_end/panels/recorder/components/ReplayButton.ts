@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Extensions from '../extensions/extensions.js';
 import type * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
@@ -219,7 +220,8 @@ export class ReplayButton extends HTMLElement {
       .disabled=${this.#props.disabled}
       .action=${Actions.RecorderActions.ReplayRecording}
       .value=${this.#settings?.replayExtension || this.#settings?.speed}
-      .groups=${groups}>
+      .groups=${groups}
+      jslog=${VisualLogging.action(Actions.RecorderActions.ReplayRecording).track({click: true})}>
     </${SelectButton.litTagName}>`,
       this.#shadow,
       { host: this },

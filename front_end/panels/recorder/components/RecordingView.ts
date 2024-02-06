@@ -748,6 +748,7 @@ export class RecordingView extends HTMLElement {
             .sideButton=${false}
             .showSelectedItem=${true}
             .showConnector=${false}
+            .jslogContext=${'network-conditions'}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${menuButtonTitle}
           >
@@ -755,6 +756,7 @@ export class RecordingView extends HTMLElement {
               return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                 .value=${condition.i18nTitleKey}
                 .selected=${selectedOption === condition.i18nTitleKey}
+                jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(condition.i18nTitleKey || ''))}
               >
                 ${
                   condition.title instanceof Function
@@ -870,8 +872,8 @@ export class RecordingView extends HTMLElement {
           <div slot="main">
             ${this.#renderSections()}
           </div>
-          <div slot="sidebar">
-            <div class="section-toolbar">
+          <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({keydown: true})}>
+            <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
               <${Menus.SelectMenu.SelectMenu.litTagName}
                 @selectmenuselected=${this.#onCodeFormatChange}
                 .showDivider=${true}
@@ -881,6 +883,7 @@ export class RecordingView extends HTMLElement {
                 .showConnector=${false}
                 .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
                 .buttonTitle=${converterFormatName}
+                .jslogContext=${'code-format'}
               >
                 ${this.#builtInConverters.map(converter => {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
@@ -963,7 +966,6 @@ export class RecordingView extends HTMLElement {
         }
         .disabled=${this.#replayState.isPlaying}
         @startreplay=${this.#handleTogglePlaying}
-        jslog=${VisualLogging.action('replay').track({click: true})}
         >
       </${ReplayButton.litTagName}>`;
     // clang-format on
@@ -1183,6 +1185,7 @@ export class RecordingView extends HTMLElement {
                   @keydown=${this.#onTitleInputKeyDown}
                   id="title-input"
                   .contentEditable=${isTitleEditable ? 'true' : 'false'}
+                  jslog=${VisualLogging.value('title').track({change: true})}
                   class=${LitHtml.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
                     'disabled': !isTitleEditable,

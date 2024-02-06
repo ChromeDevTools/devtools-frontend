@@ -1220,6 +1220,7 @@ export class RecorderController extends LitElement {
                     i18nString(UIStrings.createRecording),
                     Actions.RecorderActions.CreateRecording,
                   ),
+                  jslogContext: Actions.RecorderActions.CreateRecording,
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>
@@ -1233,6 +1234,7 @@ export class RecorderController extends LitElement {
               }
               @click=${(e: Event): void => e.stopPropagation()}
               @change=${this.#onRecordingSelected}
+              jslog=${VisualLogging.dropDown('recordings').track({change: true})}
             >
               ${LitHtml.Directives.repeat(
                 values,
@@ -1250,6 +1252,7 @@ export class RecorderController extends LitElement {
                   variant: Buttons.Button.Variant.TOOLBAR,
                   iconName: 'import',
                   title: i18nString(UIStrings.importRecording),
+                  jslogContext: 'import-recording',
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>
@@ -1269,6 +1272,7 @@ export class RecorderController extends LitElement {
                   disabled: !this.currentRecording,
                 } as Buttons.Button.ButtonData
               }
+              jslog=${VisualLogging.dropDown('export-recording').track({click: true})}
             ></${Buttons.Button.Button.litTagName}>
             <${Menus.Menu.Menu.litTagName}
               @menucloserequest=${this.#onExportMenuClosed}
@@ -1288,7 +1292,8 @@ export class RecorderController extends LitElement {
                     return html`
                     <${
                       Menus.Menu.MenuItem.litTagName
-                    } .value=${converter.getId()}>
+                    } .value=${converter.getId()}
+                      jslog=${VisualLogging.item(`converter-${converter.getFormatName()}`).track({click: true})}>
                       ${converter.getFormatName()}
                     </${Menus.Menu.MenuItem.litTagName}>
                   `;
@@ -1304,7 +1309,8 @@ export class RecorderController extends LitElement {
                     return html`
                     <${
                       Menus.Menu.MenuItem.litTagName
-                    } .value=${converter.getId()}>
+                    } .value=${converter.getId()}
+                      jslog=${VisualLogging.item(`converter-${converter.getFormatName()}`).track({click: true})}>
                     ${converter.getFormatName()}
                     </${Menus.Menu.MenuItem.litTagName}>
                   `;
@@ -1329,6 +1335,7 @@ export class RecorderController extends LitElement {
                     this.isRecording ||
                     this.isToggling,
                   title: i18nString(UIStrings.deleteRecording),
+                  jslogContext: 'delete-recording',
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>
@@ -1343,6 +1350,7 @@ export class RecorderController extends LitElement {
                     !this.recordingPlayer ||
                     !this.#replayState.isPausedOnBreakpoint,
                   title: i18nString(UIStrings.continueReplay),
+                  jslogContext: 'continue-replay',
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>
@@ -1356,13 +1364,14 @@ export class RecorderController extends LitElement {
                     !this.recordingPlayer ||
                     !this.#replayState.isPausedOnBreakpoint,
                   title: i18nString(UIStrings.stepOverReplay),
+                  jslogContext: 'step-over',
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>
             <div class="feedback">
               <x-link class="x-link" href=${
                 Components.StartView.FEEDBACK_URL
-              }>${i18nString(UIStrings.sendFeedback)}</x-link>
+              } jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
             </div>
             <div class="separator"></div>
             <${Dialogs.ShortcutDialog.ShortcutDialog.litTagName}
@@ -1370,7 +1379,7 @@ export class RecorderController extends LitElement {
                 {
                   shortcuts: this.#getShortcutsInfo(),
                 } as Dialogs.ShortcutDialog.ShortcutDialogData
-              }
+              } jslog=${VisualLogging.action('show-shortcuts').track({click: true})}
             ></${Dialogs.ShortcutDialog.ShortcutDialog.litTagName}>
           </div>
           ${

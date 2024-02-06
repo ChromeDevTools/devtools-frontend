@@ -12,6 +12,7 @@ import * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feed
 import * as PanelIntroductionSteps from '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import startViewStyles from './startView.css.js';
 
@@ -101,7 +102,8 @@ export class StartView extends HTMLElement {
           <div class="fit-content">
             <${Buttons.Button.Button.litTagName} .variant=${
         Buttons.Button.Variant.PRIMARY
-      } @click=${this.#onClick}>
+      } @click=${this.#onClick}
+              .jslogContext=${Actions.RecorderActions.CreateRecording}>
               ${i18nString(UIStrings.createRecording)}
             </${Buttons.Button.Button.litTagName}>
           </div>

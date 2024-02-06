@@ -497,6 +497,9 @@ class RecorderSelectorPickerButton extends LitElement {
       .iconName=${'select-element'}
       .active=${this.#picker.active}
       .variant=${Buttons.Button.Variant.SECONDARY}
+      jslog=${VisualLogging.toggle('selector-picker').track({
+      click: true,
+    })}
     ></devtools-button>`;
   }
 }
@@ -660,6 +663,9 @@ export class StepEditor extends LitElement {
         .size=${Buttons.Button.Size.SMALL}
         .iconName=${opts.iconName}
         .variant=${Buttons.Button.Variant.SECONDARY}
+        jslog=${VisualLogging.action(opts.class).track({
+      click: true,
+    })}
         class="inline-button ${opts.class}"
         @click=${opts.onClick}
       ></devtools-button>
@@ -685,6 +691,7 @@ export class StepEditor extends LitElement {
       .title=${i18nString(UIStrings.deleteRow)}
       class="inline-button delete-row"
       data-attribute=${attribute}
+      jslog=${VisualLogging.action('delete').track({click: true})}
       @click=${(event: MouseEvent): void => {
         event.preventDefault();
         event.stopPropagation();
@@ -1134,6 +1141,7 @@ export class StepEditor extends LitElement {
           .variant=${Buttons.Button.Variant.SECONDARY}
           class="add-row"
           data-attribute=${attr}
+          jslog=${VisualLogging.action(`add-${Platform.StringUtilities.toKebabCase(attr)}`)}
           @click=${this.#handleAddRowClickEvent}
         >
           ${i18nString(UIStrings.addAttribute, {

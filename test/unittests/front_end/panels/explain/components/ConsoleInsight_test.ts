@@ -30,8 +30,8 @@ describeWithLocale('ConsoleInsight', () => {
     });
     it('renders unsupported tokens', () => {
       const renderer = new Explain.MarkdownRenderer();
-      const result = renderer.renderToken({type: 'html', raw: '!<DOCTYPE html>'} as Marked.Marked.Token);
-      assert(result.values.join('').includes('!<DOCTYPE html>'));
+      const result = renderer.renderToken({type: 'html', raw: '<!DOCTYPE html>'} as Marked.Marked.Token);
+      assert(result.values.join('').includes('<!DOCTYPE html>'));
     });
   });
 

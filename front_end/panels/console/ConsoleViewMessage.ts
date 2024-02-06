@@ -1342,7 +1342,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   #createHoverButton(): HTMLButtonElement {
     const icon = new IconButton.Icon.Icon();
     icon.data = {
-      iconName: 'spark-info',
+      iconName: 'lightbulb-spark',
       color: 'var(--sys-color-primary)',
       width: '16px',
       height: '16px',

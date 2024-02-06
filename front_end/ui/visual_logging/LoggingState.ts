@@ -24,7 +24,11 @@ function nextVeId(): number {
 
 export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfig, parent?: Loggable): LoggingState {
   if (state.has(loggable)) {
-    return state.get(loggable) as LoggingState;
+    const currentState = state.get(loggable) as LoggingState;
+    if (parent && !config.parent && currentState.parent !== getLoggingState(parent)) {
+      currentState.parent = getLoggingState(parent);
+    }
+    return currentState;
   }
   if (config.parent && parentProviders.has(config.parent) && loggable instanceof Element) {
     parent = parentProviders.get(config.parent)?.(loggable);

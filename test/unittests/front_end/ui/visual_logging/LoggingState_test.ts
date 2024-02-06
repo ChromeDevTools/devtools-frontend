@@ -44,6 +44,18 @@ describe('LoggingState', () => {
     assert.strictEqual(state, VisualLogging.LoggingState.getLoggingState(element));
   });
 
+  it('can update parent', () => {
+    VisualLogging.LoggingState.getOrCreateLoggingState(parent, {ve: 1, context: '21'}, undefined);
+    const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: '42'}, parent);
+    assert.strictEqual(state.parent, VisualLogging.LoggingState.getLoggingState(parent));
+
+    const newParent = document.createElement('div');
+    VisualLogging.LoggingState.getOrCreateLoggingState(parent, {ve: 1, context: '84'}, undefined);
+    VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: '42'}, newParent);
+
+    assert.strictEqual(state.parent, VisualLogging.LoggingState.getLoggingState(newParent));
+  });
+
   it('getLoggingState returns null for unknown element', () => {
     assert.isNull(VisualLogging.LoggingState.getLoggingState(element));
   });

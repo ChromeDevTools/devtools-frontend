@@ -1,23 +1,13 @@
 "use strict";
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PuppeteerNode = void 0;
 const browsers_1 = require("@puppeteer/browsers");
-const Puppeteer_js_1 = require("../cdp/Puppeteer.js");
+const Puppeteer_js_1 = require("../common/Puppeteer.js");
 const revisions_js_1 = require("../revisions.js");
 const ChromeLauncher_js_1 = require("./ChromeLauncher.js");
 const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
@@ -131,7 +121,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * for a description of the differences between Chromium and Chrome.
      * {@link https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md | This article}
      * describes some differences for Linux users. See
-     * {@link https://goo.gle/chrome-for-testing | this doc} for the description
+     * {@link https://developer.chrome.com/blog/chrome-for-testing/ | this doc} for the description
      * of Chrome for Testing.
      *
      * @param options - Options to configure launching behavior.
@@ -184,7 +174,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @internal
      */
     get defaultDownloadPath() {
-        return this.configuration.downloadPath ?? this.configuration.cacheDirectory;
+        return this.configuration.cacheDirectory;
     }
     /**
      * The name of the browser that was last launched.
@@ -238,7 +228,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
         if (!platform) {
             throw new Error('The current platform is not supported.');
         }
-        const cacheDir = this.configuration.downloadPath ?? this.configuration.cacheDirectory;
+        const cacheDir = this.configuration.cacheDirectory;
         const installedBrowsers = await (0, browsers_1.getInstalledBrowsers)({
             cacheDir,
         });

@@ -1,17 +1,7 @@
 /**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2022 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import type {Product} from './Product.js';
@@ -42,7 +32,13 @@ export interface Configuration {
    * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
    * is inferred.
    *
-   * @defaultValue A compatible-revision of the browser.
+   * Use a specific browser version (e.g., 119.0.6045.105). If you use an alias
+   * such `stable` or `canary` it will only work during the installation of
+   * Puppeteer and it will fail when launching the browser.
+   *
+   * @example 119.0.6045.105
+   * @defaultValue The pinned browser version supported by the current Puppeteer
+   * version.
    */
   browserRevision?: string;
   /**
@@ -66,14 +62,6 @@ export interface Configuration {
    * depending on the product.
    */
   downloadBaseUrl?: string;
-  /**
-   * Specifies the path for the downloads folder.
-   *
-   * Can be overridden by `PUPPETEER_DOWNLOAD_PATH`.
-   *
-   * @defaultValue `<cacheDirectory>`
-   */
-  downloadPath?: string;
   /**
    * Specifies an executable path to be used in
    * {@link PuppeteerNode.launch | puppeteer.launch}.
@@ -105,6 +93,18 @@ export interface Configuration {
    * Can be overridden by `PUPPETEER_SKIP_DOWNLOAD`.
    */
   skipDownload?: boolean;
+  /**
+   * Tells Puppeteer to not Chrome download during installation.
+   *
+   * Can be overridden by `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
+   */
+  skipChromeDownload?: boolean;
+  /**
+   * Tells Puppeteer to not chrome-headless-shell download during installation.
+   *
+   * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESSS_HELL_DOWNLOAD`.
+   */
+  skipChromeHeadlessShellDownload?: boolean;
   /**
    * Tells Puppeteer to log at the given level.
    *

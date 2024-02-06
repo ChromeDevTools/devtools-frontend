@@ -1,6 +1,6 @@
 {
   "name": "tar-stream",
-  "version": "3.1.6",
+  "version": "3.1.7",
   "description": "tar-stream is a streaming tar parser and generator and nothing else. It operates purely using streams which means you can easily extract/parse tarballs without ever hitting the file system.",
   "main": "index.js",
   "files": [

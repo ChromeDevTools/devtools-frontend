@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import { CDPSessionEvent, } from '../api/CDPSession.js';
 import { CallbackRegistry } from '../common/CallbackRegistry.js';
@@ -71,21 +61,20 @@ export class Connection extends EventEmitter {
     url() {
         return this.#url;
     }
-    send(method, ...paramArgs) {
+    send(method, params, options) {
         // There is only ever 1 param arg passed, but the Protocol defines it as an
         // array of 0 or 1 items See this comment:
         // https://github.com/ChromeDevTools/devtools-protocol/pull/113#issuecomment-412603285
         // which explains why the protocol defines the params this way for better
         // type-inference.
         // So now we check if there are any params or not and deal with them accordingly.
-        const params = paramArgs.length ? paramArgs[0] : undefined;
-        return this._rawSend(this.#callbacks, method, params);
+        return this._rawSend(this.#callbacks, method, params, undefined, options);
     }
     /**
      * @internal
      */
-    _rawSend(callbacks, method, params, sessionId) {
-        return callbacks.create(method, this.#timeout, id => {
+    _rawSend(callbacks, method, params, sessionId, options) {
+        return callbacks.create(method, options?.timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 method,
                 params,
@@ -201,6 +190,17 @@ export class Connection extends EventEmitter {
      */
     async createSession(targetInfo) {
         return await this._createSession(targetInfo, false);
+    }
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors() {
+        const result = [];
+        result.push(...this.#callbacks.getPendingProtocolErrors());
+        for (const session of this.#sessions.values()) {
+            result.push(...session.getPendingProtocolErrors());
+        }
+        return result;
     }
 }
 /**

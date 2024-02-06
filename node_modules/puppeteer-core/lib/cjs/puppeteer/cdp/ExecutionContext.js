@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCdpHandle = exports.ExecutionContext = void 0;
@@ -25,6 +15,7 @@ const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
 const Binding_js_1 = require("./Binding.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
@@ -196,10 +187,10 @@ class ExecutionContext {
             })
                 .catch(rewriteError);
             if (exceptionDetails) {
-                throw (0, util_js_1.createEvaluationError)(exceptionDetails);
+                throw (0, utils_js_1.createEvaluationError)(exceptionDetails);
             }
             return returnByValue
-                ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
+                ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
                 : createCdpHandle(this._world, remoteObject);
         }
         const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
@@ -211,7 +202,9 @@ class ExecutionContext {
             callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
                 functionDeclaration: functionDeclarationWithSourceUrl,
                 executionContextId: this._contextId,
-                arguments: await Promise.all(args.map(convertArgument.bind(this))),
+                arguments: args.length
+                    ? await Promise.all(args.map(convertArgument.bind(this)))
+                    : [],
                 returnByValue,
                 awaitPromise: true,
                 userGesture: true,
@@ -226,10 +219,10 @@ class ExecutionContext {
         }
         const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
         if (exceptionDetails) {
-            throw (0, util_js_1.createEvaluationError)(exceptionDetails);
+            throw (0, utils_js_1.createEvaluationError)(exceptionDetails);
         }
         return returnByValue
-            ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
+            ? (0, utils_js_1.valueFromRemoteObject)(remoteObject)
             : createCdpHandle(this._world, remoteObject);
         async function convertArgument(arg) {
             if (arg instanceof LazyArg_js_1.LazyArg) {

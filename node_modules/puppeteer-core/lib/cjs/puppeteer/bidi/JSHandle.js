@@ -1,22 +1,13 @@
 "use strict";
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiJSHandle = void 0;
 const JSHandle_js_1 = require("../api/JSHandle.js");
+const Errors_js_1 = require("../common/Errors.js");
 const Deserializer_js_1 = require("./Deserializer.js");
 const util_js_1 = require("./util.js");
 /**
@@ -83,7 +74,7 @@ class BidiJSHandle extends JSHandle_js_1.JSHandle {
         return this.#remoteValue;
     }
     remoteObject() {
-        throw new Error('Not available in WebDriver BiDi');
+        throw new Errors_js_1.UnsupportedOperation('Not available in WebDriver BiDi');
     }
 }
 exports.BidiJSHandle = BidiJSHandle;

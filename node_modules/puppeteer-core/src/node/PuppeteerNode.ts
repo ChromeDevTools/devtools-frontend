@@ -1,17 +1,7 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {
@@ -23,14 +13,13 @@ import {
 } from '@puppeteer/browsers';
 
 import type {Browser} from '../api/Browser.js';
-import type {BrowserConnectOptions} from '../cdp/BrowserConnector.js';
-import {
-  type CommonPuppeteerSettings,
-  type ConnectOptions,
-  Puppeteer,
-} from '../cdp/Puppeteer.js';
 import type {Configuration} from '../common/Configuration.js';
+import type {
+  ConnectOptions,
+  BrowserConnectOptions,
+} from '../common/ConnectOptions.js';
 import type {Product} from '../common/Product.js';
+import {type CommonPuppeteerSettings, Puppeteer} from '../common/Puppeteer.js';
 import {PUPPETEER_REVISIONS} from '../revisions.js';
 
 import {ChromeLauncher} from './ChromeLauncher.js';
@@ -173,7 +162,7 @@ export class PuppeteerNode extends Puppeteer {
    * for a description of the differences between Chromium and Chrome.
    * {@link https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md | This article}
    * describes some differences for Linux users. See
-   * {@link https://goo.gle/chrome-for-testing | this doc} for the description
+   * {@link https://developer.chrome.com/blog/chrome-for-testing/ | this doc} for the description
    * of Chrome for Testing.
    *
    * @param options - Options to configure launching behavior.
@@ -234,7 +223,7 @@ export class PuppeteerNode extends Puppeteer {
    * @internal
    */
   get defaultDownloadPath(): string | undefined {
-    return this.configuration.downloadPath ?? this.configuration.cacheDirectory;
+    return this.configuration.cacheDirectory;
   }
 
   /**
@@ -294,8 +283,7 @@ export class PuppeteerNode extends Puppeteer {
       throw new Error('The current platform is not supported.');
     }
 
-    const cacheDir =
-      this.configuration.downloadPath ?? this.configuration.cacheDirectory!;
+    const cacheDir = this.configuration.cacheDirectory!;
     const installedBrowsers = await getInstalledBrowsers({
       cacheDir,
     });

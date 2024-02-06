@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2022 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -37,10 +27,12 @@ class EventEmitter {
     #emitter;
     #handlers = new Map();
     /**
+     * If you pass an emitter, the returned emitter will wrap the passed emitter.
+     *
      * @internal
      */
-    constructor() {
-        this.#emitter = (0, mitt_js_1.default)(this.#handlers);
+    constructor(emitter = (0, mitt_js_1.default)(new Map())) {
+        this.#emitter = emitter;
     }
     /**
      * Bind an event listener to fire when an event occurs.
@@ -49,6 +41,13 @@ class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     on(type, handler) {
+        const handlers = this.#handlers.get(type);
+        if (handlers === undefined) {
+            this.#handlers.set(type, [handler]);
+        }
+        else {
+            handlers.push(handler);
+        }
         this.#emitter.on(type, handler);
         return this;
     }
@@ -59,25 +58,18 @@ class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     off(type, handler) {
-        this.#emitter.off(type, handler);
-        return this;
-    }
-    /**
-     * Remove an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.off} instead.
-     */
-    removeListener(type, handler) {
-        this.off(type, handler);
-        return this;
-    }
-    /**
-     * Add an event listener.
-     *
-     * @deprecated please use {@link EventEmitter.on} instead.
-     */
-    addListener(type, handler) {
-        this.on(type, handler);
+        const handlers = this.#handlers.get(type) ?? [];
+        if (handler === undefined) {
+            for (const handler of handlers) {
+                this.#emitter.off(type, handler);
+            }
+            this.#handlers.delete(type);
+            return this;
+        }
+        const index = handlers.lastIndexOf(handler);
+        if (index > -1) {
+            this.#emitter.off(type, ...handlers.splice(index, 1));
+        }
         return this;
     }
     /**
@@ -121,13 +113,22 @@ class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(type) {
-        if (type === undefined || type === '*') {
-            this.#handlers.clear();
+        if (type !== undefined) {
+            return this.off(type);
         }
-        else {
-            this.#handlers.delete(type);
-        }
+        this[disposable_js_1.disposeSymbol]();
         return this;
+    }
+    /**
+     * @internal
+     */
+    [disposable_js_1.disposeSymbol]() {
+        for (const [type, handlers] of this.#handlers) {
+            for (const handler of handlers) {
+                this.#emitter.off(type, handler);
+            }
+        }
+        this.#handlers.clear();
     }
 }
 exports.EventEmitter = EventEmitter;

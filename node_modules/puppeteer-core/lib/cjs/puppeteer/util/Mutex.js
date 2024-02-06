@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Mutex = void 0;
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const Deferred_js_1 = require("./Deferred.js");
 const disposable_js_1 = require("./disposable.js");
 /**

@@ -1,17 +1,7 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -168,10 +158,22 @@ export interface PDFOptions {
   omitBackground?: boolean;
   /**
    * Generate tagged (accessible) PDF.
-   * @defaultValue `false`
+   * @defaultValue `true`
    * @experimental
    */
   tagged?: boolean;
+  /**
+   * Generate document outline.
+   *
+   * @remarks
+   * If this is enabled the PDF will also be tagged (accessible)
+   * Currently only works in old Headless (headless = 'shell')
+   * crbug/840455#c47
+   *
+   * @defaultValue `false`
+   * @experimental
+   */
+  outline?: boolean;
   /**
    * Timeout in milliseconds. Pass `0` to disable timeout.
    * @defaultValue `30_000`
@@ -205,7 +207,7 @@ export interface ParsedPDFOptionsInterface {
  * @internal
  */
 export type ParsedPDFOptions = Required<
-  Omit<PDFOptions, 'path' | 'format'> & ParsedPDFOptionsInterface
+  Omit<PDFOptions, 'path' | 'format' | 'timeout'> & ParsedPDFOptionsInterface
 >;
 
 /**

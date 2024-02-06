@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiHTTPRequest = void 0;
 const HTTPRequest_js_1 = require("../api/HTTPRequest.js");
+const Errors_js_1 = require("../common/Errors.js");
 /**
  * @internal
  */
@@ -35,6 +36,9 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             }
         }
     }
+    get client() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
     url() {
         return this.#url;
     }
@@ -45,6 +49,12 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         return this.#method;
     }
     postData() {
+        return this.#postData;
+    }
+    hasPostData() {
+        return this.#postData !== undefined;
+    }
+    async fetchPostData() {
         return this.#postData;
     }
     headers() {
@@ -68,6 +78,36 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     frame() {
         return this.#frame;
+    }
+    continueRequestOverrides() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    continue(_overrides = {}) {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    responseForRequest() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    abortErrorReason() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    interceptResolutionState() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    isInterceptResolutionHandled() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    finalizeInterceptions() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    abort() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    respond(_response, _priority) {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    failure() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;

@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -34,6 +24,7 @@ __exportStar(require("./AriaQueryHandler.js"), exports);
 __exportStar(require("./Binding.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserConnector.js"), exports);
+__exportStar(require("./cdp.js"), exports);
 __exportStar(require("./CDPSession.js"), exports);
 __exportStar(require("./ChromeTargetManager.js"), exports);
 __exportStar(require("./Connection.js"), exports);
@@ -46,6 +37,7 @@ __exportStar(require("./ExecutionContext.js"), exports);
 __exportStar(require("./FirefoxTargetManager.js"), exports);
 __exportStar(require("./Frame.js"), exports);
 __exportStar(require("./FrameManager.js"), exports);
+__exportStar(require("./FrameManagerEvents.js"), exports);
 __exportStar(require("./FrameTree.js"), exports);
 __exportStar(require("./HTTPRequest.js"), exports);
 __exportStar(require("./HTTPResponse.js"), exports);
@@ -58,10 +50,9 @@ __exportStar(require("./NetworkEventManager.js"), exports);
 __exportStar(require("./NetworkManager.js"), exports);
 __exportStar(require("./Page.js"), exports);
 __exportStar(require("./PredefinedNetworkConditions.js"), exports);
-__exportStar(require("./Puppeteer.js"), exports);
 __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
 __exportStar(require("./Tracing.js"), exports);
+__exportStar(require("./utils.js"), exports);
 __exportStar(require("./WebWorker.js"), exports);
-__exportStar(require("./cdp.js"), exports);
 //# sourceMappingURL=cdp.js.map

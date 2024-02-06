@@ -2163,7 +2163,7 @@
                 },
                 {
                     "id": "SerializationOptions",
-                    "description": "Represents options for serialization. Overrides `generatePreview`, `returnByValue` and\n`generateWebDriverValue`.",
+                    "description": "Represents options for serialization. Overrides `generatePreview` and `returnByValue`.",
                     "type": "object",
                     "properties": [
                         {
@@ -2220,7 +2220,8 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "node",
-                                "window"
+                                "window",
+                                "generator"
                             ]
                         },
                         {
@@ -2321,13 +2322,6 @@
                             "description": "String representation of the object.",
                             "optional": true,
                             "type": "string"
-                        },
-                        {
-                            "name": "webDriverValue",
-                            "description": "Deprecated. Use `deepSerializedValue` instead. WebDriver BiDi representation of the value.",
-                            "deprecated": true,
-                            "optional": true,
-                            "$ref": "DeepSerializedValue"
                         },
                         {
                             "name": "deepSerializedValue",
@@ -2998,15 +2992,8 @@
                             "type": "string"
                         },
                         {
-                            "name": "generateWebDriverValue",
-                            "description": "Deprecated. Use `serializationOptions: {serialization:\"deep\"}` instead.\nWhether the result should contain `webDriverValue`, serialized according to\nhttps://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but\nresulting `objectId` is still provided.",
-                            "deprecated": true,
-                            "optional": true,
-                            "type": "boolean"
-                        },
-                        {
                             "name": "serializationOptions",
-                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview`, `returnByValue` and `generateWebDriverValue`.",
+                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview` and `returnByValue`.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "SerializationOptions"
@@ -3180,15 +3167,8 @@
                             "type": "string"
                         },
                         {
-                            "name": "generateWebDriverValue",
-                            "description": "Deprecated. Use `serializationOptions: {serialization:\"deep\"}` instead.\nWhether the result should contain `webDriverValue`, serialized\naccording to\nhttps://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but\nresulting `objectId` is still provided.",
-                            "deprecated": true,
-                            "optional": true,
-                            "type": "boolean"
-                        },
-                        {
                             "name": "serializationOptions",
-                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview`, `returnByValue` and `generateWebDriverValue`.",
+                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview` and `returnByValue`.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "SerializationOptions"

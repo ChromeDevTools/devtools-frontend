@@ -59,9 +59,6 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
     constructor() {
         super();
     }
-    connection() {
-        throw new Error('Not implemented');
-    }
     /**
      * Parent session in terms of CDP's auto-attach mechanism.
      *
@@ -69,22 +66,6 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
      */
     parentSession() {
         return undefined;
-    }
-    send() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Detaches the cdpSession from the target. Once detached, the cdpSession object
-     * won't emit any events and can't be used to send messages.
-     */
-    async detach() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Returns the session's id.
-     */
-    id() {
-        throw new Error('Not implemented');
     }
 }
 exports.CDPSession = CDPSession;

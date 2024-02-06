@@ -1,17 +1,7 @@
 /**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2022 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import type {ElementHandle} from '../api/ElementHandle.js';
@@ -48,11 +38,13 @@ export class WaitTask<T = unknown> {
   #args: unknown[];
 
   #timeout?: NodeJS.Timeout;
+  #timeoutError?: TimeoutError;
 
   #result = Deferred.create<HandleFor<T>>();
 
   #poller?: JSHandle<Poller<T>>;
   #signal?: AbortSignal;
+  #reruns: AbortController[] = [];
 
   constructor(
     world: Realm,
@@ -87,10 +79,11 @@ export class WaitTask<T = unknown> {
     this.#world.taskManager.add(this);
 
     if (options.timeout) {
+      this.#timeoutError = new TimeoutError(
+        `Waiting failed: ${options.timeout}ms exceeded`
+      );
       this.#timeout = setTimeout(() => {
-        void this.terminate(
-          new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`)
-        );
+        void this.terminate(this.#timeoutError);
       }, options.timeout);
     }
 
@@ -102,6 +95,12 @@ export class WaitTask<T = unknown> {
   }
 
   async rerun(): Promise<void> {
+    for (const prev of this.#reruns) {
+      prev.abort();
+    }
+    this.#reruns.length = 0;
+    const controller = new AbortController();
+    this.#reruns.push(controller);
     try {
       switch (this.#polling) {
         case 'raf':
@@ -164,6 +163,9 @@ export class WaitTask<T = unknown> {
 
       await this.terminate();
     } catch (error) {
+      if (controller.signal.aborted) {
+        return;
+      }
       const badError = this.getBadError(error);
       if (badError) {
         await this.terminate(badError);
@@ -174,9 +176,7 @@ export class WaitTask<T = unknown> {
   async terminate(error?: Error): Promise<void> {
     this.#world.taskManager.delete(this);
 
-    if (this.#timeout) {
-      clearTimeout(this.#timeout);
-    }
+    clearTimeout(this.#timeout);
 
     if (error && !this.#result.finished()) {
       this.#result.reject(error);
@@ -221,11 +221,15 @@ export class WaitTask<T = unknown> {
 
       // We could have tried to evaluate in a context which was already
       // destroyed.
+      if (error.message.includes('Cannot find context with specified id')) {
+        return;
+      }
+
+      // Errors coming from WebDriver BiDi. TODO: Adjust messages after
+      // https://github.com/w3c/webdriver-bidi/issues/540 is resolved.
       if (
-        error.message.includes('Cannot find context with specified id') ||
-        // Firefox BiDi Error, update one https://github.com/w3c/webdriver-bidi/issues/540 is resolved
         error.message.includes(
-          "destroyed before query 'MessageHandlerFrameParent:sendCommand'"
+          "AbortError: Actor 'MessageHandlerFrame' destroyed"
         )
       ) {
         return;

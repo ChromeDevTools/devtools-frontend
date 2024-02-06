@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
@@ -48,7 +38,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { Frame, FrameEvent, throwIfDetached } from '../api/Frame.js';
-import { setPageContent } from '../common/util.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -115,6 +105,11 @@ let CdpFrame = (() => {
         updateClient(client, keepWorlds = false) {
             this.#client = client;
             if (!keepWorlds) {
+                // Clear the current contexts on previous world instances.
+                if (this.worlds) {
+                    this.worlds[MAIN_WORLD].clearContext();
+                    this.worlds[PUPPETEER_WORLD].clearContext();
+                }
                 this.worlds = {
                     [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
                     [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
@@ -209,7 +204,9 @@ let CdpFrame = (() => {
         }
         async setContent(html, options = {}) {
             const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-            await setPageContent(this.isolatedRealm(), html);
+            // We rely upon the fact that document.open() will reset frame lifecycle with "init"
+            // lifecycle event. @see https://crrev.com/608658
+            await this.setFrameContent(html);
             const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
             const error = await Deferred.race([
                 watcher.terminationPromise(),
@@ -272,6 +269,9 @@ let CdpFrame = (() => {
             this.#detached = true;
             this.worlds[MAIN_WORLD][disposeSymbol]();
             this.worlds[PUPPETEER_WORLD][disposeSymbol]();
+        }
+        exposeFunction() {
+            throw new UnsupportedOperation();
         }
     };
 })();

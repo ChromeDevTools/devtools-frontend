@@ -458,7 +458,7 @@ describe('The Network Tab', async function() {
       }),
     ];
     await navigateToNetworkTab('service-worker.html');
-    await target.waitForXPath('//div[@id="content" and text()="pong"]');
+    await target.waitForSelector('xpath///div[@id="content" and text()="pong"]');
     await Promise.all(promises);
   });
 });

@@ -30,7 +30,7 @@ async function beforeAll() {
   };
 
   const browser = await puppeteer.launch({
-    headless: process.env['DEBUG_TEST'] ? false : 'new',
+    headless: !Boolean(process.env['DEBUG_TEST']),
     devtools: true,
     dumpio: !process.env['DEBUG_TEST'],
     executablePath,

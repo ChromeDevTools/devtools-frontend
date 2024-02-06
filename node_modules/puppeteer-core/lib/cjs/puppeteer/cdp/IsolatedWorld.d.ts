@@ -1,17 +1,7 @@
 /**
- * Copyright 2019 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2019 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
@@ -21,10 +11,10 @@ import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import { disposeSymbol } from '../util/disposable.js';
 import type { Binding } from './Binding.js';
-import { type ExecutionContext } from './ExecutionContext.js';
+import { ExecutionContext } from './ExecutionContext.js';
 import type { CdpFrame } from './Frame.js';
 import type { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
-import type { WebWorker } from './WebWorker.js';
+import type { CdpWebWorker } from './WebWorker.js';
 /**
  * @internal
  */
@@ -46,8 +36,8 @@ export interface IsolatedWorldChart {
 export declare class IsolatedWorld extends Realm {
     #private;
     get _bindings(): Map<string, Binding>;
-    constructor(frameOrWorker: CdpFrame | WebWorker, timeoutSettings: TimeoutSettings);
-    get environment(): CdpFrame | WebWorker;
+    constructor(frameOrWorker: CdpFrame | CdpWebWorker, timeoutSettings: TimeoutSettings);
+    get environment(): CdpFrame | CdpWebWorker;
     frameUpdated(): void;
     get client(): CDPSession;
     clearContext(): void;

@@ -1,17 +1,7 @@
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import type Protocol from 'devtools-protocol';
@@ -35,33 +25,22 @@ export interface RemoteAddress {
  *
  * @public
  */
-export class HTTPResponse {
+export abstract class HTTPResponse {
   /**
    * @internal
    */
   constructor() {}
 
   /**
-   * @internal
-   */
-  _resolveBody(_err: Error | null): void {
-    throw new Error('Not implemented');
-  }
-
-  /**
    * The IP address and port number used to connect to the remote
    * server.
    */
-  remoteAddress(): RemoteAddress {
-    throw new Error('Not implemented');
-  }
+  abstract remoteAddress(): RemoteAddress;
 
   /**
    * The URL of the response.
    */
-  url(): string {
-    throw new Error('Not implemented');
-  }
+  abstract url(): string;
 
   /**
    * True if the response was successful (status in the range 200-299).
@@ -75,47 +54,35 @@ export class HTTPResponse {
   /**
    * The status code of the response (e.g., 200 for a success).
    */
-  status(): number {
-    throw new Error('Not implemented');
-  }
+  abstract status(): number;
 
   /**
    * The status text of the response (e.g. usually an "OK" for a
    * success).
    */
-  statusText(): string {
-    throw new Error('Not implemented');
-  }
+  abstract statusText(): string;
 
   /**
    * An object with HTTP headers associated with the response. All
    * header names are lower-case.
    */
-  headers(): Record<string, string> {
-    throw new Error('Not implemented');
-  }
+  abstract headers(): Record<string, string>;
 
   /**
    * {@link SecurityDetails} if the response was received over the
    * secure connection, or `null` otherwise.
    */
-  securityDetails(): SecurityDetails | null {
-    throw new Error('Not implemented');
-  }
+  abstract securityDetails(): SecurityDetails | null;
 
   /**
    * Timing information related to the response.
    */
-  timing(): Protocol.Network.ResourceTiming | null {
-    throw new Error('Not implemented');
-  }
+  abstract timing(): Protocol.Network.ResourceTiming | null;
 
   /**
    * Promise which resolves to a buffer with response body.
    */
-  buffer(): Promise<Buffer> {
-    throw new Error('Not implemented');
-  }
+  abstract buffer(): Promise<Buffer>;
 
   /**
    * Promise which resolves to a text representation of response body.
@@ -141,30 +108,22 @@ export class HTTPResponse {
   /**
    * A matching {@link HTTPRequest} object.
    */
-  request(): HTTPRequest {
-    throw new Error('Not implemented');
-  }
+  abstract request(): HTTPRequest;
 
   /**
    * True if the response was served from either the browser's disk
    * cache or memory cache.
    */
-  fromCache(): boolean {
-    throw new Error('Not implemented');
-  }
+  abstract fromCache(): boolean;
 
   /**
    * True if the response was served by a service worker.
    */
-  fromServiceWorker(): boolean {
-    throw new Error('Not implemented');
-  }
+  abstract fromServiceWorker(): boolean;
 
   /**
    * A {@link Frame} that initiated this response, or `null` if
    * navigating to error pages.
    */
-  frame(): Frame | null {
-    throw new Error('Not implemented');
-  }
+  abstract frame(): Frame | null;
 }

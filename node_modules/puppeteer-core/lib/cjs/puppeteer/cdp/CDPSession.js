@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpCDPSession = void 0;
@@ -69,13 +59,11 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
         const parent = this.#connection?.session(this.#parentSessionId);
         return parent ?? undefined;
     }
-    send(method, ...paramArgs) {
+    send(method, params, options) {
         if (!this.#connection) {
             return Promise.reject(new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
         }
-        // See the comment in Connection#send explaining why we do this.
-        const params = paramArgs.length ? paramArgs[0] : undefined;
-        return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId);
+        return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId, options);
     }
     /**
      * @internal
@@ -119,6 +107,12 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
      */
     id() {
         return this.#sessionId;
+    }
+    /**
+     * @internal
+     */
+    getPendingProtocolErrors() {
+        return this.#callbacks.getPendingProtocolErrors();
     }
 }
 exports.CdpCDPSession = CdpCDPSession;

@@ -43,6 +43,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import { JSHandle } from '../api/JSHandle.js';
 import { debugError } from '../common/util.js';
 import { DisposableStack } from '../util/disposable.js';

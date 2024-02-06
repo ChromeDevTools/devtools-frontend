@@ -43,7 +43,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { mergeMap, from, EMPTY, defer, filter, first, identity, ignoreElements, retry, throwIfEmpty, race, catchError, defaultIfEmpty, firstValueFrom, fromEvent, map, merge, noop, pipe, raceWith, tap, } from '../../../third_party/rxjs/rxjs.js';
+import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, fromEvent, identity, ignoreElements, map, merge, mergeMap, noop, pipe, race, raceWith, retry, tap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { debugError, timeout } from '../../common/util.js';
 /**
@@ -58,11 +58,6 @@ export var LocatorEvent;
      */
     LocatorEvent["Action"] = "action";
 })(LocatorEvent || (LocatorEvent = {}));
-export { 
-/**
- * @deprecated Use {@link LocatorEvent}.
- */
-LocatorEvent as LocatorEmittedEvents, };
 /**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the

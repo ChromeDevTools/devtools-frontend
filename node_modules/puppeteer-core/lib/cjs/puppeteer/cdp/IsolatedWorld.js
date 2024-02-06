@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2019 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2019 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
@@ -67,6 +57,7 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const Mutex_js_1 = require("../util/Mutex.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
+const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
@@ -95,6 +86,8 @@ class IsolatedWorld extends Realm_js_1.Realm {
         return this.#frameOrWorker.client;
     }
     clearContext() {
+        // The message has to match the CDP message expected by the WaitTask class.
+        this.#context?.reject(new Error('Execution context was destroyed'));
         this.#context = Deferred_js_1.Deferred.create();
         if ('clearDocumentHandle' in this.#frameOrWorker) {
             this.#frameOrWorker.clearDocumentHandle();
@@ -124,7 +117,10 @@ class IsolatedWorld extends Realm_js_1.Realm {
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
-        const context = await this.#executionContext();
+        let context = this.#context.value();
+        if (!context || !(context instanceof ExecutionContext_js_1.ExecutionContext)) {
+            context = await this.#executionContext();
+        }
         return await context.evaluate(pageFunction, ...args);
     }
     // If multiple waitFor are set up asynchronously, we need to wait for the
@@ -136,7 +132,6 @@ class IsolatedWorld extends Realm_js_1.Realm {
             if (this.#contextBindings.has(name)) {
                 return;
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const _ = __addDisposableResource(env_1, await this.#mutex.acquire(), false);
             try {
                 await context._client.send('Runtime.addBinding', context._contextName
@@ -148,7 +143,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
                         name,
                         executionContextId: context._contextId,
                     });
-                await context.evaluate(util_js_1.addPageBinding, 'internal', name);
+                await context.evaluate(utils_js_1.addPageBinding, 'internal', name);
                 this.#contextBindings.add(name);
             }
             catch (error) {

@@ -1,4 +1,5 @@
 import { HTTPResponse as HTTPResponse, } from '../api/HTTPResponse.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 /**
  * @internal
  */
@@ -62,6 +63,12 @@ export class BidiHTTPResponse extends HTTPResponse {
     }
     fromServiceWorker() {
         return false;
+    }
+    securityDetails() {
+        throw new UnsupportedOperation();
+    }
+    buffer() {
+        throw new UnsupportedOperation();
     }
 }
 //# sourceMappingURL=HTTPResponse.js.map

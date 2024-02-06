@@ -19,7 +19,7 @@ export interface ResolvedLaunchArgs {
  *
  * @public
  */
-export declare class ProductLauncher {
+export declare abstract class ProductLauncher {
     #private;
     /**
      * @internal
@@ -35,8 +35,8 @@ export declare class ProductLauncher {
     constructor(puppeteer: PuppeteerNode, product: Product);
     get product(): Product;
     launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
-    executablePath(channel?: ChromeReleaseChannel): string;
-    defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+    abstract executablePath(channel?: ChromeReleaseChannel): string;
+    abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
     /**
      * Set only for Firefox, after the launcher resolves the `latest` revision to
      * the actual revision.
@@ -46,17 +46,17 @@ export declare class ProductLauncher {
     /**
      * @internal
      */
-    protected computeLaunchArguments(options: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
+    protected abstract computeLaunchArguments(options: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
     /**
      * @internal
      */
-    protected cleanUserDataDir(path: string, opts: {
+    protected abstract cleanUserDataDir(path: string, opts: {
         isTemp: boolean;
     }): Promise<void>;
     /**
      * @internal
      */
-    protected closeBrowser(browserProcess: ReturnType<typeof launch>, connection?: Connection): Promise<void>;
+    protected closeBrowser(browserProcess: ReturnType<typeof launch>, cdpConnection?: Connection): Promise<void>;
     /**
      * @internal
      */
@@ -104,6 +104,6 @@ export declare class ProductLauncher {
     /**
      * @internal
      */
-    protected resolveExecutablePath(): string;
+    protected resolveExecutablePath(headless?: boolean | 'shell'): string;
 }
 //# sourceMappingURL=ProductLauncher.d.ts.map

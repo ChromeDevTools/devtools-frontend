@@ -1,30 +1,18 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 /// <reference types="node" />
-/// <reference types="node" />
-import type { Readable } from 'stream';
 import type { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame, WaitForOptions } from '../api/Frame.js';
-import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
+import type { Cookie, DeleteCookiesRequest, CookieParam } from '../common/Cookie.js';
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -36,7 +24,7 @@ import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import type { Credentials, NetworkConditions } from './NetworkManager.js';
 import type { CdpTarget } from './Target.js';
 import { Tracing } from './Tracing.js';
-import { WebWorker } from './WebWorker.js';
+import { CdpWebWorker } from './WebWorker.js';
 /**
  * @internal
  */
@@ -60,7 +48,7 @@ export declare class CdpPage extends Page {
     get tracing(): Tracing;
     get accessibility(): Accessibility;
     frames(): Frame[];
-    workers(): WebWorker[];
+    workers(): CdpWebWorker[];
     setRequestInterception(value: boolean): Promise<void>;
     setBypassServiceWorker(bypass: boolean): Promise<void>;
     setDragInterception(enabled: boolean): Promise<void>;
@@ -70,9 +58,9 @@ export declare class CdpPage extends Page {
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;
     queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<JSHandle<Prototype[]>>;
-    cookies(...urls: string[]): Promise<Protocol.Network.Cookie[]>;
-    deleteCookie(...cookies: Protocol.Network.DeleteCookiesRequest[]): Promise<void>;
-    setCookie(...cookies: Protocol.Network.CookieParam[]): Promise<void>;
+    cookies(...urls: string[]): Promise<Cookie[]>;
+    deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
+    setCookie(...cookies: CookieParam[]): Promise<void>;
     exposeFunction(name: string, pptrFunction: Function | {
         default: Function;
     }): Promise<void>;
@@ -83,16 +71,6 @@ export declare class CdpPage extends Page {
     metrics(): Promise<Metrics>;
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
     createCDPSession(): Promise<CDPSession>;
-    waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPRequest>;
-    waitForResponse(urlOrPredicate: string | ((res: HTTPResponse) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<HTTPResponse>;
-    waitForNetworkIdle(options?: {
-        idleTime?: number;
-        timeout?: number;
-    }): Promise<void>;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     bringToFront(): Promise<void>;
@@ -113,7 +91,7 @@ export declare class CdpPage extends Page {
     removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     setCacheEnabled(enabled?: boolean): Promise<void>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
-    createPDFStream(options?: PDFOptions): Promise<Readable>;
+    createPDFStream(options?: PDFOptions): Promise<ReadableStream<Uint8Array>>;
     pdf(options?: PDFOptions): Promise<Buffer>;
     close(options?: {
         runBeforeUnload?: boolean;

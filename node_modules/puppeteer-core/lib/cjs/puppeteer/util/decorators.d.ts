@@ -1,21 +1,12 @@
 /**
- * Copyright 2023 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2023 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import type { Disposed, Moveable } from '../common/types.js';
 export declare function moveable<Class extends abstract new (...args: never[]) => Moveable>(Class: Class, _: ClassDecoratorContext<Class>): Class;
 export declare function throwIfDisposed<This extends Disposed>(message?: (value: This) => string): (target: (this: This, ...args: any[]) => any, _: unknown) => (this: This, ...args: any[]) => any;
+export declare function inertIfDisposed<This extends Disposed>(target: (this: This, ...args: any[]) => any, _: unknown): (this: This, ...args: any[]) => any;
 /**
  * The decorator only invokes the target if the target has not been invoked with
  * the same arguments before. The decorated method throws an error if it's

@@ -15,6 +15,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     #url;
     #resourceType;
     #method;
+    #hasPostData = false;
     #postData;
     #headers = {};
     #frame;
@@ -41,6 +42,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         this.#resourceType = (data.type || 'other').toLowerCase();
         this.#method = data.request.method;
         this.#postData = data.request.postData;
+        this.#hasPostData = data.request.hasPostData ?? false;
         this.#frame = frame;
         this._redirectChain = redirectChain;
         this.#continueRequestOverrides = {};
@@ -105,6 +107,21 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     postData() {
         return this.#postData;
+    }
+    hasPostData() {
+        return this.#hasPostData;
+    }
+    async fetchPostData() {
+        try {
+            const result = await this.#client.send('Network.getRequestPostData', {
+                requestId: this._requestId,
+            });
+            return result.postData;
+        }
+        catch (err) {
+            (0, util_js_1.debugError)(err);
+            return;
+        }
     }
     headers() {
         return this.#headers;

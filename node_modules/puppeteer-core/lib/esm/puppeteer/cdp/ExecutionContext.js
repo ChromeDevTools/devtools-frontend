@@ -1,27 +1,18 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
-import { PuppeteerURL, SOURCE_URL_REGEX, createEvaluationError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, valueFromRemoteObject, } from '../common/util.js';
+import { PuppeteerURL, SOURCE_URL_REGEX, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, } from '../common/util.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
 import { ARIAQueryHandler } from './AriaQueryHandler.js';
 import { Binding } from './Binding.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';
+import { createEvaluationError, valueFromRemoteObject } from './utils.js';
 /**
  * @internal
  */
@@ -208,7 +199,9 @@ export class ExecutionContext {
             callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
                 functionDeclaration: functionDeclarationWithSourceUrl,
                 executionContextId: this._contextId,
-                arguments: await Promise.all(args.map(convertArgument.bind(this))),
+                arguments: args.length
+                    ? await Promise.all(args.map(convertArgument.bind(this)))
+                    : [],
                 returnByValue,
                 awaitPromise: true,
                 userGesture: true,

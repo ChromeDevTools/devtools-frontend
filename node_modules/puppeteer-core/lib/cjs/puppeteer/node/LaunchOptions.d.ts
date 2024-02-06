@@ -1,19 +1,9 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2020 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
-import type { BrowserConnectOptions } from '../cdp/BrowserConnector.js';
+import type { BrowserConnectOptions } from '../common/ConnectOptions.js';
 import type { Product } from '../common/Product.js';
 /**
  * Launcher options that only apply to Chrome.
@@ -25,13 +15,18 @@ export interface BrowserLaunchArgumentOptions {
      * Whether to run the browser in headless mode.
      *
      * @remarks
-     * In the future `headless: true` will be equivalent to `headless: 'new'`.
-     * You can read more about the change {@link https://developer.chrome.com/articles/new-headless/ | here}.
-     * Consider opting in early by setting the value to `"new"`.
+     *
+     * - `true` launches the browser in the
+     *   {@link https://developer.chrome.com/articles/new-headless/ | new headless}
+     *   mode.
+     *
+     * - `'shell'` launches
+     *   {@link https://developer.chrome.com/blog/chrome-headless-shell | shell}
+     *   known as the old headless mode.
      *
      * @defaultValue `true`
      */
-    headless?: boolean | 'new';
+    headless?: boolean | 'shell';
     /**
      * Path to a user data directory.
      * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}

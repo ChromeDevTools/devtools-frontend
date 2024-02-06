@@ -1,16 +1,8 @@
 import { CDPSession } from '../api/CDPSession.js';
-import { TargetCloseError } from '../common/Errors.js';
+import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError } from '../common/util.js';
-import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { BidiRealm } from './Realm.js';
-/**
- * @internal
- */
-export const lifeCycleToSubscribedEvent = new Map([
-    ['load', 'browsingContext.load'],
-    ['domcontentloaded', 'browsingContext.domContentLoaded'],
-]);
 /**
  * @internal
  */
@@ -51,7 +43,7 @@ export class CdpSessionWrapper extends CDPSession {
     }
     async send(method, ...paramArgs) {
         if (!this.#context.supportsCdp()) {
-            throw new Error('CDP support is required for this feature. The current browser does not support CDP.');
+            throw new UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');
         }
         if (this.#detached) {
             throw new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);
@@ -145,24 +137,5 @@ export class BrowsingContext extends BidiRealm {
         this.connection.unregisterBrowsingContexts(this.#id);
         void this.#cdpSession.detach().catch(debugError);
     }
-}
-/**
- * @internal
- */
-export function getWaitUntilSingle(event) {
-    if (Array.isArray(event) && event.length > 1) {
-        throw new Error('BiDi support only single `waitUntil` argument');
-    }
-    const waitUntilSingle = Array.isArray(event)
-        ? event.find(lifecycle => {
-            return lifecycle === 'domcontentloaded' || lifecycle === 'load';
-        })
-        : event;
-    if (waitUntilSingle === 'networkidle0' ||
-        waitUntilSingle === 'networkidle2') {
-        throw new Error(`BiDi does not support 'waitUntil' ${waitUntilSingle}`);
-    }
-    assert(waitUntilSingle, `Invalid waitUntil option ${waitUntilSingle}`);
-    return waitUntilSingle;
 }
 //# sourceMappingURL=BrowsingContext.js.map

@@ -1,18 +1,8 @@
 "use strict";
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the 'License');
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license
+ * Copyright 2017 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Touchscreen = exports.Mouse = exports.MouseButton = exports.Keyboard = void 0;
@@ -152,43 +142,6 @@ class Mouse {
      * @internal
      */
     constructor() { }
-    /**
-     * Resets the mouse to the default state: No buttons pressed; position at
-     * (0,0).
-     */
-    async reset() {
-        throw new Error('Not implemented');
-    }
-    async move() {
-        throw new Error('Not implemented');
-    }
-    async down() {
-        throw new Error('Not implemented');
-    }
-    async up() {
-        throw new Error('Not implemented');
-    }
-    async click() {
-        throw new Error('Not implemented');
-    }
-    async wheel() {
-        throw new Error('Not implemented');
-    }
-    async drag() {
-        throw new Error('Not implemented');
-    }
-    async dragEnter() {
-        throw new Error('Not implemented');
-    }
-    async dragOver() {
-        throw new Error('Not implemented');
-    }
-    async drop() {
-        throw new Error('Not implemented');
-    }
-    async dragAndDrop() {
-        throw new Error('Not implemented');
-    }
 }
 exports.Mouse = Mouse;
 /**

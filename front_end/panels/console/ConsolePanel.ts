@@ -32,6 +32,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleView} from './ConsoleView.js';
 
@@ -94,6 +95,7 @@ export class WrapperView extends UI.Widget.VBox {
   private constructor() {
     super();
     this.view = ConsoleView.instance();
+    this.element.setAttribute('jslog', `${VisualLogging.panel('console')}`);
   }
 
   static instance(): WrapperView {

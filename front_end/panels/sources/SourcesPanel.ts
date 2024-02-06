@@ -1361,6 +1361,7 @@ export class QuickSourceView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('sources-view-wrapper');
+    this.element.setAttribute('jslog', `${VisualLogging.panel('sources.quick')}`);
     this.view = SourcesPanel.instance().sourcesView();
   }
 

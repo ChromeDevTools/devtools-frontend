@@ -188,6 +188,7 @@ type StateData = {
   type: State.INSIGHT,
   explanation: string,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
+  validMarkdown: boolean,
   sources: Source[],
 }|{
   type: State.ERROR,
@@ -340,20 +341,50 @@ export class ConsoleInsight extends HTMLElement {
       consentGiven: true,
     });
     try {
-      const {prompt, sources} = await this.#promptBuilder.buildPrompt();
-      const explanation = await this.#insightProvider.getInsights(prompt);
+      const {sources, explanation} = await this.#getInsight();
+      const tokens = this.#validateMarkdown(explanation);
+      const valid = tokens !== false;
       this.#transitionTo({
         type: State.INSIGHT,
-        tokens: Marked.Marked.lexer(explanation),
+        tokens: valid ? tokens : [],
+        validMarkdown: valid,
         explanation,
         sources,
       });
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
       this.#transitionTo({
         type: State.ERROR,
         error: err.message,
       });
+    }
+  }
+
+  /**
+   * Validates the markdown by trying to render it.
+   */
+  #validateMarkdown(text: string): Marked.Marked.TokensList|false {
+    try {
+      const tokens = Marked.Marked.lexer(text);
+      for (const token of tokens) {
+        this.#renderer.renderToken(token);
+      }
+      return tokens;
+    } catch {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredMarkdown);
+      return false;
+    }
+  }
+
+  async #getInsight(): Promise<{sources: Source[], explanation: string}> {
+    try {
+      const {prompt, sources} = await this.#promptBuilder.buildPrompt();
+      const explanation = await this.#insightProvider.getInsights(prompt);
+      return {sources, explanation};
+    } catch (err) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredApi);
+      throw err;
     }
   }
 
@@ -388,9 +419,11 @@ export class ConsoleInsight extends HTMLElement {
       case State.INSIGHT:
         return html`
         <main>
-          <${MarkdownView.MarkdownView.MarkdownView.litTagName}
-            .data=${{tokens: this.#state.tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-          </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
+          ${
+            this.#state.validMarkdown ? html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+              .data=${{tokens: this.#state.tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+            </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`: this.#state.explanation
+          }
           <details style="--list-height: ${this.#state.sources.length * 20}px;">
             <summary>${i18nString(UIStrings.sources)}</summary>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
@@ -609,8 +642,7 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
   override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
     const template = this.templateForToken(token);
     if (template === null) {
-      console.warn(`Markdown token type '${token.type}' not supported.`);
-      return LitHtml.html``;
+      return LitHtml.html`${token.raw}`;
     }
     return template;
   }

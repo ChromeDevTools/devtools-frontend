@@ -12993,6 +12993,19 @@ declare namespace Protocol {
       System = 'system',
     }
 
+    /**
+     * COHERENT_BEGIN
+     */
+    export interface TraceCategoryDefinition {
+      name: string;
+      categoryString: string;
+    }
+
+    export interface GetTraceSystemsAndLevelsResponse extends ProtocolResponseWithError {
+      systems: TraceCategoryDefinition[];
+      levels: TraceCategoryDefinition[];
+    }
+
     export interface GetCategoriesResponse extends ProtocolResponseWithError {
       /**
        * A list of supported tracing categories.

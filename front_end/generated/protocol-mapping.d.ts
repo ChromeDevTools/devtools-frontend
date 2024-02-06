@@ -3546,6 +3546,10 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Tethering.UnbindRequest];
       returnType: void;
     };
+    'Tracing.getTraceSystemsAndLevels': {
+      paramsType: [];
+      returnType: Protocol.Tracing.GetTraceSystemsAndLevelsResponse;
+    };
     /**
      * Stop trace events collection.
      */

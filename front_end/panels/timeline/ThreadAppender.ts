@@ -162,7 +162,7 @@ export class ThreadAppender implements TrackAppender {
   readonly isOnMainFrame: boolean;
   #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
-  #entriesFilter?: TraceEngine.EntriesFilter.EntriesFilter;
+  #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
   #url: string = '';
   #headerNestingLevel: number|null = null;
   constructor(
@@ -213,27 +213,8 @@ export class ThreadAppender implements TrackAppender {
 
     this.#url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
   }
-
-  modifyTree(
-      traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry,
-      action: TraceEngine.EntriesFilter.FilterAction): void {
-    if (this.#entriesFilter) {
-      this.#entriesFilter.applyFilterAction({type: action, entry: traceEvent});
-    } else {
-      console.warn('Could not modify tree because entriesFilter does not exist');
-    }
-  }
-
-  findPossibleContextMenuActions(traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry):
-      TraceEngine.EntriesFilter.PossibleFilterActions|void {
-    return this.#entriesFilter?.findPossibleActions(traceEvent);
-  }
-
-  findHiddenDescendantsAmount(traceEvent: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): number|void {
-    if ((this.#entriesFilter)) {
-      return this.#entriesFilter?.findHiddenDescendantsAmount(traceEvent);
-    }
-    console.warn('Could not find hidden entries because entriesFilter does not exist');
+  entriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {
+    return this.#entriesFilter;
   }
 
   processId(): TraceEngine.Types.TraceEvents.ProcessID {

@@ -81,7 +81,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       div.classList.add('page-state-checkbox');
       const label = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.emulateFocusedPage));
       UI.SettingsUI.bindCheckbox(
-          label.checkboxElement, Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'), {
+          label.checkboxElement, Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), {
             enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,
             disable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOff,
           });

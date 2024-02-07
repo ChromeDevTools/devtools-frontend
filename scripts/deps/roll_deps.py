@@ -139,7 +139,8 @@ def generate_protocol_resources(options):
     print('generating protocol resources')
     subprocess.check_call([
         os.path.join(options.devtools_dir, 'scripts', 'deps',
-                     'generate_protocol_resources.py')
+                     'generate_protocol_resources.py'), '--node-path',
+        node_path(options)
     ],
                           cwd=options.devtools_dir)
 

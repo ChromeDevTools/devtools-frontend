@@ -318,13 +318,13 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private selectTabInternal(tabId: string): void {
+  private selectTabInternal(tabId: NetworkForward.UIRequestLocation.UIRequestTabs): void {
     if (!this.selectTab(tabId)) {
       // maybeAppendPayloadPanel might cause payload tab to appear asynchronously, so
       // it makes sense to retry on the next tick
       window.setTimeout(() => {
         if (!this.selectTab(tabId)) {
-          this.selectTab('headers');
+          this.selectTab(NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent);
         }
       }, 0);
     }

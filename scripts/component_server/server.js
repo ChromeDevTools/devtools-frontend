@@ -302,7 +302,12 @@ async function requestHandler(request, response) {
      */
     const baseUrlForSharedResource =
         componentDocsBaseArg && componentDocsBaseArg.endsWith(sharedResourcesBase) ? '/' : `/${sharedResourcesBase}`;
-    const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});
+    const fullPath = path.join(componentDocsBaseFolder, filePath);
+    if (!(await checkFileExists(fullPath))) {
+      send404(response, '404, File not found');
+      return;
+    }
+    const fileContents = await fs.promises.readFile(fullPath, {encoding: 'utf8'});
 
     const linksToStyleSheets =
         styleSheetPaths

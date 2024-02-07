@@ -71,8 +71,15 @@ if (!fs.existsSync(devtoolsRootFolder)) {
   process.exit(1);
 }
 
-const server = http.createServer(requestHandler);
-server.listen(serverPort);
+process.on('uncaughtException', error => {
+  console.error('uncaughtException', error);
+});
+process.on('unhandledRejection', error => {
+  console.error('unhandledRejection', error);
+});
+
+const server = http.createServer((req, res) => requestHandler(req, res).catch(err => send500(res, err)));
+server.listen(serverPort, 'localhost');
 server.once('listening', () => {
   if (process.send) {
     process.send(serverPort);
@@ -207,6 +214,12 @@ function respondWithHtml(response, html) {
 function send404(response, message) {
   response.writeHead(404);
   response.write(message, 'utf8');
+  response.end();
+}
+
+function send500(response, error) {
+  response.writeHead(500);
+  response.write(error.toString(), 'utf8');
   response.end();
 }
 

@@ -12,6 +12,7 @@ import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 
 describeWithMockConnection('AutofillManager', () => {
   let target: SDK.Target.Target;
@@ -26,6 +27,7 @@ describeWithMockConnection('AutofillManager', () => {
     model = maybeModel;
     showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.AUTOFILL_VIEW);
   });
 
   afterEach(() => {

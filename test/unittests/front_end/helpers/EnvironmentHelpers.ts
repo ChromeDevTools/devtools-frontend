@@ -127,6 +127,7 @@ const REGISTERED_EXPERIMENTS = [
   'networkPanelFilterBarRedesign',
   'trackContextMenu',
   'sourcesFrameIndentationMarkersTemporarilyDisable',
+  Root.Runtime.ExperimentName.AUTOFILL_VIEW,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

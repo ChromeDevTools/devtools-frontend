@@ -99,11 +99,13 @@ export function scheduleProcessing(): void {
 
 let veDebuggingEnabled = false;
 let debugPopover: HTMLElement|null = null;
+const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
 
 function setVeDebuggingEnabled(enabled: boolean): void {
   veDebuggingEnabled = enabled;
   if (enabled && !debugPopover) {
     debugPopover = document.createElement('div');
+    debugPopover.classList.add('ve-debug');
     debugPopover.style.position = 'absolute';
     debugPopover.style.bottom = '100px';
     debugPopover.style.left = '100px';
@@ -203,6 +205,28 @@ async function process(): Promise<void> {
     const visible = !loggingState.parent || loggingState.parent.impressionLogged;
     if (!visible) {
       continue;
+    }
+    if (veDebuggingEnabled) {
+      let debugElement = nonDomDebugElements.get(loggable);
+      if (!debugElement) {
+        debugElement = document.createElement('div');
+        debugElement.classList.add('ve-debug');
+        debugElement.style.background = 'black';
+        debugElement.style.color = 'white';
+        debugElement.style.zIndex = '100000';
+        debugElement.textContent = debugString(config);
+        nonDomDebugElements.set(loggable, debugElement);
+      }
+      const parentDebugElement =
+          parent instanceof HTMLElement ? parent : nonDomDebugElements.get(parent as Loggable) || debugPopover;
+      assertNotNullOrUndefined(parentDebugElement);
+      if (!parentDebugElement.classList.contains('ve-debug')) {
+        debugElement.style.position = 'absolute';
+        parentDebugElement.insertBefore(debugElement, parentDebugElement.firstChild);
+      } else {
+        debugElement.style.marginLeft = '10px';
+        parentDebugElement.appendChild(debugElement);
+      }
     }
     visibleLoggables.push(loggable);
     loggingState.impressionLogged = true;

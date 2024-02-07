@@ -75,6 +75,7 @@ describe('CookieParser', () => {
     });
 
     it('handles multiple cookies with an invalid attribute', () => {
+      const stub = sinon.stub(console, 'error');
       parseAndExpectSetCookies(
           `cookie1 = value; expires = Mon, Oct 18 2010 17:00 GMT+0000; Domain   =.example.com
       Cookie2 = value2; Path = /foo; DOMAIN = foo.example.com; HttpOnly; Secure; Discard;`,
@@ -90,9 +91,11 @@ describe('CookieParser', () => {
               size: 83,
             },
           ]);
+      assert.isTrue(stub.calledOnceWithExactly('Failed getting cookie attribute: Discard'));
     });
 
     it('handles multiple cookies with an invalid attribute', () => {
+      const stub = sinon.stub(console, 'error');
       parseAndExpectSetCookies(
           `cookie1 = value; max-age= 1440; Domain   =.example.com
       Cookie2 = value2; Path = /foo; DOMAIN = foo.example.com; HttpOnly; Secure; Discard;`,
@@ -108,6 +111,7 @@ describe('CookieParser', () => {
               size: 83,
             },
           ]);
+      assert.isTrue(stub.calledOnceWithExactly('Failed getting cookie attribute: Discard'));
     });
 
     describe('handles the SameSite attribute', () => {

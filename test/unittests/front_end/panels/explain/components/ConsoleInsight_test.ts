@@ -99,7 +99,8 @@ describeWithLocale('ConsoleInsight', () => {
       renderElementIntoDOM(component);
       await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-      assert.strictEqual(content, 'This feature is only available if you are logged into your Chrome account.');
+      assert.strictEqual(
+          content, 'This feature is only available if you are signed into Chrome with your Google account.');
     });
 
     it('report if the sync is not enabled', async () => {
@@ -110,7 +111,7 @@ describeWithLocale('ConsoleInsight', () => {
       renderElementIntoDOM(component);
       await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-      assert.strictEqual(content, 'This feature is only available if have sync enabled for your Chrome account.');
+      assert.strictEqual(content, 'This feature is only available if you have Chrome sync turned on.');
     });
   });
 });

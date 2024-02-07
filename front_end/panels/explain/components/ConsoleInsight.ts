@@ -40,7 +40,7 @@ const UIStrings = {
   /**
    * @description The title that is shown while the insight is being generated.
    */
-  generating: 'Generating…',
+  generating: 'Coming up with an explanation…',
   /**
    * @description The header that indicates that the content shown is a console
    * insight.
@@ -53,25 +53,21 @@ const UIStrings = {
   /**
    * @description The title of the list of source data that was used to generate the insight.
    */
-  sources: 'Sources',
+  inputData: 'Data used to create this insight',
   /**
    * @description The title of the button that allows submitting positive
    * feedback about the console insight.
    */
-  thumbUp: 'Thumb up',
+  thumbsUp: 'Thumbs up',
   /**
    * @description The title of the button that allows submitting negative
    * feedback about the console insight.
    */
-  thumbDown: 'Thumb down',
+  thumbsDown: 'Thumbs down',
   /**
    * @description The title of the link that allows submitting more feedback.
    */
   submitFeedback: 'Submit feedback',
-  /**
-   * @description The title indicating the dogfood phase of the feature.
-   */
-  dogfood: 'Dogfood',
   /**
    * @description The text of the header inside the console insight pane when there was an error generating an insight.
    */
@@ -85,7 +81,7 @@ const UIStrings = {
    * @description The legal disclaimer for using the Console Insights feature.
    */
   disclaimer:
-      'The following data will be sent to Google servers to generate tailored tips and suggestions. It may be stored, reviewed by humans, or used to train AI models.',
+      'The following data will be sent to Google to find an explanation for the console message. They may be reviewed by humans and used to improve products.',
   /**
    * @description The title of the button that records the consent of the user
    * to send the data to the backend.
@@ -95,23 +91,27 @@ const UIStrings = {
    * @description The title of a link that allows the user to learn more about
    * the feature.
    */
-  learnMore: 'Learn more',
+  learnMore: 'Learn more about AI in DevTools',
   /**
    * @description The title of the message when the console insight is not available for some reason.
    */
-  notAvailable: 'Console Insights is not available',
+  notAvailable: 'Console insights is not available',
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
-  notLoggedIn: 'This feature is only available if you are logged into your Chrome account.',
+  notLoggedIn: 'This feature is only available if you are signed into Chrome with your Google account.',
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
-  syncIsOff: 'This feature is only available if have sync enabled for your Chrome account.',
+  syncIsOff: 'This feature is only available if you have Chrome sync turned on.',
   /**
    * @description The title of the button that opens Chrome settings.
    */
   goToSettings: 'Go to settings',
+  /**
+   * @description Fine print to set expectations for users.
+   */
+  finePrint: 'This is an experimental AI insights tool and won’t always get it right.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -425,7 +425,7 @@ export class ConsoleInsight extends HTMLElement {
             </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`: this.#state.explanation
           }
           <details style="--list-height: ${this.#state.sources.length * 20}px;">
-            <summary>${i18nString(UIStrings.sources)}</summary>
+            <summary>${i18nString(UIStrings.inputData)}</summary>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </details>
@@ -438,7 +438,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.CONSENT:
         return html`
           <main>
-            <p>${i18nString(UIStrings.disclaimer)} <x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link></p>
+            <p>${i18nString(UIStrings.disclaimer)}</p>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
@@ -466,8 +466,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.NOT_LOGGED_IN:
       case State.SYNC_IS_OFF:
         return html`<footer>
-        <div class="filler">
-        </div>
+        <div class="filler"></div>
         <div>
           <${Buttons.Button.Button.litTagName}
             @click=${this.#onGoToSettings}
@@ -483,8 +482,11 @@ export class ConsoleInsight extends HTMLElement {
       </footer>`;
       case State.CONSENT:
         return html`<footer>
-          <div class="filler">
+          <div class="disclaimer">
+            <span>${i18nString(UIStrings.finePrint)}</span>
+            <span><x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link></span>
           </div>
+          <div class="filler"></div>
           <div>
             <${Buttons.Button.Button.litTagName}
               class="consent-button"
@@ -502,9 +504,9 @@ export class ConsoleInsight extends HTMLElement {
         </footer>`;
       case State.INSIGHT:
         return html`<footer>
-        <div class="dogfood-feedback">
-          <${IconButton.Icon.Icon.litTagName} name="dog-paw"></${IconButton.Icon.Icon.litTagName}>
-          <span>${i18nString(UIStrings.dogfood)} - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
+        <div class="disclaimer">
+          <span>${i18nString(UIStrings.finePrint)}</span>
+          <span><x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link> - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
         </div>
         <div class="filler"></div>
         <div class="rating">
@@ -516,7 +518,7 @@ export class ConsoleInsight extends HTMLElement {
                 size: Buttons.Button.Size.SMALL,
                 iconName: 'thumb-up',
                 active: this.#selectedRating,
-                title: i18nString(UIStrings.thumbUp),
+                title: i18nString(UIStrings.thumbsUp),
               } as Buttons.Button.ButtonData
             }
             @click=${this.#onRating}
@@ -529,7 +531,7 @@ export class ConsoleInsight extends HTMLElement {
                 size: Buttons.Button.Size.SMALL,
                 iconName: 'thumb-down',
                 active: this.#selectedRating !== undefined && !this.#selectedRating,
-                title: i18nString(UIStrings.thumbDown),
+                title: i18nString(UIStrings.thumbsDown),
               } as Buttons.Button.ButtonData
             }
             @click=${this.#onRating}

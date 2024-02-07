@@ -46,6 +46,7 @@ import type * as TextEditor from '../../ui/components/text_editor/text_editor.js
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
@@ -1278,7 +1279,7 @@ export class DebuggerPlugin extends Plugin {
       } else if (main.condition()) {
         gutterClass += ' cm-breakpoint-conditional';
       }
-      gutterMarkers.push((new BreakpointGutterMarker(gutterClass)).range(lineStart));
+      gutterMarkers.push((new BreakpointGutterMarker(gutterClass, lineStart)).range(lineStart));
     }
 
     const addPossibleBreakpoints = (line: CodeMirror.Line, locations: Workspace.UISourceCode.UILocation[]): void => {
@@ -1842,7 +1843,7 @@ function muteGutterMarkers(markers: CodeMirror.RangeSet<CodeMirror.GutterMarker>
     if (!/cm-breakpoint-disabled/.test(className)) {
       className += ' cm-breakpoint-disabled';
     }
-    newMarkers.push(new BreakpointGutterMarker(className).range(from));
+    newMarkers.push(new BreakpointGutterMarker(className, from).range(from));
   });
   return CodeMirror.RangeSet.of(newMarkers, false);
 }
@@ -1900,6 +1901,7 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
   toDOM(): HTMLElement {
     const span = document.createElement('span');
     span.className = this.class;
+    span.setAttribute('jslog', `${VisualLogging.breakpointMarker('inline').track({click: true})}`);
     span.addEventListener('click', (event: MouseEvent) => {
       this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
       event.consume();
@@ -1917,12 +1919,24 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
 }
 
 class BreakpointGutterMarker extends CodeMirror.GutterMarker {
-  constructor(override readonly elementClass: string) {
+  readonly #position: number;
+
+  constructor(override readonly elementClass: string, position: number) {
     super();
+    this.#position = position;
   }
 
   override eq(other: BreakpointGutterMarker): boolean {
     return other.elementClass === this.elementClass;
+  }
+
+  override toDOM(view: CodeMirror.EditorView): Node {
+    const div = document.createElement('div');  // We want {display: block} so it uses all of the space.
+    div.setAttribute('jslog', `${VisualLogging.breakpointMarker('gutter').track({click: true})}`);
+    const line = view.state.doc.lineAt(this.#position).number;
+    const formatNumber = view.state.facet(SourceFrame.SourceFrame.LINE_NUMBER_FORMATTER);
+    div.textContent = formatNumber(line, view.state);
+    return div;
   }
 }
 

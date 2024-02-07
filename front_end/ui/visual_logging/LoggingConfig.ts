@@ -38,7 +38,7 @@ enum VisualElements {
   ControlPoint = 16,
   Toolbar = 17,
   Popover = 18,
-  /* 19 used to be CssLayersPane, but free to grab now */
+  BreakpointMarker = 19,
   DropDown = 20,
   /* 21 used to be StylesMetricsPane, but free to grab now */
   /* 22 used to be JumpToSource, but free to grab now */

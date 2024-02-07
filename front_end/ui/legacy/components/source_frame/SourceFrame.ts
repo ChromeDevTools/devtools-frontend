@@ -132,6 +132,16 @@ export type EventTypes = {
   [Events.EditorScroll]: void,
 };
 
+type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
+export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define<FormatFn, FormatFn>({
+  combine(value): FormatFn {
+    if (value.length === 0) {
+      return (lineNo: number) => lineNo.toString();
+    }
+    return value[0];
+  },
+});
+
 export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.View.SimpleView>(
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
   private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
@@ -452,7 +462,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         return '-';
       };
     }
-    return formatNumber ? CodeMirror.lineNumbers({formatNumber}) : [];
+    return formatNumber ? [CodeMirror.lineNumbers({formatNumber}), LINE_NUMBER_FORMATTER.of(formatNumber)] : [];
   }
 
   private updateLineNumberFormatter(): void {

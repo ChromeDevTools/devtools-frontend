@@ -32,6 +32,7 @@ export const animationClip = LoggingConfig.makeConfigStringBuilder.bind(null, 'A
 export const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 export const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 export const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
+export const breakpointMarker = LoggingConfig.makeConfigStringBuilder.bind(null, 'BreakpointMarker');
 export const canvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'Canvas');
 export const close = LoggingConfig.makeConfigStringBuilder.bind(null, 'Close');
 export const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');

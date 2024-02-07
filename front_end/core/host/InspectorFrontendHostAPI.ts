@@ -143,10 +143,18 @@ export interface VisualElementImpression {
   type: number;
   parent?: number;
   context?: number;
+  width?: number;
+  height?: number;
 }
 
 export interface ImpressionEvent {
   impressions: VisualElementImpression[];
+}
+
+export interface ResizeEvent {
+  veid: number;
+  width?: number;
+  height?: number;
 }
 
 export interface ClickEvent {

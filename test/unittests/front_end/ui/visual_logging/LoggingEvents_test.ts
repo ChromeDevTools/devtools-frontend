@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {stabilizeEvent, stabilizeImpressions} from '../../helpers/VisualLoggingHelpers.js';
 
@@ -143,5 +144,22 @@ describe('LoggingEvents', () => {
     await throttler.process?.();
     assert.isTrue(recordDrag.calledOnce);
     assert.deepStrictEqual(stabilizeEvent(recordDrag.firstCall.firstArg), {veid: 0, context: 42});
+  });
+
+  it('calls UI binding to log a resize event', async () => {
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+    const throttler = new Common.Throttler.Throttler(1000000);
+    const loggingState = VisualLogging.LoggingState.getLoggingState(element);
+    assertNotNullOrUndefined(loggingState);
+    loggingState.size = new DOMRect(0, 0, 100, 50);
+    void VisualLogging.LoggingEvents.logResize(throttler)(element);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(recordResize.called);
+    await throttler.process?.();
+    assert.isTrue(recordResize.calledOnce);
+    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
   });
 });

@@ -176,6 +176,7 @@ export interface ConfigStringBuilder {
     drag?: boolean,
     change?: boolean,
     keydown?: boolean|string,
+    resize?: boolean,
   }) => ConfigStringBuilder;
 
   /**
@@ -209,6 +210,7 @@ export function makeConfigStringBuilder(veName: VisualElementName, context?: str
       drag?: boolean,
       change?: boolean,
       keydown?: boolean|string,
+      resize?: boolean,
     }): ConfigStringBuilder {
       components.push(`track: ${
           Object.entries(options).map(([key, value]) => value !== true ? `${key}: ${value}` : key).join(', ')}`);

@@ -22,12 +22,29 @@ export async function logImpressions(loggables: Loggable[]): Promise<void> {
     if (context) {
       impression.context = context;
     }
+    if (loggingState.size) {
+      impression.width = loggingState.size.width;
+      impression.height = loggingState.size.height;
+    }
     return impression;
   }));
   if (impressions.length) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordImpression({impressions});
   }
 }
+
+export const logResize = (resizeLogThrottler: Common.Throttler.Throttler) =>
+    async(loggable: Loggable): Promise<void> => {
+  const loggingState = getLoggingState(loggable);
+  if (!loggingState || !loggingState.size) {
+    return;
+  }
+  const resizeEvent: Host.InspectorFrontendHostAPI
+      .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
+  await resizeLogThrottler.schedule(async () => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
+  });
+};
 
 export async function logClick(loggable: Loggable, event: Event, options?: {doubleClick?: boolean}): Promise<void> {
   if (!(event instanceof MouseEvent)) {

@@ -965,7 +965,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       if (!TextUtils.ContentData.ContentData.isError(responseBody)) {
         const content = responseBody.isTextContent ? responseBody.text : responseBody.base64;
         void interceptedRequest.continueRequestWithContent(
-            new Blob([content], {type: mimeType}), /* encoded */ true, responseHeaders,
+            new Blob([content], {type: mimeType}), /* encoded */ !responseBody.isTextContent, responseHeaders,
             /* isBodyOverridden */ false);
       }
     }

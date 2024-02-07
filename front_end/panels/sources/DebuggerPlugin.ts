@@ -1596,10 +1596,6 @@ export class DebuggerPlugin extends Plugin {
     if (this.muted || event.button !== 0 || event.altKey) {
       return false;
     }
-    const sourceFrame = this.scriptsPanel.sourcesView().currentSourceFrame();
-    if (sourceFrame) {
-      void VisualLogging.logClick(sourceFrame.gutterLoggable, event);
-    }
     if (event.metaKey || event.ctrlKey) {
       Host.userMetrics.breakpointEditDialogRevealedFrom(Host.UserMetrics.BreakpointEditDialogRevealedFrom.MouseClick);
       this.#openEditDialogForLine(line, event.shiftKey);

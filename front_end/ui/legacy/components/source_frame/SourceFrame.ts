@@ -38,7 +38,6 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
-import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
@@ -178,7 +177,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private wasmDisassemblyInternal: Common.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
-  readonly gutterLoggable = {};
 
   constructor(
       lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
@@ -239,7 +237,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     Common.Settings.Settings.instance()
         .moduleSetting('text-editor-indent')
         .addChangeListener(this.#textEditorIndentChanged, this);
-    VisualLogging.registerLoggable(this.gutterLoggable, `${VisualLogging.toggle('debugger.gutter')}`, this.element);
   }
 
   override disposeView(): void {
@@ -1054,7 +1051,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.populateLineGutterContextMenu(contextMenu, lineNumber);
     contextMenu.appendApplicableItems(this);
     void contextMenu.show();
-    void VisualLogging.logClick(this.gutterLoggable, event);
     return true;
   }
 

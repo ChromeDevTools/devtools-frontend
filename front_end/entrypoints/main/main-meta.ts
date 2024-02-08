@@ -820,20 +820,12 @@ UI.Toolbar.registerToolbarItem({
   separator: true,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
   order: 100,
-  showLabel: undefined,
-  actionId: undefined,
-  condition: undefined,
-  loadItem: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
   separator: true,
   order: 97,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  actionId: undefined,
-  condition: undefined,
-  loadItem: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -843,10 +835,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 99,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -856,10 +844,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 100,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 UI.Toolbar.registerToolbarItem({
@@ -868,10 +852,6 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 101,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });
 
 Common.AppProvider.registerAppProvider({
@@ -880,5 +860,4 @@ Common.AppProvider.registerAppProvider({
     return Main.SimpleApp.SimpleAppProvider.instance();
   },
   order: 10,
-  condition: undefined,
 });

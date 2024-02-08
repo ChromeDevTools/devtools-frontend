@@ -22,8 +22,4 @@ UI.Toolbar.registerToolbarItem({
   },
   order: 1,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
 });

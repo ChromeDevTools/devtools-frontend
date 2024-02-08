@@ -138,8 +138,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.element.setAttribute('jslog', `${VisualLogging.panel('animations').track({resize: true})}`);
 
     this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
-    this.#timelineControlsResizer.setAttribute(
-        'jslog', `${VisualLogging.resizer('animations.timeline-controls').track({drag: true})}`);
 
     this.#gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
     this.#grid = UI.UIUtils.createSVGChild(this.#gridWrapper, 'svg', 'animation-timeline-grid');
@@ -956,7 +954,9 @@ export class NodeUI {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
     this.#description = this.element.createChild('div', 'animation-node-description');
+    this.#description.setAttribute('jslog', `${VisualLogging.tableCell('description').track({resize: true})}`);
     this.#timelineElement = this.element.createChild('div', 'animation-node-timeline');
+    this.#timelineElement.setAttribute('jslog', `${VisualLogging.tableCell('timeline').track({resize: true})}`);
     UI.ARIAUtils.markAsApplication(this.#timelineElement);
   }
 

@@ -559,9 +559,6 @@ export class DataGrid extends HTMLElement {
      @pointerdown=${this.#onResizePointerDown}
      @pointerup=${this.#onResizePointerUp}
      data-column-index=${columnIndex}
-     jslog=${VisualLogging.resizer(column.id).track({
-      drag: true,
-    })}
     ></span>`;
   }
 
@@ -882,7 +879,7 @@ export class DataGrid extends HTMLElement {
                   const cellOutput = col.visible ? renderCellValue(cell) : null;
                   return LitHtml.html`<td
                     class=${cellClasses}
-                    jslog=${VisualLogging.tableCell().track({click: true}).context(col.id)}
+                    jslog=${VisualLogging.tableCell().track({click: true, resize: true})}).context(col.id)}
                     style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                     tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}

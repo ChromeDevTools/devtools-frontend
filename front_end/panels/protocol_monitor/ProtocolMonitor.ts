@@ -667,7 +667,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   #sideBarMinWidth = 400;
   constructor() {
     super(true);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('protocol-monitor')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('protocol-monitor').track({resize: true})}`);
     this.#split =
         new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', this.#sideBarMinWidth);
     this.#split.show(this.contentElement);

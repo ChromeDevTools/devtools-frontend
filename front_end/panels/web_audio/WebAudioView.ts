@@ -34,7 +34,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   private readonly summaryBarContainer: HTMLElement;
   constructor() {
     super(true, 1000);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('web-audio')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('web-audio').track({resize: true})}`);
     this.element.classList.add('web-audio-drawer');
 
     // Creates the toolbar.

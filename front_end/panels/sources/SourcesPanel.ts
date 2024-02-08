@@ -243,7 +243,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
-    tabbedPane.element.setAttribute('jslog', `${VisualLogging.toolbar('navigator')}`);
+    tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('navigator')}`);
     const navigatorMenuButton =
         new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true, 'more-options');
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
@@ -1361,7 +1361,7 @@ export class QuickSourceView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('sources-view-wrapper');
-    this.element.setAttribute('jslog', `${VisualLogging.panel('sources.quick')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('sources.quick').track({resize: true})}`);
     this.view = SourcesPanel.instance().sourcesView();
   }
 

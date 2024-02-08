@@ -69,7 +69,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel('network-conditions')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('network-conditions').track({resize: true})}`);
 
     this.contentElement.classList.add('network-config');
 

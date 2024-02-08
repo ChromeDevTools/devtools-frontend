@@ -17,7 +17,7 @@ export class RecorderPanel extends UI.Panel.Panel {
 
   constructor() {
     super(RecorderPanel.panelName);
-    this.element.setAttribute('jslog', `${VisualLogging.panel('chrome-recorder')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('chrome-recorder').track({resize: true})}`);
     this.#controller = new RecorderController();
     this.contentElement.append(this.#controller);
     this.contentElement.style.minWidth = '400px';

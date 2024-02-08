@@ -135,7 +135,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     super(true);
 
     this.element.classList.add('animations-timeline');
-    this.element.setAttribute('jslog', `${VisualLogging.panel('animations')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel('animations').track({resize: true})}`);
 
     this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
     this.#timelineControlsResizer.setAttribute(

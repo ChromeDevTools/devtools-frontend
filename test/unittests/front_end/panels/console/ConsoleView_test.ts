@@ -148,7 +148,7 @@ describeWithMockConnection('ConsoleView', () => {
   describe('out of scope', messageTests(false));
 
   const handlesSwitchingScope = (preserveLog: boolean) => async () => {
-    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(preserveLog);
+    Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(preserveLog);
     const target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const anotherTarget = createTarget();
@@ -168,7 +168,7 @@ describeWithMockConnection('ConsoleView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
     assert.deepEqual(await getConsoleMessages(), preserveLog ? ['message 1', 'message 2', 'message 3'] : ['message 3']);
 
-    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(false);
+    Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(false);
   };
 
   it('replaces messages when switching scope with preserve log off', handlesSwitchingScope(false));
@@ -225,7 +225,7 @@ describeWithMockConnection('ConsoleView', () => {
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     assertNotNullOrUndefined(consoleModel);
-    const consoleHistorySetting = Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []);
+    const consoleHistorySetting = Common.Settings.Settings.instance().createLocalSetting('console-history', []);
 
     consoleModel.dispatchEventToListeners(
         SDK.ConsoleModel.Events.MessageAdded,

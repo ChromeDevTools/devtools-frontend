@@ -375,7 +375,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('allows enabling header overrides via buttons located next to each header', async () => {
-    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, 'https://www.example.com/' as Platform.DevToolsPath.UrlString,

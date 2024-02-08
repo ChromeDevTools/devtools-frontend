@@ -294,7 +294,7 @@ describeWithMockConnection('NetworkLogView', () => {
     describe('out of scope', tests(false));
 
     const handlesSwitchingScope = (preserveLog: boolean) => async () => {
-      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(preserveLog);
+      Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').set(preserveLog);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const anotherTarget = createTarget();
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -324,7 +324,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
 
     it('appends requests on prerender activation with preserve log on', async () => {
-      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(true);
+      Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').set(true);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const anotherTarget = createTarget();
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);

@@ -474,10 +474,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata([]);
       const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance(
           {forceNew: true, breakpointManager, settings});
-      settings.moduleSetting('breakpointsActive').set(true);
+      settings.moduleSetting('breakpoints-active').set(true);
       let data = await controller.getUpdatedBreakpointViewData();
       assert.strictEqual(data.breakpointsActive, true);
-      settings.moduleSetting('breakpointsActive').set(false);
+      settings.moduleSetting('breakpoints-active').set(false);
       data = await controller.getUpdatedBreakpointViewData();
       assert.strictEqual(data.breakpointsActive, false);
     });
@@ -896,8 +896,8 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
         const data = await controller.getUpdatedBreakpointViewData();
         assert.strictEqual(data.pauseOnUncaughtExceptions, pauseOnUncaughtExceptions);
         assert.strictEqual(data.pauseOnCaughtExceptions, pauseOnCaughtExceptions);
-        assert.strictEqual(settings.moduleSetting('pauseOnUncaughtException').get(), pauseOnUncaughtExceptions);
-        assert.strictEqual(settings.moduleSetting('pauseOnCaughtException').get(), pauseOnCaughtExceptions);
+        assert.strictEqual(settings.moduleSetting('pause-on-uncaught-exception').get(), pauseOnUncaughtExceptions);
+        assert.strictEqual(settings.moduleSetting('pause-on-caught-exception').get(), pauseOnCaughtExceptions);
       }
     }
   });

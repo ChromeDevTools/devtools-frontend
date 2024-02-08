@@ -100,7 +100,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   });
 
   it('logs a message on main frame navigation', async () => {
-    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(true);
+    Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
@@ -129,7 +129,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   });
 
   it('logs a message on main frame navigation via bfcache', async () => {
-    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(true);
+    Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(true);
     const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
@@ -191,7 +191,7 @@ describeWithMockConnection('ConsoleMessage', () => {
   });
 
   it('clears when main frame global object cleared', async () => {
-    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(false);
+    Common.Settings.Settings.instance().moduleSetting('preserve-console-log').set(false);
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});

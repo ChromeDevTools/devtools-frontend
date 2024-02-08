@@ -31,7 +31,7 @@ describeWithMockConnection('LayoutPane', async () => {
     assertNotNullOrUndefined(overlayModel);
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.registerSettingExtension({
-      settingName: 'showUAShadowDOM',
+      settingName: 'show-ua-shadow-dom',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
     });
@@ -65,8 +65,8 @@ describeWithMockConnection('LayoutPane', async () => {
   }
 
   it('renders settings', async () => {
-    Common.Settings.Settings.instance().moduleSetting('showGridLineLabels').setTitle('Enum setting title');
-    Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes').setTitle('Boolean setting title');
+    Common.Settings.Settings.instance().moduleSetting('show-grid-line-labels').setTitle('Enum setting title');
+    Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').setTitle('Boolean setting title');
 
     const component = await renderComponent();
     assert.deepEqual(queryLabels(component, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);
@@ -79,13 +79,13 @@ describeWithMockConnection('LayoutPane', async () => {
     const component = await renderComponent();
 
     assertShadowRoot(component.shadowRoot);
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes').get());
+    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
     const input = component.shadowRoot.querySelector('[data-boolean-setting] [data-input]');
     assertElement(input, HTMLInputElement);
 
     input.click();
 
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes').get());
+    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
   });
 
   function makeNode(id: Protocol.DOM.NodeId) {

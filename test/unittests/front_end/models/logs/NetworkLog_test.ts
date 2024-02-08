@@ -339,7 +339,7 @@ describeWithMockConnection('NetworkLog', () => {
     let frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 
     beforeEach(() => {
-      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(false);
+      Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').set(false);
       const target = createTarget();
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
       assertNotNullOrUndefined(networkManager);

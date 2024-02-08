@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Root from '../../core/root/root.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -130,7 +131,7 @@ export class PreRegisteredView implements View {
     return this.viewRegistration.experiment;
   }
 
-  condition(): string|undefined {
+  condition(): Root.Runtime.Condition|undefined {
     return this.viewRegistration.condition;
   }
 }

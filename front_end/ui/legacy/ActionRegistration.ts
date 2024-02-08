@@ -223,7 +223,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.setting;
   }
 
-  condition(): string|undefined {
+  condition(): Root.Runtime.Condition|undefined {
     return this.actionRegistration.condition;
   }
 
@@ -537,12 +537,12 @@ export interface ActionRegistration {
    */
   setting?: string;
   /**
-   * A condition represented as a string the action's availability depends on. Conditions come
-   * from the queryParamsObject defined in Runtime and just as the experiment field, they determine the availability
-   * of the setting. A condition can be negated by prepending a ‘!’ to the value of the condition
-   * property and in that case the behaviour of the action's availability will be inverted.
+   * A condition is a function that will make the action available if it
+   * returns true, and not available, otherwise. Make sure that objects you
+   * access from inside the condition function are ready at the time when the
+   * setting conditions are checked.
    */
-  condition?: Root.Runtime.ConditionName;
+  condition?: Root.Runtime.Condition;
   /**
    * Used to sort actions when all registered actions are queried.
    */

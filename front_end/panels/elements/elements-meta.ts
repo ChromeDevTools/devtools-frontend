@@ -418,7 +418,7 @@ UI.ActionRegistration.registerActionExtension({
     const Elements = await loadElementsModule();
     return new Elements.InspectElementModeController.ToggleSearchActionDelegate();
   },
-  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  condition: Root.Runtime.conditions.canDock,
   title: i18nLazyString(UIStrings.captureAreaScreenshot),
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
 });

@@ -1131,7 +1131,7 @@ export interface ToolbarItemRegistration {
   label?: () => Platform.UIString.LocalizedString;
   showLabel?: boolean;
   actionId?: string;
-  condition?: string;
+  condition?: Root.Runtime.Condition;
   loadItem?: (() => Promise<Provider>);
   experiment?: string;
   jslog?: string;

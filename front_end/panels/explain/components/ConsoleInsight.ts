@@ -112,6 +112,10 @@ const UIStrings = {
    * @description Fine print to set expectations for users.
    */
   finePrint: 'This is an experimental AI insights tool and won’t always get it right.',
+  /**
+   * @description Message shown when the user is offline.
+   */
+  offline: 'Internet connection is currently not available.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -179,6 +183,7 @@ const enum State {
   CONSENT = 'consent',
   NOT_LOGGED_IN = 'not-logged-in',
   SYNC_IS_OFF = 'sync-is-off',
+  OFFLINE = 'offline',
 }
 
 type StateData = {
@@ -200,6 +205,8 @@ type StateData = {
   type: State.NOT_LOGGED_IN,
 }|{
   type: State.SYNC_IS_OFF,
+}|{
+  type: State.OFFLINE,
 };
 
 export class ConsoleInsight extends HTMLElement {
@@ -251,6 +258,11 @@ export class ConsoleInsight extends HTMLElement {
     } else if (!syncInfo?.isSyncActive) {
       this.#state = {
         type: State.SYNC_IS_OFF,
+      };
+    }
+    if (!navigator.onLine) {
+      this.#state = {
+        type: State.OFFLINE,
       };
     }
     this.#render();
@@ -453,6 +465,11 @@ export class ConsoleInsight extends HTMLElement {
           <main>
             <div class="error">${i18nString(UIStrings.syncIsOff)}</div>
           </main>`;
+      case State.OFFLINE:
+        return html`
+          <main>
+            <div class="error">${i18nString(UIStrings.offline)}</div>
+          </main>`;
     }
     // clang-format on
   }
@@ -462,6 +479,7 @@ export class ConsoleInsight extends HTMLElement {
     switch (this.#state.type) {
       case State.LOADING:
       case State.ERROR:
+      case State.OFFLINE:
         return LitHtml.nothing;
       case State.NOT_LOGGED_IN:
       case State.SYNC_IS_OFF:
@@ -546,8 +564,8 @@ export class ConsoleInsight extends HTMLElement {
   #getHeader(): string {
     switch (this.#state.type) {
       case State.SYNC_IS_OFF:
-        return i18nString(UIStrings.notAvailable);
       case State.NOT_LOGGED_IN:
+      case State.OFFLINE:
         return i18nString(UIStrings.notAvailable);
       case State.LOADING:
         return i18nString(UIStrings.generating);

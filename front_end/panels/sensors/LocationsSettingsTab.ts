@@ -113,7 +113,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
         {className: 'add-locations-button', jslogContext: 'emulation.add-location'});
     this.contentElement.appendChild(addButton);
 
-    this.list = new UI.ListWidget.ListWidget(this);
+    this.list = new UI.ListWidget.ListWidget(this, undefined, true);
     this.list.element.classList.add('locations-list');
     this.list.show(this.contentElement);
     this.customSetting =
@@ -172,19 +172,29 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
   renderItem(location: LocationDescription, _editable: boolean): Element {
     const element = document.createElement('div');
+    element.role = 'row';
     element.classList.add('locations-list-item');
     const title = element.createChild('div', 'locations-list-text locations-list-title');
+    title.role = 'cell';
     const titleText = title.createChild('div', 'locations-list-title-text');
     titleText.textContent = location.title;
     UI.Tooltip.Tooltip.install(titleText, location.title);
     element.createChild('div', 'locations-list-separator');
-    element.createChild('div', 'locations-list-text').textContent = String(location.lat);
+    const lat = element.createChild('div', 'locations-list-text');
+    lat.textContent = String(location.lat);
+    lat.role = 'cell';
     element.createChild('div', 'locations-list-separator');
-    element.createChild('div', 'locations-list-text').textContent = String(location.long);
+    const long = element.createChild('div', 'locations-list-text');
+    long.textContent = String(location.long);
+    long.role = 'cell';
     element.createChild('div', 'locations-list-separator');
-    element.createChild('div', 'locations-list-text').textContent = location.timezoneId;
+    const timezoneId = element.createChild('div', 'locations-list-text');
+    timezoneId.textContent = location.timezoneId;
+    timezoneId.role = 'cell';
     element.createChild('div', 'locations-list-separator');
-    element.createChild('div', 'locations-list-text').textContent = location.locale;
+    const locale = element.createChild('div', 'locations-list-text');
+    locale.textContent = location.locale;
+    locale.role = 'cell';
     return element;
   }
 

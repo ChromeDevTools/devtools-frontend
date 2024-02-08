@@ -224,11 +224,6 @@ export interface SettingRegistration {
    */
   title?: () => Platform.UIString.LocalizedString;
   /**
-   * The title with which the setting is shown on screen, if the platform running DevTools is 'mac'.
-   * If not set, the 'title' field will be used instead.
-   */
-  titleMac?: () => Platform.UIString.LocalizedString;
-  /**
    * The identifier of the setting.
    */
   settingName: string;

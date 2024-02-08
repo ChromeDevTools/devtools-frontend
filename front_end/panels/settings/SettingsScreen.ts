@@ -328,10 +328,7 @@ export class GenericSettingsTab extends SettingsTab {
   }
 
   static isSettingVisible(setting: Common.Settings.SettingRegistration): boolean {
-    const titleMac = setting.titleMac && setting.titleMac();
-    const defaultTitle = setting.title && setting.title();
-    const title = titleMac || defaultTitle;
-    return Boolean(title && setting.category);
+    return Boolean(setting.title?.()) && Boolean(setting.category);
   }
 
   override wasShown(): void {

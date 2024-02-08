@@ -43,6 +43,7 @@ import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type AXTreeNodeData} from './AccessibilityTreeUtils.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
@@ -1072,6 +1073,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => UI.ViewManager.ViewManager.instance().showView('elements'), 'styles-pane-sidebar', true, true);
     const tabbedPane = this.sidebarPaneView.tabbedPane();
+    tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('sidebar')}`);
     if (this.splitMode !== _splitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }

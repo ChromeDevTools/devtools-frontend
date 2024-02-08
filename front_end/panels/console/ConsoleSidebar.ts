@@ -10,6 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
 import consoleSidebarStyles from './consoleSidebar.css.js';
@@ -63,6 +64,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.tree = new UI.TreeOutline.TreeOutlineInShadow();
     this.tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged.bind(this));
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
     this.contentElement.appendChild(this.tree.element);
     this.selectedTreeElement = null;
     this.treeElements = [];

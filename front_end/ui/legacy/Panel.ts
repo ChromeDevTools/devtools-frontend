@@ -42,7 +42,7 @@ export class Panel extends VBox {
   constructor(name: string) {
     super();
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel().context(name)}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context(name).track({resize: true})}`);
     this.element.classList.add('panel');
     this.element.setAttribute('aria-label', name);
     this.element.classList.add(name);
@@ -90,6 +90,7 @@ export class PanelWithSidebar extends Panel {
     this.panelSplitWidget.setSidebarWidget(this.sidebarWidget);
 
     this.sidebarWidget.element.classList.add('panel-sidebar');
+    this.sidebarWidget.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
   }
 
   panelSidebarElement(): Element {

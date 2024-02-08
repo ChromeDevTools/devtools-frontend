@@ -836,7 +836,7 @@ class StackLocation extends Location implements ViewLocation {
 
   constructor(manager: ViewManager, revealCallback?: (() => void), location?: string) {
     const vbox = new VBox();
-    vbox.element.setAttribute('jslog', `${VisualLogging.pane('sidebar')}`);
+    vbox.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
     super(manager, vbox, revealCallback);
     this.vbox = vbox;
     ARIAUtils.markAsTree(vbox.element);

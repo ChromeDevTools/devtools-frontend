@@ -188,6 +188,33 @@ def _CheckESBuildVersion(input_api, output_api):
     return results
 
 
+def _CheckEnumeratedHistograms(input_api, output_api):
+    enumerated_histograms_files = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                               'devtools_compatibility.js'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                               'core', 'host', 'InspectorFrontendHostAPI.ts')
+    ]
+    affected_main_files = _getAffectedFiles(input_api,
+                                            enumerated_histograms_files, [],
+                                            ['.js', '.ts'])
+    if len(affected_main_files) == 0:
+        return [
+            output_api.PresubmitNotifyResult(
+                'No affected files for UMA Enumerated Histograms check')
+        ]
+
+    results = [
+        output_api.PresubmitNotifyResult(
+            'Running UMA Enumerated Histograms check:')
+    ]
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                         'scripts',
+                                         'check_enumerated_histograms.js')
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results
+
+
 def _CheckFormat(input_api, output_api):
     node_modules_affected_files = _getAffectedFiles(input_api, [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
@@ -601,8 +628,8 @@ def _CommonChecks(canned_checks):
         _CheckGeneratedFiles, _CheckDevToolsStyleJS, _CheckDevToolsStyleCSS,
         _CheckDevToolsRunESLintTests, _CheckDevToolsRunBuildTests,
         _CheckDevToolsNonJSFileLicenseHeaders, _CheckFormat,
-        _CheckESBuildVersion, _CheckChangesAreExclusiveToDirectory,
-        _CheckObsoleteScreenshotGoldens
+        _CheckESBuildVersion, _CheckEnumeratedHistograms,
+        _CheckChangesAreExclusiveToDirectory, _CheckObsoleteScreenshotGoldens
     ]
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The

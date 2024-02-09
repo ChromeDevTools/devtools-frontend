@@ -5,8 +5,14 @@
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 
-import {type ContentProvider, type DeferredContent, type SearchMatch} from './ContentProvider.js';
-import {performSearchInContent} from './TextUtils.js';
+import {ContentData, type ContentDataOrError} from './ContentData.js';
+import {
+  type ContentProvider,
+  type DeferredContent,
+  type SafeContentProvider,
+  type SearchMatch,
+} from './ContentProvider.js';
+import {performSearchInContent, performSearchInContentData} from './TextUtils.js';
 
 export class StaticContentProvider implements ContentProvider {
   private readonly contentURLInternal: Platform.DevToolsPath.UrlString;
@@ -49,5 +55,40 @@ export class StaticContentProvider implements ContentProvider {
       isEncoded: boolean,
     });
     return content ? performSearchInContent(content, query, caseSensitive, isRegex) : [];
+  }
+}
+
+export class SafeStaticContentProvider implements SafeContentProvider {
+  readonly #contentURL: Platform.DevToolsPath.UrlString;
+  readonly #contentType: Common.ResourceType.ResourceType;
+  readonly #lazyContent: () => Promise<ContentDataOrError>;
+
+  constructor(
+      contentURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+      lazyContent: () => Promise<ContentDataOrError>) {
+    this.#contentURL = contentURL;
+    this.#contentType = contentType;
+    this.#lazyContent = lazyContent;
+  }
+
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.#contentURL;
+  }
+
+  contentType(): Common.ResourceType.ResourceType {
+    return this.#contentType;
+  }
+
+  requestContent(): Promise<DeferredContent> {
+    return this.#lazyContent().then(ContentData.asDeferredContent.bind(undefined));
+  }
+
+  requestContentData(): Promise<ContentDataOrError> {
+    return this.#lazyContent();
+  }
+
+  async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<SearchMatch[]> {
+    const contentData = await this.requestContentData();
+    return performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
 }

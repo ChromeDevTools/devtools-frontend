@@ -30,6 +30,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
+import {ContentData, type ContentDataOrError} from './ContentData.js';
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
@@ -353,6 +354,20 @@ export const isMinified = function(text: string): boolean {
     lastIndex = eolIndex + 1;
   }
   return (text.length - lineCount) / lineCount >= 80;
+};
+
+/**
+ * Small wrapper around {@link performSearchInContent} to reduce boilerplate when searching
+ * in {@link ContentDataOrError}.
+ *
+ * @returns empty search matches if `contentData` is an error or not text content.
+ */
+export const performSearchInContentData = function(
+    contentData: ContentDataOrError, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {
+  if (ContentData.isError(contentData) || !contentData.isTextContent) {
+    return [];
+  }
+  return performSearchInContent(contentData.text, query, caseSensitive, isRegex);
 };
 
 /**

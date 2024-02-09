@@ -87,8 +87,7 @@ export class PreRegisteredView implements View {
   }
 
   settings(): string[]|undefined {
-    // TODO(b/320405843): remove kebab mapping here once the migration is complete
-    return this.viewRegistration.settings?.map(s => Platform.StringUtilities.toKebabCase(s));
+    return this.viewRegistration.settings;
   }
 
   tags(): string|undefined {

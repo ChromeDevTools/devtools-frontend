@@ -515,8 +515,6 @@ export const toKebabCase = function(input: string): Lowercase<string> {
       Lowercase<string>;
 };
 
-// TODO(b/320405843): remove this when kebab migration is complete and
-// replace with settings version upgrade
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function toKebabCaseKeys(settingValue: {
   [x: string]: any,

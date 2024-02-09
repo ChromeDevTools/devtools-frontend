@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -456,8 +457,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @input=${handleInputChange}
           .value=${value}
           placeholder=${placeholder}
-          jslog=${VisualLogging.textField().track({keydown: true}).context(stateKey)}
-        />
+          jslog=${
+        VisualLogging.textField().track({keydown: true}).context(Platform.StringUtilities.toKebabCase(stateKey))}
+          />
       </label>
     `;
   }

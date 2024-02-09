@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Sources from '../../panels/sources/sources.js';
@@ -217,12 +217,13 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   protected createBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint): void {
     const labelNode = UI.UIUtils.CheckboxLabel.create(
         Sources.CategorizedBreakpointL10n.getLocalizedBreakpointName(breakpoint.name), undefined, undefined,
-        breakpoint.name);
+        Platform.StringUtilities.toKebabCase(breakpoint.name));
     labelNode.classList.add('source-code');
     labelNode.checkboxElement.addEventListener('click', this.breakpointCheckboxClicked.bind(this, breakpoint), true);
     labelNode.checkboxElement.tabIndex = -1;
 
-    const treeElement = new UI.TreeOutline.TreeElement(labelNode, undefined, breakpoint.name);
+    const treeElement =
+        new UI.TreeOutline.TreeElement(labelNode, undefined, Platform.StringUtilities.toKebabCase(breakpoint.name));
     treeElement.listItemElement.addEventListener('keydown', event => {
       this.handleSpaceKeyEventOnBreakpoint(event, this.#breakpoints.get(breakpoint));
     });

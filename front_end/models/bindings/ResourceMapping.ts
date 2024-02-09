@@ -391,7 +391,7 @@ class ModelInfo {
   }
 }
 
-class Binding implements TextUtils.ContentProvider.ContentProvider {
+class Binding implements TextUtils.ContentProvider.SafeContentProvider {
   readonly resources: Set<SDK.Resource.Resource>;
   readonly #project: ContentProviderBasedProject;
   readonly #uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -534,6 +534,10 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
 
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     return this.firstResource().requestContent();
+  }
+
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    return this.firstResource().requestContentData();
   }
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):

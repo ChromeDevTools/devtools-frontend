@@ -177,7 +177,7 @@ export class StylesSourceMapping implements SourceMapping {
   }
 }
 
-export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
+export class StyleFile implements TextUtils.ContentProvider.SafeContentProvider {
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #project: ContentProviderBasedProject;
   headers: Set<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
@@ -315,6 +315,11 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     console.assert(this.headers.size > 0);
     return this.headers.values().next().value.originalContentProvider().requestContent();
+  }
+
+  requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    console.assert(this.headers.size > 0);
+    return this.headers.values().next().value.originalContentProvider().requestContentData();
   }
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):

@@ -457,7 +457,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         <div class="header-name">${name}:</div>
         <div
           class="header-value ${classNames?.join(' ')}"
-          @copy=${(): void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+          @copy=${() => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >${value}</div>
       </div>
     `;

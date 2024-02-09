@@ -59,7 +59,7 @@ export async function takeScreenshots(testName: string): Promise<{target?: strin
 
 function wrapSuiteFunction(fn: (this: Mocha.Suite) => void) {
   return function(this: Mocha.Suite): void {
-    const hookCreationHook = (hook: Mocha.Hook): void => {
+    const hookCreationHook = (hook: Mocha.Hook) => {
       const originalFn = hook.fn;
       if (!originalFn) {
         return;

@@ -1057,7 +1057,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         commit: editorHandles.commit,
         cancel: editorHandles.cancel,
         editor: undefined,
-        resize: (): void => {},
+        resize: () => {},
       };
     }
   }
@@ -1100,14 +1100,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         CodeMirror.keymap.of([
           {
             key: 'Mod-Enter',
-            run: (): boolean => {
+            run: () => {
               this.editing?.commit();
               return true;
             },
           },
           {
             key: 'Escape',
-            run: (): boolean => {
+            run: () => {
               this.editing?.cancel();
               return true;
             },
@@ -2202,7 +2202,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const adorner = this.adorn(config);
     adorner.classList.add('grid');
 
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        if (adorner.isActive()) {
                          node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
                          Host.userMetrics.badgeActivated(
@@ -2244,7 +2244,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const adorner = this.adorn(config);
     adorner.classList.add('scroll-snap');
 
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightScrollSnapInPersistentOverlay(nodeId);
@@ -2288,7 +2288,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const adorner = this.adorn(config);
     adorner.classList.add('flex');
 
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightFlexContainerInPersistentOverlay(nodeId);
@@ -2333,7 +2333,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const adorner = this.adorn(config);
     adorner.classList.add('container');
 
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightContainerQueryInPersistentOverlay(nodeId);
@@ -2376,7 +2376,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const adorner = this.adornMedia(config);
     adorner.classList.add('media');
 
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        void UI.ViewManager.ViewManager.instance().showView('medias');
                      }) as EventListener);
 

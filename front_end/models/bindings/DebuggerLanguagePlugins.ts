@@ -774,7 +774,7 @@ export class DebuggerLanguagePluginManager implements
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
         const sourceFileURLsPromise =
-            (async(): Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: string[]}> => {
+            (async () => {
               const console = Common.Console.Console.instance();
               const url = script.sourceURL;
               const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';

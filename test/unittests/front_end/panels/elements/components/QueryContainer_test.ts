@@ -29,7 +29,7 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
   getAttribute: x => nodeAttributes.get(x) || '',
 };
 
-const assertContainerContent = (container: HTMLElement, expectedContent: string): void => {
+const assertContainerContent = (container: HTMLElement, expectedContent: string) => {
   assertShadowRoot(container.shadowRoot);
   const nodeText =
       container.shadowRoot.querySelector<NodeText.NodeText.NodeText>(`${NodeText.NodeText.NodeText.litTagName.value}`);

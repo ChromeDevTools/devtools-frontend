@@ -134,13 +134,13 @@ export class ContrastRatioLineBuilder {
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
     let candidateLuminance: ((candidateHSVA: Common.ColorUtils.Color4D) => number)|
-        ((candidateHSVA: Common.ColorUtils.Color4D) => number) = (candidateHSVA: Common.ColorUtils.Color4D): number => {
+        ((candidateHSVA: Common.ColorUtils.Color4D) => number) = (candidateHSVA: Common.ColorUtils.Color4D) => {
           return Common.ColorUtils.luminance(
               Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
     if (Root.Runtime.experiments.isEnabled('APCA')) {
-      candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D): number => {
+      candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D) => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
       };

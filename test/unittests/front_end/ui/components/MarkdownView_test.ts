@@ -138,7 +138,7 @@ ${paragraphText}
 
   const renderString =
       (string: string, selector: 'p'|'code'|'devtools-code-block',
-       renderer?: MarkdownView.MarkdownView.MarkdownLitRenderer): HTMLElement => {
+       renderer?: MarkdownView.MarkdownView.MarkdownLitRenderer) => {
         const component = new MarkdownView.MarkdownView.MarkdownView();
         renderElementIntoDOM(component);
         component.data = {tokens: Marked.Marked.lexer(string), renderer};

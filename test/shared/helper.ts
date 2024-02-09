@@ -66,13 +66,12 @@ export const withControlOrMetaKey = async (action: () => Promise<void>, root = g
   });
 };
 
-export const click = async(selector: string, options?: ClickOptions): Promise<puppeteer.ElementHandle> => {
+export const click = async (selector: string, options?: ClickOptions) => {
   return await performActionOnSelector(
       selector, {root: options?.root}, element => element.click(options?.clickOptions));
 };
 
-export const hover =
-    async(selector: string, options?: {root?: puppeteer.JSHandle}): Promise<puppeteer.ElementHandle> => {
+export const hover = async (selector: string, options?: {root?: puppeteer.JSHandle}) => {
   return await performActionOnSelector(selector, {root: options?.root}, element => element.hover());
 };
 
@@ -338,7 +337,7 @@ export const waitForNoElementsWithTextContent =
 export const TIMEOUT_ERROR_MESSAGE = 'Test timed out';
 
 export const waitForFunction =
-    async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string): Promise<T> => {
+    async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) => {
   const innerFunction = async () => {
     while (true) {
       if (asyncScope.isCanceled()) {
@@ -358,7 +357,7 @@ export const waitForFunctionWithTries = async<T>(
     fn: () => Promise<T|undefined>, options: {tries: number} = {
       tries: Number.MAX_SAFE_INTEGER,
     },
-    asyncScope = new AsyncScope()): Promise<T|undefined> => {
+    asyncScope = new AsyncScope()) => {
   return await asyncScope.exec(async () => {
     let tries = 0;
     while (tries++ < options.tries) {
@@ -725,11 +724,11 @@ export function waitForEvent(element: puppeteer.ElementHandle, eventType: string
   }, eventType);
 }
 
-export const hasClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<boolean> => {
+export const hasClass = async (element: puppeteer.ElementHandle<Element>, classname: string) => {
   return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
 };
 
-export const waitForClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<void> => {
+export const waitForClass = async (element: puppeteer.ElementHandle<Element>, classname: string) => {
   await waitForFunction(async () => {
     return hasClass(element, classname);
   });
@@ -823,7 +822,7 @@ export const summonSearchBox = async () => {
   await pressKey('f', {control: true});
 };
 
-export const replacePuppeteerUrl = (value: string): string => {
+export const replacePuppeteerUrl = (value: string) => {
   return value.replace(/pptr:.*:([0-9]+)$/, (_, match) => {
     return `(index):${match}`;
   });

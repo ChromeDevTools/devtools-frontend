@@ -72,7 +72,7 @@ export class CommandMenu {
     let handler = executeHandler;
     if (userActionCode) {
       const actionCode = userActionCode;
-      handler = (): void => {
+      handler = () => {
         Host.userMetrics.actionTaken(actionCode);
         executeHandler();
       };
@@ -94,7 +94,7 @@ export class CommandMenu {
       keys: tags,
       title,
       shortcut: '',
-      executeHandler: (): void => {
+      executeHandler: () => {
         if (setting.deprecation?.disabled &&
             (!setting.deprecation?.experiment || setting.deprecation.experiment.isEnabled())) {
           void Common.Revealer.reveal(setting);
@@ -424,6 +424,6 @@ registerProvider({
   iconName: 'chevron-right',
   iconWidth: '20px',
   provider: () => Promise.resolve(new CommandMenuProvider()),
-  titlePrefix: (): Common.UIString.LocalizedString => i18nString(UIStrings.run),
-  titleSuggestion: (): Common.UIString.LocalizedString => i18nString(UIStrings.command),
+  titlePrefix: () => i18nString(UIStrings.run),
+  titleSuggestion: () => i18nString(UIStrings.command),
 });

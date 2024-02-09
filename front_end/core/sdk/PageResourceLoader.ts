@@ -180,7 +180,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       this.#currentlyLoadingPerTarget.set(target.id(), currentCount + 1);
     }
     if (this.#currentlyLoading > this.#maxConcurrentLoads) {
-      const entry: LoadQueueEntry = {resolve: (): void => {}, reject: (): void => {}};
+      const entry: LoadQueueEntry = {resolve: () => {}, reject: (): void => {}};
       const waitForCapacity = new Promise<void>((resolve, reject) => {
         entry.resolve = resolve;
         entry.reject = reject;

@@ -125,7 +125,7 @@ export class ShortcutDialog extends HTMLElement {
       <${DialogElement.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}
-        .origin=${(): Buttons.Button.Button => {
+        .origin=${() => {
           if (!this.#showButton) {
             throw new Error('Button not found');
           }

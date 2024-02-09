@@ -351,7 +351,7 @@ describe('PropertyParser', () => {
     const originalText = 'abcdefghijklmnopqrstuvwxyz';
     const computedText = new Elements.PropertyParser.ComputedText(originalText);
 
-    const push = (from: string, to: string): void => {
+    const push = (from: string, to: string) => {
       const text = originalText.substring(originalText.indexOf(from), originalText.indexOf(to) + 1);
       assert.isAbove(text.length, 1);
       // This means computed and authored test have identical length, but we're testing the computed text stitching

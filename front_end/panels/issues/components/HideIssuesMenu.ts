@@ -49,7 +49,7 @@ export class HideIssuesMenu extends HTMLElement {
     const buttonElement = this.#shadow.querySelector('button');
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
       useSoftMenu: true,
-      onSoftMenuClosed: (): void => {
+      onSoftMenuClosed: () => {
         this.classList.toggle('has-context-menu-opened', false);
       },
       x: buttonElement?.getBoundingClientRect().left,

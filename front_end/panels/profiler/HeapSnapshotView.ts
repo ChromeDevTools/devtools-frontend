@@ -902,7 +902,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // @ts-expect-error
       box: span.boxInWindow(),
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+      show: async (popover: UI.GlassPane.GlassPane) => {
         if (!heapProfilerModel) {
           return false;
         }
@@ -918,7 +918,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
         }
         return true;
       },
-      hide: (): void => {
+      hide: () => {
         heapProfilerModel.runtimeModel().releaseObjectGroup('popover');
         if (objectPopoverHelper) {
           objectPopoverHelper.dispose();
@@ -1755,7 +1755,7 @@ export class HeapProfileHeader extends ProfileHeader {
         this.didCompleteSnapshotTransfer();
         return;
       }
-      this.onTempFileReady = (): void => {
+      this.onTempFileReady = () => {
         void onOpen(accepted);
       };
       this.updateSaveProgress(0, 1);

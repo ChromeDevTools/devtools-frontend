@@ -346,7 +346,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       styleProperty: string,
       computedStyle: Map<string, string>,
       keyDownHandler: (arg0: Event) => void,
-    } = {box, styleProperty, computedStyle, keyDownHandler: (): void => {}};
+    } = {box, styleProperty, computedStyle, keyDownHandler: () => {}};
     const boundKeyDown = this.handleKeyDown.bind(this, context);
     context.keyDownHandler = boundKeyDown;
     targetElement.addEventListener('keydown', boundKeyDown, false);

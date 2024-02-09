@@ -252,17 +252,17 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     const columnId = dataGrid.sortColumnId();
     let comparator: (arg0: DataGridNode, arg1: DataGridNode) => number;
     if (columnId === 'name') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.name.localeCompare(b.name);
+      comparator = (a: DataGridNode, b: DataGridNode) => a.name.localeCompare(b.name);
     } else if (columnId === 'content-type') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.mimeType.localeCompare(b.data.mimeType);
+      comparator = (a: DataGridNode, b: DataGridNode) => a.data.mimeType.localeCompare(b.data.mimeType);
     } else if (columnId === 'content-length') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.resourceSize - b.data.resourceSize;
+      comparator = (a: DataGridNode, b: DataGridNode) => a.data.resourceSize - b.data.resourceSize;
     } else if (columnId === 'response-time') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.data.endTime - b.data.endTime;
+      comparator = (a: DataGridNode, b: DataGridNode) => a.data.endTime - b.data.endTime;
     } else if (columnId === 'response-type') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.responseType.localeCompare(b.responseType);
+      comparator = (a: DataGridNode, b: DataGridNode) => a.responseType.localeCompare(b.responseType);
     } else if (columnId === 'vary-header') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a.varyHeader.localeCompare(b.varyHeader);
+      comparator = (a: DataGridNode, b: DataGridNode) => a.varyHeader.localeCompare(b.varyHeader);
     }
 
     const children = dataGrid.rootNode().children.slice();

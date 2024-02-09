@@ -18,11 +18,11 @@ const {assert} = chai;
 describeWithLocale('RequestTrustTokensView', () => {
   const mockId = 'mockId' as Protocol.Network.RequestId;
 
-  const makeRequest = (params?: Protocol.Network.TrustTokenParams,
-                       result?: Protocol.Network.TrustTokenOperationDoneEvent): SDK.NetworkRequest.NetworkRequest => {
-    return {trustTokenParams: () => params, trustTokenOperationDoneEvent: () => result} as
-        SDK.NetworkRequest.NetworkRequest;
-  };
+  const makeRequest =
+      (params?: Protocol.Network.TrustTokenParams, result?: Protocol.Network.TrustTokenOperationDoneEvent) => {
+        return {trustTokenParams: () => params, trustTokenOperationDoneEvent: () => result} as
+            SDK.NetworkRequest.NetworkRequest;
+      };
 
   const renderRequestTrustTokensView = (request: SDK.NetworkRequest.NetworkRequest) => {
     const component = new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView(request);

@@ -17,7 +17,7 @@ export interface LoadResult {
 }
 
 export function setupPageResourceLoaderForSourceMap(sourceMapContent: string) {
-  const loadSourceMap = async(_url: string): Promise<LoadResult> => {
+  const loadSourceMap = async (_url: string) => {
     return {
       success: true,
       content: sourceMapContent,

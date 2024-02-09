@@ -99,7 +99,7 @@ export function registerNoopActions(actionIds: string[]): void {
     UI.ActionRegistration.registerActionExtension({
       actionId,
       category: UI.ActionRegistration.ActionCategory.NONE,
-      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
+      title: () => 'mock' as Platform.UIString.LocalizedString,
     });
   }
   const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});

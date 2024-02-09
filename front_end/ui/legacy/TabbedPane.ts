@@ -627,7 +627,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       useSoftMenu: false,
       x: rect.left,
       y: rect.bottom,
-      onSoftMenuClosed: (): void => {
+      onSoftMenuClosed: () => {
         ARIAUtils.setExpanded(this.dropDownButton, false);
       },
     });

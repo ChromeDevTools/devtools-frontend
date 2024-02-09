@@ -789,7 +789,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
       if (columnId === SDK.Cookie.Attribute.Name &&
           IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(this.cookie)) {
         infoElement.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-        infoElement.onclick = (): Promise<void> => IssuesManager.RelatedIssue.reveal(this.cookie);
+        infoElement.onclick = () => IssuesManager.RelatedIssue.reveal(this.cookie);
         infoElement.style.cursor = 'pointer';
       } else {
         infoElement.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};

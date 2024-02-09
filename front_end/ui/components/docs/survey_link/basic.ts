@@ -19,10 +19,10 @@ document.getElementById('container')?.appendChild(link);
 link.data = {
   trigger: 'test trigger',
   promptText: Common.UIString.LocalizedEmptyString,
-  canShowSurvey: (trigger, callback): void => {
+  canShowSurvey: (trigger, callback) => {
     setTimeout(callback.bind(undefined, {canShowSurvey: true}), 500);
   },
-  showSurvey: (trigger, callback): void => {
+  showSurvey: (trigger, callback) => {
     setTimeout(callback.bind(undefined, {surveyShown: true}), 1500);
   },
 };

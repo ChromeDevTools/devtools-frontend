@@ -27,7 +27,7 @@ row1.appendChild(icon1);
 
 iconTable?.appendChild(row1);
 
-icon.onclick = (): void => {
+icon.onclick = () => {
   // Change of colour through a data-setter, which rerenders the component. Getting the data first in order not to specify the data fields all over again
   icon.data = {...icon.data, color: 'blue'};
 };
@@ -65,7 +65,7 @@ row3.appendChild(icon3);
 
 iconTable?.appendChild(row3);
 
-((): void => {
+(() => {
   const div = document.createElement('div');
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';
@@ -85,7 +85,7 @@ iconTable?.appendChild(row3);
   document.body.append(div);
 })();
 
-((): void => {
+(() => {
   const div = document.createElement('div');
   const span1 = document.createElement('span');
   span1.textContent = 'Some text';

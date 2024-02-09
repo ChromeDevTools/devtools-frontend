@@ -76,8 +76,8 @@ export class DynamicSetting<T> {
 
 export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
   key: 'Tab',
-  run: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentMore(view) : false,
-  shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
+  run: (view: CM.EditorView) => view.state.doc.length ? CM.indentMore(view) : false,
+  shift: (view: CM.EditorView) => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
 const disableConservativeCompletion = CM.StateEffect.define();
@@ -162,12 +162,12 @@ function announceSelectedCompletionInfo(view: CM.EditorView): void {
 
 export const autocompletion = new DynamicSetting<boolean>(
     'text-editor-autocompletion',
-    (activateOnTyping: boolean): CM.Extension =>
+    (activateOnTyping: boolean) =>
         [CM.autocompletion({
           activateOnTyping,
           icons: false,
-          optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
-          tooltipClass: (state: CM.EditorState): string => {
+          optionClass: (option: CM.Completion) => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+          tooltipClass: (state: CM.EditorState) => {
             return state.field(conservativeCompletion, false) ? 'cm-conservativeCompletion' : '';
           },
           defaultKeymap: false,
@@ -247,7 +247,7 @@ function getWhitespaceDeco(space: string): CM.Decoration {
 
 const showAllWhitespace = matcher(new CM.MatchDecorator({
   regexp: /\t| +/g,
-  decoration: (match: RegExpExecArray): CM.Decoration => getWhitespaceDeco(match[0]),
+  decoration: (match: RegExpExecArray) => getWhitespaceDeco(match[0]),
   boundary: /\S/,
 }));
 

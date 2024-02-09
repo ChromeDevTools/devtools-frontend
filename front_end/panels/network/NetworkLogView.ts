@@ -551,9 +551,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const filterItems =
         Object.values(Common.ResourceType.resourceCategories)
-            .map(
-                category =>
-                    ({name: category.title(), label: (): string => category.shortTitle(), title: category.title()}));
+            .map(category => ({name: category.title(), label: () => category.shortTitle(), title: category.title()}));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN)) {
       this.resourceCategoryFilterUI = new DropDownTypesUI(filterItems, this.networkResourceTypeFiltersSetting);
@@ -1891,7 +1889,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       await Common.Revealer.reveal(requestLocation);
     } else {  // If folder for local overrides has not been provided yet
-      UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async(): Promise<void> => {
+      UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
         await Common.Revealer.reveal(requestLocation);

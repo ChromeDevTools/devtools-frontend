@@ -40,7 +40,7 @@ class BaseLinkSwatch extends HTMLElement {
   }
 
   set data(data: BaseLinkSwatchRenderData) {
-    this.onLinkActivate = (linkText: string, event: MouseEvent|KeyboardEvent): void => {
+    this.onLinkActivate = (linkText: string, event: MouseEvent|KeyboardEvent) => {
       if (event instanceof MouseEvent && event.button !== 0) {
         return;
       }

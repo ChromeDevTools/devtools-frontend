@@ -60,7 +60,7 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
   return {component, nameEditable, valueEditable, scrollIntoViewSpy};
 }
 
-const hasReloadPrompt = (shadowRoot: ShadowRoot): boolean => {
+const hasReloadPrompt = (shadowRoot: ShadowRoot) => {
   return Boolean(
       shadowRoot.querySelector('devtools-icon[title="Refresh the page/request for these changes to take effect"]'));
 };

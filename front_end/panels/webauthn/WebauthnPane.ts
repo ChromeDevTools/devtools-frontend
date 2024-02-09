@@ -175,7 +175,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
       return cell;
     }
 
-    const exportButton = UI.UIUtils.createTextButton(i18nString(UIStrings.export), (): void => {
+    const exportButton = UI.UIUtils.createTextButton(i18nString(UIStrings.export), () => {
       if (this.dataGrid) {
         (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.ExportCredential, this.credential);
       }
@@ -183,7 +183,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 
     cell.appendChild(exportButton);
 
-    const removeButton = UI.UIUtils.createTextButton(i18nString(UIStrings.remove), (): void => {
+    const removeButton = UI.UIUtils.createTextButton(i18nString(UIStrings.remove), () => {
       if (this.dataGrid) {
         (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.RemoveCredential, this.credential);
       }
@@ -550,13 +550,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#protocolSelect = (protocolGroup.createChild('select', 'chrome-select') as HTMLSelectElement);
     this.#protocolSelect.setAttribute('jslog', `${VisualLogging.dropDown('protocol').track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, (this.#protocolSelect as Element));
-    Object.values(PROTOCOL_AUTHENTICATOR_VALUES)
-        .sort()
-        .forEach((option: Protocol.WebAuthn.AuthenticatorProtocol): void => {
-          if (this.#protocolSelect) {
-            this.#protocolSelect.appendChild(new Option(option, option));
-          }
-        });
+    Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().forEach((option: Protocol.WebAuthn.AuthenticatorProtocol) => {
+      if (this.#protocolSelect) {
+        this.#protocolSelect.appendChild(new Option(option, option));
+      }
+    });
 
     if (this.#protocolSelect) {
       this.#protocolSelect.value = Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
@@ -671,14 +669,14 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     editName.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click,
-        (): void => this.#handleEditNameButton(titleElement, nameField, editName, saveName));
+        () => this.#handleEditNameButton(titleElement, nameField, editName, saveName));
     saveName.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click,
-        (): void => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
+        () => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
 
     nameField.addEventListener(
-        'focusout', (): void => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
-    nameField.addEventListener('keydown', (event: KeyboardEvent): void => {
+        'focusout', () => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
+    nameField.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel);
       }
@@ -727,8 +725,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     // @ts-ignore dataGrid node type is indeterminate.
     dataGrid.rootNode()
-        .children
-        .find((n: DataGrid.DataGrid.DataGridNode<DataGridNode>): boolean => n.data.credentialId === credentialId)
+        .children.find((n: DataGrid.DataGrid.DataGridNode<DataGridNode>) => n.data.credentialId === credentialId)
         .remove();
 
     if (!dataGrid.rootNode().children.length) {
@@ -879,7 +876,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #updateActiveButtons(): void {
     const authenticators = this.#authenticatorsView.getElementsByClassName('authenticator-section');
-    Array.from(authenticators).forEach((authenticator: Element): void => {
+    Array.from(authenticators).forEach((authenticator: Element) => {
       const button = (authenticator.querySelector('input.dt-radio-button') as HTMLInputElement);
       if (!button) {
         return;

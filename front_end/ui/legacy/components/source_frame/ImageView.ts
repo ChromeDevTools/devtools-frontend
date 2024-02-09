@@ -252,7 +252,7 @@ export class ImageView extends UI.View.SimpleView {
     const encoded = !file.name.endsWith('.svg');
     const fileCallback = (file: Blob): void => {
       const reader = new FileReader();
-      reader.onloadend = (): void => {
+      reader.onloadend = () => {
         let result;
         try {
           result = (reader.result as string | null);

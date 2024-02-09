@@ -764,7 +764,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       result.push({
         section: 'reveal',
         title: destination ? i18nString(UIStrings.revealInS, {PH1: destination}) : i18nString(UIStrings.reveal),
-        handler: (): Promise<void> => {
+        handler: () => {
           if (revealable instanceof Breakpoints.BreakpointManager.BreakpointLocation) {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.Linkifier);
@@ -796,12 +796,12 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       result.push({
         section: 'reveal',
         title: UI.UIUtils.openLinkExternallyLabel(),
-        handler: (): void => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url),
+        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url),
       });
       result.push({
         section: 'clipboard',
         title: UI.UIUtils.copyLinkAddressLabel(),
-        handler: (): void => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(url),
+        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(url),
       });
     }
 
@@ -810,8 +810,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       result.push({
         section: 'clipboard',
         title: UI.UIUtils.copyFileNameLabel(),
-        handler: (): void =>
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()),
+        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()),
       });
     }
 

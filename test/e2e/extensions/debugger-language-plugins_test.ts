@@ -936,7 +936,7 @@ describe('The Debugger Language Plugins', async () => {
     await locationLabels.setBreakpointInWasmAndRun(
         'BREAK(can_access_wasm_data)', 'window.Module.instance.exports.exported_func(4)');
 
-    const mem = await extension.evaluate(async(): Promise<number[]> => {
+    const mem = await extension.evaluate(async () => {
       const buffer = await chrome.devtools.languageServices.getWasmLinearMemory(0, 10, 0n);
       if (buffer instanceof ArrayBuffer) {
         return Array.from(new Uint8Array(buffer));

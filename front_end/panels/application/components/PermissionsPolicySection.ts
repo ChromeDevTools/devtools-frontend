@@ -133,7 +133,7 @@ export class PermissionsPolicySection extends HTMLElement {
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
           ${disallowed.map(p => p.feature).join(', ')}
-          <button class="link" @click=${(): void => this.#toggleShowPermissionsDisallowedDetails()}
+          <button class="link" @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
           jslog=${VisualLogging.action('show-disabled-features-details').track({
         click: true,
       })}>
@@ -153,7 +153,7 @@ export class PermissionsPolicySection extends HTMLElement {
       const resource = frame && frame.resourceForURL(frame.url);
       const linkTargetRequest =
           blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource && resource.request;
-      const blockReasonText = ((): String => {
+      const blockReasonText = (() => {
         switch (blockReason) {
           case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:
             return i18nString(UIStrings.disabledByIframe);
@@ -199,7 +199,7 @@ export class PermissionsPolicySection extends HTMLElement {
             ${
           linkTargetDOMNode ? renderIconLink(
                                   'code-circle', i18nString(UIStrings.clickToShowIframe),
-                                  (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode), 'reveal-in-elements') :
+                                  () => Common.Revealer.reveal(linkTargetDOMNode), 'reveal-in-elements') :
                               LitHtml.nothing}
             ${
           linkTargetRequest ? renderIconLink(
@@ -220,7 +220,7 @@ export class PermissionsPolicySection extends HTMLElement {
       <${ReportView.ReportView.ReportValue.litTagName} class="policies-list">
         ${featureRows}
         <div class="permissions-row">
-          <button class="link" @click=${(): void => this.#toggleShowPermissionsDisallowedDetails()}
+          <button class="link" @click=${() => this.#toggleShowPermissionsDisallowedDetails()}
           jslog=${VisualLogging.action('hide-disabled-features-details').track({
       click: true,
     })}>

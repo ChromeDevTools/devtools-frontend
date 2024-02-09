@@ -82,22 +82,21 @@ export class LayersWidget extends UI.Widget.Widget {
     if (!this.cssModel) {
       return;
     }
-    const makeTreeNode = (parentId: string) =>
-        (layer: Protocol.CSS.CSSLayerData): TreeOutline.TreeOutlineUtils.TreeNode<string> => {
-          const subLayers = layer.subLayers;
-          const name = SDK.CSSModel.CSSModel.readableLayerName(layer.name);
-          const treeNodeData = layer.order + ': ' + name;
-          const id = parentId ? parentId + '.' + name : name;
-          if (!subLayers) {
-            return {treeNodeData, id};
-          }
-          return {
-            treeNodeData,
-            id,
-            children: (): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> =>
-                Promise.resolve(subLayers.sort((layer1, layer2) => layer1.order - layer2.order).map(makeTreeNode(id))),
-          };
-        };
+    const makeTreeNode = (parentId: string) => (layer: Protocol.CSS.CSSLayerData) => {
+      const subLayers = layer.subLayers;
+      const name = SDK.CSSModel.CSSModel.readableLayerName(layer.name);
+      const treeNodeData = layer.order + ': ' + name;
+      const id = parentId ? parentId + '.' + name : name;
+      if (!subLayers) {
+        return {treeNodeData, id};
+      }
+      return {
+        treeNodeData,
+        id,
+        children: () =>
+            Promise.resolve(subLayers.sort((layer1, layer2) => layer1.order - layer2.order).map(makeTreeNode(id))),
+      };
+    };
     const rootLayer = await this.cssModel.getRootLayer(node.id);
     this.layerTreeComponent.data = {
       defaultRenderer: TreeOutline.TreeOutline.defaultRenderer,

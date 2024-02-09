@@ -342,7 +342,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         if (hint) {
           return {
             box: hoveredNode.boxInWindow(),
-            show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+            show: async (popover: UI.GlassPane.GlassPane) => {
               const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
               popover.contentElement.appendChild(popupElement);
               return true;
@@ -362,7 +362,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         if (cssProperty) {
           return {
             box: hoveredNode.boxInWindow(),
-            show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+            show: async (popover: UI.GlassPane.GlassPane) => {
               const popupElement = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
               popover.contentElement.appendChild(popupElement);
               Host.userMetrics.cssPropertyDocumentation(Host.UserMetrics.CSSPropertyDocumentation.Shown);
@@ -376,7 +376,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         const specificity = StylePropertiesSection.getSpecificityStoredForNodeElement(hoveredNode);
         return {
           box: hoveredNode.boxInWindow(),
-          show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+          show: async (popover: UI.GlassPane.GlassPane) => {
             popover.setIgnoreLeftMargin(true);
             const element = document.createElement('span');
             element.textContent = i18nString(
@@ -404,7 +404,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         if (contents) {
           return {
             box: element.boxInWindow(),
-            show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+            show: async (popover: UI.GlassPane.GlassPane) => {
               popover.contentElement.classList.add('borderless-popover');
               popover.contentElement.appendChild(contents);
               return true;
@@ -1760,7 +1760,7 @@ export class SectionBlock {
     layerLink.title = i18nString(UIStrings.clickToRevealLayer);
     const name = layers.map(layer => SDK.CSSModel.CSSModel.readableLayerName(layer.text)).join('.');
     layerLink.textContent = name;
-    layerLink.onclick = (): Promise<void> => LayersWidget.LayersWidget.instance().revealLayer(name);
+    layerLink.onclick = () => LayersWidget.LayersWidget.instance().revealLayer(name);
     return new SectionBlock(separatorElement);
   }
 

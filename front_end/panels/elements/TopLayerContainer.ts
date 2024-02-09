@@ -105,7 +105,7 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
     adornerContent.append(adornerText);
     const adorner = element?.adorn(config, adornerContent);
     if (adorner) {
-      const onClick = (((): void => {
+      const onClick = ((() => {
                          Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.TOP_LAYER);
                          topLayerElementRepresentation.revealAndSelect();
                        }) as EventListener);

@@ -22,7 +22,7 @@ import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 const {assert} = chai;
 
 const makeFrame =
-    (overrides: Partial<SDK.ResourceTreeModel.ResourceTreeFrame> = {}): SDK.ResourceTreeModel.ResourceTreeFrame => {
+    (overrides: Partial<SDK.ResourceTreeModel.ResourceTreeFrame> = {}) => {
       const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
         resourceTreeModel: () => ({
           target: () => ({}),

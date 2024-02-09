@@ -124,7 +124,7 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
     });
 
     this.gutter = CodeMirror.gutter({
-      markers: (view): CodeMirror.RangeSet<CodeMirror.GutterMarker> => view.state.field(this.field),
+      markers: view => view.state.field(this.field),
       class: `cm-${type}Gutter`,
     });
   }

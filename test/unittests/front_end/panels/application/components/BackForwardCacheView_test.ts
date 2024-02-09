@@ -298,11 +298,11 @@ describeWithMockConnection('BackForwardCacheView', () => {
       stub.onCall(4).returns({entries, currentIndex: 1});
       resourceTreeModel.navigationHistory = stub;
 
-      resourceTreeModel.navigate = (url: Platform.DevToolsPath.UrlString): Promise<Protocol.Page.NavigateResponse> => {
+      resourceTreeModel.navigate = (url: Platform.DevToolsPath.UrlString) => {
         resourceTreeModel.frameNavigated({url} as unknown as Protocol.Page.Frame, undefined);
         return Promise.resolve({frameId: '' as Protocol.Page.FrameId, getError(): undefined {}});
       };
-      resourceTreeModel.navigateToHistoryEntry = (entry: Protocol.Page.NavigationEntry): void => {
+      resourceTreeModel.navigateToHistoryEntry = (entry: Protocol.Page.NavigationEntry) => {
         resourceTreeModel.frameNavigated({url: entry.url} as unknown as Protocol.Page.Frame, undefined);
       };
       const navigateToHistoryEntrySpy = sinon.spy(resourceTreeModel, 'navigateToHistoryEntry');

@@ -13,7 +13,7 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
-const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.NetworkRequest => {
+const simulateRequestWithStartTime = (startTime: number) => {
   const requestId = 'r0' as Protocol.Network.RequestId;
   const request = SDK.NetworkRequest.NetworkRequest.create(
       requestId, 'p0.com' as Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);

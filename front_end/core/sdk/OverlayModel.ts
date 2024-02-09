@@ -136,13 +136,13 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
 
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
-      onGridOverlayStateChanged: ({nodeId, enabled}): void =>
+      onGridOverlayStateChanged: ({nodeId, enabled}) =>
           this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled}),
-      onFlexOverlayStateChanged: ({nodeId, enabled}): void =>
+      onFlexOverlayStateChanged: ({nodeId, enabled}) =>
           this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled}),
-      onContainerQueryOverlayStateChanged: ({nodeId, enabled}): void =>
+      onContainerQueryOverlayStateChanged: ({nodeId, enabled}) =>
           this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled}),
-      onScrollSnapOverlayStateChanged: ({nodeId, enabled}): void =>
+      onScrollSnapOverlayStateChanged: ({nodeId, enabled}) =>
           this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled}),
     });
     this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {

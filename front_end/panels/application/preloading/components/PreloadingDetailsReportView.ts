@@ -240,7 +240,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     const action = PreloadingString.capitalizedAction(this.#data.preloadingAttempt.action);
 
     let maybeInspectButton: LitHtml.LitTemplate = LitHtml.nothing;
-    ((): void => {
+    (() => {
       if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
         return;
       }

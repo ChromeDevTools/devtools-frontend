@@ -2905,7 +2905,7 @@ export class TimelineUIUtils {
     pieChart.data = {
       chartName: i18nString(UIStrings.timeSpentInRendering),
       size: 110,
-      formatter: (value: number): string => i18n.TimeUtilities.preciseMillisToString(value),
+      formatter: (value: number) => i18n.TimeUtilities.preciseMillisToString(value),
       showLegend: true,
       total,
       slices,

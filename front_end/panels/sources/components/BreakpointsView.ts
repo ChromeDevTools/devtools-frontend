@@ -957,7 +957,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               aria-label=${breakpointItem.location}
               ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE}
               .checked=${breakpointItem.status === BreakpointStatus.ENABLED}
-              @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}
+              @change=${(e: Event) => this.#onCheckboxToggled(e, breakpointItem)}
               tabindex=-1
               jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
       </label>

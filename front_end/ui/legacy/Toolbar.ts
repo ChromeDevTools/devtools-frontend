@@ -233,7 +233,7 @@ export class Toolbar {
     };
     if (options.userActionCode) {
       const actionCode = options.userActionCode;
-      handler = (): void => {
+      handler = () => {
         Host.userMetrics.actionTaken(actionCode);
         void action.execute();
       };
@@ -691,7 +691,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     this.proxyElement.classList.add('toolbar-prompt-proxy');
     this.proxyElement.addEventListener('keydown', (event: Event) => this.onKeydownCallback(event as KeyboardEvent));
     this.prompt.initialize(
-        completions || ((): Promise<never[]> => Promise.resolve([])),
+        completions || (() => Promise.resolve([])),
         ' ',
         dynamicCompletions,
     );

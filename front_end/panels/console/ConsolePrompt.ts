@@ -134,7 +134,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       TextEditor.Config.baseConfiguration(this.initialText),
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
-        autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
+        autocomplete: (context: CodeMirror.CompletionContext) =>
             this.addCompletionsFromHistory ? this.#editorHistory.historyCompletions(context) : null,
       }),
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
@@ -146,7 +146,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
     this.editor = new TextEditor.TextEditor.TextEditor(editorState);
-    this.editor.addEventListener('keydown', (event): void => {
+    this.editor.addEventListener('keydown', event => {
       if (event.defaultPrevented) {
         event.stopPropagation();
       }
@@ -261,26 +261,26 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
     return [
-      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
-      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
+      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Escape',
-        run: (): boolean => {
+        run: () => {
           return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
         },
       },
       {
         key: 'Ctrl-Enter',
-        run: (): boolean => {
+        run: () => {
           void this.handleEnter(/* forceEvaluate */ true);
           return true;
         },
       },
       {
         key: 'Enter',
-        run: (): boolean => {
+        run: () => {
           void this.handleEnter();
           return true;
         },

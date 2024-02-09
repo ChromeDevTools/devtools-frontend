@@ -92,15 +92,15 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   private registerShortcuts(): void {
     const zoomFactor = 1.1;
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
-      'layers.reset-view': async(): Promise<true> => {
+      'layers.reset-view': async () => {
         this.resetAndNotify();
         return true;
       },
-      'layers.pan-mode': async(): Promise<true> => {
+      'layers.pan-mode': async () => {
         this.setMode(Modes.Pan);
         return true;
       },
-      'layers.rotate-mode': async(): Promise<true> => {
+      'layers.rotate-mode': async () => {
         this.setMode(Modes.Rotate);
         return true;
       },

@@ -112,7 +112,7 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     hideAvailableIssuesBtn.classList.add('hide-available-issues');
     hideAvailableIssuesBtn.data = {
       menuItemLabel: this.getHideAllCurrentKindString(),
-      menuItemAction: (): void => {
+      menuItemAction: () => {
         const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
         const values = setting.get();
         for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {

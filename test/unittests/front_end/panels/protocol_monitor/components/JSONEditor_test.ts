@@ -14,7 +14,6 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import * as ProtocolComponents from '../../../../../../front_end/panels/protocol_monitor/components/components.js';
 import type * as SuggestionInput from '../../../../../../front_end/ui/components/suggestion_input/suggestion_input.js';
-import type * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
@@ -35,7 +34,7 @@ describeWithEnvironment('JSONEditor', () => {
     return jsonEditor;
   };
 
-  const populateMetadata = async(jsonEditor: ProtocolComponents.JSONEditor.JSONEditor): Promise<void> => {
+  const populateMetadata = async (jsonEditor: ProtocolComponents.JSONEditor.JSONEditor) => {
     const mockDomain = [
       {
         domain: 'Test',
@@ -234,9 +233,9 @@ describeWithEnvironment('JSONEditor', () => {
     }
   };
 
-  const renderSuggestionBox = async(
+  const renderSuggestionBox = async (
       command: string, jsonEditor: ProtocolComponents.JSONEditor.JSONEditor,
-      enumsByName?: Map<string, Record<string, string>>): Promise<string[]> => {
+      enumsByName?: Map<string, Record<string, string>>) => {
     jsonEditor.command = command;
     if (enumsByName) {
       jsonEditor.enumsByName = enumsByName;
@@ -266,7 +265,7 @@ describeWithEnvironment('JSONEditor', () => {
     return suggestions;
   };
 
-  const serializePopupContent = (): string|null|undefined => {
+  const serializePopupContent = () => {
     const container = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
     const hintDetailView = container?.shadowRoot?.querySelector('devtools-css-hint-details-view');
     return hintDetailView?.shadowRoot?.textContent?.replaceAll(/\s/g, '');
@@ -297,8 +296,7 @@ describeWithEnvironment('JSONEditor', () => {
     return {inputs, displayedCommand, jsonEditor};
   };
 
-  const renderParamsWithDefaultValues =
-      async(command: string): Promise<SuggestionInput.SuggestionInput.SuggestionInput> => {
+  const renderParamsWithDefaultValues = async (command: string) => {
     const jsonEditor = renderJSONEditor();
 
     await populateMetadata(jsonEditor);
@@ -329,8 +327,7 @@ describeWithEnvironment('JSONEditor', () => {
     return paramInput;
   };
 
-  const renderWarningIcon =
-      async(command: string, enumsByName?: Map<string, Record<string, string>>): Promise<IconButton.Icon.Icon> => {
+  const renderWarningIcon = async (command: string, enumsByName?: Map<string, Record<string, string>>) => {
     const jsonEditor = renderJSONEditor();
     await populateMetadata(jsonEditor);
     jsonEditor.command = command;

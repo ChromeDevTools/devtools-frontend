@@ -234,17 +234,17 @@ export class StartView extends UI.Widget.Widget {
 
     if (mode === 'timespan') {
       buttonLabel = i18nString(UIStrings.startTimespan);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleTimespanStart();
       };
     } else if (mode === 'snapshot') {
       buttonLabel = i18nString(UIStrings.analyzeSnapshot);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleCompleteRun();
       };
     } else {
       buttonLabel = i18nString(UIStrings.analyzeNavigation);
-      callback = (): void => {
+      callback = () => {
         void this.panel.handleCompleteRun();
       };
     }

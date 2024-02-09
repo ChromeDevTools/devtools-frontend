@@ -253,7 +253,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
       let widget: UI.Widget.VBox, addListener: (handler: (event: {data: string}) => void) => void;
       if (active.type === TooltipType.Color) {
         const spectrum = new ColorPicker.Spectrum.Spectrum();
-        addListener = (handler): void => {
+        addListener = handler => {
           spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, handler);
         };
         spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, () => view.requestMeasure());
@@ -263,7 +263,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
         widget = spectrum;
-        addListener = (handler): void => {
+        addListener = handler => {
           spectrum.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, handler);
         };
       }
@@ -295,10 +295,10 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
         dom,
         resize: false,
         offset: {x: -8, y: 0},
-        mount: (): void => {
+        mount: () => {
           widget.focus();
           widget.wasShown();
-          addListener((event: {data: string}): void => {
+          addListener((event: {data: string}) => {
             view.dispatch({
               changes: {from: active.pos, to: active.pos + text.length, insert: event.data},
               annotations: isSwatchEdit.of(true),
@@ -414,7 +414,7 @@ export function cssBindings(): CodeMirror.Extension {
   });
 
   return CodeMirror.EditorView.domEventHandlers({
-    keydown: (event, view): boolean => {
+    keydown: (event, view) => {
       const prevView = currentView;
       currentView = view;
       listener(event);

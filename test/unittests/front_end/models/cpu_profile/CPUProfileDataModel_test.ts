@@ -159,7 +159,7 @@ describe('ProfileTreeModel', function() {
 });
 
 describeWithEnvironment('CPUProfileDataModel', () => {
-  const buildBasicProfile = (): Protocol.Profiler.Profile => {
+  const buildBasicProfile = () => {
     const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
     const url = '';
     const lineNumber = -1;

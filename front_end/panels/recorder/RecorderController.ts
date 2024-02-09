@@ -1128,7 +1128,7 @@ export class RecorderController extends LitElement {
         @timeoutchanged=${this.#onTimeoutChanged}
         @requestselectorattribute=${(
           event: Controllers.SelectorPicker.RequestSelectorAttributeEvent,
-        ): void => {
+        ) => {
           event.send(this.currentRecording?.flow.selectorAttribute);
         }}
         @recordingfinished=${this.#onRecordingFinished}
@@ -1232,7 +1232,7 @@ export class RecorderController extends LitElement {
                 this.isRecording ||
                 this.isToggling
               }
-              @click=${(e: Event): void => e.stopPropagation()}
+              @click=${(e: Event) => e.stopPropagation()}
               @change=${this.#onRecordingSelected}
               jslog=${VisualLogging.dropDown('recordings').track({change: true})}
             >
@@ -1341,7 +1341,7 @@ export class RecorderController extends LitElement {
             ></${Buttons.Button.Button.litTagName}>
             <div class="separator"></div>
             <${Buttons.Button.Button.litTagName}
-              @click=${(): void => this.recordingPlayer?.continue()}
+              @click=${() => this.recordingPlayer?.continue()}
               .data=${
                 {
                   variant: Buttons.Button.Variant.PRIMARY_TOOLBAR,
@@ -1355,7 +1355,7 @@ export class RecorderController extends LitElement {
               }
             ></${Buttons.Button.Button.litTagName}>
             <${Buttons.Button.Button.litTagName}
-              @click=${(): void => this.recordingPlayer?.stepOver()}
+              @click=${() => this.recordingPlayer?.stepOver()}
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,

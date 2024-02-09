@@ -281,7 +281,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     return {
       box: anchorBox,
-      show: (popover: UI.GlassPane.GlassPane): Promise<true> => {
+      show: (popover: UI.GlassPane.GlassPane) => {
         const content =
             RequestTimingView.createTimingTable((request as SDK.NetworkRequest.NetworkRequest), this.calculator);
         popover.registerCSSFiles([networkingTimingTableStyles]);

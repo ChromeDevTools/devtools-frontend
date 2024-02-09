@@ -337,7 +337,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       }
 
       const reader = new FileReader();
-      reader.onload = (): void => this.loadedFromFile(reader.result as string);
+      reader.onload = () => this.loadedFromFile(reader.result as string);
       reader.readAsText(file);
     }
   }

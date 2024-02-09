@@ -68,7 +68,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
         Common.Debouncer.debounce(this.startPreviewAnimation.bind(this), PREVIEW_ANIMATION_DEBOUNCE_DELAY);
     this.animationTimingUI = new AnimationTimingUI({
       model: this.model,
-      onChange: (model: AnimationTimingModel): void => {
+      onChange: (model: AnimationTimingModel) => {
         this.setModel(model);
         this.onchange();
         this.unselectPresets();

@@ -212,20 +212,20 @@ export const getMessageForElement = (element: Element): ConsoleViewMessage|undef
 // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
 const defaultConsoleRowHeight = 19;
 
-const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|null): (
-    parameter?: SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|string) => SDK.RemoteObject.RemoteObject =>
-    (parameter?: string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject): SDK.RemoteObject.RemoteObject => {
-      if (parameter instanceof SDK.RemoteObject.RemoteObject) {
-        return parameter;
-      }
-      if (!runtimeModel) {
-        return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
-      }
-      if (typeof parameter === 'object') {
-        return runtimeModel.createRemoteObject(parameter);
-      }
-      return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
-    };
+const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|null):
+    (parameter?: SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|string) => SDK.RemoteObject.RemoteObject =>
+        (parameter?: string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject) => {
+          if (parameter instanceof SDK.RemoteObject.RemoteObject) {
+            return parameter;
+          }
+          if (!runtimeModel) {
+            return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
+          }
+          if (typeof parameter === 'object') {
+            return runtimeModel.createRemoteObject(parameter);
+          }
+          return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
+        };
 
 const EXPLAIN_HOVER_ACTION_ID = 'explain.console-message.hover';
 const EXPLAIN_CONTEXT_ERROR_ACTION_ID = 'explain.console-message.context.error';
@@ -459,7 +459,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url());
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       messageElement.appendChild(linkElement);
       if (request.failed) {
         UI.UIUtils.createTextChildren(messageElement, ' ', request.localizedFailDescription || '');
@@ -480,7 +480,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             Components.Linkifier.Linkifier.linkifyURL(
                 url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
         linkElement.tabIndex = -1;
-        this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+        this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
         return linkElement;
       });
       messageElement.appendChild(fragment);
@@ -556,7 +556,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       anchorElement.tabIndex = -1;
       this.selectableChildren.push({
         element: anchorElement,
-        forceSelect: (): void => anchorElement.focus(),
+        forceSelect: () => anchorElement.focus(),
       });
       const anchorWrapperElement = document.createElement('span');
       anchorWrapperElement.classList.add('console-message-anchor');
@@ -591,7 +591,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         runtimeModel.target(), this.linkifier, {stackTrace: this.message.stackTrace, tabStops: undefined});
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
     UI.ARIAUtils.setLabel(
@@ -601,7 +601,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // We debounce the trace expansion metric in case this was accidental.
     const DEBOUNCE_MS = 300;
     let debounce: number|undefined;
-    this.expandTrace = (expand: boolean): void => {
+    this.expandTrace = (expand: boolean) => {
       if (expand) {
         debounce = window.setTimeout(() => {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.TraceExpanded);
@@ -1349,7 +1349,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     };
     const button = document.createElement('button');
     button.append(icon);
-    button.onclick = (event: Event): void => {
+    button.onclick = (event: Event) => {
       event.stopPropagation();
       UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this);
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
@@ -1590,7 +1590,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, url, lineNumber, {columnNumber, inlineFrameIndex: f});
       scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
       formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       stackTrace.insertBefore(formattedLine, insertBefore);
@@ -1670,7 +1670,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             showColumnNumber: true,
           });
       scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
       formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       formattedResult.appendChild(formattedLine);
@@ -1753,7 +1753,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       return linkElement;
     });
   }

@@ -144,7 +144,7 @@ export const getContentOfSelectedNode = async () => {
   return await selectedNode.evaluate(node => node.textContent as string);
 };
 
-export const waitForSelectedNodeChange = async(initialValue: string, asyncScope = new AsyncScope()): Promise<void> => {
+export const waitForSelectedNodeChange = async (initialValue: string, asyncScope = new AsyncScope()) => {
   await waitForFunction(async () => {
     const currentContent = await getContentOfSelectedNode();
     return currentContent !== initialValue;

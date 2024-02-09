@@ -252,7 +252,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   private screencastFrame(base64Data: string, metadata: Protocol.Page.ScreencastFrameMetadata): void {
-    this.imageElement.onload = (): void => {
+    this.imageElement.onload = () => {
       this.pageScaleFactor = metadata.pageScaleFactor;
       this.screenOffsetTop = metadata.offsetTop;
       this.scrollOffsetX = metadata.scrollOffsetX;

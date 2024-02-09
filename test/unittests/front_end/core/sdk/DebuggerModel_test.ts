@@ -157,7 +157,7 @@ describeWithMockConnection('DebuggerModel', () => {
   describe('setBreakpointByURL', () => {
     it('correctly sets only a single breakpoint in Node.js internal scripts', async () => {
       setMockConnectionResponseHandler(
-          'Debugger.setBreakpointByUrl', ({url}): Protocol.Debugger.SetBreakpointByUrlResponse => {
+          'Debugger.setBreakpointByUrl', ({url}) => {
             if (url === 'fs.js') {
               return {
                 breakpointId: breakpointId1,

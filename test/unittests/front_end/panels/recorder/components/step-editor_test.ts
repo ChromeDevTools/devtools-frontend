@@ -29,7 +29,7 @@ function getStepEditedPromise(editor: Components.StepEditor.StepEditor) {
       .then(({data}) => data);
 }
 
-const triggerMicroTaskQueue = async(n = 1): Promise<void> => {
+const triggerMicroTaskQueue = async (n = 1) => {
   while (n > 0) {
     --n;
     await new Promise(resolve => setTimeout(resolve, 0));

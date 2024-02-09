@@ -28,7 +28,7 @@ function testHighlight(code: string, mimeType: string) {
     const tokens = parseTokens(code), rawCode = tokens.map(t => t[0]).join('');
     const highlighter = await CodeHighlighter.CodeHighlighter.create(rawCode, mimeType);
     let i = 0;
-    highlighter.highlight((text, style): void => {
+    highlighter.highlight((text, style) => {
       assert.strictEqual(
           JSON.stringify([text, style.replace(/\btoken-/g, '').split(' ').sort().join('&')]),
           JSON.stringify(tokens[i++] || ['', '']));

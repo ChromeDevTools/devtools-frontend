@@ -52,14 +52,14 @@ export class XLink extends XElement {
     this.hrefInternal = null;
     this.clickable = true;
 
-    this.onClick = (event: Event): void => {
+    this.onClick = (event: Event) => {
       event.consume(true);
       if (this.hrefInternal) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);
       }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
-    this.onKeyDown = (event: KeyboardEvent): void => {
+    this.onKeyDown = (event: KeyboardEvent) => {
       if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         event.consume(true);
         if (this.hrefInternal) {

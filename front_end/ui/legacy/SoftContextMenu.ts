@@ -133,7 +133,7 @@ export class SoftContextMenu {
     this.focusRestorer = new ElementFocusRestorer(this.contextMenuElement);
 
     if (!this.parentMenu) {
-      this.hideOnUserMouseDownUnlessInMenu = (event: Event): void => {
+      this.hideOnUserMouseDownUnlessInMenu = (event: Event) => {
         // If a user clicks on any submenu, prevent the menu system from closing.
         let subMenu: (SoftContextMenu|undefined) = this.subMenu;
         while (subMenu) {

@@ -30,7 +30,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
     UI.ActionRegistration.registerActionExtension({
       actionId: 'background-service.toggle-recording',
       category: UI.ActionRegistration.ActionCategory.BACKGROUND_SERVICES,
-      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
+      title: () => 'mock' as Platform.UIString.LocalizedString,
       toggleable: true,
     });
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({

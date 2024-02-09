@@ -8,7 +8,7 @@ import {assertElements, assertShadowRoot, renderElementIntoDOM} from '../../help
 
 const {assert} = chai;
 
-const renderTextPrompt = (data: TextPrompt.TextPrompt.TextPromptData): TextPrompt.TextPrompt.TextPrompt => {
+const renderTextPrompt = (data: TextPrompt.TextPrompt.TextPromptData) => {
   const component = new TextPrompt.TextPrompt.TextPrompt();
   component.data = data;
   return component;

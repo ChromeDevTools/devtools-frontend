@@ -236,7 +236,7 @@ export class PopoverHelper {
       popover.setContentAnchorBox(request.box);
       popover.show(document);
 
-      this.hidePopoverCallback = (): void => {
+      this.hidePopoverCallback = () => {
         if (request.hide) {
           request.hide.call(null);
         }

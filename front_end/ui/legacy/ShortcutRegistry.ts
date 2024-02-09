@@ -151,7 +151,7 @@ export class ShortcutRegistry {
       allowlistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
     });
 
-    return (event: KeyboardEvent): void => {
+    return (event: KeyboardEvent) => {
       const key = KeyboardShortcut.makeKeyFromEvent(event);
       const keyMap = this.activePrefixKey ? allowlistKeyMap.getNode(this.activePrefixKey.key()) : allowlistKeyMap;
       if (!keyMap) {
@@ -204,7 +204,7 @@ export class ShortcutRegistry {
     }
     if (keyMapNode && keyMapNode.hasChords()) {
       this.activePrefixKey = keyMapNode;
-      this.consumePrefix = async(): Promise<void> => {
+      this.consumePrefix = async () => {
         this.activePrefixKey = null;
         this.activePrefixTimeout = null;
         await maybeExecuteActionForKey.call(this);

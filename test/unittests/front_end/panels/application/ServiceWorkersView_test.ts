@@ -64,7 +64,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
       ];
       let serviceWorkersManager: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
 
-      const hasRouterField = (): boolean => {
+      const hasRouterField = () => {
         return Array.from(view.currentWorkersView.contentElement.querySelectorAll('.report-field')).some(field => {
           return field.querySelector('.report-field-name')?.textContent === 'Routers';
         });
@@ -152,7 +152,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
           routerRules: JSON.stringify(routerRules),
         };
 
-        const updateAndDispatchEvent = (status: Protocol.ServiceWorker.ServiceWorkerVersionStatus): void => {
+        const updateAndDispatchEvent = (status: Protocol.ServiceWorker.ServiceWorkerVersionStatus) => {
           versionId++;
           registration.updateVersion(Object.assign({}, versionPayload, {versionId: versionId.toString(), status}));
           serviceWorkersManager?.dispatchEventToListeners(

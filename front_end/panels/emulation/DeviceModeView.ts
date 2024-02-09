@@ -459,7 +459,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     const pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
-    pageImage.onload = async(): Promise<void> => {
+    pageImage.onload = async () => {
       const scale = pageImage.naturalWidth / this.model.screenRect().width;
       const outlineRectFromModel = this.model.outlineRect();
       if (!outlineRectFromModel) {
@@ -512,7 +512,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   private saveScreenshotBase64(screenshot: string): void {
     const pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
-    pageImage.onload = (): void => {
+    pageImage.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = pageImage.naturalWidth;
       // Cap the height to not hit the GPU limit.
@@ -534,8 +534,8 @@ export class DeviceModeView extends UI.Widget.VBox {
       const image = new Image();
       image.crossOrigin = 'Anonymous';
       image.srcset = src;
-      image.onerror = (): void => resolve();
-      image.onload = (): void => {
+      image.onerror = () => resolve();
+      image.onload = () => {
         ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
         resolve();
       };

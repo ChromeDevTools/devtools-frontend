@@ -357,7 +357,7 @@ export class ThrottlingManager {
       };
 
       inputElement.value = `${defaultValue}`;
-      inputElement.oninput = (): void => setHardwareConcurrency(Number(inputElement.value));
+      inputElement.oninput = () => setHardwareConcurrency(Number(inputElement.value));
       toggle.inputElement.disabled = false;
       toggle.inputElement.addEventListener('change', () => {
         this.#hardwareConcurrencyOverrideEnabled = toggle.checked();

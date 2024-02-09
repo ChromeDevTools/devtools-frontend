@@ -26,13 +26,12 @@ export async function completeInContext(
     extensions: CodeMirror.javascript.javascriptLanguage,
   });
   const result = await javascriptCompletionSource(new CodeMirror.CompletionContext(state, state.doc.length, force));
-  return result ?
-      result.options.filter((o): boolean => o.label.startsWith(query)).map((o): UI.SuggestBox.Suggestion => ({
-                                                                             text: o.label,
-                                                                             priority: 100 + (o.boost || 0),
-                                                                             isSecondary: o.type === 'secondary',
-                                                                           })) :
-      [];
+  return result ? result.options.filter(o => o.label.startsWith(query)).map(o => ({
+                                                                              text: o.label,
+                                                                              priority: 100 + (o.boost || 0),
+                                                                              isSecondary: o.type === 'secondary',
+                                                                            })) :
+                  [];
 }
 
 class CompletionSet {
@@ -517,7 +516,7 @@ async function getArgumentHints(
     }
     scanPos = before.from;
   }
-  return (): {dom: HTMLElement} => tooltipBuilder(argumentList, argumentIndex);
+  return () => tooltipBuilder(argumentList, argumentIndex);
 }
 
 async function getArgumentsForExpression(

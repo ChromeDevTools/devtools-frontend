@@ -167,7 +167,7 @@ interface RecordingSnapshotOptions {
 const preprocessRecording = (
     recording: unknown,
     options: RecordingSnapshotOptions = {},
-    ): unknown => {
+    ) => {
   let value = JSON.stringify(recording).replaceAll(
       `:${getTestServerPort()}`,
       ':<test-port>',

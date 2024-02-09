@@ -52,9 +52,9 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     this.swCacheModels.clear();
     this.swCacheTreeElements.clear();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, {
-      modelAdded: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void =>
+      modelAdded: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) =>
           this.serviceWorkerCacheModelAdded(model),
-      modelRemoved: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void =>
+      modelRemoved: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) =>
           this.serviceWorkerCacheModelRemoved(model),
     });
   }

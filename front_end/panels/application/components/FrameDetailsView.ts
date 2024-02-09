@@ -392,7 +392,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     return renderIconLink(
         'breakpoint-circle',
         i18nString(UIStrings.clickToRevealInSourcesPanel),
-        (): Promise<void> => Common.Revealer.reveal(sourceCode),
+        () => Common.Revealer.reveal(sourceCode),
         'reveal-in-sources',
     );
   }
@@ -402,12 +402,11 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       const resource = this.#frame.resourceForURL(this.#frame.url);
       if (resource && resource.request) {
         const request = resource.request;
-        return renderIconLink(
-            'arrow-up-down-circle', i18nString(UIStrings.clickToRevealInNetworkPanel), (): Promise<void> => {
-              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-                  request, NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent);
-              return Common.Revealer.reveal(requestLocation);
-            }, 'reveal-in-network');
+        return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToRevealInNetworkPanel), () => {
+          const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+              request, NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent);
+          return Common.Revealer.reveal(requestLocation);
+        }, 'reveal-in-network');
       }
     }
     return LitHtml.nothing;
@@ -493,9 +492,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           <${ReportView.ReportView.ReportValue.litTagName} class="without-min-width">
             <div class="inline-items">
               <button class="link" role="link" tabindex=0
-                @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
-                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+                @mouseenter=${() => this.#frame?.highlight()}
+                @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+                @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
                 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
                 jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
               >
@@ -508,9 +507,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
                 </${IconButton.Icon.Icon.litTagName}>
               </button>
               <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
-                @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
-                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+                @mouseenter=${() => this.#frame?.highlight()}
+                @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+                @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}
                 jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
               >
                 &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;

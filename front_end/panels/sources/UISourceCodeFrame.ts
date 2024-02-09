@@ -504,7 +504,7 @@ export class UISourceCodeFrame extends
     return {
       box: anchor,
       hide(): void{},
-      show: async(popover: UI.GlassPane.GlassPane): Promise<true> => {
+      show: async (popover: UI.GlassPane.GlassPane) => {
         popover.contentElement.append(element);
         return true;
       },
@@ -830,8 +830,7 @@ const rowMessageTheme = CodeMirror.EditorView.baseTheme({
 
 function rowMessages(initialMessages: RowMessage[]): CodeMirror.Extension {
   return [
-    showRowMessages.init(
-        (state): RowMessageDecorations => RowMessageDecorations.create(RowMessages.create(initialMessages), state.doc)),
+    showRowMessages.init(state => RowMessageDecorations.create(RowMessages.create(initialMessages), state.doc)),
     rowMessageTheme,
   ];
 }

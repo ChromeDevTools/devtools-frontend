@@ -137,7 +137,7 @@ describe('NetworkDispatcher', () => {
         statusCode: 200,
       } as Protocol.Network.ResponseReceivedExtraInfoEvent;
       const mockResponseReceivedEventWithHeaders =
-          (headers: Protocol.Network.Headers): Protocol.Network.ResponseReceivedEvent => {
+          (headers: Protocol.Network.Headers) => {
             return {
               requestId: 'mockId',
               loaderId: 'mockLoaderId',

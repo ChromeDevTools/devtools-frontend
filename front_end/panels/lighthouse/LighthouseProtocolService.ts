@@ -110,7 +110,7 @@ export class ProtocolService {
     };
 
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.JavaScriptDialogOpening, dialogHandler);
-    this.removeDialogHandler = (): void =>
+    this.removeDialogHandler = () =>
         resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.JavaScriptDialogOpening, dialogHandler);
 
     this.parallelConnection = connection;

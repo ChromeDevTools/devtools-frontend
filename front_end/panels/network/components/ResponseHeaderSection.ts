@@ -510,7 +510,7 @@ export class ResponseHeaderSection extends HTMLElement {
       Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
       await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {  // If folder for local overrides has not been provided yet
-      UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async(): Promise<void> => {
+      UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });

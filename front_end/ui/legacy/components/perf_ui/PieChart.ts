@@ -106,7 +106,7 @@ export class PieChart extends HTMLElement {
         </div>
         ${this.showLegend ? html`
         <div class="pie-chart-legend" jslog=${VisualLogging.section('legend')}>
-          ${this.slices.map((slice, index): LitHtml.TemplateResult => {
+          ${this.slices.map((slice, index) => {
             const selected = this.sliceSelected === index;
             return html`
               <div class="pie-chart-legend-row ${selected ? 'selected' : ''}"

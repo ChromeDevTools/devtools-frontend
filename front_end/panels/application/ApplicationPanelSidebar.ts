@@ -435,36 +435,34 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     SDK.TargetManager.TargetManager.instance().observeModels(
         DOMStorageModel, {
-          modelAdded: (model: DOMStorageModel): void => this.domStorageModelAdded(model),
-          modelRemoved: (model: DOMStorageModel): void => this.domStorageModelRemoved(model),
+          modelAdded: (model: DOMStorageModel) => this.domStorageModelAdded(model),
+          modelRemoved: (model: DOMStorageModel) => this.domStorageModelRemoved(model),
         },
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
         IndexedDBModel, {
-          modelAdded: (model: IndexedDBModel): void => this.indexedDBModelAdded(model),
-          modelRemoved: (model: IndexedDBModel): void => this.indexedDBModelRemoved(model),
+          modelAdded: (model: IndexedDBModel) => this.indexedDBModelAdded(model),
+          modelRemoved: (model: IndexedDBModel) => this.indexedDBModelRemoved(model),
         },
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
         InterestGroupStorageModel, {
-          modelAdded: (model: InterestGroupStorageModel): void => this.interestGroupModelAdded(model),
-          modelRemoved: (model: InterestGroupStorageModel): void => this.interestGroupModelRemoved(model),
+          modelAdded: (model: InterestGroupStorageModel) => this.interestGroupModelAdded(model),
+          modelRemoved: (model: InterestGroupStorageModel) => this.interestGroupModelRemoved(model),
         },
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
         SharedStorageModel, {
-          modelAdded: (model: SharedStorageModel): Promise<void> => this.sharedStorageModelAdded(model).catch(err => {
+          modelAdded: (model: SharedStorageModel) => this.sharedStorageModelAdded(model).catch(err => {
             console.error(err);
           }),
-          modelRemoved: (model: SharedStorageModel): void => this.sharedStorageModelRemoved(model),
+          modelRemoved: (model: SharedStorageModel) => this.sharedStorageModelRemoved(model),
         },
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
         SDK.StorageBucketsModel.StorageBucketsModel, {
-          modelAdded: (model: SDK.StorageBucketsModel.StorageBucketsModel): void =>
-              this.storageBucketsModelAdded(model),
-          modelRemoved: (model: SDK.StorageBucketsModel.StorageBucketsModel): void =>
-              this.storageBucketsModelRemoved(model),
+          modelAdded: (model: SDK.StorageBucketsModel.StorageBucketsModel) => this.storageBucketsModelAdded(model),
+          modelRemoved: (model: SDK.StorageBucketsModel.StorageBucketsModel) => this.storageBucketsModelRemoved(model),
         },
         {scoped: true});
 

@@ -639,7 +639,7 @@ export class StepView extends HTMLElement {
         title=${i18nString(UIStrings.openStepActions)}
         aria-label=${i18nString(UIStrings.openStepActions)}
         @click=${this.#onToggleActionsMenu}
-        @keydown=${(event: Event): void => {
+        @keydown=${(event: Event) => {
           event.stopPropagation();
         }}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {

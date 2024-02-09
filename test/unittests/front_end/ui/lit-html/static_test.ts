@@ -8,7 +8,7 @@ import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
 import * as i18nRaw from '../../../../../front_end/third_party/i18n/i18n.js';
 
-const templateArray = (value: string[]): TemplateStringsArray => {
+const templateArray = (value: string[]) => {
   // We assume here it's okay to lose the `raw` value from the TemplateStringsArray
   // for the purposes of testing.
   return value as unknown as TemplateStringsArray;

@@ -22,7 +22,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
+const makeFrame = () => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
     url: 'https://www.example.com/path/page.html',
     securityOrigin: 'https://www.example.com',

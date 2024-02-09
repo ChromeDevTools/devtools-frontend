@@ -27,7 +27,7 @@ export class SettingDeprecationWarning extends HTMLElement {
     let onclick: (() => void)|undefined;
     if (disabled && experiment) {
       classes.clickable = true;
-      onclick = (): void => {
+      onclick = () => {
         void Common.Revealer.reveal(experiment);
       };
     }

@@ -68,7 +68,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issue').track({click: true})}`);
     countersWrapper.appendChild(this.issueCounter);
     this.issueCounter.data = {
-      clickHandler: (): void => {
+      clickHandler: () => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },

@@ -70,7 +70,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     if (!target) {
       if (existingCallback) {
         return new Promise(r => {
-          this.#pendingMainTargetPromise = (result: number): void => {
+          this.#pendingMainTargetPromise = (result: number) => {
             r(result);
             existingCallback(result);
           };

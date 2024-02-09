@@ -120,7 +120,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
       triggerKey: string): HTMLElement {
     const triggerButton = createButton(buttonTitle);
 
-    triggerButton.onclick = async(event): Promise<void> => {
+    triggerButton.onclick = async event => {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();
       const widget = StyleEditorWidget.instance();
@@ -152,7 +152,7 @@ function createButton(buttonTitle: string): HTMLButtonElement {
   button.classList.add('styles-pane-button');
   button.tabIndex = 0;
   button.title = buttonTitle;
-  button.onmouseup = (event): void => {
+  button.onmouseup = event => {
     // Stop propagation to prevent the property editor from being activated.
     event.stopPropagation();
   };

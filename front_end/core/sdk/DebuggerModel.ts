@@ -115,7 +115,7 @@ export function sortAndMergeRanges(locationRanges: Protocol.Debugger.LocationRan
   if (locationRanges.length === 0) {
     return [];
   }
-  locationRanges.sort((r1, r2): number => {
+  locationRanges.sort((r1, r2) => {
     if (r1.scriptId < r2.scriptId) {
       return -1;
     }

@@ -699,7 +699,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
         'lighthouse.device-type', 'mobile', Common.Settings.SettingStorageType.Synced),
     title: i18nLazyString(UIStrings.applyMobileEmulation),
     description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
-    setFlags: (flags: Flags, value: string|boolean): void => {
+    setFlags: (flags: Flags, value: string|boolean) => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
       flags.formFactor = value;
     },
@@ -714,7 +714,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
         'lighthouse.mode', 'navigation', Common.Settings.SettingStorageType.Synced),
     title: i18nLazyString(UIStrings.lighthouseMode),
     description: i18nLazyString(UIStrings.runLighthouseInMode),
-    setFlags: (flags: Flags, value: string|boolean): void => {
+    setFlags: (flags: Flags, value: string|boolean) => {
       flags.mode = value;
     },
     options: [
@@ -747,7 +747,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
         'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling' as
         Platform.DevToolsPath.UrlString,
     description: i18nLazyString(UIStrings.simulateASlowerPageLoadBasedOn),
-    setFlags: (flags: Flags, value: string|boolean): void => {
+    setFlags: (flags: Flags, value: string|boolean) => {
       if (typeof value === 'string') {
         flags.throttlingMethod = value;
       } else {
@@ -764,7 +764,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
         'lighthouse.clear-storage', true, Common.Settings.SettingStorageType.Synced),
     title: i18nLazyString(UIStrings.clearStorage),
     description: i18nLazyString(UIStrings.resetStorageLocalstorage),
-    setFlags: (flags: Flags, value: string|boolean): void => {
+    setFlags: (flags: Flags, value: string|boolean) => {
       flags.disableStorageReset = !value;
     },
     options: undefined,

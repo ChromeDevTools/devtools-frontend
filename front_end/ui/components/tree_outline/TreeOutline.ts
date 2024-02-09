@@ -495,10 +495,10 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         })}
       >
         <span class="arrow-and-key-wrapper"
-          @mouseover=${(): void => {
+          @mouseover=${() => {
             this.dispatchEvent(new ItemMouseOverEvent(node));
           }}
-          @mouseout=${(): void => {
+          @mouseout=${() => {
             this.dispatchEvent(new ItemMouseOutEvent(node));
           }}
         >

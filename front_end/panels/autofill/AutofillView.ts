@@ -202,7 +202,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       return LitHtml.html`
         <span
           class=${spanClasses}
-          @mouseenter=${(): void => this.#onSpanMouseEnter(startIndex)}
+          @mouseenter=${() => this.#onSpanMouseEnter(startIndex)}
           @mouseleave=${this.#onSpanMouseLeave}
         >${templateLines}</span>`;
     };

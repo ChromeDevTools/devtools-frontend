@@ -99,7 +99,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     this.accessibilityTreeComponent.data = {
       defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
       tree: treeData,
-      filter: (node): TreeOutline.TreeOutline.FilterOption => {
+      filter: node => {
         return node.ignored() || (node.role()?.value === 'generic' && !node.name()?.value) ?
             TreeOutline.TreeOutline.FilterOption.FLATTEN :
             TreeOutline.TreeOutline.FilterOption.SHOW;

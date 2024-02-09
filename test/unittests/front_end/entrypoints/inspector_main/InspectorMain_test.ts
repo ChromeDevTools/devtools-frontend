@@ -43,7 +43,7 @@ describeWithMockConnection('FocusDebuggeeActionDelegate', () => {
 describeWithMockConnection('InspectorMainImpl', () => {
   const DEBUGGER_ID = 'debuggerId' as Protocol.Runtime.UniqueDebuggerId;
 
-  const runForTabTarget = async(): Promise<void> => {
+  const runForTabTarget = async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
     const runPromise = inspectorMain.run();
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();

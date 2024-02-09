@@ -247,7 +247,7 @@ export class HeaderSectionRow extends HTMLElement {
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${editIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
-          @click=${(): void => {
+          @click=${() => {
             this.dispatchEvent(new EnableHeaderEditingEvent());
           }}
           jslog=${VisualLogging.action('enable-header-overrides').track({click: true})}

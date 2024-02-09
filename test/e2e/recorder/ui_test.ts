@@ -298,7 +298,7 @@ describe('Recorder', function() {
         await button.click();
         const input = await waitForAria('Timeout');
         // Clear the default value.
-        await input.evaluate((el: Element): void => {
+        await input.evaluate((el: Element) => {
           (el as HTMLInputElement).value = '';
         });
         await input.type('2000');

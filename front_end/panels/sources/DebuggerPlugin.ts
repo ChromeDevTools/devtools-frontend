@@ -293,7 +293,7 @@ export class DebuggerPlugin extends Plugin {
     return [
       CodeMirror.EditorView.updateListener.of(update => this.onEditorUpdate(update)),
       CodeMirror.EditorView.domEventHandlers({
-        keydown: (event): boolean => {
+        keydown: event => {
           if (this.onKeyDown(event)) {
             return true;
           }
@@ -332,21 +332,21 @@ export class DebuggerPlugin extends Plugin {
     };
 
     return UI.ShortcutRegistry.ShortcutRegistry.instance().getShortcutListener({
-      'debugger.toggle-breakpoint': async(): Promise<boolean> => {
+      'debugger.toggle-breakpoint': async () => {
         if (this.muted || !this.editor) {
           return false;
         }
         await this.toggleBreakpoint(selectionLine(this.editor), false);
         return true;
       },
-      'debugger.toggle-breakpoint-enabled': async(): Promise<boolean> => {
+      'debugger.toggle-breakpoint-enabled': async () => {
         if (this.muted || !this.editor) {
           return false;
         }
         await this.toggleBreakpoint(selectionLine(this.editor), true);
         return true;
       },
-      'debugger.breakpoint-input-window': async(): Promise<boolean> => {
+      'debugger.breakpoint-input-window': async () => {
         if (this.muted || !this.editor) {
           return false;
         }
@@ -708,7 +708,7 @@ export class DebuggerPlugin extends Plugin {
     let objectPopoverHelper: ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper|null = null;
     return {
       box,
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+      show: async (popover: UI.GlassPane.GlassPane) => {
         let resolvedText: string = '';
         if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
           const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame);
@@ -764,7 +764,7 @@ export class DebuggerPlugin extends Plugin {
         editor.dispatch({effects: evalExpression.update.of(decoration)});
         return true;
       },
-      hide: (): void => {
+      hide: () => {
         if (objectPopoverHelper) {
           objectPopoverHelper.dispose();
         }
@@ -1664,7 +1664,7 @@ export class DebuggerPlugin extends Plugin {
       this.setExecutionLocation(null);
     } else {
       await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
-          callFrame.location(), async(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> => {
+          callFrame.location(), async (liveLocation: Bindings.LiveLocation.LiveLocation) => {
             const uiLocation = await liveLocation.uiLocation();
             if (uiLocation && uiLocation.uiSourceCode === this.uiSourceCode) {
               this.setExecutionLocation(uiLocation);
@@ -2019,10 +2019,9 @@ const noMarkers = {}, hasContinueMarkers = {
 // Add a class to the content element when there are active
 // continue-to markers. This hides the background on the current
 // execution line.
-const markIfContinueTo =
-    CodeMirror.EditorView.contentAttributes.compute([continueToMarkers.field], (state): Record<string, string> => {
-      return state.field(continueToMarkers.field).size ? hasContinueMarkers : noMarkers;
-    });
+const markIfContinueTo = CodeMirror.EditorView.contentAttributes.compute([continueToMarkers.field], state => {
+  return state.field(continueToMarkers.field).size ? hasContinueMarkers : noMarkers;
+});
 
 // Variable value decorations
 

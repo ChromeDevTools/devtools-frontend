@@ -814,7 +814,7 @@ export class NetworkLogViewColumns {
     }
     return {
       box: anchor.boxInWindow(),
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+      show: async (popover: UI.GlassPane.GlassPane) => {
         this.popupLinkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, () => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
         });

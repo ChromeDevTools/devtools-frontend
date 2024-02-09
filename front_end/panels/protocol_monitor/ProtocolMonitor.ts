@@ -294,7 +294,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       contextMenus: {
         bodyRow:
             (menu: UI.ContextMenu.ContextMenu, columns: readonly DataGrid.DataGridUtils.Column[],
-             row: Readonly<DataGrid.DataGridUtils.Row>): void => {
+             row: Readonly<DataGrid.DataGridUtils.Row>) => {
               const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
               const typeColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'type');
               /**

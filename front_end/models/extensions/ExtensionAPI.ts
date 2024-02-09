@@ -594,7 +594,7 @@ self.injectedExtensionAPI = function(
       const id = 'extension-panel-' + extensionServer.nextObjectId();
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.CreatePanel, id, title, page},
-          callback && ((): unknown => callback.call(this, new (Constructor(ExtensionPanel))(id))));
+          callback && (() => callback.call(this, new (Constructor(ExtensionPanel))(id))));
     },
 
     setOpenResourceHandler: function(

@@ -15,7 +15,7 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController): ShadowRoot => {
+const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController) => {
   assertShadowRoot(component.shadowRoot);
   const internalDataGrid = component.shadowRoot.querySelector('devtools-data-grid');
   assertNotNullOrUndefined(internalDataGrid);

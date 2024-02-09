@@ -300,7 +300,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
 
-    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean): void => {
+    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean) => {
       assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
       assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
       assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
@@ -1296,7 +1296,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
 
-    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean): void => {
+    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean) => {
       assert.deepEqual(getCleanTextContentFromElements(shadowRoot, '.header-name'), [headerName]);
       assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
       assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);

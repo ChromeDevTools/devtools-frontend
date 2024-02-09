@@ -366,7 +366,7 @@ export class SessionRouter {
   private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
       void {
     const domain = method.split('.')[0];
-    this.sendMessage(sessionId, domain, method, params, callback || ((): void => {}));
+    this.sendMessage(sessionId, domain, method, params, callback || (() => {}));
   }
 
   private onMessage(message: string|Object): void {
@@ -1056,7 +1056,7 @@ class _AgentPrototype {
         }
 
         const errorMessage = error?.message;
-        fulfill({...result, getError: (): string | undefined => errorMessage});
+        fulfill({...result, getError: () => errorMessage});
       };
 
       const router = this.target.router();

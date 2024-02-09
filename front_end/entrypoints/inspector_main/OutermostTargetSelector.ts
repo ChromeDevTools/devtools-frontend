@@ -106,7 +106,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   }
 
   #targetComparator() {
-    return (a: SDK.Target.Target, b: SDK.Target.Target): number => {
+    return (a: SDK.Target.Target, b: SDK.Target.Target) => {
       const aTargetInfo = a.targetInfo();
       const bTargetInfo = b.targetInfo();
       if (!aTargetInfo || !bTargetInfo) {

@@ -1099,7 +1099,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         showNodeIcon.classList.add('show-element');
         UI.Tooltip.Tooltip.install(showNodeIcon, i18nString(UIStrings.showElement));
         showNodeIcon.tabIndex = 0;
-        showNodeIcon.onclick = (): Promise<void> => frontendNode.scrollIntoView();
+        showNodeIcon.onclick = () => frontendNode.scrollIntoView();
         cell.appendChild(showNodeIcon);
       });
       return cell;

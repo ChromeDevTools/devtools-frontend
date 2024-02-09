@@ -501,16 +501,16 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       case 'url':
         return compareURL;
       case 'type':
-        return (a: GridNode, b: GridNode): number => {
+        return (a: GridNode, b: GridNode) => {
           const typeA = coverageTypeToString(a.coverageInfo.type());
           const typeB = coverageTypeToString(b.coverageInfo.type());
           return typeA.localeCompare(typeB) || compareURL(a, b);
         };
       case 'size':
-        return (a: GridNode, b: GridNode): number => a.coverageInfo.size() - b.coverageInfo.size() || compareURL(a, b);
+        return (a: GridNode, b: GridNode) => a.coverageInfo.size() - b.coverageInfo.size() || compareURL(a, b);
       case 'bars':
       case 'unused-size':
-        return (a: GridNode, b: GridNode): number =>
+        return (a: GridNode, b: GridNode) =>
                    a.coverageInfo.unusedSize() - b.coverageInfo.unusedSize() || compareURL(a, b);
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);

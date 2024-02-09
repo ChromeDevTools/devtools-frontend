@@ -155,7 +155,7 @@ describe('ConsoleInsight', async function() {
       messages = await frontend.$$('pierce/.console-message-wrapper');
     }
 
-    const messageGetter = async(consoleModule: typeof Console, consoleElement: Element): Promise<string> => {
+    const messageGetter = async (consoleModule: typeof Console, consoleElement: Element) => {
       const consoleViewMessage = consoleModule.ConsoleViewMessage.getMessageForElement(consoleElement);
       const message = consoleViewMessage?.toMessageTextString() || '';
       // Replace dynamic line and column numbers in stacktraces with ':1:1'.

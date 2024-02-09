@@ -68,11 +68,11 @@ export function getRegisteredDecorators(): MarkerDecoratorRegistration[] {
   return [
     {
       ...domBreakpointData,
-      decorator: (): GenericDecorator => new GenericDecorator(domBreakpointData),
+      decorator: () => new GenericDecorator(domBreakpointData),
     },
     {
       ...elementIsHiddenData,
-      decorator: (): GenericDecorator => new GenericDecorator(elementIsHiddenData),
+      decorator: () => new GenericDecorator(elementIsHiddenData),
     },
     {
       decorator: PseudoStateMarkerDecorator.instance,

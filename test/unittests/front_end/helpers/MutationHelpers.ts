@@ -167,8 +167,7 @@ const DEFAULT_MAX_MUTATIONS_LIMIT = 10;
  * unnecessarily.
  */
 export const withMutations = async<T extends Node>(
-    expectedMutations: ExpectedMutation[], shadowRoot: T,
-    functionToObserve: (shadowRoot: T) => void): Promise<void> => {
+    expectedMutations: ExpectedMutation[], shadowRoot: T, functionToObserve: (shadowRoot: T) => void) => {
   const observedMutations: ObservedMutation[] = [];
   const mutationObserver = new MutationObserver(entries => {
     storeRelevantMutationEntries(entries, observedMutations);
@@ -238,11 +237,11 @@ export const withMutations = async<T extends Node>(
  * element and a callback, it will execute th e callback function and ensure
  * afterwards that a MutatonObserver saw no changes.
  */
-export const withNoMutations = async<T extends Node>(element: T, fn: (shadowRoot: T) => void): Promise<void> => {
+export const withNoMutations = async<T extends Node>(element: T, fn: (shadowRoot: T) => void) => {
   return await withMutations([], element, fn);
 };
 
-export const someMutations = async<T extends Node>(element: T): Promise<void> => {
+export const someMutations = async<T extends Node>(element: T) => {
   return new Promise<void>(resolve => {
     const observer = new MutationObserver(() => {
       resolve();

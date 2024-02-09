@@ -81,7 +81,7 @@ const getSnapshotPath = (testPath: string) => {
   return join(SNAPSHOTS_DIR, dirname(testPath), `${basename(testPath, extname(testPath))}.json`);
 };
 
-const getOrUpdateSnapshot = (value: unknown, options: SnapshotOptions): unknown => {
+const getOrUpdateSnapshot = (value: unknown, options: SnapshotOptions) => {
   if (!currentTestPath || !currentTestTitle) {
     throw new Error('Not using snapshot helper in test');
   }

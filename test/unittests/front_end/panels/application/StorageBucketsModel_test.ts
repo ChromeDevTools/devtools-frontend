@@ -117,7 +117,7 @@ describeWithMockConnection('StorageBucketsModel', () => {
   };
 
   const setStorageBucketTrackingStub =
-      ({storageKey}: {storageKey: string}): Promise<Protocol.ProtocolResponseWithError> => {
+      ({storageKey}: {storageKey: string}) => {
         for (const bucketInfo of getBucketsForStorageKeys(storageKey)) {
           storageBucketsModel.storageBucketCreatedOrUpdated({bucketInfo});
         }

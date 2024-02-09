@@ -939,19 +939,18 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case GroupBy.None:
         return null;
       case GroupBy.EventName:
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent): string => TimelineUIUtils.eventStyle(event).title;
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent) => TimelineUIUtils.eventStyle(event).title;
       case GroupBy.Category:
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent): string =>
-                   TimelineUIUtils.eventStyle(event).category.name;
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent) => TimelineUIUtils.eventStyle(event).category.name;
       case GroupBy.Subdomain:
         return this.domainByEvent.bind(this, false);
       case GroupBy.Domain:
         return this.domainByEvent.bind(this, true);
       case GroupBy.URL:
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent): string =>
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent) =>
                    TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent): string =>
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent) =>
                    TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).frameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);

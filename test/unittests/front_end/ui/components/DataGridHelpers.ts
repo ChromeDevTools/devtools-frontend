@@ -50,7 +50,7 @@ export const getHeaderCells = (shadowRoot: ShadowRoot, options: {onlyVisible: bo
 export const getValuesOfBodyRowByAriaIndex =
     (shadowRoot: ShadowRoot, ariaIndex: number, options: {onlyVisible: boolean} = {
       onlyVisible: false,
-    }): string[] => {
+    }) => {
       const row = getBodyRowByAriaIndex(shadowRoot, ariaIndex);
       const cells = row.querySelectorAll('[data-grid-value-cell-for-column]');
       assertElements(cells, HTMLTableCellElement);
@@ -63,7 +63,7 @@ export const getValuesOfBodyRowByAriaIndex =
           });
     };
 
-export const getAllRows = (shadowRoot: ShadowRoot): HTMLTableRowElement[] => {
+export const getAllRows = (shadowRoot: ShadowRoot) => {
   const rows = shadowRoot.querySelectorAll('[aria-rowindex]');
   assertElements(rows, HTMLTableRowElement);
   return Array.from(rows);
@@ -89,7 +89,7 @@ export const getDataGrid = (gridComponent: HTMLElement) => {
 };
 
 export const assertGridContents =
-    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): DataGrid.DataGrid.DataGrid => {
+    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
       const grid = getDataGrid(gridComponent);
       assertShadowRoot(grid.shadowRoot);
 
@@ -125,7 +125,7 @@ export const emulateUserFocusingCellAt = async (shadowRoot: ShadowRoot, position
 
 export const getValuesOfAllBodyRows = (shadowRoot: ShadowRoot, options: {onlyVisible: boolean} = {
   onlyVisible: false,
-}): string[][] => {
+}) => {
   const rows = getAllRows(shadowRoot);
   return rows
       .map(row => {
@@ -141,19 +141,19 @@ export const getValuesOfAllBodyRows = (shadowRoot: ShadowRoot, options: {onlyVis
       .map(r => r.rowValues);
 };
 
-export const getBodyRowByAriaIndex = (shadowRoot: ShadowRoot, rowIndex: number): HTMLTableRowElement => {
+export const getBodyRowByAriaIndex = (shadowRoot: ShadowRoot, rowIndex: number) => {
   const row = shadowRoot.querySelector(`[aria-rowindex="${rowIndex}"]`);
   assertElement(row, HTMLTableRowElement);
   return row;
 };
 
-export const getHeaderCellForColumnId = (shadowRoot: ShadowRoot, columnId: string): HTMLTableCellElement => {
+export const getHeaderCellForColumnId = (shadowRoot: ShadowRoot, columnId: string) => {
   const cell = shadowRoot.querySelector(`[data-grid-header-cell="${columnId}`);
   assertElement(cell, HTMLTableCellElement);
   return cell;
 };
 
-export const getValuesForColumn = (shadowRoot: ShadowRoot, columnId: string): string[] => {
+export const getValuesForColumn = (shadowRoot: ShadowRoot, columnId: string) => {
   const cells = shadowRoot.querySelectorAll(`[data-grid-value-cell-for-column=${columnId}]`);
   assertElements(cells, HTMLTableCellElement);
   return Array.from(cells, cell => cell.innerText);

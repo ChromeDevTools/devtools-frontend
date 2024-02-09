@@ -951,7 +951,7 @@ export function animateFunction(
     }
   }
 
-  return (): void => window.cancelAnimationFrame(raf);
+  return () => window.cancelAnimationFrame(raf);
 }
 
 export class LongClickController {
@@ -1533,7 +1533,7 @@ export function createFileSelectorElement(callback: (arg0: File) => void): HTMLI
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
   fileSelectorElement.tabIndex = -1;
-  fileSelectorElement.onchange = (): void => {
+  fileSelectorElement.onchange = () => {
     if (fileSelectorElement.files) {
       callback(fileSelectorElement.files[0]);
     }

@@ -21,27 +21,26 @@ const renderIssueCounter = (data: IssueCounter.IssueCounter.IssueCounterData):
       return {component, shadowRoot: component.shadowRoot};
     };
 
-export const extractIconGroups =
-    (shadowRoot: ShadowRoot): {iconData: IconButton.Icon.IconData, label: string|null}[] => {
-      const iconButton = shadowRoot.querySelector('icon-button');
-      assertElement(iconButton, IconButton.IconButton.IconButton);
-      const iconButtonShadowRoot = iconButton.shadowRoot;
-      assertNotNullOrUndefined(iconButtonShadowRoot);
-      const icons = iconButtonShadowRoot.querySelectorAll('.status-icon');
-      assertElements(icons, IconButton.Icon.Icon);
-      const labels = iconButtonShadowRoot.querySelectorAll('.icon-button-title');
-      assertElements(labels, HTMLSpanElement);
-      assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
-      const iconGroups = [];
-      for (let i = 0; i < icons.length; ++i) {
-        const labelElement = labels[i];
-        const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
-        iconGroups.push({iconData: icons[i].data, label});
-      }
-      return iconGroups;
-    };
+export const extractIconGroups = (shadowRoot: ShadowRoot) => {
+  const iconButton = shadowRoot.querySelector('icon-button');
+  assertElement(iconButton, IconButton.IconButton.IconButton);
+  const iconButtonShadowRoot = iconButton.shadowRoot;
+  assertNotNullOrUndefined(iconButtonShadowRoot);
+  const icons = iconButtonShadowRoot.querySelectorAll('.status-icon');
+  assertElements(icons, IconButton.Icon.Icon);
+  const labels = iconButtonShadowRoot.querySelectorAll('.icon-button-title');
+  assertElements(labels, HTMLSpanElement);
+  assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
+  const iconGroups = [];
+  for (let i = 0; i < icons.length; ++i) {
+    const labelElement = labels[i];
+    const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
+    iconGroups.push({iconData: icons[i].data, label});
+  }
+  return iconGroups;
+};
 
-export const extractButton = (shadowRoot: ShadowRoot): HTMLButtonElement => {
+export const extractButton = (shadowRoot: ShadowRoot) => {
   const iconButton = shadowRoot.querySelector('icon-button');
   assertElement(iconButton, IconButton.IconButton.IconButton);
   const iconButtonShadowRoot = iconButton.shadowRoot;

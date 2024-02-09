@@ -100,7 +100,7 @@ export class ValueInterpreterSettings extends HTMLElement {
       ${types.map(type => {
         return html`
           <label class="type-label" title=${valueTypeToLocalizedString(type)}>
-            <input data-input="true" type="checkbox" .checked=${this.#valueTypes.has(type)} @change=${(e: Event): void => this.#onTypeToggle(type, e)} jslog=${VisualLogging.toggle().track({change: true}).context(type)}>
+            <input data-input="true" type="checkbox" .checked=${this.#valueTypes.has(type)} @change=${(e: Event) => this.#onTypeToggle(type, e)} jslog=${VisualLogging.toggle().track({change: true}).context(type)}>
             <span data-title="true">${valueTypeToLocalizedString(type)}</span>
           </label>
      `;})}`;

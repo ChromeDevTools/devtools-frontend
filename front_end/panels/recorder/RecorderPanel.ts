@@ -58,7 +58,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       _context: UI.Context.Context,
       actionId: Actions.RecorderActions,
       ): boolean {
-    void (async(): Promise<void> => {
+    void (async () => {
       await UI.ViewManager.ViewManager.instance().showView(
           RecorderPanel.panelName,
       );

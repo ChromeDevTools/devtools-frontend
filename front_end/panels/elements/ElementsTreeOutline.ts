@@ -233,7 +233,7 @@ export class ElementsTreeOutline extends
 
         return {
           box: hoveredNode.boxInWindow(),
-          show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+          show: async (popover: UI.GlassPane.GlassPane) => {
             popover.setIgnoreLeftMargin(true);
             const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
             viewIssueElement.addEventListener('click', () => openIssueEvent());
@@ -1793,7 +1793,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
       content: adornerContent,
     };
     this.listItemElement.appendChild(adorner);
-    const onClick = (((): void => {
+    const onClick = ((() => {
                        Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.REVEAL);
                        this.nodeShortcut.deferredNode.resolve(
                            node => {

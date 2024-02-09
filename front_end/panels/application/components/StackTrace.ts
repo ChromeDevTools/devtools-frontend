@@ -123,7 +123,7 @@ export class StackTraceLinkButton extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
       <div class="stack-trace-row">
-          <button class="link" @click=${(): void => this.#onShowAllClick()}>
+          <button class="link" @click=${() => this.#onShowAllClick()}>
             ${linkText}
           </button>
         </div>

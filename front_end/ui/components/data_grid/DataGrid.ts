@@ -813,10 +813,10 @@ export class DataGrid extends HTMLElement {
                   jslog=${VisualLogging.tableHeader().track({click: anyColumnsSortable}).context(col.id)}
                   style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                   data-grid-header-cell=${col.id}
-                  @focus=${(): void => {
+                  @focus=${() => {
                     this.#focusCellIfRequired([columnIndex, 0]);
                   }}
-                  @click=${(): void => {
+                  @click=${() => {
                     /**
                      * We use click here rather than focus because if you've
                      * clicked on the header to sort, you've also focused it. If
@@ -840,7 +840,7 @@ export class DataGrid extends HTMLElement {
             <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
               height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
             })} aria-hidden="true"></tr>
-            ${LitHtml.Directives.repeat(renderableRows, row => this.#rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
+            ${LitHtml.Directives.repeat(renderableRows, row => this.#rowIndexMap.get(row), row => {
               const rowIndex = this.#rowIndexMap.get(row);
               if (rowIndex === undefined) {
                 throw new Error('Trying to render a row that has no index in the rowIndexMap');
@@ -863,10 +863,10 @@ export class DataGrid extends HTMLElement {
                   class=${rowClasses}
                   style=${LitHtml.Directives.ifDefined(row.styles ? LitHtml.Directives.styleMap(row.styles) : undefined)}
                   @contextmenu=${this.#onBodyRowContextMenu}
-                  @mouseenter=${(): void => {
+                  @mouseenter=${() => {
                     this.dispatchEvent(new RowMouseEnterEvent(row));
                   }}
-                  @mouseleave=${(): void => {
+                  @mouseleave=${() => {
                     this.dispatchEvent(new RowMouseLeaveEvent(row));
                   }}
                 >${this.#columns.map((col, columnIndex) => {
@@ -887,7 +887,7 @@ export class DataGrid extends HTMLElement {
                     data-row-index=${tableRowIndex}
                     data-col-index=${columnIndex}
                     data-grid-value-cell-for-column=${col.id}
-                    @focus=${(): void => {
+                    @focus=${() => {
                       this.#focusCellIfRequired([columnIndex, tableRowIndex]);
                       this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
                     }}

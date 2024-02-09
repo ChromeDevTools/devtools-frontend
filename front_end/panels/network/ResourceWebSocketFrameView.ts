@@ -263,7 +263,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   static opCodeDescription(opCode: number, mask: boolean): string {
-    const localizedDescription = opCodeDescriptions[opCode] || ((): string => '');
+    const localizedDescription = opCodeDescriptions[opCode] || (() => '');
     if (mask) {
       return i18nString(UIStrings.sOpcodeSMask, {PH1: localizedDescription(), PH2: opCode});
     }

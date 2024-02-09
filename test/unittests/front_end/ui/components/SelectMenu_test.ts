@@ -82,7 +82,7 @@ describeWithLocale('SelectMenu', () => {
       return;
     }
     firsItem.selected = true;
-    menu.buttonTitle = (): LitHtml.TemplateResult => LitHtml.html`Override Title`;
+    menu.buttonTitle = () => LitHtml.html`Override Title`;
     Helpers.renderElementIntoDOM(menu);
     await coordinator.done();
     Helpers.assertShadowRoot(menu.shadowRoot);

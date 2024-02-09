@@ -106,7 +106,7 @@ describe('SourceMapManager', () => {
     SDK.TargetManager.TargetManager.removeInstance();
   });
 
-  const createTarget = (): SDK.Target.Target => {
+  const createTarget = () => {
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.type.returns(SDK.Target.Type.Frame);
     return target;

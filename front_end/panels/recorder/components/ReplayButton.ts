@@ -66,26 +66,26 @@ const items: SelectButtonItem[] = [
   {
     value: PlayRecordingSpeed.Normal,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayNormalButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayNormalItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
+    label: () => i18nString(UIStrings.ReplayNormalItemLabel),
   },
   {
     value: PlayRecordingSpeed.Slow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplaySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplaySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplaySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.VerySlow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayVerySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayVerySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.ExtremelySlow,
     buttonIconName: 'play',
-    buttonLabel: (): string => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
-    label: (): string => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
+    buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
+    label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
   },
 ];
 
@@ -203,8 +203,8 @@ export class ReplayButton extends HTMLElement {
           return {
             value: REPLAY_EXTENSION_PREFIX + idx,
             buttonIconName: 'play',
-            buttonLabel: (): string => extension.getName(),
-            label: (): string => extension.getName(),
+            buttonLabel: () => extension.getName(),
+            label: () => extension.getName(),
           };
         }),
       });

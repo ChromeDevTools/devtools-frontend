@@ -544,7 +544,7 @@ export class TextMatch implements Match {
   computedText?: () => string;
   constructor(readonly text: string, readonly isComment: boolean) {
     if (isComment) {
-      this.computedText = (): string => '';
+      this.computedText = () => '';
     }
   }
   render(): Node[] {

@@ -873,12 +873,11 @@ async function openMoreTypesDropdown(
 }
 
 function setupRequestTypesDropdown() {
-  const filterItems =
-      Object.values(Common.ResourceType.resourceCategories).map(category => ({
-                                                                  name: category.title(),
-                                                                  label: (): string => category.shortTitle(),
-                                                                  title: category.title(),
-                                                                }));
+  const filterItems = Object.values(Common.ResourceType.resourceCategories).map(category => ({
+                                                                                  name: category.title(),
+                                                                                  label: () => category.shortTitle(),
+                                                                                  title: category.title(),
+                                                                                }));
 
   const setting = Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {all: true});
   const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, setting);

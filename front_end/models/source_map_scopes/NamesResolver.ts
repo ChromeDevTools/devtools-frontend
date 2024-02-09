@@ -226,7 +226,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
 
       if (!cachedScopeMap || cachedScopeMap.sourceMap !== sourceMap) {
         const identifiersPromise =
-            (async(): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
+            (async () => {
               const variableMapping = new Map<string, string>();
               let thisMapping = null;
 

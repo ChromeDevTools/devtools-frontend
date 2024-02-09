@@ -378,8 +378,8 @@ function schemefulSameSiteSubstitutions(
     Map<string, () => string> {
   return new Map([
     // TODO(crbug.com/1168438): Use translated phrases once the issue description is localized.
-    ['PLACEHOLDER_destination', (): string => isDestinationSecure ? 'a secure' : 'an insecure'],
-    ['PLACEHOLDER_origin', (): string => isOriginSecure ? 'a secure' : 'an insecure'],
+    ['PLACEHOLDER_destination', () => isDestinationSecure ? 'a secure' : 'an insecure'],
+    ['PLACEHOLDER_origin', () => isOriginSecure ? 'a secure' : 'an insecure'],
   ]);
 }
 

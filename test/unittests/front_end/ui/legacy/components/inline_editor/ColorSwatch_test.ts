@@ -190,7 +190,7 @@ describeWithLocale('ColorSwatch', () => {
   it('produces a color conversion menu', () => {
     const menuEntries: string[] = [];
     sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-    sinon.stub(UI.ContextMenu.Section.prototype, 'appendItem').callsFake((label: string): UI.ContextMenu.Item => {
+    sinon.stub(UI.ContextMenu.Section.prototype, 'appendItem').callsFake((label: string) => {
       menuEntries.push(label);
       return new UI.ContextMenu.Item(null, 'item');
     });

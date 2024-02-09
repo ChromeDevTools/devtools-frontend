@@ -134,7 +134,7 @@ export class IconDialog extends HTMLElement {
       <${DialogElement.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}
-        .origin=${(): IconButton.Icon.Icon => {
+        .origin=${() => {
           if (!this.#icon) {
             throw new Error('Icon not found');
           }

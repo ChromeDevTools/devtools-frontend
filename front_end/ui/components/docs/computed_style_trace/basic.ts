@@ -20,5 +20,5 @@ document.getElementById('container')?.appendChild(component);
 component.data = {
   selector: 'body',
   active: true,
-  onNavigateToSource: (): void => {},
+  onNavigateToSource: () => {},
 };

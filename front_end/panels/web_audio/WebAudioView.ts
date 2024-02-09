@@ -69,7 +69,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
     this.contextSelector.addEventListener(
         SelectorEvents.ContextSelected,
-        (event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext|null>): void => {
+        (event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext|null>) => {
           const context = event.data;
           if (context) {
             this.updateDetailView(context);

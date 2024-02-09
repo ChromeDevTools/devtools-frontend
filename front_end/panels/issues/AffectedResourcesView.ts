@@ -182,7 +182,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       const icon = new IconButton.Icon.Icon();
       icon.data = {iconName: 'code-circle', color: 'var(--icon-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
-      icon.onclick = async(): Promise<void> => {
+      icon.onclick = async () => {
         Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.Element);
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
         if (frame) {
@@ -196,13 +196,13 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       frameCell.appendChild(icon);
     }
     frameCell.appendChild(document.createTextNode(url));
-    frameCell.onmouseenter = (): void => {
+    frameCell.onmouseenter = () => {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
       if (frame) {
         void frame.highlight();
       }
     };
-    frameCell.onmouseleave = (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    frameCell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     return frameCell;
   }
 

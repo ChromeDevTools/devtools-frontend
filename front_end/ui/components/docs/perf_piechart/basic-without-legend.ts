@@ -11,7 +11,7 @@ document.getElementById('container')?.appendChild(chart);
 chart.data = {
   chartName: 'Nice Chart',
   size: 110,
-  formatter: (value): string => String(value) + ' %',
+  formatter: value => String(value) + ' %',
   showLegend: false,
   total: 100,
   slices: [{value: 75, color: 'crimson', title: 'Filling'}, {value: 25, color: 'burlywood', title: 'Crust'}],

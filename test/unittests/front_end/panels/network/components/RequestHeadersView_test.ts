@@ -73,7 +73,7 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
   return component;
 }
 
-const getTextFromRow = (row: HTMLElement): string[] => {
+const getTextFromRow = (row: HTMLElement) => {
   assertShadowRoot(row.shadowRoot);
   const headerNameElement = row.shadowRoot.querySelector('.header-name');
   const headerName = headerNameElement?.textContent?.trim() || '';
@@ -82,7 +82,7 @@ const getTextFromRow = (row: HTMLElement): string[] => {
   return [headerName, headerValue];
 };
 
-const getRowsFromCategory = (category: HTMLElement): NetworkComponents.HeaderSectionRow.HeaderSectionRow[] => {
+const getRowsFromCategory = (category: HTMLElement) => {
   const slot = getElementWithinComponent(category, 'slot', HTMLSlotElement);
   const section = slot.assignedElements()[0];
   assertElement(section, HTMLElement);
@@ -91,11 +91,11 @@ const getRowsFromCategory = (category: HTMLElement): NetworkComponents.HeaderSec
   return Array.from(rows);
 };
 
-const getRowsTextFromCategory = (category: HTMLElement): string[][] => {
+const getRowsTextFromCategory = (category: HTMLElement) => {
   return getRowsFromCategory(category).map(row => getTextFromRow(row));
 };
 
-const getRowHighlightStatus = (container: HTMLElement): boolean[] => {
+const getRowHighlightStatus = (container: HTMLElement) => {
   const rows = getRowsFromCategory(container);
   return rows.map(row => {
     const element = row.shadowRoot?.querySelector('.row');
@@ -401,7 +401,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(headerRow, HTMLElement);
     assertShadowRoot(headerRow.shadowRoot);
 
-    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean): void => {
+    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean) => {
       assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
       const valueEditableComponent =
           shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-value devtools-editable-span');

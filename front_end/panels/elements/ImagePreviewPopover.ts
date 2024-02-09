@@ -40,7 +40,7 @@ export class ImagePreviewPopover {
     return {
       box: link.boxInWindow(),
       hide: undefined,
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+      show: async (popover: UI.GlassPane.GlassPane) => {
         const node = this.getDOMNode((link as Element));
         if (!node) {
           return false;

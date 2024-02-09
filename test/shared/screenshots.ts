@@ -142,7 +142,7 @@ interface ScreenshotAssertionOptions {
   retryCount?: number;
 }
 
-const assertScreenshotUnchanged = async(options: ScreenshotAssertionOptions): Promise<void> => {
+const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) => {
   const {
     elementOrPage,
     generatedScreenshotPath,

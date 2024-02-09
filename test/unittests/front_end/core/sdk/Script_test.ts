@@ -40,7 +40,7 @@ console.log("foo");
         hash: '',
         hasSourceURL: true,
       });
-      setMockConnectionResponseHandler('Debugger.getScriptSource', (): Protocol.Debugger.GetScriptSourceResponse => {
+      setMockConnectionResponseHandler('Debugger.getScriptSource', () => {
         return {
           scriptSource,
           getError() {

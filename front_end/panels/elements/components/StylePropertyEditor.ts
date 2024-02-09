@@ -141,7 +141,7 @@ export class StylePropertyEditor extends HTMLElement {
       <button title=${title}
               class=${classes}
               jslog=${VisualLogging.item().track({click: true}).context(`${propertyName}-${propertyValue}`)}
-              @click=${(): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
+              @click=${() => this.#onButtonClick(propertyName, propertyValue, selected)}>
         <${IconButton.Icon.Icon.litTagName} style=${transform} name=${iconInfo.iconName}>
         </${IconButton.Icon.Icon.litTagName}>
       </button>

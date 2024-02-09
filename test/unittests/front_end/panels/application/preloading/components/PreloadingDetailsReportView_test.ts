@@ -22,14 +22,14 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
+const zip2 = <T, S>(xs: T[], ys: S[]) => {
   assert.strictEqual(xs.length, ys.length);
 
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
 };
 
-const renderPreloadingDetailsReportView = async(
-    data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData): Promise<HTMLElement> => {
+const renderPreloadingDetailsReportView =
+    async (data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData) => {
   const component = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   component.data = data;
   renderElementIntoDOM(component);
@@ -160,7 +160,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 
   it('renders prefetch details with cancelled reason', async () => {
     const fakeRequestResolver = {
-      waitFor: (_requestId: Protocol.Network.RequestId): Promise<void> => {
+      waitFor: (_requestId: Protocol.Network.RequestId) => {
         return Promise.reject();
       },
     } as unknown as Logs.RequestResolver.RequestResolver;
@@ -220,7 +220,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 
   it('renders prefetch details with out-of-document Speculation Rules', async () => {
     const fakeRequestResolver = {
-      waitFor: (_requestId: Protocol.Network.RequestId): Promise<void> => {
+      waitFor: (_requestId: Protocol.Network.RequestId) => {
         return Promise.reject();
       },
     } as unknown as Logs.RequestResolver.RequestResolver;

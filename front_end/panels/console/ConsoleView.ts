@@ -427,7 +427,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issues').track({click: true})}`);
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
-      clickHandler: (): void => {
+      clickHandler: () => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
         void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
@@ -510,7 +510,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.viewportThrottler = new Common.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
-    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void => {
+    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => {
       void this.onMessageResized(e);
     };
 

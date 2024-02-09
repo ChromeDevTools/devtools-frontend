@@ -890,7 +890,7 @@ export class StylePropertiesSection {
     containerElement.data = {
       container: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(container.containerNode),
       queryName: containerQuery.name,
-      onContainerLinkClick: (event): void => {
+      onContainerLinkClick: event => {
         event.preventDefault();
         void ElementsPanel.instance().revealAndSelectNode(container.containerNode, true, true);
         void container.containerNode.scrollIntoView();

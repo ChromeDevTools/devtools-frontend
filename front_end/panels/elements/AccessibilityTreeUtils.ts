@@ -100,7 +100,7 @@ export async function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.Acces
 
   return [{
     treeNodeData,
-    children: async(): Promise<AXTreeNode[]> => {
+    children: async () => {
       const childNodes = await getChildren(sdkNode);
       const childTreeNodes = await Promise.all(childNodes.map(childNode => sdkNodeToAXTreeNodes(childNode)));
       return childTreeNodes.flat(1);

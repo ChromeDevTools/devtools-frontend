@@ -18,8 +18,8 @@ describe('SelectButton', () => {
     const component = new RecorderComponents.SelectButton.SelectButton();
     component.value = 'item1';
     component.items = [
-      {value: 'item1', label: (): string => 'item1-label'},
-      {value: 'item2', label: (): string => 'item2-label'},
+      {value: 'item1', label: () => 'item1-label'},
+      {value: 'item2', label: () => 'item2-label'},
     ];
     renderElementIntoDOM(component);
     await coordinator.done();
@@ -43,8 +43,8 @@ describe('SelectButton', () => {
     const component = new RecorderComponents.SelectButton.SelectButton();
     component.value = 'item1';
     component.items = [
-      {value: 'item1', label: (): string => 'item1-label'},
-      {value: 'item2', label: (): string => 'item2-label'},
+      {value: 'item1', label: () => 'item1-label'},
+      {value: 'item2', label: () => 'item2-label'},
     ];
     component.connectedCallback();
     await coordinator.done();

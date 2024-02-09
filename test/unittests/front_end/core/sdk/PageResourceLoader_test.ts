@@ -29,7 +29,7 @@ describeWithLocale('PageResourceLoader', () => {
   const foo2Url = 'foo2' as Platform.DevToolsPath.UrlString;
   const foo3Url = 'foo3' as Platform.DevToolsPath.UrlString;
   const loads: Array<{url: string, resolve?: {(_: LoadResult|PromiseLike<LoadResult>): void}}> = [];
-  const load = async(url: string): Promise<LoadResult> => {
+  const load = async (url: string) => {
     loads.push({url});
 
     return {
@@ -251,7 +251,7 @@ describeWithMockConnection('PageResourceLoader', () => {
     const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID});
     const initiator = {target, frameId: null, initiatorUrl};
     const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
-    const load = async(): Promise<LoadResult> => {
+    const load = async () => {
       await new Promise(() => {});
       return {
         success: true,
@@ -287,7 +287,7 @@ describeWithMockConnection('PageResourceLoader', () => {
     const initiator = {target, frameId: null, initiatorUrl};
     const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
 
-    const load = async(url: string): Promise<LoadResult> => {
+    const load = async (url: string) => {
       return {
         success: true,
         content: `${url} - content`,

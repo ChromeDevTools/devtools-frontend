@@ -99,7 +99,7 @@ export const formatAsJSLiteral = (content: string): string => {
 export const sprintf = (fmt: string, ...args: unknown[]): string => {
   let argIndex = 0;
   const RE = /%(?:(\d+)\$)?(?:\.(\d*))?([%dfs])/g;
-  return fmt.replaceAll(RE, (_: string, index?: string, precision?: string, specifier?: string): string => {
+  return fmt.replaceAll(RE, (_: string, index?: string, precision?: string, specifier?: string) => {
     if (specifier === '%') {
       return '%';
     }

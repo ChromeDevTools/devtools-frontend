@@ -36,7 +36,7 @@ const STACKTRACE_ROW_SELECTOR = '.stack-trace-row';
 const STACKTRACE_ROW_LINK_SELECTOR = '.stack-trace-row .link';
 const APPLICATION_PANEL_SELECTED_SELECTOR = '.tabbed-pane-header-tab.selected[aria-label="Application"]';
 
-const getTrailingURL = (text: string): string => {
+const getTrailingURL = (text: string) => {
   const match = text.match(/http.*$/);
   return match ? match[0] : '';
 };

@@ -39,15 +39,15 @@ type Attribute = Keys<Models.Schema.Step>;
 type DataType<A extends Attribute> = ReturnType<typeof typeConverters[typeof dataTypeByAttribute[A]]>;
 
 const typeConverters = Object.freeze({
-  string: (value: string): string => value.trim(),
-  number: (value: string): number => {
+  string: (value: string) => value.trim(),
+  number: (value: string) => {
     const number = parseFloat(value);
     if (Number.isNaN(number)) {
       return 0;
     }
     return number;
   },
-  boolean: (value: string): boolean => {
+  boolean: (value: string) => {
     if (value.toLowerCase() === 'true') {
       return true;
     }
@@ -350,7 +350,7 @@ export class EditorState {
     for (const attribute of attributes.required) {
       promise = Promise.all([
         promise,
-        (async(): Promise<EditorState> => Object.assign(state, {
+        (async () => Object.assign(state, {
           [attribute]: await this.defaultByAttribute(state, attribute),
         }))(),
       ]);
@@ -692,7 +692,7 @@ export class StepEditor extends LitElement {
       class="inline-button delete-row"
       data-attribute=${attribute}
       jslog=${VisualLogging.action('delete').track({click: true})}
-      @click=${(event: MouseEvent): void => {
+      @click=${(event: MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -733,7 +733,7 @@ export class StepEditor extends LitElement {
         .disabled=${this.disabled}
         .placeholder=${defaultValuesByAttribute[attribute].toString()}
         .value=${live(attributeValue)}
-        .mimeType=${((): string => {
+        .mimeType=${(() => {
           switch (attribute) {
             case 'expression':
               return 'text/javascript';
@@ -1089,7 +1089,7 @@ export class StepEditor extends LitElement {
               {
                 attributes: new ArrayAssignments({
                   [index + 1]: new InsertAssignment(
-                    ((): { name: string, value: string } => {
+                    (() => {
                       {
                         const names = new Set(
                           attributes.map(({ name }) => name),

@@ -201,7 +201,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
     this.element.appendChild(this.textEditorInternal);
-    this.element.addEventListener('keydown', (event: KeyboardEvent): void => {
+    this.element.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.defaultPrevented) {
         event.stopPropagation();
       }
@@ -442,13 +442,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       const disassembly = this.wasmDisassemblyInternal;
       const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
       const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length + 1;
-      formatNumber = (lineNumber: number): string => {
+      formatNumber = (lineNumber: number) => {
         const bytecodeOffset =
             disassembly.lineNumberToBytecodeOffset(Math.min(disassembly.lineNumbers, lineNumber) - 1);
         return `0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
       };
     } else if (this.prettyInternal) {
-      formatNumber = (lineNumber: number, state: CodeMirror.EditorState): string => {
+      formatNumber = (lineNumber: number, state: CodeMirror.EditorState) => {
         // @codemirror/view passes a high number here to estimate the
         // maximum width to allocate for the line number gutter.
         if (lineNumber < 2 || lineNumber > state.doc.lines) {
@@ -582,7 +582,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         worker.onmessage =
             // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ({data}: MessageEvent<any>): void => {
+            ({data}: MessageEvent<any>) => {
               if ('event' in data) {
                 switch (data.event) {
                   case 'progress':
@@ -896,7 +896,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   private searchResultIndexForCurrentSelection(): number {
     return Platform.ArrayUtilities.lowerBound(
-        this.searchResults, this.textEditor.state.selection.main, (a, b): number => a.to - b.to);
+        this.searchResults, this.textEditor.state.selection.main, (a, b) => a.to - b.to);
   }
 
   jumpToNextSearchResult(): void {
@@ -1067,7 +1067,7 @@ class SearchMatch {
   }
 
   insertPlaceholders(replacement: string): string {
-    return replacement.replace(/\$(\$|&|\d+|<[^>]+>)/g, (_, selector): string => {
+    return replacement.replace(/\$(\$|&|\d+|<[^>]+>)/g, (_, selector) => {
       if (selector === '$') {
         return '$';
       }
@@ -1186,8 +1186,8 @@ class ActiveSearch {
   }
 }
 
-const setActiveSearch = CodeMirror.StateEffect.define<ActiveSearch|null>(
-    {map: (value, mapping): ActiveSearch | null => value && value.map(mapping)});
+const setActiveSearch =
+    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value && value.map(mapping)});
 
 const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   create(): null {
@@ -1252,7 +1252,7 @@ decorations:
     }
     return builder.finish();
   }
-}, {decorations: (value): CodeMirror.DecorationSet => value.decorations});
+}, {decorations: value => value.decorations});
 
 const nonBreakableLineMark = new (class extends CodeMirror.GutterMarker {
   override elementClass = 'cm-nonBreakableLine';

@@ -123,7 +123,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const content = oldCondition || '';
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
-      void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete): void => {
+      void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then(complete => {
         if (complete) {
           this.finishEditing(true, this.editor.state.doc.toString());
         } else {
@@ -133,10 +133,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       return true;
     };
     const keymap = [
-      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
-      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
-      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
+      {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Mod-Enter',
         run: finishIfComplete,
@@ -151,7 +151,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       },
       {
         key: 'Escape',
-        run: (): boolean => {
+        run: () => {
           this.finishEditing(false, '');
           return true;
         },
@@ -179,7 +179,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     closeIcon.name = 'cross';
     closeIcon.title = i18nString(UIStrings.closeDialog);
     closeIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
-    closeIcon.onclick = (): void => this.finishEditing(true, this.editor.state.doc.toString());
+    closeIcon.onclick = () => this.finishEditing(true, this.editor.state.doc.toString());
     header.appendChild(closeIcon);
 
     this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(

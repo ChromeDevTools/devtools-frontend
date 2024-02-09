@@ -24,21 +24,20 @@ const defaultIcon: IconButton.IconButton.IconWithTextData = {
   text: '1',
 };
 
-export const extractIconGroups =
-    (shadowRoot: ShadowRoot): {iconData: IconButton.Icon.IconData, label: string|null}[] => {
-      const icons = shadowRoot.querySelectorAll('.status-icon');
-      assertElements(icons, IconButton.Icon.Icon);
-      const labels = shadowRoot.querySelectorAll('.icon-button-title');
-      assertElements(labels, HTMLSpanElement);
-      assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
-      const iconGroups = [];
-      for (let i = 0; i < icons.length; ++i) {
-        const labelElement = labels[i];
-        const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
-        iconGroups.push({iconData: icons[i].data, label});
-      }
-      return iconGroups;
-    };
+export const extractIconGroups = (shadowRoot: ShadowRoot) => {
+  const icons = shadowRoot.querySelectorAll('.status-icon');
+  assertElements(icons, IconButton.Icon.Icon);
+  const labels = shadowRoot.querySelectorAll('.icon-button-title');
+  assertElements(labels, HTMLSpanElement);
+  assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
+  const iconGroups = [];
+  for (let i = 0; i < icons.length; ++i) {
+    const labelElement = labels[i];
+    const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
+    iconGroups.push({iconData: icons[i].data, label});
+  }
+  return iconGroups;
+};
 
 describe('IconButton', () => {
   it('renders correctly with one icon', () => {

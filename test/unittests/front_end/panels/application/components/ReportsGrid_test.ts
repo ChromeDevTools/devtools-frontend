@@ -16,8 +16,7 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const renderReportsGrid =
-    async(data?: ApplicationComponents.ReportsGrid.ReportsGridData|null): Promise<HTMLElement> => {
+const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.ReportsGridData|null) => {
   const component = new ApplicationComponents.ReportsGrid.ReportsGrid();
   if (data) {
     component.data = data;
@@ -37,7 +36,7 @@ const renderReportsGrid =
   return datagrid;
 };
 
-const getHeaderText = (cell: HTMLTableCellElement): string => {
+const getHeaderText = (cell: HTMLTableCellElement) => {
   const ret = cell.textContent?.trim() ||
       cell.querySelector('devtools-resources-reports-grid-status-header')?.shadowRoot?.textContent?.trim();
   assertNotNullOrUndefined(ret);

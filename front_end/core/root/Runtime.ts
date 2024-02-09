@@ -299,5 +299,5 @@ export const enum ExperimentName {
 export type Condition = () => boolean;
 
 export const conditions = {
-  canDock: (): boolean => Boolean(Runtime.queryParam('can_dock')),
+  canDock: () => Boolean(Runtime.queryParam('can_dock')),
 };

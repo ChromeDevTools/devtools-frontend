@@ -31,7 +31,7 @@ export class LighthouseReportRenderer {
       HTMLElement {
     let onViewTrace: (() => Promise<void>)|undefined = undefined;
     if (artifacts) {
-      onViewTrace = async(): Promise<void> => {
+      onViewTrace = async () => {
         const defaultPassTrace = artifacts.traces.defaultPass;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
         await UI.InspectorView.InspectorView.instance().showPanel('timeline');

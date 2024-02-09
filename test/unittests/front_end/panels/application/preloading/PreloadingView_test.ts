@@ -27,7 +27,7 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
+const zip2 = <T, S>(xs: T[], ys: S[]) => {
   assert.strictEqual(xs.length, ys.length);
 
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));

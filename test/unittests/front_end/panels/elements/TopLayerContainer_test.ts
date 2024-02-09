@@ -12,7 +12,7 @@ import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 const {assert} = chai;
 
 const stubTopLayerDOMNode =
-    (nodeName: string, backendNodeId: number, ownerDocument: SDK.DOMModel.DOMDocument): SDK.DOMModel.DOMNode => {
+    (nodeName: string, backendNodeId: number, ownerDocument: SDK.DOMModel.DOMDocument) => {
       return {
         nodeName: () => nodeName,
         backendNodeId: () => backendNodeId,
@@ -20,10 +20,10 @@ const stubTopLayerDOMNode =
       } as SDK.DOMModel.DOMNode;
     };
 
-const stubElementsTreeElement = (): ElementsModule.ElementsTreeElement.ElementsTreeElement => {
+const stubElementsTreeElement = () => {
   return {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    adorn: ({name: string}, content?: HTMLElement): Adorners.Adorner.Adorner => new Adorners.Adorner.Adorner(),
+    adorn: ({name: string}, content?: HTMLElement) => new Adorners.Adorner.Adorner(),
   } as ElementsModule.ElementsTreeElement.ElementsTreeElement;
 };
 

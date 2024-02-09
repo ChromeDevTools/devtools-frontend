@@ -29,7 +29,13 @@ module.exports = {
     {
       'files': ['*.ts'],
       'rules': {
-        '@typescript-eslint/explicit-function-return-type': 'error',
+        '@typescript-eslint/explicit-function-return-type': [
+            'error', {
+              'allowExpressions': true,
+              'allowConciseArrowFunctionExpressionsStartingWithVoid': true,
+              'allowIIFEs':true,
+            },
+        ],
         'rulesdir/no_importing_images_from_src': 'error',
         'rulesdir/enforce_bound_render_for_schedule_render': 'error',
         'rulesdir/enforce_custom_event_names': 'error',

@@ -139,7 +139,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
           (arg0: boolean, arg1?: string|undefined, arg2?: Platform.DevToolsPath.UrlString|undefined,
            arg3?: Common.ResourceType.ResourceType|undefined) => void): void {
     const path = uiSourceCode.url();
-    this.performRename(path, newName, (success: boolean, newName?: string): void => {
+    this.performRename(path, newName, (success: boolean, newName?: string) => {
       if (success && newName) {
         this.renameUISourceCode(uiSourceCode, newName);
       }

@@ -17,7 +17,7 @@ describe('Infobar', () => {
     await deinitializeGlobalVars();
   });
 
-  const checkDetailsMessage = (component: UI.Infobar.Infobar, messageText: string): void => {
+  const checkDetailsMessage = (component: UI.Infobar.Infobar, messageText: string) => {
     renderElementIntoDOM(component.element);
     assertShadowRoot(component.element.shadowRoot);
 

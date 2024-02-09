@@ -213,7 +213,7 @@ const coverageState = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirro
 
 function coverageGutter(url: Platform.DevToolsPath.UrlString): CodeMirror.Extension {
   return CodeMirror.gutter({
-    markers: (view): CodeMirror.RangeSet<CodeMirror.GutterMarker> => view.state.field(coverageState),
+    markers: view => view.state.field(coverageState),
 
     domEventHandlers: {
       click() {

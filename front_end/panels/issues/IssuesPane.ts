@@ -256,7 +256,7 @@ export class IssuesPane extends UI.Widget.VBox {
     rightToolbar.appendSeparator();
     const issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     issueCounter.data = {
-      tooltipCallback: (): void => {
+      tooltipCallback: () => {
         const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(
             IssuesManager.IssuesManager.IssuesManager.instance(), false);
         issueCounter.title = issueEnumeration;

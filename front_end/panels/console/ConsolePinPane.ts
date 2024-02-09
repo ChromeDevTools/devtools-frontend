@@ -240,7 +240,7 @@ export class ConsolePin {
       CodeMirror.keymap.of([
         {
           key: 'Escape',
-          run: (view: CodeMirror.EditorView): boolean => {
+          run: (view: CodeMirror.EditorView) => {
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
             this.focusOut();
             return true;
@@ -248,14 +248,14 @@ export class ConsolePin {
         },
         {
           key: 'Enter',
-          run: (): boolean => {
+          run: () => {
             this.focusOut();
             return true;
           },
         },
         {
           key: 'Mod-Enter',
-          run: (): boolean => {
+          run: () => {
             this.focusOut();
             return true;
           },

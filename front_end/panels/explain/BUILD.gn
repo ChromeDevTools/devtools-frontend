@@ -62,6 +62,7 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../panels/console:bundle",
     "../../ui/legacy:bundle",
   ]
 

@@ -159,7 +159,6 @@ export class MainImpl {
     if (Root.Runtime.Runtime.queryParam('veLogging')) {
       void VisualLogging.startLogging();
     }
-
     void this.#createAppUI();
   }
 

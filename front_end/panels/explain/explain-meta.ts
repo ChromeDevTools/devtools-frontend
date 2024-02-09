@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as Console from '../../panels/console/console.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -25,77 +26,96 @@ const UIStrings = {
    * the settings tab.
    */
   enableConsoleInsights: 'Enable Console Insights',
+  /**
+   * @description Message shown to the user if the DevTools locale is not
+   * supported.
+   */
+  wrongLocale: 'Only English-US locale is currently supported.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const setting = 'console-insights-enabled';
 
-if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
-  const Console = await import('../console/console.js');
-
-  UI.ActionRegistration.registerActionExtension({
-    setting,
+const actions = [
+  {
     actionId: 'explain.console-message.hover',
-    category: UI.ActionRegistration.ActionCategory.CONSOLE,
-    async loadActionDelegate() {
-      const Explain = await import('./explain.js');
-      return new Explain.ActionDelegate();
-    },
     title: i18nLazyString(UIStrings.explainThisMessage),
-    contextTypes() {
+    contextTypes(): [typeof Console.ConsoleViewMessage.ConsoleViewMessage] {
       return [Console.ConsoleViewMessage.ConsoleViewMessage];
     },
-  });
-
-  UI.ActionRegistration.registerActionExtension({
-    setting,
+  },
+  {
     actionId: 'explain.console-message.context.error',
-    category: UI.ActionRegistration.ActionCategory.CONSOLE,
-    async loadActionDelegate() {
-      const Explain = await import('./explain.js');
-      return new Explain.ActionDelegate();
-    },
     title: i18nLazyString(UIStrings.explainThisError),
-    contextTypes() {
+    contextTypes(): [] {
       return [];
     },
-  });
-
-  UI.ActionRegistration.registerActionExtension({
-    setting,
+  },
+  {
     actionId: 'explain.console-message.context.warning',
-    category: UI.ActionRegistration.ActionCategory.CONSOLE,
-    async loadActionDelegate() {
-      const Explain = await import('./explain.js');
-      return new Explain.ActionDelegate();
-    },
     title: i18nLazyString(UIStrings.explainThisWarning),
-    contextTypes() {
+    contextTypes(): [] {
       return [];
     },
-  });
-
-  UI.ActionRegistration.registerActionExtension({
-    setting,
+  },
+  {
     actionId: 'explain.console-message.context.other',
+    title: i18nLazyString(UIStrings.explainThisMessage),
+    contextTypes(): [] {
+      return [];
+    },
+  },
+];
+
+function isActionAvailable(): boolean {
+  return isLocaleAllowed() === true && isSettingAvailable();
+}
+
+function isSettingAvailable(): boolean {
+  return isFeatureEnabled();
+}
+
+/**
+ * Additional checks for the availability of the feature event if enabled via
+ * the server. Returns true if locale is supported, or a string containing the
+ * reason why not.
+ */
+export function isLocaleAllowed(): true|string {
+  const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+  // TODO: implement the actual locale check once we can display it in the
+  // settings.
+  if (!devtoolsLocale.locale) {
+    return i18nString(UIStrings.wrongLocale);
+  }
+
+  return true;
+}
+
+export function isFeatureEnabled(): boolean {
+  return Root.Runtime.Runtime.queryParam('enableAida') === 'true';
+}
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  settingName: setting,
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  title: i18nLazyString(UIStrings.enableConsoleInsights),
+  defaultValue: true,
+  reloadRequired: true,
+  condition: isSettingAvailable,
+});
+
+for (const action of actions) {
+  UI.ActionRegistration.registerActionExtension({
+    ...action,
+    setting,
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
       return new Explain.ActionDelegate();
     },
-    title: i18nLazyString(UIStrings.explainThisMessage),
-    contextTypes() {
-      return [];
-    },
-  });
-
-  Common.Settings.registerSettingExtension({
-    category: Common.Settings.SettingCategory.CONSOLE,
-    settingName: setting,
-    settingType: Common.Settings.SettingType.BOOLEAN,
-    title: i18nLazyString(UIStrings.enableConsoleInsights),
-    defaultValue: true,
-    reloadRequired: true,
+    condition: isActionAvailable,
   });
 }

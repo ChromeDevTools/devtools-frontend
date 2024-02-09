@@ -253,8 +253,14 @@ export function getRegisteredActionExtensions(): Array<Action> {
   return Array.from(registeredActions.values())
       .filter(action => {
         const settingName = action.setting();
-        if (settingName && !Common.Settings.moduleSetting(settingName).get()) {
-          return false;
+        try {
+          if (settingName && !Common.Settings.moduleSetting(settingName).get()) {
+            return false;
+          }
+        } catch (err) {
+          if (err.message.startsWith('No setting registered')) {
+            return false;
+          }
         }
 
         return Root.Runtime.Runtime.isDescriptorEnabled(

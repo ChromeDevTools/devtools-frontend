@@ -58,6 +58,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly networkPane: UI.Widget.VBox;
   private readonly splitResizer: HTMLElement;
   private readonly chartSplitWidget: UI.SplitWidget.SplitWidget;
+  private brickGame?: PerfUI.BrickBreaker.BrickBreaker;
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly detailsView: TimelineDetailsView;
@@ -75,9 +76,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #gameKeyMatches = 0;
+  #gameTimeout = setTimeout(() => ({}), 0);
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
+
     this.delegate = delegate;
     this.model = null;
     this.eventListeners = [];
@@ -141,7 +145,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onNetworkEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
-
+    this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
     this.boundRefresh = this.#reset.bind(this);
     this.#selectedEvents = null;
 
@@ -152,6 +156,33 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.updateColorMapper();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  #keydownHandler(event: KeyboardEvent): void {
+    const keyCombo = 'fixme';
+    if (event.key === keyCombo[this.#gameKeyMatches]) {
+      this.#gameKeyMatches++;
+      clearTimeout(this.#gameTimeout);
+      this.#gameTimeout = setTimeout(() => {
+        this.#gameKeyMatches = 0;
+      }, 2000);
+    } else {
+      this.#gameKeyMatches = 0;
+      clearTimeout(this.#gameTimeout);
+    }
+    if (this.#gameKeyMatches !== keyCombo.length) {
+      return;
+    }
+    this.fixMe();
+  }
+
+  fixMe(): void {
+    if ([...this.element.childNodes].find(child => child instanceof PerfUI.BrickBreaker.BrickBreaker)) {
+      return;
+    }
+    this.brickGame = new PerfUI.BrickBreaker.BrickBreaker(this.mainFlameChart);
+    this.brickGame.classList.add('brick-game');
+    this.element.append(this.brickGame);
   }
 
   #onTraceBoundsChange(event: TraceBounds.TraceBounds.StateChangedEvent): void {

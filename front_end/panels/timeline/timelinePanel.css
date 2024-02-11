@@ -243,6 +243,79 @@
   overflow: hidden;
 }
 
+.brick-game {
+  background-color: var(--sys-color-neutral-container);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999; /* A high value to ensure it's on top */
+}
+
+.game-close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.scorePanel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  white-space: pre-line;
+  padding: 15px;
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+  border: double 7px transparent;
+  border-radius: 20px;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  font-weight: 200;
+}
+
+.confetti-100 {
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.confetti-100 > .confetti-100-particle {
+  opacity: 0%;
+  position: fixed;
+  animation: confetti-100-animation 1s none ease-out;
+  font-size: 30px;
+}
+
+@keyframes confetti-100-animation {
+  0% {
+    opacity: 100%;
+    transform: translateY(0%) translateY(0%) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0%;
+    transform: translateY(var(--to-Y)) translateX(var(--to-X)) rotate(var(--rotation));
+  }
+}
+
+@media (prefers-reduced-motion) {
+  .confetti-100 > .confetti-100-particle {
+    animation-name: dissolve;
+  }
+}
+
 .timeline-flamechart-resizer {
   flex: 8px 0 0;
   background-color: var(--sys-color-surface2);

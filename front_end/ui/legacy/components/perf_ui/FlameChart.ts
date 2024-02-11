@@ -269,6 +269,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.hideHighlight();
   }
 
+  getBarHeight(): number {
+    return this.barHeight;
+  }
+
   setBarHeight(value: number): void {
     this.barHeight = value;
   }
@@ -940,6 +944,56 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener(eventName, onEvent);
   }
 
+  drawTrackOnCanvas(trackName: string, context: CanvasRenderingContext2D, minWidth: number):
+      {top: number, height: number, visibleEntries: Set<number>}|null {
+    const timelineData = this.timelineData();
+    if (!timelineData) {
+      return null;
+    }
+    const canvasWidth = this.offsetWidth;
+    const canvasHeight = this.offsetHeight;
+    context.save();
+    const ratio = window.devicePixelRatio;
+    context.scale(ratio, ratio);
+    context.fillStyle = 'rgba(0, 0, 0, 0)';
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    context.font = this.#font;
+
+    const groups = this.rawTimelineData?.groups || [];
+    const groupOffsets = this.groupOffsets;
+    if (!groups.length || !groupOffsets) {
+      return null;
+    }
+    const trackIndex = groups.findIndex(g => g.name.includes(trackName));
+    if (trackIndex < 0) {
+      return null;
+    }
+    this.scrollGroupIntoView(trackIndex);
+    const group = groups[trackIndex];
+    const startLevel = group.startLevel;
+    const endLevel = groups[trackIndex + 1].startLevel;
+    const groupTop = groupOffsets[trackIndex];
+    const nextOffset = groupOffsets[trackIndex + 1];
+
+    const {colorBuckets, titleIndices} = this.getDrawableData(context, timelineData);
+
+    const entryIndexIsInTrack = (index: number): boolean => {
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, index), canvasWidth);
+      return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel &&
+          barWidth > minWidth;
+    };
+    let allFilteredIndexes: number[] = [];
+    for (const [color, {indexes}] of colorBuckets) {
+      const filteredIndexes = indexes.filter(entryIndexIsInTrack);
+      allFilteredIndexes = [...allFilteredIndexes, ...filteredIndexes];
+      this.#drawGenericEvents(context, timelineData, color, filteredIndexes);
+    }
+    const filteredTitleIndices = titleIndices.filter(entryIndexIsInTrack);
+    this.drawEventTitles(context, timelineData, filteredTitleIndices, canvasWidth);
+    context.restore();
+    return {top: groupOffsets[trackIndex], height: nextOffset - groupTop, visibleEntries: new Set(allFilteredIndexes)};
+  }
+
   private handleKeyboardGroupNavigation(event: Event): boolean {
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
@@ -1448,9 +1502,28 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     context.restore();
 
+    const groups = this.rawTimelineData?.groups || [];
+    const trackIndex = groups.findIndex(g => g.name.includes('Main'));
+    const group = groups.at(trackIndex);
+    const startLevel = group?.startLevel;
+    const endLevel = groups.at(trackIndex + 1)?.startLevel;
+    const entryIndexIsInTrack = (index: number): boolean => {
+      if (trackIndex < 0 || startLevel === undefined || endLevel === undefined) {
+        return false;
+      }
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, index), canvasWidth);
+      return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel &&
+          barWidth > 10;
+    };
+    let wideEntryExists: boolean = false;
     for (const [color, {indexes}] of colorBuckets) {
+      if (!wideEntryExists) {
+        wideEntryExists = indexes.some(entryIndexIsInTrack);
+      }
       this.#drawGenericEvents(context, timelineData, color, indexes);
     }
+    this.dispatchEventToListeners(Events.ChartPlayableStateChange, wideEntryExists);
+
     const allIndexes = Array.from(colorBuckets.values()).map(x => x.indexes).flat();
     this.#drawDecorations(context, timelineData, allIndexes);
 
@@ -1684,6 +1757,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const barLevel = entryLevels[entryIndex];
     const barHeight = this.levelHeight(barLevel);
     return barHeight;
+  }
+
+  entryWidth(entryIndex: number): number {
+    const timelineData = this.timelineData();
+    if (!timelineData) {
+      return 0;
+    }
+    return this.#eventBarWidth(timelineData, entryIndex);
   }
 
   #eventBarWidth(timelineData: FlameChartTimelineData, entryIndex: number): number {
@@ -3097,6 +3178,7 @@ export const enum Events {
    * mouse off the event)
    */
   EntryHighlighted = 'EntryHighlighted',
+  ChartPlayableStateChange = 'ChartPlayableStateChange',
 }
 
 export type EventTypes = {
@@ -3104,6 +3186,7 @@ export type EventTypes = {
   [Events.EntryInvoked]: number,
   [Events.EntrySelected]: number,
   [Events.EntryHighlighted]: number,
+  [Events.ChartPlayableStateChange]: boolean,
 };
 
 export interface Group {

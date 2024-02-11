@@ -44,6 +44,7 @@ import type * as TimelineModel from '../../models/timeline_model/timeline_model.
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
+import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -94,6 +95,10 @@ const UIStrings = {
    *@description Text to clear content
    */
   clear: 'Clear',
+  /**
+   *@description A label for a button that fixes something.
+   */
+  fixMe: 'Fix me',
   /**
    *@description Tooltip text that appears when hovering over the largeicon load button
    */
@@ -283,6 +288,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private controller!: TimelineController|null;
   private cpuProfiler!: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
+  private fixMeButton: UI.Toolbar.ToolbarButton;
+  private fixMeButtonAdded = false;
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton;
   private statusPane!: StatusPane|null;
@@ -306,10 +313,25 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #traceEngineActiveTraceIndex = -1;
   #sourceMapsResolver: SourceMapsResolver|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
-
+  readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
   constructor() {
     super('timeline');
-
+    const adornerContent = document.createElement('span');
+    adornerContent.innerHTML = `<div style="
+      font-size: 12px;
+      transform: scale(1.25);
+      color: transparent;
+      background: linear-gradient(90deg, rgb(255 0 0 / 100%) 0%, rgb(255 154 0 / 100%) 10%, rgb(208 222 33 / 100%) 20%, rgb(79 220 74 / 100%) 30%, rgb(63 218 216 / 100%) 40%, rgb(47 201 226 / 100%) 50%, rgb(28 127 238 / 100%) 60%, rgb(95 21 242 / 100%) 70%, rgb(186 12 248 / 100%) 80%, rgb(251 7 217 / 100%) 90%, rgb(255 0 0 / 100%) 100%);
+      -webkit-background-clip: text;
+      ">💫</div>`;
+    const adorner = new Adorners.Adorner.Adorner();
+    adorner.classList.add('fix-perf-icon');
+    adorner.data = {
+      name: i18nString(UIStrings.fixMe),
+      content: adornerContent,
+    };
+    this.fixMeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.fixMe), adorner);
+    this.fixMeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onFixMe());
     const config = TraceEngine.Types.Configuration.DEFAULT;
     config.experiments.timelineShowAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
     config.experiments.timelineV8RuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
@@ -372,6 +394,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
 
     this.flameChart = new TimelineFlameChartView(this);
+    this.#onChartPlayableStateChangeBound = this.#onChartPlayableStateChange.bind(this);
+
+    this.flameChart.getMainFlameChart().addEventListener(
+        PerfUI.FlameChart.Events.ChartPlayableStateChange, this.#onChartPlayableStateChangeBound, this);
+
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
     this.searchableViewInternal.element.classList.add('searchable-view');
@@ -459,6 +486,22 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   getFlameChart(): TimelineFlameChartView {
     return this.flameChart;
+  }
+
+  #onChartPlayableStateChange(event: Common.EventTarget.EventTargetEvent<boolean, unknown>): void {
+    if (event.data) {
+      const dateObj = new Date();
+      const month = dateObj.getUTCMonth() + 1;
+      const day = dateObj.getUTCDate();
+      const isAprilFools = (month === 4 && day === 1) || true;  // TODO: show only on April fools
+      if (isAprilFools && !this.fixMeButtonAdded) {
+        this.fixMeButtonAdded = true;
+        this.panelToolbar.appendToolbarItem(this.fixMeButton);
+      }
+    } else {
+      this.fixMeButtonAdded = false;
+      this.panelToolbar.removeToolbarItem(this.fixMeButton);
+    }
   }
 
   private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, title?: string): void {
@@ -1066,6 +1109,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.clear();
   }
 
+  private onFixMe(): void {
+    if (!this.performanceModel) {
+      return;
+    }
+    this.flameChart.fixMe();
+  }
+
   private clear(): void {
     if (this.statusPane) {
       this.statusPane.remove();
@@ -1137,6 +1187,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.searchableViewInternal.showWidget();
     } else {
       this.searchableViewInternal.hideWidget();
+      this.fixMeButtonAdded = false;
+      this.panelToolbar.removeToolbarItem(this.fixMeButton);
     }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
     this.flameChart.setSelection(null);

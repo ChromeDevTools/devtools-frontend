@@ -40,6 +40,8 @@ fs.writeFileSync(outPath, `
 // found in the LICENSE file.
 // Generated from ${thisPath}
 
+// clang-format off
+
 /**
  * All the specs used when generating the DOM pinned properties dataset.
  */

@@ -1001,6 +1001,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param {InspectorFrontendHostAPI.ResizeEvent} resizeEvent
+   */
+  recordResize(resizeEvent) {
+    DevToolsAPI.sendMessageToEmbedder('recordResize', [resizeEvent], null);
+  }
+
+  /**
+   * @override
    * @param {InspectorFrontendHostAPI.ClickEvent} clickEvent
    */
   recordClick(clickEvent) {

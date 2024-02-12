@@ -76,6 +76,7 @@ devtools_module("sdk") {
     "ServiceWorkerManager.ts",
     "SourceMap.ts",
     "SourceMapManager.ts",
+    "SourceMapScopes.ts",
     "StorageBucketsModel.ts",
     "StorageKeyManager.ts",
     "Target.ts",

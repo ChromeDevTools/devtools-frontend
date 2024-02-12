@@ -43,6 +43,10 @@ export const UIStrings = {
    */
   CrossOriginWindowConfirm: "Triggering window.confirm from cross origin iframes has been deprecated and will be removed in the future.",
   /**
+   * @description Warning displayed to developers when their website uses `:--customstatename` in CSS. They can simply switch their CSS to `:state(customstatename)` and it will be the same.
+   */
+  CSSCustomStateDeprecatedSyntax: "`:--customstatename` is deprecated. Please use the `:state(customstatename)` syntax instead.",
+  /**
    * @description Warning displayed to developers when they hide the Cast button on a video element using the deprecated CSS selector instead of using the disableRemotePlayback attribute on the element.
    */
   CSSSelectorInternalMediaControlsOverlayCastButton: "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.",
@@ -256,6 +260,10 @@ export interface DeprecationDescriptor {
 export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor>> = {
   "AuthorizationCoveredByWildcard": {
     "milestone": 97
+  },
+  "CSSCustomStateDeprecatedSyntax": {
+    "chromeStatusFeature": 5140610730426368,
+    "milestone": 122
   },
   "CSSSelectorInternalMediaControlsOverlayCastButton": {
     "chromeStatusFeature": 5714245488476160

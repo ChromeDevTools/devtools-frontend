@@ -694,7 +694,13 @@ export const NativeFunctions = [
   },
   {
     name: 'forEach',
-    signatures: [['callbackfn','?thisArg']]
+    signatures: [['callbackfn','?thisArg']],
+    receivers: ['ReadonlyArray','Array','Int8Array','Uint8Array','Uint8ClampedArray','Int16Array','Uint16Array','Int32Array','Uint32Array','Float32Array','Float64Array','AudioParamMap','CSSNumericArray','CSSTransformValue','CSSUnparsedValue','DOMTokenList','EventCounts','FontFaceSet','FormData','Headers','MIDIInputMap','MIDIOutputMap','MediaKeyStatusMap','NodeList','NodeListOf','RTCStatsReport','StylePropertyMapReadOnly','URLSearchParams','Map','ReadonlyMap','Set','ReadonlySet','BigInt64Array','BigUint64Array']
+  },
+  {
+    name: 'forEach',
+    signatures: [['callback','?options']],
+    receivers: ['Observable']
   },
   {
     name: 'map',
@@ -7714,11 +7720,19 @@ export const NativeFunctions = [
     signatures: [['?options'],['input','?options']]
   },
   {
+    name: 'lstm',
+    signatures: [['input','weight','recurrentWeight','steps','hiddenSize','?options']]
+  },
+  {
     name: 'pad',
     signatures: [['input','beginningPadding','endingPadding','?options']]
   },
   {
     name: 'averagePool2d',
+    signatures: [['input','?options']]
+  },
+  {
+    name: 'l2Pool2d',
     signatures: [['input','?options']]
   },
   {
@@ -8164,6 +8178,14 @@ export const NativeFunctions = [
   {
     name: 'enableDebugMode',
     signatures: [['?options']]
+  },
+  {
+    name: 'selectURL',
+    signatures: [['name','urls','?options']]
+  },
+  {
+    name: 'run',
+    signatures: [['name','?options']]
   },
   {
     name: 'transmit',

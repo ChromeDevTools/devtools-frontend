@@ -2837,6 +2837,15 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "none",
+   "flip-block",
+   "flip-inline",
+   "flip-start"
+  ],
+  "name": "position-try-options"
+ },
+ {
+  "keywords": [
    "normal",
    "most-width",
    "most-height",
@@ -5250,6 +5259,14 @@ export const generatedPropertyValues = {
  "position-fallback-bounds": {
   "values": [
    "normal"
+  ]
+ },
+ "position-try-options": {
+  "values": [
+   "none",
+   "flip-block",
+   "flip-inline",
+   "flip-start"
   ]
  },
  "position-try-order": {

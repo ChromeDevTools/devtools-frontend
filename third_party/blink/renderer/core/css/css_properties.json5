@@ -2368,7 +2368,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       computed_style_protected_functions: ["getter"],
-      style_builder_custom_functions: ["value"],
+      converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
         resolver: "bottom",
@@ -3256,7 +3256,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       computed_style_protected_functions: ["getter"],
-      style_builder_custom_functions: ["value"],
+      converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
         resolver: "left",
@@ -4169,6 +4169,20 @@
       runtime_flag: "CSSAnchorPositioning",
     },
     {
+      name: "position-try-options",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_custom_functions: ["value"],
+      field_group: "*",
+      field_template: "external",
+      keywords: ["none", "flip-block", "flip-inline", "flip-start"],
+      typedom_types: ["Keyword"],
+      include_paths: ["third_party/blink/renderer/core/style/position_try_options.h"],
+      wrapper_pointer_name: "Member",
+      type_name: "PositionTryOptions",
+      default_value: "nullptr",
+      runtime_flag: "CSSAnchorPositioning",
+    },
+    {
       name: "position-try-order",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
@@ -4224,7 +4238,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       computed_style_protected_functions: ["getter"],
-      style_builder_custom_functions: ["value"],
+      converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
         resolver: "right",
@@ -5263,7 +5277,7 @@
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
       computed_style_protected_functions: ["getter"],
-      style_builder_custom_functions: ["value"],
+      converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
         resolver: "top",

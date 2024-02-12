@@ -17,6 +17,9 @@
   "core/common/ResourceType.ts | fetch": {
     "message": "ดึงข้อมูล"
   },
+  "core/common/ResourceType.ts | fetchAndXHR": {
+    "message": "Fetch และ XHR"
+  },
   "core/common/ResourceType.ts | font": {
     "message": "แบบอักษร"
   },
@@ -76,9 +79,6 @@
   },
   "core/common/ResourceType.ts | ws": {
     "message": "WS"
-  },
-  "core/common/ResourceType.ts | xhrAndFetch": {
-    "message": "XHR และ Fetch"
   },
   "core/common/Revealer.ts | applicationPanel": {
     "message": "แผงแอปพลิเคชัน"
@@ -586,9 +586,6 @@
   },
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "เปิดใช้แคช"
-  },
-  "core/sdk/sdk-meta.ts | enableCustomFormatters": {
-    "message": "เปิดใช้ตัวจัดรูปแบบที่กำหนดเอง"
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "เปิดใช้ JavaScript"
@@ -1166,9 +1163,6 @@
   "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน MIDIOptions ก็ตาม"
   },
-  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "แอตทริบิวต์ shadowroot เวอร์ชันเก่าที่ไม่เป็นไปตามมาตรฐานเลิกใช้งานแล้ว และจะ *ไม่ทำงานอีกต่อไป* ใน M119 โปรดใช้แอตทริบิวต์ shadowrootmode เวอร์ชันใหม่ที่เป็นมาตรฐานแทน"
-  },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
   },
@@ -1230,7 +1224,7 @@
     "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า true สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
   },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
-    "message": "getStats() ที่อิงตามโค้ดเรียกกลับเลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
+    "message": "getStats() ที่อิงตาม Callback เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
   },
   "generated/Deprecation.ts | RangeExpand": {
     "message": "Range.expand() เลิกใช้งานแล้ว โปรดใช้ Selection.modify() แทน"
@@ -1328,6 +1322,9 @@
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
     "message": "อัตราส่วนพิกเซลของอุปกรณ์ต้องน้อยกว่าหรือเท่ากับ {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | heightCannotBeEmpty": {
+    "message": "ต้องระบุความสูง"
+  },
   "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
     "message": "ความสูงต้องเป็นตัวเลข"
   },
@@ -1336,6 +1333,9 @@
   },
   "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
     "message": "ความสูงต้องน้อยกว่าหรือเท่ากับ {PH1}"
+  },
+  "models/emulation/DeviceModeModel.ts | widthCannotBeEmpty": {
+    "message": "ต้องระบุความกว้าง"
   },
   "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
     "message": "ความกว้างต้องเป็นตัวเลข"
@@ -1684,6 +1684,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsHiddenBy": {
     "message": "กล่องโต้ตอบโมดัลที่เปิดอยู่ซ่อนองค์ประกอบ: "
+  },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsHiddenByChildTree": {
+    "message": "แผนผังย่อยซ่อนองค์ประกอบไว้: "
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
     "message": "องค์ประกอบอยู่ในแผนผังย่อย inert จาก "
@@ -2145,7 +2148,7 @@
     "message": "คัดลอกรหัสที่แนะนำ {PH1} ไปยังคลิปบอร์ดแล้ว"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
-    "message": "คัดลอกไปยังคลิปบอร์ด"
+    "message": "คัดลอกรหัสที่แนะนำไปยังคลิปบอร์ด"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "ตรวจสอบ service worker โดยไม่มีช่อง \"start_url\" ในไฟล์ Manifest ไม่ได้"
@@ -2446,6 +2449,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "เนื้อหาของเอกสารนี้สร้างขึ้นแบบไดนามิกผ่าน \"document.write()\""
+  },
+  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
+    "message": "คุกกี้จาก {PH1} อาจถูกบล็อกเนื่องจากมีการเลิกใช้งานคุกกี้ของบุคคลที่สาม"
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "เวอร์ชัน: {PH1}"
@@ -3125,6 +3131,15 @@
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome ตรวจพบความพยายามที่จะเรียกใช้ JavaScript ขณะอยู่ในแคช"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "ไม่ระบุ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
+    "message": "ไม่ระบุ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | UnloadHandler": {
+    "message": "ไม่ระบุ"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
   },
@@ -3665,14 +3680,14 @@
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "ต้นทาง"
   },
+  "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
+    "message": "ช่วงทดลองใช้จากต้นทางเปิดให้คุณได้เข้าถึงฟีเจอร์ใหม่หรือฟีเจอร์ทดลอง"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "องค์ประกอบเจ้าของ"
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "เฟรมนี้ได้รับการพิจารณาว่าเป็นเฟรมโฆษณาเพราะเฟรมระดับบนของเฟรมนี้เป็นเฟรมโฆษณา"
-  },
-  "panels/application/components/FrameDetailsView.ts | refresh": {
-    "message": "รีเฟรช"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "กำลังรายงานไปยัง"
@@ -3754,6 +3769,9 @@
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
     "message": "การจับคู่โดเมนย่อย"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | noTrialTokens": {
+    "message": "ไม่มีโทเค็นสำหรับช่วงทดลองใช้"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ต้นทาง"
@@ -3889,6 +3907,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "แสดงผลสแต็กเทรซไม่ได้"
+  },
+  "panels/application/components/StackTrace.ts | creationStackTrace": {
+    "message": "Stack Trace การสร้างเฟรม"
   },
   "panels/application/components/StackTrace.ts | showLess": {
     "message": "แสดงน้อยลง"
@@ -4475,17 +4496,23 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | viewAllSpeculations": {
     "message": "ดูการคาดเดาทั้งหมด"
   },
+  "panels/autofill/AutofillView.ts | addressPreview": {
+    "message": "ตัวอย่างที่อยู่"
+  },
   "panels/autofill/AutofillView.ts | attr": {
     "message": "แอตทริบิวต์"
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "เปิดแท็บอัตโนมัติเมื่อมีการป้อนข้อความอัตโนมัติ"
+    "message": "เปิดแผงที่มีการป้อนข้อความอัตโนมัติ"
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "แอตทริบิวต์การเติมข้อความอัตโนมัติ"
   },
   "panels/autofill/AutofillView.ts | formField": {
     "message": "ฟิลด์ในแบบฟอร์ม"
+  },
+  "panels/autofill/AutofillView.ts | formInspector": {
+    "message": "เครื่องมือตรวจสอบแบบฟอร์ม"
   },
   "panels/autofill/AutofillView.ts | heur": {
     "message": "การประเมิน"
@@ -4640,9 +4667,6 @@
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | unchecked": {
     "message": "ยกเลิกการเลือกแล้ว"
   },
-  "panels/browser_debugger/ObjectEventListenersSidebarPane.ts | refreshGlobalListeners": {
-    "message": "รีเฟรช Listener ส่วนกลาง"
-  },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | addBreakpoint": {
     "message": "เพิ่มเบรกพอยท์"
   },
@@ -4696,6 +4720,9 @@
   },
   "panels/browser_debugger/browser_debugger-meta.ts | page": {
     "message": "หน้าเว็บ"
+  },
+  "panels/browser_debugger/browser_debugger-meta.ts | refreshGlobalListeners": {
+    "message": "รีเฟรช Listener ส่วนกลาง"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showContentScripts": {
     "message": "แสดงสคริปต์เนื้อหา"
@@ -5439,7 +5466,7 @@
     "message": "คัดลอก URL"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
-    "message": "ทรัพยากรสำหรับนักพัฒนาซอฟต์แวร์"
+    "message": "แหล่งข้อมูลสำหรับนักพัฒนาซอฟต์แวร์"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | error": {
     "message": "ข้อผิดพลาด"
@@ -5484,10 +5511,16 @@
     "message": "ทรัพยากร {PH1} รายการ กำลังโหลด {PH2} รายการ"
   },
   "panels/developer_resources/developer_resources-meta.ts | developerResources": {
-    "message": "ทรัพยากรสำหรับนักพัฒนาซอฟต์แวร์"
+    "message": "แหล่งข้อมูลสำหรับนักพัฒนาซอฟต์แวร์"
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
-    "message": "แสดงทรัพยากรของนักพัฒนาเว็บ"
+    "message": "แสดงแหล่งข้อมูลสำหรับนักพัฒนาซอฟต์แวร์"
+  },
+  "panels/elements/CSSRuleValidator.ts | flexGridContainerPropertyRuleFix": {
+    "message": "ลองตั้งค่า {PROPERTY_NAME} ในองค์ประกอบคอนเทนเนอร์หรือใช้ {ALTERNATIVE_PROPERTY_NAME} แทน"
+  },
+  "panels/elements/CSSRuleValidator.ts | flexGridContainerPropertyRuleReason": {
+    "message": "องค์ประกอบนี้เป็นรายการ {CONTAINER_DISPLAY_NAME} ซึ่งก็คือรายการย่อยของคอนเทนเนอร์ {CONTAINER_DISPLAY_NAME} แต่ {PROPERTY_NAME} จะมีผลกับคอนเทนเนอร์เท่านั้น"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
     "message": "ค่าสำหรับการตั้งค่า \"{PH1}\" {PH2} อยู่นอกช่วงที่รองรับ [{PH3}, {PH4}] สำหรับชุดแบบอักษร \"{PH5}\""
@@ -5497,6 +5530,9 @@
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
     "message": "พร็อพเพอร์ตี้ {REASON_PROPERTY_DECLARATION_CODE} ในองค์ประกอบระดับบนป้องกันผลกระทบของ {AFFECTED_PROPERTY_DECLARATION_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeFlexOrGrid": {
+    "message": "ลองเพิ่ม {DISPLAY_GRID_RULE} หรือ {DISPLAY_FLEX_RULE} เพื่อทำให้องค์ประกอบนี้กลายเป็นคอนเทนเนอร์"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
     "message": "ลองตั้งค่าพร็อพเพอร์ตี้ {EXISTING_PROPERTY_DECLARATION} เป็น {TARGET_PROPERTY_DECLARATION}"
@@ -6299,20 +6335,11 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "เลือกว่า Listener เหตุการณ์เป็นแบบแพสซีฟหรือการบล็อก"
   },
-  "panels/explain/components/ConsoleInsight.ts | additionalFeedback": {
-    "message": "แสดงความคิดเห็นเพิ่มเติม (ไม่บังคับ)"
-  },
-  "panels/explain/components/ConsoleInsight.ts | close": {
-    "message": "ปิด"
-  },
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "ปิดข้อมูลเชิงลึก"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "ข้อความในคอนโซล"
-  },
-  "panels/explain/components/ConsoleInsight.ts | dogfood": {
-    "message": "การลองใช้แบบ Dogfood"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "เกิดข้อผิดพลาด…"
@@ -6320,65 +6347,23 @@
   "panels/explain/components/ConsoleInsight.ts | generating": {
     "message": "กำลังสร้าง…"
   },
-  "panels/explain/components/ConsoleInsight.ts | inaccurate": {
-    "message": "ไม่ถูกต้อง"
-  },
-  "panels/explain/components/ConsoleInsight.ts | inappropriate": {
-    "message": "ไม่เหมาะสม"
-  },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "ข้อมูลเชิงลึก"
-  },
-  "panels/explain/components/ConsoleInsight.ts | irrelevant": {
-    "message": "ไม่เกี่ยวข้อง"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "คำขอของเครือข่าย"
   },
-  "panels/explain/components/ConsoleInsight.ts | notHelpful": {
-    "message": "ไม่มีประโยชน์"
-  },
-  "panels/explain/components/ConsoleInsight.ts | other": {
-    "message": "อื่นๆ"
-  },
-  "panels/explain/components/ConsoleInsight.ts | reason": {
-    "message": "ทำไมถึงให้คะแนนระดับนี้ (ไม่บังคับ)"
-  },
-  "panels/explain/components/ConsoleInsight.ts | refine": {
-    "message": "ให้บริบทเพื่อปรับเปลี่ยนข้อมูลเชิงลึกในแบบของคุณ"
-  },
-  "panels/explain/components/ConsoleInsight.ts | refineButtonHint": {
-    "message": "คลิกปุ่มนี้เพื่อส่งข้อมูลต่อไปนี้ไปยังโมเดล AI ที่ทำงานบนเซิร์ฟเวอร์ของ Google เพื่อให้สร้างคำตอบที่ถูกต้องและเกี่ยวข้องมากขึ้นได้"
-  },
-  "panels/explain/components/ConsoleInsight.ts | refineInfo": {
-    "message": "ดูวิธีการทำงานของการปรับเปลี่ยนข้อมูลเชิงลึกในแบบของคุณ"
-  },
-  "panels/explain/components/ConsoleInsight.ts | refining": {
-    "message": "กำลังปรับเปลี่ยนข้อมูลเชิงลึกในแบบของคุณ…"
+  "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
+    "message": "(เปิดในแท็บใหม่)"
   },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "โค้ดที่เกี่ยวข้อง"
   },
-  "panels/explain/components/ConsoleInsight.ts | searchAnswers": {
-    "message": "คำตอบใน Google Search"
-  },
-  "panels/explain/components/ConsoleInsight.ts | sources": {
-    "message": "แหล่งข้อมูล"
-  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "สแต็กเทรซ"
   },
-  "panels/explain/components/ConsoleInsight.ts | submit": {
-    "message": "ส่ง"
-  },
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "ส่งความคิดเห็น"
-  },
-  "panels/explain/components/ConsoleInsight.ts | thumbDown": {
-    "message": "ไม่ชอบ"
-  },
-  "panels/explain/components/ConsoleInsight.ts | thumbUp": {
-    "message": "ชอบ"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "อธิบายข้อผิดพลาดนี้"
@@ -7916,6 +7901,9 @@
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "Signed Exchange"
   },
+  "panels/network/NetworkDataGridNode.ts | thirdPartyPhaseout": {
+    "message": "คุกกี้สําหรับคําขอนี้ถูกบล็อกเนื่องจากมีการเลิกใช้งานคุกกี้ของบุคคลที่สาม ดูข้อมูลเพิ่มเติมในแท็บปัญหา"
+  },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
     "message": "ความล่าช้า (เวลาที่ได้รับการตอบสนอง - เวลาเริ่มต้น)"
   },
@@ -7982,6 +7970,9 @@
   "panels/network/NetworkItemView.ts | signedexchangeError": {
     "message": "ข้อผิดพลาดของ SignedExchange"
   },
+  "panels/network/NetworkItemView.ts | thirdPartyPhaseout": {
+    "message": "คุกกี้ถูกบล็อกเนื่องจากมีการเลิกใช้งานคุกกี้ของบุคคลที่สาม"
+  },
   "panels/network/NetworkItemView.ts | timing": {
     "message": "กรอบเวลา"
   },
@@ -8040,10 +8031,13 @@
     "message": "คัดลอกทั้งหมดเป็น HAR"
   },
   "panels/network/NetworkLogView.ts | copyAllAsNodejsFetch": {
-    "message": "คัดลอกทั้งหมดเป็น Node.js fetch"
+    "message": "คัดลอกทั้งหมดเป็น fetch (Node.js)"
   },
   "panels/network/NetworkLogView.ts | copyAllAsPowershell": {
     "message": "คัดลอกทั้งหมดเป็น PowerShell"
+  },
+  "panels/network/NetworkLogView.ts | copyAllURLs": {
+    "message": "คัดลอก URL ทั้งหมด"
   },
   "panels/network/NetworkLogView.ts | copyAsCurl": {
     "message": "คัดลอกเป็น cURL"
@@ -8058,7 +8052,7 @@
     "message": "คัดลอกเป็น fetch"
   },
   "panels/network/NetworkLogView.ts | copyAsNodejsFetch": {
-    "message": "คัดลอกเป็น Node.js fetch"
+    "message": "คัดลอกเป็น fetch (Node.js)"
   },
   "panels/network/NetworkLogView.ts | copyAsPowershell": {
     "message": "คัดลอกเป็น PowerShell"
@@ -8074,6 +8068,9 @@
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "คัดลอกสแต็กเทรซ"
+  },
+  "panels/network/NetworkLogView.ts | copyURL": {
+    "message": "คัดลอก URL"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
@@ -10830,7 +10827,7 @@
     "message": "แป้นพิมพ์ลัด"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
-    "message": "ทางลัดจะมีเพียงคีย์ตัวปรับแต่งไม่ได้"
+    "message": "ทางลัดจะมีเพียงแป้นกดร่วมไม่ได้"
   },
   "panels/settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
     "message": "{PH1} ใช้ทางลัดนี้อยู่: {PH2}"
@@ -11601,7 +11598,7 @@
     "message": "ดำเนินการต่อโดยบล็อกการหยุดชั่วคราวทั้งหมดเป็นเวลา 500 มิลลิวินาที"
   },
   "panels/sources/SourcesPanel.ts | revealInSidebar": {
-    "message": "แสดงในแถบด้านข้าง"
+    "message": "แสดงในแถบด้านข้างของตัวนำทาง"
   },
   "panels/sources/SourcesPanel.ts | showDebugger": {
     "message": "แสดงโปรแกรมแก้ไขข้อบกพร่อง"
@@ -11807,9 +11804,6 @@
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "ปิดใช้การแมปแหล่งที่มา CSS"
   },
-  "panels/sources/sources-meta.ts | disableJavascriptSourceMaps": {
-    "message": "ปิดใช้การแมปแหล่งที่มาของ JavaScript"
-  },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "ปิดใช้การกดแป้น Tab เพื่อย้ายโฟกัส"
   },
@@ -11851,9 +11845,6 @@
   },
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "เปิดใช้การแมปแหล่งที่มา CSS"
-  },
-  "panels/sources/sources-meta.ts | enableJavascriptSourceMaps": {
-    "message": "เปิดใช้การแมปแหล่งที่มา JavaScript"
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "เปิดใช้การกดแป้น Tab เพื่อย้ายโฟกัส"
@@ -11917,6 +11908,9 @@
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "ดำเนินการสคริปต์ต่อ"
+  },
+  "panels/sources/sources-meta.ts | revealActiveFileInSidebar": {
+    "message": "แสดงไฟล์ที่ใช้งานอยู่ในแถบด้านข้างของตัวนำทาง"
   },
   "panels/sources/sources-meta.ts | runSnippet": {
     "message": "เรียกใช้ข้อมูลโค้ด"
@@ -12075,7 +12069,7 @@
     "message": "ยกเลิกเฟรมภาพเคลื่อนไหว"
   },
   "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
-    "message": "ยกเลิกโค้ดเรียกกลับที่ไม่มีการใช้งาน"
+    "message": "ยกเลิก Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/EventUICategory.ts | commit": {
     "message": "คอมมิต"
@@ -12100,6 +12094,9 @@
   },
   "panels/timeline/EventUICategory.ts | consoleTime": {
     "message": "เวลาในคอนโซล"
+  },
+  "panels/timeline/EventUICategory.ts | cppGc": {
+    "message": "GC สำหรับ CPP"
   },
   "panels/timeline/EventUICategory.ts | createWebsocket": {
     "message": "สร้าง WebSocket"
@@ -12132,7 +12129,7 @@
     "message": "วาดเฟรม"
   },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
-    "message": "โค้ดเรียกกลับเครื่องมือฝัง"
+    "message": "Callback ของเครื่องมือฝัง"
   },
   "panels/timeline/EventUICategory.ts | encrypt": {
     "message": "เข้ารหัส"
@@ -12159,7 +12156,7 @@
     "message": "เสร็จสิ้นการโหลด"
   },
   "panels/timeline/EventUICategory.ts | fireIdleCallback": {
-    "message": "เริ่มใช้โค้ดเรียกกลับที่ไม่มีการใช้งาน"
+    "message": "เริ่มใช้ Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
     "message": "First Contentful Paint"
@@ -12288,7 +12285,7 @@
     "message": "ส่งคำขอเฟรมภาพเคลื่อนไหว"
   },
   "panels/timeline/EventUICategory.ts | requestIdleCallback": {
-    "message": "ขอโค้ดเรียกกลับที่ไม่มีการใช้งาน"
+    "message": "ขอ Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
     "message": "ส่งคำขอเฟรมชุดข้อความหลัก"
@@ -12388,6 +12385,12 @@
   },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "การโต้ตอบ"
+  },
+  "panels/timeline/IsolateSelector.ts | empty": {
+    "message": "(ว่าง)"
+  },
+  "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
+    "message": "เลือกอินสแตนซ์ VM ของ JavaScript"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "การเปลี่ยนเลย์เอาต์"
@@ -12858,28 +12861,13 @@
     "message": "ฟังก์ชันเรียกกลับ"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
-    "message": "รหัสของโค้ดเรียกกลับ"
+    "message": "รหัสของ Callback"
   },
   "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
     "message": "ยกเลิกเฟรมภาพเคลื่อนไหว"
   },
   "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "ยกเลิกโค้ดเรียกกลับที่ไม่มีการใช้งาน"
-  },
-  "panels/timeline/TimelineUIUtils.ts | changedAttributeToSs": {
-    "message": "(เปลี่ยนแอตทริบิวต์เป็น \"{PH1}\"{PH2} แล้ว)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | changedClassToSs": {
-    "message": "(เปลี่ยนคลาสเป็น \"{PH1}\"{PH2} แล้ว)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | changedIdToSs": {
-    "message": "(เปลี่ยนรหัสเป็น \"{PH1}\"{PH2} แล้ว)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | changedPesudoToSs": {
-    "message": "(เปลี่ยนองค์ประกอบจำลองเป็น \"{PH1}\"{PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | changedSs": {
-    "message": "(เปลี่ยน \"{PH1}\"{PH2})"
+    "message": "ยกเลิก Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "รวบรวมแล้ว"
@@ -12984,7 +12972,7 @@
     "message": "องค์ประกอบที่ได้รับผลกระทบ"
   },
   "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "โค้ดเรียกกลับเครื่องมือฝัง"
+    "message": "Callback ของเครื่องมือฝัง"
   },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
@@ -13023,7 +13011,7 @@
     "message": "เสร็จสิ้นการโหลด"
   },
   "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "เริ่มใช้โค้ดเรียกกลับที่ไม่มีการใช้งาน"
+    "message": "เริ่มใช้ Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
     "message": "First Contentful Paint"
@@ -13071,7 +13059,7 @@
     "message": "ไม่มีการใช้งาน"
   },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
-    "message": "ขอโค้ดเรียกกลับที่ไม่มีการใช้งานแล้ว"
+    "message": "ขอ Callback ที่ไม่มีการใช้งานแล้ว"
   },
   "panels/timeline/TimelineUIUtils.ts | imageDecode": {
     "message": "ถอดรหัสรูปภาพ"
@@ -13099,6 +13087,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ทำให้เลย์เอาต์ไม่ถูกต้อง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
+    "message": "{PH1} ที่ {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "การระบุว่าไม่ถูกต้อง"
@@ -13132,9 +13123,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "การเข้าทำเลย์เอาต์"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layoutInvalidations": {
-    "message": "การระบุว่าเลย์เอาต์ไม่ถูกต้อง"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "รูทของเลย์เอาต์"
@@ -13184,12 +13172,6 @@
   "panels/timeline/TimelineUIUtils.ts | no": {
     "message": "ไม่"
   },
-  "panels/timeline/TimelineUIUtils.ts | node": {
-    "message": "โหนด:"
-  },
-  "panels/timeline/TimelineUIUtils.ts | nodes": {
-    "message": "โหนด:"
-  },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "โหนดที่ต้องมีเลย์เอาต์"
   },
@@ -13201,9 +13183,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "อื่นๆ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | otherInvalidations": {
-    "message": "การระบุว่าไม่ถูกต้องอื่นๆ"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "องค์ประกอบเจ้าของ"
@@ -13296,7 +13275,7 @@
     "message": "ส่งคำขอเฟรมภาพเคลื่อนไหว"
   },
   "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "ขอโค้ดเรียกกลับที่ไม่มีการใช้งาน"
+    "message": "ขอ Callback ที่ไม่มีการใช้งาน"
   },
   "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
     "message": "ส่งคำขอเฟรมชุดข้อความหลัก"
@@ -13309,12 +13288,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "เรียกใช้ Microtask"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sAndS": {
-    "message": "{PH1} และ {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sAndSOther": {
-    "message": "{PH1}, {PH2} และอีก 1 รายการ"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} เวลา {PH2}"
@@ -13331,26 +13304,17 @@
   "panels/timeline/TimelineUIUtils.ts | sCollected": {
     "message": "รวบรวมแล้ว {PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sForS": {
-    "message": "{PH1} สำหรับ {PH2}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} จาก {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSAndSOthers": {
-    "message": "{PH1}, {PH2} และอีก {PH3} รายการ"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
     "message": "({PH1}, {PH2})"
   },
   "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
     "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDot": {
-    "message": "{PH1} {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
@@ -13403,9 +13367,6 @@
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "สแต็กเทรซ"
   },
-  "panels/timeline/TimelineUIUtils.ts | stackTraceColon": {
-    "message": "สแต็กเทรซ:"
-  },
   "panels/timeline/TimelineUIUtils.ts | state": {
     "message": "สถานะ"
   },
@@ -13417,9 +13378,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
     "message": "คำตอบ Wasm ที่มีการสตรีม"
-  },
-  "panels/timeline/TimelineUIUtils.ts | styleInvalidations": {
-    "message": "การระบุว่ารูปแบบไม่ถูกต้อง"
   },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "URL ของสไตล์ชีต"
@@ -13453,12 +13411,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "ประเภท"
-  },
-  "panels/timeline/TimelineUIUtils.ts | unknown": {
-    "message": "ไม่รู้จัก"
-  },
-  "panels/timeline/TimelineUIUtils.ts | unknownCause": {
-    "message": "สาเหตุที่ไม่รู้จัก"
   },
   "panels/timeline/TimelineUIUtils.ts | updateLayer": {
     "message": "อัปเดตเลเยอร์"
@@ -13533,7 +13485,7 @@
     "message": "บังคับให้จัดเรียงใหม่แล้ว"
   },
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
-    "message": "ขยายการดำเนินการของโค้ดเรียกกลับที่ไม่มีการใช้งานให้มากกว่ากำหนดเวลาแล้ว {PH1}"
+    "message": "ขยายการดำเนินการของ Callback ที่ไม่มีการใช้งานให้มากกว่ากำหนดเวลาแล้ว {PH1}"
   },
   "panels/timeline/components/DetailsView.ts | longInteractionINP": {
     "message": "การโต้ตอบแบบยาว"
@@ -13611,10 +13563,10 @@
     "message": "หยุด"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
-    "message": "ขนาดบัฟเฟอร์ของโค้ดเรียกกลับ"
+    "message": "ขนาดบัฟเฟอร์ของ Callback"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackInterval": {
-    "message": "ระยะเวลาของโค้ดเรียกกลับ"
+    "message": "ระยะเวลาของ Callback"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | currentTime": {
     "message": "เวลาปัจจุบัน"
@@ -14036,11 +13988,17 @@
   "ui/legacy/ListWidget.ts | cancelString": {
     "message": "ยกเลิก"
   },
+  "ui/legacy/ListWidget.ts | changesSaved": {
+    "message": "บันทึกการเปลี่ยนแปลงรายการแล้ว"
+  },
   "ui/legacy/ListWidget.ts | editString": {
     "message": "แก้ไข"
   },
   "ui/legacy/ListWidget.ts | removeString": {
     "message": "นำออก"
+  },
+  "ui/legacy/ListWidget.ts | removedItem": {
+    "message": "นำรายการออกแล้ว"
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "บันทึก"
@@ -14277,7 +14235,7 @@
     "message": "คลิกค้างหรือกดค้างตรงพื้นที่ว่างเพื่อแสดงเฉดสีอื่นๆ ของ {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "กดแป้นลูกศรโดยใช้หรือไม่ใช้คีย์ตัวปรับแต่งเพื่อย้ายตำแหน่งแผ่นสี เมื่อใช้แป้นลูกศรกับแป้น Shift จะย้ายตำแหน่งแบบกว้าง เมื่อใช้กับแป้น Ctrl จะย้ายตำแหน่งน้อยลง และเมื่อใช้กับแป้น Alt จะย้ายตำแหน่งน้อยที่สุด"
+    "message": "กดแป้นลูกศรโดยใช้หรือไม่ใช้แป้นกดร่วมเพื่อย้ายตำแหน่งแผ่นสี เมื่อใช้แป้นลูกศรกับแป้น Shift จะย้ายตำแหน่งแบบกว้าง เมื่อใช้กับแป้น Ctrl จะย้ายตำแหน่งน้อยลง และเมื่อใช้กับแป้น Alt จะย้ายตำแหน่งน้อยที่สุด"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
     "message": "แสดงตัวอย่างพาเล็ต"
@@ -14555,6 +14513,18 @@
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "แผนภูมิ Flame Chart"
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | hideChildren": {
+    "message": "ซ่อนรายการย่อย"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | hideFunction": {
+    "message": "ซ่อนฟังก์ชัน"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
+    "message": "ซ่อนรายการย่อยที่ซ้ำ"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
+    "message": "รีเซ็ตการติดตาม"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | sCollapsed": {
     "message": "ยุบ{PH1}แล้ว"
   },
@@ -14638,6 +14608,9 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "ข้อความแบบเปิดด่วน"
+  },
+  "ui/legacy/components/quick_open/FilteredListWidget.ts | sItemSOfS": {
+    "message": "{PH1}, รายการที่ {PH2} จาก {PH3}"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "พิมพ์ \"?\" เพื่อดูคำสั่งที่ใช้ได้"

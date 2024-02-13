@@ -475,7 +475,7 @@ devtools-console-insight {
 }
 
 .hover-button {
-  --width: 22px;
+  --width: 24px;
 
   align-items: center;
   background-color: var(--sys-color-cdt-base-container);
@@ -494,7 +494,7 @@ devtools-console-insight {
   min-height: var(--width);
   min-width: var(--width);
   overflow: hidden;
-  padding: 3px;
+  padding: 4px 3px 4px 5px;
   position: absolute;
   right: 6px;
   display: none;

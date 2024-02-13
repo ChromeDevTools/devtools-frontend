@@ -6,6 +6,7 @@ import type * as Common from '../../../core/common/common.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
+import * as IconButton from '../icon_button/icon_button.js';
 import * as Input from '../input/input.js';
 
 import settingCheckboxStyles from './settingCheckbox.css.js';
@@ -57,10 +58,16 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     const icon = this.#deprecationIcon();
+    const reason = this.#setting.disabledReason() ?
+        LitHtml.html`
+      <${IconButton.Icon.Icon.litTagName} class="disabled-reason" name="info" title=${
+            this.#setting.disabledReason()} @click=${onclick}></${IconButton.Icon.Icon.litTagName}>
+    ` :
+        LitHtml.nothing;
     LitHtml.render(
         LitHtml.html`
       <p>
-        <label title=${this.#setting.disabledReason()}>
+        <label>
           <input
             type="checkbox"
             .checked=${this.#setting.disabledReason() ? false : this.#setting.get()}
@@ -69,7 +76,7 @@ export class SettingCheckbox extends HTMLElement {
             jslog=${VisualLogging.toggle().track({click: true}).context(this.#setting.name)}
             aria-label=${this.#setting.title()}
           />
-          ${this.#setting.title()}${icon}
+          ${this.#setting.title()}${reason}${icon}
         </label>
       </p>`,
         this.#shadow, {host: this});

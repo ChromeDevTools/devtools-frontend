@@ -115,7 +115,7 @@ describe('SettingCheckbox', () => {
 
     const {component} = renderSettingCheckbox({setting});
 
-    assert.strictEqual(component.shadowRoot!.querySelector('label')?.title, 'reason');
+    assert.strictEqual((component.shadowRoot!.querySelector('.disabled-reason') as HTMLElement).title, 'reason');
   });
 
   it('is disabled for a disabled deprecated settings', () => {

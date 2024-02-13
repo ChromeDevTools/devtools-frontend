@@ -199,7 +199,8 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   static eventNameForSorting(event: TraceEngine.Legacy.Event): string {
-    return event.name + ':@' + TimelineModel.TimelineProfileTree.eventURL(event);
+    const name = TimelineUIUtils.eventTitle(event) || event.name;
+    return name + ':@' + TimelineModel.TimelineProfileTree.eventURL(event);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {

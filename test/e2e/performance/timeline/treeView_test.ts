@@ -8,6 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   $,
   $$,
+  click,
   getBrowserAndPages,
   step,
   waitFor,
@@ -24,7 +25,8 @@ import {
   toggleRegExButtonBottomUp,
 } from '../../helpers/performance-helpers.js';
 
-async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActivities: string[]) {
+async function checkActivityTree(
+    frontend: puppeteer.Page, expectedActivities: string[], expandSubTree: boolean = false) {
   let index = 0;
   let parentItem: puppeteer.ElementHandle<Element>|undefined = undefined;
   let result = false;
@@ -45,7 +47,11 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
       return false;
     });
     index++;
-    await frontend.keyboard.press('ArrowRight');
+
+    if (expandSubTree) {
+      await frontend.keyboard.press('ArrowRight');
+    }
+
     await frontend.keyboard.press('ArrowDown');
   } while (index < expectedActivities.length);
 
@@ -184,7 +190,33 @@ describe('The Performance tool, Bottom-up panel', async function() {
       }
       await rootActivity.click();
       assert.isTrue(
-          await expandAndCheckActivityTree(frontend, expectedActivities), 'Tree does not contain expected activities');
+          await checkActivityTree(frontend, expectedActivities, true), 'Tree does not contain expected activities');
+    });
+  });
+
+  it('sorting "Title" column is working as expected', async () => {
+    const {frontend} = getBrowserAndPages();
+    const expectedActivities = ['Commit', 'Function Call', 'h2_with_suffix', 'h2', 'H2', 'Layerize', 'Layout'];
+
+    await step('navigate to the Bottom Up tab', async () => {
+      await navigateToBottomUpTab();
+    });
+
+    await step('validate activities', async () => {
+      await waitFor('th.activity-column');
+      await click('th.activity-column');
+      await waitFor('th.activity-column.sortable.sort-ascending');
+
+      const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+      const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
+      if (!rootActivity) {
+        assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
+      }
+      await rootActivity.click();
+
+      assert.isTrue(
+          await checkActivityTree(frontend, expectedActivities),
+          'Tree does not contain activities in the expected order');
     });
   });
 });

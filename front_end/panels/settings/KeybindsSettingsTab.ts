@@ -75,6 +75,23 @@ const UIStrings = {
    *@description Label for a button in the shortcut editor that resets all shortcuts for the current action.
    */
   ResetShortcutsForAction: 'Reset shortcuts for action',
+  /**
+   *@description Screen reader announcement for shortcut removed
+   *@example {Start/stop recording} PH1
+   */
+  shortcutRemoved: '{PH1} Shortcut removed',
+  /**
+   *@description Screen reader announcment for shortcut restored to default
+   */
+  shortcutChangesRestored: 'Changes to shortcut restored to default',
+  /**
+   *@description Screen reader announcment for applied short cut changes
+   */
+  shortcutChangesApplied: 'Changes to shortcut applied',
+  /**
+   *@description Screen reader announcment for discarded short cut changes
+   */
+  shortcutChangesDiscared: 'Changes to shortcut discarded',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/KeybindsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -373,12 +390,16 @@ export class ShortcutListItem {
     this.element.appendChild(this.createIconButton(
         i18nString(UIStrings.ResetShortcutsForAction), 'undo', '', 'undo', this.resetShortcutsToDefaults.bind(this)));
     this.confirmButton = this.createIconButton(
-        i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button', 'confirm',
-        () => this.settingsTab.commitChanges(this.item, this.editedShortcuts));
+        i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button', 'confirm', () => {
+          UI.ARIAUtils.alert(UIStrings.shortcutChangesApplied);
+          this.settingsTab.commitChanges(this.item, this.editedShortcuts);
+        });
     this.element.appendChild(this.confirmButton);
-    this.element.appendChild(this.createIconButton(
-        i18nString(UIStrings.discardChanges), 'cross', 'keybinds-cancel-button', 'cancel',
-        () => this.settingsTab.stopEditing(this.item)));
+    this.element.appendChild(
+        this.createIconButton(i18nString(UIStrings.discardChanges), 'cross', 'keybinds-cancel-button', 'cancel', () => {
+          this.settingsTab.stopEditing(this.item);
+          UI.ARIAUtils.alert(UIStrings.shortcutChangesDiscared);
+        }));
     this.element.addEventListener('keydown', event => {
       if (Platform.KeyboardUtilities.isEscKey(event)) {
         this.settingsTab.stopEditing(this.item);
@@ -436,6 +457,7 @@ export class ShortcutListItem {
             if (!shortcut.isDefault()) {
               this.shortcuts.splice(index, 1);
             }
+            UI.ARIAUtils.alert(i18nString(UIStrings.shortcutRemoved, {PH1: this.item.title()}));
             this.editedShortcuts.set(shortcut, null);
             this.update();
             this.focus();
@@ -548,6 +570,7 @@ export class ShortcutListItem {
       this.shortcuts.push(shortcut);
       this.editedShortcuts.set(shortcut, shortcut.descriptors);
     });
+    UI.ARIAUtils.alert(UIStrings.shortcutChangesRestored);
     this.update();
     this.focus();
   }

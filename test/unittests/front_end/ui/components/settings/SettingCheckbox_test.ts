@@ -75,11 +75,47 @@ describe('SettingCheckbox', () => {
 
   it('ignores clicks when disabled', () => {
     const setting = createFakeSetting<boolean>('setting', false);
-    const {checkbox} = renderSettingCheckbox({setting, disabled: true});
+    setting.setDisabled(true);
+    const {checkbox} = renderSettingCheckbox({setting});
 
     checkbox.click();
 
     assert.isFalse(setting.get());
+  });
+
+  it('can be disabled via registration', () => {
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      disabledCondition: () => {
+        return {disabled: true, reason: 'reason'};
+      },
+    });
+
+    const {checkbox} = renderSettingCheckbox({setting});
+
+    checkbox.click();
+
+    assert.isFalse(setting.get());
+    assert.isTrue(checkbox.disabled);
+  });
+
+  it('shows disabled reason', () => {
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      disabledCondition: () => {
+        return {disabled: true, reason: 'reason'};
+      },
+    });
+
+    const {component} = renderSettingCheckbox({setting});
+
+    assert.strictEqual(component.shadowRoot!.querySelector('label')?.title, 'reason');
   });
 
   it('is disabled for a disabled deprecated settings', () => {

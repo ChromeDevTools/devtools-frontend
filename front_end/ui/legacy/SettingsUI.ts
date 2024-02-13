@@ -181,7 +181,9 @@ export const createControlForSetting = function(
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
       const component = new Settings.SettingCheckbox.SettingCheckbox();
-      component.data = {setting: setting as Common.Settings.Setting<boolean>};
+      component.data = {
+        setting: setting as Common.Settings.Setting<boolean>,
+      };
       component.onchange = () => {
         InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
       };

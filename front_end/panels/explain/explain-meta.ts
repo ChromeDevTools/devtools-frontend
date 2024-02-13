@@ -30,7 +30,7 @@ const UIStrings = {
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'Only English-US locale is currently supported.',
+  wrongLocale: 'Only English locales are currently supported.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -82,18 +82,16 @@ function isSettingAvailable(): boolean {
  * the server. Returns true if locale is supported, or a string containing the
  * reason why not.
  */
-export function isLocaleAllowed(): true|string {
+function isLocaleAllowed(): true|string {
   const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-  // TODO: implement the actual locale check once we can display it in the
-  // settings.
-  if (!devtoolsLocale.locale) {
+  if (!devtoolsLocale.locale.startsWith('en-')) {
     return i18nString(UIStrings.wrongLocale);
   }
 
   return true;
 }
 
-export function isFeatureEnabled(): boolean {
+function isFeatureEnabled(): boolean {
   return Root.Runtime.Runtime.queryParam('enableAida') === 'true';
 }
 
@@ -105,6 +103,13 @@ Common.Settings.registerSettingExtension({
   defaultValue: true,
   reloadRequired: true,
   condition: isSettingAvailable,
+  disabledCondition: () => {
+    const localeCheck = isLocaleAllowed();
+    if (localeCheck !== true) {
+      return {disabled: true, reason: localeCheck};
+    }
+    return {disabled: false};
+  },
 });
 
 for (const action of actions) {

@@ -403,7 +403,25 @@ export class Setting<V> {
   }
 
   disabled(): boolean {
+    if (this.#registration?.disabledCondition) {
+      const {disabled} = this.#registration.disabledCondition();
+      // If registration does not disable it, pass through to #disabled
+      // attribute check.
+      if (disabled) {
+        return true;
+      }
+    }
     return this.#disabled || false;
+  }
+
+  disabledReason(): string|undefined {
+    if (this.#registration?.disabledCondition) {
+      const result = this.#registration.disabledCondition();
+      if (result.disabled) {
+        return result.reason;
+      }
+    }
+    return undefined;
   }
 
   setDisabled(disabled: boolean): void {

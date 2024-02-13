@@ -17,7 +17,7 @@ import {type DeferredContent} from './ContentProvider.js';
  * incomplete unicode at the end and not in-between chunks.
  */
 export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  readonly #mimeType: string;
+  readonly mimeType: string;
   readonly #charset?: string;
 
   readonly #disallowStreaming: boolean;
@@ -27,7 +27,7 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   private constructor(mimeType: string, charset?: string, initialContent?: ContentData) {
     super();
-    this.#mimeType = mimeType;
+    this.mimeType = mimeType;
     this.#charset = charset;
     this.#disallowStreaming = Boolean(initialContent && !initialContent.createdFromBase64);
     this.#contentData = initialContent;
@@ -52,7 +52,7 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   get isTextContent(): boolean {
-    return Platform.MimeType.isTextType(this.#mimeType);
+    return Platform.MimeType.isTextType(this.mimeType);
   }
 
   /** @param chunk base64 encoded data */
@@ -74,7 +74,7 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
     const initialBase64 = this.#contentData?.base64 ?? '';
     const base64Content =
         this.#chunks.reduce((acc, chunk) => Platform.StringUtilities.concatBase64(acc, chunk), initialBase64);
-    this.#contentData = new ContentData(base64Content, /* isBase64=*/ true, this.#mimeType, this.#charset);
+    this.#contentData = new ContentData(base64Content, /* isBase64=*/ true, this.mimeType, this.#charset);
     this.#chunks = [];
     return this.#contentData;
   }

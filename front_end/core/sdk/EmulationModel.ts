@@ -570,13 +570,17 @@ export class DeviceOrientation {
     valid: boolean,
     errorMessage: (string|undefined),
   } {
-    return DeviceOrientation.angleRangeValidator(value, {minimum: -180, maximum: 180});
+    // https://w3c.github.io/deviceorientation/#device-orientation-model
+    // Alpha must be within the [0, 360) interval.
+    return DeviceOrientation.angleRangeValidator(value, {minimum: 0, maximum: 360});
   }
 
   static betaAngleValidator(value: string): {
     valid: boolean,
     errorMessage: (string|undefined),
   } {
+    // https://w3c.github.io/deviceorientation/#device-orientation-model
+    // Beta must be within the [-180, 180) interval.
     return DeviceOrientation.angleRangeValidator(value, {minimum: -180, maximum: 180});
   }
 
@@ -584,6 +588,8 @@ export class DeviceOrientation {
     valid: boolean,
     errorMessage: (string|undefined),
   } {
+    // https://w3c.github.io/deviceorientation/#device-orientation-model
+    // Gamma must be within the [-90, 90) interval.
     return DeviceOrientation.angleRangeValidator(value, {minimum: -90, maximum: 90});
   }
 

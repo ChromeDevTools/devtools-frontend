@@ -24,7 +24,8 @@ describe('Orientation emulation on Sensors panel', () => {
     assert.deepEqual(actualOrientations, expectedOrientations);
   });
 
-  it('allows negative alpha values', async () => {
+  // Skipped since the backend became more restrictive in what values are allowed.
+  it.skip('[crbug.com/40947677] allows negative alpha values', async () => {
     await setCustomOrientation();
 
     const alpha = (await getOrientationInputs())[0];

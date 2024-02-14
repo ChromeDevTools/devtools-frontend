@@ -245,7 +245,13 @@ describe('The Styles pane', async () => {
             selectorText: '#properties-to-inspect',
             propertyData: [{propertyName: 'width', isOverLoaded: false, isInherited: false}],
           },
-          {selectorText: 'div', propertyData: [{propertyName: 'display', isOverLoaded: false, isInherited: false}]},
+          {
+            selectorText: 'div',
+            propertyData: [
+              {propertyName: 'display', isOverLoaded: false, isInherited: false},
+              {propertyName: 'unicode-bidi', isOverLoaded: false, isInherited: false},
+            ],
+          },
         ],
         'The correct rule is displayed');
   });
@@ -807,6 +813,7 @@ describe('The Styles pane', async () => {
       'margin-left: 10px;',
       'margin-left: 20px;',
       'display: block;',
+      'unicode-bidi: isolate;',
     ]);
   });
 

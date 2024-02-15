@@ -147,7 +147,8 @@ def generate_protocol_resources(options):
 
 def run_git_cl_format(options):
     print('running `git cl format` to format generated TS files')
-    subprocess.check_call(['git', 'cl', 'format'], cwd=options.devtools_dir)
+    subprocess.check_call(['git', 'cl', 'format', '--js', '--full'],
+                          cwd=options.devtools_dir)
 
 
 def run_eslint(options):

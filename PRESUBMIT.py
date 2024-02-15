@@ -216,23 +216,33 @@ def _CheckEnumeratedHistograms(input_api, output_api):
 
 
 def _CheckFormat(input_api, output_api):
-    node_modules_affected_files = _getAffectedFiles(input_api, [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'third_party')
-    ], [], [])
+    files_with_potential_large_diffs = _getAffectedFiles(
+        input_api, [
+            input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                   'node_modules'),
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                                   'third_party'),
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                                   'generated'),
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                                   'models', 'javascript_metadata'),
+        ], [], [])
 
+    # Changes to the above directories can produce large diffs. This is a problem on Windows,
+    # where clang-format-diff.py specifies all the diff ranges on the command line when invoking
+    # clang-format. Since command line length is limited on Win, the invocation fails.
+    # As a heuristic, we'll format all touched files fully if we suspect that the diff could
+    # be large.
     # TODO(crbug.com/1068198): Remove once `git cl format --js` can handle large CLs.
-    if (len(node_modules_affected_files) > 0):
-        return [
-            output_api.PresubmitNotifyResult(
-                'Skipping Format Checks because `node_modules`/`front_end/third_party` files are affected.'
-            )
-        ]
+    additional_args = []
+    if (len(files_with_potential_large_diffs) > 0):
+        additional_args = ['--full']
 
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
 
-    return _ExecuteSubProcess(input_api, output_api, ['git', 'cl', 'format', '--js'], [], results)
+    return _ExecuteSubProcess(input_api, output_api,
+                              ['git', 'cl', 'format', '--js'] +
+                              additional_args, [], results)
 
 
 def _CheckDevToolsRunESLintTests(input_api, output_api):

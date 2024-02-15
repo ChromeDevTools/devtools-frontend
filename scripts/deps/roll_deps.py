@@ -25,6 +25,7 @@ def node_path(options):
         sys.path = old_sys_path
     return node.GetBinaryPath()
 
+
 # Files whose location within devtools-frontend matches the upstream location.
 FILES = [
     'v8/include/js_protocol.pdl',
@@ -59,7 +60,8 @@ class ReferenceMode(enum.Enum):
 
 
 def parse_options(cli_args):
-    parser = argparse.ArgumentParser(description='Roll dependencies from Chromium.')
+    parser = argparse.ArgumentParser(
+        description='Roll dependencies from Chromium.')
     parser.add_argument(
         '--ref',
         type=ReferenceMode,
@@ -77,6 +79,7 @@ def parse_options(cli_args):
                         help='path to devtools/devtools-frontend directory')
     return parser.parse_args(cli_args)
 
+
 def update(options):
     subprocess.check_call(['git', 'fetch', 'origin'], cwd=options.chromium_dir)
     subprocess.check_call(['git', 'checkout', 'origin/main'],
@@ -84,14 +87,13 @@ def update(options):
     subprocess.check_call(['gclient', 'sync'], cwd=options.chromium_dir)
 
 
-def get_hook_action(options, hook_name):
+def get_hook_action(options, hook_name, project_dir):
     """Parses Chromium DEPS file and returns the action for the given hook.
     """
-    sys.path.append(
-        os.path.join(options.chromium_dir, 'third_party', 'depot_tools'))
+    sys.path.append(os.path.join(project_dir, 'third_party', 'depot_tools'))
     import gclient_eval
 
-    filepath = os.path.join(options.chromium_dir, 'DEPS')
+    filepath = os.path.join(project_dir, 'DEPS')
     with open(filepath) as deps_file:
         deps = gclient_eval.Parse(deps_file.read(), filepath)
     for hook in deps['hooks']:
@@ -102,9 +104,17 @@ def get_hook_action(options, hook_name):
 
 def sync_node(options):
     """Executes the nodejs sync hook from Chromium DEPS file."""
-    action = get_hook_action(options, 'node_linux64')
+    action = get_hook_action(options, 'node_linux64', options.chromium_dir)
     gclient_context = os.path.join(options.chromium_dir, '..')
     subprocess.check_call(action, cwd=gclient_context)
+
+
+def sync_clang_format(options):
+    """Executes the clang_format sync hook from Devtools DEPS file."""
+    action = get_hook_action(options, 'clang_format_linux',
+                             options.devtools_dir)
+    subprocess.check_call(action, cwd=options.devtools_dir)
+
 
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
@@ -167,12 +177,14 @@ def run_eslint(options):
     ] + generated_source_files,
                           cwd=options.devtools_dir)
 
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
         update(OPTIONS)
     if OPTIONS.update_node:
         sync_node(OPTIONS)
+        sync_clang_format(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)

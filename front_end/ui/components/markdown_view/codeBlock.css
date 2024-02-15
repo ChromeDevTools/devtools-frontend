@@ -12,7 +12,7 @@
 
 code {
   color: var(--sys-color-on-surface);
-  font-size: 12px;
+  font-size: 11px;
   user-select: text;
   cursor: text;
   background: var(--sys-color-surface1);

@@ -88,5 +88,4 @@ export interface DOMPinnedPropertiesDataset {
  * and inheritance/include chains as values.
  */
 export const DOMPinnedProperties: DOMPinnedPropertiesDataset = ${stringify(minimize(output))};
-
 `);

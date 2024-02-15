@@ -8,7 +8,9 @@ import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.j
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('Network track', function() {
-  this.timeout(20_000);
+  if (this.timeout() !== 0) {
+    this.timeout(20_000);
+  }
   preloadForCodeCoverage('performance_panel/track_example.html');
 
   const urlForTest = 'performance_panel/track_example.html?track=Network&fileName=cls-cluster-max-timeout';

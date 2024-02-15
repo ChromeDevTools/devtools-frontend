@@ -10,7 +10,9 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Rasterizer tracks', function() {
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to
   // prevent timeout bump.
-  this.timeout(20_000);
+  if (this.timeout() !== 0) {
+    this.timeout(20_000);
+  }
   preloadForCodeCoverage('performance_panel/track_example.html');
 
   // Times here are so that we zoom into the panel a bit rather than have a screenshot with loads of whitespace.

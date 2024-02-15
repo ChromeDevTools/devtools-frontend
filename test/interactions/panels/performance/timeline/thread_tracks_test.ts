@@ -58,7 +58,9 @@ describe('Rasterizer', function() {
 describe('Workers', function() {
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to
   // prevent timeout bump.
-  this.timeout(20_000);
+  if (this.timeout() !== 0) {
+    this.timeout(20_000);
+  }
   preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the Worker track', async () => {
     const urlForTest =

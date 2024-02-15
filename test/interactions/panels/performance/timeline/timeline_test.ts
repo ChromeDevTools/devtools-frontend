@@ -91,7 +91,9 @@ describe('Performance panel', function() {
   });
 
   itScreenshot.skip('renders screenshots in the frames track', async () => {
-    this.timeout(20_000);
+    if (this.timeout() !== 0) {
+      this.timeout(20_000);
+    }
     await loadComponentDocExample(
         'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
     const panel = await waitFor('body');

@@ -10,7 +10,9 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Timeline History Manager tracks', function() {
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to
   // prevent timeout bump.
-  this.timeout(20_000);
+  if (this.timeout() !== 0) {
+    this.timeout(20_000);
+  }
   preloadForCodeCoverage('performance_panel/timeline_history_manager.html');
   itScreenshot('renders minimap for parsed profiles in the HistoryManager', async () => {
     await loadComponentDocExample('performance_panel/timeline_history_manager.html');

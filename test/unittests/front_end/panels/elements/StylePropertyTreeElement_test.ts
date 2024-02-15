@@ -19,6 +19,8 @@ const {assert} = chai;
 describeWithRealConnection('StylePropertyTreeElement', async () => {
   let Elements: typeof ElementsModule;
   let stylesSidebarPane: ElementsModule.StylesSidebarPane.StylesSidebarPane;
+  let mockStylePropertiesSection:
+      sinon.SinonStubbedInstance<ElementsModule.StylePropertiesSection.StylePropertiesSection>;
   let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;
   let mockMatchedStyles: sinon.SinonStubbedInstance<SDK.CSSMatchedStyles.CSSMatchedStyles>;
   let mockCssProperty: sinon.SinonStubbedInstance<SDK.CSSProperty.CSSProperty>;
@@ -28,6 +30,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
     stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
 
+    mockStylePropertiesSection = sinon.createStubInstance(ElementsModule.StylePropertiesSection.StylePropertiesSection);
     mockCssStyleDeclaration = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     mockMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
     mockCssProperty = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
@@ -78,6 +81,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
              ]);
          const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
            stylesPane: stylesSidebarPane,
+           section: mockStylePropertiesSection,
            matchedStyles: mockMatchedStyles,
            property: cssAnimationShorthand,
            isShorthand: true,
@@ -111,6 +115,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssPropertyWithColorMix,
           isShorthand: false,
@@ -135,6 +140,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssPropertyWithColorMix,
           isShorthand: false,
@@ -159,6 +165,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             false, '', undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssPropertyWithColorMix,
           isShorthand: false,
@@ -179,6 +186,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             true, false, '', undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssPropertyWithColorMix,
           isShorthand: false,
@@ -201,6 +209,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
                false, true, false, '', undefined);
            const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
              stylesPane: stylesSidebarPane,
+             section: mockStylePropertiesSection,
              matchedStyles: mockMatchedStyles,
              property: cssPropertyWithColorMix,
              isShorthand: false,
@@ -223,6 +232,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
                true, false, true, false, '', undefined);
            const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
              stylesPane: stylesSidebarPane,
+             section: mockStylePropertiesSection,
              matchedStyles: mockMatchedStyles,
              property: cssPropertyWithColorMix,
              isShorthand: false,
@@ -244,6 +254,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe', true, false, true, false, '', undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssAnimationNameProperty,
           isShorthand: false,
@@ -265,6 +276,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
                false, '', undefined);
            const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
              stylesPane: stylesSidebarPane,
+             section: mockStylePropertiesSection,
              matchedStyles: mockMatchedStyles,
              property: cssAnimationNameProperty,
              isShorthand: false,
@@ -287,6 +299,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         mockCssStyleDeclaration, 0, 'color', 'color(srgb .5 .5 1)', true, false, true, false, '', undefined);
     const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesPane: stylesSidebarPane,
+      section: mockStylePropertiesSection,
       matchedStyles: mockMatchedStyles,
       property: cssPropertyWithColorMix,
       isShorthand: false,
@@ -335,6 +348,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       };
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: mockCssProperty,
         isShorthand: false,
@@ -379,6 +393,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWidth,
         isShorthand: false,
@@ -409,6 +424,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWidth,
         isShorthand: false,
@@ -441,6 +457,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           sinon.spy(ElementsModule.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssCustomPropertyUse,
         isShorthand: false,
@@ -467,6 +484,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       const addElementPopoverHook = sinon.stub(stylesSidebarPane, 'addPopover');
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssCustomPropertyDef,
         isShorthand: false,
@@ -501,6 +519,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           sinon.spy(ElementsModule.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssCustomPropertyDef,
         isShorthand: false,
@@ -529,6 +548,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'color', 'var(--a)', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -556,6 +576,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'color', 'var(--not-existing, red)', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -584,6 +605,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -614,6 +636,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -642,6 +665,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
             undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles: mockMatchedStyles,
           property: cssProperty,
           isShorthand: false,
@@ -673,6 +697,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, '--shadow', 'var(--a) var(--b)', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -692,6 +717,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'color', 'var( --test    )', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property: cssPropertyWithColorMix,
         isShorthand: false,
@@ -779,6 +805,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         const property = matchedStyles.nodeStyles()[0].leadingProperties()[1];
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
           stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
           matchedStyles,
           property,
           isShorthand: false,
@@ -818,6 +845,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property,
         isShorthand: false,
@@ -843,6 +871,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
           mockCssStyleDeclaration, 0, 'color', 'hsl(165deg 50% 25%)', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
+        section: mockStylePropertiesSection,
         matchedStyles: mockMatchedStyles,
         property,
         isShorthand: false,

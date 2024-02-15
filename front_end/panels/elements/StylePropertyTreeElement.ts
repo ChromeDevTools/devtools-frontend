@@ -120,6 +120,7 @@ const parentMap = new WeakMap<StylesSidebarPane, StylePropertyTreeElement>();
 
 interface StylePropertyTreeElementParams {
   stylesPane: StylesSidebarPane;
+  section: StylePropertiesSection;
   matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   property: SDK.CSSProperty.CSSProperty;
   isShorthand: boolean;
@@ -326,6 +327,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly inheritedInternal: boolean;
   private overloadedInternal: boolean;
   private parentPaneInternal: StylesSidebarPane;
+  #parentSection: StylePropertiesSection;
   isShorthand: boolean;
   private readonly applyStyleThrottler: Common.Throttler.Throttler;
   private newProperty: boolean;
@@ -343,7 +345,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   #propertyTextFromSource: string;
 
   constructor(
-      {stylesPane, matchedStyles, property, isShorthand, inherited, overloaded, newProperty}:
+      {stylesPane, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty}:
           StylePropertyTreeElementParams,
   ) {
     // Pass an empty title, the title gets made later in onattach.
@@ -355,6 +357,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.overloadedInternal = overloaded;
     this.selectable = false;
     this.parentPaneInternal = stylesPane;
+    this.#parentSection = section;
     this.isShorthand = isShorthand;
     this.applyStyleThrottler = new Common.Throttler.Throttler(0);
     this.newProperty = newProperty;
@@ -768,10 +771,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private processFont(text: string): Node {
-    const section = this.section();
-    if (section) {
-      section.registerFontProperty(this);
-    }
+    this.#parentSection.registerFontProperty(this);
     return document.createTextNode(text);
   }
 
@@ -858,18 +858,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     cssAngle.append(valueElement);
 
     cssAngle.addEventListener('popovertoggled', ({data}) => {
-      const section = this.section();
-      if (!section) {
-        return;
-      }
-
       if (data.open) {
         this.parentPaneInternal.hideAllPopovers();
         this.parentPaneInternal.activeCSSAngle = cssAngle;
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Angle);
       }
 
-      section.element.classList.toggle('has-open-popover', data.open);
+      this.#parentSection.element.classList.toggle('has-open-popover', data.open);
       this.parentPaneInternal.setEditingStyle(data.open);
     });
     cssAngle.addEventListener('valuechanged', async ({data}) => {
@@ -964,20 +959,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.parentPaneInternal;
   }
 
-  section(): StylePropertiesSection|null {
-    if (!this.treeOutline) {
-      return null;
-    }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (this.treeOutline as any).section;
+  section(): StylePropertiesSection {
+    return this.#parentSection;
   }
 
   private updatePane(): void {
-    const section = this.section();
-    if (section) {
-      section.refreshUpdate(this);
-    }
+    this.#parentSection.refreshUpdate(this);
   }
 
   private async toggleDisabled(disabled: boolean): Promise<void> {
@@ -1020,12 +1007,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       let inherited = false;
       let overloaded = false;
 
-      const section = this.section();
-      if (section) {
-        inherited = section.isPropertyInherited(name);
-        overloaded =
-            this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
-      }
+      inherited = this.#parentSection.isPropertyInherited(name);
+      overloaded = this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
 
       const leadingProperty = leadingProperties.find(property => property.name === name && property.activeInStyle());
       if (leadingProperty) {
@@ -1034,6 +1017,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       const item = new StylePropertyTreeElement({
         stylesPane: this.parentPaneInternal,
+        section: this.#parentSection,
         matchedStyles: this.matchedStylesInternal,
         property,
         isShorthand: false,
@@ -1184,19 +1168,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    const section = this.section();
-    if (this.valueElement && section && section.editable && this.property.name === 'display') {
+    if (this.valueElement && this.#parentSection.editable && this.property.name === 'display') {
       const propertyValue = this.property.trimmedValueWithoutImportant();
       const isFlex = propertyValue === 'flex' || propertyValue === 'inline-flex';
       const isGrid = propertyValue === 'grid' || propertyValue === 'inline-grid';
       if (isFlex || isGrid) {
-        const key = `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx}`;
+        const key = `${this.#parentSection.getSectionIdx()}_${this.#parentSection.nextEditorTriggerButtonIdx}`;
         const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, section, isFlex ? FlexboxEditor : GridEditor,
+            this.parentPaneInternal, this.#parentSection, isFlex ? FlexboxEditor : GridEditor,
             isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
         button.setAttribute(
             'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(isFlex ? 'flex' : 'grid')}`);
-        section.nextEditorTriggerButtonIdx++;
+        this.#parentSection.nextEditorTriggerButtonIdx++;
         button.addEventListener('click', () => {
           Host.userMetrics.swatchActivated(
               isFlex ? Host.UserMetrics.SwatchType.Flex : Host.UserMetrics.SwatchType.Grid);
@@ -1236,7 +1219,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.updateFilter();
 
-    if (this.property.parsedOk && this.section() && this.parent && this.parent.root) {
+    if (this.property.parsedOk && this.parent && this.parent.root) {
       const enabledCheckboxElement = document.createElement('input');
       enabledCheckboxElement.className = 'enabled-button';
       enabledCheckboxElement.type = 'checkbox';
@@ -1325,9 +1308,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const section = this.section();
     let selectedElement = event.target as Element;
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && section && section.navigable) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && this.#parentSection.navigable) {
       this.navigateToSource(selectedElement);
       return;
     }
@@ -1336,7 +1318,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    if (section && !section.editable) {
+    if (!this.#parentSection.editable) {
       return;
     }
 
@@ -1352,7 +1334,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private handleContextMenuEvent(context: Context, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (this.property.parsedOk && this.section() && this.parent && this.parent.root) {
+    if (this.property.parsedOk && this.parent && this.parent.root) {
       const sectionIndex = this.parentPaneInternal.focusedSectionIndex();
       contextMenu.defaultSection().appendCheckboxItem(
           i18nString(UIStrings.togglePropertyAndContinueEditing), async () => {
@@ -1401,8 +1383,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyRule), () => {
-      const section = (this.section() as StylePropertiesSection);
-      const ruleText = StylesSidebarPane.formatLeadingProperties(section).ruleText;
+      const ruleText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RuleViaContextMenu);
     });
@@ -1411,8 +1392,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         i18nString(UIStrings.copyCssDeclarationAsJs), this.copyCssDeclarationAsJs.bind(this));
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
-      const section = (this.section() as StylePropertiesSection);
-      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(section).allDeclarationText;
+      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsViaContextMenu);
     });
@@ -1461,8 +1441,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private copyAllCssDeclarationAsJs(): void {
-    const section = this.section() as StylePropertiesSection;
-    const leadingProperties = (section.style()).leadingProperties();
+    const leadingProperties = this.#parentSection.style().leadingProperties();
     const cssDeclarationsAsJsProperties =
         leadingProperties.filter(property => !property.disabled).map(getCssDeclarationAsJavascriptProperty);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssDeclarationsAsJsProperties.join(',\n'));
@@ -1470,8 +1449,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private navigateToSource(element: Element, omitFocus?: boolean): void {
-    const section = this.section();
-    if (!section || !section.navigable) {
+    if (!this.#parentSection.navigable) {
       return;
     }
     const propertyNameClicked = element === this.nameElement;
@@ -1857,7 +1835,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const shouldCommitNewProperty = this.newProperty &&
         (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput) ||
          nameValueEntered);
-    const section = (this.section() as StylePropertiesSection);
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this.newProperty) || shouldCommitNewProperty) {
       let propertyText;
       if (nameValueEntered) {
@@ -1874,7 +1851,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
       }
       await this.applyStyleText(propertyText || '', true);
-      moveToNextCallback.call(this, this.newProperty, !blankInput, section);
+      moveToNextCallback.call(this, this.newProperty, !blankInput, this.#parentSection);
     } else {
       if (isEditingName) {
         this.property.name = userInput;
@@ -1884,7 +1861,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       if (!isDataPasted && !this.newProperty) {
         this.updateTitle();
       }
-      moveToNextCallback.call(this, this.newProperty, false, section);
+      moveToNextCallback.call(this, this.newProperty, false, this.#parentSection);
     }
 
     /**
@@ -2058,9 +2035,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     // This occurs when deleting the last index of a StylePropertiesSection as this.style._allProperties array gets updated
     // before we index it when setting the value for updatedProperty
     const deleteProperty = majorChange && !styleText.length;
-    const section = this.section();
-    if (deleteProperty && section) {
-      section.resetToolbars();
+    if (deleteProperty) {
+      this.#parentSection.resetToolbars();
     } else if (!deleteProperty && updatedProperty) {
       this.property = updatedProperty;
     }

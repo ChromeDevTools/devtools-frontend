@@ -103,7 +103,7 @@ describe('FlameChart', function() {
     const timerFireHandle = await waitFor('.timeline-details-chip-title');
     const timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
     assert.isTrue(timerFireTitle.includes('Timer Fired'));
-    const initiatorLink = await waitFor('[data-row-title="Initiator"] .timeline-details-view-row-value');
+    const initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
     await initiatorLink.click();
 
     // Make sure the highlighting element is on the initiator, with some

@@ -860,9 +860,13 @@ const UIStrings = {
    */
   FromServiceWorker: ' (from `service worker`)',
   /**
-   *@description Text for the initiator of something
+   *@description Text for the event initiated by another one
    */
-  initiator: 'Initiator',
+  initiatedBy: 'Initiated by',
+  /**
+   *@description Text for the event that is an initiator for another one
+   */
+  initiatorFor: 'Initiator for',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
@@ -1839,6 +1843,10 @@ export class TimelineUIUtils {
     const initiator = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
         traceParseData?.Initiators.eventToInitiator.get(event) ?? null :
         null;
+    const initiatorFor = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+        traceParseData?.Initiators.initiatorToEvents.get(event) ?? null :
+        null;
+
     let url: Platform.DevToolsPath.UrlString|null = null;
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
@@ -2239,7 +2247,7 @@ export class TimelineUIUtils {
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
       const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
-      if (initiator || stackTrace || traceParseData?.Invalidations.invalidationsForEvent.get(event)) {
+      if (initiator || initiatorFor || stackTrace || traceParseData?.Invalidations.invalidationsForEvent.get(event)) {
         await TimelineUIUtils.generateCauses(event, contentHelper, traceParseData);
       }
     }
@@ -2469,7 +2477,7 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(
           i18nString(UIStrings.decodedBody), Platform.NumberUtilities.bytesToString(event.args.data.decodedBodyLength));
     }
-    const title = i18nString(UIStrings.initiator);
+    const title = i18nString(UIStrings.initiatedBy);
 
     const topFrame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
     if (topFrame) {
@@ -2531,14 +2539,8 @@ export class TimelineUIUtils {
         break;
     }
 
-    const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
-    if (stackTrace && stackTrace.length) {
-      contentHelper.addSection(i18nString(UIStrings.callStacks));
-      contentHelper.appendStackTrace(
-          stackLabel || i18nString(UIStrings.stackTrace), TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
-    }
-
     const initiator = traceParseData.Initiators.eventToInitiator.get(event);
+    const initiatorFor = traceParseData.Initiators.initiatorToEvents.get(event);
     const invalidations = traceParseData.Invalidations.invalidationsForEvent.get(event);
 
     if (initiator) {
@@ -2548,21 +2550,8 @@ export class TimelineUIUtils {
       const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
 
-      const link = document.createElement('span');
-      link.classList.add('devtools-link');
-      UI.ARIAUtils.markAsLink(link);
-      link.tabIndex = 0;
-      link.textContent = i18nString(UIStrings.reveal);
-      link.addEventListener('click', () => {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator)));
-      });
-      link.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator)));
-          event.consume(true);
-        }
-      });
-      contentHelper.appendElementRow(i18nString(UIStrings.initiator), link);
+      const link = this.createEntryLink(initiator);
+      contentHelper.appendElementRow(i18nString(UIStrings.initiatedBy), link);
 
       const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(initiator);
       if (stackTrace) {
@@ -2576,10 +2565,51 @@ export class TimelineUIUtils {
             })));
       }
     }
+
+    if (initiatorFor) {
+      // If the event is an initiator for some entries, add links to reveal them.
+      const links = document.createElement('div');
+      initiatorFor.map((initiator, i) => {
+        links.appendChild(this.createEntryLink(initiator));
+        // Add space between each link if it's not last
+        if (i < initiatorFor.length - 1) {
+          links.append(' ');
+        }
+      });
+      contentHelper.appendElementRow(UIStrings.initiatorFor, links);
+    }
+
+    const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
+    if (stackTrace && stackTrace.length) {
+      contentHelper.addSection(i18nString(UIStrings.callStacks));
+      contentHelper.appendStackTrace(
+          stackLabel || i18nString(UIStrings.stackTrace), TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+    }
+
     if (invalidations && invalidations.length) {
       contentHelper.addSection(i18nString(UIStrings.invalidations));
       await TimelineUIUtils.generateInvalidationsList(invalidations, contentHelper);
     }
+  }
+
+  private static createEntryLink(entry: TraceEngine.Types.TraceEvents.TraceEventData): HTMLElement {
+    const link = document.createElement('span');
+    link.classList.add('devtools-link');
+    UI.ARIAUtils.markAsLink(link);
+    link.tabIndex = 0;
+    link.textContent = i18nString(UIStrings.reveal);
+    link.addEventListener('click', () => {
+      TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((entry)));
+    });
+
+    link.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((entry)));
+        event.consume(true);
+      }
+    });
+
+    return link;
   }
 
   private static async generateInvalidationsList(

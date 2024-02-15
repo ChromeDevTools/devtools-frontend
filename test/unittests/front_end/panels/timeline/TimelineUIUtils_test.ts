@@ -555,18 +555,18 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: '3',
         },
         {
-          title: 'Recalculation Forced',
-          // The Stack trace output would be here but the detailRow helper is
-          // unable to parse it, hence why this returns empty.
-          value: '',
-        },
-        {
           title: 'Pending for',
           value: '7.1 ms',
         },
         {
-          title: 'Initiator',
+          title: 'Initiated by',
           value: 'Reveal',
+        },
+        {
+          title: 'Recalculation Forced',
+          // The Stack trace output would be here but the detailRow helper is
+          // unable to parse it, hence why this returns empty.
+          value: '',
         },
         {
           title: 'PseudoClass:active',
@@ -762,10 +762,44 @@ describeWithMockConnection('TimelineUIUtils', function() {
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
            {title: 'Pending for', value: '72.0 ms'},
-           {title: 'Initiator', 'value': 'Reveal'},
+           {title: 'Initiated by', 'value': 'Reveal'},
            // This value looks odd, but it is because the stack trace UI cannot be
            // easily represented as a string, so this is OK.
            {title: 'First Invalidated', value: ''},
+         ];
+         assert.deepEqual(
+             rowData,
+             expectedRowData,
+         );
+       });
+
+    it('shows information for the events initiated by WebSocketCreate when viewing a WebSocketCreate event',
+       async function() {
+         const data = await TraceLoader.allModels(this, 'web-sockets.json.gz');
+         const events = data.traceParsedData.Renderer?.allTraceEntries;
+         if (!events) {
+           throw new Error('Could not find renderer events');
+         }
+
+         const sendHandshake = events.find(TraceEngine.Types.TraceEvents.isTraceEventWebSocketCreate);
+         if (!sendHandshake) {
+           throw new Error('Could not find handshake event.');
+         }
+
+         const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+             sendHandshake,
+             data.timelineModel,
+             new Components.Linkifier.Linkifier(),
+             false,
+             data.traceParsedData,
+         );
+         const rowData = getRowDataForDetailsElement(details);
+         const expectedRowData = [
+           {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
+           {title: 'Initiator for', 'value': 'Reveal Reveal'},
+           // This value looks odd, but it is because the stack trace UI cannot be
+           // easily represented as a string, so this is OK.
+           {title: 'Stack Trace', value: ''},
          ];
          assert.deepEqual(
              rowData,

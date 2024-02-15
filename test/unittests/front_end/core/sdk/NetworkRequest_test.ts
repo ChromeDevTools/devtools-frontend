@@ -152,6 +152,7 @@ describe('NetworkRequest', () => {
       statusCode: undefined,
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
+      exemptedResponseCookies: undefined,
     });
 
     assert.deepEqual(
@@ -164,6 +165,53 @@ describe('NetworkRequest', () => {
                      }]);
     assert.deepEqual(
         request.nonBlockedResponseCookies().map(cookie => cookie.getCookieLine()), ['foo=duplicate; Path=/']);
+  });
+
+  it('can handle the case of exempted cookies', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'url' as Platform.DevToolsPath.UrlString,
+        'documentURL' as Platform.DevToolsPath.UrlString, null, null, null);
+
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
+    cookie.addAttribute(SDK.Cookie.Attribute.SameSite, 'None');
+    cookie.addAttribute(SDK.Cookie.Attribute.Secure, true);
+    cookie.setCookieLine('name=value; Path=/; SameSite=None; Secure;');
+    request.addExtraResponseInfo({
+      responseHeaders: [{name: 'Set-Cookie', value: cookie.getCookieLine() as string}],
+      blockedResponseCookies: [],
+      resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+      statusCode: undefined,
+      cookiePartitionKey: undefined,
+      cookiePartitionKeyOpaque: undefined,
+      exemptedResponseCookies:
+          [{cookie: cookie, exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics}],
+    });
+
+    assert.deepEqual(
+        request.responseCookies.map(cookie => cookie.getCookieLine()), ['name=value; Path=/; SameSite=None; Secure;']);
+    assert.deepEqual(
+        request.nonBlockedResponseCookies().map(cookie => cookie.getCookieLine()),
+        ['name=value; Path=/; SameSite=None; Secure;']);
+    assert.deepEqual(
+        request.exemptedResponseCookies().map(cookie => cookie.cookie.getCookieLine()),
+        ['name=value; Path=/; SameSite=None; Secure;']);
+    assert.deepEqual(
+        request.exemptedResponseCookies().map(cookie => cookie.exemptionReason),
+        [Protocol.Network.CookieExemptionReason.TPCDHeuristics]);
+
+    request.addExtraRequestInfo({
+      blockedRequestCookies: [],
+      requestHeaders: [],
+      includedRequestCookies: [{exemptionReason: Protocol.Network.CookieExemptionReason.EnterprisePolicy, cookie}],
+      connectTiming: {requestTime: 0},
+    });
+
+    assert.deepEqual(
+        request.includedRequestCookies().map(included => included.cookie.getCookieLine()),
+        ['name=value; Path=/; SameSite=None; Secure;']);
+    assert.deepEqual(
+        request.includedRequestCookies().map(included => included.exemptionReason),
+        [Protocol.Network.CookieExemptionReason.EnterprisePolicy]);
   });
 
   it('preserves order of headers in case of duplicates', () => {
@@ -224,6 +272,7 @@ describeWithMockConnection('NetworkRequest', () => {
       statusCode: undefined,
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
+      exemptedResponseCookies: undefined,
     });
     assert.isTrue(addBlockedCookieSpy.calledOnceWith(
         cookie, [{

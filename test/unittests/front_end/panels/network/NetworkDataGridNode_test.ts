@@ -440,6 +440,7 @@ describeWithEnvironment('NetworkLogView', () => {
       statusCode: undefined,
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
+      exemptedResponseCookies: undefined,
     });
 
     const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(

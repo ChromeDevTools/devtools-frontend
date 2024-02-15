@@ -201,7 +201,8 @@ export class Entry {
       httpVersion: this.request.requestHttpVersion(),
       headers: this.request.requestHeaders(),
       queryString: this.buildParameters(this.request.queryParameters || []),
-      cookies: this.buildCookies(this.request.includedRequestCookies()),
+      cookies: this.buildCookies(
+          this.request.includedRequestCookies().map(includedRequestCookie => includedRequestCookie.cookie)),
       headersSize: headersText ? headersText.length : -1,
       bodySize: await this.requestBodySize(),
       postData: undefined,

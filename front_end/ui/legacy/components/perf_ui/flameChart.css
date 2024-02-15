@@ -50,6 +50,13 @@
   background-color: var(--sys-color-state-ripple-primary);
 }
 
+.flame-chart-search-element {
+  position: absolute;
+  pointer-events: none;
+  outline: 1px solid var(--sys-color-on-surface-subtle);
+  background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+}
+
 .chart-cursor-element {
   position: absolute;
   top: 0;

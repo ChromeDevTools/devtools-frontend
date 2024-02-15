@@ -39,6 +39,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const MAX_HIGHLIGHTED_SEARCH_ELEMENTS: number = 200;
+
 export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate,
                                                                       UI.SearchableView.Searchable {
   private readonly delegate: TimelineModeViewDelegate;
@@ -458,6 +460,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const oldSelectedSearchResult = (this.selectedSearchResult as number);
     delete this.selectedSearchResult;
     this.searchResults = [];
+    this.mainFlameChart.removeSearchResultHighlights();
     if (!this.searchRegex || !this.model) {
       return;
     }
@@ -465,6 +468,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
     this.searchResults = this.mainDataProvider.search(visibleWindow.min, visibleWindow.max, regExpFilter);
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
+    // To avoid too many highlights when the search regex matches too many entries,
+    // for example, when user only types in "e" as the search query,
+    // We only highlight the search results when the number of matches is less than or equal to 200.
+    if (this.searchResults.length <= MAX_HIGHLIGHTED_SEARCH_ELEMENTS) {
+      this.mainFlameChart.highlightAllEntries(this.searchResults);
+    }
     if (!shouldJump || !this.searchResults.length) {
       return;
     }
@@ -492,6 +501,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     delete this.searchResults;
     delete this.selectedSearchResult;
     delete this.searchRegex;
+    this.mainFlameChart.showPopoverForSearchResult(-1);
+    this.mainFlameChart.removeSearchResultHighlights();
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {

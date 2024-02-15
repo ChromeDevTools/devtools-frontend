@@ -184,6 +184,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number;
+  #searchResultHighlightElements: HTMLElement[] = [];
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
@@ -307,6 +308,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHighlighted, entryIndex);
+  }
+
+  highlightAllEntries(entries: number[]): void {
+    for (const entry of entries) {
+      const searchElement = this.viewportElement.createChild('div', 'flame-chart-search-element');
+      this.#searchResultHighlightElements.push(searchElement);
+      searchElement.id = entry.toString();
+      this.updateElementPosition(searchElement, entry);
+    }
+  }
+
+  removeSearchResultHighlights(): void {
+    for (const element of this.#searchResultHighlightElements) {
+      element.remove();
+    }
+    this.#searchResultHighlightElements = [];
   }
 
   hideHighlight(): void {
@@ -1575,6 +1592,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
     if (this.#searchResultEntryIndex !== -1) {
       this.showPopoverForSearchResult(this.#searchResultEntryIndex);
+    }
+    for (const element of this.#searchResultHighlightElements) {
+      this.updateElementPosition(element, Number(element.id));
     }
     this.updateMarkerHighlight();
   }

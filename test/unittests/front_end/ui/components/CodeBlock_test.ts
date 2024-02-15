@@ -5,7 +5,7 @@
 import * as Host from '../../../../../front_end/core/host/host.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as MarkdownView from '../../../../../front_end/ui/components/markdown_view/markdown_view.js';
-import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM, resetTestDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -38,6 +38,7 @@ describeWithEnvironment('CodeBlock', () => {
       assert.strictEqual(button.querySelector('span')?.innerText, 'Copy code');
     } finally {
       clock.restore();
+      resetTestDOM();
     }
   });
 });

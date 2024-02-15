@@ -38,13 +38,10 @@ code {
   line-height: 16px;
 }
 
-.codeblock code {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px;
-  display: block;
-  overflow: auto;
-  white-space: pre;
+.codeblock .editor-wrapper {
+  color: var(--sys-color-on-surface);
+  background: var(--sys-color-surface1);
+  padding: 10px 5px;
 }
 
 .codeblock .lang {

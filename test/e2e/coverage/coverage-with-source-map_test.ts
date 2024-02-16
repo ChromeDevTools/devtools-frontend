@@ -47,7 +47,7 @@ describe('Coverage Panel', function() {
     const URL_PREFIX = `https://localhost:${getTestServerPort()}/test/e2e/resources/coverage`;
     const expected = [
       {
-        'total': '1 445',
+        'total': '1,445',
         'unused': '783',
         'url': `${URL_PREFIX}/with-source-map.js`,
       },
@@ -85,7 +85,7 @@ describe('Coverage Panel', function() {
     result.pop();  // remove the last item, which is the coverage for the eval code
     const expected = [
       {
-        'total': '1 445',
+        'total': '1,445',
         'unused': '682',
         'url': `${URL_PREFIX}/with-source-map.js`,
       },

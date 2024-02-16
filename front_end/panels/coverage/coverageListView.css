@@ -42,12 +42,9 @@
 }
 
 .data-grid td .percent-value {
-  width: 6ex;
+  width: 7ex;
   display: inline-block;
-}
-
-.data-grid tr:not(.selected) td .percent-value {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 @media (forced-colors: active) {

@@ -1590,6 +1590,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/CLSLinkifier.js",
   "front_end/panels/timeline/CompatibilityTracksAppender.js",
   "front_end/panels/timeline/CountersGraph.js",
+  "front_end/panels/timeline/EasterEgg.js",
   "front_end/panels/timeline/EventUICategory.js",
   "front_end/panels/timeline/EventsTimelineTreeView.js",
   "front_end/panels/timeline/GPUTrackAppender.js",

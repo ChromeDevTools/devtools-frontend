@@ -53,6 +53,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
+import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {PerformanceModel} from './PerformanceModel.js';
@@ -494,7 +495,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       const month = dateObj.getUTCMonth() + 1;
       const day = dateObj.getUTCDate();
       const isAprilFools = (month === 4 && (day === 1 || day === 2));  // Show only on April fools and the next day
-      if (isAprilFools && !this.fixMeButtonAdded) {
+      if (isAprilFools && !this.fixMeButtonAdded && SHOULD_SHOW_EASTER_EGG) {
         this.fixMeButtonAdded = true;
         this.panelToolbar.appendToolbarItem(this.fixMeButton);
       }

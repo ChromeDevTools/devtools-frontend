@@ -3677,6 +3677,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setAutomaticPresenceSimulation(params: Protocol.WebAuthn.SetAutomaticPresenceSimulationRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Allows setting credential properties.
+     * https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+     */
+    invoke_setCredentialProperties(params: Protocol.WebAuthn.SetCredentialPropertiesRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface WebAuthnDispatcher {
     /**

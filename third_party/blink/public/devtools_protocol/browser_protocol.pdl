@@ -1110,6 +1110,8 @@ experimental domain Autofill
       string autofillType
       # The filling strategy
       FillingStrategy fillingStrategy
+      # The frame the field belongs to
+      Page.FrameId frameId
       # The form field's DOM node
       DOM.BackendNodeId fieldId
 
@@ -9679,9 +9681,15 @@ experimental domain Storage
   # Details for an origin's shared storage.
   type SharedStorageMetadata extends object
     properties
+      # Time when the origin's shared storage was last created.
       Network.TimeSinceEpoch creationTime
+      # Number of key-value pairs stored in origin's shared storage.
       integer length
+      # Current amount of bits of entropy remaining in the navigation budget.
       number remainingBudget
+      # Total number of bytes stored as key-value pairs in origin's shared
+      # storage.
+      integer bytesUsed
 
   # Pair of reporting metadata details for a candidate URL for `selectURL()`.
   type SharedStorageReportingMetadata extends object
@@ -10190,12 +10198,17 @@ experimental domain Storage
       include
       exclude
 
-  experimental type AttributionReportingAggregatableValueEntry extends object
+  experimental type AttributionReportingAggregatableValueDictEntry extends object
     properties
       string key
       # number instead of integer because not all uint32 can be represented by
       # int
       number value
+
+  experimental type AttributionReportingAggregatableValueEntry extends object
+    properties
+      array of AttributionReportingAggregatableValueDictEntry values
+      AttributionReportingFilterPair filters
 
   experimental type AttributionReportingEventTriggerData extends object
     properties
@@ -11404,6 +11417,14 @@ experimental domain WebAuthn
       # The large blob associated with the credential.
       # See https://w3c.github.io/webauthn/#sctn-large-blob-extension
       optional binary largeBlob
+      # Assertions returned by this credential will have the backup eligibility
+      # (BE) flag set to this value. Defaults to the authenticator's
+      # defaultBackupEligibility value.
+      optional boolean backupEligibility
+      # Assertions returned by this credential will have the backup state (BS)
+      # flag set to this value. Defaults to the authenticator's
+      # defaultBackupState value.
+      optional boolean backupState
 
   # Enable the WebAuthn domain and start intercepting credential storage and
   # retrieval with a virtual authenticator.
@@ -11491,6 +11512,15 @@ experimental domain WebAuthn
     parameters
       AuthenticatorId authenticatorId
       boolean enabled
+
+  # Allows setting credential properties.
+  # https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+  command setCredentialProperties
+    parameters
+      AuthenticatorId authenticatorId
+      binary credentialId
+      optional boolean backupEligibility
+      optional boolean backupState
 
   # Triggered when a credential is added to an authenticator.
   event credentialAdded

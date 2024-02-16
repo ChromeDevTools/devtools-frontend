@@ -58,6 +58,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
       ];
       const inEvent = {
@@ -91,6 +92,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
         {
           htmlType: 'text',
@@ -100,6 +102,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'Last name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 2 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
       ];
       const inEvent = {
@@ -136,6 +139,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'Street address',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
       ];
       const inEvent = {
@@ -169,6 +173,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
         {
           htmlType: 'text',
@@ -178,6 +183,7 @@ describeWithMockConnection('AutofillManager', () => {
           autofillType: 'City',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 2 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
       ];
       const inEvent = {

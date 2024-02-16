@@ -35,6 +35,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
+      bytesUsed: 2,
     });
     renderElementIntoDOM(component);
 
@@ -52,6 +53,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
+      bytesUsed: 2,
     });
     renderElementIntoDOM(component);
 
@@ -106,6 +108,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
           creationTime: 10 as Protocol.Network.TimeSinceEpoch,
           length: 4,
           remainingBudget: 8.3,
+          bytesUsed: 2,
         },
         resetBudgetHandlerSpy);
     renderElementIntoDOM(component);

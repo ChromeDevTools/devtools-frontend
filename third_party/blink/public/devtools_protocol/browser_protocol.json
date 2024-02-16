@@ -2228,6 +2228,11 @@
                             "$ref": "FillingStrategy"
                         },
                         {
+                            "name": "frameId",
+                            "description": "The frame the field belongs to",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
                             "name": "fieldId",
                             "description": "The form field's DOM node",
                             "$ref": "DOM.BackendNodeId"
@@ -20488,15 +20493,23 @@
                     "properties": [
                         {
                             "name": "creationTime",
+                            "description": "Time when the origin's shared storage was last created.",
                             "$ref": "Network.TimeSinceEpoch"
                         },
                         {
                             "name": "length",
+                            "description": "Number of key-value pairs stored in origin's shared storage.",
                             "type": "integer"
                         },
                         {
                             "name": "remainingBudget",
+                            "description": "Current amount of bits of entropy remaining in the navigation budget.",
                             "type": "number"
+                        },
+                        {
+                            "name": "bytesUsed",
+                            "description": "Total number of bytes stored as key-value pairs in origin's shared\nstorage.",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -20895,7 +20908,7 @@
                     ]
                 },
                 {
-                    "id": "AttributionReportingAggregatableValueEntry",
+                    "id": "AttributionReportingAggregatableValueDictEntry",
                     "experimental": true,
                     "type": "object",
                     "properties": [
@@ -20907,6 +20920,24 @@
                             "name": "value",
                             "description": "number instead of integer because not all uint32 can be represented by\nint",
                             "type": "number"
+                        }
+                    ]
+                },
+                {
+                    "id": "AttributionReportingAggregatableValueEntry",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "values",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AttributionReportingAggregatableValueDictEntry"
+                            }
+                        },
+                        {
+                            "name": "filters",
+                            "$ref": "AttributionReportingFilterPair"
                         }
                     ]
                 },
@@ -24237,6 +24268,18 @@
                             "description": "The large blob associated with the credential.\nSee https://w3c.github.io/webauthn/#sctn-large-blob-extension",
                             "optional": true,
                             "type": "binary"
+                        },
+                        {
+                            "name": "backupEligibility",
+                            "description": "Assertions returned by this credential will have the backup eligibility\n(BE) flag set to this value. Defaults to the authenticator's\ndefaultBackupEligibility value.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "backupState",
+                            "description": "Assertions returned by this credential will have the backup state (BS)\nflag set to this value. Defaults to the authenticator's\ndefaultBackupState value.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 }
@@ -24413,6 +24456,30 @@
                         },
                         {
                             "name": "enabled",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setCredentialProperties",
+                    "description": "Allows setting credential properties.\nhttps://w3c.github.io/webauthn/#sctn-automation-set-credential-properties",
+                    "parameters": [
+                        {
+                            "name": "authenticatorId",
+                            "$ref": "AuthenticatorId"
+                        },
+                        {
+                            "name": "credentialId",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "backupEligibility",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "backupState",
+                            "optional": true,
                             "type": "boolean"
                         }
                     ]

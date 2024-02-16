@@ -4228,6 +4228,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Allows setting credential properties.
+     * https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+     */
+    'WebAuthn.setCredentialProperties': {
+      paramsType: [Protocol.WebAuthn.SetCredentialPropertiesRequest];
+      returnType: void;
+    };
+    /**
      * Enables the Media domain
      */
     'Media.enable': {

@@ -44,7 +44,7 @@ describeWithMockConnection('AutofillModel', () => {
     const dispatchedEvents: Array<SDKModule.AutofillModel.AddressFormFilledEvent> = [];
     autofillModel.addEventListener(SDK.AutofillModel.Events.AddressFormFilled, e => dispatchedEvents.push(e.data));
 
-    const addressFormFilledEvent = {
+    const addressFormFilledEvent: Protocol.Autofill.AddressFormFilledEvent = {
       addressUi: {
         addressFields: [
           {
@@ -63,6 +63,7 @@ describeWithMockConnection('AutofillModel', () => {
           autofillType: 'First name',
           fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
           fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
         },
       ],
     };

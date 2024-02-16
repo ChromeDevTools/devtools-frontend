@@ -36,4 +36,10 @@ describe('FlameChart', function() {
     const flameChart = await getFlameChartContainerWhenReady('#container2');
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.5);
   });
+
+  itScreenshot('can add initiators to events', async () => {
+    await loadComponentDocExample('performance_panel/flamechart.html');
+    const flameChart = await getFlameChartContainerWhenReady('#container5');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.5);
+  });
 });

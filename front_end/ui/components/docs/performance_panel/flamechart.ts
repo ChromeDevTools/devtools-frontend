@@ -285,7 +285,46 @@ function renderExample4() {
   });
 }
 
+/**
+ * Render a flame chart with event initiators of different sizes.
+ **/
+function renderExample5() {
+  class FakeProviderWithVariousTasksForInitiators extends TraceHelpers.FakeFlameChartProvider {
+    override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+      return PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2],
+        entryStartTimes: [5, 5, 5, 15, 15, 15, 40, 40, 40, 55.4, 55.4, 55.4, 80, 80, 80],
+        entryTotalTimes: [5, 5, 5, 5, 5, 5, 15, 15, 15, 2, 2, 2, 10, 10, 10],
+        groups: [{
+          name: 'Testing initiators' as Platform.UIString.LocalizedString,
+          startLevel: 0,
+          style: defaultGroupStyle,
+        }],
+        flowStartTimes: [10, 20, 20, 55, 57.4, 10],
+        flowStartLevels: [2, 0, 0, 0, 2, 1],
+        flowEndTimes: [15, 40, 40, 55.4, 80, 80],
+        flowEndLevels: [0, 2, 0, 2, 0, 1],
+      });
+    }
+  }
+
+  const container = document.querySelector('div#container5');
+  if (!container) {
+    throw new Error('No container');
+  }
+  const delegate = new TraceHelpers.MockFlameChartDelegate();
+  const dataProvider = new FakeProviderWithVariousTasksForInitiators();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+
+  flameChart.markAsRoot();
+  flameChart.setSelectedEntry(14);
+  flameChart.setWindowTimes(0, 100);
+  flameChart.show(container);
+  flameChart.update();
+}
+
 renderExample1();
 renderExample2();
 renderExample3();
 renderExample4();
+renderExample5();

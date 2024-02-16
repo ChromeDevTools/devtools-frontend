@@ -28,8 +28,8 @@ type Brick = {
   width: number,
 };
 
-const MAX_DELTA = 5;
-const MIN_DELTA = 3;
+const MAX_DELTA = 16;
+const MIN_DELTA = 10;
 const MAX_PADDLE_LENGTH = 150;
 const MIN_PADDLE_LENGTH = 85;
 const PADDLE_HEIGHT = 15;
@@ -52,10 +52,17 @@ const colorPallettes: ColorPalette[] = [
   },
   // pinks
   {
-    light: 'rgb(223,213,225)',
-    mediumLighter: 'rgb(208,192,211)',
-    mediumDarker: 'rgb(177,150,182)',
-    dark: 'rgb(253,77,246)',
+    light: 'rgb(253, 216, 229)',
+    mediumLighter: 'rgb(250, 157, 188)',
+    mediumDarker: 'rgb(249, 98, 154)',
+    dark: 'rgb(254, 5, 105)',
+  },
+  // pastel pinks
+  {
+    light: 'rgb(254, 234, 234)',
+    mediumLighter: 'rgb(255, 216, 216)',
+    mediumDarker: 'rgb(255, 195, 195)',
+    dark: 'rgb(235, 125, 138)',
   },
   // purples
   {
@@ -73,16 +80,16 @@ const colorPallettes: ColorPalette[] = [
   },
   // reds
   {
-    light: 'rgb(255,177,177)',
-    mediumLighter: 'rgb(255,137,137)',
-    mediumDarker: 'rgb(255,0,0)',
-    dark: 'rgb(226,29,29)',
+    light: 'rgb(255, 188, 181)',
+    mediumLighter: 'rgb(254, 170, 170)',
+    mediumDarker: 'rgb(215, 59, 43)',
+    dark: 'rgb(187, 37, 23)',
   },
   // aqua
   {
-    light: 'rgb(125,255,211)',
-    mediumLighter: 'rgb(117,235,194)',
-    mediumDarker: 'rgb(95,217,174)',
+    light: 'rgb(236, 254, 250)',
+    mediumLighter: 'rgb(204, 255, 245)',
+    mediumDarker: 'rgb(164, 240, 233)',
     dark: 'rgb(72,189,144)',
   },
   // yellow/pink
@@ -133,7 +140,12 @@ export class BrickBreaker extends HTMLElement {
   #lives = 0;
   #blockCount = 0;
   #paddleLength = MAX_PADDLE_LENGTH;
-  #deltaVectorLength = MIN_DELTA;
+  #minScreenHeight = 150;
+  #maxScreenHeight = 1500;
+  #screenHeightDiff = this.#maxScreenHeight - this.#minScreenHeight;
+  // Value from 0.1 to 1 that multiplies speed depending on the screen height
+  #deltaMultiplier = 0;
+  #deltaVectorLength = 0;
   #currentPalette: ColorPalette;
   constructor(private timelineFlameChart: FlameChart) {
     super();
@@ -201,6 +213,8 @@ export class BrickBreaker extends HTMLElement {
 
   #setUpNewGame(): void {
     this.#resetCanvas();
+    this.#deltaMultiplier = Math.max(0.1, (this.offsetHeight - this.#minScreenHeight) / this.#screenHeightDiff);
+    this.#deltaVectorLength = MIN_DELTA * this.#deltaMultiplier;
     const trackData = this.timelineFlameChart.drawTrackOnCanvas('Main', this.#ctx, BALL_RADIUS);
     if (trackData === null || trackData.visibleEntries.size === 0) {
       console.error('Could not draw game');
@@ -393,7 +407,10 @@ export class BrickBreaker extends HTMLElement {
     this.#scorePanel.innerHTML = lives + blocks;
 
     this.#blockCount = this.#visibleEntries.size - this.#brokenBricks.size;
-    this.#deltaVectorLength = MIN_DELTA + (MAX_DELTA - MIN_DELTA) * this.#brokenBricks.size / this.#visibleEntries.size;
+    this.#deltaVectorLength =
+        (MIN_DELTA + (MAX_DELTA - MIN_DELTA) * this.#brokenBricks.size / this.#visibleEntries.size) *
+        this.#deltaMultiplier;
+
     this.#paddleLength = MAX_PADDLE_LENGTH -
         (MAX_PADDLE_LENGTH - MIN_PADDLE_LENGTH) * this.#brokenBricks.size / this.#visibleEntries.size;
 

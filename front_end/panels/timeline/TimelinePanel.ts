@@ -493,7 +493,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       const dateObj = new Date();
       const month = dateObj.getUTCMonth() + 1;
       const day = dateObj.getUTCDate();
-      const isAprilFools = (month === 4 && day === 1) || true;  // TODO: show only on April fools
+      const isAprilFools = (month === 4 && (day === 1 || day === 2));  // Show only on April fools and the next day
       if (isAprilFools && !this.fixMeButtonAdded) {
         this.fixMeButtonAdded = true;
         this.panelToolbar.appendToolbarItem(this.fixMeButton);

@@ -165,7 +165,7 @@ luci.notifier(
         "gsutil upload",
         "taskkill",
     ] + EXCLUDED_STEPS,
-    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
+    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
 )
 
 luci.tree_closer(
@@ -185,7 +185,7 @@ luci.notifier(
     failed_step_regexp = [
         ".*Previous roll failed",
     ],
-    notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
+    notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
     template = luci.notifier_template(
         name = "sheriff_email",
         body = """Stuck auto-roller: {{.Build.Builder.Builder}} found a stale CL.

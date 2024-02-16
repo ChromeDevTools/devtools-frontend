@@ -54,6 +54,14 @@ console.log('test');
 document.querySelector('test').style = 'black';
 \`\`\`
 
+\`\`\`
+<!DOCTYPE html>
+<div>Hello world</div>
+<script>
+  console.log('Hello World');
+</script>
+\`\`\`
+
 Links: [https://example.com](https://example.com)
 Images: ![https://example.com](https://example.com)
 `;

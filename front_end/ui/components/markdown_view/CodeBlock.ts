@@ -125,8 +125,11 @@ export class CodeBlock extends HTMLElement {
     if (!editor) {
       return;
     }
-    let language = CodeMirror.javascript.javascript();
+    let language = CodeMirror.html.html();
     switch (this.#codeLang) {
+      case 'js':
+        language = CodeMirror.javascript.javascript();
+        break;
       case 'ts':
         language = CodeMirror.javascript.javascript({typescript: true});
         break;

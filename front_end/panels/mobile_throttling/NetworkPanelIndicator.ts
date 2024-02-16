@@ -11,10 +11,6 @@ const UIStrings = {
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
-  browserCacheDisabled: 'Browser cache is disabled',
-  /**
-   *@description Icon title in Network Panel Indicator of the Network panel
-   */
   networkThrottlingIsEnabled: 'Network throttling is enabled',
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
@@ -54,9 +50,6 @@ export class NetworkPanelIndicator {
       const warnings = [];
       if (manager.isThrottling()) {
         warnings.push(i18nString(UIStrings.networkThrottlingIsEnabled));
-      }
-      if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
-        warnings.push(i18nString(UIStrings.browserCacheDisabled));
       }
       if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
         warnings.push(i18nString(UIStrings.requestsMayBeOverridden));

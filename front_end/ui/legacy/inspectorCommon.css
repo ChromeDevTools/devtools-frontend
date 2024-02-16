@@ -134,9 +134,9 @@ body {
 .platform-linux,
 :host-context(.platform-linux) {
   --monospace-font-size: 11px;
-  --monospace-font-family: dejavu sans mono, monospace;
+  --monospace-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
   --source-code-font-size: 11px;
-  --source-code-font-family: dejavu sans mono, monospace;
+  --source-code-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
 }
 
 .monospace {

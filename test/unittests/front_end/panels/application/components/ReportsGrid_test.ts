@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
@@ -38,8 +37,7 @@ const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.Report
 
 const getHeaderText = (cell: HTMLTableCellElement) => {
   const ret = cell.textContent?.trim() ||
-      cell.querySelector('devtools-resources-reports-grid-status-header')?.shadowRoot?.textContent?.trim();
-  assertNotNullOrUndefined(ret);
+      cell.querySelector('devtools-resources-reports-grid-status-header')!.shadowRoot!.textContent!.trim();
   return ret;
 };
 

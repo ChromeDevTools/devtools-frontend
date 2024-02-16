@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
@@ -34,14 +33,13 @@ describe('CSSPlugin', () => {
 
 describeWithMockConnection('CSSPlugin', () => {
   const classNameCompletion = (targetFactory: () => SDK.Target.Target) => {
-    let target: SDK.Target.Target;
     beforeEach(() => {
       sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
         shortcutTitleForAction: () => {},
         shortcutsForAction: () => [],
         getShortcutListener: () => {},
       } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-      target = targetFactory();
+      targetFactory();
     });
 
     type CompletionProvider = (cx: CodeMirror.CompletionContext) => Promise<CodeMirror.CompletionResult|null>;
@@ -68,18 +66,15 @@ describeWithMockConnection('CSSPlugin', () => {
       uiSourceCode.url.returns(URL);
       const plugin = new CSSPlugin(uiSourceCode);
       const autocompletion = findAutocompletion(plugin.editorExtension());
-      assertNotNullOrUndefined(autocompletion);
       const FROM = 42;
       sinon.stub(CodeMirror.Tree.prototype, 'resolveInner')
           .returns({name: 'ClassName', from: FROM} as CodeMirror.SyntaxNode);
-      const cssModel = target.model(SDK.CSSModel.CSSModel);
-      assertNotNullOrUndefined(cssModel);
       const STYLESHEET_ID = 'STYLESHEET_ID' as Protocol.CSS.StyleSheetId;
-      sinon.stub(cssModel, 'getStyleSheetIdsForURL').withArgs(URL).returns([STYLESHEET_ID]);
+      sinon.stub(SDK.CSSModel.CSSModel.prototype, 'getStyleSheetIdsForURL').withArgs(URL).returns([STYLESHEET_ID]);
       const CLASS_NAMES = ['foo', 'bar', 'baz'];
-      sinon.stub(cssModel, 'getClassNames').withArgs(STYLESHEET_ID).resolves(CLASS_NAMES);
+      sinon.stub(SDK.CSSModel.CSSModel.prototype, 'getClassNames').withArgs(STYLESHEET_ID).resolves(CLASS_NAMES);
       const completionResult =
-          await autocompletion({state: {field: () => {}}} as unknown as CodeMirror.CompletionContext);
+          await autocompletion!({state: {field: () => {}}} as unknown as CodeMirror.CompletionContext);
       assert.deepStrictEqual(completionResult, {
         from: FROM,
         options: [

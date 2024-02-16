@@ -805,11 +805,8 @@ export class WasmLocationLabels {
   }
 
   async checkLocationForLabel(label: string) {
-    const mappedLines = this.#mappings.get(label);
-    assertNotNullOrUndefined(mappedLines);
-
     const pauseLocation = await retrieveTopCallFrameWithoutResuming();
-    const pausedLine = mappedLines.find(
+    const pausedLine = this.#mappings.get(label)!.find(
         line => pauseLocation === `${path.basename(this.#wasm)}:0x${line.moduleOffset.toString(16)}` ||
             pauseLocation === `${path.basename(this.#source)}:${line.sourceLine}`);
     assertNotNullOrUndefined(pausedLine);
@@ -818,28 +815,18 @@ export class WasmLocationLabels {
 
   async addBreakpointsForLabelInSource(label: string) {
     const {frontend} = getBrowserAndPages();
-    const mappedLines = this.#mappings.get(label);
-    assertNotNullOrUndefined(mappedLines);
     await openFileInEditor(path.basename(this.#source));
-    for (const line of mappedLines) {
-      await addBreakpointForLine(frontend, line.sourceLine);
-    }
+    await Promise.all(this.#mappings.get(label)!.map(({sourceLine}) => addBreakpointForLine(frontend, sourceLine)));
   }
 
   async addBreakpointsForLabelInWasm(label: string) {
     const {frontend} = getBrowserAndPages();
-    const mappedLines = this.#mappings.get(label);
-    assertNotNullOrUndefined(mappedLines);
     await openFileInEditor(path.basename(this.#wasm));
     const visibleLines = await $$(CODE_LINE_SELECTOR);
     const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
     const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
-
-    for (const line of mappedLines) {
-      const lineNumberLabel = lineNumberLabels.get(line.moduleOffset);
-      assertNotNullOrUndefined(lineNumberLabel);
-      await addBreakpointForLine(frontend, lineNumberLabel);
-    }
+    await Promise.all(this.#mappings.get(label)!.map(
+        ({moduleOffset}) => addBreakpointForLine(frontend, lineNumberLabels.get(moduleOffset)!)));
   }
 
   async setBreakpointInSourceAndRun(label: string, script: string) {

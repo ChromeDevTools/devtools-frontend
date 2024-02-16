@@ -276,8 +276,7 @@ describe('The Memory Panel', async function() {
     });
     const rows = await getDataGridRows('.retaining-paths-view table.data');
     const propertyNameElement = await rows[0].$('span.property-name');
-    assertNotNullOrUndefined(propertyNameElement);
-    propertyNameElement.hover();
+    propertyNameElement!.hover();
     const el = await waitFor('div.vbox.flex-auto.no-pointer-events');
     await waitFor('.source-code', el);
   });

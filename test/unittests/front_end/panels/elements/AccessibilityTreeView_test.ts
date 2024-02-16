@@ -3,14 +3,11 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Elements from '../../../../../front_end/panels/elements/elements.js';
-
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-
+import * as Elements from '../../../../../front_end/panels/elements/elements.js';
 import * as TreeOutline from '../../../../../front_end/ui/components/tree_outline/tree_outline.js';
+import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
 
@@ -33,13 +30,12 @@ describeWithMockConnection('AccessibilityTreeView', () => {
     new Elements.AccessibilityTreeView.AccessibilityTreeView(toggleButoon, treeComponent);
 
     const model = target.model(SDK.AccessibilityModel.AccessibilityModel);
-    assertNotNullOrUndefined(model);
     const treeComponentDataSet = sinon.spy(treeComponent, 'data', ['set']);
     sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getOutermostFrame').returns({
       id: MAIN_FRAME_ID,
     } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-    model.dispatchEventToListeners(SDK.AccessibilityModel.Events.TreeUpdated, {
+    model!.dispatchEventToListeners(SDK.AccessibilityModel.Events.TreeUpdated, {
       root: {numChildren: () => 0, role: () => null, getFrameId: () => MAIN_FRAME_ID, id: () => 'id'} as unknown as
           SDK.AccessibilityModel.AccessibilityNode,
     });

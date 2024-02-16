@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -66,11 +65,7 @@ describeWithLocale('EndpointsGrid', async () => {
     const dataGrid = await renderEndpointsGrid(data);
     assertShadowRoot(dataGrid.shadowRoot);
 
-    const header = Array.from(getHeaderCells(dataGrid.shadowRoot), cell => {
-      assertNotNullOrUndefined(cell.textContent);
-      return cell.textContent.trim();
-    });
-
+    const header = getHeaderCells(dataGrid.shadowRoot).map(({textContent}) => textContent!.trim());
     assert.deepEqual(header, ['Origin', 'Name', 'URL']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);

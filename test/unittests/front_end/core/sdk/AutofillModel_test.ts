@@ -4,11 +4,10 @@
 
 const {assert} = chai;
 
+import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describeWithMockConnection('AutofillModel', () => {
   let SDK: typeof SDKModule;
@@ -19,19 +18,17 @@ describeWithMockConnection('AutofillModel', () => {
   it('can enable and disable the Autofill CDP domain', () => {
     const target = createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
-    assertNotNullOrUndefined(autofillModel);
-    assertNotNullOrUndefined(autofillModel.agent);
-    const enableSpy = sinon.spy(autofillModel.agent, 'invoke_enable');
-    const disableSpy = sinon.spy(autofillModel.agent, 'invoke_disable');
+    const enableSpy = sinon.spy(autofillModel!.agent, 'invoke_enable');
+    const disableSpy = sinon.spy(autofillModel!.agent, 'invoke_disable');
     assert.isTrue(enableSpy.notCalled);
     assert.isTrue(disableSpy.notCalled);
 
-    autofillModel.disable();
+    autofillModel!.disable();
     assert.isTrue(enableSpy.notCalled);
     assert.isTrue(disableSpy.calledOnce);
     disableSpy.resetHistory();
 
-    autofillModel.enable();
+    autofillModel!.enable();
     assert.isTrue(enableSpy.calledOnce);
     assert.isTrue(disableSpy.notCalled);
   });
@@ -39,10 +36,9 @@ describeWithMockConnection('AutofillModel', () => {
   it('dispatches addressFormFilledEvent on autofill event', () => {
     const target = createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
-    assertNotNullOrUndefined(autofillModel);
 
     const dispatchedEvents: Array<SDKModule.AutofillModel.AddressFormFilledEvent> = [];
-    autofillModel.addEventListener(SDK.AutofillModel.Events.AddressFormFilled, e => dispatchedEvents.push(e.data));
+    autofillModel!.addEventListener(SDK.AutofillModel.Events.AddressFormFilled, e => dispatchedEvents.push(e.data));
 
     const addressFormFilledEvent: Protocol.Autofill.AddressFormFilledEvent = {
       addressUi: {
@@ -67,8 +63,8 @@ describeWithMockConnection('AutofillModel', () => {
         },
       ],
     };
-    autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.strictEqual(dispatchedEvents.length, 1);
+    autofillModel!.addressFormFilled(addressFormFilledEvent);
+    assert.lengthOf(dispatchedEvents, 1);
     assert.deepStrictEqual(dispatchedEvents[0].event, addressFormFilledEvent);
   });
 });

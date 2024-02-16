@@ -4,18 +4,17 @@
 
 const {assert} = chai;
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Main from '../../../../../front_end/entrypoints/main/main.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {
   createTarget,
 } from '../../helpers/EnvironmentHelpers.js';
 
 import {
-  dispatchEvent,
   describeWithMockConnection,
+  dispatchEvent,
 } from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('ExecutionContextSelector', () => {
@@ -43,8 +42,7 @@ describeWithMockConnection('ExecutionContextSelector', () => {
       });
 
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assertNotNullOrUndefined(runtimeModel);
-      runtimeModel.dispatchEventToListeners(
+      runtimeModel!.dispatchEventToListeners(
           SDK.RuntimeModel.Events.ExecutionContextCreated,
           {isDefault: true, frameId: 'testFrame' as Protocol.Page.FrameId, target: () => target} as
               SDK.RuntimeModel.ExecutionContext);

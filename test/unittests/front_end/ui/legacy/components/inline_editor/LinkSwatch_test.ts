@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -16,23 +15,16 @@ function assertVarSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected:
   varText: string,
   parsedColor?: string,
 }) {
-  assertShadowRoot(swatch.shadowRoot);
-  const container = swatch.shadowRoot.querySelector('span');
-  assertNotNullOrUndefined(container);
-  const linkSwatch = container.querySelector('devtools-base-link-swatch');
-  assertNotNullOrUndefined(linkSwatch);
-
-  assertShadowRoot(linkSwatch.shadowRoot);
-  const link = linkSwatch.shadowRoot.querySelector('.link-swatch-link');
-  assertNotNullOrUndefined(link);
+  const container = swatch.shadowRoot!.querySelector('span');
+  const link = container!.querySelector('devtools-base-link-swatch')!.shadowRoot!.querySelector('.link-swatch-link');
 
   assert.strictEqual(
-      container.getAttribute('data-title'), expected.valueTooltip || '', 'The computed values appears as a tooltip');
+      container!.getAttribute('data-title'), expected.valueTooltip || '', 'The computed values appears as a tooltip');
   assert.strictEqual(
-      link.classList.contains('undefined'), !expected.isDefined,
+      link!.classList.contains('undefined'), !expected.isDefined,
       'The link only has the class undefined when the property is undefined');
-  assert.strictEqual(link.getAttribute('data-title'), expected.linkTooltip, 'The link has the right tooltip');
-  assert.strictEqual(link.textContent, expected.varText, 'The link has the right text content');
+  assert.strictEqual(link!.getAttribute('data-title'), expected.linkTooltip, 'The link has the right tooltip');
+  assert.strictEqual(link!.textContent, expected.varText, 'The link has the right text content');
 }
 
 describeWithLocale('CSSVarSwatch', () => {
@@ -106,22 +98,15 @@ function assertLinkSwatch(swatch: InlineEditor.LinkSwatch.LinkSwatch, expected: 
   title: string|null,
   isDefined: boolean,
 }) {
-  assertShadowRoot(swatch.shadowRoot);
-  const container = swatch.shadowRoot.querySelector('span');
-  assertNotNullOrUndefined(container);
-  const linkSwatch = container.querySelector('devtools-base-link-swatch');
-  assertNotNullOrUndefined(linkSwatch);
+  const container = swatch.shadowRoot!.querySelector('span');
+  const link = container!.querySelector('devtools-base-link-swatch')!.shadowRoot!.querySelector('.link-swatch-link');
 
-  assertShadowRoot(linkSwatch.shadowRoot);
-  const link = linkSwatch.shadowRoot.querySelector('.link-swatch-link');
-  assertNotNullOrUndefined(link);
-
-  assert.strictEqual(container.getAttribute('title'), expected.text, 'The text appears as a tooltip');
+  assert.strictEqual(container!.getAttribute('title'), expected.text, 'The text appears as a tooltip');
   assert.strictEqual(
-      link.classList.contains('undefined'), !expected.isDefined,
+      link!.classList.contains('undefined'), !expected.isDefined,
       'The link only has the class undefined when the property is undefined');
-  assert.strictEqual(link.getAttribute('title'), expected.title, 'The link has the right tooltip');
-  assert.strictEqual(link.textContent, expected.text, 'The link has the right text content');
+  assert.strictEqual(link!.getAttribute('title'), expected.title, 'The link has the right tooltip');
+  assert.strictEqual(link!.textContent, expected.text, 'The link has the right text content');
 }
 
 describeWithLocale('LinkSwatch', () => {
@@ -178,11 +163,9 @@ describeWithLocale('LinkSwatch', () => {
       jslogContext: 'test',
     };
 
-    const element = renderElementIntoDOM(component)
-                        ?.shadowRoot?.querySelector('devtools-base-link-swatch')
-                        ?.shadowRoot?.querySelector('.link-swatch-link');
-    assertNotNullOrUndefined(element);
-    element.dispatchEvent(new MouseEvent('mousedown'));
+    const element = renderElementIntoDOM(component)!.shadowRoot!.querySelector('devtools-base-link-swatch')!.shadowRoot!
+                        .querySelector('.link-swatch-link');
+    element!.dispatchEvent(new MouseEvent('mousedown'));
 
     assert.isTrue(callbackCalled);
   });

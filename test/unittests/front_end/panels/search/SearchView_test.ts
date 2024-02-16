@@ -6,13 +6,12 @@ const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
-import * as Search from '../../../../../front_end/panels/search/search.js';
 import type * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import * as Search from '../../../../../front_end/panels/search/search.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 interface PerformSearchArgs {
   searchConfig: Workspace.SearchConfig.SearchConfig;
@@ -97,9 +96,7 @@ class TestSearchView extends Search.SearchView.SearchView {
   }
 
   get currentSearchResultMessage(): string {
-    const messageDiv = this.contentElement.querySelector<HTMLDivElement>('.search-message:nth-child(3)');
-    assertNotNullOrUndefined(messageDiv);
-    return messageDiv.textContent ?? '';
+    return this.contentElement.querySelector('.search-message:nth-child(3)')!.textContent ?? '';
   }
 }
 

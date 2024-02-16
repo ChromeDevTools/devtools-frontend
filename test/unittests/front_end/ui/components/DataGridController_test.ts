@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
@@ -16,12 +15,9 @@ const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController) => {
-  assertShadowRoot(component.shadowRoot);
-  const internalDataGrid = component.shadowRoot.querySelector('devtools-data-grid');
-  assertNotNullOrUndefined(internalDataGrid);
-  const internalShadow = internalDataGrid.shadowRoot;
-  assertShadowRoot(internalShadow);
-  return internalShadow;
+  const {shadowRoot} = component.shadowRoot!.querySelector('devtools-data-grid')!;
+  assertShadowRoot(shadowRoot);
+  return shadowRoot;
 };
 
 describe('DataGridController', () => {

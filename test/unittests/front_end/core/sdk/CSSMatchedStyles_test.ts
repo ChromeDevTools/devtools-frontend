@@ -202,11 +202,9 @@ describe('CSSMatchedStyles', () => {
       const testComputedVariableValueEquals =
           (name: string, startingCascade: SDK.CSSStyleDeclaration.CSSStyleDeclaration, expectedValue: string,
            expectedDeclaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty) => {
-            const result = matchedStyles.computeCSSVariable(startingCascade, name);
-            Platform.assertNotNullOrUndefined(result);
-            assert.strictEqual(result.value, expectedValue);
-            Platform.assertNotNullOrUndefined(result.declaration);
-            assert.strictEqual(result.declaration, expectedDeclaration);
+            const {value, declaration} = matchedStyles.computeCSSVariable(startingCascade, name)!;
+            assert.strictEqual(value, expectedValue);
+            assert.strictEqual(declaration, expectedDeclaration);
           };
 
       const styles = matchedStyles.nodeStyles();

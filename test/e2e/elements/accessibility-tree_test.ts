@@ -49,8 +49,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
     await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
-    assertNotNullOrUndefined(link);
-    await link.evaluate(node => {
+    await link!.evaluate(node => {
       (node as HTMLElement).innerText = 'dogs';
     });
     // For some reason a11y tree takes a while to propagate.
@@ -92,11 +91,10 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await toggleAccessibilityTree();
     await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
-    assertNotNullOrUndefined(link);
     await frontend.bringToFront();
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
     await target.bringToFront();
-    await link.evaluate(node => node.remove());
+    await link!.evaluate(node => node.remove());
     // For some reason a11y tree takes a while to propagate.
     for (let i = 0; i < 30; i++) {
       await raf(target);

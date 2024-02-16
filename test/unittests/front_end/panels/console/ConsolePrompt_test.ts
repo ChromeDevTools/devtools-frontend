@@ -37,8 +37,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     assert.isTrue(keymapOf.called);
     keyBinding = keymapOf.firstCall.firstArg;
     const editorContainer = consolePrompt.element.querySelector('.console-prompt-editor-container');
-    assertNotNullOrUndefined(editorContainer);
-    editor = editorContainer.firstElementChild as TextEditor.TextEditor.TextEditor;
+    editor = editorContainer!.firstElementChild as TextEditor.TextEditor.TextEditor;
     editor.state = {doc: 'foo', selection: {main: {head: 42}}} as unknown as CodeMirror.EditorState;
     editor.dispatch = () => {};
 
@@ -77,10 +76,9 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
   it('evaluates on enter', async () => {
     const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    assertNotNullOrUndefined(enterBinding);
     sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
-    enterBinding.run?.({} as CodeMirror.EditorView);
+    enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
     assert.isTrue(evaluateOnTarget.called);
@@ -91,28 +89,26 @@ describeWithMockConnection('ConsoleContextSelector', () => {
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
     assert.isFalse(setting.get());
     const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    assertNotNullOrUndefined(enterBinding);
     sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
     consolePrompt.showSelfXssWarning();
-    enterBinding.run?.({} as CodeMirror.EditorView);
+    enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(setting.get());
 
     consolePrompt.showSelfXssWarning();
     editor.state = {doc: 'allow pasting', selection: {main: {head: 42}}} as unknown as CodeMirror.EditorState;
-    enterBinding.run?.({} as CodeMirror.EditorView);
+    enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(setting.get());
   });
 
   it('does not evaluate incomplete expression', async () => {
     const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    assertNotNullOrUndefined(enterBinding);
     sinon.stub(target.runtimeAgent(), 'invoke_compileScript')
         .resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
 
-    enterBinding.run?.({} as CodeMirror.EditorView);
+    enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
     assert.isFalse(evaluateOnTarget.called);
@@ -120,11 +116,10 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
   it('evaluate incomplete expression if forced', async () => {
     const ctrlEnterBinding = keyBinding.find(b => b.key === 'Ctrl-Enter');
-    assertNotNullOrUndefined(ctrlEnterBinding);
     sinon.stub(target.runtimeAgent(), 'invoke_compileScript')
         .resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));
 
-    ctrlEnterBinding.run?.({} as CodeMirror.EditorView);
+    ctrlEnterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
     assert.isTrue(evaluateOnTarget.called);
@@ -136,11 +131,10 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     const evaluateOnAnotherTarget = sinon.stub(anotherTarget.runtimeAgent(), 'invoke_evaluate');
 
     const enterBinding = keyBinding.find(b => b.key === 'Enter');
-    assertNotNullOrUndefined(enterBinding);
     sinon.stub(target.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
     sinon.stub(anotherTarget.runtimeAgent(), 'invoke_compileScript').resolves(compileScriptResponse());
 
-    enterBinding.run?.({} as CodeMirror.EditorView);
+    enterBinding!.run!({} as CodeMirror.EditorView);
 
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, anotherTargetContext);
     await new Promise(resolve => setTimeout(resolve, 0));

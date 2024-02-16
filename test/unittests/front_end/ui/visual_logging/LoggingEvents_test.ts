@@ -4,7 +4,6 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {stabilizeEvent, stabilizeImpressions} from '../../helpers/VisualLoggingHelpers.js';
 
@@ -153,8 +152,7 @@ describe('LoggingEvents', () => {
     );
     const throttler = new Common.Throttler.Throttler(1000000);
     const loggingState = VisualLogging.LoggingState.getLoggingState(element);
-    assertNotNullOrUndefined(loggingState);
-    loggingState.size = new DOMRect(0, 0, 100, 50);
+    loggingState!.size = new DOMRect(0, 0, 100, 50);
     void VisualLogging.LoggingEvents.logResize(throttler)(element);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(recordResize.called);

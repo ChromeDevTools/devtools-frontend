@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {stabilizeState} from '../../helpers/VisualLoggingHelpers.js';
 
@@ -62,7 +61,6 @@ describe('LoggingState', () => {
 
   it('hashes a string context', async () => {
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: 'foobar'});
-    assertNotNullOrUndefined(state);
     const context = await state.context(element);
     assert.strictEqual(4191634312, context);
   });
@@ -72,7 +70,6 @@ describe('LoggingState', () => {
     provider.returns(123);
     VisualLogging.LoggingState.registerContextProvider('custom', provider);
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: 'custom'});
-    assertNotNullOrUndefined(state);
     const context = await state.context(element);
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, context);
@@ -86,7 +83,6 @@ describe('LoggingState', () => {
     provider.returns(customParent);
     VisualLogging.LoggingState.registerParentProvider('custom', provider);
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom'});
-    assertNotNullOrUndefined(state);
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, await state.parent?.context(element));
   });
@@ -105,7 +101,6 @@ describe('LoggingState', () => {
     VisualLogging.LoggingState.registerParentProvider('custom2', provider);
 
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom2'});
-    assertNotNullOrUndefined(state);
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, await state.parent?.context(element));
   });
@@ -129,7 +124,6 @@ describe('LoggingState', () => {
     VisualLogging.LoggingState.registerParentProvider('custom3', provider);
 
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom3'});
-    assertNotNullOrUndefined(state);
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, await state.parent?.context(element));
   });

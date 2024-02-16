@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Elements from '../../../../../front_end/panels/elements/elements.js';
@@ -22,14 +21,12 @@ describeWithMockConnection('InspectElementModeController', () => {
 
   function onModeToggle(target: SDK.Target.Target) {
     const model = target.model(SDK.OverlayModel.OverlayModel);
-    assertNotNullOrUndefined(model);
-    return model.once(SDK.OverlayModel.Events.InspectModeWillBeToggled);
+    return model!.once(SDK.OverlayModel.Events.InspectModeWillBeToggled);
   }
 
   function failOnModeToggle(target: SDK.Target.Target) {
     const model = target.model(SDK.OverlayModel.OverlayModel);
-    assertNotNullOrUndefined(model);
-    model.addEventListener(
+    model!.addEventListener(
         SDK.OverlayModel.Events.InspectModeWillBeToggled,
         () => assert.fail('Unexected mode toggle on out of scope target'));
   }

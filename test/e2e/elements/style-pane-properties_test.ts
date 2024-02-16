@@ -403,7 +403,6 @@ describe('The Styles pane', async () => {
       const layers = await $$(LAYER_SEPARATOR_SELECTOR);
       return layers.length === 6 ? layers : null;
     });
-    assertNotNullOrUndefined(layerSeparators);
 
     const layerText = await Promise.all(layerSeparators.map(element => element.evaluate(node => node.textContent)));
     assert.deepEqual(layerText, [
@@ -528,7 +527,6 @@ describe('The Styles pane', async () => {
       const separators = await $$(SIDEBAR_SEPARATOR_SELECTOR);
       return separators.length === 8 ? separators : null;
     });
-    assertNotNullOrUndefined(sidebarSeparators);
 
     const layerText = await Promise.all(sidebarSeparators.map(element => element.evaluate(node => node.textContent)));
     assert.deepEqual(layerText, [

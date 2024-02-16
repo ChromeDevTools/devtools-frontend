@@ -54,11 +54,10 @@ class NavigationEmulator {
   private async createTarget(targetInfo: Protocol.Target.TargetInfo, sessionId: Protocol.Target.SessionID):
       Promise<SDK.Target.Target> {
     const childTargetManager = this.tabTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-    assertNotNullOrUndefined(childTargetManager);
 
     dispatchEvent(this.tabTarget, 'Target.targetCreated', {targetInfo});
 
-    await childTargetManager.attachedToTarget({
+    await childTargetManager!.attachedToTarget({
       sessionId,
       targetInfo,
       waitingForDebugger: false,

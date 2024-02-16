@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
@@ -298,11 +297,8 @@ describeWithEnvironment('PreloadingGrid', async () => {
     assertShadowRoot(grid.shadowRoot);
     const cell = getCellByIndexes(grid.shadowRoot, {row: 1, column: 3});
     const div = cell.querySelector('div');
-    assertNotNullOrUndefined(div);
-    assert.strictEqual(div.getAttribute('style'), 'color: var(--sys-color-error);');
-    const icon = div.children[0];
-    assertNotNullOrUndefined(icon);
-    assertShadowRoot(icon.shadowRoot);
-    assert.include(String(icon.shadowRoot?.innerHTML), 'cross-circle-filled');
+    assert.strictEqual(div!.getAttribute('style'), 'color: var(--sys-color-error);');
+    const icon = div!.children[0];
+    assert.include(icon.shadowRoot!.innerHTML, 'cross-circle-filled');
   });
 });

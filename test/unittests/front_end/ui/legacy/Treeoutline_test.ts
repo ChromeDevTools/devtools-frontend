@@ -4,10 +4,9 @@
 
 const {assert} = chai;
 
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 describe('TreeOutline', () => {
@@ -55,9 +54,7 @@ describe('TreeOutline', () => {
       selectedTitles.push(String(event.data.title));
     });
 
-    const firstChild = treeOutline.firstChild();
-    assertNotNullOrUndefined(firstChild);
-    firstChild.select(false, true);
+    treeOutline.firstChild()!.select(false, true);
 
     const distance = 25;
 
@@ -103,18 +100,15 @@ describe('TreeOutline', () => {
     const treeElementForNestedTree = new UI.TreeOutline.TreeElement(innerTreeOutline.element);
     treeOutline.appendChild(treeElementForNestedTree);
 
-    const innerFirstChild = innerTreeOutline.firstChild();
-    assertNotNullOrUndefined(innerFirstChild);
-    innerFirstChild.select(false, true);
+    innerTreeOutline.firstChild()!.select(false, true);
+
     sendKey('ArrowRight');
 
-    assert.isTrue(innerFirstChild.expanded, 'child is not expanded');
+    assert.isTrue(innerTreeOutline.firstChild()!.expanded, 'child is not expanded');
 
     function sendKey(key: string) {
       const deepActiveElement = Platform.DOMUtilities.deepActiveElement(document);
-      assertNotNullOrUndefined(deepActiveElement);
-      const keyEvent = new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key});
-      deepActiveElement.dispatchEvent(keyEvent);
+      deepActiveElement!.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key}));
     }
   });
 });

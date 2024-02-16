@@ -1033,8 +1033,7 @@ describe('The Debugger Language Plugins', async () => {
     await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
     await waitFor('.paused-status');
     await locationLabels.checkLocationForLabel('FIRST_PAUSE');
-    const beforeStepCallFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
-    assertNotNullOrUndefined(beforeStepCallFrame);
+    const beforeStepCallFrame = (await retrieveTopCallFrameWithoutResuming())!.split(':');
     const beforeStepFunctionNames = await getCallFrameNames();
 
     await stepOver();

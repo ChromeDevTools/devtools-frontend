@@ -2,19 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../../../front_end/core/common/common.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Application from '../../../../../front_end/panels/application/application.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import type * as Common from '../../../../../front_end/core/common/common.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {
   createTarget,
   stubNoopSettings,
 } from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
@@ -117,8 +116,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
       await coordinator.done({waitForWork: true});
       assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-      const view = treeElement.view;
-      assertNotNullOrUndefined(view);
+      const {view} = treeElement;
 
       const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
       const refreshedPromise = itemsListener.waitForItemsRefreshed();

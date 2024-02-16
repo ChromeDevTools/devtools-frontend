@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import {assertNotNullOrUndefined, waitForMany} from '../../shared/helper.js';
+import {waitForMany} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, startRecording, stopRecording} from '../helpers/performance-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
@@ -29,8 +29,7 @@ describe('The Performance panel', () => {
     const elements = await waitForMany('.navigator-file-tree-item', 2);
     for (const element of elements) {
       const button = await element.$('.tree-element-title');
-      assertNotNullOrUndefined(button);
-      await button.click();
+      await button!.click();
     }
     await waitForMany('.cm-performanceGutter .cm-gutterElement', 2);
   });

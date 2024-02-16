@@ -7,7 +7,6 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
@@ -168,8 +167,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       const [rawLocation] = rawLocations;
       assert.strictEqual(rawLocation.script(), script);
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-      assertNotNullOrUndefined(uiLocation);
-      assert.strictEqual(uiLocation.uiSourceCode, uiSourceCode);
+      assert.strictEqual(uiLocation!.uiSourceCode, uiSourceCode);
     }
   });
 
@@ -213,8 +211,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       const [rawLocation] = rawLocations;
       assert.strictEqual(rawLocation.script(), script);
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-      assertNotNullOrUndefined(uiLocation);
-      assert.strictEqual(uiLocation.uiSourceCode, uiSourceCode);
+      assert.strictEqual(uiLocation!.uiSourceCode, uiSourceCode);
     }
   });
 
@@ -283,10 +280,9 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     assert.strictEqual(rawLocation.lineNumber, 1);
     assert.strictEqual(rawLocation.columnNumber, 2);
     const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-    assertNotNullOrUndefined(uiLocation);
-    assert.strictEqual(uiLocation.uiSourceCode, uiSourceCode);
-    assert.strictEqual(uiLocation.lineNumber, 1);
-    assert.strictEqual(uiLocation.columnNumber, 2);
+    assert.strictEqual(uiLocation!.uiSourceCode, uiSourceCode);
+    assert.strictEqual(uiLocation!.lineNumber, 1);
+    assert.strictEqual(uiLocation!.columnNumber, 2);
   });
 
   it('correctly removes UISourceCodes when detaching a sourcemap', async () => {
@@ -349,8 +345,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     ]);
 
     const mappedLines = await debuggerWorkspaceBinding.getMappedLines(uiSourceCode);
-    assertNotNullOrUndefined(mappedLines);
-    assert.sameMembers([...mappedLines], [0, 2, 4]);
+    assert.deepEqual(mappedLines, new Set([0, 2, 4]));
   });
 
   describe('supports modern Web development workflows', () => {
@@ -508,11 +503,10 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       ]);
 
       // ...and the `app.js` mapping of the `bundle.js` is now gone...
-      const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(
-          originalScript.debuggerModel.createRawLocation(originalScript, 1, 0));
-      assertNotNullOrUndefined(uiLocation);
-      assert.notStrictEqual(uiLocation.uiSourceCode, originalAppUISourceCode);
-      assert.notStrictEqual(uiLocation.uiSourceCode, updateAppUISourceCode);
+      const {uiSourceCode} = (await debuggerWorkspaceBinding.rawLocationToUILocation(
+          originalScript.debuggerModel.createRawLocation(originalScript, 1, 0)))!;
+      assert.notStrictEqual(uiSourceCode, originalAppUISourceCode);
+      assert.notStrictEqual(uiSourceCode, updateAppUISourceCode);
 
       // ...while the `lib.js` mapping of `bundle.js` is still intact (because it
       // was the same content).

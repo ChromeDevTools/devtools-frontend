@@ -4,11 +4,10 @@
 
 const {assert} = chai;
 
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('CookieModel', () => {
   let SDK: typeof SDKModule;
@@ -122,7 +121,6 @@ describeWithMockConnection('CookieModel', () => {
   it('clears stored blocked cookies on primary page change', async () => {
     const target = createTarget();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel);
     const cookieModel = new SDK.CookieModel.CookieModel(target);
     const cookie = new SDK.Cookie.Cookie('name', 'value');
     const blockedReason = {
@@ -135,7 +133,7 @@ describeWithMockConnection('CookieModel', () => {
     assert.strictEqual(cookieToBlockedReasons.size, 1);
     assert.deepStrictEqual(cookieToBlockedReasons.get(cookie), [blockedReason]);
 
-    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+    resourceTreeModel!.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
       frame: {} as SDKModule.ResourceTreeModel.ResourceTreeFrame,
       type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
     });

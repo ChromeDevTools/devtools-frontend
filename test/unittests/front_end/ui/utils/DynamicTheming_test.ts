@@ -4,9 +4,8 @@
 
 const {assert} = chai;
 
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
 describe('DynamicTheming', () => {
   it('fetchColors updates color node url', () => {
@@ -22,9 +21,7 @@ describe('DynamicTheming', () => {
 
     void UI.Utils.DynamicTheming.fetchColors(doc);
 
-    const colorNode = doc.body.querySelector(COLORS_CSS_SELECTOR);
-    assertNotNullOrUndefined(colorNode);
-    const updatedHref = colorNode.getAttribute('href');
+    const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
     assert.notEqual(updatedHref, originalColorHref);
   });
 });

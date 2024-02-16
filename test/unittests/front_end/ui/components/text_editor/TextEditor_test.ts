@@ -4,7 +4,6 @@
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
@@ -125,9 +124,8 @@ describeWithEnvironment('TextEditor', () => {
 
     it('does not treat dashes as word chars in CSS', () => {
       const state = makeState('.some-selector {}', CodeMirror.css.cssLanguage);
-      const range = state.wordAt(1);
-      assertNotNullOrUndefined(range);
-      assert.strictEqual(state.sliceDoc(range.from, range.to), 'some');
+      const {from, to} = state.wordAt(1)!;
+      assert.strictEqual(state.sliceDoc(from, to), 'some');
     });
   });
 

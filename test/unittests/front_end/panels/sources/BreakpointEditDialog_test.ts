@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import type * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
-import {assertShadowRoot, dispatchKeyDownEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {
@@ -18,13 +17,9 @@ function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {
 function setBreakpointType(
     dialog: Sources.BreakpointEditDialog.BreakpointEditDialog, newType: SDK.DebuggerModel.BreakpointType) {
   const toolbar = dialog.contentElement.querySelector('.toolbar');
-  assertNotNullOrUndefined(toolbar);
-  assertShadowRoot(toolbar.shadowRoot);
-  const selectElement = toolbar.shadowRoot.querySelector('select');
-  assertNotNullOrUndefined(selectElement);
-
-  selectElement.value = newType;
-  selectElement.dispatchEvent(new Event('change'));
+  const selectElement = toolbar!.shadowRoot!.querySelector('select');
+  selectElement!.value = newType;
+  selectElement!.dispatchEvent(new Event('change'));
 }
 
 // Note that we currently don't install a fake RuntimeModel + ExecutionContext for these tests.
@@ -64,9 +59,7 @@ describeWithEnvironment('BreakpointEditDialog', () => {
       const {editorForTest: {editor}} = dialog;
       setCodeMirrorContent(editor, 'x === 5');
 
-      const closeIcon = dialog.contentElement.querySelector('devtools-icon');
-      assertNotNullOrUndefined(closeIcon);
-      closeIcon.click();
+      dialog.contentElement.querySelector('devtools-icon')!.click();
     });
 
     const {committed, condition} = await resultPromise;

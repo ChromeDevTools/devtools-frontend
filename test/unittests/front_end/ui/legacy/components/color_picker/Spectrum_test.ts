@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../../front_end/core/common/common.js';
-import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as ColorPicker from '../../../../../../../front_end/ui/legacy/components/color_picker/color_picker.js';
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../../helpers/EnvironmentHelpers.js';
@@ -29,7 +28,7 @@ describe('ColorPicker aka Spectrum', () => {
 
       spectrum.setColor(displayP3Color, Common.Color.Format.DISPLAY_P3);
 
-      assertNotNullOrUndefined(spectrum.contentElement.querySelector('devtools-spectrum-srgb-overlay'));
+      assert.isNotNull(spectrum.contentElement.querySelector('devtools-spectrum-srgb-overlay'));
     });
 
     it('should not show sRGB overlay when the format doesn\'t support display-p3 colors', () => {

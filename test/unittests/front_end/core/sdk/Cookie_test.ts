@@ -5,7 +5,6 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describe('Cookie', () => {
@@ -208,8 +207,7 @@ describe('Cookie', () => {
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute(SDK.Cookie.Attribute.MaxAge, '3600');
     const expiresDate = cookie.expiresDate(now);
-    assertNotNullOrUndefined(expiresDate);
-    assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
+    assert.strictEqual(expiresDate!.toISOString(), new Date(expires).toISOString());
   });
 
   it('can calculate the expiration date for cookies with expires attribute', () => {
@@ -218,8 +216,7 @@ describe('Cookie', () => {
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute(SDK.Cookie.Attribute.Expires, expires);
     const expiresDate = cookie.expiresDate(now);
-    assertNotNullOrUndefined(expiresDate);
-    assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
+    assert.strictEqual(expiresDate!.toISOString(), new Date(expires).toISOString());
   });
 
   it('can check if a cookie domain matches a given host', () => {

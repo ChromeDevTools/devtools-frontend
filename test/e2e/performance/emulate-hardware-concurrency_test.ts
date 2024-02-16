@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import {assertNotNullOrUndefined, hasClass, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {hasClass, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 
@@ -75,7 +75,6 @@ describe('The Performance panel', () => {
 
     // Check that resetting the value works:
     const button = await waitForAria('Reset to the default value');
-    assertNotNullOrUndefined(button);
     await button.click();
 
     concurrency = await waitForChangedConcurrency(concurrency);

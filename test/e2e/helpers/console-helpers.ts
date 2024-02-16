@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
 import type * as puppeteer from 'puppeteer-core';
 
+import {AsyncScope} from '../../shared/async-scope.js';
 import {
   $,
   $$,
-  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   goToResource,
@@ -19,7 +18,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
-import {AsyncScope} from '../../shared/async-scope.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
@@ -309,7 +307,6 @@ async function getIssueButtonLabel(): Promise<string|null> {
   const infobarButton = await waitFor('#console-issues-counter');
   const iconButton = await waitFor('icon-button', infobarButton);
   const titleElement = await waitFor('.icon-button-title', iconButton);
-  assertNotNullOrUndefined(titleElement);
   const infobarButtonText = await titleElement.evaluate(node => (node as HTMLElement).textContent);
   return infobarButtonText;
 }

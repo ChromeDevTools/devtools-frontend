@@ -5,7 +5,7 @@
 import * as Host from '../../../../../front_end/core/host/host.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as MarkdownView from '../../../../../front_end/ui/components/markdown_view/markdown_view.js';
-import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM, resetTestDOM} from '../../helpers/DOMHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM, resetTestDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -15,8 +15,7 @@ describeWithEnvironment('CodeBlock', () => {
     const component = new MarkdownView.CodeBlock.CodeBlock();
     component.code = 'test';
     renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
-    const button = component.shadowRoot.querySelector('.copy-button');
+    const button = component.shadowRoot!.querySelector('.copy-button');
     assertNotNullOrUndefined(button);
     const clock = sinon.useFakeTimers();
     try {
@@ -33,9 +32,9 @@ describeWithEnvironment('CodeBlock', () => {
       });
       assert.isTrue(copyText.calledWith('test'));
       clock.tick(100);
-      assert.strictEqual(button.querySelector('span')?.innerText, 'Copied to clipboard');
+      assert.strictEqual(button.querySelector('span')!.innerText, 'Copied to clipboard');
       clock.tick(1100);
-      assert.strictEqual(button.querySelector('span')?.innerText, 'Copy code');
+      assert.strictEqual(button.querySelector('span')!.innerText, 'Copy code');
     } finally {
       clock.restore();
       resetTestDOM();

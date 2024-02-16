@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as EmulationModel from '../../../../../front_end/models/emulation/emulation.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
@@ -89,18 +88,16 @@ describeWithMockConnection('DeviceModeModel', () => {
     it('shows hinge on main frame resize', () => {
       EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
       const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized);
+      resourceTreeModel!.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized);
       assert.isTrue(setShowHinge.calledOnce);
     });
 
     it('shows hinge on main frame navigation', () => {
       EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
       const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
-      resourceTreeModel.dispatchEventToListeners(
+      resourceTreeModel!.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.FrameNavigated, {} as SDK.ResourceTreeModel.ResourceTreeFrame);
       assert.isTrue(setShowHinge.calledOnce);
     });

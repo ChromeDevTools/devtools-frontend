@@ -3,15 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../../front_end/core/common/common.js';
-import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
-import {
-  assertElement,
-  assertShadowRoot,
-  dispatchClickEvent,
-  renderElementIntoDOM,
-} from '../../../../helpers/DOMHelpers.js';
+import {assertElement, dispatchClickEvent, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -19,14 +13,12 @@ const {assert} = chai;
 function assertSwatch(
     swatch: InlineEditor.ColorSwatch.ColorSwatch,
     expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
-  assertShadowRoot(swatch.shadowRoot);
-
-  const swatchEl = swatch.shadowRoot.querySelector('.color-swatch');
-  const swatchInnerEl = swatch.shadowRoot.querySelector('.color-swatch-inner');
-  const slotEl = swatch.shadowRoot.querySelector('slot');
+  const swatchEl = swatch.shadowRoot!.querySelector('.color-swatch');
   assertElement(swatchEl, HTMLElement);
+  const swatchInnerEl = swatch.shadowRoot!.querySelector('.color-swatch-inner');
   assertElement(swatchInnerEl, HTMLElement);
-  assertNotNullOrUndefined(slotEl);
+  const slotEl = swatch.shadowRoot!.querySelector('slot');
+  assertElement(slotEl, HTMLElement);
 
   if (expected.backgroundColor) {
     assert.strictEqual(
@@ -48,8 +40,7 @@ function createSwatch(color: Common.Color.Color|string, formatOrUseUserSetting?:
 }
 
 function getClickTarget(swatch: InlineEditor.ColorSwatch.ColorSwatch) {
-  assertNotNullOrUndefined(swatch.shadowRoot);
-  return swatch.shadowRoot.querySelector('.color-swatch-inner') as HTMLElement;
+  return swatch.shadowRoot!.querySelector('.color-swatch-inner')!;
 }
 
 describeWithLocale('ColorSwatch', () => {
@@ -81,10 +72,9 @@ describeWithLocale('ColorSwatch', () => {
   it('renders text only for invalid colors provided as text', () => {
     const swatch = createSwatch('invalid');
 
-    assertShadowRoot(swatch.shadowRoot);
     assert.strictEqual(
-        swatch.shadowRoot.querySelectorAll('.color-swatch').length, 0, 'There is no swatch in the component');
-    assert.strictEqual(swatch.shadowRoot.textContent, 'invalid', 'The correct value is displayed');
+        swatch.shadowRoot!.querySelectorAll('.color-swatch').length, 0, 'There is no swatch in the component');
+    assert.strictEqual(swatch.shadowRoot!.textContent, 'invalid', 'The correct value is displayed');
   });
 
   it('accepts a custom color format', () => {

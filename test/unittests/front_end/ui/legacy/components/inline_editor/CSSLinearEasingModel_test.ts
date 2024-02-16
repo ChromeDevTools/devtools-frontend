@@ -2,15 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 
 const {assert} = chai;
 
 function testValidCase(input: string, output: string): void {
   const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse(input);
-  assertNotNullOrUndefined(model);
-  assert.strictEqual(model.asCSSText(), output, `Parsing is invalid for case "${input}"`);
+  assert.strictEqual(model!.asCSSText(), output, `Parsing is invalid for case "${input}"`);
 }
 
 function testInvalidCase(input: string): void {
@@ -57,20 +55,12 @@ describe('CSSLinearEasingModel', () => {
   });
 
   it('should parse "linear" as linear(0 0%, 1 100%) function', () => {
-    const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse('linear');
-
-    assertNotNullOrUndefined(model);
-
-    assert.strictEqual(model.points().length, 2);
-    assert.deepEqual({input: 0, output: 0}, model.points()[0]);
-    assert.deepEqual({input: 100, output: 1}, model.points()[1]);
+    const points = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse('linear')!.points();
+    assert.deepEqual(points, [{input: 0, output: 0}, {input: 100, output: 1}]);
   });
 
   it('linear(0 0%, 1 100%) is stringified as "linear"', () => {
     const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse('linear(0 0%, 1 100%)');
-
-    assertNotNullOrUndefined(model);
-
-    assert.strictEqual(model.asCSSText(), 'linear');
+    assert.strictEqual(model!.asCSSText(), 'linear');
   });
 });

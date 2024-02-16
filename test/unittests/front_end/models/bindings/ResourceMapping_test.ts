@@ -257,7 +257,6 @@ describeWithMockConnection('ResourceMapping', () => {
         }
       });
       const mappedLines = resourceMapping.getMappedLines(uiSourceCode);
-      assertNotNullOrUndefined(mappedLines);
       assert.deepEqual(mappedLines, expectedLines);
     });
   });

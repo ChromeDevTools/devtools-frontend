@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as CodeMirror from '../../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../../../../front_end/ui/components/text_editor/text_editor.js';
 import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
@@ -140,10 +139,8 @@ describeWithEnvironment('TextEditorHistory', () => {
     it('has completions when there is no input but the user explicitly requests completions', () => {
       history.pushHistoryItem('x == 5');
 
-      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 0, true));
-
-      assertNotNullOrUndefined(completions);
-      assert.lengthOf(completions.options, 1);
+      const {options} = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 0, true))!;
+      assert.lengthOf(options, 1);
     });
 
     it('has no completions if the caret is not at the end of the input', () => {
@@ -161,12 +158,10 @@ describeWithEnvironment('TextEditorHistory', () => {
       history.pushHistoryItem('x > 10');
       setCodeMirrorContent(editor, 'x ');
 
-      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 2, false));
-
-      assertNotNullOrUndefined(completions);
-      assert.lengthOf(completions.options, 2);
-      assert.strictEqual(completions.options[0].label, 'x > 10');
-      assert.strictEqual(completions.options[1].label, 'x === 5');
+      const {options} = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 2, false))!;
+      assert.lengthOf(options, 2);
+      assert.strictEqual(options[0].label, 'x > 10');
+      assert.strictEqual(options[1].label, 'x === 5');
     });
   });
 });

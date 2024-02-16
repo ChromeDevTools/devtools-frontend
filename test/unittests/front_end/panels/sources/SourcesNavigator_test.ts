@@ -85,9 +85,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-
-      assertNotNullOrUndefined(rootElement);
-
       const folder = rootElement.firstChild();
       const file = folder?.firstChild();
 
@@ -117,8 +114,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-
-      assertNotNullOrUndefined(rootElement);
       assert.strictEqual(rootElement.children().length, 0);
 
       project.removeProject();
@@ -128,7 +123,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
 
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
       assert.strictEqual(rootElement.childCount(), 1);
       assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
       assert.isFalse(rootElement.firstChild()?.expanded);
@@ -145,7 +139,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
 
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
       assert.strictEqual(rootElement.childCount(), 1);
       assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
       assert.isTrue(navigatorView.scriptsTree.firstChild()?.expanded);
@@ -187,7 +180,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
 
     let rootElement = navigatorView.scriptsTree.rootElement();
-    assertNotNullOrUndefined(rootElement);
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
     assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'gtm.js', 'favicon.ico']);
@@ -195,7 +187,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
 
     rootElement = navigatorView.scriptsTree.rootElement();
-    assertNotNullOrUndefined(rootElement);
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 2);
     assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'background.bmp']);
@@ -231,8 +222,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const exampleComNode = rootElement.firstChild();
       assertNotNullOrUndefined(exampleComNode);
       const nodeA = exampleComNode.childAt(0);
@@ -270,8 +259,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const nodeExampleCom = rootElement.firstChild();
       assertNotNullOrUndefined(nodeExampleCom);
       const nodeA = nodeExampleCom.childAt(0);
@@ -321,8 +308,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const exampleComNode = rootElement.firstChild();
       assertNotNullOrUndefined(exampleComNode);
       const nodeD = exampleComNode.childAt(0);
@@ -378,8 +363,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const exampleComNode = rootElement.firstChild();
       assertNotNullOrUndefined(exampleComNode);
       const nodeD = exampleComNode.childAt(0);
@@ -441,8 +424,6 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const exampleComNode = rootElement.firstChild();
       assertNotNullOrUndefined(exampleComNode);
       const nodeA = exampleComNode.childAt(0);
@@ -524,16 +505,12 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const nodeExampleCom = rootElement.firstChild();
-      assertNotNullOrUndefined(nodeExampleCom);
+      const ignoredFolder = nodeExampleCom!.childAt(0);
+      const mixedFolder = nodeExampleCom!.childAt(1);
 
-      const ignoredFolder = nodeExampleCom.childAt(0);
-      const mixedFolder = nodeExampleCom.childAt(1);
-
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
       project.removeProject();
     });
@@ -564,26 +541,22 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const nodeExampleCom = rootElement.firstChild();
-      assertNotNullOrUndefined(nodeExampleCom);
+      const ignoredFolder = nodeExampleCom!.childAt(0);
+      const mixedFolder = nodeExampleCom!.childAt(1);
 
-      const ignoredFolder = nodeExampleCom.childAt(0);
-      const mixedFolder = nodeExampleCom.childAt(1);
-
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored');
 
       await enableIgnoreListing();
 
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
       await disableIgnoreListing();
 
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored');
 
       project.removeProject();
     });
@@ -611,16 +584,12 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assertNotNullOrUndefined(rootElement);
-
       const nodeExampleCom = rootElement.firstChild();
-      assertNotNullOrUndefined(nodeExampleCom);
+      const ignoredFolder = nodeExampleCom!.childAt(0);
+      const mixedFolder = nodeExampleCom!.childAt(1);
 
-      const ignoredFolder = nodeExampleCom.childAt(0);
-      const mixedFolder = nodeExampleCom.childAt(1);
-
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed/a (ignore listed)');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed/a (ignore listed)');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
@@ -633,13 +602,13 @@ describeWithMockConnection('NetworkNavigatorView', () => {
         target,
       });
 
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
       otherProject.removeProject();
 
-      assert.strictEqual(mixedFolder?.tooltip, 'mixed (ignore listed)');
-      assert.strictEqual(ignoredFolder?.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(mixedFolder!.tooltip, 'mixed (ignore listed)');
+      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
       project.removeProject();
     });

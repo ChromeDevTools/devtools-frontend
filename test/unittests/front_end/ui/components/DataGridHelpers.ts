@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {
@@ -88,21 +87,18 @@ export const getDataGrid = (gridComponent: HTMLElement) => {
   return getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
 };
 
-export const assertGridContents =
-    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
-      const grid = getDataGrid(gridComponent);
-      assertShadowRoot(grid.shadowRoot);
+export const assertGridContents = (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
+  const grid = getDataGrid(gridComponent);
+  assertShadowRoot(grid.shadowRoot);
 
-      const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
-        assertNotNullOrUndefined(cell.textContent);
-        return cell.textContent.trim();
-      });
-      const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
+  const headerActual = getHeaderCells(grid.shadowRoot).map(({textContent}) => textContent!.trim());
+  assert.deepEqual(headerActual, headerExpected);
 
-      assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
+  const rowsActual = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
+  assert.deepEqual(rowsActual, rowsExpected);
 
-      return grid;
-    };
+  return grid;
+};
 
 export const focusCurrentlyFocusableCell = (shadowRoot: ShadowRoot) => {
   const cell = getFocusableCell(shadowRoot);

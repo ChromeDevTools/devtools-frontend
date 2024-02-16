@@ -53,11 +53,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
   it('calls clearRequests on reloadPage', () => {
     const target = createTarget();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(resourceTreeModel);
-    assertNotNullOrUndefined(networkManager);
-    const clearRequests = sinon.stub(networkManager, 'clearRequests');
-    resourceTreeModel.reloadPage();
+    const clearRequests = sinon.stub(SDK.NetworkManager.NetworkManager.prototype, 'clearRequests');
+    resourceTreeModel!.reloadPage();
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
@@ -80,18 +77,14 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
   it('calls clearRequests on top frame navigated', () => {
     const target = createTarget();
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(networkManager);
-    const clearRequests = sinon.stub(networkManager, 'clearRequests');
+    const clearRequests = sinon.stub(SDK.NetworkManager.NetworkManager.prototype, 'clearRequests');
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
   it('does not call clearRequests on non-top frame navigated', () => {
     const target = createTarget();
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(networkManager);
-    const clearRequests = sinon.stub(networkManager, 'clearRequests');
+    const clearRequests = sinon.stub(SDK.NetworkManager.NetworkManager.prototype, 'clearRequests');
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
     assert.isTrue(clearRequests.notCalled, 'Called unexpctedly');
   });
@@ -99,16 +92,14 @@ describeWithMockConnection('ResourceTreeModel', () => {
   it('added frame has storageKey when navigated', async () => {
     const testKey = 'test-storage-key';
 
-    const resourceTreeModel = createTarget().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.isEmpty(resourceTreeModel?.frames());
+    const target = createTarget();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.isEmpty(resourceTreeModel!.frames());
     navigateFrameWithMockConnection(testKey, resourceTreeModel);
-    const frames = resourceTreeModel?.frames();
-    assertNotNullOrUndefined(frames);
+    const frames = resourceTreeModel!.frames();
     assert.lengthOf(frames, 1);
     const addedFrame = frames[0];
-    assertNotNullOrUndefined(addedFrame);
     const key = await addedFrame.getStorageKey(false);
-    assertNotNullOrUndefined(key);
     assert.strictEqual(key, testKey);
   });
 
@@ -180,9 +171,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
     dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
-    assert.isTrue(getResourceTreeModel(mainFrameTarget).mainFrame?.isOutermostFrame());
-    assertNotNullOrUndefined(getResourceTreeModel(subframeTarget));
-    assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame?.isOutermostFrame());
+    assert.isTrue(getResourceTreeModel(mainFrameTarget).mainFrame!.isOutermostFrame());
+    assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame!.isOutermostFrame());
   });
 
   it('identifies not top frame with tab target', async () => {
@@ -192,9 +182,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
     dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
-    assert.isTrue(getResourceTreeModel(mainFrameTarget).mainFrame?.isOutermostFrame());
-    assertNotNullOrUndefined(getResourceTreeModel(subframeTarget));
-    assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame?.isOutermostFrame());
+    assert.isTrue(getResourceTreeModel(mainFrameTarget).mainFrame!.isOutermostFrame());
+    assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame!.isOutermostFrame());
   });
 
   it('emits PrimaryPageChanged event upon prerender activation', async () => {

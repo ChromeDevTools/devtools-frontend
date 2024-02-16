@@ -5,14 +5,13 @@
 const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 const Color = Common.Color;
 
 const parseAndAssertNotNull = (value: string) => {
   const result = Color.parse(value);
-  assertNotNullOrUndefined(result);
-  return result.asLegacyColor();
+  assert.isNotNull(result, `failed to parse '${value} as color`);
+  return result!.asLegacyColor();
 };
 
 const deepCloseTo = (actual: number[], expected: number[], delta: number, message?: string) => {
@@ -167,17 +166,14 @@ describe('Color', () => {
   it('parses lch values', () => {
     // White in sRGB
     const colorOne = parseAndAssertNotNull('lch(99 0.09 312)');
-    assertNotNullOrUndefined(colorOne);
     deepCloseTo(colorOne.rgba(), [0.989, 0.989, 0.989, 1], colorSpaceConversionTolerance);
 
     // Parses out of sRGB gamut values too
     const colorTwo = parseAndAssertNotNull('lch(99 112 312)');
-    assertNotNullOrUndefined(colorTwo);
     deepCloseTo(colorTwo.rgba(), [1, 0.762, 1, 1], colorSpaceConversionTolerance);
 
     // Parses none values too
     const colorThree = parseAndAssertNotNull('lch(99 112 none)');
-    assertNotNullOrUndefined(colorThree);
     deepCloseTo(colorThree.rgba(), [1, 0.484, 1, 1], colorSpaceConversionTolerance);
 
     // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
@@ -197,7 +193,6 @@ describe('Color', () => {
 
     for (const [syntax, expectedRgba] of colorCases) {
       const color = parseAndAssertNotNull(syntax as string);
-      assertNotNullOrUndefined(color);
       deepCloseTo(
           color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
           'LCH parsing from syntax list is not correct');
@@ -208,17 +203,14 @@ describe('Color', () => {
   it('parses lab values', () => {
     // White in sRGB
     const colorOne = parseAndAssertNotNull('lab(99 0 0)');
-    assertNotNullOrUndefined(colorOne);
     deepCloseTo(colorOne.rgba(), [0.989, 0.989, 0.989, 1], colorSpaceConversionTolerance);
 
     // Parses out of sRGB gamut values too
     const colorTwo = parseAndAssertNotNull('lab(99 58 64)');
-    assertNotNullOrUndefined(colorTwo);
     deepCloseTo(colorTwo.rgba(), [1, 0.794, 0.508, 1], colorSpaceConversionTolerance);
 
     // Parses none values too
     const colorThree = parseAndAssertNotNull('lch(99 none none)');
-    assertNotNullOrUndefined(colorThree);
     deepCloseTo(colorThree.rgba(), [0.989, 0.989, 0.989, 1], colorSpaceConversionTolerance);
 
     // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
@@ -237,7 +229,6 @@ describe('Color', () => {
 
     for (const [syntax, expectedRgba] of colorCases) {
       const color = parseAndAssertNotNull(syntax as string);
-      assertNotNullOrUndefined(color);
       deepCloseTo(
           color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
           'lab() parsing from syntax list is not correct');
@@ -248,17 +239,16 @@ describe('Color', () => {
   it('parses color() values', () => {
     // White in sRGB
     const colorOne = parseAndAssertNotNull('color(srgb 100% 100% 100% / 50%)');
-    assertNotNullOrUndefined(colorOne);
     deepCloseTo(colorOne.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
 
     const colorTwo = parseAndAssertNotNull('color(srgb 100% 100% 100%/50%)');
-    deepCloseTo(colorTwo?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+    deepCloseTo(colorTwo.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
 
     const colorThree = parseAndAssertNotNull('color(srgb 100% 100% 100%/ 50%)');
-    deepCloseTo(colorThree?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+    deepCloseTo(colorThree.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
 
     const colorFour = parseAndAssertNotNull('color(srgb 100% 100% 100% /50%)');
-    deepCloseTo(colorFour?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+    deepCloseTo(colorFour.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
 
     // Does not parse invalid syntax
     const invalidSyntaxes = [
@@ -288,7 +278,7 @@ describe('Color', () => {
     ];
     for (const colorSpaceCase of colorSpaceCases) {
       const color = Color.parse(colorSpaceCase);
-      assertNotNullOrUndefined(color);
+      assert.isNotNull(color);
     }
 
     // Parses correctly from syntax list
@@ -533,10 +523,7 @@ describe('Color', () => {
     for (const {fgColor, bgColor, contrast, result} of colors) {
       const fgParsed = parseAndAssertNotNull(fgColor);
       const bgParsed = parseAndAssertNotNull(bgColor);
-      assertNotNullOrUndefined(fgParsed);
-      assertNotNullOrUndefined(bgParsed);
-      const suggestedColor = Color.findFgColorForContrast(fgParsed, bgParsed, contrast)?.as(Color.Format.HSL);
-      assertNotNullOrUndefined(suggestedColor);
+      const suggestedColor = Color.findFgColorForContrast(fgParsed, bgParsed, contrast)!.as(Color.Format.HSL);
       assert.strictEqual(
           suggestedColor.asString(), result,
           `incorrect color suggestion for ${fgColor}/${bgColor} with contrast ${contrast}`);
@@ -575,8 +562,7 @@ describe('Color', () => {
       const fg = parseAndAssertNotNull(test.fgColor);
       const bg = parseAndAssertNotNull(test.bgColor);
       const result = Common.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
-      assertNotNullOrUndefined(result);
-      const absContrast = Math.abs(Common.ColorUtils.contrastRatioAPCA(result.rgba() || [], bg.rgba()));
+      const absContrast = Math.abs(Common.ColorUtils.contrastRatioAPCA(result!.rgba(), bg.rgba()));
       assert.isTrue(Math.round(absContrast) >= test.requiredContrast);
     }
   });
@@ -633,46 +619,42 @@ describe('Color', () => {
     for (const format in lime) {
       const spec = lime[format as Common.Color.Format];
       const color = Common.Color.parse(spec);
-      assertNotNullOrUndefined(color);
-      assert.deepEqual(color?.getAuthoredText(), spec);
-      assert.deepEqual(color?.format(), format, spec);
+      assert.deepEqual(color!.getAuthoredText(), spec);
+      assert.deepEqual(color!.format(), format, spec);
     }
   });
 
   it('prints the correct color when stringified with format', () => {
-    const lime: {[key in Common.Color.Format]: string} = {
-      [Common.Color.Format.Nickname]: 'lime',
-      [Common.Color.Format.HEX]: '#00ff00',
-      [Common.Color.Format.ShortHEX]: '#0f0',
-      [Common.Color.Format.HEXA]: '#00ff00ff',
-      [Common.Color.Format.ShortHEXA]: '#0f0f',
-      [Common.Color.Format.RGB]: 'rgb(0 255 0)',
-      [Common.Color.Format.RGBA]: 'rgb(0 255 0)',  // no alpha here because it is ignored at 100%
-      [Common.Color.Format.HSL]: 'hsl(120deg 100% 50%)',
-      [Common.Color.Format.HSLA]: 'hsl(120deg 100% 50%)',
-      [Common.Color.Format.HWB]: 'hwb(120deg 0% 0%)',
-      [Common.Color.Format.HWBA]: 'hwb(120deg 0% 0%)',
-      [Common.Color.Format.LCH]: 'lch(88 113.32 134.38)',
-      [Common.Color.Format.OKLCH]: 'oklch(0.87 0.29 142.49)',
-      [Common.Color.Format.LAB]: 'lab(88 -79.26 80.99)',
-      [Common.Color.Format.OKLAB]: 'oklab(0.87 -0.23 0.18)',
-      [Common.Color.Format.SRGB]: 'color(srgb 0 1 0)',
-      [Common.Color.Format.SRGB_LINEAR]: 'color(srgb-linear 0 1 0)',
-      [Common.Color.Format.DISPLAY_P3]: 'color(display-p3 0.46 0.99 0.3)',
-      [Common.Color.Format.A98_RGB]: 'color(a98-rgb 0.57 1 0.23)',
-      [Common.Color.Format.PROPHOTO_RGB]: 'color(prophoto-rgb 0.54 0.93 0.3)',
-      [Common.Color.Format.REC_2020]: 'color(rec2020 0.57 0.96 0.27)',
-      [Common.Color.Format.XYZ_D50]: 'color(xyz-d50 0.39 0.72 0.1)',
-      [Common.Color.Format.XYZ_D65]: 'color(xyz-d65 0.36 0.72 0.12)',
-      [Common.Color.Format.XYZ]: 'color(xyz 0.36 0.72 0.12)',
-    };
+    const LIME = [
+      {format: Common.Color.Format.Nickname, spec: 'lime'},
+      {format: Common.Color.Format.HEX, spec: '#00ff00'},
+      {format: Common.Color.Format.ShortHEX, spec: '#0f0'},
+      {format: Common.Color.Format.HEXA, spec: '#00ff00ff'},
+      {format: Common.Color.Format.ShortHEXA, spec: '#0f0f'},
+      {format: Common.Color.Format.RGB, spec: 'rgb(0 255 0)'},
+      {format: Common.Color.Format.RGBA, spec: 'rgb(0 255 0)'},  // no alpha here because it is ignored at 100%
+      {format: Common.Color.Format.HSL, spec: 'hsl(120deg 100% 50%)'},
+      {format: Common.Color.Format.HSLA, spec: 'hsl(120deg 100% 50%)'},
+      {format: Common.Color.Format.HWB, spec: 'hwb(120deg 0% 0%)'},
+      {format: Common.Color.Format.HWBA, spec: 'hwb(120deg 0% 0%)'},
+      {format: Common.Color.Format.LCH, spec: 'lch(88 113.32 134.38)'},
+      {format: Common.Color.Format.OKLCH, spec: 'oklch(0.87 0.29 142.49)'},
+      {format: Common.Color.Format.LAB, spec: 'lab(88 -79.26 80.99)'},
+      {format: Common.Color.Format.OKLAB, spec: 'oklab(0.87 -0.23 0.18)'},
+      {format: Common.Color.Format.SRGB, spec: 'color(srgb 0 1 0)'},
+      {format: Common.Color.Format.SRGB_LINEAR, spec: 'color(srgb-linear 0 1 0)'},
+      {format: Common.Color.Format.DISPLAY_P3, spec: 'color(display-p3 0.46 0.99 0.3)'},
+      {format: Common.Color.Format.A98_RGB, spec: 'color(a98-rgb 0.57 1 0.23)'},
+      {format: Common.Color.Format.PROPHOTO_RGB, spec: 'color(prophoto-rgb 0.54 0.93 0.3)'},
+      {format: Common.Color.Format.REC_2020, spec: 'color(rec2020 0.57 0.96 0.27)'},
+      {format: Common.Color.Format.XYZ_D50, spec: 'color(xyz-d50 0.39 0.72 0.1)'},
+      {format: Common.Color.Format.XYZ_D65, spec: 'color(xyz-d65 0.36 0.72 0.12)'},
+      {format: Common.Color.Format.XYZ, spec: 'color(xyz 0.36 0.72 0.12)'},
+    ];
 
-    const color = Common.Color.parse('lime');
-    assertNotNullOrUndefined(color);
-
-    for (const format in lime) {
-      const spec = lime[format as Common.Color.Format];
-      assert.deepEqual(color?.asString(format as Common.Color.Format), spec);
+    for (const {format, spec} of LIME) {
+      const color = Common.Color.parse('lime');
+      assert.deepEqual(color!.asString(format), spec);
     }
   });
 
@@ -780,11 +762,9 @@ describe('Color', () => {
     // Test all-to-all conversions.
     for (const from of colors.keys()) {
       for (const to of colors.keys()) {
-        const color = colors.get(from);
-        assertNotNullOrUndefined(color);
+        const actual = colors.get(from);
         const expected = colors.get(to);
-        assertNotNullOrUndefined(expected);
-        assert.deepEqual(color.as(to).asString(), expected.asString());
+        assert.deepEqual(actual!.as(to).asString(), expected!.asString());
       }
     }
 
@@ -792,34 +772,31 @@ describe('Color', () => {
     // verify the result.
     for (const start of colors.keys()) {
       let color = colors.get(start);
-      assertNotNullOrUndefined(color);
       for (const next of colors.keys()) {
-        color = color.as(next);
+        color = color!.as(next);
         const expected = colors.get(next);
-        assertNotNullOrUndefined(expected);
-        assert.deepEqual(color.asString(), expected.asString(), `Original color ${colors.get(start)?.asString()}`);
+        assert.deepEqual(color.asString(), expected!.asString(), `Original color ${colors.get(start)?.asString()}`);
       }
     }
   });
 
   it('correctly clips results on conversion', () => {
     const nonSRGBColor = Color.parse('lab(99 50 50)');
-    assertNotNullOrUndefined(nonSRGBColor);
 
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HEX), '#ffd39e');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HEXA), '#ffd39eff');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.RGB), 'rgb(255 211 158)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.RGBA), 'rgb(255 211 158)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSL), 'hsl(0deg 0% 100%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSLA), 'hsl(0deg 0% 100%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWB), 'hwb(15.95deg 61.78% 0%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWBA), 'hwb(15.95deg 61.78% 0%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.SRGB), 'color(srgb 1 0.83 0.62)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.SRGB_LINEAR), 'color(srgb-linear 1 0.65 0.34)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.DISPLAY_P3), 'color(display-p3 1 0.86 0.66)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.A98_RGB), 'color(a98-rgb 1 0.82 0.62)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.PROPHOTO_RGB), 'color(prophoto-rgb 1 0.88 0.61)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.REC_2020), 'color(rec2020 1 0.87 0.63)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HEX), '#ffd39e');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HEXA), '#ffd39eff');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.RGB), 'rgb(255 211 158)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.RGBA), 'rgb(255 211 158)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HSL), 'hsl(0deg 0% 100%)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HSLA), 'hsl(0deg 0% 100%)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HWB), 'hwb(15.95deg 61.78% 0%)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.HWBA), 'hwb(15.95deg 61.78% 0%)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.SRGB), 'color(srgb 1 0.83 0.62)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.SRGB_LINEAR), 'color(srgb-linear 1 0.65 0.34)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.DISPLAY_P3), 'color(display-p3 1 0.86 0.66)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.A98_RGB), 'color(a98-rgb 1 0.82 0.62)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.PROPHOTO_RGB), 'color(prophoto-rgb 1 0.88 0.61)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.REC_2020), 'color(rec2020 1 0.87 0.63)');
   });
 
   it('correctly detects and clips out-of-gamut colors', () => {

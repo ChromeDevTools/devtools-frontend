@@ -4,17 +4,17 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
-import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
 
 const LONG_URL_PART =
     'LoremIpsumDolorSitAmetConsecteturAdipiscingElitPhasellusVitaeOrciInAugueCondimentumTinciduntUtEgetDolorQuisqueEfficiturUltricesTinciduntVivamusVelitPurusCommodoQuisErosSitAmetTemporMalesuadaNislNullamTtempusVulputateAugueEgetScelerisqueLacusVestibulumNon/index.html';
@@ -136,27 +136,26 @@ describe('NetworkDispatcher', () => {
         resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
         statusCode: 200,
       } as Protocol.Network.ResponseReceivedExtraInfoEvent;
-      const mockResponseReceivedEventWithHeaders =
-          (headers: Protocol.Network.Headers) => {
-            return {
-              requestId: 'mockId',
-              loaderId: 'mockLoaderId',
-              frameId: 'mockFrameId',
-              timestamp: 581734.083213,
-              type: Protocol.Network.ResourceType.Document,
-              response: {
-                url: 'example.com',
-                status: 200,
-                statusText: '',
-                headers,
-                mimeType: 'text/html',
-                connectionReused: true,
-                connectionId: 12345,
-                encodedDataLength: 100,
-                securityState: 'secure',
-              } as Protocol.Network.Response,
-            } as Protocol.Network.ResponseReceivedEvent;
-          };
+      const mockResponseReceivedEventWithHeaders = (headers: Protocol.Network.Headers) => {
+        return {
+          requestId: 'mockId',
+          loaderId: 'mockLoaderId',
+          frameId: 'mockFrameId',
+          timestamp: 581734.083213,
+          type: Protocol.Network.ResourceType.Document,
+          response: {
+            url: 'example.com',
+            status: 200,
+            statusText: '',
+            headers,
+            mimeType: 'text/html',
+            connectionReused: true,
+            connectionId: 12345,
+            encodedDataLength: 100,
+            securityState: 'secure',
+          } as Protocol.Network.Response,
+        } as Protocol.Network.ResponseReceivedEvent;
+      };
 
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
       networkDispatcher.responseReceivedExtraInfo(responseReceivedExtraInfoEvent);
@@ -857,12 +856,9 @@ describeWithMockConnection('InterceptedRequest', () => {
       {name: 'content-type', value: 'text/html; charset=utf-8'},
     ];
 
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    Platform.assertNotNullOrUndefined(networkManager);
-    networkManager.dispatcher.requestWillBeSent(
-        {requestId: requestId1 as string, request} as Protocol.Network.RequestWillBeSentEvent);
-    networkManager?.dispatcher.requestWillBeSent(
-        {requestId: requestId2 as string, request} as Protocol.Network.RequestWillBeSentEvent);
+    const {dispatcher} = target.model(SDK.NetworkManager.NetworkManager)!;
+    dispatcher.requestWillBeSent({requestId: requestId1 as string, request} as Protocol.Network.RequestWillBeSentEvent);
+    dispatcher.requestWillBeSent({requestId: requestId2 as string, request} as Protocol.Network.RequestWillBeSentEvent);
 
     await checkRequestOverride(target, request, requestId1, responseCode, originalResponseHeaders, body, {
       requestId: requestId1,
@@ -876,8 +872,8 @@ describeWithMockConnection('InterceptedRequest', () => {
       body: btoa(body),
       responseHeaders,
     });
-    assert.isTrue(networkManager.dispatcher.requestForId(requestId1)?.wasIntercepted());
-    assert.isTrue(networkManager.dispatcher.requestForId(requestId2)?.wasIntercepted());
+    assert.isTrue(dispatcher.requestForId(requestId1)?.wasIntercepted());
+    assert.isTrue(dispatcher.requestForId(requestId2)?.wasIntercepted());
   });
 
   it('stores \'set-cookie\' headers on the request', async () => {

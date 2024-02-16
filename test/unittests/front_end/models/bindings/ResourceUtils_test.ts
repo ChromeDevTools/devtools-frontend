@@ -4,12 +4,11 @@
 
 const {assert} = chai;
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
@@ -35,9 +34,10 @@ describeWithMockConnection('ResourceUtils', () => {
     beforeEach(() => {
       target = targetFactory();
       target.setInspectedURL(INSPECTED_URL);
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
-      sinon.stub(resourceTreeModel, 'resourceForURL').returns(null).withArgs(RESOURCE_URL).returns(RESOURCE);
+      sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel.prototype, 'resourceForURL')
+          .returns(null)
+          .withArgs(RESOURCE_URL)
+          .returns(RESOURCE);
 
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       sinon.stub(workspace, 'uiSourceCodeForURL')

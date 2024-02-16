@@ -683,7 +683,7 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.emulateAFocusedPage),
   settingName: 'emulate-page-focus',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.Session,
+  storageType: Common.Settings.SettingStorageType.Local,
   defaultValue: false,
   options: [
     {

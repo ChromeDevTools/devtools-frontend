@@ -244,9 +244,9 @@ const theme = CodeMirror.EditorView.baseTheme({
     marginLeft: '3px',
   },
   '.cm-coverageUnused': {
-    backgroundColor: 'var(--sys-color-error-bright)',
+    backgroundColor: 'var(--app-color-coverage-unused)',
   },
   '.cm-coverageUsed': {
-    backgroundColor: 'var(--sys-color-green-bright)',
+    backgroundColor: 'var(--app-color-coverage-used)',
   },
 });

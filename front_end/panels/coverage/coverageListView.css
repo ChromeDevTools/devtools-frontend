@@ -34,11 +34,11 @@
 }
 
 .data-grid td .bar-unused-size {
-  background-color: var(--sys-color-error-bright);
+  background-color: var(--app-color-coverage-unused);
 }
 
 .data-grid td .bar-used-size {
-  background-color: var(--sys-color-green-bright);
+  background-color: var(--app-color-coverage-used);
 }
 
 .data-grid td .percent-value {

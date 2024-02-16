@@ -178,7 +178,6 @@
   --color-search-match-border: rgb(128 128 128);
   --color-selected-search-match: var(--sys-color-on-surface);
   --color-selected-search-match-background: rgb(241 234 0);
-  --color-coverage-used: #63acbe;
   --color-continue-to-location: var(--ref-palette-blue90);
   --color-continue-to-location-hover: var(--ref-palette-blue80);
   --color-continue-to-location-hover-border: var(--ref-palette-blue70);
@@ -414,6 +413,12 @@
   */
   --sys-color-gradient-primary: var(--ref-palette-primary90);
   --sys-color-gradient-tertiary: var(--ref-palette-tertiary95);
+
+  /**
+   * Colors for Coverage visualization.
+   */
+  --app-color-coverage-used: var(--ref-palette-neutral80);
+  --app-color-coverage-unused: var(--sys-color-error-bright);
 }
 
 .-theme-with-dark-background {
@@ -546,7 +551,6 @@
   --color-search-match-border: rgb(128 128 128);
   --color-selected-search-match: #eee;
   --color-selected-search-match-background: hsl(133deg 100% 30%);
-  --color-coverage-used: rgb(65 138 156);
   --color-continue-to-location: var(--ref-palette-yellow30);
   --color-continue-to-location-hover: var(--ref-palette-yellow40);
   --color-continue-to-location-hover-border: var(--ref-palette-yellow50);
@@ -781,4 +785,10 @@
   */
   --sys-color-gradient-primary: var(--ref-palette-primary30);
   --sys-color-gradient-tertiary: var(--ref-palette-tertiary30);
+
+  /**
+   * Colors for Coverage visualization.
+   */
+  --app-color-coverage-used: var(--ref-palette-neutral40);
+  --app-color-coverage-unused: var(--sys-color-error-bright);
 }

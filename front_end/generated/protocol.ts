@@ -8235,8 +8235,19 @@ export namespace Network {
     UnspecifiedReason = 'unspecifiedReason',
   }
 
+  /**
+   * Source of service worker router.
+   */
+  export const enum ServiceWorkerRouterSource {
+    Network = 'network',
+    Cache = 'cache',
+    FetchEvent = 'fetch-event',
+    RaceNetworkAndFetchHandler = 'race-network-and-fetch-handler',
+  }
+
   export interface ServiceWorkerRouterInfo {
     ruleIdMatched: integer;
+    matchedSourceType: ServiceWorkerRouterSource;
   }
 
   /**

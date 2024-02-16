@@ -12356,6 +12356,17 @@
                     ]
                 },
                 {
+                    "id": "ServiceWorkerRouterSource",
+                    "description": "Source of service worker router.",
+                    "type": "string",
+                    "enum": [
+                        "network",
+                        "cache",
+                        "fetch-event",
+                        "race-network-and-fetch-handler"
+                    ]
+                },
+                {
                     "id": "ServiceWorkerRouterInfo",
                     "experimental": true,
                     "type": "object",
@@ -12363,6 +12374,10 @@
                         {
                             "name": "ruleIdMatched",
                             "type": "integer"
+                        },
+                        {
+                            "name": "matchedSourceType",
+                            "$ref": "ServiceWorkerRouterSource"
                         }
                     ]
                 },

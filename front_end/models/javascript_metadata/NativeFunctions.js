@@ -7222,10 +7222,6 @@ export const NativeFunctions = [
     signatures: [["type","init"]]
   },
   {
-    name: "requestIdentity",
-    signatures: [["options"]]
-  },
-  {
     name: "FederatedCredential",
     signatures: [["data"]]
   },
@@ -7580,19 +7576,11 @@ export const NativeFunctions = [
     receivers: ["MLModel"]
   },
   {
-    name: "computeSync",
-    signatures: [["graph","inputs","outputs"]]
-  },
-  {
     name: "MLModelLoader",
     signatures: [["context"]]
   },
   {
     name: "createContext",
-    signatures: [["?options"]]
-  },
-  {
-    name: "createContextSync",
     signatures: [["?options"]]
   },
   {
@@ -7817,10 +7805,6 @@ export const NativeFunctions = [
   },
   {
     name: "build",
-    signatures: [["outputs"]]
-  },
-  {
-    name: "buildSync",
     signatures: [["outputs"]]
   },
   {

@@ -19,6 +19,39 @@ describe('CSSFormatter', () => {
 `);
   });
 
+  it('formats selector with quotes', () => {
+    const formattedCode = formatCSS('a[href=\'/\']');
+    assert.strictEqual(formattedCode, 'a[href=\'/\']');
+  });
+
+  it('formats compound selector', () => {
+    const formattedCode = formatCSS('#content > a:hover');
+    assert.strictEqual(formattedCode, '#content > a:hover');
+  });
+
+  it('formats color values', () => {
+    const formattedCode = formatCSS(
+        'p { color: color; red: red; color: #000; color: #FFF; color: #123AbC; color: #faebfe; color:papayawhip; }');
+    assert.strictEqual(formattedCode, `p {
+  color: color;
+  red: red;
+  color: #000;
+  color: #FFF;
+  color: #123AbC;
+  color: #faebfe;
+  color: papayawhip;
+}
+`);
+  });
+
+  it('formats important declaration', () => {
+    const formattedCode = formatCSS('p { margin: -10px !important; }');
+    assert.strictEqual(formattedCode, `p {
+  margin: -10px !important;
+}
+`);
+  });
+
   it('formats with comments correctly', () => {
     const formattedCode =
         formatCSS('a { /* pre-comment */ color /* after name */ : /* before value */ red /* post-comment */ }');

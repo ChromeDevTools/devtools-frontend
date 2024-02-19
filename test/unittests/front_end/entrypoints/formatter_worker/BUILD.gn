@@ -14,7 +14,6 @@ ts_library("formatter_worker") {
     "HTMLFormatter.test.ts",
     "JSONFormatter.test.ts",
     "JavaScriptFormatter.test.ts",
-    "SCSSFormatter.test.ts",
     "ScopeParser.test.ts",
     "Substitute.test.ts",
   ]

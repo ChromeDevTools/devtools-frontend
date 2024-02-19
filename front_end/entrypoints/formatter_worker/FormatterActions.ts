@@ -17,7 +17,6 @@ export const enum FormattableMediaTypes {
   TEXT_CSS = 'text/css',
   TEXT_HTML = 'text/html',
   TEXT_JAVASCRIPT = 'text/javascript',
-  TEXT_X_SCSS = 'text/x-scss',
 }
 
 export const FORMATTABLE_MEDIA_TYPES: string[] = [
@@ -27,7 +26,6 @@ export const FORMATTABLE_MEDIA_TYPES: string[] = [
   FormattableMediaTypes.TEXT_CSS,
   FormattableMediaTypes.TEXT_HTML,
   FormattableMediaTypes.TEXT_JAVASCRIPT,
-  FormattableMediaTypes.TEXT_X_SCSS,
 ];
 
 export interface FormatMapping {

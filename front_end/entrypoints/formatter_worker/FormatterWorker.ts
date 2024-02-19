@@ -153,8 +153,7 @@ export function format(mimeType: string, text: string, indentString?: string): F
         formatter.format(text, lineEndings);
         break;
       }
-      case FormattableMediaTypes.TEXT_CSS:
-      case FormattableMediaTypes.TEXT_X_SCSS: {
+      case FormattableMediaTypes.TEXT_CSS: {
         const formatter = new CSSFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;

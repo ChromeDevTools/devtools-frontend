@@ -239,13 +239,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   #setNodeKeyNoWrapCSSVariable(attributeValue: string|null): void {
-    ComponentHelpers.SetCSSProperty.set(
-        this, '--override-key-whitespace-wrapping', attributeValue !== null ? 'nowrap' : 'initial');
+    this.style.setProperty('--override-key-whitespace-wrapping', attributeValue !== null ? 'nowrap' : 'initial');
   }
 
   #setTopLevelNodeBorderColorCSSVariable(attributeValue: string|null): void {
-    ComponentHelpers.SetCSSProperty.set(
-        this, '--override-top-node-border', attributeValue ? `1px solid ${attributeValue}` : '');
+    this.style.setProperty('--override-top-node-border', attributeValue ? `1px solid ${attributeValue}` : '');
   }
 
   async #recursivelyCollapseTreeNodeChildren(treeNode: TreeNode<TreeNodeDataType>): Promise<void> {

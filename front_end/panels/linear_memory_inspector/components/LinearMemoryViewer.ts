@@ -84,7 +84,7 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   connectedCallback(): void {
-    ComponentHelpers.SetCSSProperty.set(this, '--byte-group-margin', `${BYTE_GROUP_MARGIN}px`);
+    this.style.setProperty('--byte-group-margin', `${BYTE_GROUP_MARGIN}px`);
     this.#shadow.adoptedStyleSheets = [linearMemoryViewerStyles];
   }
 

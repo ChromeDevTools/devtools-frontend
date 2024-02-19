@@ -158,7 +158,7 @@ export class DataGrid extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [dataGridStyles];
-    ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
+    this.style.setProperty('--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
     void this.#render();
   }
 

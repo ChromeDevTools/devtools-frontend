@@ -38,24 +38,6 @@ customElements.define('x-devtools-test-element', TestElement);
 const {assert} = chai;
 
 describe('ComponentHelpers', () => {
-  describe('setCSSProperty', () => {
-    it('sets a property on the shadow root host element', () => {
-      class TestComponent extends HTMLElement {
-        shadow = this.attachShadow({mode: 'open'});
-
-        constructor() {
-          super();
-          ComponentHelpers.SetCSSProperty.set(this, '--test-var', 'blue');
-        }
-      }
-
-      customElements.define('set-css-property-test-component', TestComponent);
-
-      const instance = new TestComponent();
-      assert.strictEqual(instance.style.getPropertyValue('--test-var'), 'blue');
-    });
-  });
-
   describe('Directives', () => {
     describe('nodeRenderedCallback', () => {
       it('runs when any node is rendered', () => {

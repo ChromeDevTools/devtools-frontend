@@ -15,7 +15,6 @@ devtools_module("helpers") {
     "directives.ts",
     "get-root-node.ts",
     "scheduled-render.ts",
-    "set-css-property.ts",
   ]
 
   deps = [

@@ -44,7 +44,7 @@ export class CSSAngleEditor extends HTMLElement {
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [cssAngleEditorStyles];
-    ComponentHelpers.SetCSSProperty.set(this, '--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
+    this.style.setProperty('--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
   }
   set data(data: CSSAngleEditorData) {
     this.angle = data.angle;

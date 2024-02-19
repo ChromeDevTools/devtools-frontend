@@ -24,7 +24,7 @@ function renderCookiesView(request: SDK.NetworkRequest.NetworkRequest): Network.
 
 describeWithMockConnection('RequestCookiesView', () => {
   beforeEach(() => {
-    Root.Runtime.experiments.register('experimentalCookieFeatures', '');
+    Root.Runtime.experiments.register('experimental-cookie-features', '');
   });
   it('show a message when request site has cookies in another partition', () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(

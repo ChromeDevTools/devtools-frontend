@@ -169,7 +169,7 @@ describe('The Sources Tab', async function() {
   });
 
   it('can hit a breakpoint on the main thread on a fresh DevTools', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {frontend, target} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -203,7 +203,7 @@ describe('The Sources Tab', async function() {
   it.skip(
       '[crbug.com/1229541] can hit a breakpoint in an inline script on the main thread on a fresh DevTools',
       async () => {
-        await enableExperiment('instrumentationBreakpoints');
+        await enableExperiment('instrumentation-breakpoints');
         const {frontend, target} = getBrowserAndPages();
 
         await step('navigate to a page and open the Sources tab', async () => {
@@ -234,7 +234,7 @@ describe('The Sources Tab', async function() {
 
   it('can hit a breakpoint in an inline script with sourceURL comment on the main thread on a fresh DevTools',
      async () => {
-       await enableExperiment('instrumentationBreakpoints');
+       await enableExperiment('instrumentation-breakpoints');
        const {frontend, target} = getBrowserAndPages();
 
        await step('navigate to a page and open the Sources tab', async () => {

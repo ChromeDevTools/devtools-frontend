@@ -96,7 +96,7 @@ describeWithMockConnection('AutofillView', () => {
   let showViewStub: sinon.SinonStub;
 
   beforeEach(() => {
-    Root.Runtime.experiments.register('APCA', '');
+    Root.Runtime.experiments.register('apca', '');
     target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const maybeAutofillModel = target.model(SDK.AutofillModel.AutofillModel);

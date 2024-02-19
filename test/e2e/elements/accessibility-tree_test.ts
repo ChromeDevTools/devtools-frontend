@@ -17,8 +17,8 @@ import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Tree in the Elements Tab', async function() {
   it('displays the fuller accessibility tree', async () => {
-    await enableExperiment('fullAccessibilityTree');
-    await enableExperiment('protocolMonitor');
+    await enableExperiment('full-accessibility-tree');
+    await enableExperiment('protocol-monitor');
     await goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityTree();
     await waitForElementWithTextContent('heading\xa0"Title"');
@@ -26,7 +26,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
   });
 
   it('allows navigating iframes', async () => {
-    await enableExperiment('fullAccessibilityTree');
+    await enableExperiment('full-accessibility-tree');
     await goToResource('elements/accessibility-iframe-page.html');
     await toggleAccessibilityTree();
     const iframeDoc = await waitForElementWithTextContent(
@@ -41,7 +41,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
 
   it('listens for text changes to DOM and redraws the tree', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await enableExperiment('fullAccessibilityTree');
+    await enableExperiment('full-accessibility-tree');
     await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
     await frontend.bringToFront();
@@ -62,7 +62,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
 
   it('listens for changes to properties and redraws tree', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await enableExperiment('fullAccessibilityTree');
+    await enableExperiment('full-accessibility-tree');
     await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
     await frontend.bringToFront();
@@ -84,7 +84,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
 
   it('listen for removed nodes and redraw tree', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await enableExperiment('fullAccessibilityTree');
+    await enableExperiment('full-accessibility-tree');
     await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
     await frontend.bringToFront();

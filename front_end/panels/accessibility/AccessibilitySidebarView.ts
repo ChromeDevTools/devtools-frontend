@@ -102,7 +102,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     if (!accessibilityModel) {
       return;
     }
-    if (!Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
+    if (!Root.Runtime.experiments.isEnabled('full-accessibility-tree')) {
       accessibilityModel.clear();
     }
     await accessibilityModel.requestPartialAXTree(node);

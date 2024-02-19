@@ -273,7 +273,7 @@ describe('Sources Tab', async function() {
   });
 
   it('is able to step with state in multi-threaded code in main thread', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
     await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
@@ -394,7 +394,7 @@ describe('Sources Tab', async function() {
   });
 
   it('is able to step with state in multi-threaded code in worker thread', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
     await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);

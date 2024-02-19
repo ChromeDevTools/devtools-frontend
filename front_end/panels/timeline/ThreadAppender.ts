@@ -160,8 +160,8 @@ export class ThreadAppender implements TrackAppender {
   #headerAppended: boolean = false;
   readonly threadType: TraceEngine.Handlers.Threads.ThreadType = TraceEngine.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
-  #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
-  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
+  #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignore-list-js-frames-on-timeline');
+  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
   #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
   #url: string = '';
   #headerNestingLevel: number|null = null;

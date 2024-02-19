@@ -91,7 +91,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     // 'disabled-by-default-v8.cpu_profiler'
     //   └ default: on, option: enableJSSampling
     const categoriesArray = [
-      Root.Runtime.experiments.isEnabled('timelineShowAllEvents') ? '*' : '-*',
+      Root.Runtime.experiments.isEnabled('timeline-show-all-events') ? '*' : '-*',
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
       TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
       'devtools.timeline',
@@ -107,13 +107,13 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
       'cppgc',
     ];
 
-    if (Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
+    if (Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     }
     if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
     }
-    if (Root.Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
+    if (Root.Runtime.experiments.isEnabled('timeline-invalidation-tracking')) {
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
     }
     if (options.capturePictures) {

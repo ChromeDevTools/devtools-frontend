@@ -89,7 +89,7 @@ describeWithEnvironment('ReportsGrid', async () => {
   });
 
   it('renders ID column if experiment is enabled', async () => {
-    Root.Runtime.experiments.enableForTest('protocolMonitor');
+    Root.Runtime.experiments.enableForTest('protocol-monitor');
     const body = {
       columnNumber: 8,
       id: 'PrefixedStorageInfo',

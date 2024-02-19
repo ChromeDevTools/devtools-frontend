@@ -230,7 +230,7 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
   });
 
   it('parses lengths correctly', () => {
-    Root.Runtime.experiments.disableForTest('cssTypeComponentLengthDeprecate');
+    Root.Runtime.experiments.disableForTest('css-type-component-length-deprecate');
     const renderer =
         new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'width', 'calc(6em + 7em)');
     renderer.setLengthHandler(() => document.createTextNode('MATCH'));

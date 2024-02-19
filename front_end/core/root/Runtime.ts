@@ -59,10 +59,11 @@ export class Runtime {
     [x: string]: boolean,
   } {
     try {
-      return JSON.parse(
-                 self.localStorage && self.localStorage['experiments'] ? self.localStorage['experiments'] : '{}') as {
-        [x: string]: boolean,
-      };
+      return Platform.StringUtilities.toKebabCaseKeys(
+          JSON.parse(self.localStorage && self.localStorage['experiments'] ? self.localStorage['experiments'] : '{}') as
+          {
+            [x: string]: boolean,
+          });
     } catch (e) {
       console.error('Failed to parse localStorage[\'experiments\']');
       return {};
@@ -265,31 +266,31 @@ export class Experiment {
 export const experiments = new ExperimentsSupport();
 
 export const enum ExperimentName {
-  CAPTURE_NODE_CREATION_STACKS = 'captureNodeCreationStacks',
-  CSS_OVERVIEW = 'cssOverview',
-  LIVE_HEAP_PROFILE = 'liveHeapProfile',
+  CAPTURE_NODE_CREATION_STACKS = 'capture-node-creation-stacks',
+  CSS_OVERVIEW = 'css-overview',
+  LIVE_HEAP_PROFILE = 'live-heap-profile',
   ALL = '*',
-  PROTOCOL_MONITOR = 'protocolMonitor',
-  FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
-  STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
-  HEADER_OVERRIDES = 'headerOverrides',
-  INSTRUMENTATION_BREAKPOINTS = 'instrumentationBreakpoints',
-  AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
-  IMPORTANT_DOM_PROPERTIES = 'importantDOMProperties',
-  JUST_MY_CODE = 'justMyCode',
-  PRELOADING_STATUS_PANEL = 'preloadingStatusPanel',
-  TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timelineAsConsoleProfileResultPanel',
-  OUTERMOST_TARGET_SELECTOR = 'outermostTargetSelector',
-  JS_PROFILER_TEMP_ENABLE = 'jsProfilerTemporarilyEnable',
-  HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlightErrorsElementsPanel',
-  SET_ALL_BREAKPOINTS_EAGERLY = 'setAllBreakpointsEagerly',
-  SELF_XSS_WARNING = 'selfXssWarning',
-  USE_SOURCE_MAP_SCOPES = 'useSourceMapScopes',
-  STORAGE_BUCKETS_TREE = 'storageBucketsTree',
-  NETWORK_PANEL_FILTER_BAR_REDESIGN = 'networkPanelFilterBarRedesign',
-  TRACK_CONTEXT_MENU = 'trackContextMenu',
+  PROTOCOL_MONITOR = 'protocol-monitor',
+  FULL_ACCESSIBILITY_TREE = 'full-accessibility-tree',
+  STYLES_PANE_CSS_CHANGES = 'styles-pane-css-changes',
+  HEADER_OVERRIDES = 'header-overrides',
+  INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
+  AUTHORED_DEPLOYED_GROUPING = 'authored-deployed-grouping',
+  IMPORTANT_DOM_PROPERTIES = 'important-dom-properties',
+  JUST_MY_CODE = 'just-my-code',
+  PRELOADING_STATUS_PANEL = 'preloading-status-panel',
+  TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timeline-as-console-profile-result-panel',
+  OUTERMOST_TARGET_SELECTOR = 'outermost-target-selector',
+  JS_PROFILER_TEMP_ENABLE = 'js-profiler-temporarily-enable',
+  HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
+  SET_ALL_BREAKPOINTS_EAGERLY = 'set-all-breakpoints-eagerly',
+  SELF_XSS_WARNING = 'self-xss-warning',
+  USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
+  STORAGE_BUCKETS_TREE = 'storage-buckets-tree',
+  NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
+  TRACK_CONTEXT_MENU = 'track-context-menu',
   AUTOFILL_VIEW = 'autofillView',
-  INDENTATION_MARKERS_TEMP_DISABLE = 'sourcesFrameIndentationMarkersTemporarilyDisable',
+  INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',
 }
 
 /**

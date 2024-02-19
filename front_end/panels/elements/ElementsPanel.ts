@@ -238,7 +238,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.mainContainer = document.createElement('div');
     this.domTreeContainer = document.createElement('div');
     const crumbsContainer = document.createElement('div');
-    if (Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
+    if (Root.Runtime.experiments.isEnabled('full-accessibility-tree')) {
       this.initializeFullAccessibilityTreeView();
     }
     this.mainContainer.appendChild(this.domTreeContainer);

@@ -310,7 +310,7 @@ describe('The Network Tab', async function() {
   this.timeout(5000);
 
   beforeEach(async () => {
-    await disableExperiment('networkPanelFilterBarRedesign');
+    await disableExperiment('network-panel-filter-bar-redesign');
 
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
@@ -335,7 +335,7 @@ describe('The Network Tab', async function() {
   this.timeout(5000);
 
   beforeEach(async () => {
-    await enableExperiment('networkPanelFilterBarRedesign');
+    await enableExperiment('network-panel-filter-bar-redesign');
 
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);

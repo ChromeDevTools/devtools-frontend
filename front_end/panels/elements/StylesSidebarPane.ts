@@ -2366,7 +2366,7 @@ export class StylesSidebarPropertyRenderer {
                                                 InlineEditor.FontEditorUtils.FontPropertiesRegex,
           this.fontHandler));
     }
-    if (!Root.Runtime.experiments.isEnabled('cssTypeComponentLengthDeprecate') && this.lengthHandler) {
+    if (!Root.Runtime.experiments.isEnabled('css-type-component-length-deprecate') && this.lengthHandler) {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
       matchers.push(
           new LegacyRegexMatcher(asLineMatch(InlineEditor.CSSLengthUtils.CSSLengthRegex), this.lengthHandler));

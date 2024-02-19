@@ -135,7 +135,7 @@ describe('SettingCheckbox', () => {
   });
 
   it('is enabled for a disabled deprecated settings with enabled experiment', () => {
-    const experiment = 'testExperiment';
+    const experiment = 'test-experiment';
     Root.Runtime.experiments.register(experiment, experiment);
     Root.Runtime.experiments.setEnabled(experiment, true);
     const setting = createFakeSetting<boolean>('setting', false);
@@ -155,7 +155,7 @@ describe('SettingCheckbox', () => {
   });
 
   it('is enabled for a disabled deprecated settings with disabled experiment', () => {
-    const experiment = 'testExperiment';
+    const experiment = 'test-experiment';
     Root.Runtime.experiments.register(experiment, experiment);
     Root.Runtime.experiments.setEnabled(experiment, false);
     const setting = createFakeSetting<boolean>('setting', false);

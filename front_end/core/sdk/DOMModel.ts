@@ -1079,7 +1079,7 @@ export class DOMModel extends SDKModel<EventTypes> {
       void this.agent.invoke_enable({});
     }
 
-    if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
+    if (Root.Runtime.experiments.isEnabled('capture-node-creation-stacks')) {
       void this.agent.invoke_setNodeStackTracesEnabled({enable: true});
     }
   }

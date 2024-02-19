@@ -788,7 +788,7 @@ describe('The Debugger Language Plugins', async () => {
   it('shows sensible error messages.', async () => {
     const {frontend} = getBrowserAndPages();
     // This test times out on mac-arm64 when watch expressions take some time to calculate.
-    await disableExperiment('evaluateExpressionsWithSourceMaps');
+    await disableExperiment('evaluate-expressions-with-source-maps');
 
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);

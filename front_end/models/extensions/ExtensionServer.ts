@@ -524,7 +524,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (message.command !== PrivateAPI.Commands.ApplyStyleSheet) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ApplyStyleSheet}`);
     }
-    if (!Root.Runtime.experiments.isEnabled('applyCustomStylesheet')) {
+    if (!Root.Runtime.experiments.isEnabled('apply-custom-stylesheet')) {
       return;
     }
 

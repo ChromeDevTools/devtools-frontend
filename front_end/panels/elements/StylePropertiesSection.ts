@@ -226,7 +226,7 @@ export class StylePropertiesSection {
       UI.ARIAUtils.markAsHidden(this.newStyleRuleToolbar.element);
     }
 
-    if (Root.Runtime.experiments.isEnabled('fontEditor') && this.editable) {
+    if (Root.Runtime.experiments.isEnabled('font-editor') && this.editable) {
       this.fontEditorToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this.innerElement);
       this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
       this.fontEditorButton = new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography');

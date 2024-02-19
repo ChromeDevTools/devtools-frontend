@@ -562,7 +562,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
+      contrastAlgorithm: Root.Runtime.experiments.isEnabled('apca') ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 

@@ -228,7 +228,7 @@ export class CookiesTable extends UI.Widget.VBox {
       },
     ] as DataGrid.DataGrid.ColumnDescriptor[];
 
-    if (Root.Runtime.experiments.isEnabled('experimentalCookieFeatures')) {
+    if (Root.Runtime.experiments.isEnabled('experimental-cookie-features')) {
       const additionalColumns = [
         {
           id: SDK.Cookie.Attribute.SourceScheme,

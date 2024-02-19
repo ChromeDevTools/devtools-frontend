@@ -99,7 +99,7 @@ const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
-Root.Runtime.experiments.setEnabled('timelineInvalidationTracking', params.has('invalidations'));
+Root.Runtime.experiments.setEnabled('timeline-invalidation-tracking', params.has('invalidations'));
 
 const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
 const container = document.getElementById('container');

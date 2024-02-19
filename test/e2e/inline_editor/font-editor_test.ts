@@ -32,7 +32,7 @@ async function openFontEditorForInlineStyle() {
 
 describe('The font editor', async function() {
   beforeEach(async function() {
-    await enableExperiment('fontEditor');
+    await enableExperiment('font-editor');
     await goToTestPageAndSelectTestElement();
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
   });

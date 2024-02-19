@@ -274,7 +274,7 @@ describe('Multi-Workers', async function() {
 
     describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
       beforeEach(async () => {
-        await enableExperiment('instrumentationBreakpoints');
+        await enableExperiment('instrumentation-breakpoints');
         const {frontend} = getBrowserAndPages();
         await waitForSourceFiles(
             SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith('multi-workers.js')), async () => {

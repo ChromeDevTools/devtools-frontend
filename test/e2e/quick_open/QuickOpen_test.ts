@@ -70,7 +70,7 @@ describe('Quick Open menu', () => {
   });
 
   it('Does not list ignore-listed files', async () => {
-    await enableExperiment('justMyCode');
+    await enableExperiment('just-my-code');
     await setIgnoreListPattern('workers.js');
     await goToResource('sources/multi-workers-sourcemap.html');
     await openSourcesPanel();

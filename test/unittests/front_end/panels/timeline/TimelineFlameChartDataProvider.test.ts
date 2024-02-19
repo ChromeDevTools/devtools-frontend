@@ -107,7 +107,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
   describe('ignoring frames', function() {
     it('removes entries from the data that match the ignored URL', async function() {
-      Root.Runtime.experiments.enableForTest('ignoreListJSFramesOnTimeline');
+      Root.Runtime.experiments.enableForTest('ignore-list-js-frames-on-timeline');
 
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});

@@ -748,7 +748,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA) as string);
     const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA) as string);
 
-    const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
+    const showAPCA = Root.Runtime.experiments.isEnabled('apca');
 
     const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
       PH1: color,
@@ -1127,7 +1127,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
 
     if (columnId === 'contrast-ratio') {
       const cell = this.createTD(columnId);
-      const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
+      const showAPCA = Root.Runtime.experiments.isEnabled('apca');
       const contrastRatio = Platform.NumberUtilities.floor(this.data.contrastRatio, 2);
       const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
       const border = getBorderString(this.data.backgroundColor);

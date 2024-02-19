@@ -424,7 +424,7 @@ describe('The Memory Panel', async function() {
 
   it('Does not include backing store size in the shallow size of a JS Set', async () => {
     await goToResource('memory/set.html');
-    await disableExperiment('heapSnapshotTreatBackingStoreAsContainingObject');
+    await disableExperiment('heap-snapshot-treat-backing-store-as-containing-object');
     const sizes = await runJSSetTest();
 
     // The Set object is small, regardless of the contained content.
@@ -440,7 +440,7 @@ describe('The Memory Panel', async function() {
 
   it('Includes backing store size in the shallow size of a JS Set', async () => {
     await goToResource('memory/set.html');
-    await enableExperiment('heapSnapshotTreatBackingStoreAsContainingObject');
+    await enableExperiment('heap-snapshot-treat-backing-store-as-containing-object');
     const sizes = await runJSSetTest();
 
     // The Set is reported as containing at least 100 pointers.

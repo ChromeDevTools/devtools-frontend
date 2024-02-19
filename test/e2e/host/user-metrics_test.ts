@@ -463,7 +463,7 @@ describe('User Metrics for sidebar panes', () => {
 
 describe('User Metrics for Issue Panel', () => {
   beforeEach(async () => {
-    await enableExperiment('contrastIssues');
+    await enableExperiment('contrast-issues');
     await openPanelViaMoreTools('Issues');
   });
 

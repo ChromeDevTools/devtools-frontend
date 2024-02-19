@@ -238,7 +238,7 @@ describe('The Sources Tab', async function() {
     await step('Check that expression evaluation understands unminified name', async () => {
       await frontend.evaluate(`(async () => {
         const Root = await import('./core/root/root.js');
-        Root.Runtime.experiments.setEnabled('evaluateExpressionsWithSourceMaps', true);
+        Root.Runtime.experiments.setEnabled('evaluate-expressions-with-source-maps', true);
       })()`);
 
       await click(CONSOLE_TAB_SELECTOR);
@@ -403,7 +403,7 @@ describe('The Sources Tab', async function() {
   });
 
   it('reliably hits breakpoints on worker with source map', async () => {
-    await enableExperiment('instrumentationBreakpoints');
+    await enableExperiment('instrumentation-breakpoints');
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
 

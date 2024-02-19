@@ -289,7 +289,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
   connectedCallback(): void {
     this.parentElement?.classList.add('overflow-auto');
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
     this.#shadow.adoptedStyleSheets = [frameDetailsReportViewStyles];
   }
 

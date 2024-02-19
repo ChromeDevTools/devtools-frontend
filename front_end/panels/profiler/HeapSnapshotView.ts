@@ -1251,7 +1251,7 @@ export class HeapSnapshotProfileType extends
   override customContent(): Element|null {
     const optionsContainer = document.createElement('div');
     const showOptionToExposeInternalsInHeapSnapshot =
-        Root.Runtime.experiments.isEnabled('showOptionToExposeInternalsInHeapSnapshot');
+        Root.Runtime.experiments.isEnabled('show-option-tp-expose-internals-in-heap-snapshot');
     const omitParagraphElement = !showOptionToExposeInternalsInHeapSnapshot;
     if (showOptionToExposeInternalsInHeapSnapshot) {
       const exposeInternalsInHeapSnapshotCheckbox = UI.SettingsUI.createSettingCheckbox(

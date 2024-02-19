@@ -158,7 +158,7 @@ describe('Ignore list', async function() {
   });
 
   it('removes ignored sources from page source tree', async function() {
-    await enableExperiment('justMyCode');
+    await enableExperiment('just-my-code');
     await setIgnoreListPattern('thirdparty');
     await goToResource('sources/multi-files.html');
     await openSourcesPanel();

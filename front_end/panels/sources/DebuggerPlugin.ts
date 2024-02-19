@@ -710,7 +710,7 @@ export class DebuggerPlugin extends Plugin {
       box,
       show: async (popover: UI.GlassPane.GlassPane) => {
         let resolvedText: string = '';
-        if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+        if (Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps')) {
           const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame);
           try {
             resolvedText =
@@ -731,7 +731,7 @@ export class DebuggerPlugin extends Plugin {
         //   * Explicit function calls on the other hand must be side-effect free. The canonical
         //     example is hovering over {Math.random()} which would result in a different value
         //     each time the user hovers over it.
-        const throwOnSideEffect = Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps') &&
+        const throwOnSideEffect = Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps') &&
             highlightRange.containsSideEffects;
         const result = await selectedCallFrame.evaluate({
           expression: resolvedText || evaluationText,

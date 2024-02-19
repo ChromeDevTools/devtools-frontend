@@ -282,7 +282,7 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('substitutes source-mapped variables', async () => {
-      Root.Runtime.experiments.enableForTest('evaluateExpressionsWithSourceMaps');
+      Root.Runtime.experiments.enableForTest('evaluate-expressions-with-source-maps');
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(debuggerModel);
 
@@ -328,12 +328,12 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.strictEqual(columnNumber, 20);
       assert.strictEqual(condition, 'n > 0\n\n//# sourceURL=debugger://breakpoint');
 
-      Root.Runtime.experiments.disableForTest('evaluateExpressionsWithSourceMaps');
+      Root.Runtime.experiments.disableForTest('evaluate-expressions-with-source-maps');
     });
   });
 
   it('substitutes source-mapped variables for the same original script in different bundles correctly', async () => {
-    Root.Runtime.experiments.enableForTest('evaluateExpressionsWithSourceMaps');
+    Root.Runtime.experiments.enableForTest('evaluate-expressions-with-source-maps');
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
 
@@ -397,7 +397,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.strictEqual(req2.url, url2);
     assert.strictEqual(req2.condition, 'o > 0\n\n//# sourceURL=debugger://breakpoint');
 
-    Root.Runtime.experiments.disableForTest('evaluateExpressionsWithSourceMaps');
+    Root.Runtime.experiments.disableForTest('evaluate-expressions-with-source-maps');
   });
 
   it('allows awaiting the restoration of breakpoints', async () => {

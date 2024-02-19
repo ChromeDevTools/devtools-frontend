@@ -15,7 +15,7 @@ import {
 
 describe('Low contrast issues', async () => {
   it('should report low contrast issues', async () => {
-    await enableExperiment('contrastIssues');
+    await enableExperiment('contrast-issues');
     await goToResource('elements/low-contrast.html');
     await navigateToIssuesTab();
     await expandIssue();

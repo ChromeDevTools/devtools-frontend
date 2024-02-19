@@ -815,7 +815,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       return `${condition}\n\n//# sourceURL=${sourceUrl}` as SDK.DebuggerModel.BackendCondition;
     };
 
-    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps') && location) {
+    if (Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps') && location) {
       return SourceMapScopes.NamesResolver.allVariablesAtPosition(location)
           .then(
               nameMap => nameMap.size > 0 ?

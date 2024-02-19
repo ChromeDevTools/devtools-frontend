@@ -14,7 +14,7 @@ import {
 
 describe('The JavaScript Profiler Panel', async () => {
   beforeEach(async () => {
-    await enableExperiment('jsProfilerTemporarilyEnable');
+    await enableExperiment('js-profiler-temporarily-enable');
   });
 
   it('Loads content', async () => {

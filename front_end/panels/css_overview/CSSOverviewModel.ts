@@ -60,7 +60,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
     const highlightConfig = {
       contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),
       showInfo: true,
-      contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
+      contrastAlgorithm: Root.Runtime.experiments.isEnabled('apca') ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
@@ -282,7 +282,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
           const formattedTextColor = formatColor(blendedTextColor);
           const formattedBackgroundColor = formatColor(blendedBackgroundColor.asLegacyColor());
           const key = `${formattedTextColor}_${formattedBackgroundColor}`;
-          if (Root.Runtime.experiments.isEnabled('APCA')) {
+          if (Root.Runtime.experiments.isEnabled('apca')) {
             const contrastRatio = contrastInfo.contrastRatioAPCA();
             const threshold = contrastInfo.contrastRatioAPCAThreshold();
             const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;

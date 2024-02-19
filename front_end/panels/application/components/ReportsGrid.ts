@@ -81,7 +81,7 @@ export class ReportsGrid extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportingApiGridStyles];
-    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
     this.#render();
   }
 

@@ -377,7 +377,7 @@ describeWithEnvironment('ThreadAppender', function() {
   describe('ignore listing', () => {
     let ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager;
     beforeEach(() => {
-      Root.Runtime.experiments.enableForTest('ignoreListJSFramesOnTimeline');
+      Root.Runtime.experiments.enableForTest('ignore-list-js-frames-on-timeline');
 
       const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
@@ -526,7 +526,7 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.strictEqual(unknownEventIndex, -1);
 
       // Now enable the experiment and make sure the event is appended to the timeline data this time
-      Root.Runtime.experiments.enableForTest('timelineShowAllEvents');
+      Root.Runtime.experiments.enableForTest('timeline-show-all-events');
       const finalTimelineData = await renderThreadAppendersFromTrace(this, fileName);
       const finalFlamechartData = finalTimelineData.flameChartData;
       unknownEventIndex = finalTimelineData.entryData.findIndex(entry => {
@@ -536,7 +536,7 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.isAbove(unknownEventIndex, -1);
       assert.isDefined(finalFlamechartData.entryStartTimes);
       assert.isDefined(finalFlamechartData.entryTotalTimes);
-      Root.Runtime.experiments.disableForTest('timelineShowAllEvents');
+      Root.Runtime.experiments.disableForTest('timeline-show-all-events');
     });
   });
   describe('AuctionWorklet threads', () => {

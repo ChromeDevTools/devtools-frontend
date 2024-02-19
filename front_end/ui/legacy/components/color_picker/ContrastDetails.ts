@@ -242,7 +242,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.setVisible(true);
     this.hideNoContrastInfoAvailableMessage();
 
-    const isAPCAEnabled = Root.Runtime.experiments.isEnabled('APCA');
+    const isAPCAEnabled = Root.Runtime.experiments.isEnabled('apca');
 
     const fgColor = this.contrastInfo.color();
     const bgColor = this.contrastInfo.bgColor();

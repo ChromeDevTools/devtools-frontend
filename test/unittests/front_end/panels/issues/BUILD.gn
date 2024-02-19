@@ -7,14 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("issues") {
   testonly = true
   sources = [
-    "DeprecationIssue.test.ts",
-    "FederatedAuthUserInfoRequestIssue.test.ts",
-    "GenericIssue.test.ts",
     "IssueAggregator.test.ts",
     "IssueView.test.ts",
-    "LowContrastIssuesAggregation.test.ts",
-    "PropertyRuleIssue.test.ts",
-    "StylesheetLoadingIssue.test.ts",
   ]
 
   deps = [

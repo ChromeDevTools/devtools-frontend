@@ -21,7 +21,7 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../../helpers/MockConnection.js';
-import {assertGridContents} from '../../../ui/components/DataGridHelpers.js';
+import {assertGridContents} from '../../../ui/components/data_grid/DataGridHelpers.js';
 
 const {assert} = chai;
 

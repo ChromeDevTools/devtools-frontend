@@ -8,7 +8,6 @@ ts_library("elements") {
   testonly = true
   sources = [
     "AccessibilityTreeView.test.ts",
-    "CSSPropertyPrompt.test.ts",
     "CSSRuleValidator.test.ts",
     "ClassesPaneWidget.test.ts",
     "DOMLinkifier.test.ts",

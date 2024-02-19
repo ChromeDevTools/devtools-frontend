@@ -7,8 +7,8 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
+    "LinearMemoryHighlightChipList.test.ts",
     "LinearMemoryInspector.test.ts",
-    "LinearMemoryInspectorHighlightChipList.test.ts",
     "LinearMemoryNavigator.test.ts",
     "LinearMemoryValueInterpreter.test.ts",
     "LinearMemoryViewer.test.ts",

@@ -1,0 +1,21 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("dialogs") {
+  testonly = true
+  sources = [
+    "Dialog.test.ts",
+    "ShortcutDialog.test.ts",
+  ]
+
+  deps = [
+    "../../../../../../front_end/core/platform:bundle",
+    "../../../../../../front_end/services/window_bounds:bundle",
+    "../../../../../../front_end/ui/components/dialogs:bundle",
+    "../../../../../../front_end/ui/components/render_coordinator:bundle",
+    "../../../helpers",
+  ]
+}

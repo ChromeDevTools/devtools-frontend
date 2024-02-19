@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("har") {
   testonly = true
   sources = [
-    "HARImporter.test.ts",
-    "HARLog.test.ts",
-    "HARWriter.test.ts",
+    "Importer.test.ts",
+    "Log.test.ts",
+    "Writer.test.ts",
   ]
   deps = [
     "../../../../../front_end/core/common:bundle",

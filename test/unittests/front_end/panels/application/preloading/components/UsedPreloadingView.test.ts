@@ -17,7 +17,7 @@ import {
   renderElementIntoDOM,
 } from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
-import {assertGridContents} from '../../../../ui/components/DataGridHelpers.js';
+import {assertGridContents} from '../../../../ui/components/data_grid/DataGridHelpers.js';
 
 const {assert} = chai;
 

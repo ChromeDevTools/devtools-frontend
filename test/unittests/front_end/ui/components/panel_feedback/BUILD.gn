@@ -7,9 +7,9 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("panel_feedback") {
   testonly = true
   sources = [
-    "feedback_button.test.ts",
-    "panel_feedback.test.ts",
-    "preview_toggle.test.ts",
+    "FeedbackButton.test.ts",
+    "PanelFeedback.test.ts",
+    "PreviewToggle.test.ts",
   ]
 
   deps = [

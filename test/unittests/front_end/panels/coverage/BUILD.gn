@@ -8,9 +8,8 @@ ts_library("coverage") {
   testonly = true
   sources = [
     "CoverageDecorationManager.test.ts",
-    "CoverageInfo.test.ts",
+    "CoverageModel.test.ts",
     "CoverageView.test.ts",
-    "Segments.test.ts",
   ]
 
   deps = [

@@ -13,7 +13,7 @@ import {
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
-import {getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
+import {getValuesOfAllBodyRows} from '../../../ui/components/data_grid/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

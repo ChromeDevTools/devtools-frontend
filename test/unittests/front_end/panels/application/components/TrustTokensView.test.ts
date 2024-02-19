@@ -13,9 +13,9 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import {getCellByIndexes, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
+import {getCellByIndexes, getValuesOfAllBodyRows} from '../../../ui/components/data_grid/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

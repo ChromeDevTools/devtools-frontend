@@ -8,7 +8,7 @@ ts_library("helpers") {
   testonly = true
   sources = [
     "component_helpers.test.ts",
-    "custom_elements.test.ts",
+    "custom-elements.test.ts",
   ]
 
   deps = [

@@ -17,7 +17,7 @@ import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js
 import {
   assertGridContents,
   getCellByIndexes,
-} from '../../../../ui/components/DataGridHelpers.js';
+} from '../../../../ui/components/data_grid/DataGridHelpers.js';
 
 const {assert} = chai;
 

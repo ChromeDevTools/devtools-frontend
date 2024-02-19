@@ -11,8 +11,8 @@ ts_library("inspector_overlay") {
     "css_grid_label_helpers.test.ts",
     "highlight_common.test.ts",
     "highlight_flex_common.test.ts",
-    "source_order_impl_helpers.test.ts",
     "tool_highlight.test.ts",
+    "tool_source_order.test.ts",
     "tool_window_controls.test.ts",
   ]
 

@@ -22,7 +22,7 @@ devtools_entrypoint("bundle") {
   deps = [ ":client-variations" ]
 
   visibility = [
-    "../../../../test/unittests/front_end/client_variations/*",
+    "../../../../test/unittests/front_end/third_party/chromium/client-variations/*",
     "../../../panels/network/*",
   ]
 

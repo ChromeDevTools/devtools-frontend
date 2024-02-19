@@ -8,13 +8,21 @@ ts_library("legacy") {
   testonly = true
   sources = [
     "ActionRegistration.test.ts",
+    "Context.test.ts",
     "ContextMenu.test.ts",
     "DockController.test.ts",
+    "Fragment.test.ts",
+    "Geometry.test.ts",
     "Infobar.test.ts",
+    "KeyboardShortcut.test.ts",
+    "ListModel.test.ts",
+    "ListWidget.test.ts",
+    "ShortcutRegistry.test.ts",
     "SuggestBox.test.ts",
     "Toolbar.test.ts",
     "Treeoutline.test.ts",
     "UIUtils.test.ts",
+    "View.test.ts",
     "XLink.test.ts",
   ]
 

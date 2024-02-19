@@ -449,7 +449,7 @@ export class SelectMenuButton extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <button aria-haspopup="true" aria-expanded="false" class="show" @keydown=${this.#handleButtonKeyDown} @click=${this.#handleClick} ?disabled=${this.disabled} jslog=${VisualLogging.dropDown(this.jslogContext)}>${buttonTitle}</button>
     `, this.#shadow, { host: this });
-      // clang-format on
+    // clang-format on
   }
 }
 

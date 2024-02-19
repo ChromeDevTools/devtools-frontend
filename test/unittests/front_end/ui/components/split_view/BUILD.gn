@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("split_view") {
   testonly = true
-  sources = [ "split-view.test.ts" ]
+  sources = [ "SplitView.test.ts" ]
 
   deps = [
     "../../../../../../front_end/ui/components/split_view:bundle",

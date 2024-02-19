@@ -38,22 +38,22 @@ devtools_pre_built("dcheck") {
 
 devtools_module("platform") {
   sources = [
+    "ArrayUtilities.ts",
+    "Brand.ts",
+    "DOMUtilities.ts",
+    "DateUtilities.ts",
     "DevToolsPath.ts",
+    "KeyboardUtilities.ts",
+    "MapUtilities.ts",
     "MimeType.ts",
+    "NumberUtilities.ts",
+    "PromiseUtilities.ts",
+    "SetUtilities.ts",
+    "StringUtilities.ts",
     "Timing.ts",
+    "TypescriptUtilities.ts",
     "UIString.ts",
     "UserVisibleError.ts",
-    "array-utilities.ts",
-    "brand.ts",
-    "date-utilities.ts",
-    "dom-utilities.ts",
-    "keyboard-utilities.ts",
-    "map-utilities.ts",
-    "number-utilities.ts",
-    "promise-utilities.ts",
-    "set-utilities.ts",
-    "string-utilities.ts",
-    "typescript-utilities.ts",
   ]
 
   deps = [ ":dcheck" ]

@@ -10,7 +10,8 @@ ts_library("autofill") {
 
   deps = [
     "../../../../../front_end/panels/autofill:bundle",
+    "../../../../../front_end/ui/legacy:bundle",
     "../../helpers",
-    "../../ui/components",
+    "../../ui/components/data_grid",
   ]
 }

@@ -9,7 +9,7 @@ import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/d
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {getHeaderCells, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
+import {getHeaderCells, getValuesOfAllBodyRows} from '../../../ui/components/data_grid/DataGridHelpers.js';
 
 const {assert} = chai;
 

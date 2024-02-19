@@ -8,14 +8,20 @@ ts_library("issues_manager") {
   testonly = true
   sources = [
     "CheckFormsIssuesTrigger.test.ts",
+    "DeprecationIssue.test.ts",
+    "FederatedAuthUserInfoRequestIssue.test.ts",
+    "GenericIssue.test.ts",
     "Issue.test.ts",
     "IssueResolver.test.ts",
     "IssuesManager.test.ts",
+    "LowTextContrastIssue.test.ts",
     "MarkdownIssueDescription.test.ts",
     "MockIssuesManager.ts",
     "MockIssuesModel.ts",
+    "PropertyRuleIssue.test.ts",
     "RelatedIssue.test.ts",
     "StubIssue.ts",
+    "StylesheetLoadingIssue.test.ts",
   ]
 
   deps = [

@@ -13,7 +13,7 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../ui/components/DataGridHelpers.js';
+import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../ui/components/data_grid/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

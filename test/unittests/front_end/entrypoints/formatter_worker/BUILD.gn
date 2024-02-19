@@ -8,7 +8,6 @@ ts_library("formatter_worker") {
   testonly = true
   sources = [
     "CSSFormatter.test.ts",
-    "EvaluatableJavaScriptSubstring.test.ts",
     "FormattedContentBuilder.test.ts",
     "FormatterWorker.test.ts",
     "HTMLFormatter.test.ts",

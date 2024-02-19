@@ -1,0 +1,27 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("markdown_view") {
+  testonly = true
+  sources = [
+    "CodeBlock.test.ts",
+    "MarkdownImage.test.ts",
+    "MarkdownLink.test.ts",
+    "MarkdownView.test.ts",
+  ]
+
+  deps = [
+    "../../../../../../front_end/core/host:bundle",
+    "../../../../../../front_end/core/platform:bundle",
+    "../../../../../../front_end/third_party/marked:bundle",
+    "../../../../../../front_end/ui/components/icon_button:bundle",
+    "../../../../../../front_end/ui/components/markdown_view:bundle",
+    "../../../../../../front_end/ui/components/render_coordinator:bundle",
+    "../../../../../../front_end/ui/legacy:bundle",
+    "../../../../../../front_end/ui/lit-html:bundle",
+    "../../../helpers",
+  ]
+}

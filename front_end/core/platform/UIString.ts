@@ -33,7 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {type Brand} from './brand.js';
+import {type Brand} from './Brand.js';
 
 export type LocalizedString = Brand<string, 'LocalizedString'>;
 export const LocalizedEmptyString = '' as LocalizedString;

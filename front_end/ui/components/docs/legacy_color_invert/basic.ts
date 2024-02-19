@@ -30,7 +30,7 @@ form.addEventListener('submit', event => {
 });
 
 /**
- * This code is largely copy and pasted from the legacy theme_support_impl
+ * This code is largely copy and pasted from the legacy ThemeSupport
  * around color patching. This is because we are working towards removing the
  * legacy color patching, but still may need to be able to generate legacy dark
  * mode values for light colors during the migration. This doc exists for that

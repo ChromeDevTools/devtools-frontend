@@ -10,7 +10,7 @@ import type * as DataGrid from '../../../../../../../front_end/ui/components/dat
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
-import {assertGridContents, getCellByIndexes} from '../../../../ui/components/DataGridHelpers.js';
+import {assertGridContents, getCellByIndexes} from '../../../../ui/components/data_grid/DataGridHelpers.js';
 
 const {assert} = chai;
 

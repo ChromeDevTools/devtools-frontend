@@ -289,7 +289,7 @@ export const enum ExperimentName {
   STORAGE_BUCKETS_TREE = 'storage-buckets-tree',
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
   TRACK_CONTEXT_MENU = 'track-context-menu',
-  AUTOFILL_VIEW = 'autofillView',
+  AUTOFILL_VIEW = 'autofill-view',
   INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',
 }
 

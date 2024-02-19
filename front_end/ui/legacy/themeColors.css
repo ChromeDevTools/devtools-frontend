@@ -676,7 +676,7 @@
 
   --sys-color-primary-bright: var(--ref-palette-primary70);
   --sys-color-blue-bright: var(--ref-palette-blue70);
-  --sys-color-green-bright: var(--ref-palette-tertiary70);
+  --sys-color-green-bright: var(--ref-palette-green70);
   --sys-color-error-bright: var(--ref-palette-error60);
   --sys-color-orange-bright: var(--ref-palette-orange70);
   --sys-color-yellow-bright: var(--ref-palette-yellow70);

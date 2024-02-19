@@ -11,7 +11,7 @@ const Debug_js_1 = require("../common/Debug.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
-const BrowsingContext_js_1 = require("./BrowsingContext.js");
+const CDPSession_js_1 = require("./CDPSession.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:RECV ◀');
 /**
@@ -24,7 +24,6 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     #timeout = 0;
     #closed = false;
     #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
-    #browsingContexts = new Map();
     #emitters = [];
     constructor(url, transport, delay = 0, timeout) {
         super();
@@ -86,12 +85,11 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
                     return;
                 case 'event':
                     if (isCdpEvent(object)) {
-                        BrowsingContext_js_1.cdpSessions
+                        CDPSession_js_1.BidiCdpSession.sessions
                             .get(object.params.session)
                             ?.emit(object.params.event, object.params.params);
                         return;
                     }
-                    this.#maybeEmitOnContext(object);
                     // SAFETY: We know the method and parameter still match here.
                     this.emit(object.method, object.params);
                     return;
@@ -103,46 +101,6 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
             this.#callbacks.reject(object.id, `Protocol Error. Message is not in BiDi protocol format: '${message}'`, object.message);
         }
         (0, util_js_1.debugError)(object);
-    }
-    #maybeEmitOnContext(event) {
-        let context;
-        // Context specific events
-        if ('context' in event.params && event.params.context !== null) {
-            context = this.#browsingContexts.get(event.params.context);
-            // `log.entryAdded` specific context
-        }
-        else if ('source' in event.params &&
-            event.params.source.context !== undefined) {
-            context = this.#browsingContexts.get(event.params.source.context);
-        }
-        context?.emit(event.method, event.params);
-    }
-    registerBrowsingContexts(context) {
-        this.#browsingContexts.set(context.id, context);
-    }
-    getBrowsingContext(contextId) {
-        const currentContext = this.#browsingContexts.get(contextId);
-        if (!currentContext) {
-            throw new Error(`BrowsingContext ${contextId} does not exist.`);
-        }
-        return currentContext;
-    }
-    getTopLevelContext(contextId) {
-        let currentContext = this.#browsingContexts.get(contextId);
-        if (!currentContext) {
-            throw new Error(`BrowsingContext ${contextId} does not exist.`);
-        }
-        while (currentContext.parent) {
-            contextId = currentContext.parent;
-            currentContext = this.#browsingContexts.get(contextId);
-            if (!currentContext) {
-                throw new Error(`BrowsingContext ${contextId} does not exist.`);
-            }
-        }
-        return currentContext;
-    }
-    unregisterBrowsingContexts(id) {
-        this.#browsingContexts.delete(id);
     }
     /**
      * Unbinds the connection, but keeps the transport open. Useful when the transport will
@@ -157,7 +115,6 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
         // Both may still be invoked and produce errors
         this.#transport.onmessage = () => { };
         this.#transport.onclose = () => { };
-        this.#browsingContexts.clear();
         this.#callbacks.clear();
     }
     /**

@@ -1,1 +1,0 @@
-{"version":3,"file":"EmulationManager.d.ts","sourceRoot":"","sources":["../../../../src/bidi/EmulationManager.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AACH,OAAO,KAAK,EAAC,QAAQ,EAAC,MAAM,uBAAuB,CAAC;AAEpD,OAAO,KAAK,EAAC,eAAe,EAAC,MAAM,sBAAsB,CAAC;AAE1D;;GAEG;AACH,qBAAa,gBAAgB;;gBAGf,eAAe,EAAE,eAAe;IAItC,eAAe,CAAC,QAAQ,EAAE,QAAQ,GAAG,OAAO,CAAC,IAAI,CAAC;CAezD"}

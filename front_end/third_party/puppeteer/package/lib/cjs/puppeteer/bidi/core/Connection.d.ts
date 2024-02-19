@@ -143,6 +143,5 @@ export interface Connection<Events extends BidiEvents = BidiEvents> extends Even
     send<T extends keyof Commands>(method: T, params: Commands[T]['params']): Promise<{
         result: Commands[T]['returnType'];
     }>;
-    pipeTo<Events extends BidiEvents>(emitter: EventEmitter<Events>): void;
 }
 //# sourceMappingURL=Connection.d.ts.map

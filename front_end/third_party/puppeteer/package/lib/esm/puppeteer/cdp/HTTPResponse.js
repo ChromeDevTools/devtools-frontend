@@ -95,7 +95,7 @@ export class CdpHTTPResponse extends HTTPResponse {
                 .then(async () => {
                 try {
                     const response = await this.#client.send('Network.getResponseBody', {
-                        requestId: this.#request._requestId,
+                        requestId: this.#request.id,
                     });
                     return Buffer.from(response.body, response.base64Encoded ? 'base64' : 'utf8');
                 }

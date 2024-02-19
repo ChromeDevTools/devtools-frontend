@@ -84,7 +84,7 @@ export class ExposeableFunction {
                 }),
                 arguments: [
                     (await callbacks.resolve.valueOrThrow()),
-                    BidiSerializer.serializeRemoteValue(result),
+                    BidiSerializer.serialize(result),
                 ],
                 awaitPromise: false,
                 target: {
@@ -106,9 +106,9 @@ export class ExposeableFunction {
                         }),
                         arguments: [
                             (await callbacks.reject.valueOrThrow()),
-                            BidiSerializer.serializeRemoteValue(error.name),
-                            BidiSerializer.serializeRemoteValue(error.message),
-                            BidiSerializer.serializeRemoteValue(error.stack),
+                            BidiSerializer.serialize(error.name),
+                            BidiSerializer.serialize(error.message),
+                            BidiSerializer.serialize(error.stack),
                         ],
                         awaitPromise: false,
                         target: {
@@ -123,7 +123,7 @@ export class ExposeableFunction {
                         }),
                         arguments: [
                             (await callbacks.reject.valueOrThrow()),
-                            BidiSerializer.serializeRemoteValue(error),
+                            BidiSerializer.serialize(error),
                         ],
                         awaitPromise: false,
                         target: {
@@ -138,7 +138,7 @@ export class ExposeableFunction {
         }
     };
     get #connection() {
-        return this.#frame.context().connection;
+        return this.#frame.page().browser().connection;
     }
     get #channelArguments() {
         return [

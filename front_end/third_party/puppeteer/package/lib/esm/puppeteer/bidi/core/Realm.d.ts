@@ -6,6 +6,7 @@
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
+import type { Browser } from './Browser.js';
 import type { BrowsingContext } from './BrowsingContext.js';
 import type { Session } from './Session.js';
 /**
@@ -20,6 +21,8 @@ export type EvaluateOptions = Omit<Bidi.Script.EvaluateParameters, 'expression' 
  * @internal
  */
 export declare abstract class Realm extends EventEmitter<{
+    /** Emitted whenever the realm has updated. */
+    updated: Realm;
     /** Emitted when the realm is destroyed. */
     destroyed: {
         reason: string;
@@ -34,10 +37,9 @@ export declare abstract class Realm extends EventEmitter<{
     readonly id: string;
     readonly origin: string;
     protected constructor(id: string, origin: string);
-    protected initialize(): void;
     get disposed(): boolean;
     protected abstract get session(): Session;
-    protected get target(): Bidi.Script.Target;
+    get target(): Bidi.Script.Target;
     protected dispose(reason?: string): void;
     disown(handles: string[]): Promise<void>;
     callFunction(functionDeclaration: string, awaitPromise: boolean, options?: CallFunctionOptions): Promise<Bidi.Script.EvaluateResult>;
@@ -53,7 +55,6 @@ export declare class WindowRealm extends Realm {
     readonly browsingContext: BrowsingContext;
     readonly sandbox?: string;
     private constructor();
-    initialize(): void;
     get session(): Session;
     get target(): Bidi.Script.Target;
 }
@@ -69,7 +70,6 @@ export declare class DedicatedWorkerRealm extends Realm {
     static from(owner: DedicatedWorkerOwnerRealm, id: string, origin: string): DedicatedWorkerRealm;
     readonly owners: Set<DedicatedWorkerOwnerRealm>;
     private constructor();
-    initialize(): void;
     get session(): Session;
 }
 /**
@@ -77,10 +77,9 @@ export declare class DedicatedWorkerRealm extends Realm {
  */
 export declare class SharedWorkerRealm extends Realm {
     #private;
-    static from(owners: [WindowRealm, ...WindowRealm[]], id: string, origin: string): SharedWorkerRealm;
-    readonly owners: Set<WindowRealm>;
+    static from(browser: Browser, id: string, origin: string): SharedWorkerRealm;
+    readonly browser: Browser;
     private constructor();
-    initialize(): void;
     get session(): Session;
 }
 //# sourceMappingURL=Realm.d.ts.map

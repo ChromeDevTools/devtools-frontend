@@ -3,6 +3,40 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
@@ -48,703 +82,461 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { firstValueFrom, from, map, raceWith, zip, } from '../../third_party/rxjs/rxjs.js';
+import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
-import { EmulationManager as CdpEmulationManager } from '../cdp/EmulationManager.js';
-import { FrameTree } from '../cdp/FrameTree.js';
+import { EmulationManager } from '../cdp/EmulationManager.js';
 import { Tracing } from '../cdp/Tracing.js';
-import { ConsoleMessage, } from '../common/ConsoleMessage.js';
-import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
-import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, NETWORK_IDLE_TIME, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
+import { UnsupportedOperation } from '../common/Errors.js';
+import { EventEmitter } from '../common/EventEmitter.js';
+import { evaluationString, parsePDFOptions, timeout } from '../common/util.js';
 import { assert } from '../util/assert.js';
-import { Deferred } from '../util/Deferred.js';
-import { disposeSymbol } from '../util/disposable.js';
+import { bubble } from '../util/decorators.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { BrowsingContextEvent, CdpSessionWrapper, } from './BrowsingContext.js';
-import { BidiDeserializer } from './Deserializer.js';
-import { BidiDialog } from './Dialog.js';
 import { BidiElementHandle } from './ElementHandle.js';
-import { EmulationManager } from './EmulationManager.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
-import { getBiDiReadinessState, rewriteNavigationError } from './lifecycle.js';
-import { BidiNetworkManager } from './NetworkManager.js';
-import { createBidiHandle } from './Realm.js';
+import { rewriteNavigationError } from './util.js';
 /**
  * @internal
  */
-export class BidiPage extends Page {
-    #accessibility;
-    #connection;
-    #frameTree = new FrameTree();
-    #networkManager;
-    #viewport = null;
-    #closedDeferred = Deferred.create();
-    #subscribedEvents = new Map([
-        ['log.entryAdded', this.#onLogEntryAdded.bind(this)],
-        ['browsingContext.load', this.#onFrameLoaded.bind(this)],
-        [
-            'browsingContext.fragmentNavigated',
-            this.#onFrameFragmentNavigated.bind(this),
-        ],
-        [
-            'browsingContext.domContentLoaded',
-            this.#onFrameDOMContentLoaded.bind(this),
-        ],
-        ['browsingContext.userPromptOpened', this.#onDialog.bind(this)],
-    ]);
-    #networkManagerEvents = [
-        [
-            NetworkManagerEvent.Request,
-            (request) => {
-                this.emit("request" /* PageEvent.Request */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestServedFromCache,
-            (request) => {
-                this.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestFailed,
-            (request) => {
-                this.emit("requestfailed" /* PageEvent.RequestFailed */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.RequestFinished,
-            (request) => {
-                this.emit("requestfinished" /* PageEvent.RequestFinished */, request);
-            },
-        ],
-        [
-            NetworkManagerEvent.Response,
-            (response) => {
-                this.emit("response" /* PageEvent.Response */, response);
-            },
-        ],
-    ];
-    #browsingContextEvents = new Map([
-        [BrowsingContextEvent.Created, this.#onContextCreated.bind(this)],
-        [BrowsingContextEvent.Destroyed, this.#onContextDestroyed.bind(this)],
-    ]);
-    #tracing;
-    #coverage;
-    #cdpEmulationManager;
-    #emulationManager;
-    #mouse;
-    #touchscreen;
-    #keyboard;
-    #browsingContext;
-    #browserContext;
-    #target;
-    _client() {
-        return this.mainFrame().context().cdpSession;
-    }
-    constructor(browsingContext, browserContext, target) {
-        super();
-        this.#browsingContext = browsingContext;
-        this.#browserContext = browserContext;
-        this.#target = target;
-        this.#connection = browsingContext.connection;
-        for (const [event, subscriber] of this.#browsingContextEvents) {
-            this.#browsingContext.on(event, subscriber);
+let BidiPage = (() => {
+    let _classSuper = Page;
+    let _instanceExtraInitializers = [];
+    let _trustedEmitter_decorators;
+    let _trustedEmitter_initializers = [];
+    return class BidiPage extends _classSuper {
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            _trustedEmitter_decorators = [bubble()];
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _instanceExtraInitializers);
+            if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        this.#networkManager = new BidiNetworkManager(this.#connection, this);
-        for (const [event, subscriber] of this.#subscribedEvents) {
-            this.#connection.on(event, subscriber);
+        static from(browserContext, browsingContext) {
+            const page = new BidiPage(browserContext, browsingContext);
+            page.#initialize();
+            return page;
         }
-        for (const [event, subscriber] of this.#networkManagerEvents) {
-            // TODO: remove any
-            this.#networkManager.on(event, subscriber);
+        #trustedEmitter_accessor_storage = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _trustedEmitter_initializers, new EventEmitter()));
+        get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
+        set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
+        #browserContext;
+        #frame;
+        #viewport = null;
+        #workers = new Set();
+        keyboard;
+        mouse;
+        touchscreen;
+        accessibility;
+        tracing;
+        coverage;
+        #cdpEmulationManager;
+        _client() {
+            return this.#frame.client;
         }
-        const frame = new BidiFrame(this, this.#browsingContext, this._timeoutSettings, this.#browsingContext.parent);
-        this.#frameTree.addFrame(frame);
-        this.emit("frameattached" /* PageEvent.FrameAttached */, frame);
-        // TODO: https://github.com/w3c/webdriver-bidi/issues/443
-        this.#accessibility = new Accessibility(this.mainFrame().context().cdpSession);
-        this.#tracing = new Tracing(this.mainFrame().context().cdpSession);
-        this.#coverage = new Coverage(this.mainFrame().context().cdpSession);
-        this.#cdpEmulationManager = new CdpEmulationManager(this.mainFrame().context().cdpSession);
-        this.#emulationManager = new EmulationManager(browsingContext);
-        this.#mouse = new BidiMouse(this.mainFrame().context());
-        this.#touchscreen = new BidiTouchscreen(this.mainFrame().context());
-        this.#keyboard = new BidiKeyboard(this);
-    }
-    /**
-     * @internal
-     */
-    get connection() {
-        return this.#connection;
-    }
-    async setUserAgent(userAgent, userAgentMetadata) {
-        // TODO: handle CDP-specific cases such as mprach.
-        await this._client().send('Network.setUserAgentOverride', {
-            userAgent: userAgent,
-            userAgentMetadata: userAgentMetadata,
-        });
-    }
-    async setBypassCSP(enabled) {
-        // TODO: handle CDP-specific cases such as mprach.
-        await this._client().send('Page.setBypassCSP', { enabled });
-    }
-    async queryObjects(prototypeHandle) {
-        assert(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
-        assert(prototypeHandle.id, 'Prototype JSHandle must not be referencing primitive value');
-        const response = await this.mainFrame().client.send('Runtime.queryObjects', {
-            prototypeObjectId: prototypeHandle.id,
-        });
-        return createBidiHandle(this.mainFrame().mainRealm(), {
-            type: 'array',
-            handle: response.objects.objectId,
-        });
-    }
-    _setBrowserContext(browserContext) {
-        this.#browserContext = browserContext;
-    }
-    get accessibility() {
-        return this.#accessibility;
-    }
-    get tracing() {
-        return this.#tracing;
-    }
-    get coverage() {
-        return this.#coverage;
-    }
-    get mouse() {
-        return this.#mouse;
-    }
-    get touchscreen() {
-        return this.#touchscreen;
-    }
-    get keyboard() {
-        return this.#keyboard;
-    }
-    browser() {
-        return this.browserContext().browser();
-    }
-    browserContext() {
-        return this.#browserContext;
-    }
-    mainFrame() {
-        const mainFrame = this.#frameTree.getMainFrame();
-        assert(mainFrame, 'Requesting main frame too early!');
-        return mainFrame;
-    }
-    /**
-     * @internal
-     */
-    async focusedFrame() {
-        const env_1 = { stack: [], error: void 0, hasError: false };
-        try {
-            const frame = __addDisposableResource(env_1, await this.mainFrame()
-                .isolatedRealm()
-                .evaluateHandle(() => {
-                let frame;
-                let win = window;
-                while (win?.document.activeElement instanceof HTMLIFrameElement) {
-                    frame = win.document.activeElement;
-                    win = frame.contentWindow;
-                }
-                return frame;
-            }), false);
-            if (!(frame instanceof BidiElementHandle)) {
-                return this.mainFrame();
-            }
-            return await frame.contentFrame();
+        constructor(browserContext, browsingContext) {
+            super();
+            this.#browserContext = browserContext;
+            this.#frame = BidiFrame.from(this, browsingContext);
+            this.#cdpEmulationManager = new EmulationManager(this.#frame.client);
+            this.accessibility = new Accessibility(this.#frame.client);
+            this.tracing = new Tracing(this.#frame.client);
+            this.coverage = new Coverage(this.#frame.client);
+            this.keyboard = new BidiKeyboard(this);
+            this.mouse = new BidiMouse(this);
+            this.touchscreen = new BidiTouchscreen(this);
         }
-        catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
-        }
-        finally {
-            __disposeResources(env_1);
-        }
-    }
-    frames() {
-        return Array.from(this.#frameTree.frames());
-    }
-    frame(frameId) {
-        return this.#frameTree.getById(frameId ?? '') || null;
-    }
-    childFrames(frameId) {
-        return this.#frameTree.childFrames(frameId);
-    }
-    #onFrameLoaded(info) {
-        const frame = this.frame(info.context);
-        if (frame && this.mainFrame() === frame) {
-            this.emit("load" /* PageEvent.Load */, undefined);
-        }
-    }
-    #onFrameFragmentNavigated(info) {
-        const frame = this.frame(info.context);
-        if (frame) {
-            this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
-        }
-    }
-    #onFrameDOMContentLoaded(info) {
-        const frame = this.frame(info.context);
-        if (frame) {
-            frame._hasStartedLoading = true;
-            if (this.mainFrame() === frame) {
-                this.emit("domcontentloaded" /* PageEvent.DOMContentLoaded */, undefined);
-            }
-            this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
-        }
-    }
-    #onContextCreated(context) {
-        if (!this.frame(context.id) &&
-            (this.frame(context.parent ?? '') || !this.#frameTree.getMainFrame())) {
-            const frame = new BidiFrame(this, context, this._timeoutSettings, context.parent);
-            this.#frameTree.addFrame(frame);
-            if (frame !== this.mainFrame()) {
-                this.emit("frameattached" /* PageEvent.FrameAttached */, frame);
-            }
-        }
-    }
-    #onContextDestroyed(context) {
-        const frame = this.frame(context.id);
-        if (frame) {
-            if (frame === this.mainFrame()) {
-                this.emit("close" /* PageEvent.Close */, undefined);
-            }
-            this.#removeFramesRecursively(frame);
-        }
-    }
-    #removeFramesRecursively(frame) {
-        for (const child of frame.childFrames()) {
-            this.#removeFramesRecursively(child);
-        }
-        frame[disposeSymbol]();
-        this.#networkManager.clearMapAfterFrameDispose(frame);
-        this.#frameTree.removeFrame(frame);
-        this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
-    }
-    #onLogEntryAdded(event) {
-        const frame = this.frame(event.source.context);
-        if (!frame) {
-            return;
-        }
-        if (isConsoleLogEntry(event)) {
-            const args = event.args.map(arg => {
-                return createBidiHandle(frame.mainRealm(), arg);
+        #initialize() {
+            this.#frame.browsingContext.on('closed', () => {
+                this.trustedEmitter.emit("close" /* PageEvent.Close */, undefined);
+                this.trustedEmitter.removeAllListeners();
             });
-            const text = args
-                .reduce((value, arg) => {
-                const parsedValue = arg.isPrimitiveValue
-                    ? BidiDeserializer.deserialize(arg.remoteValue())
-                    : arg.toString();
-                return `${value} ${parsedValue}`;
-            }, '')
-                .slice(1);
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage(event.method, text, args, getStackTraceLocations(event.stackTrace)));
+            this.trustedEmitter.on("workercreated" /* PageEvent.WorkerCreated */, worker => {
+                this.#workers.add(worker);
+            });
+            this.trustedEmitter.on("workerdestroyed" /* PageEvent.WorkerDestroyed */, worker => {
+                this.#workers.delete(worker);
+            });
         }
-        else if (isJavaScriptLogEntry(event)) {
-            const error = new Error(event.text ?? '');
-            const messageHeight = error.message.split('\n').length;
-            const messageLines = error.stack.split('\n').splice(0, messageHeight);
-            const stackLines = [];
-            if (event.stackTrace) {
-                for (const frame of event.stackTrace.callFrames) {
-                    // Note we need to add `1` because the values are 0-indexed.
-                    stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
-                    if (stackLines.length >= Error.stackTraceLimit) {
-                        break;
+        async setUserAgent(userAgent, userAgentMetadata) {
+            // TODO: handle CDP-specific cases such as mprach.
+            await this._client().send('Network.setUserAgentOverride', {
+                userAgent: userAgent,
+                userAgentMetadata: userAgentMetadata,
+            });
+        }
+        async setBypassCSP(enabled) {
+            // TODO: handle CDP-specific cases such as mprach.
+            await this._client().send('Page.setBypassCSP', { enabled });
+        }
+        async queryObjects(prototypeHandle) {
+            assert(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
+            assert(prototypeHandle.id, 'Prototype JSHandle must not be referencing primitive value');
+            const response = await this.#frame.client.send('Runtime.queryObjects', {
+                prototypeObjectId: prototypeHandle.id,
+            });
+            return this.#frame.mainRealm().createHandle({
+                type: 'array',
+                handle: response.objects.objectId,
+            });
+        }
+        browser() {
+            return this.browserContext().browser();
+        }
+        browserContext() {
+            return this.#browserContext;
+        }
+        mainFrame() {
+            return this.#frame;
+        }
+        async focusedFrame() {
+            const env_1 = { stack: [], error: void 0, hasError: false };
+            try {
+                const frame = __addDisposableResource(env_1, await this.mainFrame()
+                    .isolatedRealm()
+                    .evaluateHandle(() => {
+                    let frame;
+                    let win = window;
+                    while (win?.document.activeElement instanceof HTMLIFrameElement) {
+                        frame = win.document.activeElement;
+                        win = frame.contentWindow;
                     }
+                    return frame;
+                }), false);
+                if (!(frame instanceof BidiElementHandle)) {
+                    return this.mainFrame();
                 }
+                return await frame.contentFrame();
             }
-            error.stack = [...messageLines, ...stackLines].join('\n');
-            this.emit("pageerror" /* PageEvent.PageError */, error);
-        }
-        else {
-            debugError(`Unhandled LogEntry with type "${event.type}", text "${event.text}" and level "${event.level}"`);
-        }
-    }
-    #onDialog(event) {
-        const frame = this.frame(event.context);
-        if (!frame) {
-            return;
-        }
-        const type = validateDialogType(event.type);
-        const dialog = new BidiDialog(frame.context(), type, event.message, event.defaultValue);
-        this.emit("dialog" /* PageEvent.Dialog */, dialog);
-    }
-    getNavigationResponse(id) {
-        return this.#networkManager.getNavigationResponse(id);
-    }
-    isClosed() {
-        return this.#closedDeferred.finished();
-    }
-    async close(options) {
-        if (this.#closedDeferred.finished()) {
-            return;
-        }
-        this.#closedDeferred.reject(new TargetCloseError('Page closed!'));
-        this.#networkManager.dispose();
-        await this.#connection.send('browsingContext.close', {
-            context: this.mainFrame()._id,
-            promptUnload: options?.runBeforeUnload ?? false,
-        });
-        this.emit("close" /* PageEvent.Close */, undefined);
-        this.removeAllListeners();
-    }
-    async reload(options = {}) {
-        const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
-        const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-        const result$ = zip(from(this.#connection.send('browsingContext.reload', {
-            context: this.mainFrame()._id,
-            wait: readiness,
-        })), ...(networkIdle !== null
-            ? [
-                this.waitForNetworkIdle$({
-                    timeout: ms,
-                    concurrency: networkIdle === 'networkidle2' ? 2 : 0,
-                    idleTime: NETWORK_IDLE_TIME,
-                }),
-            ]
-            : [])).pipe(map(([{ result }]) => {
-            return result;
-        }), raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow())), rewriteNavigationError(this.url(), ms));
-        const result = await firstValueFrom(result$);
-        return this.getNavigationResponse(result.navigation);
-    }
-    setDefaultNavigationTimeout(timeout) {
-        this._timeoutSettings.setDefaultNavigationTimeout(timeout);
-    }
-    setDefaultTimeout(timeout) {
-        this._timeoutSettings.setDefaultTimeout(timeout);
-    }
-    getDefaultTimeout() {
-        return this._timeoutSettings.timeout();
-    }
-    isJavaScriptEnabled() {
-        return this.#cdpEmulationManager.javascriptEnabled;
-    }
-    async setGeolocation(options) {
-        return await this.#cdpEmulationManager.setGeolocation(options);
-    }
-    async setJavaScriptEnabled(enabled) {
-        return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
-    }
-    async emulateMediaType(type) {
-        return await this.#cdpEmulationManager.emulateMediaType(type);
-    }
-    async emulateCPUThrottling(factor) {
-        return await this.#cdpEmulationManager.emulateCPUThrottling(factor);
-    }
-    async emulateMediaFeatures(features) {
-        return await this.#cdpEmulationManager.emulateMediaFeatures(features);
-    }
-    async emulateTimezone(timezoneId) {
-        return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
-    }
-    async emulateIdleState(overrides) {
-        return await this.#cdpEmulationManager.emulateIdleState(overrides);
-    }
-    async emulateVisionDeficiency(type) {
-        return await this.#cdpEmulationManager.emulateVisionDeficiency(type);
-    }
-    async setViewport(viewport) {
-        if (!this.#browsingContext.supportsCdp()) {
-            await this.#emulationManager.emulateViewport(viewport);
-            this.#viewport = viewport;
-            return;
-        }
-        const needsReload = await this.#cdpEmulationManager.emulateViewport(viewport);
-        this.#viewport = viewport;
-        if (needsReload) {
-            await this.reload();
-        }
-    }
-    viewport() {
-        return this.#viewport;
-    }
-    async pdf(options = {}) {
-        const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
-        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, } = parsePDFOptions(options, 'cm');
-        const pageRanges = ranges ? ranges.split(', ') : [];
-        const { result } = await firstValueFrom(from(this.#connection.send('browsingContext.print', {
-            context: this.mainFrame()._id,
-            background,
-            margin,
-            orientation: landscape ? 'landscape' : 'portrait',
-            page: {
-                width,
-                height,
-            },
-            pageRanges,
-            scale,
-            shrinkToFit: !preferCSSPageSize,
-        })).pipe(raceWith(timeout(ms))));
-        const buffer = Buffer.from(result.data, 'base64');
-        await this._maybeWriteBufferToFile(path, buffer);
-        return buffer;
-    }
-    async createPDFStream(options) {
-        const buffer = await this.pdf(options);
-        return new ReadableStream({
-            start(controller) {
-                controller.enqueue(buffer);
-                controller.close();
-            },
-        });
-    }
-    async _screenshot(options) {
-        const { clip, type, captureBeyondViewport, quality } = options;
-        if (options.omitBackground !== undefined && options.omitBackground) {
-            throw new UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
-        }
-        if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
-            throw new UnsupportedOperation(`BiDi does not support 'optimizeForSpeed'.`);
-        }
-        if (options.fromSurface !== undefined && !options.fromSurface) {
-            throw new UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
-        }
-        if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
-            throw new UnsupportedOperation(`BiDi does not support 'scale' in 'clip'.`);
-        }
-        let box;
-        if (clip) {
-            if (captureBeyondViewport) {
-                box = clip;
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
             }
-            else {
-                // The clip is always with respect to the document coordinates, so we
-                // need to convert this to viewport coordinates when we aren't capturing
-                // beyond the viewport.
-                const [pageLeft, pageTop] = await this.evaluate(() => {
-                    if (!window.visualViewport) {
-                        throw new Error('window.visualViewport is not supported.');
-                    }
-                    return [
-                        window.visualViewport.pageLeft,
-                        window.visualViewport.pageTop,
-                    ];
+            finally {
+                __disposeResources(env_1);
+            }
+        }
+        frames() {
+            const frames = [this.#frame];
+            for (const frame of frames) {
+                frames.push(...frame.childFrames());
+            }
+            return frames;
+        }
+        isClosed() {
+            return this.#frame.detached;
+        }
+        async close(options) {
+            try {
+                await this.#frame.browsingContext.close(options?.runBeforeUnload);
+            }
+            catch {
+                return;
+            }
+        }
+        async reload(options = {}) {
+            const [response] = await Promise.all([
+                this.#frame.waitForNavigation(options),
+                this.#frame.browsingContext.reload(),
+            ]).catch(rewriteNavigationError(this.url(), options.timeout ?? this._timeoutSettings.navigationTimeout()));
+            return response;
+        }
+        setDefaultNavigationTimeout(timeout) {
+            this._timeoutSettings.setDefaultNavigationTimeout(timeout);
+        }
+        setDefaultTimeout(timeout) {
+            this._timeoutSettings.setDefaultTimeout(timeout);
+        }
+        getDefaultTimeout() {
+            return this._timeoutSettings.timeout();
+        }
+        isJavaScriptEnabled() {
+            return this.#cdpEmulationManager.javascriptEnabled;
+        }
+        async setGeolocation(options) {
+            return await this.#cdpEmulationManager.setGeolocation(options);
+        }
+        async setJavaScriptEnabled(enabled) {
+            return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
+        }
+        async emulateMediaType(type) {
+            return await this.#cdpEmulationManager.emulateMediaType(type);
+        }
+        async emulateCPUThrottling(factor) {
+            return await this.#cdpEmulationManager.emulateCPUThrottling(factor);
+        }
+        async emulateMediaFeatures(features) {
+            return await this.#cdpEmulationManager.emulateMediaFeatures(features);
+        }
+        async emulateTimezone(timezoneId) {
+            return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
+        }
+        async emulateIdleState(overrides) {
+            return await this.#cdpEmulationManager.emulateIdleState(overrides);
+        }
+        async emulateVisionDeficiency(type) {
+            return await this.#cdpEmulationManager.emulateVisionDeficiency(type);
+        }
+        async setViewport(viewport) {
+            if (!this.browser().cdpSupported) {
+                await this.#frame.browsingContext.setViewport({
+                    viewport: viewport.width && viewport.height
+                        ? {
+                            width: viewport.width,
+                            height: viewport.height,
+                        }
+                        : null,
+                    devicePixelRatio: viewport.deviceScaleFactor
+                        ? viewport.deviceScaleFactor
+                        : null,
                 });
-                box = {
-                    ...clip,
-                    x: clip.x - pageLeft,
-                    y: clip.y - pageTop,
-                };
+                this.#viewport = viewport;
+                return;
+            }
+            const needsReload = await this.#cdpEmulationManager.emulateViewport(viewport);
+            this.#viewport = viewport;
+            if (needsReload) {
+                await this.reload();
             }
         }
-        const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
-            context: this.mainFrame()._id,
-            origin: captureBeyondViewport ? 'document' : 'viewport',
-            format: {
-                type: `image/${type}`,
-                ...(quality !== undefined ? { quality: quality / 100 } : {}),
-            },
-            ...(box ? { clip: { type: 'box', ...box } } : {}),
-        });
-        return data;
-    }
-    async createCDPSession() {
-        const { sessionId } = await this.mainFrame()
-            .context()
-            .cdpSession.send('Target.attachToTarget', {
-            targetId: this.mainFrame()._id,
-            flatten: true,
-        });
-        return new CdpSessionWrapper(this.mainFrame().context(), sessionId);
-    }
-    async bringToFront() {
-        await this.#connection.send('browsingContext.activate', {
-            context: this.mainFrame()._id,
-        });
-    }
-    async evaluateOnNewDocument(pageFunction, ...args) {
-        const expression = evaluationExpression(pageFunction, ...args);
-        const { result } = await this.#connection.send('script.addPreloadScript', {
-            functionDeclaration: expression,
-            contexts: [this.mainFrame()._id],
-        });
-        return { identifier: result.script };
-    }
-    async removeScriptToEvaluateOnNewDocument(id) {
-        await this.#connection.send('script.removePreloadScript', {
-            script: id,
-        });
-    }
-    async exposeFunction(name, pptrFunction) {
-        return await this.mainFrame().exposeFunction(name, 'default' in pptrFunction ? pptrFunction.default : pptrFunction);
-    }
-    isDragInterceptionEnabled() {
-        return false;
-    }
-    async setCacheEnabled(enabled) {
-        // TODO: handle CDP-specific cases such as mprach.
-        await this._client().send('Network.setCacheDisabled', {
-            cacheDisabled: !enabled,
-        });
-    }
-    async cookies(...urls) {
-        const normalizedUrls = (urls.length ? urls : [this.url()]).map(url => {
-            return new URL(url);
-        });
-        const bidiCookies = await this.#connection.send('storage.getCookies', {
-            partition: {
-                type: 'context',
-                context: this.mainFrame()._id,
-            },
-        });
-        return bidiCookies.result.cookies
-            .map(cookie => {
-            return bidiToPuppeteerCookie(cookie);
-        })
-            .filter(cookie => {
-            return normalizedUrls.some(url => {
-                return testUrlMatchCookie(cookie, url);
-            });
-        });
-    }
-    isServiceWorkerBypassed() {
-        throw new UnsupportedOperation();
-    }
-    target() {
-        return this.#target;
-    }
-    waitForFileChooser() {
-        throw new UnsupportedOperation();
-    }
-    workers() {
-        throw new UnsupportedOperation();
-    }
-    setRequestInterception() {
-        throw new UnsupportedOperation();
-    }
-    setDragInterception() {
-        throw new UnsupportedOperation();
-    }
-    setBypassServiceWorker() {
-        throw new UnsupportedOperation();
-    }
-    setOfflineMode() {
-        throw new UnsupportedOperation();
-    }
-    emulateNetworkConditions() {
-        throw new UnsupportedOperation();
-    }
-    async setCookie(...cookies) {
-        const pageURL = this.url();
-        const pageUrlStartsWithHTTP = pageURL.startsWith('http');
-        for (const cookie of cookies) {
-            let cookieUrl = cookie.url || '';
-            if (!cookieUrl && pageUrlStartsWithHTTP) {
-                cookieUrl = pageURL;
-            }
-            assert(cookieUrl !== 'about:blank', `Blank page can not have cookie "${cookie.name}"`);
-            assert(!String.prototype.startsWith.call(cookieUrl || '', 'data:'), `Data URL page can not have cookie "${cookie.name}"`);
-            const normalizedUrl = URL.canParse(cookieUrl)
-                ? new URL(cookieUrl)
-                : undefined;
-            const domain = cookie.domain ?? normalizedUrl?.hostname;
-            assert(domain !== undefined, `At least one of the url and domain needs to be specified`);
-            const bidiCookie = {
-                domain: domain,
-                name: cookie.name,
-                value: {
-                    type: 'string',
-                    value: cookie.value,
+        viewport() {
+            return this.#viewport;
+        }
+        async pdf(options = {}) {
+            const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
+            const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, } = parsePDFOptions(options, 'cm');
+            const pageRanges = ranges ? ranges.split(', ') : [];
+            const data = await firstValueFrom(from(this.#frame.browsingContext.print({
+                background,
+                margin,
+                orientation: landscape ? 'landscape' : 'portrait',
+                page: {
+                    width,
+                    height,
                 },
-                ...(cookie.path !== undefined ? { path: cookie.path } : {}),
-                ...(cookie.httpOnly !== undefined ? { httpOnly: cookie.httpOnly } : {}),
-                ...(cookie.secure !== undefined ? { secure: cookie.secure } : {}),
-                ...(cookie.sameSite !== undefined
-                    ? { sameSite: convertCookiesSameSiteCdpToBiDi(cookie.sameSite) }
-                    : {}),
-                ...(cookie.expires !== undefined ? { expiry: cookie.expires } : {}),
-                // Chrome-specific properties.
-                ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
-            };
-            // TODO: delete cookie before setting them.
-            // await this.deleteCookie(bidiCookie);
-            const partition = cookie.partitionKey !== undefined
-                ? {
-                    type: 'storageKey',
-                    sourceOrigin: cookie.partitionKey,
-                    userContext: this.#browserContext.id,
-                }
-                : {
-                    type: 'context',
-                    context: this.mainFrame()._id,
-                };
-            await this.#connection.send('storage.setCookie', {
-                cookie: bidiCookie,
-                partition,
+                pageRanges,
+                scale,
+                shrinkToFit: !preferCSSPageSize,
+            })).pipe(raceWith(timeout(ms))));
+            const buffer = Buffer.from(data, 'base64');
+            await this._maybeWriteBufferToFile(path, buffer);
+            return buffer;
+        }
+        async createPDFStream(options) {
+            const buffer = await this.pdf(options);
+            return new ReadableStream({
+                start(controller) {
+                    controller.enqueue(buffer);
+                    controller.close();
+                },
             });
         }
-    }
-    deleteCookie() {
-        throw new UnsupportedOperation();
-    }
-    removeExposedFunction() {
-        // TODO: Quick win?
-        throw new UnsupportedOperation();
-    }
-    authenticate() {
-        throw new UnsupportedOperation();
-    }
-    setExtraHTTPHeaders() {
-        throw new UnsupportedOperation();
-    }
-    metrics() {
-        throw new UnsupportedOperation();
-    }
-    async goBack(options = {}) {
-        return await this.#go(-1, options);
-    }
-    async goForward(options = {}) {
-        return await this.#go(+1, options);
-    }
-    async #go(delta, options) {
-        try {
-            const result = await Promise.all([
-                this.waitForNavigation(options),
-                this.#connection.send('browsingContext.traverseHistory', {
-                    delta,
-                    context: this.mainFrame()._id,
-                }),
-            ]);
-            return result[0];
-        }
-        catch (err) {
-            // TODO: waitForNavigation should be cancelled if an error happens.
-            if (isErrorLike(err)) {
-                if (err.message.includes('no such history entry')) {
-                    return null;
+        async _screenshot(options) {
+            const { clip, type, captureBeyondViewport, quality } = options;
+            if (options.omitBackground !== undefined && options.omitBackground) {
+                throw new UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
+            }
+            if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
+                throw new UnsupportedOperation(`BiDi does not support 'optimizeForSpeed'.`);
+            }
+            if (options.fromSurface !== undefined && !options.fromSurface) {
+                throw new UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
+            }
+            if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
+                throw new UnsupportedOperation(`BiDi does not support 'scale' in 'clip'.`);
+            }
+            let box;
+            if (clip) {
+                if (captureBeyondViewport) {
+                    box = clip;
+                }
+                else {
+                    // The clip is always with respect to the document coordinates, so we
+                    // need to convert this to viewport coordinates when we aren't capturing
+                    // beyond the viewport.
+                    const [pageLeft, pageTop] = await this.evaluate(() => {
+                        if (!window.visualViewport) {
+                            throw new Error('window.visualViewport is not supported.');
+                        }
+                        return [
+                            window.visualViewport.pageLeft,
+                            window.visualViewport.pageTop,
+                        ];
+                    });
+                    box = {
+                        ...clip,
+                        x: clip.x - pageLeft,
+                        y: clip.y - pageTop,
+                    };
                 }
             }
-            throw err;
+            const data = await this.#frame.browsingContext.captureScreenshot({
+                origin: captureBeyondViewport ? 'document' : 'viewport',
+                format: {
+                    type: `image/${type}`,
+                    ...(quality !== undefined ? { quality: quality / 100 } : {}),
+                },
+                ...(box ? { clip: { type: 'box', ...box } } : {}),
+            });
+            return data;
         }
-    }
-    waitForDevicePrompt() {
-        throw new UnsupportedOperation();
-    }
-}
-function isConsoleLogEntry(event) {
-    return event.type === 'console';
-}
-function isJavaScriptLogEntry(event) {
-    return event.type === 'javascript';
-}
-function getStackTraceLocations(stackTrace) {
-    const stackTraceLocations = [];
-    if (stackTrace) {
-        for (const callFrame of stackTrace.callFrames) {
-            stackTraceLocations.push({
-                url: callFrame.url,
-                lineNumber: callFrame.lineNumber,
-                columnNumber: callFrame.columnNumber,
+        async createCDPSession() {
+            return await this.#frame.createCDPSession();
+        }
+        async bringToFront() {
+            await this.#frame.browsingContext.activate();
+        }
+        async evaluateOnNewDocument(pageFunction, ...args) {
+            const expression = evaluationExpression(pageFunction, ...args);
+            const script = await this.#frame.browsingContext.addPreloadScript(expression);
+            return { identifier: script };
+        }
+        async removeScriptToEvaluateOnNewDocument(id) {
+            await this.#frame.browsingContext.removePreloadScript(id);
+        }
+        async exposeFunction(name, pptrFunction) {
+            return await this.mainFrame().exposeFunction(name, 'default' in pptrFunction ? pptrFunction.default : pptrFunction);
+        }
+        isDragInterceptionEnabled() {
+            return false;
+        }
+        async setCacheEnabled(enabled) {
+            // TODO: handle CDP-specific cases such as mprach.
+            await this._client().send('Network.setCacheDisabled', {
+                cacheDisabled: !enabled,
             });
         }
-    }
-    return stackTraceLocations;
-}
+        async cookies(...urls) {
+            const normalizedUrls = (urls.length ? urls : [this.url()]).map(url => {
+                return new URL(url);
+            });
+            const cookies = await this.#frame.browsingContext.getCookies();
+            return cookies
+                .map(cookie => {
+                return bidiToPuppeteerCookie(cookie);
+            })
+                .filter(cookie => {
+                return normalizedUrls.some(url => {
+                    return testUrlMatchCookie(cookie, url);
+                });
+            });
+        }
+        isServiceWorkerBypassed() {
+            throw new UnsupportedOperation();
+        }
+        target() {
+            throw new UnsupportedOperation();
+        }
+        waitForFileChooser() {
+            throw new UnsupportedOperation();
+        }
+        workers() {
+            return [...this.#workers];
+        }
+        setRequestInterception() {
+            throw new UnsupportedOperation();
+        }
+        setDragInterception() {
+            throw new UnsupportedOperation();
+        }
+        setBypassServiceWorker() {
+            throw new UnsupportedOperation();
+        }
+        setOfflineMode() {
+            throw new UnsupportedOperation();
+        }
+        emulateNetworkConditions() {
+            throw new UnsupportedOperation();
+        }
+        async setCookie(...cookies) {
+            const pageURL = this.url();
+            const pageUrlStartsWithHTTP = pageURL.startsWith('http');
+            for (const cookie of cookies) {
+                let cookieUrl = cookie.url || '';
+                if (!cookieUrl && pageUrlStartsWithHTTP) {
+                    cookieUrl = pageURL;
+                }
+                assert(cookieUrl !== 'about:blank', `Blank page can not have cookie "${cookie.name}"`);
+                assert(!String.prototype.startsWith.call(cookieUrl || '', 'data:'), `Data URL page can not have cookie "${cookie.name}"`);
+                const normalizedUrl = URL.canParse(cookieUrl)
+                    ? new URL(cookieUrl)
+                    : undefined;
+                const domain = cookie.domain ?? normalizedUrl?.hostname;
+                assert(domain !== undefined, `At least one of the url and domain needs to be specified`);
+                const bidiCookie = {
+                    domain: domain,
+                    name: cookie.name,
+                    value: {
+                        type: 'string',
+                        value: cookie.value,
+                    },
+                    ...(cookie.path !== undefined ? { path: cookie.path } : {}),
+                    ...(cookie.httpOnly !== undefined ? { httpOnly: cookie.httpOnly } : {}),
+                    ...(cookie.secure !== undefined ? { secure: cookie.secure } : {}),
+                    ...(cookie.sameSite !== undefined
+                        ? { sameSite: convertCookiesSameSiteCdpToBiDi(cookie.sameSite) }
+                        : {}),
+                    ...(cookie.expires !== undefined ? { expiry: cookie.expires } : {}),
+                    // Chrome-specific properties.
+                    ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
+                };
+                // TODO: delete cookie before setting them.
+                // await this.deleteCookie(bidiCookie);
+                if (cookie.partitionKey !== undefined) {
+                    await this.browserContext().userContext.setCookie(bidiCookie, cookie.partitionKey);
+                }
+                else {
+                    await this.#frame.browsingContext.setCookie(bidiCookie);
+                }
+            }
+        }
+        deleteCookie() {
+            throw new UnsupportedOperation();
+        }
+        removeExposedFunction() {
+            // TODO: Quick win?
+            throw new UnsupportedOperation();
+        }
+        authenticate() {
+            throw new UnsupportedOperation();
+        }
+        setExtraHTTPHeaders() {
+            throw new UnsupportedOperation();
+        }
+        metrics() {
+            throw new UnsupportedOperation();
+        }
+        async goBack(options = {}) {
+            return await this.#go(-1, options);
+        }
+        async goForward(options = {}) {
+            return await this.#go(1, options);
+        }
+        async #go(delta, options) {
+            try {
+                const [response] = await Promise.all([
+                    this.waitForNavigation(options),
+                    this.#frame.browsingContext.traverseHistory(delta),
+                ]);
+                return response;
+            }
+            catch (error) {
+                // TODO: waitForNavigation should be cancelled if an error happens.
+                if (isErrorLike(error)) {
+                    if (error.message.includes('no such history entry')) {
+                        return null;
+                    }
+                }
+                throw error;
+            }
+        }
+        waitForDevicePrompt() {
+            throw new UnsupportedOperation();
+        }
+    };
+})();
+export { BidiPage };
 function evaluationExpression(fun, ...args) {
     return `() => {${evaluationString(fun, ...args)}}`;
 }

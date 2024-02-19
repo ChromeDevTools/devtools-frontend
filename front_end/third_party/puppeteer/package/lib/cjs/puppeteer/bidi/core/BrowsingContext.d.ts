@@ -8,6 +8,7 @@ import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { AddPreloadScriptOptions } from './Browser.js';
 import { Navigation } from './Navigation.js';
+import type { DedicatedWorkerRealm } from './Realm.js';
 import { WindowRealm } from './Realm.js';
 import { Request } from './Request.js';
 import type { UserContext } from './UserContext.js';
@@ -32,6 +33,10 @@ export type HandleUserPromptOptions = Omit<Bidi.BrowsingContext.HandleUserPrompt
  * @internal
  */
 export type SetViewportOptions = Omit<Bidi.BrowsingContext.SetViewportParameters, 'context'>;
+/**
+ * @internal
+ */
+export type GetCookiesOptions = Omit<Bidi.Storage.GetCookiesParameters, 'partition'>;
 /**
  * @internal
  */
@@ -70,6 +75,11 @@ export declare class BrowsingContext extends EventEmitter<{
     DOMContentLoaded: void;
     /** Emitted whenever the frame emits `load` */
     load: void;
+    /** Emitted whenever a dedicated worker is created */
+    worker: {
+        /** The realm for the new dedicated worker */
+        realm: DedicatedWorkerRealm;
+    };
 }> {
     #private;
     static from(userContext: UserContext, parent: BrowsingContext | undefined, id: string, url: string): BrowsingContext;
@@ -89,8 +99,8 @@ export declare class BrowsingContext extends EventEmitter<{
     captureScreenshot(options?: CaptureScreenshotOptions): Promise<string>;
     close(promptUnload?: boolean): Promise<void>;
     traverseHistory(delta: number): Promise<void>;
-    navigate(url: string, wait?: Bidi.BrowsingContext.ReadinessState): Promise<Navigation>;
-    reload(options?: ReloadOptions): Promise<Navigation>;
+    navigate(url: string, wait?: Bidi.BrowsingContext.ReadinessState): Promise<void>;
+    reload(options?: ReloadOptions): Promise<void>;
     print(options?: PrintOptions): Promise<string>;
     handleUserPrompt(options?: HandleUserPromptOptions): Promise<void>;
     setViewport(options?: SetViewportOptions): Promise<void>;
@@ -99,6 +109,8 @@ export declare class BrowsingContext extends EventEmitter<{
     createWindowRealm(sandbox: string): WindowRealm;
     addPreloadScript(functionDeclaration: string, options?: AddPreloadScriptOptions): Promise<string>;
     removePreloadScript(script: string): Promise<void>;
+    getCookies(options?: GetCookiesOptions): Promise<Bidi.Network.Cookie[]>;
+    setCookie(cookie: Bidi.Storage.PartialCookie): Promise<void>;
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

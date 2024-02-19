@@ -80,13 +80,13 @@ export class LifecycleWatcher {
         }
     }
     #onRequestFailed(request) {
-        if (this.#navigationRequest?._requestId !== request._requestId) {
+        if (this.#navigationRequest?.id !== request.id) {
             return;
         }
         this.#navigationResponseReceived?.resolve();
     }
     #onResponse(response) {
-        if (this.#navigationRequest?._requestId !== response.request()._requestId) {
+        if (this.#navigationRequest?.id !== response.request().id) {
             return;
         }
         this.#navigationResponseReceived?.resolve();

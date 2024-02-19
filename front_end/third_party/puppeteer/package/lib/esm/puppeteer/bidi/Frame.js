@@ -37,161 +37,323 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { first, firstValueFrom, forkJoin, from, map, merge, raceWith, zip, } from '../../third_party/rxjs/rxjs.js';
+var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
+    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+};
+import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
-import { UnsupportedOperation } from '../common/Errors.js';
-import { fromEmitterEvent, NETWORK_IDLE_TIME, timeout, UTILITY_WORLD_NAME, } from '../common/util.js';
-import { Deferred } from '../util/Deferred.js';
-import { disposeSymbol } from '../util/disposable.js';
+import { ConsoleMessage, } from '../common/ConsoleMessage.js';
+import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
+import { debugError, fromEmitterEvent, timeout } from '../common/util.js';
+import { BidiCdpSession } from './CDPSession.js';
+import { BidiDeserializer } from './Deserializer.js';
+import { BidiDialog } from './Dialog.js';
 import { ExposeableFunction } from './ExposedFunction.js';
-import { getBiDiLifecycleEvent, getBiDiReadinessState, rewriteNavigationError, } from './lifecycle.js';
-import { MAIN_SANDBOX, PUPPETEER_SANDBOX, Sandbox, } from './Sandbox.js';
-/**
- * Puppeteer's Frame class could be viewed as a BiDi BrowsingContext implementation
- * @internal
- */
+import { BidiHTTPRequest, requests } from './HTTPRequest.js';
+import { BidiJSHandle } from './JSHandle.js';
+import { BidiFrameRealm } from './Realm.js';
+import { rewriteNavigationError } from './util.js';
+import { BidiWebWorker } from './WebWorker.js';
 let BidiFrame = (() => {
+    var _a;
     let _classSuper = Frame;
     let _instanceExtraInitializers = [];
     let _goto_decorators;
     let _setContent_decorators;
     let _waitForNavigation_decorators;
+    let _private_waitForLoad$_decorators;
+    let _private_waitForLoad$_descriptor;
+    let _private_waitForNetworkIdle$_decorators;
+    let _private_waitForNetworkIdle$_descriptor;
     return class BidiFrame extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            _goto_decorators = [throwIfDetached];
+            _setContent_decorators = [throwIfDetached];
+            _waitForNavigation_decorators = [throwIfDetached];
+            _private_waitForLoad$_decorators = [throwIfDetached];
+            _private_waitForNetworkIdle$_decorators = [throwIfDetached];
             __esDecorate(this, null, _goto_decorators, { kind: "method", name: "goto", static: false, private: false, access: { has: obj => "goto" in obj, get: obj => obj.goto }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setContent_decorators, { kind: "method", name: "setContent", static: false, private: false, access: { has: obj => "setContent" in obj, get: obj => obj.setContent }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForNavigation_decorators, { kind: "method", name: "waitForNavigation", static: false, private: false, access: { has: obj => "waitForNavigation" in obj, get: obj => obj.waitForNavigation }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, _private_waitForLoad$_descriptor = { value: __setFunctionName(function (options = {}) {
+                    let { waitUntil = 'load' } = options;
+                    const { timeout: ms = this.timeoutSettings.navigationTimeout() } = options;
+                    if (!Array.isArray(waitUntil)) {
+                        waitUntil = [waitUntil];
+                    }
+                    const events = new Set();
+                    for (const lifecycleEvent of waitUntil) {
+                        switch (lifecycleEvent) {
+                            case 'load': {
+                                events.add('load');
+                                break;
+                            }
+                            case 'domcontentloaded': {
+                                events.add('DOMContentLoaded');
+                                break;
+                            }
+                        }
+                    }
+                    if (events.size === 0) {
+                        return of(undefined);
+                    }
+                    return combineLatest([...events].map(event => {
+                        return fromEmitterEvent(this.browsingContext, event);
+                    })).pipe(map(() => { }), first(), raceWith(timeout(ms), this.#detached$().pipe(map(() => {
+                        throw new Error('Frame detached.');
+                    }))));
+                }, "#waitForLoad$") }, _private_waitForLoad$_decorators, { kind: "method", name: "#waitForLoad$", static: false, private: true, access: { has: obj => #waitForLoad$ in obj, get: obj => obj.#waitForLoad$ }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, _private_waitForNetworkIdle$_descriptor = { value: __setFunctionName(function (options = {}) {
+                    let { waitUntil = 'load' } = options;
+                    if (!Array.isArray(waitUntil)) {
+                        waitUntil = [waitUntil];
+                    }
+                    let concurrency = Infinity;
+                    for (const event of waitUntil) {
+                        switch (event) {
+                            case 'networkidle0': {
+                                concurrency = Math.min(0, concurrency);
+                                break;
+                            }
+                            case 'networkidle2': {
+                                concurrency = Math.min(2, concurrency);
+                                break;
+                            }
+                        }
+                    }
+                    if (concurrency === Infinity) {
+                        return of(undefined);
+                    }
+                    return this.page().waitForNetworkIdle$({
+                        idleTime: 500,
+                        timeout: options.timeout ?? this.timeoutSettings.timeout(),
+                        concurrency,
+                    });
+                }, "#waitForNetworkIdle$") }, _private_waitForNetworkIdle$_decorators, { kind: "method", name: "#waitForNetworkIdle$", static: false, private: true, access: { has: obj => #waitForNetworkIdle$ in obj, get: obj => obj.#waitForNetworkIdle$ }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        #page = (__runInitializers(this, _instanceExtraInitializers), void 0);
-        #context;
-        #timeoutSettings;
-        #abortDeferred = Deferred.create();
-        #disposed = false;
-        sandboxes;
+        static from(parent, browsingContext) {
+            const frame = new BidiFrame(parent, browsingContext);
+            frame.#initialize();
+            return frame;
+        }
+        #parent = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        browsingContext;
+        #frames = new WeakMap();
+        realms;
         _id;
-        constructor(page, context, timeoutSettings, parentId) {
+        client;
+        constructor(parent, browsingContext) {
             super();
-            this.#page = page;
-            this.#context = context;
-            this.#timeoutSettings = timeoutSettings;
-            this._id = this.#context.id;
-            this._parentId = parentId ?? undefined;
-            this.sandboxes = {
-                [MAIN_SANDBOX]: new Sandbox(undefined, this, context, timeoutSettings),
-                [PUPPETEER_SANDBOX]: new Sandbox(UTILITY_WORLD_NAME, this, context.createRealmForSandbox(), timeoutSettings),
+            this.#parent = parent;
+            this.browsingContext = browsingContext;
+            this._id = browsingContext.id;
+            this.client = new BidiCdpSession(this);
+            this.realms = {
+                default: BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
+                internal: BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
             };
         }
-        get client() {
-            return this.context().cdpSession;
+        #initialize() {
+            for (const browsingContext of this.browsingContext.children) {
+                this.#createFrameTarget(browsingContext);
+            }
+            this.browsingContext.on('browsingcontext', ({ browsingContext }) => {
+                this.#createFrameTarget(browsingContext);
+            });
+            this.browsingContext.on('closed', () => {
+                for (const session of BidiCdpSession.sessions.values()) {
+                    if (session.frame === this) {
+                        void session.detach().catch(debugError);
+                    }
+                }
+                this.page().trustedEmitter.emit("framedetached" /* PageEvent.FrameDetached */, this);
+            });
+            this.browsingContext.on('request', ({ request }) => {
+                const httpRequest = BidiHTTPRequest.from(request, this);
+                request.once('success', () => {
+                    // SAFETY: BidiHTTPRequest will create this before here.
+                    this.page().trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
+                });
+                request.once('error', () => {
+                    this.page().trustedEmitter.emit("requestfailed" /* PageEvent.RequestFailed */, httpRequest);
+                });
+            });
+            this.browsingContext.on('navigation', ({ navigation }) => {
+                navigation.once('fragment', () => {
+                    this.page().trustedEmitter.emit("framenavigated" /* PageEvent.FrameNavigated */, this);
+                });
+            });
+            this.browsingContext.on('load', () => {
+                this.page().trustedEmitter.emit("load" /* PageEvent.Load */, undefined);
+            });
+            this.browsingContext.on('DOMContentLoaded', () => {
+                this._hasStartedLoading = true;
+                this.page().trustedEmitter.emit("domcontentloaded" /* PageEvent.DOMContentLoaded */, undefined);
+                this.page().trustedEmitter.emit("framenavigated" /* PageEvent.FrameNavigated */, this);
+            });
+            this.browsingContext.on('userprompt', ({ userPrompt }) => {
+                this.page().trustedEmitter.emit("dialog" /* PageEvent.Dialog */, BidiDialog.from(userPrompt));
+            });
+            this.browsingContext.on('log', ({ entry }) => {
+                if (this._id !== entry.source.context) {
+                    return;
+                }
+                if (isConsoleLogEntry(entry)) {
+                    const args = entry.args.map(arg => {
+                        return this.mainRealm().createHandle(arg);
+                    });
+                    const text = args
+                        .reduce((value, arg) => {
+                        const parsedValue = arg instanceof BidiJSHandle && arg.isPrimitiveValue
+                            ? BidiDeserializer.deserialize(arg.remoteValue())
+                            : arg.toString();
+                        return `${value} ${parsedValue}`;
+                    }, '')
+                        .slice(1);
+                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage(entry.method, text, args, getStackTraceLocations(entry.stackTrace)));
+                }
+                else if (isJavaScriptLogEntry(entry)) {
+                    const error = new Error(entry.text ?? '');
+                    const messageHeight = error.message.split('\n').length;
+                    const messageLines = error.stack.split('\n').splice(0, messageHeight);
+                    const stackLines = [];
+                    if (entry.stackTrace) {
+                        for (const frame of entry.stackTrace.callFrames) {
+                            // Note we need to add `1` because the values are 0-indexed.
+                            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
+                            if (stackLines.length >= Error.stackTraceLimit) {
+                                break;
+                            }
+                        }
+                    }
+                    error.stack = [...messageLines, ...stackLines].join('\n');
+                    this.page().trustedEmitter.emit("pageerror" /* PageEvent.PageError */, error);
+                }
+                else {
+                    debugError(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
+                }
+            });
+            this.browsingContext.on('worker', ({ realm }) => {
+                const worker = BidiWebWorker.from(this, realm);
+                realm.on('destroyed', () => {
+                    this.page().trustedEmitter.emit("workerdestroyed" /* PageEvent.WorkerDestroyed */, worker);
+                });
+                this.page().trustedEmitter.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
+            });
+        }
+        #createFrameTarget(browsingContext) {
+            const frame = BidiFrame.from(this, browsingContext);
+            this.#frames.set(browsingContext, frame);
+            this.page().trustedEmitter.emit("frameattached" /* PageEvent.FrameAttached */, frame);
+            browsingContext.on('closed', () => {
+                this.#frames.delete(browsingContext);
+            });
+            return frame;
+        }
+        get timeoutSettings() {
+            return this.page()._timeoutSettings;
         }
         mainRealm() {
-            return this.sandboxes[MAIN_SANDBOX];
+            return this.realms.default;
         }
         isolatedRealm() {
-            return this.sandboxes[PUPPETEER_SANDBOX];
+            return this.realms.internal;
         }
         page() {
-            return this.#page;
+            let parent = this.#parent;
+            while (parent instanceof BidiFrame) {
+                parent = parent.#parent;
+            }
+            return parent;
         }
         isOOPFrame() {
             throw new UnsupportedOperation();
         }
         url() {
-            return this.#context.url;
+            return this.browsingContext.url;
         }
         parentFrame() {
-            return this.#page.frame(this._parentId ?? '');
+            if (this.#parent instanceof BidiFrame) {
+                return this.#parent;
+            }
+            return null;
         }
         childFrames() {
-            return this.#page.childFrames(this.#context.id);
+            return [...this.browsingContext.children].map(child => {
+                return this.#frames.get(child);
+            });
+        }
+        #detached$() {
+            return defer(() => {
+                if (this.detached) {
+                    return of(this);
+                }
+                return fromEmitterEvent(this.page().trustedEmitter, "framedetached" /* PageEvent.FrameDetached */).pipe(filter(detachedFrame => {
+                    return detachedFrame === this;
+                }));
+            });
         }
         async goto(url, options = {}) {
-            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
-            const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-            const result$ = zip(from(this.#context.connection.send('browsingContext.navigate', {
-                context: this.#context.id,
-                url,
-                wait: readiness,
-            })), ...(networkIdle !== null
-                ? [
-                    this.#page.waitForNetworkIdle$({
-                        timeout: ms,
-                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
-                        idleTime: NETWORK_IDLE_TIME,
-                    }),
-                ]
-                : [])).pipe(map(([{ result }]) => {
-                return result;
-            }), raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())), rewriteNavigationError(url, ms));
-            const result = await firstValueFrom(result$);
-            return this.#page.getNavigationResponse(result.navigation);
+            const [response] = await Promise.all([
+                this.waitForNavigation(options),
+                // Some implementations currently only report errors when the
+                // readiness=interactive.
+                //
+                // Related: https://bugzilla.mozilla.org/show_bug.cgi?id=1846601
+                this.browsingContext.navigate(url, "interactive" /* Bidi.BrowsingContext.ReadinessState.Interactive */),
+            ]).catch(rewriteNavigationError(url, options.timeout ?? this.timeoutSettings.navigationTimeout()));
+            return response;
         }
         async setContent(html, options = {}) {
-            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
-            const [waitEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
-            const result$ = zip(forkJoin([
-                fromEmitterEvent(this.#context, waitEvent).pipe(first()),
-                from(this.setFrameContent(html)),
-            ]).pipe(map(() => {
-                return null;
-            })), ...(networkIdle !== null
-                ? [
-                    this.#page.waitForNetworkIdle$({
-                        timeout: ms,
-                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
-                        idleTime: NETWORK_IDLE_TIME,
-                    }),
-                ]
-                : [])).pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())), rewriteNavigationError('setContent', ms));
-            await firstValueFrom(result$);
-        }
-        context() {
-            return this.#context;
+            await Promise.all([
+                this.setFrameContent(html),
+                firstValueFrom(combineLatest([
+                    this.#waitForLoad$(options),
+                    this.#waitForNetworkIdle$(options),
+                ])),
+            ]);
         }
         async waitForNavigation(options = {}) {
-            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
-            const [waitUntilEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
-            const navigation$ = merge(forkJoin([
-                fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe(first()),
-                fromEmitterEvent(this.#context, waitUntilEvent).pipe(first()),
-            ]), fromEmitterEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe(map(result => {
-                if (Array.isArray(result)) {
-                    return { result: result[1] };
+            const { timeout: ms = this.timeoutSettings.navigationTimeout() } = options;
+            const frames = this.childFrames().map(frame => {
+                return frame.#detached$();
+            });
+            return await firstValueFrom(combineLatest([
+                fromEmitterEvent(this.browsingContext, 'navigation').pipe(switchMap(({ navigation }) => {
+                    return this.#waitForLoad$(options).pipe(delayWhen(() => {
+                        if (frames.length === 0) {
+                            return of(undefined);
+                        }
+                        return combineLatest(frames);
+                    }), raceWith(fromEmitterEvent(navigation, 'fragment'), fromEmitterEvent(navigation, 'failed').pipe(map(({ url }) => {
+                        throw new Error(`Navigation failed: ${url}`);
+                    })), fromEmitterEvent(navigation, 'aborted').pipe(map(({ url }) => {
+                        throw new Error(`Navigation aborted: ${url}`);
+                    }))), map(() => {
+                        return navigation;
+                    }));
+                })),
+                this.#waitForNetworkIdle$(options),
+            ]).pipe(map(([navigation]) => {
+                const request = navigation.request;
+                if (!request) {
+                    return null;
                 }
-                return { result };
-            }));
-            const result$ = zip(navigation$, ...(networkIdle !== null
-                ? [
-                    this.#page.waitForNetworkIdle$({
-                        timeout: ms,
-                        concurrency: networkIdle === 'networkidle2' ? 2 : 0,
-                        idleTime: NETWORK_IDLE_TIME,
-                    }),
-                ]
-                : [])).pipe(map(([{ result }]) => {
-                return result;
-            }), raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())));
-            const result = await firstValueFrom(result$);
-            return this.#page.getNavigationResponse(result.navigation);
+                const httpRequest = requests.get(request);
+                const lastRedirect = httpRequest.redirectChain().at(-1);
+                return (lastRedirect !== undefined ? lastRedirect : httpRequest).response();
+            }), raceWith(timeout(ms), this.#detached$().pipe(map(() => {
+                throw new TargetCloseError('Frame detached.');
+            })))));
         }
         waitForDevicePrompt() {
             throw new UnsupportedOperation();
         }
         get detached() {
-            return this.#disposed;
-        }
-        [(_goto_decorators = [throwIfDetached], _setContent_decorators = [throwIfDetached], _waitForNavigation_decorators = [throwIfDetached], disposeSymbol)]() {
-            if (this.#disposed) {
-                return;
-            }
-            this.#disposed = true;
-            this.#abortDeferred.reject(new Error('Frame detached'));
-            this.#context.dispose();
-            this.sandboxes[MAIN_SANDBOX][disposeSymbol]();
-            this.sandboxes[PUPPETEER_SANDBOX][disposeSymbol]();
+            return this.browsingContext.closed;
         }
         #exposedFunctions = new Map();
         async exposeFunction(name, apply) {
@@ -214,7 +376,35 @@ let BidiFrame = (() => {
             }
             return super.waitForSelector(selector, options);
         }
+        async createCDPSession() {
+            const { sessionId } = await this.client.send('Target.attachToTarget', {
+                targetId: this._id,
+                flatten: true,
+            });
+            return new BidiCdpSession(this, sessionId);
+        }
+        get #waitForLoad$() { return _private_waitForLoad$_descriptor.value; }
+        get #waitForNetworkIdle$() { return _private_waitForNetworkIdle$_descriptor.value; }
     };
 })();
 export { BidiFrame };
+function isConsoleLogEntry(event) {
+    return event.type === 'console';
+}
+function isJavaScriptLogEntry(event) {
+    return event.type === 'javascript';
+}
+function getStackTraceLocations(stackTrace) {
+    const stackTraceLocations = [];
+    if (stackTrace) {
+        for (const callFrame of stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return stackTraceLocations;
+}
 //# sourceMappingURL=Frame.js.map

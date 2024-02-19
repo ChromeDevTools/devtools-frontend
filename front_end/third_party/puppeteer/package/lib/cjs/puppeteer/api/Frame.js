@@ -247,10 +247,6 @@ let Frame = (() => {
         /**
          * @internal
          */
-        worlds;
-        /**
-         * @internal
-         */
         _name;
         /**
          * @internal
@@ -297,14 +293,14 @@ let Frame = (() => {
                     return null;
                 }
                 const list = __addDisposableResource(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
-                    return document.querySelectorAll('iframe');
+                    return document.querySelectorAll('iframe,frame');
                 }), false);
                 for await (const iframe_1 of (0, HandleIterator_js_1.transposeIterableHandle)(list)) {
                     const env_2 = { stack: [], error: void 0, hasError: false };
                     try {
                         const iframe = __addDisposableResource(env_2, iframe_1, false);
                         const frame = await iframe.contentFrame();
-                        if (frame._id === this._id) {
+                        if (frame?._id === this._id) {
                             return iframe.move();
                         }
                     }

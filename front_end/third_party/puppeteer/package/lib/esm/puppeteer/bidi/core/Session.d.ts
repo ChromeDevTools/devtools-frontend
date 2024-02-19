@@ -23,14 +23,13 @@ export declare class Session extends EventEmitter<BidiEvents & {
     #private;
     static from(connection: Connection, capabilities: Bidi.Session.CapabilitiesRequest): Promise<Session>;
     readonly browser: Browser;
-    readonly connection: Connection;
+    accessor connection: Connection;
     private constructor();
     get capabilities(): Bidi.Session.NewResult['capabilities'];
     get disposed(): boolean;
     get ended(): boolean;
     get id(): string;
     private dispose;
-    pipeTo<Events extends BidiEvents>(emitter: EventEmitter<Events>): void;
     /**
      * Currently, there is a 1:1 relationship between the session and the
      * session. In the future, we might support multiple sessions and in that

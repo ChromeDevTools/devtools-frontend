@@ -96,7 +96,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * );
      * ```
      */
-    abstract waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     /**
      * Gets a list of all open {@link Page | pages} inside this
      * {@link BrowserContext | browser context}.

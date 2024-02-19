@@ -181,7 +181,7 @@ let Page = (() => {
                 return concat(of(1), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
                     return response.request();
                 }))).pipe(filter(request => {
-                    return request._requestId === originalRequest._requestId;
+                    return request.id === originalRequest.id;
                 }), take(1), map(() => {
                     return -1;
                 })));

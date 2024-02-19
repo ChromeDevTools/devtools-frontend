@@ -32,6 +32,7 @@ export declare class Navigation extends EventEmitter<{
     private constructor();
     get disposed(): boolean;
     get request(): Request | undefined;
+    get navigation(): Navigation | undefined;
     private dispose;
     [disposeSymbol](): void;
 }

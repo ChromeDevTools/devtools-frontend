@@ -83,10 +83,9 @@ let Request = (() => {
             });
             const sessionEmitter = this.#disposables.use(new EventEmitter(this.#session));
             sessionEmitter.on('network.beforeRequestSent', event => {
-                if (event.context !== this.#browsingContext.id) {
-                    return;
-                }
-                if (event.request.request !== this.id) {
+                if (event.context !== this.#browsingContext.id ||
+                    event.request.request !== this.id ||
+                    event.redirectCount !== this.#event.redirectCount + 1) {
                     return;
                 }
                 this.#redirect = Request.from(this.#browsingContext, event);
@@ -94,10 +93,9 @@ let Request = (() => {
                 this.dispose();
             });
             sessionEmitter.on('network.fetchError', event => {
-                if (event.context !== this.#browsingContext.id) {
-                    return;
-                }
-                if (event.request.request !== this.id) {
+                if (event.context !== this.#browsingContext.id ||
+                    event.request.request !== this.id ||
+                    this.#event.redirectCount !== event.redirectCount) {
                     return;
                 }
                 this.#error = event.errorText;
@@ -105,14 +103,17 @@ let Request = (() => {
                 this.dispose();
             });
             sessionEmitter.on('network.responseCompleted', event => {
-                if (event.context !== this.#browsingContext.id) {
-                    return;
-                }
-                if (event.request.request !== this.id) {
+                if (event.context !== this.#browsingContext.id ||
+                    event.request.request !== this.id ||
+                    this.#event.redirectCount !== event.redirectCount) {
                     return;
                 }
                 this.#response = event.response;
                 this.emit('success', this.#response);
+                // In case this is a redirect.
+                if (this.#response.status >= 300 && this.#response.status < 400) {
+                    return;
+                }
                 this.dispose();
             });
         }
@@ -142,7 +143,7 @@ let Request = (() => {
             return this.#event.navigation ?? undefined;
         }
         get redirect() {
-            return this.redirect;
+            return this.#redirect;
         }
         get response() {
             return this.#response;

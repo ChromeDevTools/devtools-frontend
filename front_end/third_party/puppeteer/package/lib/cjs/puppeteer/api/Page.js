@@ -208,7 +208,7 @@ let Page = (() => {
                 return (0, rxjs_js_1.concat)((0, rxjs_js_1.of)(1), (0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "requestfailed" /* PageEvent.RequestFailed */), (0, util_js_1.fromEmitterEvent)(this, "requestfinished" /* PageEvent.RequestFinished */), (0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.map)(response => {
                     return response.request();
                 }))).pipe((0, rxjs_js_1.filter)(request => {
-                    return request._requestId === originalRequest._requestId;
+                    return request.id === originalRequest.id;
                 }), (0, rxjs_js_1.take)(1), (0, rxjs_js_1.map)(() => {
                     return -1;
                 })));

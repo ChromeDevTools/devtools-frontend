@@ -9,23 +9,26 @@ import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
 import type { WaitForSelectorOptions } from '../api/Page.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, NodeFor } from '../common/types.js';
-import { disposeSymbol } from '../util/disposable.js';
-import type { BrowsingContext } from './BrowsingContext.js';
+import { BidiCdpSession } from './CDPSession.js';
+import type { BrowsingContext } from './core/BrowsingContext.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
 import type { BidiPage } from './Page.js';
-import { Sandbox, type SandboxChart } from './Sandbox.js';
-/**
- * Puppeteer's Frame class could be viewed as a BiDi BrowsingContext implementation
- * @internal
- */
+import type { BidiRealm } from './Realm.js';
+import { BidiFrameRealm } from './Realm.js';
 export declare class BidiFrame extends Frame {
     #private;
-    sandboxes: SandboxChart;
-    _id: string;
-    constructor(page: BidiPage, context: BrowsingContext, timeoutSettings: TimeoutSettings, parentId?: string | null);
-    get client(): CDPSession;
-    mainRealm(): Sandbox;
-    isolatedRealm(): Sandbox;
+    static from(parent: BidiPage | BidiFrame, browsingContext: BrowsingContext): BidiFrame;
+    readonly browsingContext: BrowsingContext;
+    readonly realms: {
+        default: BidiFrameRealm;
+        internal: BidiFrameRealm;
+    };
+    readonly _id: string;
+    readonly client: BidiCdpSession;
+    private constructor();
+    get timeoutSettings(): TimeoutSettings;
+    mainRealm(): BidiRealm;
+    isolatedRealm(): BidiRealm;
     page(): BidiPage;
     isOOPFrame(): never;
     url(): string;
@@ -33,12 +36,11 @@ export declare class BidiFrame extends Frame {
     childFrames(): BidiFrame[];
     goto(url: string, options?: GoToOptions): Promise<BidiHTTPResponse | null>;
     setContent(html: string, options?: WaitForOptions): Promise<void>;
-    context(): BrowsingContext;
     waitForNavigation(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
     waitForDevicePrompt(): never;
     get detached(): boolean;
-    [disposeSymbol](): void;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    createCDPSession(): Promise<CDPSession>;
 }
 //# sourceMappingURL=Frame.d.ts.map

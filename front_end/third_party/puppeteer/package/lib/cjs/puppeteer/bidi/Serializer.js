@@ -6,10 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiSerializer = void 0;
-const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
-const ElementHandle_js_1 = require("./ElementHandle.js");
-const JSHandle_js_1 = require("./JSHandle.js");
 /**
  * @internal
  */
@@ -19,7 +16,37 @@ class UnserializableError extends Error {
  * @internal
  */
 class BidiSerializer {
-    static serializeNumber(arg) {
+    static serialize(arg) {
+        switch (typeof arg) {
+            case 'symbol':
+            case 'function':
+                throw new UnserializableError(`Unable to serializable ${typeof arg}`);
+            case 'object':
+                return this.#serializeObject(arg);
+            case 'undefined':
+                return {
+                    type: 'undefined',
+                };
+            case 'number':
+                return this.#serializeNumber(arg);
+            case 'bigint':
+                return {
+                    type: 'bigint',
+                    value: arg.toString(),
+                };
+            case 'string':
+                return {
+                    type: 'string',
+                    value: arg,
+                };
+            case 'boolean':
+                return {
+                    type: 'boolean',
+                    value: arg,
+                };
+        }
+    }
+    static #serializeNumber(arg) {
         let value;
         if (Object.is(arg, -0)) {
             value = '-0';
@@ -41,7 +68,7 @@ class BidiSerializer {
             value,
         };
     }
-    static serializeObject(arg) {
+    static #serializeObject(arg) {
         if (arg === null) {
             return {
                 type: 'null',
@@ -49,7 +76,7 @@ class BidiSerializer {
         }
         else if (Array.isArray(arg)) {
             const parsedArray = arg.map(subArg => {
-                return BidiSerializer.serializeRemoteValue(subArg);
+                return this.serialize(subArg);
             });
             return {
                 type: 'array',
@@ -69,10 +96,7 @@ class BidiSerializer {
             }
             const parsedObject = [];
             for (const key in arg) {
-                parsedObject.push([
-                    BidiSerializer.serializeRemoteValue(key),
-                    BidiSerializer.serializeRemoteValue(arg[key]),
-                ]);
+                parsedObject.push([this.serialize(key), this.serialize(arg[key])]);
             }
             return {
                 type: 'object',
@@ -95,56 +119,6 @@ class BidiSerializer {
             };
         }
         throw new UnserializableError('Custom object sterilization not possible. Use plain objects instead.');
-    }
-    static serializeRemoteValue(arg) {
-        switch (typeof arg) {
-            case 'symbol':
-            case 'function':
-                throw new UnserializableError(`Unable to serializable ${typeof arg}`);
-            case 'object':
-                return BidiSerializer.serializeObject(arg);
-            case 'undefined':
-                return {
-                    type: 'undefined',
-                };
-            case 'number':
-                return BidiSerializer.serializeNumber(arg);
-            case 'bigint':
-                return {
-                    type: 'bigint',
-                    value: arg.toString(),
-                };
-            case 'string':
-                return {
-                    type: 'string',
-                    value: arg,
-                };
-            case 'boolean':
-                return {
-                    type: 'boolean',
-                    value: arg,
-                };
-        }
-    }
-    static async serialize(sandbox, arg) {
-        if (arg instanceof LazyArg_js_1.LazyArg) {
-            arg = await arg.get(sandbox.realm);
-        }
-        // eslint-disable-next-line rulesdir/use-using -- We want this to continue living.
-        const objectHandle = arg && (arg instanceof JSHandle_js_1.BidiJSHandle || arg instanceof ElementHandle_js_1.BidiElementHandle)
-            ? arg
-            : null;
-        if (objectHandle) {
-            if (objectHandle.realm.environment.context() !==
-                sandbox.environment.context()) {
-                throw new Error('JSHandles can be evaluated only in the context they were created!');
-            }
-            if (objectHandle.disposed) {
-                throw new Error('JSHandle is disposed!');
-            }
-            return objectHandle.remoteValue();
-        }
-        return BidiSerializer.serializeRemoteValue(arg);
     }
 }
 exports.BidiSerializer = BidiSerializer;

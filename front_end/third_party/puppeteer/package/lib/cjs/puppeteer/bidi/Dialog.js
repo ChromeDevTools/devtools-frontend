@@ -7,24 +7,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiDialog = void 0;
 const Dialog_js_1 = require("../api/Dialog.js");
-/**
- * @internal
- */
 class BidiDialog extends Dialog_js_1.Dialog {
-    #context;
-    /**
-     * @internal
-     */
-    constructor(context, type, message, defaultValue) {
-        super(type, message, defaultValue);
-        this.#context = context;
+    static from(prompt) {
+        return new BidiDialog(prompt);
     }
-    /**
-     * @internal
-     */
+    #prompt;
+    constructor(prompt) {
+        super(prompt.info.type, prompt.info.message, prompt.info.defaultValue);
+        this.#prompt = prompt;
+    }
     async handle(options) {
-        await this.#context.connection.send('browsingContext.handleUserPrompt', {
-            context: this.#context.id,
+        await this.#prompt.handle({
             accept: options.accept,
             userText: options.text,
         });

@@ -9,24 +9,20 @@ exports.BidiJSHandle = void 0;
 const JSHandle_js_1 = require("../api/JSHandle.js");
 const Errors_js_1 = require("../common/Errors.js");
 const Deserializer_js_1 = require("./Deserializer.js");
-const util_js_1 = require("./util.js");
 /**
  * @internal
  */
 class BidiJSHandle extends JSHandle_js_1.JSHandle {
-    #disposed = false;
-    #sandbox;
+    static from(value, realm) {
+        return new BidiJSHandle(value, realm);
+    }
     #remoteValue;
-    constructor(sandbox, remoteValue) {
+    realm;
+    #disposed = false;
+    constructor(value, realm) {
         super();
-        this.#sandbox = sandbox;
-        this.#remoteValue = remoteValue;
-    }
-    context() {
-        return this.realm.environment.context();
-    }
-    get realm() {
-        return this.#sandbox;
+        this.#remoteValue = value;
+        this.realm = realm;
     }
     get disposed() {
         return this.#disposed;
@@ -44,9 +40,7 @@ class BidiJSHandle extends JSHandle_js_1.JSHandle {
             return;
         }
         this.#disposed = true;
-        if ('handle' in this.#remoteValue) {
-            await (0, util_js_1.releaseReference)(this.context(), this.#remoteValue);
-        }
+        await this.realm.destroyHandles([this]);
     }
     get isPrimitiveValue() {
         switch (this.#remoteValue.type) {

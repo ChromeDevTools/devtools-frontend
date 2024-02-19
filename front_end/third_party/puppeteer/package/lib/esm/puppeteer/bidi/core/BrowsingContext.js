@@ -66,6 +66,8 @@ let BrowsingContext = (() => {
     let _createWindowRealm_decorators;
     let _addPreloadScript_decorators;
     let _removePreloadScript_decorators;
+    let _getCookies_decorators;
+    let _setCookie_decorators;
     return class BrowsingContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -84,6 +86,8 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _createWindowRealm_decorators, { kind: "method", name: "createWindowRealm", static: false, private: false, access: { has: obj => "createWindowRealm" in obj, get: obj => obj.createWindowRealm }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _addPreloadScript_decorators, { kind: "method", name: "addPreloadScript", static: false, private: false, access: { has: obj => "addPreloadScript" in obj, get: obj => obj.addPreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(userContext, parent, id, url) {
@@ -112,7 +116,7 @@ let BrowsingContext = (() => {
             this.parent = parent;
             this.userContext = context;
             // keep-sorted end
-            this.defaultRealm = WindowRealm.from(this);
+            this.defaultRealm = this.#createWindowRealm();
         }
         #initialize() {
             const userContextEmitter = this.#disposables.use(new EventEmitter(this.userContext));
@@ -158,7 +162,16 @@ let BrowsingContext = (() => {
                     return;
                 }
                 this.#url = info.url;
-                this.#requests.clear();
+                for (const [id, request] of this.#requests) {
+                    if (request.disposed) {
+                        this.#requests.delete(id);
+                    }
+                }
+                // If the navigation hasn't finished, then this is nested navigation. The
+                // current navigation will handle this.
+                if (this.#navigation !== undefined && !this.#navigation.disposed) {
+                    return;
+                }
                 // Note the navigation ID is null for this event.
                 this.#navigation = Navigation.from(this);
                 const navigationEmitter = this.#disposables.use(new EventEmitter(this.#navigation));
@@ -174,7 +187,8 @@ let BrowsingContext = (() => {
                 if (event.context !== this.id) {
                     return;
                 }
-                if (this.#requests.has(event.request.request)) {
+                if (event.redirectCount !== 0) {
+                    // Means the request is a redirect. This is handled in Request.
                     return;
                 }
                 const request = Request.from(this, event);
@@ -209,7 +223,12 @@ let BrowsingContext = (() => {
             return this.closed;
         }
         get realms() {
-            return this.#realms.values();
+            // eslint-disable-next-line @typescript-eslint/no-this-alias -- Required
+            const self = this;
+            return (function* () {
+                yield self.defaultRealm;
+                yield* self.#realms.values();
+            })();
         }
         get top() {
             let context = this;
@@ -222,6 +241,13 @@ let BrowsingContext = (() => {
             return this.#url;
         }
         // keep-sorted end
+        #createWindowRealm(sandbox) {
+            const realm = WindowRealm.from(this, sandbox);
+            realm.on('worker', realm => {
+                this.emit('worker', { realm });
+            });
+            return realm;
+        }
         dispose(reason) {
             this.#reason = reason;
             this[disposeSymbol]();
@@ -259,21 +285,11 @@ let BrowsingContext = (() => {
                 url,
                 wait,
             });
-            return await new Promise(resolve => {
-                this.once('navigation', ({ navigation }) => {
-                    resolve(navigation);
-                });
-            });
         }
         async reload(options = {}) {
             await this.#session.send('browsingContext.reload', {
                 context: this.id,
                 ...options,
-            });
-            return await new Promise(resolve => {
-                this.once('navigation', ({ navigation }) => {
-                    resolve(navigation);
-                });
             });
         }
         async print(options = {}) {
@@ -307,7 +323,7 @@ let BrowsingContext = (() => {
             });
         }
         createWindowRealm(sandbox) {
-            return WindowRealm.from(this, sandbox);
+            return this.#createWindowRealm(sandbox);
         }
         async addPreloadScript(functionDeclaration, options = {}) {
             return await this.userContext.browser.addPreloadScript(functionDeclaration, {
@@ -317,6 +333,25 @@ let BrowsingContext = (() => {
         }
         async removePreloadScript(script) {
             await this.userContext.browser.removePreloadScript(script);
+        }
+        async getCookies(options = {}) {
+            const { result: { cookies }, } = await this.#session.send('storage.getCookies', {
+                ...options,
+                partition: {
+                    type: 'context',
+                    context: this.id,
+                },
+            });
+            return cookies;
+        }
+        async setCookie(cookie) {
+            await this.#session.send('storage.setCookie', {
+                cookie,
+                partition: {
+                    type: 'context',
+                    context: this.id,
+                },
+            });
         }
         [(_dispose_decorators = [inertIfDisposed], _activate_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
@@ -358,6 +393,12 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _removePreloadScript_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _getCookies_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setCookie_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], disposeSymbol)]() {

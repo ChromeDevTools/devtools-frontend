@@ -7,7 +7,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { BrowsingContext } from './BrowsingContext.js';
-import type { SharedWorkerRealm } from './Realm.js';
+import { SharedWorkerRealm } from './Realm.js';
 import type { Session } from './Session.js';
 import { UserContext } from './UserContext.js';
 /**

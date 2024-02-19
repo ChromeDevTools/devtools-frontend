@@ -5,6 +5,7 @@ import { assert } from '../util/assert.js';
  * @internal
  */
 export class CdpHTTPRequest extends HTTPRequest {
+    id;
     #client;
     #isNavigationRequest;
     #allowInterception;
@@ -30,7 +31,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
         this.#client = client;
-        this._requestId = data.requestId;
+        this.id = data.requestId;
         this.#isNavigationRequest =
             data.requestId === data.loaderId && data.type === 'Document';
         this._interceptionId = interceptionId;
@@ -111,7 +112,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     async fetchPostData() {
         try {
             const result = await this.#client.send('Network.getRequestPostData', {
-                requestId: this._requestId,
+                requestId: this.id,
             });
             return result.postData;
         }

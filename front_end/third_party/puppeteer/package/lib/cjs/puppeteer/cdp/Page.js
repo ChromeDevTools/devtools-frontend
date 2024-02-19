@@ -299,7 +299,7 @@ class CdpPage extends Page_js_1.Page {
         (0, assert_js_1.assert)(session instanceof CDPSession_js_2.CdpCDPSession);
         this.#frameManager.onAttachedToTarget(session._target());
         if (session._target()._getTargetInfo().type === 'worker') {
-            const worker = new WebWorker_js_1.CdpWebWorker(session, session._target().url(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this));
+            const worker = new WebWorker_js_1.CdpWebWorker(session, session._target().url(), session._target()._targetId, session._target().type(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this));
             this.#workers.set(session.id(), worker);
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }

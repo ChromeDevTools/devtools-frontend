@@ -5,53 +5,27 @@
  */
 import { Target, TargetType } from '../api/Target.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { CdpSessionWrapper } from './BrowsingContext.js';
 import { BidiPage } from './Page.js';
 /**
  * @internal
  */
-export class BidiTarget extends Target {
-    _browserContext;
-    constructor(browserContext) {
-        super();
-        this._browserContext = browserContext;
-    }
-    _setBrowserContext(browserContext) {
-        this._browserContext = browserContext;
-    }
-    asPage() {
-        throw new UnsupportedOperation();
-    }
-    browser() {
-        return this._browserContext.browser();
-    }
-    browserContext() {
-        return this._browserContext;
-    }
-    opener() {
-        throw new UnsupportedOperation();
-    }
-    createCDPSession() {
-        throw new UnsupportedOperation();
-    }
-}
-/**
- * @internal
- */
-export class BiDiBrowserTarget extends Target {
+export class BidiBrowserTarget extends Target {
     #browser;
     constructor(browser) {
         super();
         this.#browser = browser;
     }
+    asPage() {
+        throw new UnsupportedOperation();
+    }
     url() {
         return '';
     }
+    createCDPSession() {
+        throw new UnsupportedOperation();
+    }
     type() {
         return TargetType.BROWSER;
-    }
-    asPage() {
-        throw new UnsupportedOperation();
     }
     browser() {
         return this.#browser;
@@ -62,48 +36,111 @@ export class BiDiBrowserTarget extends Target {
     opener() {
         throw new UnsupportedOperation();
     }
+}
+/**
+ * @internal
+ */
+export class BidiPageTarget extends Target {
+    #page;
+    constructor(page) {
+        super();
+        this.#page = page;
+    }
+    async page() {
+        return this.#page;
+    }
+    async asPage() {
+        return BidiPage.from(this.browserContext(), this.#page.mainFrame().browsingContext);
+    }
+    url() {
+        return this.#page.url();
+    }
     createCDPSession() {
+        return this.#page.createCDPSession();
+    }
+    type() {
+        return TargetType.PAGE;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#page.browserContext();
+    }
+    opener() {
         throw new UnsupportedOperation();
     }
 }
 /**
  * @internal
  */
-export class BiDiBrowsingContextTarget extends BidiTarget {
-    _browsingContext;
-    constructor(browserContext, browsingContext) {
-        super(browserContext);
-        this._browsingContext = browsingContext;
+export class BidiFrameTarget extends Target {
+    #frame;
+    #page;
+    constructor(frame) {
+        super();
+        this.#frame = frame;
+    }
+    async page() {
+        if (this.#page === undefined) {
+            this.#page = BidiPage.from(this.browserContext(), this.#frame.browsingContext);
+        }
+        return this.#page;
+    }
+    async asPage() {
+        return BidiPage.from(this.browserContext(), this.#frame.browsingContext);
     }
     url() {
-        return this._browsingContext.url;
+        return this.#frame.url();
     }
-    async createCDPSession() {
-        const { sessionId } = await this._browsingContext.cdpSession.send('Target.attachToTarget', {
-            targetId: this._browsingContext.id,
-            flatten: true,
-        });
-        return new CdpSessionWrapper(this._browsingContext, sessionId);
+    createCDPSession() {
+        return this.#frame.createCDPSession();
     }
     type() {
         return TargetType.PAGE;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#frame.page().browserContext();
+    }
+    opener() {
+        throw new UnsupportedOperation();
     }
 }
 /**
  * @internal
  */
-export class BiDiPageTarget extends BiDiBrowsingContextTarget {
-    #page;
-    constructor(browserContext, browsingContext) {
-        super(browserContext, browsingContext);
-        this.#page = new BidiPage(browsingContext, browserContext, this);
+export class BidiWorkerTarget extends Target {
+    #worker;
+    constructor(worker) {
+        super();
+        this.#worker = worker;
     }
     async page() {
-        return this.#page;
+        throw new UnsupportedOperation();
     }
-    _setBrowserContext(browserContext) {
-        super._setBrowserContext(browserContext);
-        this.#page._setBrowserContext(browserContext);
+    async asPage() {
+        throw new UnsupportedOperation();
+    }
+    url() {
+        return this.#worker.url();
+    }
+    createCDPSession() {
+        throw new UnsupportedOperation();
+    }
+    type() {
+        return TargetType.OTHER;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#worker.frame.page().browserContext();
+    }
+    opener() {
+        throw new UnsupportedOperation();
     }
 }
 //# sourceMappingURL=Target.js.map

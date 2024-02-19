@@ -8,15 +8,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
  * @internal
  */
 export declare class BidiDeserializer {
-    static deserializeNumber(value: Bidi.Script.SpecialNumber | number): number;
-    static deserializeLocalValue(result: Bidi.Script.RemoteValue): unknown;
-    static deserializeTuple([serializedKey, serializedValue]: [
-        Bidi.Script.RemoteValue | string,
-        Bidi.Script.RemoteValue
-    ]): {
-        key: unknown;
-        value: unknown;
-    };
+    #private;
     static deserialize(result: Bidi.Script.RemoteValue): any;
 }
 //# sourceMappingURL=Deserializer.d.ts.map

@@ -12,7 +12,7 @@ import {assert} from '../util/assert.js';
 import {Deferred} from '../util/Deferred.js';
 import {interpolateFunction, stringifyFunction} from '../util/Function.js';
 
-import type {BidiConnection} from './Connection.js';
+import type {Connection} from './core/Connection.js';
 import {BidiDeserializer} from './Deserializer.js';
 import type {BidiFrame} from './Frame.js';
 import {BidiSerializer} from './Serializer.js';
@@ -144,7 +144,7 @@ export class ExposeableFunction<Args extends unknown[], Ret> {
         }),
         arguments: [
           (await callbacks.resolve.valueOrThrow()) as Bidi.Script.LocalValue,
-          BidiSerializer.serializeRemoteValue(result),
+          BidiSerializer.serialize(result),
         ],
         awaitPromise: false,
         target: {
@@ -172,9 +172,9 @@ export class ExposeableFunction<Args extends unknown[], Ret> {
             ),
             arguments: [
               (await callbacks.reject.valueOrThrow()) as Bidi.Script.LocalValue,
-              BidiSerializer.serializeRemoteValue(error.name),
-              BidiSerializer.serializeRemoteValue(error.message),
-              BidiSerializer.serializeRemoteValue(error.stack),
+              BidiSerializer.serialize(error.name),
+              BidiSerializer.serialize(error.message),
+              BidiSerializer.serialize(error.stack),
             ],
             awaitPromise: false,
             target: {
@@ -193,7 +193,7 @@ export class ExposeableFunction<Args extends unknown[], Ret> {
             ),
             arguments: [
               (await callbacks.reject.valueOrThrow()) as Bidi.Script.LocalValue,
-              BidiSerializer.serializeRemoteValue(error),
+              BidiSerializer.serialize(error),
             ],
             awaitPromise: false,
             target: {
@@ -207,8 +207,8 @@ export class ExposeableFunction<Args extends unknown[], Ret> {
     }
   };
 
-  get #connection(): BidiConnection {
-    return this.#frame.context().connection;
+  get #connection(): Connection {
+    return this.#frame.page().browser().connection;
   }
 
   get #channelArguments() {

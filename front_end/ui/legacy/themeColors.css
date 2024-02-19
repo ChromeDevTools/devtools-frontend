@@ -699,6 +699,8 @@
   --sys-color-on-cyan: var(--ref-palette-cyan20);
   --sys-color-purple: var(--ref-palette-purple80);
   --sys-color-on-purple: var(--ref-palette-purple20);
+  --sys-color-pink: var(--ref-palette-pink80);
+  --sys-color-on-pink: var(--ref-palette-pink20);
 
   /* Containers */
 

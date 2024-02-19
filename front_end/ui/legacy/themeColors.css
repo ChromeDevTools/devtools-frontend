@@ -683,6 +683,7 @@
   --sys-color-cyan-bright: var(--ref-palette-cyan70);
   --sys-color-purple-bright: var(--ref-palette-purple70);
   --sys-color-neutral-bright: var(--ref-palette-neutral50);
+  --sys-color-pink-bright: var(--ref-palette-pink70);
 
   /* Prominent accent colors for text */
 

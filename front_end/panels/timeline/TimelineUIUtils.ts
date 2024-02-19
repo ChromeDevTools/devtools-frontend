@@ -860,6 +860,10 @@ const UIStrings = {
    */
   FromServiceWorker: ' (from `service worker`)',
   /**
+   *@description Text for the stack trace of the initiator of something. The Initiator is the event or factor that directly triggered or precipitated a subsequent action.
+   */
+  initiatorStackTrace: 'Initiator Stack Trace',
+  /**
    *@description Text for the event initiated by another one
    */
   initiatedBy: 'Initiated by',
@@ -891,10 +895,6 @@ const UIStrings = {
    *@description Stack label in Timeline UIUtils of the Performance panel
    */
   layoutForced: 'Layout Forced',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  callStacks: 'Call Stacks',
   /**
    *@description Text for the execution stack trace
    */
@@ -2516,27 +2516,34 @@ export class TimelineUIUtils {
       event: TraceEngine.Types.TraceEvents.TraceEventData, contentHelper: TimelineDetailsContentHelper,
       traceParseData: TraceEngine.Handlers.Types.TraceParseData): Promise<void> {
     const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-    let callSiteStackLabel;
-    let stackLabel;
+    let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
+    let stackLabel = i18nString(UIStrings.stackTrace);
 
     switch (event.name) {
       case TraceEngine.Types.TraceEvents.KnownEventName.TimerFire:
-        callSiteStackLabel = i18nString(UIStrings.timerInstalled);
+        initiatorStackLabel = i18nString(UIStrings.timerInstalled);
         break;
       case TraceEngine.Types.TraceEvents.KnownEventName.FireAnimationFrame:
-        callSiteStackLabel = i18nString(UIStrings.animationFrameRequested);
+        initiatorStackLabel = i18nString(UIStrings.animationFrameRequested);
         break;
       case TraceEngine.Types.TraceEvents.KnownEventName.FireIdleCallback:
-        callSiteStackLabel = i18nString(UIStrings.idleCallbackRequested);
+        initiatorStackLabel = i18nString(UIStrings.idleCallbackRequested);
         break;
       case TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree:
       case TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles:
+        initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
         stackLabel = i18nString(UIStrings.recalculationForced);
         break;
       case TraceEngine.Types.TraceEvents.KnownEventName.Layout:
-        callSiteStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
+        initiatorStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
         stackLabel = i18nString(UIStrings.layoutForced);
         break;
+    }
+
+    const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
+    if (stackTrace && stackTrace.length) {
+      contentHelper.addSection(stackLabel);
+      contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
     }
 
     const initiator = traceParseData.Initiators.eventToInitiator.get(event);
@@ -2544,26 +2551,25 @@ export class TimelineUIUtils {
     const invalidations = traceParseData.Invalidations.invalidationsForEvent.get(event);
 
     if (initiator) {
-      // If we have an initiator for the event, we can show information about
-      // its initiator and a link to reveal it.
-      const {startTime: initiatorStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
-      const delay = startTime - initiatorStartTime;
-      contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
+      // If we have an initiator for the event, we can show its stack trace, a link to reveal the initiator,
+      // and the time since the initiator (Pending For).
+      const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(initiator);
+      if (stackTrace) {
+        contentHelper.addSection(initiatorStackLabel);
+        contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace.map(frame => {
+          return {
+            ...frame,
+            scriptId: String(frame.scriptId) as Protocol.Runtime.ScriptId,
+          };
+        })));
+      }
 
       const link = this.createEntryLink(initiator);
       contentHelper.appendElementRow(i18nString(UIStrings.initiatedBy), link);
 
-      const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(initiator);
-      if (stackTrace) {
-        contentHelper.appendStackTrace(
-            callSiteStackLabel || i18nString(UIStrings.firstInvalidated),
-            TimelineUIUtils.stackTraceFromCallFrames(stackTrace.map(frame => {
-              return {
-                ...frame,
-                scriptId: String(frame.scriptId) as Protocol.Runtime.ScriptId,
-              };
-            })));
-      }
+      const {startTime: initiatorStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
+      const delay = startTime - initiatorStartTime;
+      contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
     }
 
     if (initiatorFor) {
@@ -2577,13 +2583,6 @@ export class TimelineUIUtils {
         }
       });
       contentHelper.appendElementRow(UIStrings.initiatorFor, links);
-    }
-
-    const stackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(event);
-    if (stackTrace && stackTrace.length) {
-      contentHelper.addSection(i18nString(UIStrings.callStacks));
-      contentHelper.appendStackTrace(
-          stackLabel || i18nString(UIStrings.stackTrace), TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
     }
 
     if (invalidations && invalidations.length) {
@@ -3245,23 +3244,13 @@ export class TimelineDetailsContentHelper {
     this.appendElementRow(title, locationContent);
   }
 
-  appendStackTrace(title: string, stackTrace: Protocol.Runtime.StackTrace): void {
+  createChildStackTraceElement(stackTrace: Protocol.Runtime.StackTrace): void {
     if (!this.linkifierInternal) {
       return;
     }
 
-    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
-    rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
-    this.createChildStackTraceElement(rowElement, stackTrace);
-  }
-
-  createChildStackTraceElement(parentElement: Element, stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this.linkifierInternal) {
-      return;
-    }
-    parentElement.classList.add('timeline-details-stack-values');
     const stackTraceElement =
-        parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
+        this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
     const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
         this.target, this.linkifierInternal, {stackTrace, tabStops: true});
     stackTraceElement.appendChild(callFrameContents.element);

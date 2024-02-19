@@ -168,13 +168,6 @@ class ScopeTreeEntry implements ScopeEntry {
   }
 }
 
-const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-const base64Map = new Map<string, number>();
-
-for (let i = 0; i < base64Digits.length; ++i) {
-  base64Map.set(base64Digits.charAt(i), i);
-}
-
 const sourceMapToSourceList = new WeakMap<SourceMapV3, Platform.DevToolsPath.UrlString[]>();
 
 interface SourceInfo {
@@ -485,7 +478,7 @@ export class SourceMap {
     // we have the list available.
     const sources = sourceMapToSourceList.get(map);
     const names = map.names ?? [];
-    const stringCharIterator = new SourceMap.StringCharIterator(map.mappings);
+    const stringCharIterator = new StringCharIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = sources && sources[sourceIndex];
 
     while (true) {
@@ -502,21 +495,21 @@ export class SourceMap {
         }
       }
 
-      columnNumber += this.decodeVLQ(stringCharIterator);
+      columnNumber += stringCharIterator.decodeVLQ();
       if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
         this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
-      const sourceIndexDelta = this.decodeVLQ(stringCharIterator);
+      const sourceIndexDelta = stringCharIterator.decodeVLQ();
       if (sourceIndexDelta) {
         sourceIndex += sourceIndexDelta;
         if (sources) {
           sourceURL = sources[sourceIndex];
         }
       }
-      sourceLineNumber += this.decodeVLQ(stringCharIterator);
-      sourceColumnNumber += this.decodeVLQ(stringCharIterator);
+      sourceLineNumber += stringCharIterator.decodeVLQ();
+      sourceColumnNumber += stringCharIterator.decodeVLQ();
 
       if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
         this.mappings().push(
@@ -524,7 +517,7 @@ export class SourceMap {
         continue;
       }
 
-      nameIndex += this.decodeVLQ(stringCharIterator);
+      nameIndex += stringCharIterator.decodeVLQ();
       this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
@@ -561,7 +554,7 @@ export class SourceMap {
       let endLineNumber = 0;
       let endColumnNumber = 0;
 
-      const stringCharIterator = new SourceMap.StringCharIterator(scopes);
+      const stringCharIterator = new StringCharIterator(scopes);
       const entries: ScopeTreeEntry[] = [];
       let atStart = true;
       while (stringCharIterator.hasNext()) {
@@ -573,11 +566,11 @@ export class SourceMap {
           // Unexpected character.
           return;
         }
-        nameIndex += this.decodeVLQ(stringCharIterator);
-        startLineNumber += this.decodeVLQ(stringCharIterator);
-        startColumnNumber += this.decodeVLQ(stringCharIterator);
-        endLineNumber += this.decodeVLQ(stringCharIterator);
-        endColumnNumber += this.decodeVLQ(stringCharIterator);
+        nameIndex += stringCharIterator.decodeVLQ();
+        startLineNumber += stringCharIterator.decodeVLQ();
+        startColumnNumber += stringCharIterator.decodeVLQ();
+        endLineNumber += stringCharIterator.decodeVLQ();
+        endColumnNumber += stringCharIterator.decodeVLQ();
         entries.push(new ScopeTreeEntry(
             startLineNumber, startColumnNumber, endLineNumber, endColumnNumber, names[nameIndex] ?? '<invalid>'));
       }
@@ -635,23 +628,6 @@ export class SourceMap {
 
   private isSeparator(char: string): boolean {
     return char === ',' || char === ';';
-  }
-
-  private decodeVLQ(stringCharIterator: SourceMap.StringCharIterator): number {
-    // Read unsigned value.
-    let result = 0;
-    let shift = 0;
-    let digit: number = SourceMap._VLQ_CONTINUATION_MASK;
-    while (digit & SourceMap._VLQ_CONTINUATION_MASK) {
-      digit = base64Map.get(stringCharIterator.next()) || 0;
-      result += (digit & SourceMap._VLQ_BASE_MASK) << shift;
-      shift += SourceMap._VLQ_BASE_SHIFT;
-    }
-
-    // Fix the sign.
-    const negative = result & 1;
-    result >>= 1;
-    return negative ? -result : result;
   }
 
   /**
@@ -805,36 +781,50 @@ export class SourceMap {
   }
 }
 
-export namespace SourceMap {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_BASE_SHIFT = 5;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_BASE_MASK = (1 << 5) - 1;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const _VLQ_CONTINUATION_MASK = 1 << 5;
+const VLQ_BASE_SHIFT = 5;
+const VLQ_BASE_MASK = (1 << 5) - 1;
+const VLQ_CONTINUATION_MASK = 1 << 5;
 
-  export class StringCharIterator {
-    private readonly string: string;
-    private position: number;
+export class StringCharIterator {
+  readonly #string: string;
+  #position: number;
 
-    constructor(string: string) {
-      this.string = string;
-      this.position = 0;
+  constructor(string: string) {
+    this.#string = string;
+    this.#position = 0;
+  }
+
+  next(): string {
+    return this.#string.charAt(this.#position++);
+  }
+
+  /** Returns the unicode value of the next character and advances the iterator  */
+  nextCharCode(): number {
+    return this.#string.charCodeAt(this.#position++);
+  }
+
+  peek(): string {
+    return this.#string.charAt(this.#position);
+  }
+
+  hasNext(): boolean {
+    return this.#position < this.#string.length;
+  }
+
+  decodeVLQ(): number {
+    // Read unsigned value.
+    let result = 0;
+    let shift = 0;
+    let digit: number = VLQ_CONTINUATION_MASK;
+    while (digit & VLQ_CONTINUATION_MASK && this.hasNext()) {
+      digit = Common.Base64.BASE64_CODES[this.nextCharCode()];
+      result += (digit & VLQ_BASE_MASK) << shift;
+      shift += VLQ_BASE_SHIFT;
     }
 
-    next(): string {
-      return this.string.charAt(this.position++);
-    }
-
-    peek(): string {
-      return this.string.charAt(this.position);
-    }
-
-    hasNext(): boolean {
-      return this.position < this.string.length;
-    }
+    // Fix the sign.
+    const negative = result & 1;
+    result >>= 1;
+    return negative ? -result : result;
   }
 }

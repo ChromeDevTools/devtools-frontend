@@ -59,23 +59,23 @@ describeWithEnvironment('SourceMap', () => {
 
   describe('StringCharIterator', () => {
     it('detects when it has reached the end', () => {
-      const emptyIterator = new SDK.SourceMap.SourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.StringCharIterator('');
       assert.isFalse(emptyIterator.hasNext());
 
-      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.StringCharIterator('foo');
       assert.isTrue(iterator.hasNext());
     });
 
     it('peeks the next character', () => {
-      const emptyIterator = new SDK.SourceMap.SourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.StringCharIterator('');
       assert.strictEqual(emptyIterator.peek(), '');
 
-      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.StringCharIterator('foo');
       assert.strictEqual(iterator.peek(), 'f');
     });
 
     it('advances when {next} is called', () => {
-      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('bar');
+      const iterator = new SDK.SourceMap.StringCharIterator('bar');
       assert.strictEqual(iterator.next(), 'b');
       assert.strictEqual(iterator.next(), 'a');
       assert.strictEqual(iterator.next(), 'r');

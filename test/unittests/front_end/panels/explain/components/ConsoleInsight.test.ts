@@ -38,9 +38,10 @@ describeWithLocale('ConsoleInsight', () => {
   describe('ConsoleInsight', () => {
     function getTestInsightProvider() {
       return {
-        async getInsights() {
-          return 'test';
-        },
+        async *
+            getInsights() {
+              yield 'test';
+            },
       };
     }
 

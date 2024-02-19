@@ -45,8 +45,9 @@ Response status: 404`,
       },
     },
     {
-      async getInsights() {
-        return `## Result
+      async *
+          getInsights() {
+            yield `## Result
 
 Some text with \`code\`. Some code:
 \`\`\`ts
@@ -65,7 +66,7 @@ document.querySelector('test').style = 'black';
 Links: [https://example.com](https://example.com)
 Images: ![https://example.com](https://example.com)
 `;
-      },
+          },
     },
     'Explain this error', {
       isSyncActive: true,

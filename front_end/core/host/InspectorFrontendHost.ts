@@ -469,9 +469,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return null;
   }
 
-  doAidaConversation(request: string, callback: (result: DoAidaConversationResult) => void): void {
+  doAidaConversation(request: string, streamId: number, callback: (result: DoAidaConversationResult) => void): void {
     callback({
-      response: '{}',
+      error: 'Not implemened',
     });
   }
 

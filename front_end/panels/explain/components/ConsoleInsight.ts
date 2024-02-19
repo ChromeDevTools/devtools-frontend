@@ -353,16 +353,17 @@ export class ConsoleInsight extends HTMLElement {
       consentGiven: true,
     });
     try {
-      const {sources, explanation} = await this.#getInsight();
-      const tokens = this.#validateMarkdown(explanation);
-      const valid = tokens !== false;
-      this.#transitionTo({
-        type: State.INSIGHT,
-        tokens: valid ? tokens : [],
-        validMarkdown: valid,
-        explanation,
-        sources,
-      });
+      for await (const {sources, explanation} of this.#getInsight()) {
+        const tokens = this.#validateMarkdown(explanation);
+        const valid = tokens !== false;
+        this.#transitionTo({
+          type: State.INSIGHT,
+          tokens: valid ? tokens : [],
+          validMarkdown: valid,
+          explanation,
+          sources,
+        });
+      }
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
@@ -389,11 +390,12 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  async #getInsight(): Promise<{sources: Source[], explanation: string}> {
+  async * #getInsight(): AsyncGenerator<{sources: Source[], explanation: string}, void, void> {
     try {
       const {prompt, sources} = await this.#promptBuilder.buildPrompt();
-      const explanation = await this.#insightProvider.getInsights(prompt);
-      return {sources, explanation};
+      for await (const explanation of this.#insightProvider.getInsights(prompt)) {
+        yield {sources, explanation};
+      }
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredApi);
       throw err;

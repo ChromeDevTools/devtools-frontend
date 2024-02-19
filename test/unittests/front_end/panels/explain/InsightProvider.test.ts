@@ -102,77 +102,94 @@ describe('InsightProvider', () => {
     stub.restore();
   });
 
-  it('handles subsequent code chunks', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(1, {
-      response: JSON.stringify([
-        {textChunk: {text: 'hello '}},
-        {codeChunk: {code: 'brave '}},
-        {codeChunk: {code: 'new World()'}},
-      ]),
-    });
+  async function getAllResults(provider: Explain.InsightProvider): Promise<string[]> {
+    const results = [];
+    for await (const result of provider.getInsights('foo')) {
+      results.push(result);
+    }
+    return results;
+  }
+
+  it('handles chunked response', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake(async (_, streamId, callback) => {
+          const response = JSON.stringify([
+            {textChunk: {text: 'hello '}},
+            {textChunk: {text: 'brave '}},
+            {textChunk: {text: 'new world!'}},
+          ]);
+          for (const chunk of response.split(',')) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+            Host.ResourceLoader.streamWrite(streamId, chunk);
+          }
+          callback({statusCode: 200});
+        });
+
     const provider = new Explain.InsightProvider();
-    const result = await provider.getInsights('foo');
-    assert.strictEqual(result, 'hello \n`````\nbrave new World()\n`````\n');
+    const results = await getAllResults(provider);
+    assert.deepStrictEqual(results, ['hello ', 'hello brave ', 'hello brave new world!']);
+  });
+
+  it('handles subsequent code chunks', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake(async (_, streamId, callback) => {
+          const response = JSON.stringify([
+            {textChunk: {text: 'hello '}},
+            {codeChunk: {code: 'brave '}},
+            {codeChunk: {code: 'new World()'}},
+          ]);
+          for (const chunk of response.split(',')) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+            Host.ResourceLoader.streamWrite(streamId, chunk);
+          }
+          callback({statusCode: 200});
+        });
+
+    const provider = new Explain.InsightProvider();
+    const results = await getAllResults(provider);
+    assert.deepStrictEqual(
+        results, ['hello ', 'hello \n`````\nbrave \n`````\n', 'hello \n`````\nbrave new World()\n`````\n']);
   });
 
   it('throws a readable error on 403', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake((request, cb) => {
-          cb({
-            response: JSON.stringify([{
-              'error': 'Got error response from AIDA',
-              'detail': [
-                {
-                  'error': {
-                    'code': 403,
-                    'message': 'The caller does not have permission',
-                    'status': 'PERMISSION_DENIED',
-                    'details': [
-                      {
-                        '@type': 'type.googleapis.com/google.rpc.DebugInfo',
-                        'detail': 'DETAILS',
-                      },
-                    ],
-                  },
-                },
-              ],
-            }]),
-          });
-        });
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+      'statusCode': 403,
+    });
     const provider = new Explain.InsightProvider();
     try {
-      await provider.getInsights('foo');
+      await getAllResults(provider);
       expect.fail('provider.getInsights did not throw');
     } catch (err) {
       expect(err.message).equals('Server responded: permission denied');
     }
   });
 
-  it('throws an error with all details for other codes', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
-        .callsFake((request, cb) => {
-          cb({
-            response: JSON.stringify([{
-              'error': 'Got error response from AIDA',
-              'detail': [
-                {
-                  'error': {
-                    'code': 418,
-                    'message': 'I am a teapot',
-                  },
-                },
-              ],
-            }]),
-          });
-        });
+  it('throws an error for other codes', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+      'statusCode': 418,
+    });
     const provider = new Explain.InsightProvider();
     try {
-      await provider.getInsights('foo');
+      await getAllResults(provider);
+      expect.fail('provider.getInsights did not throw');
+    } catch (err) {
+      expect(err.message).equals('Request failed: {"statusCode":418}');
+    }
+  });
+
+  it('throws an error with all details for other failures', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+      'error': 'Cannot get OAuth credentials',
+      'detail': '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+    });
+    const provider = new Explain.InsightProvider();
+    try {
+      await getAllResults(provider);
       expect.fail('provider.getInsights did not throw');
     } catch (err) {
       expect(err.message)
           .equals(
-              'Server responded: {"error":"Got error response from AIDA","detail":[{"error":{"code":418,"message":"I am a teapot"}}]}');
+              'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}');
     }
   });
 });

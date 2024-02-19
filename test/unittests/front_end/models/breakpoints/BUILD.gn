@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("breakpoints") {
   testonly = true
-  sources = [ "BreakpointManager_test.ts" ]
+  sources = [ "BreakpointManager.test.ts" ]
 
   deps = [
     "../../../../../front_end/models/breakpoints:bundle",

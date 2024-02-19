@@ -6,7 +6,7 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("quick_open") {
   testonly = true
-  sources = [ "CommandMenu_test.ts" ]
+  sources = [ "CommandMenu.test.ts" ]
 
   deps = [ "../../../../helpers" ]
 }

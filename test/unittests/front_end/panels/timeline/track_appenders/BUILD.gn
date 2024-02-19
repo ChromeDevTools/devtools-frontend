@@ -7,15 +7,15 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("track_appenders") {
   testonly = true
   sources = [
-    "AnimationsTrackAppender_test.ts",
-    "AppenderUtils_test.ts",
-    "CompatibilityTracksAppender_test.ts",
-    "GPUTrackAppender_test.ts",
-    "InteractionsTrackAppender_test.ts",
-    "LayoutShiftsTrackAppender_test.ts",
-    "NetworkTrackAppender_test.ts",
-    "ThreadAppender_test.ts",
-    "TimingsTrackAppender_test.ts",
+    "AnimationsTrackAppender.test.ts",
+    "AppenderUtils.test.ts",
+    "CompatibilityTracksAppender.test.ts",
+    "GPUTrackAppender.test.ts",
+    "InteractionsTrackAppender.test.ts",
+    "LayoutShiftsTrackAppender.test.ts",
+    "NetworkTrackAppender.test.ts",
+    "ThreadAppender.test.ts",
+    "TimingsTrackAppender.test.ts",
   ]
 
   deps = [

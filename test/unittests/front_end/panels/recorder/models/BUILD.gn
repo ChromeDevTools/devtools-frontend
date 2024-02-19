@@ -7,14 +7,14 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("models") {
   testonly = true
   sources = [
-    "RecorderSettings_test.ts",
-    "RecorderShorcutHelper_test.ts",
-    "RecordingPlayer_test.ts",
-    "SchemaUtils_test.ts",
-    "ScreenshotUtils_test.ts",
-    "Section_test.ts",
-    "recording-storage_test.ts",
-    "screenshot-storage_test.ts",
+    "RecorderSettings.test.ts",
+    "RecorderShorcutHelper.test.ts",
+    "RecordingPlayer.test.ts",
+    "SchemaUtils.test.ts",
+    "ScreenshotUtils.test.ts",
+    "Section.test.ts",
+    "recording-storage.test.ts",
+    "screenshot-storage.test.ts",
   ]
 
   deps = [

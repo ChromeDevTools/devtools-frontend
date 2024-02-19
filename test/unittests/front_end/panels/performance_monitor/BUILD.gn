@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("performance_monitor") {
   testonly = true
-  sources = [ "PerformanceMonitor_test.ts" ]
+  sources = [ "PerformanceMonitor.test.ts" ]
 
   deps = [
     "../../../../../front_end/panels/performance_monitor:bundle",

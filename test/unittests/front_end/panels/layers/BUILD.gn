@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("layers") {
   testonly = true
-  sources = [ "LayersPanel_test.ts" ]
+  sources = [ "LayersPanel.test.ts" ]
 
   deps = [
     "../../../../../front_end/panels/layers:bundle",

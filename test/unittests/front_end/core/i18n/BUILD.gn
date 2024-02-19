@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("i18n") {
   testonly = true
   sources = [
-    "DevToolsLocale_test.ts",
-    "i18n_test.ts",
-    "time-utilities_test.ts",
+    "DevToolsLocale.test.ts",
+    "i18n.test.ts",
+    "time-utilities.test.ts",
   ]
 
   deps = [

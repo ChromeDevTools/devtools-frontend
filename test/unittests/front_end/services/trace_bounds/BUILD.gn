@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("trace_bounds") {
   testonly = true
-  sources = [ "TraceBounds_test.ts" ]
+  sources = [ "TraceBounds.test.ts" ]
 
   deps = [
     "../../../../../front_end/models/trace:bundle",

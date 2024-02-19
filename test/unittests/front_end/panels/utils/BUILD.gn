@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("utils") {
   testonly = true
-  sources = [ "utils_test.ts" ]
+  sources = [ "utils.test.ts" ]
 
   deps = [ "../../../../../front_end/panels/utils:bundle" ]
 }

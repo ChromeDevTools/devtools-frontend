@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("highlighting") {
   testonly = true
-  sources = [ "HighlightManager_test.ts" ]
+  sources = [ "HighlightManager.test.ts" ]
 
   deps = [ "../../../../../../front_end/ui/components/highlighting:bundle" ]
 }

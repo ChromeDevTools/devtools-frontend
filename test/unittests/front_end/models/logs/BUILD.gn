@@ -8,8 +8,8 @@ ts_library("logs") {
   testonly = true
   sources = [
     "MockNetworkLog.ts",
-    "NetworkLog_test.ts",
-    "RequestResolver_test.ts",
+    "NetworkLog.test.ts",
+    "RequestResolver.test.ts",
   ]
 
   deps = [

@@ -5,7 +5,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("root") {
   testonly = true
-  sources = [ "Runtime_test.ts" ]
+  sources = [ "Runtime.test.ts" ]
 
   deps = [ "../../../../../front_end/core/root:bundle" ]
 }

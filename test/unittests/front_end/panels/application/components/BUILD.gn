@@ -7,20 +7,20 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "BackForwardCacheView_test.ts",
-    "BounceTrackingMitigationsView_test.ts",
-    "EndpointsGrid_test.ts",
-    "FrameDetailsView_test.ts",
-    "InterestGroupAccessGrid_test.ts",
-    "OriginTrialTreeView_test.ts",
-    "ProtocolHandlersView_test.ts",
-    "ReportsGrid_test.ts",
-    "ServiceWorkerRouterView_test.ts",
-    "SharedStorageAccessGrid_test.ts",
-    "SharedStorageMetadataView_test.ts",
-    "StackTrace_test.ts",
-    "StorageMetadataView_test.ts",
-    "TrustTokensView_test.ts",
+    "BackForwardCacheView.test.ts",
+    "BounceTrackingMitigationsView.test.ts",
+    "EndpointsGrid.test.ts",
+    "FrameDetailsView.test.ts",
+    "InterestGroupAccessGrid.test.ts",
+    "OriginTrialTreeView.test.ts",
+    "ProtocolHandlersView.test.ts",
+    "ReportsGrid.test.ts",
+    "ServiceWorkerRouterView.test.ts",
+    "SharedStorageAccessGrid.test.ts",
+    "SharedStorageMetadataView.test.ts",
+    "StackTrace.test.ts",
+    "StorageMetadataView.test.ts",
+    "TrustTokensView.test.ts",
   ]
 
   deps = [

@@ -7,8 +7,8 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("utils") {
   testonly = true
   sources = [
-    "JSPresentationUtils_test.ts",
-    "Linkifier_test.ts",
+    "JSPresentationUtils.test.ts",
+    "Linkifier.test.ts",
   ]
 
   deps = [

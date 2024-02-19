@@ -7,8 +7,8 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("helpers") {
   testonly = true
   sources = [
-    "component_helpers_test.ts",
-    "custom_elements_test.ts",
+    "component_helpers.test.ts",
+    "custom_elements.test.ts",
   ]
 
   deps = [

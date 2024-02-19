@@ -7,8 +7,8 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("source_frame") {
   testonly = true
   sources = [
-    "ResourceSourceFrame_test.ts",
-    "SourceFrame_test.ts",
+    "ResourceSourceFrame.test.ts",
+    "SourceFrame.test.ts",
   ]
 
   deps = [

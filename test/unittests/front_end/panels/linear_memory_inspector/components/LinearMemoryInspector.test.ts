@@ -16,10 +16,10 @@ import {
   NAVIGATOR_ADDRESS_SELECTOR,
   NAVIGATOR_HISTORY_BUTTON_SELECTOR,
   NAVIGATOR_PAGE_BUTTON_SELECTOR,
-} from './LinearMemoryNavigator_test.js';
-import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter_test.js';
-import {VIEWER_BYTE_CELL_SELECTOR} from './LinearMemoryViewer_test.js';
-import {DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR} from './ValueInterpreterDisplay_test.js';
+} from './LinearMemoryNavigator.test.js';
+import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter.test.js';
+import {VIEWER_BYTE_CELL_SELECTOR} from './LinearMemoryViewer.test.js';
+import {DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR} from './ValueInterpreterDisplay.test.js';
 
 const {assert} = chai;
 

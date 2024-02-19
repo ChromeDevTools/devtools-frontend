@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("lit-html") {
   testonly = true
-  sources = [ "static_test.ts" ]
+  sources = [ "static.test.ts" ]
 
   deps = [ "../../../../../front_end/ui/lit-html:bundle" ]
 }

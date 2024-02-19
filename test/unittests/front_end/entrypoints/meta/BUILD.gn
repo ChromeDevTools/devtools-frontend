@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("meta") {
   testonly = true
   sources = [
-    "action_registration_test.ts",
-    "setting_registration_test.ts",
-    "view_registration_test.ts",
+    "action_registration.test.ts",
+    "setting_registration.test.ts",
+    "view_registration.test.ts",
   ]
 
   deps = [

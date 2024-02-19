@@ -5,7 +5,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("javascript_metadata") {
   testonly = true
-  sources = [ "JavascriptMetadata_test.ts" ]
+  sources = [ "JavascriptMetadata.test.ts" ]
 
   deps = [
     "../../../../../front_end/models/javascript_metadata:bundle",

@@ -7,13 +7,13 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "LinearMemoryInspectorHighlightChipList_test.ts",
-    "LinearMemoryInspector_test.ts",
-    "LinearMemoryNavigator_test.ts",
-    "LinearMemoryValueInterpreter_test.ts",
-    "LinearMemoryViewer_test.ts",
-    "ValueInterpreterDisplay_test.ts",
-    "ValueInterpreterSettings_test.ts",
+    "LinearMemoryInspector.test.ts",
+    "LinearMemoryInspectorHighlightChipList.test.ts",
+    "LinearMemoryNavigator.test.ts",
+    "LinearMemoryValueInterpreter.test.ts",
+    "LinearMemoryViewer.test.ts",
+    "ValueInterpreterDisplay.test.ts",
+    "ValueInterpreterSettings.test.ts",
   ]
 
   deps = [

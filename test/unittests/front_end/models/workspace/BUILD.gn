@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("workspace") {
   testonly = true
   sources = [
-    "SearchConfig_test.ts",
-    "UISourceCode_test.ts",
-    "WorkspaceImpl_test.ts",
+    "SearchConfig.test.ts",
+    "UISourceCode.test.ts",
+    "WorkspaceImpl.test.ts",
   ]
 
   deps = [

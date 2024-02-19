@@ -7,13 +7,13 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("text_utils") {
   testonly = true
   sources = [
-    "ContentData_test.ts",
-    "StaticContentProvider_test.ts",
-    "StreamingContentData_test.ts",
-    "TextCursor_test.ts",
-    "TextRange_test.ts",
-    "TextUtils_test.ts",
-    "Text_test.ts",
+    "ContentData.test.ts",
+    "StaticContentProvider.test.ts",
+    "StreamingContentData.test.ts",
+    "Text.test.ts",
+    "TextCursor.test.ts",
+    "TextRange.test.ts",
+    "TextUtils.test.ts",
   ]
 
   deps = [

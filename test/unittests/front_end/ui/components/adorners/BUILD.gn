@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("adorners") {
   testonly = true
-  sources = [ "Adorner_test.ts" ]
+  sources = [ "Adorner.test.ts" ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

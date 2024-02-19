@@ -7,8 +7,8 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("issue_counter") {
   testonly = true
   sources = [
-    "IssueCounter_test.ts",
-    "IssueLinkIcon_test.ts",
+    "IssueCounter.test.ts",
+    "IssueLinkIcon.test.ts",
   ]
 
   deps = [

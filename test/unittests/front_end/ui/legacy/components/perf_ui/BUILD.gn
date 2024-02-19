@@ -7,11 +7,11 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("perf_ui") {
   testonly = true
   sources = [
-    "FilmStripView_test.ts",
-    "FlameChart_test.ts",
-    "PieChart_test.ts",
-    "TimelineGrid_test.ts",
-    "TimelineOverviewCalculator_test.ts",
+    "FilmStripView.test.ts",
+    "FlameChart.test.ts",
+    "PieChart.test.ts",
+    "TimelineGrid.test.ts",
+    "TimelineOverviewCalculator.test.ts",
   ]
 
   deps = [

@@ -40,7 +40,7 @@ const renderPreloadingDetailsReportView =
 };
 
 // Note that testing Inspect/Activate buttons requires setup for targets.
-// These are tested in test/unittests/front_end/panels/application/preloading/PreloadingView_test.ts.
+// These are tested in test/unittests/front_end/panels/application/preloading/PreloadingView.test.ts.
 describeWithEnvironment('PreloadingDetailsReportView', async () => {
   it('renders place holder if not selected', async () => {
     const data = null;

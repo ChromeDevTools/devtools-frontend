@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("css") {
   testonly = true
-  sources = [ "CSSModel_test.ts" ]
+  sources = [ "CSSModel.test.ts" ]
 
   deps = [
     "../../../../../front_end/core/sdk:bundle",

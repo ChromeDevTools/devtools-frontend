@@ -6,7 +6,7 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "UserAgentClientHintsForm_test.ts" ]
+  sources = [ "UserAgentClientHintsForm.test.ts" ]
 
   deps = [
     "../../../../../../../front_end/core/platform:bundle",

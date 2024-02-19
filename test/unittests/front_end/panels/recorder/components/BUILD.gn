@@ -7,13 +7,13 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "create-recording-view_test.ts",
-    "recording-list-view_test.ts",
-    "recording-view_test.ts",
-    "replay-button_test.ts",
-    "select-button_test.ts",
-    "step-editor_test.ts",
-    "step-view_test.ts",
+    "create-recording-view.test.ts",
+    "recording-list-view.test.ts",
+    "recording-view.test.ts",
+    "replay-button.test.ts",
+    "select-button.test.ts",
+    "step-editor.test.ts",
+    "step-view.test.ts",
   ]
 
   deps = [

@@ -7,10 +7,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("lighthouse") {
   testonly = true
   sources = [
-    "LighthouseController_test.ts",
-    "LighthousePanel_test.ts",
-    "LighthouseProtocolService_test.ts",
-    "LighthouseReportRenderer_test.ts",
+    "LighthouseController.test.ts",
+    "LighthousePanel.test.ts",
+    "LighthouseProtocolService.test.ts",
+    "LighthouseReportRenderer.test.ts",
   ]
 
   deps = [

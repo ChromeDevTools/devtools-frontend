@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "SyncSection_test.ts" ]
+  sources = [ "SyncSection.test.ts" ]
 
   deps = [
     "../../../../../../front_end/panels/settings/components:bundle",

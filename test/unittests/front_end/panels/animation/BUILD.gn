@@ -7,8 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("animation") {
   testonly = true
   sources = [
-    "AnimationModel_test.ts",
-    "AnimationTimeline_test.ts",
+    "AnimationModel.test.ts",
+    "AnimationTimeline.test.ts",
   ]
 
   deps = [

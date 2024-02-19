@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "JSONEditor_test.ts" ]
+  sources = [ "JSONEditor.test.ts" ]
 
   deps = [
     "../../../../../../front_end/panels/protocol_monitor/components:bundle",

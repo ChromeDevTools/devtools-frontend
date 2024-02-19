@@ -7,8 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("search") {
   testonly = true
   sources = [
-    "SearchResultsPane_test.ts",
-    "SearchView_test.ts",
+    "SearchResultsPane.test.ts",
+    "SearchView.test.ts",
   ]
 
   deps = [

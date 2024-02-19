@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("missing_entrypoints") {
   testonly = true
-  sources = [ "missing_entrypoints_test.ts" ]
+  sources = [ "missing_entrypoints.test.ts" ]
 
   deps = [
     "../../../../../front_end/entrypoints/heap_snapshot_worker:bundle",

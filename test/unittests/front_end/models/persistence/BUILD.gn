@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("persistence") {
   testonly = true
   sources = [
-    "NetworkPersistenceManager_test.ts",
-    "PersistenceImpl_test.ts",
-    "PlatformFileSystem_test.ts",
+    "NetworkPersistenceManager.test.ts",
+    "PersistenceImpl.test.ts",
+    "PlatformFileSystem.test.ts",
   ]
 
   deps = [

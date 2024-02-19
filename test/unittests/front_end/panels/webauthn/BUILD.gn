@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("webauthn") {
   testonly = true
-  sources = [ "WebauthnPane_test.ts" ]
+  sources = [ "WebauthnPane.test.ts" ]
 
   deps = [
     "../../../../../front_end/core/platform:bundle",

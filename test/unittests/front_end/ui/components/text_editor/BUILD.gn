@@ -7,10 +7,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("text_editor") {
   testonly = true
   sources = [
-    "AutocompleteHistory_test.ts",
-    "TextEditorHistory_test.ts",
-    "TextEditor_test.ts",
-    "javascript_test.ts",
+    "AutocompleteHistory.test.ts",
+    "TextEditor.test.ts",
+    "TextEditorHistory.test.ts",
+    "javascript.test.ts",
   ]
 
   deps = [

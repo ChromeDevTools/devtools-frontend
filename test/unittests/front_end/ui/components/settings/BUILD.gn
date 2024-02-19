@@ -7,8 +7,8 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("settings") {
   testonly = true
   sources = [
-    "SettingCheckbox_test.ts",
-    "SettingDeprecationWarning_test.ts",
+    "SettingCheckbox.test.ts",
+    "SettingDeprecationWarning.test.ts",
   ]
 
   deps = [

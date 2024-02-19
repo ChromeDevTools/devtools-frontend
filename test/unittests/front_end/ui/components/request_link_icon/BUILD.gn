@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("request_link_icon") {
   testonly = true
-  sources = [ "RequestLinkIcon_test.ts" ]
+  sources = [ "RequestLinkIcon.test.ts" ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

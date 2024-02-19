@@ -7,10 +7,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("coverage") {
   testonly = true
   sources = [
-    "CoverageDecorationManager_test.ts",
-    "CoverageInfo_test.ts",
-    "CoverageView_test.ts",
-    "Segments_test.ts",
+    "CoverageDecorationManager.test.ts",
+    "CoverageInfo.test.ts",
+    "CoverageView.test.ts",
+    "Segments.test.ts",
   ]
 
   deps = [

@@ -7,13 +7,13 @@ import("../../../third_party/typescript/typescript.gni")
 ts_library("inspector_overlay") {
   testonly = true
   sources = [
-    "common_test.ts",
-    "css_grid_label_helpers_test.ts",
-    "highlight_common_test.ts",
-    "highlight_flex_common_test.ts",
-    "source_order_impl_helpers_test.ts",
-    "tool_highlight_test.ts",
-    "tool_window_controls_test.ts",
+    "common.test.ts",
+    "css_grid_label_helpers.test.ts",
+    "highlight_common.test.ts",
+    "highlight_flex_common.test.ts",
+    "source_order_impl_helpers.test.ts",
+    "tool_highlight.test.ts",
+    "tool_window_controls.test.ts",
   ]
 
   deps = [

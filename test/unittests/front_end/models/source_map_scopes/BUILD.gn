@@ -7,8 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("source_map_scopes") {
   testonly = true
   sources = [
-    "NamesResolver_test.ts",
-    "ScopeTreeCache_test.ts",
+    "NamesResolver.test.ts",
+    "ScopeTreeCache.test.ts",
   ]
 
   deps = [

@@ -7,8 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("explain") {
   testonly = true
   sources = [
-    "InsightProvider_test.ts",
-    "PromptBuilder_test.ts",
+    "InsightProvider.test.ts",
+    "PromptBuilder.test.ts",
   ]
 
   deps = [

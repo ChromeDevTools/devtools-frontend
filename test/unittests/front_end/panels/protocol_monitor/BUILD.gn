@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("protocol_monitor") {
   testonly = true
-  sources = [ "ProtocolMonitor_test.ts" ]
+  sources = [ "ProtocolMonitor.test.ts" ]
 
   deps = [
     "../../../../../front_end/panels/protocol_monitor:bundle",

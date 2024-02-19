@@ -7,8 +7,8 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("object_ui") {
   testonly = true
   sources = [
-    "JavaScriptREPL_test.ts",
-    "ObjectPropertiesSection_test.ts",
+    "JavaScriptREPL.test.ts",
+    "ObjectPropertiesSection.test.ts",
   ]
 
   deps = [

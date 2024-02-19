@@ -7,18 +7,18 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("bindings") {
   testonly = true
   sources = [
-    "CompilerScriptMapping_test.ts",
-    "ContentProviderBasedProject_test.ts",
-    "DebuggerLanguagePlugins_test.ts",
-    "DebuggerWorkspaceBinding_test.ts",
-    "DefaultScriptMapping_test.ts",
-    "FileUtils_test.ts",
-    "IgnoreListManager_test.ts",
-    "LiveLocation_test.ts",
-    "PresentationConsoleMessageHelper_test.ts",
-    "ResourceMapping_test.ts",
-    "ResourceScriptMapping_test.ts",
-    "ResourceUtils_test.ts",
+    "CompilerScriptMapping.test.ts",
+    "ContentProviderBasedProject.test.ts",
+    "DebuggerLanguagePlugins.test.ts",
+    "DebuggerWorkspaceBinding.test.ts",
+    "DefaultScriptMapping.test.ts",
+    "FileUtils.test.ts",
+    "IgnoreListManager.test.ts",
+    "LiveLocation.test.ts",
+    "PresentationConsoleMessageHelper.test.ts",
+    "ResourceMapping.test.ts",
+    "ResourceScriptMapping.test.ts",
+    "ResourceUtils.test.ts",
   ]
 
   deps = [

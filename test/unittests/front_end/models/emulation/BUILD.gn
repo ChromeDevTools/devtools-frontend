@@ -7,8 +7,8 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("emulation") {
   testonly = true
   sources = [
-    "DeviceModeModel_test.ts",
-    "EmulatedDevices_test.ts",
+    "DeviceModeModel.test.ts",
+    "EmulatedDevices.test.ts",
   ]
 
   deps = [

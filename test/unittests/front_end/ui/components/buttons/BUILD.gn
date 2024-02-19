@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("buttons") {
   testonly = true
-  sources = [ "Button_test.ts" ]
+  sources = [ "Button.test.ts" ]
 
   deps = [
     "../../../../../../front_end/ui/components/buttons:bundle",

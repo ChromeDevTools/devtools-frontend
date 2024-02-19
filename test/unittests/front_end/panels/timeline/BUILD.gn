@@ -7,22 +7,22 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("timeline") {
   testonly = true
   sources = [
-    "Breadcrumbs_test.ts",
-    "EventTypeHelpers_test.ts",
-    "SaveFileFormatter_test.ts",
-    "SourceMapsResolver_test.ts",
-    "TimelineController_test.ts",
-    "TimelineDetailsView_test.ts",
-    "TimelineFilters_test.ts",
-    "TimelineFlameChartDataProvider_test.ts",
-    "TimelineFlameChartNetworkDataProvider_test.ts",
-    "TimelineFlameChartView_test.ts",
-    "TimelineHistoryManager_test.ts",
-    "TimelineLoader_test.ts",
-    "TimelineMiniMap_test.ts",
-    "TimelineSelection_test.ts",
-    "TimelineTreeView_test.ts",
-    "TimelineUIUtils_test.ts",
+    "Breadcrumbs.test.ts",
+    "EventTypeHelpers.test.ts",
+    "SaveFileFormatter.test.ts",
+    "SourceMapsResolver.test.ts",
+    "TimelineController.test.ts",
+    "TimelineDetailsView.test.ts",
+    "TimelineFilters.test.ts",
+    "TimelineFlameChartDataProvider.test.ts",
+    "TimelineFlameChartNetworkDataProvider.test.ts",
+    "TimelineFlameChartView.test.ts",
+    "TimelineHistoryManager.test.ts",
+    "TimelineLoader.test.ts",
+    "TimelineMiniMap.test.ts",
+    "TimelineSelection.test.ts",
+    "TimelineTreeView.test.ts",
+    "TimelineUIUtils.test.ts",
   ]
 
   deps = [

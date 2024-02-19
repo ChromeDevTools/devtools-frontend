@@ -7,10 +7,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("extras") {
   testonly = true
   sources = [
-    "FetchNodes_test.ts",
-    "FilmStrip_test.ts",
-    "MainThreadActivity_test.ts",
-    "Metadata_test.ts",
+    "FetchNodes.test.ts",
+    "FilmStrip.test.ts",
+    "MainThreadActivity.test.ts",
+    "Metadata.test.ts",
   ]
 
   deps = [

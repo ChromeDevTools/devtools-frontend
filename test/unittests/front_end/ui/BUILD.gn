@@ -7,17 +7,17 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("ui") {
   testonly = true
   sources = [
-    "Context_test.ts",
-    "Fragment_test.ts",
-    "Geometry_test.ts",
-    "KeyboardShortcut_test.ts",
-    "ListModel_test.ts",
-    "ListWidget_test.ts",
-    "ShortcutRegistry_test.ts",
-    "UIUtils_test.ts",
-    "ViewLocation_test.ts",
-    "utils/DynamicTheming_test.ts",
-    "utils/measured-scrollbar-width_test.ts",
+    "Context.test.ts",
+    "Fragment.test.ts",
+    "Geometry.test.ts",
+    "KeyboardShortcut.test.ts",
+    "ListModel.test.ts",
+    "ListWidget.test.ts",
+    "ShortcutRegistry.test.ts",
+    "UIUtils.test.ts",
+    "ViewLocation.test.ts",
+    "utils/DynamicTheming.test.ts",
+    "utils/measured-scrollbar-width.test.ts",
   ]
 
   deps = [

@@ -7,17 +7,17 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("network") {
   testonly = true
   sources = [
-    "BlockedURLsPane_test.ts",
-    "NetworkDataGridNode_test.ts",
-    "NetworkItemView_test.ts",
-    "NetworkLogView_test.ts",
-    "NetworkOverview_test.ts",
-    "NetworkPanel_test.ts",
-    "NetworkSearchScope_test.ts",
-    "RequestCookiesView_test.ts",
-    "RequestPayloadView_test.ts",
-    "RequestPreviewView_test.ts",
-    "RequestResponseView_test.ts",
+    "BlockedURLsPane.test.ts",
+    "NetworkDataGridNode.test.ts",
+    "NetworkItemView.test.ts",
+    "NetworkLogView.test.ts",
+    "NetworkOverview.test.ts",
+    "NetworkPanel.test.ts",
+    "NetworkSearchScope.test.ts",
+    "RequestCookiesView.test.ts",
+    "RequestPayloadView.test.ts",
+    "RequestPreviewView.test.ts",
+    "RequestResponseView.test.ts",
   ]
 
   deps = [

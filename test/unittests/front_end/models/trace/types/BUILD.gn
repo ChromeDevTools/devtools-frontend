@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("types") {
   testonly = true
-  sources = [ "TraceEvents_test.ts" ]
+  sources = [ "TraceEvents.test.ts" ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

@@ -7,12 +7,12 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("console") {
   testonly = true
   sources = [
-    "ConsoleContextSelector_test.ts",
-    "ConsoleFormat_test.ts",
-    "ConsolePrompt_test.ts",
-    "ConsoleViewMessage_test.ts",
-    "ConsoleView_test.ts",
-    "ErrorStackParser_test.ts",
+    "ConsoleContextSelector.test.ts",
+    "ConsoleFormat.test.ts",
+    "ConsolePrompt.test.ts",
+    "ConsoleView.test.ts",
+    "ConsoleViewMessage.test.ts",
+    "ErrorStackParser.test.ts",
   ]
 
   deps = [

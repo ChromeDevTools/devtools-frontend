@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("two_states_counter") {
   testonly = true
-  sources = [ "TwoStatesCounter_test.ts" ]
+  sources = [ "TwoStatesCounter.test.ts" ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

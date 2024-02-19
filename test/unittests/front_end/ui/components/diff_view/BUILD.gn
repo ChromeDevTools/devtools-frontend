@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("diff_view") {
   testonly = true
-  sources = [ "DiffView_test.ts" ]
+  sources = [ "DiffView.test.ts" ]
 
   deps = [
     "../../../../../../front_end/third_party/diff:bundle",

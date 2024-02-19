@@ -7,9 +7,9 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("extensions") {
   testonly = true
   sources = [
-    "ExtensionServer_test.ts",
-    "HostUrlPattern_test.ts",
-    "RecorderPluginManager_test.ts",
+    "ExtensionServer.test.ts",
+    "HostUrlPattern.test.ts",
+    "RecorderPluginManager.test.ts",
     "helpers.ts",
   ]
 

@@ -7,9 +7,9 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "BreadcrumbsUI_test.ts",
-    "InteractionBreakdown_test.ts",
-    "Invalidations_test.ts",
+    "BreadcrumbsUI.test.ts",
+    "InteractionBreakdown.test.ts",
+    "Invalidations.test.ts",
   ]
 
   deps = [

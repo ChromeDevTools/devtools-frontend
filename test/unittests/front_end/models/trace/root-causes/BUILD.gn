@@ -6,7 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("root-causes") {
   testonly = true
-  sources = [ "LayoutShift_test.ts" ]
+  sources = [ "LayoutShift.test.ts" ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

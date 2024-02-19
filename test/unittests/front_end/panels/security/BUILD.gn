@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("security") {
   testonly = true
-  sources = [ "SecurityPanel_test.ts" ]
+  sources = [ "SecurityPanel.test.ts" ]
 
   deps = [
     "../../../../../front_end/panels/security:bundle",

@@ -7,11 +7,11 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
-    "HeaderSectionRow_test.ts",
-    "RequestHeaderSection_test.ts",
-    "RequestHeadersView_test.ts",
-    "RequestTrustTokensView_test.ts",
-    "ResponseHeaderSection_test.ts",
+    "HeaderSectionRow.test.ts",
+    "RequestHeaderSection.test.ts",
+    "RequestHeadersView.test.ts",
+    "RequestTrustTokensView.test.ts",
+    "ResponseHeaderSection.test.ts",
   ]
 
   deps = [

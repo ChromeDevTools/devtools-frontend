@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("cpu_profile") {
   testonly = true
-  sources = [ "CPUProfileDataModel_test.ts" ]
+  sources = [ "CPUProfileDataModel.test.ts" ]
 
   deps = [
     "../../../../../front_end/models/cpu_profile:bundle",

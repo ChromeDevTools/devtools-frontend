@@ -7,8 +7,8 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("icon_button") {
   testonly = true
   sources = [
-    "IconButton_test.ts",
-    "Icon_test.ts",
+    "Icon.test.ts",
+    "IconButton.test.ts",
   ]
 
   deps = [

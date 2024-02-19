@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("autofill") {
   testonly = true
-  sources = [ "AutofillView_test.ts" ]
+  sources = [ "AutofillView.test.ts" ]
 
   deps = [
     "../../../../../front_end/panels/autofill:bundle",

@@ -6,7 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("mobile_throttling") {
   testonly = true
-  sources = [ "ThrottlingManager_test.ts" ]
+  sources = [ "ThrottlingManager.test.ts" ]
 
   deps = [
     "../../../../../front_end/core/sdk:bundle",

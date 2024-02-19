@@ -7,8 +7,8 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("color_picker") {
   testonly = true
   sources = [
-    "ColorFormatSpec_test.ts",
-    "Spectrum_test.ts",
+    "ColorFormatSpec.test.ts",
+    "Spectrum.test.ts",
   ]
 
   deps = [

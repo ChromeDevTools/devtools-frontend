@@ -54,13 +54,13 @@ describeWithEnvironment('TextEditor', () => {
           makeState('line1  \n  line2( )\n\tline3  ', TextEditor.Config.showWhitespace.instance()));
       renderElementIntoDOM(editor);
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace, .cm-highlightedSpaces').length, 0);
-      Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').set('all');
+      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('all');
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-highlightedSpaces').length, 4);
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-highlightedTab').length, 1);
-      Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').set('trailing');
+      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('trailing');
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-highlightedSpaces').length, 0);
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace').length, 2);
-      Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').set('none');
+      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('none');
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace, .cm-highlightedSpaces').length, 0);
       editor.remove();
     });
@@ -117,9 +117,9 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       assert.strictEqual(editor.state.facet(CodeMirror.indentUnit), '    ');
-      Common.Settings.Settings.instance().moduleSetting('textEditorIndent').set('\t');
+      Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('\t');
       assert.strictEqual(editor.state.facet(CodeMirror.indentUnit), '\t');
-      Common.Settings.Settings.instance().moduleSetting('textEditorIndent').set('    ');
+      Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('    ');
     });
 
     it('does not treat dashes as word chars in CSS', () => {

@@ -223,7 +223,7 @@ describeWithMockConnection('PageResourceLoader', () => {
 
     for (const disableCache of [true, false]) {
       it(`loads with ${disableCache ? 'disabled' : 'enabled'} cache based on the setting`, async () => {
-        Common.Settings.Settings.instance().moduleSetting('cacheDisabled').set(disableCache);
+        Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(disableCache);
         const target = createTarget();
         const initiator = {target, frameId: null, initiatorUrl};
         const loader = SDK.PageResourceLoader.PageResourceLoader.instance();

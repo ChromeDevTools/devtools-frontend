@@ -26,7 +26,7 @@ describeWithMockConnection('NetworkPanel', () => {
     target = createTarget();
     const dummyStorage = new Common.Settings.SettingsStorage({});
     for (const settingName
-             of ['networkColorCodeResourceTypes', 'network.group-by-frame', 'networkRecordFilmStripSetting']) {
+             of ['network-color-code-resource-types', 'network.group-by-frame', 'network-record-film-strip-setting']) {
       Common.Settings.registerSettingExtension({
         settingName,
         settingType: Common.Settings.SettingType.BOOLEAN,
@@ -53,7 +53,7 @@ describeWithMockConnection('NetworkPanel', () => {
   const tracingTests = (inScope: boolean) => () => {
     it('starts recording on page reload', async () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-      Common.Settings.Settings.instance().moduleSetting('networkRecordFilmStripSetting').set(true);
+      Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
       const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
@@ -65,7 +65,7 @@ describeWithMockConnection('NetworkPanel', () => {
 
     it('stops recording on page load', async () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      Common.Settings.Settings.instance().moduleSetting('networkRecordFilmStripSetting').set(true);
+      Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
       const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);

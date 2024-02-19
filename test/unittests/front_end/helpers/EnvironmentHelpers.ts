@@ -135,131 +135,134 @@ export async function initializeGlobalVars({reset = true} = {}) {
 
   // Create the appropriate settings needed to boot.
   const settings = [
-    createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disablePausedStateOverlay', false),
-    createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'customFormatters', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnExceptionEnabled', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnCaughtException', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnUncaughtException', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disableAsyncStackTraces', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', true),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'automaticallyIgnoreListKnownThirdPartyScripts', true),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enableIgnoreListing', true),
+    createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disable-paused-state-overlay', false),
+    createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'custom-formatters', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pause-on-exception-enabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pause-on-caught-exception', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pause-on-uncaught-exception', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disable-async-stack-traces', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpoints-active', true),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'java-script-disabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skip-content-scripts', true),
     createSettingValue(
-        Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '/node_modules/|/bower_components/',
+        Common.Settings.SettingCategory.DEBUGGER, 'automatically-ignore-list-known-third-party-scripts', true),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enable-ignore-listing', true),
+    createSettingValue(
+        Common.Settings.SettingCategory.DEBUGGER, 'skip-stack-frames-pattern', '/node_modules/|/bower_components/',
         Common.Settings.SettingType.REGEX),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigatorGroupByFolder', true),
-    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'showDetailedInspectTooltip', true),
-    createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cacheDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avifFormatDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-folder', true),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
+    createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cache-disabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avif-format-disabled', false),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMedia', '', Common.Settings.SettingType.ENUM),
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersColorScheme', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-prefers-color-scheme', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureForcedColors', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-forced-colors', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedMotion', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-prefers-reduced-motion', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersContrast', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-prefers-contrast', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-prefers-reduced-data', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedTransparency', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-prefers-reduced-transparency', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '',
+        Common.Settings.SettingCategory.RENDERING, 'emulated-css-media-feature-color-gamut', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulatedVisionDeficiency', '', Common.Settings.SettingType.ENUM),
+        Common.Settings.SettingCategory.RENDERING, 'emulated-vision-deficiency', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.RENDERING, 'emulateAutoDarkMode', '', Common.Settings.SettingType.ENUM),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'localFontsDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showPaintRects', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showLayoutShiftRegions', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showAdHighlights', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showDebugBorders', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showFPSCounter', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allowScrollPastEof', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'jsSourceMapsEnabled', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'showWhitespacesInEditor', 'none'),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorAutocompletion', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorAutoDetectIndent', false),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorBracketMatching', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorCodeFolding', true),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorIndent', '    '),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorTabMovesFocus', false),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'domWordWrap', true),
+        Common.Settings.SettingCategory.RENDERING, 'emulate-auto-dark-mode', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'local-fonts-disabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-paint-rects', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-layout-shift-regions', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-ad-highlights', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-debug-borders', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-fps-counter', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-scroll-bottleneck-rects', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-web-vitals', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webp-format-disabled', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allow-scroll-past-eof', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'css-source-maps-enabled', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inline-variable-values', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'js-source-maps-enabled', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'show-whitespaces-in-editor', 'none'),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-autocompletion', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-auto-detect-indent', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-bracket-matching', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-code-folding', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-indent', '    '),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-tab-moves-focus', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'dom-word-wrap', true),
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', Common.Settings.SettingType.ENUM),
+        Common.Settings.SettingCategory.EMULATION, 'emulation.idle-detection', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.GRID, 'showGridLineLabels', 'none', Common.Settings.SettingType.ENUM),
-    createSettingValue(Common.Settings.SettingCategory.GRID, 'extendGridLines', true),
-    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridAreas', true),
-    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),
-    createSettingValue(Common.Settings.SettingCategory.NONE, 'activeKeybindSet', '', Common.Settings.SettingType.ENUM),
-    createSettingValue(Common.Settings.SettingCategory.NONE, 'userShortcuts', [], Common.Settings.SettingType.ARRAY),
+        Common.Settings.SettingCategory.GRID, 'show-grid-line-labels', 'none', Common.Settings.SettingType.ENUM),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'extend-grid-lines', true),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'show-grid-areas', true),
+    createSettingValue(Common.Settings.SettingCategory.GRID, 'show-grid-track-sizes', true),
+    createSettingValue(
+        Common.Settings.SettingCategory.NONE, 'active-keybind-set', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(Common.Settings.SettingCategory.NONE, 'user-shortcuts', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(
         Common.Settings.SettingCategory.APPEARANCE, 'help.show-release-note', true,
         Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(Common.Settings.SettingCategory.NETWORK, 'requestBlockingEnabled', false),
-    createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'monitoringXHREnabled', false),
+    createSettingValue(Common.Settings.SettingCategory.NETWORK, 'request-blocking-enabled', false),
+    createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'monitoring-xhr-enabled', false),
     createSettingValue(
-        Common.Settings.SettingCategory.NONE, 'customNetworkConditions', [], Common.Settings.SettingType.ARRAY),
+        Common.Settings.SettingCategory.NONE, 'custom-network-conditions', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(
-        Common.Settings.SettingCategory.APPEARANCE, 'uiTheme', 'systemPreferred', Common.Settings.SettingType.ENUM),
+        Common.Settings.SettingCategory.APPEARANCE, 'ui-theme', 'systemPreferred', Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.APPEARANCE, 'language', 'en-US', Common.Settings.SettingType.ENUM),
     createSettingValue(
-        Common.Settings.SettingCategory.PERSISTENCE, 'persistenceNetworkOverridesEnabled', true,
+        Common.Settings.SettingCategory.PERSISTENCE, 'persistence-network-overrides-enabled', true,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.NETWORK, 'network_log.preserve-log', true, Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.NETWORK, 'network-log.preserve-log', true, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.NETWORK, 'network_log.record-log', true, Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.NETWORK, 'network-log.record-log', true, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.SOURCES, 'network.enable-remote-file-loading', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'hideNetworkMessages', false, Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.CONSOLE, 'hide-network-messages', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'selectedContextFilterEnabled', false,
+        Common.Settings.SettingCategory.CONSOLE, 'selected-context-filter-enabled', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleGroupSimilar', false, Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.CONSOLE, 'console-group-similar', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleShowsCorsErrors', false, Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleTimestampsEnabled', false,
+        Common.Settings.SettingCategory.CONSOLE, 'console-shows-cors-errors', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleHistoryAutocomplete', false,
+        Common.Settings.SettingCategory.CONSOLE, 'console-timestamps-enabled', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleAutocompleteOnEnter', false,
+        Common.Settings.SettingCategory.CONSOLE, 'console-history-autocomplete', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'preserveConsoleLog', false, Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleEagerEval', false, Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleUserActivationEval', false,
+        Common.Settings.SettingCategory.CONSOLE, 'console-autocomplete-on-enter', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'consoleTraceExpand', false, Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.CONSOLE, 'preserve-console-log', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'console-eager-eval', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'console-user-activation-eval', false,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'console-trace-expand', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'flamechart-mouse-wheel-action', false,
         Common.Settings.SettingType.ENUM),

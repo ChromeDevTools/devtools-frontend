@@ -72,7 +72,6 @@ export class Settings {
     this.moduleSettings = new Map();
 
     for (const registration of getRegisteredSettings()) {
-      // TODO(b/320405843): remove normalization when kebab migration is complete
       const {settingName, defaultValue, storageType} = registration;
       const isRegex = registration.settingType === SettingType.REGEX;
 
@@ -151,8 +150,6 @@ export class Settings {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   moduleSetting<T = any>(settingName: string): Setting<T> {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    settingName = Settings.normalizeSettingName(settingName);
     const setting = this.moduleSettings.get(settingName) as Setting<T>;
     if (!setting) {
       throw new Error('No setting registered: ' + settingName);
@@ -161,8 +158,6 @@ export class Settings {
   }
 
   settingForTest(settingName: string): Setting<unknown> {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    settingName = Settings.normalizeSettingName(settingName);
     const setting = this.#registry.get(settingName);
     if (!setting) {
       throw new Error('No setting registered: ' + settingName);
@@ -171,8 +166,6 @@ export class Settings {
   }
 
   createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    key = Settings.normalizeSettingName(key);
     const storage = this.storageFromType(storageType);
     let setting = (this.#registry.get(key) as Setting<T>);
     if (!setting) {
@@ -183,15 +176,11 @@ export class Settings {
   }
 
   createLocalSetting<T>(key: string, defaultValue: T): Setting<T> {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    key = Settings.normalizeSettingName(key);
     return this.createSetting(key, defaultValue, SettingStorageType.Local);
   }
 
   createRegExpSetting(key: string, defaultValue: string, regexFlags?: string, storageType?: SettingStorageType):
       RegExpSetting {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    key = Settings.normalizeSettingName(key);
     if (!this.#registry.get(key)) {
       this.#registry.set(
           key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), regexFlags));
@@ -356,13 +345,10 @@ export class Setting<V> {
   #hadUserAction?: boolean;
   #disabled?: boolean;
   #deprecation: Deprecation|null = null;
-  readonly name: string;
 
   constructor(
-      name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
+      readonly name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
       readonly storage: SettingsStorage) {
-    // TODO(b/320405843): remove normalization when kebab migration is complete
-    this.name = Settings.normalizeSettingName(name);
     storage.register(this.name);
   }
 

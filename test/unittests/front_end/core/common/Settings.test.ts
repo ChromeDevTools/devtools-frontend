@@ -124,7 +124,7 @@ describe('Settings instance', () => {
     const syncedStorage = new SettingsStorage({});
     const dummyStorage = new SettingsStorage({});
     Common.Settings.registerSettingExtension({
-      settingName: 'staticSyncedSetting',
+      settingName: 'static-synced-setting',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.Synced,
@@ -133,9 +133,9 @@ describe('Settings instance', () => {
         {forceNew: true, syncedStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
 
     const dynamicSetting: Common.Settings.Setting<string> =
-        settings.createSetting('dynamicSyncedSetting', 'default val', Common.Settings.SettingStorageType.Synced);
+        settings.createSetting('dynamic-synced-setting', 'default val', Common.Settings.SettingStorageType.Synced);
     dynamicSetting.set('foo value');
-    const staticSetting: Common.Settings.Setting<boolean> = settings.moduleSetting('staticSyncedSetting');
+    const staticSetting: Common.Settings.Setting<boolean> = settings.moduleSetting('static-synced-setting');
     staticSetting.set(true);
 
     assert.isFalse(dummyStorage.has('dynamic-synced-setting'));
@@ -152,7 +152,7 @@ describe('Settings instance', () => {
     };
     const storage = new SettingsStorage({}, mockBackingStore, '__prefix__.');
     Common.Settings.registerSettingExtension({
-      settingName: 'staticGlobalSetting',
+      settingName: 'static-global-setting',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       storageType: Common.Settings.SettingStorageType.Global,
@@ -160,8 +160,8 @@ describe('Settings instance', () => {
 
     const settings = Common.Settings.Settings.instance(
         {forceNew: true, syncedStorage: storage, globalStorage: storage, localStorage: storage});
-    settings.createSetting('dynamicLocalSetting', 42, Common.Settings.SettingStorageType.Local);
-    settings.createSetting('dynamicSyncedSetting', 'foo', Common.Settings.SettingStorageType.Synced);
+    settings.createSetting('dynamic-local-setting', 42, Common.Settings.SettingStorageType.Local);
+    settings.createSetting('dynamic-synced-setting', 'foo', Common.Settings.SettingStorageType.Synced);
 
     assert.isTrue(registeredSettings.has('__prefix__.static-global-setting'));
     assert.isTrue(registeredSettings.has('__prefix__.dynamic-local-setting'));

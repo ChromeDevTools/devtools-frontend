@@ -54,7 +54,7 @@ describeWithMockConnection('DebuggerModel', () => {
         }
         return {};
       });
-      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+      Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(false);
       createTarget();
       assert.isTrue(breakpointsDeactivated);
     });
@@ -73,7 +73,7 @@ describeWithMockConnection('DebuggerModel', () => {
       await target.suspend();
 
       // Deactivate breakpoints while suspended.
-      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+      Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(false);
 
       // Verify that the backend received the message.
       assert.isTrue(breakpointsDeactivated);
@@ -98,14 +98,14 @@ describeWithMockConnection('DebuggerModel', () => {
       });
 
       // Deactivate breakpoints befroe the target is created.
-      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+      Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(false);
       const target = createTarget();
       assert.isTrue(breakpointsDeactivated);
 
       await target.suspend();
 
       // Activate breakpoints while suspended.
-      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
+      Common.Settings.Settings.instance().moduleSetting('breakpoints-active').set(true);
 
       // Verify that the backend received the message.
       assert.isTrue(breakpointsActivated);

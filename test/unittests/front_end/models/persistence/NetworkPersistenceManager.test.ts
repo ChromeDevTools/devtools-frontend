@@ -59,7 +59,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('can create an overridden file with Local Overrides folder set up but disabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
 
     const url = 'http://www.example.com/list-xhr.json';
     const resourceType = Common.ResourceType.resourceTypes.Document;

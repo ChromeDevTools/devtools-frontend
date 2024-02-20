@@ -27,10 +27,6 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/common/common.js',
     },
     {
-      code: 'import * as CommonModule from \'./common.js\';',
-      filename: 'front_end/common/common-legacy.js',
-    },
-    {
       code: 'import * as ARIAProperties from \'../generated/ARIAProperties.js\';',
       filename: 'front_end/accessibility/ARIAMetadata.js',
     },

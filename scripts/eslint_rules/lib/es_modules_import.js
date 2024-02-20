@@ -33,8 +33,7 @@ function isSideEffectImportSpecifier(specifiers) {
 function isModuleEntrypoint(fileName) {
   const fileNameWithoutExtension = path.basename(fileName).replace(path.extname(fileName), '');
   const directoryName = path.basename(path.dirname(fileName));
-  return directoryName === fileNameWithoutExtension || `${directoryName}-legacy` === fileNameWithoutExtension ||
-      `${directoryName}-testing` === fileNameWithoutExtension;
+  return directoryName === fileNameWithoutExtension || `${directoryName}-testing` === fileNameWithoutExtension;
 }
 
 function computeTopLevelFolder(fileName) {

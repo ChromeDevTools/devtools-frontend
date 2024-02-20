@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/es_modules_import */
-
 import {assert} from 'chai';
 
 import {type StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';

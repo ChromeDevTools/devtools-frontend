@@ -5,7 +5,7 @@
 
 const rule = require('../lib/es_modules_import.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  parser: require.resolve('@typescript-eslint/parser'),
 });
 
 ruleTester.run('es_modules_import', rule, {
@@ -132,7 +132,16 @@ ruleTester.run('es_modules_import', rule, {
       // Valid even though it breaks the rules, because it's in front_end/third_party.
       code: 'import { Browser } from "./package/lib/esm/puppeteer/common/Browser.js";',
       filename: 'front_end/third_party/puppeteer/puppeteer.ts',
-    }
+    },
+    // Type imports are unrestricted
+    {
+      code: 'import type { Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+    },
+    {
+      code: 'import { type Exporting } from \'../namespace/Exporting.js\';',
+      filename: 'front_end/common/Importing.js',
+    },
   ],
 
   invalid: [

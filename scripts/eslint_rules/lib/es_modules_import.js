@@ -150,6 +150,18 @@ module.exports = {
 
         checkImportExtension(node.source.value, importPathForErrorMessage, context, node);
 
+        // Type imports are unrestricted
+        if (node.importKind === 'type') {
+          // `import type ... from ...` syntax
+          return;
+        }
+        if (node.importKind === 'value') {
+          // `import {type ...} from ...` syntax
+          if (node.specifiers.every(spec => spec.importKind === 'type')) {
+            return;
+          }
+        }
+
         // Accidental relative URL:
         // e.g.: import * as Root from 'front_end/root/root.js';
         //

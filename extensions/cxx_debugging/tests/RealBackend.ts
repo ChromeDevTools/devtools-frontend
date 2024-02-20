@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// eslint-disable-next-line rulesdir/es_modules_import
 import type Protocol from 'devtools-protocol';
-// eslint-disable-next-line rulesdir/es_modules_import
 import {type ProtocolMapping} from 'devtools-protocol/types/protocol-mapping.js';
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';

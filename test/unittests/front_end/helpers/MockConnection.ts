@@ -4,7 +4,6 @@
 
 import * as ProtocolClient from '../../../../front_end/core/protocol_client/protocol_client.js';
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
-// eslint-disable-next-line rulesdir/es_modules_import
 import {type ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../../../../front_end/generated/protocol-proxy-api.js';
 

@@ -64,7 +64,7 @@ ruleTester.run('es_modules_import', rule, {
     // Importing test helpers directly is allowed in test files
     {
       code: 'import {resetTestDOM} from \'../helpers/DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/elements/ElementsBreadcrumbs_test.ts',
+      filename: 'test/unittests/front_end/elements/ElementsBreadcrumbs.test.ts',
     },
     {
       code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',
@@ -110,6 +110,10 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as Elements from \'./elements.js\';',
       filename: 'front_end/panels/elements/elements-entrypoint.ts',
     },
+    {
+      code: 'import * as Elements from \'./elements.js\';',
+      filename: 'front_end/panels/elements/StylesSidebarPane.test.ts',
+    },
     // Tests are allowed to import from front_end
     {
       code: 'import * as UI from \'../../../front_end/ui/ui.js\';',
@@ -120,6 +124,10 @@ ruleTester.run('es_modules_import', rule, {
       code:
           'import {createContentProviderUISourceCode} from \'../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js\';',
       filename: 'front_end/models/bindings/IgnoreListManager.test.ts',
+    },
+    {
+      code: 'import {renderElementIntoDOM} from \'./DOMHelpers.js\';',
+      filename: 'test/unittests/front_end/helpers/MutationHelpers.test.ts',
     },
     // Component doc files can reach into the test directory to use the helpers
     {
@@ -236,11 +244,21 @@ ruleTester.run('es_modules_import', rule, {
     // Unittests need to import module entrypoints.
     {
       code: 'import { LiveLocationPool } from \'../../../../front_end/bindings/LiveLocation.js\';',
-      filename: 'test/unittests/front_end/bindings/LiveLocation_test.ts',
+      filename: 'test/unittests/front_end/bindings/LiveLocation.test.ts',
       errors: [
         {
           message:
               'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
+        },
+      ],
+    },
+    {
+      code: 'import { LiveLocationPool } from \'./LiveLocation.js\';',
+      filename: 'front_end/bindings/LiveLocation.test.ts',
+      errors: [
+        {
+          message:
+              'Incorrect same-namespace import: "./LiveLocation.js". Use "import * as Bindings from \'./bindings.js\';" instead.'
         },
       ],
     },
@@ -275,6 +293,6 @@ ruleTester.run('es_modules_import', rule, {
         message:
             'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
       }],
-    }
+    },
   ]
 });

@@ -112,11 +112,16 @@ type Constructor = (abstract new (...args: any[]) => any)|(new (...args: any[]) 
 export type MatchFactory<MatchT extends Constructor> = (...args: ConstructorParameters<MatchT>) => InstanceType<MatchT>;
 
 export interface Matcher {
+  accepts(propertyName: string): boolean;
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null;
 }
 
 export abstract class MatcherBase<MatchT extends Constructor> implements Matcher {
   constructor(readonly createMatch: MatchFactory<MatchT>) {
+  }
+
+  accepts(_propertyName: string): boolean {
+    return true;
   }
 
   abstract matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null;
@@ -135,7 +140,7 @@ export class BottomUpTreeMatching extends TreeWalker {
   constructor(ast: SyntaxTree, matchers: Matcher[]) {
     super(ast);
     this.computedText = new ComputedText(ast.propertyValue);
-    this.#matchers.push(...matchers);
+    this.#matchers.push(...matchers.filter(m => !ast.propertyName || m.accepts(ast.propertyName)));
     this.#matchers.push(new TextMatcher());
   }
 
@@ -443,6 +448,31 @@ function callArgs(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode[][] {
   return split(args);
 }
 
+export abstract class AngleMatch implements Match {
+  readonly type: string = 'angle';
+  constructor(readonly text: string) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class AngleMatcher extends MatcherBase<typeof AngleMatch> {
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isAngleAwareProperty(propertyName);
+  }
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'NumberLiteral') {
+      return null;
+    }
+    const unit = node.getChild('Unit');
+    // TODO(crbug/1138628) handle unitless 0
+    if (!unit || !['deg', 'grad', 'rad', 'turn'].includes(matching.ast.text(unit))) {
+      return null;
+    }
+
+    return this.createMatch(matching.ast.text(node));
+  }
+}
+
 function literalToNumber(node: CodeMirror.SyntaxNode, ast: SyntaxTree): number|null {
   if (node.type.name !== 'NumberLiteral') {
     return null;
@@ -462,10 +492,10 @@ export abstract class ColorMixMatch implements Match {
 }
 
 export class ColorMixMatcher extends MatcherBase<typeof ColorMixMatch> {
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+  }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
-    if (matching.ast.propertyName && !SDK.CSSMetadata.cssMetadata().isColorAwareProperty(matching.ast.propertyName)) {
-      return null;
-    }
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'color-mix') {
       return null;
     }
@@ -572,10 +602,11 @@ export abstract class ColorMatch implements Match {
 }
 
 export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
-  matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
-    if (matching.ast.propertyName && !SDK.CSSMetadata.cssMetadata().isColorAwareProperty(matching.ast.propertyName)) {
-      return null;
-    }
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const text = matching.ast.text(node);
     if (node.name === 'ColorLiteral') {
       return this.createMatch(text);
@@ -623,6 +654,9 @@ export class LegacyRegexMatcher implements Matcher {
     this.regexp = new RegExp(regexp);
     this.processor = processor;
   }
+  accepts(): boolean {
+    return true;
+  }
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const text = matching.ast.text(node);
     this.regexp.lastIndex = 0;
@@ -658,6 +692,9 @@ export class TextMatch implements Match {
 }
 
 class TextMatcher implements Matcher {
+  accepts(): boolean {
+    return true;
+  }
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (!node.firstChild || node.name === 'NumberLiteral' /* may have a Unit child */) {
       // Leaf node, just emit text

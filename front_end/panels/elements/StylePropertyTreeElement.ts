@@ -27,14 +27,17 @@ import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
+  AngleMatch,
+  AngleMatcher,
   type BottomUpTreeMatching,
   children,
   ColorMatch,
   ColorMatcher,
   ColorMixMatch,
   ColorMixMatcher,
+  type CSSControlMap,
   Renderer,
-  RenderingContext,
+  type RenderingContext,
   VariableMatch,
   VariableMatcher,
 } from './PropertyParser.js';
@@ -238,22 +241,40 @@ export class ColorRenderer extends ColorMatch {
     return new ColorMatcher(text => new ColorRenderer(treeElement, text));
   }
 
-  #getValueChild(node: CodeMirror.SyntaxNode, context: RenderingContext): HTMLSpanElement {
+  #getValueChild(node: CodeMirror.SyntaxNode, context: RenderingContext):
+      {valueChild: HTMLSpanElement, cssControls?: CSSControlMap} {
     const valueChild = document.createElement('span');
     if (node.name === 'ColorLiteral' || (node.name === 'ValueName' && Common.Color.Nicknames.has(this.text))) {
       valueChild.appendChild(document.createTextNode(this.text));
-    } else {
-      const {ast, matchedResult, cssControls} = context;
-      const childContext = new RenderingContext(ast, matchedResult, cssControls, {readonly: true});
-      Renderer.renderInto(children(node), childContext, valueChild);
+      return {valueChild};
     }
-    return valueChild;
+    const {cssControls} = Renderer.renderInto(children(node), context, valueChild);
+    return {valueChild, cssControls};
   }
 
   render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
-    const swatch =
-        this.renderColorSwatch(this.#getValueChild(node, context), context.matchedResult.getComputedText(node));
+    const {valueChild, cssControls} = this.#getValueChild(node, context);
+    const swatch = this.renderColorSwatch(valueChild, context.matchedResult.getComputedText(node));
     context.addControl('color', swatch);
+
+    if (cssControls && node.name === 'CallExpression' &&
+        context.ast.text(node.getChild('Callee')).match(/^(hsla?|hwba?)/)) {
+      const angles = cssControls.get('angle');
+      if (angles?.length === 1 && angles[0] instanceof InlineEditor.CSSAngle.CSSAngle) {
+        angles[0].addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, ev => {
+          const hue = Common.Color.parseHueNumeric(ev.data.value);
+          const color = swatch.getColor();
+          if (!hue || !color) {
+            return;
+          }
+          if (color.is(Common.Color.Format.HSL) || color.is(Common.Color.Format.HSLA)) {
+            swatch.renderColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
+          } else if (color.is(Common.Color.Format.HWB) || color.is(Common.Color.Format.HWBA)) {
+            swatch.renderColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
+          }
+        });
+      }
+    }
     return [swatch];
   }
 
@@ -367,6 +388,70 @@ export class ColorMixRenderer extends ColorMixMatch {
 
   static matcher(): ColorMixMatcher {
     return new ColorMixMatcher((text, space, color1, color2) => new ColorMixRenderer(text, space, color1, color2));
+  }
+}
+
+export class AngleRenderer extends AngleMatch {
+  #treeElement: StylePropertyTreeElement;
+  constructor(text: string, treeElement: StylePropertyTreeElement) {
+    super(text);
+    this.#treeElement = treeElement;
+  }
+
+  override render(_: unknown, context: RenderingContext): Node[] {
+    const angleText = this.text;
+    if (!this.#treeElement.editable()) {
+      return [document.createTextNode(angleText)];
+    }
+    const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
+    cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('css-angle')}`);
+    const valueElement = document.createElement('span');
+    valueElement.textContent = angleText;
+    const computedPropertyValue = this.#treeElement.matchedStyles().computeValue(
+                                      this.#treeElement.property.ownerStyle, this.#treeElement.property.value) ||
+        '';
+    cssAngle.data = {
+      propertyName: this.#treeElement.property.name,
+      propertyValue: computedPropertyValue,
+      angleText,
+      containingPane:
+          (this.#treeElement.parentPane().element.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement),
+    };
+    cssAngle.append(valueElement);
+
+    cssAngle.addEventListener('popovertoggled', ({data}) => {
+      const section = this.#treeElement.section();
+      if (!section) {
+        return;
+      }
+
+      if (data.open) {
+        this.#treeElement.parentPane().hideAllPopovers();
+        this.#treeElement.parentPane().activeCSSAngle = cssAngle;
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Angle);
+      }
+
+      section.element.classList.toggle('has-open-popover', data.open);
+      this.#treeElement.parentPane().setEditingStyle(data.open);
+    });
+    cssAngle.addEventListener('valuechanged', async ({data}) => {
+      valueElement.textContent = data.value;
+      await this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), false);
+      const computedPropertyValue = this.#treeElement.matchedStyles().computeValue(
+                                        this.#treeElement.property.ownerStyle, this.#treeElement.property.value) ||
+          '';
+      cssAngle.updateProperty(this.#treeElement.property.name, computedPropertyValue);
+    });
+    cssAngle.addEventListener('unitchanged', ({data}) => {
+      valueElement.textContent = data.value;
+    });
+
+    context.addControl('angle', cssAngle);
+    return [cssAngle];
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): AngleMatcher {
+    return new AngleMatcher(text => new AngleRenderer(text, treeElement));
   }
 }
 
@@ -771,49 +856,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return container;
   }
 
-  private processAngle(angleText: string, readonly: boolean): Text|InlineEditor.CSSAngle.CSSAngle {
-    if (!this.editable() || readonly) {
-      return document.createTextNode(angleText);
-    }
-    const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
-    cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-angle').track({click: true})}`);
-    const valueElement = document.createElement('span');
-    valueElement.textContent = angleText;
-    const computedPropertyValue =
-        this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value) || '';
-    cssAngle.data = {
-      propertyName: this.property.name,
-      propertyValue: computedPropertyValue,
-      angleText,
-      containingPane:
-          (this.parentPaneInternal.element.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement),
-    };
-    cssAngle.append(valueElement);
-
-    cssAngle.addEventListener('popovertoggled', ({data}) => {
-      if (data.open) {
-        this.parentPaneInternal.hideAllPopovers();
-        this.parentPaneInternal.activeCSSAngle = cssAngle;
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Angle);
-      }
-
-      this.#parentSection.element.classList.toggle('has-open-popover', data.open);
-      this.parentPaneInternal.setEditingStyle(data.open);
-    });
-    cssAngle.addEventListener('valuechanged', async ({data}) => {
-      valueElement.textContent = data.value;
-      await this.applyStyleText(this.renderedPropertyText(), false);
-      const computedPropertyValue =
-          this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value) || '';
-      cssAngle.updateProperty(this.property.name, computedPropertyValue);
-    });
-    cssAngle.addEventListener('unitchanged', ({data}) => {
-      valueElement.textContent = data.value;
-    });
-
-    return cssAngle;
-  }
-
   private processLength(lengthText: string): Text|InlineEditor.CSSLength.CSSLength {
     if (!this.editable()) {
       return document.createTextNode(lengthText);
@@ -1049,6 +1091,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           VariableRenderer.matcher(this, this.style),
           ColorRenderer.matcher(this),
           ColorMixRenderer.matcher(),
+          AngleRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
@@ -1057,7 +1100,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));
-      propertyRenderer.setAngleHandler(this.processAngle.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
       propertyRenderer.setPositionFallbackHandler(this.processPositionFallback.bind(this));
       propertyRenderer.setFontPaletteHandler(this.processFontPalette.bind(this));

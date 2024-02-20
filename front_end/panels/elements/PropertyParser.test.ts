@@ -620,4 +620,21 @@ describe('PropertyParser', () => {
       assert.isNull(match, text);
     }
   });
+
+  it('parses angles correctly', () => {
+    for (const succeed of ['45deg', '1.3rad', '-25grad', '2.3turn']) {
+      const {ast, match, text} = matchSingleValue(
+          'transform', succeed, Elements.PropertyParser.AngleMatch,
+          new Elements.PropertyParser.AngleMatcher(nilRenderer(Elements.PropertyParser.AngleMatch)));
+      Platform.assertNotNullOrUndefined(ast, succeed);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.text, succeed);
+    }
+    for (const fail of ['0DEG', '0', '123', '2em']) {
+      const {match, text} = matchSingleValue(
+          'transform', fail, Elements.PropertyParser.AngleMatch,
+          new Elements.PropertyParser.AngleMatcher(nilRenderer(Elements.PropertyParser.AngleMatch)));
+      assert.isNull(match, text);
+    }
+  });
 });

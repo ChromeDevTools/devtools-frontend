@@ -860,9 +860,9 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       assert.lengthOf(varSwatches, 2);
     });
 
-    it('does not render an angle swatch for hues', () => {
+    it('connects correctly with an inner angle swatch', () => {
       const property = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'hsl(165deg 50% 25%)', true, false, true, false, '', undefined);
+          mockCssStyleDeclaration, 0, 'color', 'hsl(120deg, 50%, 25%))', true, false, true, false, '', undefined);
       const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesPane: stylesSidebarPane,
         section: mockStylePropertiesSection,
@@ -875,14 +875,14 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       });
 
       stylePropertyTreeElement.updateTitle();
-
-      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, property.value);
       const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assertNotNullOrUndefined(colorSwatch);
-      assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HEX), '#206050');
+      assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(120deg 50% 25%)');
 
       const angleSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
-      assert.isNull(angleSwatch);
+      assertNotNullOrUndefined(angleSwatch);
+      angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
+      assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(130deg 50% 25%)');
     });
   });
 });

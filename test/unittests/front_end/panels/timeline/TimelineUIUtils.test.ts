@@ -562,7 +562,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
         {
           title: 'Initiated by',
-          value: 'Reveal',
+          value: 'Schedule Style Recalculation',
         },
         {
           title: 'Pending for',
@@ -767,7 +767,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
              title: undefined,
              value: undefined,
            },
-           {title: 'Initiated by', 'value': 'Reveal'},
+           {title: 'Initiated by', 'value': 'Create WebSocket'},
            {title: 'Pending for', value: '72.0 ms'},
          ];
          assert.deepEqual(
@@ -802,7 +802,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
            // This value looks odd, but it is because the initiator stack trace cannot be
            // easily represented as a string, so this is OK.
            {title: undefined, value: undefined},
-           {title: 'Initiator for', 'value': 'Reveal Reveal'},
+           // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
+           {title: 'Initiator for', 'value': 'Send WebSocket Handshake Receive WebSocket Handshake'},
          ];
          assert.deepEqual(
              rowData,

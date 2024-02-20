@@ -910,10 +910,6 @@ const UIStrings = {
    */
   pendingFor: 'Pending for',
   /**
-   *@description Text for revealing an item in its destination
-   */
-  reveal: 'Reveal',
-  /**
    *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
    */
   firstInvalidated: 'First Invalidated',
@@ -2596,7 +2592,7 @@ export class TimelineUIUtils {
     link.classList.add('devtools-link');
     UI.ARIAUtils.markAsLink(link);
     link.tabIndex = 0;
-    link.textContent = i18nString(UIStrings.reveal);
+    link.textContent = this.eventTitle(entry);
     link.addEventListener('click', () => {
       TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((entry)));
     });

@@ -15,13 +15,13 @@ describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
   before(async () => {
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
-      src: new URL('../../../../../front_end/Images/review.svg', import.meta.url).toString(),
+      src: new URL('../../../../../../front_end/Images/review.svg', import.meta.url).toString(),
       width: '20px',
       height: '20px',
       isIcon: true,
     });
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-image', {
-      src: new URL(`../../../../../front_end/${imageSource}`, import.meta.url).toString(),
+      src: new URL(`../../../../../../front_end/${imageSource}`, import.meta.url).toString(),
       width: '100px',
       height: '100px',
       isIcon: false,

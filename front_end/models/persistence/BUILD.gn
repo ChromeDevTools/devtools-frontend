@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -61,6 +62,8 @@ devtools_entrypoint("bundle") {
     "../../panels/recorder/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
+    "../bindings:unittests",
+    "../workspace:unittests",
     "../workspace_diff/*",
   ]
 
@@ -80,4 +83,21 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "NetworkPersistenceManager.test.ts",
+    "PersistenceImpl.test.ts",
+    "PlatformFileSystem.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+  ]
 }

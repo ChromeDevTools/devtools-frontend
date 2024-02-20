@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("cpu_profile") {
   sources = [
@@ -32,5 +33,16 @@ devtools_entrypoint("bundle") {
     "../../ui/legacy/components/perf_ui/*",
     "../timeline_model/*",
     "../trace/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "CPUProfileDataModel.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
   ]
 }

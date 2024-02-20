@@ -17,6 +17,5 @@ ts_library("issue_counter") {
     "../../../../../../front_end/ui/components/issue_counter:bundle",
     "../../../../../../front_end/ui/legacy:bundle",
     "../../../helpers",
-    "../../../models/issues_manager",
   ]
 }

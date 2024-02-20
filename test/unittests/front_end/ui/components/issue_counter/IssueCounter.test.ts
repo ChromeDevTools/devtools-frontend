@@ -8,7 +8,7 @@ import * as IconButton from '../../../../../../front_end/ui/components/icon_butt
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
-import {MockIssuesManager} from '../../../models/issues_manager/MockIssuesManager.js';
+import {MockIssuesManager} from '../../../helpers/MockIssuesManager.js';
 
 const {assert} = chai;
 

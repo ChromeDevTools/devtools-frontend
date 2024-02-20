@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("root-causes") {
@@ -32,4 +33,16 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "LayoutShift.test.ts" ]
+
+  deps = [
+    "../../../../test/unittests/front_end/helpers",
+    "../../../core/platform:bundle",
+    "../../../models/trace:bundle",
+  ]
 }

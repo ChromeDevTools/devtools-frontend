@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import {type DevToolsRecorder} from '../../../../../front_end/panels/recorder/injected/injected.js';
+import {type Schema} from '../../../../../front_end/panels/recorder/models/models.js';
 import {
   loadComponentDocExample,
   preloadForCodeCoverage,
@@ -13,10 +15,7 @@ import {
   describe,
   it,
 } from '../../../../../test/shared/mocha-extensions.js';
-import {type Schema} from '../../../../../front_end/panels/recorder/models/models.js';
 import {assertMatchesJSONSnapshot} from '../../../../../test/shared/snapshots.js';
-
-import {type DevToolsRecorder} from '../../../../../front_end/panels/recorder/injected/injected.js';
 
 describe('Injected', () => {
   preloadForCodeCoverage('recorder_injected/basic.html');

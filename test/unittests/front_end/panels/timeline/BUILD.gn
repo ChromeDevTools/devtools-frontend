@@ -9,6 +9,7 @@ ts_library("timeline") {
   sources = [
     "Breadcrumbs.test.ts",
     "EventTypeHelpers.test.ts",
+    "Initiators.test.ts",
     "SaveFileFormatter.test.ts",
     "SourceMapsResolver.test.ts",
     "TimelineController.test.ts",

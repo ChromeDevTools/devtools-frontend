@@ -76,12 +76,11 @@ if (HTML_COVERAGE_ENABLED) {
   istanbulReportOutputs.push({type: 'html'});
 }
 
-const UNIT_TESTS_ROOT_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests');
-const UNIT_TESTS_FOLDERS = [
-  path.join(UNIT_TESTS_ROOT_FOLDER, 'front_end'),
-  path.join(UNIT_TESTS_ROOT_FOLDER, 'inspector_overlay'),
-];
-const TEST_SOURCES = UNIT_TESTS_FOLDERS.map(folder => path.join(folder, '**/*.ts'));
+const TEST_SOURCES = [
+  path.join('front_end', '**/*.test.ts'),
+  path.join('test', 'unittests', 'front_end', '**/*.ts'),
+  path.join('test', 'unittests', 'inspector_overlay', '**/*.ts'),
+].map(relativePath => path.join(ROOT_DIRECTORY, relativePath));
 
 // To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
 // aren't incorrectly included, we glob for the TypeScript files instead and use that
@@ -91,7 +90,7 @@ const TEST_FILES =
         .map(source => {
           return glob.sync(source).map(fileName => {
             const jsFile = fileName.replace(/\.ts$/, '.js');
-            const generatedJsFile = path.join(__dirname, path.relative(UNIT_TESTS_ROOT_FOLDER, jsFile));
+            const generatedJsFile = path.join(GEN_DIRECTORY, path.relative(ROOT_DIRECTORY, jsFile));
             if (!fs.existsSync(generatedJsFile)) {
               throw new Error(`Test file ${fileName} is not included in a BUILD.gn and therefore will not be run.`);
             }

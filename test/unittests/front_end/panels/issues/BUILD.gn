@@ -18,6 +18,5 @@ ts_library("issues") {
     "../../../../../front_end/panels/issues:bundle",
     "../../core/sdk",
     "../../helpers",
-    "../../models/issues_manager",
   ]
 }

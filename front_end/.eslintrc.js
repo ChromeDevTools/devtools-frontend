@@ -152,6 +152,13 @@ module.exports = {
       }
     },
     {
+      'files': ['*.test.ts'],
+      'rules': {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-non-null-assertion' : 'off',
+      },
+    },
+    {
       'files': ['panels/**/components/*.ts', 'ui/components/**/*.ts', 'entrypoints/**/*.ts'],
       'rules': {
         'rulesdir/use_private_class_members': 'error',

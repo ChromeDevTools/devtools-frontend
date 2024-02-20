@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
-import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {StubIssue} from '../../models/issues_manager/StubIssue.js';
-import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
-import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createFakeSetting, describeWithEnvironment, createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import * as Issues from '../../../../../front_end/panels/issues/issues.js';
+import {createFakeSetting, createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {MockIssuesManager} from '../../helpers/MockIssuesManager.js';
+import {StubIssue} from '../../helpers/StubIssue.js';
+
+const {assert} = chai;
 
 describeWithEnvironment('AggregatedIssue', async () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;

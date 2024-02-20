@@ -162,6 +162,7 @@ devtools_entrypoint("bundle") {
     "../../models/autofill_manager:*",
     "../../models/emulation:*",
     "../../models/extensions:*",
+    "../../models/har:unittests",
     "../../models/persistence:*",
     "../../panels/*",
     "../../services/window_bounds/*",

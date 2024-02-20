@@ -6,8 +6,8 @@ import * as Host from '../../../../../front_end/core/host/host.js';
 import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
+import {StubIssue} from '../../helpers/StubIssue.js';
 import {recordedMetricsContain} from '../../helpers/UserMetricsHelpers.js';
-import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 
 const {assert} = chai;
 

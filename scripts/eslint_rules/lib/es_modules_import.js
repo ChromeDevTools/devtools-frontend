@@ -90,12 +90,14 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
 
   if (invalidSameFolderUsage) {
     // Meta files import their entrypoints and are considered separate entrypoints.
-    // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint as well.
-    // Therefore, they are allowed to import using a same-namespace star-import.
-    const importingFileIsEntrypoint =
-        importingFileName.endsWith('-entrypoint.ts') || importingFileName.endsWith('-meta.ts');
+    // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint
+    // as well. Therefore, they are allowed to import using a same-namespace star-import.
+    // For `.test.ts` files we also need to use the namespace import syntax, to access
+    // the module itself, so we need to allow this as well.
+    const importingFileIsEntrypointOrTest = importingFileName.endsWith('-entrypoint.ts') ||
+        importingFileName.endsWith('-meta.ts') || importingFileName.endsWith('.test.ts');
 
-    if (!importingFileIsEntrypoint) {
+    if (!importingFileIsEntrypointOrTest) {
       context.report({
         node,
         message:
@@ -198,6 +200,13 @@ module.exports = {
           checkStarImport(context, node, importPath, importPathForErrorMessage, importingFileName, exportingFileName);
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
+            if (importingFileName.endsWith('.test.ts') &&
+                importPath.includes([path.sep, 'helpers', path.sep].join(''))) {
+              /** Within test files we allow the direct import of test helpers.
+               */
+              return;
+            }
+
             let message = CROSS_NAMESPACE_MESSAGE;
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {

@@ -773,46 +773,44 @@ export class DebuggerLanguagePluginManager implements
       const rawModuleId = rawModuleIdForScript(script);
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
-        const sourceFileURLsPromise =
-            (async () => {
-              const console = Common.Console.Console.instance();
-              const url = script.sourceURL;
-              const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
-              if (symbolsUrl) {
-                console.log(
-                    i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
-              } else {
-                console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
-              }
-              try {
-                const code = (!symbolsUrl && Common.ParsedURL.schemeIs(url, 'wasm:')) ? await script.getWasmBytecode() :
-                                                                                        undefined;
-                const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
-                // Check that the handle isn't stale by now. This works because the code that assigns to
-                // `rawModuleHandle` below will run before this code because of the `await` in the preceding
-                // line. This is primarily to avoid logging the message below, which would give the developer
-                // the misleading information that we're done, while in reality it was a stale call that finished.
-                if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
-                  return [];
-                }
-                if ('missingSymbolFiles' in addModuleResult) {
-                  return {missingSymbolFiles: addModuleResult.missingSymbolFiles};
-                }
-                const sourceFileURLs = addModuleResult as Platform.DevToolsPath.UrlString[];
-                if (sourceFileURLs.length === 0) {
-                  console.warn(i18nString(UIStrings.loadedDebugSymbolsForButDidnt, {PH1: plugin.name, PH2: url}));
-                } else {
-                  console.log(i18nString(
-                      UIStrings.loadedDebugSymbolsForFound, {PH1: plugin.name, PH2: url, PH3: sourceFileURLs.length}));
-                }
-                return sourceFileURLs;
-              } catch (error) {
-                console.error(i18nString(
-                    UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
-                this.#rawModuleHandles.delete(rawModuleId);
-                return [];
-              }
-            })();
+        const sourceFileURLsPromise = (async () => {
+          const console = Common.Console.Console.instance();
+          const url = script.sourceURL;
+          const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
+          if (symbolsUrl) {
+            console.log(i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
+          } else {
+            console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
+          }
+          try {
+            const code =
+                (!symbolsUrl && Common.ParsedURL.schemeIs(url, 'wasm:')) ? await script.getWasmBytecode() : undefined;
+            const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
+            // Check that the handle isn't stale by now. This works because the code that assigns to
+            // `rawModuleHandle` below will run before this code because of the `await` in the preceding
+            // line. This is primarily to avoid logging the message below, which would give the developer
+            // the misleading information that we're done, while in reality it was a stale call that finished.
+            if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
+              return [];
+            }
+            if ('missingSymbolFiles' in addModuleResult) {
+              return {missingSymbolFiles: addModuleResult.missingSymbolFiles};
+            }
+            const sourceFileURLs = addModuleResult as Platform.DevToolsPath.UrlString[];
+            if (sourceFileURLs.length === 0) {
+              console.warn(i18nString(UIStrings.loadedDebugSymbolsForButDidnt, {PH1: plugin.name, PH2: url}));
+            } else {
+              console.log(i18nString(
+                  UIStrings.loadedDebugSymbolsForFound, {PH1: plugin.name, PH2: url, PH3: sourceFileURLs.length}));
+            }
+            return sourceFileURLs;
+          } catch (error) {
+            console.error(
+                i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
+            this.#rawModuleHandles.delete(rawModuleId);
+            return [];
+          }
+        })();
         rawModuleHandle = {rawModuleId, plugin, scripts: [script], addRawModulePromise: sourceFileURLsPromise};
         this.#rawModuleHandles.set(rawModuleId, rawModuleHandle);
       } else {

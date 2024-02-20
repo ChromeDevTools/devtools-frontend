@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
@@ -68,7 +67,7 @@ export class ExpandableList extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-expandable-list', ExpandableList);
+customElements.define('devtools-expandable-list', ExpandableList);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

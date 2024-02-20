@@ -8,7 +8,6 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
@@ -251,8 +250,7 @@ export class PermissionsPolicySection extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-resources-permissions-policy-section', PermissionsPolicySection);
+customElements.define('devtools-resources-permissions-policy-section', PermissionsPolicySection);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

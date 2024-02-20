@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -118,7 +117,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-shared-storage-metadata-view', SharedStorageMetadataView);
+customElements.define('devtools-shared-storage-metadata-view', SharedStorageMetadataView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

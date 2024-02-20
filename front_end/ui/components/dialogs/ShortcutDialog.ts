@@ -180,4 +180,4 @@ export class ShortcutDialog extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-shortcut-dialog', ShortcutDialog);
+customElements.define('devtools-shortcut-dialog', ShortcutDialog);

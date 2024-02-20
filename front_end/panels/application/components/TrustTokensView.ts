@@ -7,7 +7,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -174,7 +173,7 @@ function removeTrailingSlash(s: string): string {
   return s.replace(/\/$/, '');
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-trust-tokens-storage-view', TrustTokensView);
+customElements.define('devtools-trust-tokens-storage-view', TrustTokensView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

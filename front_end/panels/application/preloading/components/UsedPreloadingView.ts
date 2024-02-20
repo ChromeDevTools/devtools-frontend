@@ -8,7 +8,6 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -459,7 +458,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-used-preloading-view', UsedPreloadingView);
+customElements.define('devtools-resources-used-preloading-view', UsedPreloadingView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

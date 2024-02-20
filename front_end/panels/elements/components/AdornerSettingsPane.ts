@@ -4,7 +4,6 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -125,7 +124,7 @@ export class AdornerSettingsPane extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-adorner-settings-pane', AdornerSettingsPane);
+customElements.define('devtools-adorner-settings-pane', AdornerSettingsPane);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

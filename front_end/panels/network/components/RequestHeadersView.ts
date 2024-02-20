@@ -573,8 +573,8 @@ export class Category extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-request-headers', RequestHeadersView);
-ComponentHelpers.CustomElements.defineComponent('devtools-request-headers-category', Category);
+customElements.define('devtools-request-headers', RequestHeadersView);
+customElements.define('devtools-request-headers-category', Category);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

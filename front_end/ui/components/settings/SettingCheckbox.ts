@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../core/common/common.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as IconButton from '../icon_button/icon_button.js';
@@ -91,7 +90,7 @@ export class SettingCheckbox extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('setting-checkbox', SettingCheckbox);
+customElements.define('setting-checkbox', SettingCheckbox);
 
 declare global {
   interface HTMLElementTagNameMap {

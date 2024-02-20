@@ -10,7 +10,6 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as Logs from '../../../../models/logs/logs.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
@@ -367,8 +366,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-resources-preloading-details-report-view', PreloadingDetailsReportView);
+customElements.define('devtools-resources-preloading-details-report-view', PreloadingDetailsReportView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -17,7 +17,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -36,8 +36,8 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-bar\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-bar', Bar);
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-bar', Bar);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -47,20 +47,6 @@ ruleTester.run('check_component_naming', rule, {
       }`,
       filename: 'front_end/ui/components/Foo.ts'
     },
-    {
-      code: `export class Foo extends HTMLElement {
-        static readonly litTagName = LitHtml.literal\`devtools-foo\`
-      }
-
-      defineComponent('devtools-foo', Foo);
-
-      declare global {
-        interface HTMLElementTagNameMap {
-          'devtools-foo': Foo
-        }
-      }`,
-      filename: 'front_end/ui/components/Foo.ts'
-    }
   ],
   invalid: [
     // Missing static litTagName
@@ -68,7 +54,7 @@ ruleTester.run('check_component_naming', rule, {
       code: `export class Foo extends HTMLElement {
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-not-foo', Foo);
+      customElements.define('devtools-not-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -84,7 +70,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`\${someVar}\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -103,7 +89,7 @@ ruleTester.run('check_component_naming', rule, {
         static litTagName = LitHtml.literal\`devtools-foo\`;
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -122,7 +108,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-not-foo', Foo);
+      customElements.define('devtools-not-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -139,7 +125,7 @@ ruleTester.run('check_component_naming', rule, {
       }
 
       const name = 'devtools-foo';
-      ComponentHelpers.CustomElements.defineComponent(name, Foo);
+      customElements.define(name, Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -175,7 +161,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -191,7 +177,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);`,
+      customElements.define('devtools-foo', Foo);`,
       filename: 'front_end/ui/components/Foo.ts',
       errors: [{messageId: 'noTSInterface', data: {tagName: 'devtools-foo'}}]
     },
@@ -201,7 +187,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = 'devtools-foo';
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -222,7 +208,7 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-bar\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      customElements.define('devtools-foo', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {
@@ -244,8 +230,8 @@ ruleTester.run('check_component_naming', rule, {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
-      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
-      ComponentHelpers.CustomElements.defineComponent('devtools-bar', Foo);
+      customElements.define('devtools-foo', Foo);
+      customElements.define('devtools-bar', Foo);
 
       declare global {
         interface HTMLElementTagNameMap {

@@ -107,7 +107,7 @@ export class BreadcrumbsUI extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-breadcrumbs-ui', BreadcrumbsUI);
+customElements.define('devtools-breadcrumbs-ui', BreadcrumbsUI);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

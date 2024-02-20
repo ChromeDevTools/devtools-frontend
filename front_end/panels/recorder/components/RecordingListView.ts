@@ -237,7 +237,7 @@ export class RecordingListView extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-recording-list-view',
     RecordingListView,
 );

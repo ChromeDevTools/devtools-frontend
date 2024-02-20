@@ -35,7 +35,7 @@ export class PanelIntroductionSteps extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-panel-introduction-steps', PanelIntroductionSteps);
+customElements.define('devtools-panel-introduction-steps', PanelIntroductionSteps);
 
 declare global {
   interface HTMLElementTagNameMap {

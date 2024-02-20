@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -65,7 +64,7 @@ export class CSSQuery extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-query', CSSQuery);
+customElements.define('devtools-css-query', CSSQuery);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

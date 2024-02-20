@@ -112,7 +112,7 @@ export class EditableSpan extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-editable-span', EditableSpan);
+customElements.define('devtools-editable-span', EditableSpan);
 
 declare global {
   interface HTMLElementTagNameMap {

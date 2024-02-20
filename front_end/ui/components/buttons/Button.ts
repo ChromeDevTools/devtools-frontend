@@ -319,4 +319,4 @@ export class Button extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-button', Button);
+customElements.define('devtools-button', Button);

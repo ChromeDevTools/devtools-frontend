@@ -4,10 +4,10 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
 import * as IconButton from '../icon_button/icon_button.js';
+
 import surveyLinkStyles from './surveyLink.css.js';
 
 const UIStrings = {
@@ -133,7 +133,7 @@ export class SurveyLink extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-survey-link', SurveyLink);
+customElements.define('devtools-survey-link', SurveyLink);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

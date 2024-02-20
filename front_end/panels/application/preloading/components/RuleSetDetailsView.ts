@@ -2,19 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../../../ui/components/code_highlighter/code_highlighter.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TextEditor from '../../../../ui/components/text_editor/text_editor.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
-import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
-import * as SDK from '../../../../core/sdk/sdk.js';
-
 import type * as UI from '../../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import ruleSetDetailsViewStyles from './RuleSetDetailsView.css.js';
 
@@ -111,7 +109,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-rulesets-details-view', RuleSetDetailsView);
+customElements.define('devtools-resources-rulesets-details-view', RuleSetDetailsView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

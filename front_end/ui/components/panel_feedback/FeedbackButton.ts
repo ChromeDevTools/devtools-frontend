@@ -60,7 +60,7 @@ export class FeedbackButton extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-feedback-button', FeedbackButton);
+customElements.define('devtools-feedback-button', FeedbackButton);
 
 declare global {
   interface HTMLElementTagNameMap {

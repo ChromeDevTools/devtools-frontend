@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
 import cssAngleStyles from './cssAngle.css.js';
@@ -279,7 +278,7 @@ export class CSSAngle extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-angle', CSSAngle);
+customElements.define('devtools-css-angle', CSSAngle);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

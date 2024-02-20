@@ -9,7 +9,6 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
@@ -141,7 +140,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-ruleset-grid', RuleSetGrid);
+customElements.define('devtools-resources-ruleset-grid', RuleSetGrid);
 
 declare global {
   interface HTMLElementTagNameMap {

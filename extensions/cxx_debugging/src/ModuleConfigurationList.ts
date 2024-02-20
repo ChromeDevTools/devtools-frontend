@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/check_component_naming, rulesdir/custom_element_definitions_location, rulesdir/no_underscored_properties, rulesdir/ban_style_tags_in_lit_html, rulesdir/ban_a_tags_in_lit_html, rulesdir/custom_element_component_definition, rulesdir/lit_html_host_this,  @typescript-eslint/naming-convention,  @typescript-eslint/explicit-function-return-type,  @typescript-eslint/no-unused-vars */
+/* eslint-disable rulesdir/check_component_naming, rulesdir/custom_element_definitions_location, rulesdir/no_underscored_properties, rulesdir/ban_style_tags_in_lit_html, rulesdir/ban_a_tags_in_lit_html, rulesdir/lit_html_host_this,  @typescript-eslint/naming-convention,  @typescript-eslint/explicit-function-return-type,  @typescript-eslint/no-unused-vars */
 
 import {html, nothing, render} from 'lit-html';
 

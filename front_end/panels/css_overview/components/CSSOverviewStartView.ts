@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
 import * as PanelIntroductionSteps from '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -118,7 +117,7 @@ export class CSSOverviewStartView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-overview-start-view', CSSOverviewStartView);
+customElements.define('devtools-css-overview-start-view', CSSOverviewStartView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

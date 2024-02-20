@@ -12,7 +12,6 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -1039,7 +1038,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-breakpoint-view', BreakpointsView);
+customElements.define('devtools-breakpoint-view', BreakpointsView);
 
 declare global {
   interface HTMLElementTagNameMap {

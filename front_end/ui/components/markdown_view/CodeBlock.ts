@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as IconButton from '../../components/icon_button/icon_button.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
@@ -143,7 +142,7 @@ export class CodeBlock extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-code-block', CodeBlock);
+customElements.define('devtools-code-block', CodeBlock);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

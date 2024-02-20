@@ -93,7 +93,7 @@ export class PanelFeedback extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-panel-feedback', PanelFeedback);
+customElements.define('devtools-panel-feedback', PanelFeedback);
 
 declare global {
   interface HTMLElementTagNameMap {

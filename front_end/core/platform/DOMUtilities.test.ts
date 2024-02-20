@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/custom_element_component_definition, rulesdir/custom_element_definitions_location */
+/* eslint-disable rulesdir/custom_element_definitions_location */
 
 import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
 

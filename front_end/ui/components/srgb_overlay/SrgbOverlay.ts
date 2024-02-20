@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -115,7 +114,7 @@ export class SrgbOverlay extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-spectrum-srgb-overlay', SrgbOverlay);
+customElements.define('devtools-spectrum-srgb-overlay', SrgbOverlay);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

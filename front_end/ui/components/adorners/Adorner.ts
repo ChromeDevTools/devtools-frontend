@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import adornerStyles from './adorner.css.js';
@@ -117,7 +116,7 @@ export class Adorner extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-adorner', Adorner);
+customElements.define('devtools-adorner', Adorner);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
 
 import nodeTextStyles from './nodeText.css.js';
 
@@ -70,7 +69,7 @@ export class NodeText extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-node-text', NodeText);
+customElements.define('devtools-node-text', NodeText);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

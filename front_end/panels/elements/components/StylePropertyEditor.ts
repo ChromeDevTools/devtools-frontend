@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -170,7 +169,7 @@ export class FlexboxEditor extends StylePropertyEditor {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-flexbox-editor', FlexboxEditor);
+customElements.define('devtools-flexbox-editor', FlexboxEditor);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -188,7 +187,7 @@ export class GridEditor extends StylePropertyEditor {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-grid-editor', GridEditor);
+customElements.define('devtools-grid-editor', GridEditor);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

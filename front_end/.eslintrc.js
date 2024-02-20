@@ -23,7 +23,6 @@ module.exports = {
     'rulesdir/custom_element_definitions_location': ['error', {
       rootFrontendDirectory: __dirname,
     }],
-    'rulesdir/custom_element_component_definition': 'error',
   },
   'overrides': [
     {

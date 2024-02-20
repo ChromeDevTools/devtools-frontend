@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import iconStyles from './icon.css.legacy.js';
@@ -183,7 +182,7 @@ export const create = (name: string, className?: string): Icon => {
   return icon;
 };
 
-ComponentHelpers.CustomElements.defineComponent('devtools-icon', Icon);
+customElements.define('devtools-icon', Icon);
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -4,7 +4,6 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as ComponentHelpers from '../components/helpers/helpers.js';
 import * as LitHtml from '../lit-html/lit-html.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -149,6 +148,6 @@ export class ContextMenuProvider implements Provider<Node> {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('x-link', XLink);
+customElements.define('x-link', XLink);
 
 export const sample = LitHtml.html`<p>Hello, <x-link>world!</x-link></p>`;

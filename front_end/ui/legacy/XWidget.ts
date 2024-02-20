@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../components/helpers/helpers.js';
-
 import {XElement} from './XElement.js';
 
 let observer: ResizeObserver|null = null;
@@ -145,4 +143,4 @@ export class XWidget extends XElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('x-widget', XWidget);
+customElements.define('x-widget', XWidget);

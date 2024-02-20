@@ -7,7 +7,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -158,7 +157,7 @@ export class IssueLinkIcon extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-issue-link-icon', IssueLinkIcon);
+customElements.define('devtools-issue-link-icon', IssueLinkIcon);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

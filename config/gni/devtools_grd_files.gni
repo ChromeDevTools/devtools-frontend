@@ -1873,7 +1873,6 @@ grd_files_debug_sources = [
   "front_end/ui/components/expandable_list/ExpandableList.js",
   "front_end/ui/components/expandable_list/expandableList.css.js",
   "front_end/ui/components/helpers/component-server-setup.js",
-  "front_end/ui/components/helpers/custom-elements.js",
   "front_end/ui/components/helpers/directives.js",
   "front_end/ui/components/helpers/get-root-node.js",
   "front_end/ui/components/helpers/scheduled-render.js",

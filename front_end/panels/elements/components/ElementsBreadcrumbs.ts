@@ -374,7 +374,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
+customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
 
 declare global {
   interface HTMLElementTagNameMap {

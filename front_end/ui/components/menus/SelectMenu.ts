@@ -453,8 +453,8 @@ export class SelectMenuButton extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-select-menu', SelectMenu);
-ComponentHelpers.CustomElements.defineComponent('devtools-select-menu-button', SelectMenuButton);
+customElements.define('devtools-select-menu', SelectMenu);
+customElements.define('devtools-select-menu-button', SelectMenuButton);
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -195,7 +195,7 @@ export class SplitView extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-split-view',
     SplitView,
 );

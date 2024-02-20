@@ -858,4 +858,4 @@ export class StepView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-step-view', StepView);
+customElements.define('devtools-step-view', StepView);

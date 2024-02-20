@@ -7,7 +7,6 @@ import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as PublicExtensions from '../../../models/extensions/extensions.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -125,7 +124,7 @@ export class ExtensionView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-recorder-extension-view',
     ExtensionView,
 );

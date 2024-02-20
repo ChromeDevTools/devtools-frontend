@@ -8,7 +8,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -254,8 +253,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-bounce-tracking-mitigations-view', BounceTrackingMitigationsView);
+customElements.define('devtools-bounce-tracking-mitigations-view', BounceTrackingMitigationsView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import timelineSectionStyles from './timelineSection.css.js';
@@ -80,7 +79,7 @@ export class TimelineSection extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-timeline-section',
     TimelineSection,
 );

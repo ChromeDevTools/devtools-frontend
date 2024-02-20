@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../../core/platform/platform.js';
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
@@ -75,7 +74,7 @@ export class ColorMixSwatch extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-color-mix-swatch', ColorMixSwatch);
+customElements.define('devtools-color-mix-swatch', ColorMixSwatch);
 
 declare global {
   interface HTMLElementTagNameMap {

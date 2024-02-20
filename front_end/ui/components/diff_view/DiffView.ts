@@ -6,7 +6,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Diff from '../../../third_party/diff/diff.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
 
 import diffViewStyles from './diffView.css.js';
 
@@ -285,4 +284,4 @@ export class DiffView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-diff-view', DiffView);
+customElements.define('devtools-diff-view', DiffView);

@@ -4,7 +4,6 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
@@ -12,9 +11,9 @@ import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 const {render, html} = LitHtml;
 
 import {
+  LinearMemoryNavigator,
   Mode,
   Navigation,
-  LinearMemoryNavigator,
   type AddressInputChangedEvent,
   type HistoryNavigationEvent,
   type LinearMemoryNavigatorData,
@@ -29,27 +28,27 @@ import {
 } from './LinearMemoryValueInterpreter.js';
 
 import {
-  VALUE_INTEPRETER_MAX_NUM_BYTES,
-  Endianness,
-  getDefaultValueTypeMapping,
-  type ValueType,
-  type ValueTypeMode,
-} from './ValueInterpreterDisplayUtils.js';
+  LinearMemoryHighlightChipList,
+  type DeleteMemoryHighlightEvent,
+  type JumpToHighlightedMemoryEvent,
+  type LinearMemoryHighlightChipListData,
+} from './LinearMemoryHighlightChipList.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import {type JumpToPointerAddressEvent, type ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {
   LinearMemoryViewer,
   type ByteSelectedEvent,
   type LinearMemoryViewerData,
   type ResizeEvent,
 } from './LinearMemoryViewer.js';
-import {
-  LinearMemoryHighlightChipList,
-  type LinearMemoryHighlightChipListData,
-  type DeleteMemoryHighlightEvent,
-  type JumpToHighlightedMemoryEvent,
-} from './LinearMemoryHighlightChipList.js';
 import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
+import {type JumpToPointerAddressEvent, type ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
+import {
+  Endianness,
+  VALUE_INTEPRETER_MAX_NUM_BYTES,
+  getDefaultValueTypeMapping,
+  type ValueType,
+  type ValueTypeMode,
+} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**
@@ -403,7 +402,7 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
+customElements.define('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
 
 declare global {
   interface HTMLElementTagNameMap {

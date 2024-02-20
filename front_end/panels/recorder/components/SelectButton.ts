@@ -254,7 +254,7 @@ export class SelectButton extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-select-button',
     SelectButton,
 );

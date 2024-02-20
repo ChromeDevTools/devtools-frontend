@@ -7,7 +7,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import {PanelUtils} from '../../../panels/utils/utils.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -108,7 +107,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-web-bundle-info', WebBundleInfoView);
+customElements.define('devtools-web-bundle-info', WebBundleInfoView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

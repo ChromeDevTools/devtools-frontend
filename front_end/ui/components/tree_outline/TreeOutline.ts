@@ -552,7 +552,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-tree-outline', TreeOutline);
+customElements.define('devtools-tree-outline', TreeOutline);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

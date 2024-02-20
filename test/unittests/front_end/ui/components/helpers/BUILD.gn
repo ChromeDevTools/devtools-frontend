@@ -6,10 +6,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("helpers") {
   testonly = true
-  sources = [
-    "component_helpers.test.ts",
-    "custom-elements.test.ts",
-  ]
+  sources = [ "component_helpers.test.ts" ]
 
   deps = [
     "../../../../../../front_end/ui/components/helpers:bundle",

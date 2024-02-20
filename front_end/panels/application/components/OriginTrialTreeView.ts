@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -104,7 +103,7 @@ export class Badge extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-origin-trial-tree-view-badge', Badge);
+customElements.define('devtools-resources-origin-trial-tree-view-badge', Badge);
 
 type TreeNode<DataType> = TreeOutline.TreeOutlineUtils.TreeNode<DataType>;
 
@@ -314,7 +313,7 @@ export class OriginTrialTokenRows extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-origin-trial-token-rows', OriginTrialTokenRows);
+customElements.define('devtools-resources-origin-trial-token-rows', OriginTrialTokenRows);
 
 export interface OriginTrialTreeViewData {
   trials: Protocol.Page.OriginTrial[];
@@ -364,7 +363,7 @@ export class OriginTrialTreeView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-origin-trial-tree-view', OriginTrialTreeView);
+customElements.define('devtools-resources-origin-trial-tree-view', OriginTrialTreeView);
 
 declare global {
   interface HTMLElementTagNameMap {

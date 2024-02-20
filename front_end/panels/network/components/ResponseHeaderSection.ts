@@ -14,7 +14,6 @@ import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Sources from '../../../panels/sources/sources.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -518,7 +517,7 @@ export class ResponseHeaderSection extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-response-header-section', ResponseHeaderSection);
+customElements.define('devtools-response-header-section', ResponseHeaderSection);
 
 declare global {
   interface HTMLElementTagNameMap {

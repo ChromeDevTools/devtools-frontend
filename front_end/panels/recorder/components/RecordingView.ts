@@ -12,7 +12,6 @@ import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/pup
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
@@ -1310,7 +1309,7 @@ export class RecordingView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-recording-view',
     RecordingView,
 );

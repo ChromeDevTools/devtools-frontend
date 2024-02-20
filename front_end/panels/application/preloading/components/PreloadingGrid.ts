@@ -9,7 +9,6 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
@@ -187,7 +186,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-resources-preloading-grid', PreloadingGrid);
+customElements.define('devtools-resources-preloading-grid', PreloadingGrid);
 
 declare global {
   interface HTMLElementTagNameMap {

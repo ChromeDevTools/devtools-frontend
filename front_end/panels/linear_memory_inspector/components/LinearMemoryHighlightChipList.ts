@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -132,7 +131,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-linear-memory-highlight-chip-list', LinearMemoryHighlightChipList);
 
 declare global {

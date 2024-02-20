@@ -132,7 +132,7 @@ export class StartView extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-start-view',
     StartView,
 );

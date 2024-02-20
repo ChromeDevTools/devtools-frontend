@@ -158,4 +158,4 @@ export class IconDialog extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-icon-dialog', IconDialog);
+customElements.define('devtools-icon-dialog', IconDialog);

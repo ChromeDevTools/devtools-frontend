@@ -94,7 +94,7 @@ export class TwoStatesCounter extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-two-states-counter', TwoStatesCounter);
+customElements.define('devtools-two-states-counter', TwoStatesCounter);
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -669,7 +669,7 @@ export class Dialog extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-dialog', Dialog);
+customElements.define('devtools-dialog', Dialog);
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -230,7 +230,7 @@ export class ReplayButton extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
+customElements.define(
     'devtools-replay-button',
     ReplayButton,
 );

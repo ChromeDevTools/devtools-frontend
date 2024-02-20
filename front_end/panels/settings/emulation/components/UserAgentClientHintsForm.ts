@@ -6,7 +6,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../../ui/components/input/input.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
@@ -852,7 +851,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   };
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
+customElements.define('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

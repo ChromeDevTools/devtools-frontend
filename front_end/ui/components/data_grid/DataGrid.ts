@@ -7,7 +7,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import dataGridStyles from './dataGrid.css.js';
@@ -942,7 +941,7 @@ export class DataGrid extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-data-grid', DataGrid);
+customElements.define('devtools-data-grid', DataGrid);
 
 declare global {
   interface HTMLElementTagNameMap {

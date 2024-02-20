@@ -108,7 +108,7 @@ const colorPallettes: ColorPalette[] = [
   },
 ];
 
-/* eslint-disable rulesdir/check_component_naming, rulesdir/custom_element_definitions_location, rulesdir/no_underscored_properties, rulesdir/ban_style_tags_in_lit_html, rulesdir/ban_a_tags_in_lit_html, rulesdir/custom_element_component_definition, rulesdir/lit_html_host_this */
+/* eslint-disable rulesdir/check_component_naming, rulesdir/custom_element_definitions_location, rulesdir/no_underscored_properties, rulesdir/ban_style_tags_in_lit_html, rulesdir/ban_a_tags_in_lit_html, rulesdir/lit_html_host_this */
 export class BrickBreaker extends HTMLElement {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;

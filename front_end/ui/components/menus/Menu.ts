@@ -529,9 +529,9 @@ export class MenuGroup extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-menu', Menu);
-ComponentHelpers.CustomElements.defineComponent('devtools-menu-item', MenuItem);
-ComponentHelpers.CustomElements.defineComponent('devtools-menu-group', MenuGroup);
+customElements.define('devtools-menu', Menu);
+customElements.define('devtools-menu-item', MenuItem);
+customElements.define('devtools-menu-group', MenuGroup);
 
 declare global {
   interface HTMLElementTagNameMap {

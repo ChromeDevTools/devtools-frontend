@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
@@ -171,7 +170,7 @@ export class CSSAngleEditor extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-css-angle-editor', CSSAngleEditor);
+customElements.define('devtools-css-angle-editor', CSSAngleEditor);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

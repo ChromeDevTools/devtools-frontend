@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 // inspectorCommonStyles is imported for the chrome-select class that is used for the dropdown
@@ -185,7 +184,7 @@ export class ProtocolHandlersView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-protocol-handlers-view', ProtocolHandlersView);
+customElements.define('devtools-protocol-handlers-view', ProtocolHandlersView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

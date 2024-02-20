@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
@@ -254,8 +253,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-linear-memory-inspector-interpreter-display', ValueInterpreterDisplay);
+customElements.define('devtools-linear-memory-inspector-interpreter-display', ValueInterpreterDisplay);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

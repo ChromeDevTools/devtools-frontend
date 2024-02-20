@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
@@ -133,7 +132,7 @@ describe('DomState', () => {
         this.render();
       }
     }
-    ComponentHelpers.CustomElements.defineComponent('ve-test-component', class extends TestComponent {});
+    customElements.define('ve-test-component', class extends TestComponent {});
 
     container.innerHTML = `
       <div id="0" jslog="TreeItem">

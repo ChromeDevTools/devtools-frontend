@@ -69,4 +69,4 @@ export class ChromeLink extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-chrome-link', ChromeLink);
+customElements.define('devtools-chrome-link', ChromeLink);

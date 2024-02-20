@@ -121,7 +121,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     </div>`;
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-sync-section', SyncSection);
+customElements.define('devtools-sync-section', SyncSection);
 
 declare global {
   interface HTMLElementTagNameMap {

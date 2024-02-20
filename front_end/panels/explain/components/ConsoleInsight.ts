@@ -8,7 +8,6 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -648,8 +647,8 @@ class ConsoleInsightSourcesList extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-console-insight', ConsoleInsight);
-ComponentHelpers.CustomElements.defineComponent('devtools-console-insight-sources-list', ConsoleInsightSourcesList);
+customElements.define('devtools-console-insight', ConsoleInsight);
+customElements.define('devtools-console-insight-sources-list', ConsoleInsightSourcesList);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

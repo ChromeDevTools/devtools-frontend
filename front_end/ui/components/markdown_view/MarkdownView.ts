@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Marked from '../../../third_party/marked/marked.js';
-import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import {CodeBlock} from './CodeBlock.js';
@@ -54,7 +53,7 @@ export class MarkdownView extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-markdown-view', MarkdownView);
+customElements.define('devtools-markdown-view', MarkdownView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

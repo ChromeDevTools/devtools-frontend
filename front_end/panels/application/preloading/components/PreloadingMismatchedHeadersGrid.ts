@@ -6,7 +6,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -127,8 +126,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-resources-preloading-mismatched-headers-grid', PreloadingMismatchedHeadersGrid);
+customElements.define('devtools-resources-preloading-mismatched-headers-grid', PreloadingMismatchedHeadersGrid);
 
 declare global {
   interface HTMLElementTagNameMap {

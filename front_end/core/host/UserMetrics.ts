@@ -1104,7 +1104,7 @@ export enum DevtoolsExperiments {
   'storage-buckets-tree' = 77,
   'network-panel-filter-bar-redesign' = 79,
   'track-context-menu' = 81,
-  'autofillView' = 82,
+  'autofill-view' = 82,
   'sources-frame-indentation-markers-temporarily-disable' = 83,
   'heap-snapshot-treat-backing-store-as-containing-object' = 84,
   'css-type-component-length-deprecate' = 85,

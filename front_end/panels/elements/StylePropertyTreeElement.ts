@@ -36,6 +36,9 @@ import {
   ColorMixMatch,
   ColorMixMatcher,
   type CSSControlMap,
+  LinkableNameMatch,
+  LinkableNameMatcher,
+  LinkableNameProperties,
   Renderer,
   type RenderingContext,
   VariableMatch,
@@ -455,6 +458,63 @@ export class AngleRenderer extends AngleMatch {
   }
 }
 
+export class LinkableNameRenderer extends LinkableNameMatch {
+  readonly #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement, text: string, propertyName: LinkableNameProperties) {
+    super(text, propertyName);
+    this.#treeElement = treeElement;
+  }
+
+  #getLinkData():
+      {jslogContext: string, metric: null|Host.UserMetrics.SwatchType, ruleBlock: string, isDefined: boolean} {
+    switch (this.properyName) {
+      case LinkableNameProperties.AnimationName:
+        return {
+          jslogContext: 'css-animation-name',
+          metric: Host.UserMetrics.SwatchType.AnimationNameLink,
+          ruleBlock: '@keyframes',
+          isDefined: Boolean(this.#treeElement.matchedStyles().keyframes().find(kf => kf.name().text === this.text)),
+        };
+      case LinkableNameProperties.FontPalette:
+        return {
+          jslogContext: 'css-font-palette',
+          metric: null,
+          ruleBlock: '@font-palette-values',
+          isDefined: this.#treeElement.matchedStyles().fontPaletteValuesRule()?.name().text === this.text,
+        };
+      case LinkableNameProperties.PositionFallback:
+        return {
+          jslogContext: 'css-position-fallback',
+          metric: Host.UserMetrics.SwatchType.PositionFallbackLink,
+          ruleBlock: '@position-fallback',
+          isDefined: Boolean(
+              this.#treeElement.matchedStyles().positionFallbackRules().find(pf => pf.name().text === this.text)),
+        };
+    }
+  }
+
+  override render(): Node[] {
+    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
+    UI.UIUtils.createTextChild(swatch, this.text);
+    const {metric, jslogContext, ruleBlock, isDefined} = this.#getLinkData();
+    swatch.data = {
+      text: this.text,
+      isDefined,
+      onLinkActivate: (): void => {
+        metric && Host.userMetrics.swatchActivated(metric);
+        this.#treeElement.parentPane().jumpToSectionBlock(`${ruleBlock} ${this.text}`);
+      },
+      jslogContext,
+    };
+
+    return [swatch];
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): LinkableNameMatcher {
+    return new LinkableNameMatcher((text, propertyName) => new LinkableNameRenderer(treeElement, text, propertyName));
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -585,33 +645,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return matches;
   }
 
-  private processAnimationName(animationNamePropertyText: string): Node {
-    const animationNames = animationNamePropertyText.split(',').map(name => name.trim());
-    const contentChild = document.createElement('span');
-    for (let i = 0; i < animationNames.length; i++) {
-      const animationName = animationNames[i];
-      const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-      UI.UIUtils.createTextChild(swatch, animationName);
-      const isDefined = Boolean(this.matchedStylesInternal.keyframes().find(kf => kf.name().text === animationName));
-      swatch.data = {
-        text: animationName,
-        isDefined,
-        onLinkActivate: (): void => {
-          Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationNameLink);
-          this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
-        },
-        jslogContext: 'css-animation-name',
-      };
-      contentChild.appendChild(swatch);
-
-      if (i !== animationNames.length - 1) {
-        contentChild.appendChild(document.createTextNode(', '));
-      }
-    }
-
-    return contentChild;
-  }
-
   private processAnimation(animationPropertyValue: string): Node {
     const animationNameProperty =
         this.property.getLonghandProperties().find(longhand => longhand.name === 'animation-name');
@@ -633,7 +666,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           contentChild.appendChild(this.processBezier(part.value));
           break;
         case InlineEditor.CSSAnimationModel.PartType.AnimationName:
-          contentChild.appendChild(this.processAnimationName(part.value));
+          contentChild.appendChild(
+              new LinkableNameRenderer(this, part.value, LinkableNameProperties.AnimationName).render()[0]);
           break;
         case InlineEditor.CSSAnimationModel.PartType.Variable:
           contentChild.appendChild(this.processVar(part.value));
@@ -644,44 +678,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         contentChild.appendChild(document.createTextNode(' '));
       }
     }
-
-    return contentChild;
-  }
-
-  private processPositionFallback(propertyText: string): Node {
-    const contentChild = document.createElement('span');
-    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    UI.UIUtils.createTextChild(swatch, propertyText);
-    const isDefined =
-        Boolean(this.matchedStylesInternal.positionFallbackRules().find(pf => pf.name().text === propertyText));
-    swatch.data = {
-      text: propertyText,
-      isDefined,
-      onLinkActivate: (): void => {
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.PositionFallbackLink);
-        this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`);
-      },
-      jslogContext: 'css-position-fallback',
-    };
-    contentChild.appendChild(swatch);
-
-    return contentChild;
-  }
-
-  private processFontPalette(propertyText: string): Node {
-    const contentChild = document.createElement('span');
-    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    UI.UIUtils.createTextChild(swatch, propertyText);
-    const isDefined = this.matchedStylesInternal.fontPaletteValuesRule()?.name().text === propertyText;
-    swatch.data = {
-      text: propertyText,
-      isDefined,
-      onLinkActivate: (): void => {
-        this.parentPaneInternal.jumpToSectionBlock(`@font-palette-values ${propertyText}`);
-      },
-      jslogContext: 'css-font-palette',
-    };
-    contentChild.appendChild(swatch);
 
     return contentChild;
   }
@@ -1092,17 +1088,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           ColorRenderer.matcher(this),
           ColorMixRenderer.matcher(),
           AngleRenderer.matcher(this),
+          LinkableNameRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
-      propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
-      propertyRenderer.setPositionFallbackHandler(this.processPositionFallback.bind(this));
-      propertyRenderer.setFontPaletteHandler(this.processFontPalette.bind(this));
     }
 
     this.listItemElement.removeChildren();

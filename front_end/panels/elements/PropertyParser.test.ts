@@ -637,4 +637,26 @@ describe('PropertyParser', () => {
       assert.isNull(match, text);
     }
   });
+
+  it('parses linkable names correctly', () => {
+    function match(name: string, value: string) {
+      const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+      Platform.assertNotNullOrUndefined(ast);
+      const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(
+          ast,
+          [new Elements.PropertyParser.LinkableNameMatcher(nilRenderer(Elements.PropertyParser.LinkableNameMatch))]);
+
+      const matches = Elements.PropertyParser.siblings(ast.tree)
+                          .map(n => matchedResult.getMatch(n))
+                          .filter(
+                              (n): n is Elements.PropertyParser.LinkableNameMatch =>
+                                  n instanceof Elements.PropertyParser.LinkableNameMatch);
+      return matches.map(m => m.text);
+    }
+
+    assert.deepStrictEqual(match('animation-name', 'first, second, -moz-third'), ['first', 'second', '-moz-third']);
+    assert.deepStrictEqual(match('animation-name', 'first'), ['first']);
+    assert.deepStrictEqual(match('font-palette', 'first'), ['first']);
+    assert.deepStrictEqual(match('position-fallback', 'first'), ['first']);
+  });
 });

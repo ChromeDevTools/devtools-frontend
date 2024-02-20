@@ -400,7 +400,7 @@ export class Renderer extends TreeWalker {
   }
 }
 
-function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
+export function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
   const result = [];
   while (node) {
     result.push(node);
@@ -621,6 +621,46 @@ export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
       }
     }
     return null;
+  }
+}
+
+export const enum LinkableNameProperties {
+  AnimationName = 'animation-name',
+  FontPalette = 'font-palette',
+  PositionFallback = 'position-fallback',
+}
+
+export abstract class LinkableNameMatch implements Match {
+  readonly type = 'linkable-name';
+  constructor(readonly text: string, readonly properyName: LinkableNameProperties) {
+  }
+
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
+  private static isLinkableNameProperty(propertyName: string): propertyName is LinkableNameProperties {
+    const names: string[] = [
+      LinkableNameProperties.AnimationName,
+      LinkableNameProperties.FontPalette,
+      LinkableNameProperties.PositionFallback,
+    ];
+    return names.includes(propertyName);
+  }
+
+  override accepts(propertyName: string): boolean {
+    return LinkableNameMatcher.isLinkableNameProperty(propertyName);
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    const {propertyName} = matching.ast;
+    const text = matching.ast.text(node);
+    if (!propertyName || node.name !== 'ValueName' || !LinkableNameMatcher.isLinkableNameProperty(propertyName)) {
+      return null;
+    }
+    // Only animation-name is allowed to specify more than one name. We don't verify this for the other properties since
+    // they would be reported as !parsedOk from the backend.
+    return this.createMatch(text, propertyName);
   }
 }
 

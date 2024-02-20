@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as FormatterWorker from '../../../../../front_end/entrypoints/formatter_worker/formatter_worker.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as FormatterWorker from './formatter_worker.js';
 
 describe('ScopeParser', () => {
   describe('parseScopes', () => {

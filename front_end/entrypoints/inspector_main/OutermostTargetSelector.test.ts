@@ -4,16 +4,16 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import * as InspectorMain from '../../../../../front_end/entrypoints/inspector_main/inspector_main.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as InspectorMain from './inspector_main.js';
 import {
   createTarget,
-} from '../../helpers/EnvironmentHelpers.js';
+} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
 import {
   describeWithMockConnection,
-} from '../../helpers/MockConnection.js';
+} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 
 describeWithMockConnection('OutermostTargetSelector', () => {
   let tabTarget: SDK.Target.Target;

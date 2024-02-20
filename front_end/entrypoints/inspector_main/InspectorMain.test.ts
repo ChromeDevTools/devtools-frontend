@@ -4,21 +4,21 @@
 
 const {assert} = chai;
 
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as ProtocolClient from '../../../../../front_end/core/protocol_client/protocol_client.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
-import type * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import * as InspectorMain from '../../../../../front_end/entrypoints/inspector_main/inspector_main.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as Root from '../../core/root/root.js';
+import type * as UI from '../../ui/legacy/legacy.js';
+import * as InspectorMain from './inspector_main.js';
 import {
   createTarget,
   stubNoopSettings,
-} from '../../helpers/EnvironmentHelpers.js';
+} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../helpers/MockConnection.js';
+} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 
 describeWithMockConnection('FocusDebuggeeActionDelegate', () => {
   it('uses main frame without tab tatget', async () => {

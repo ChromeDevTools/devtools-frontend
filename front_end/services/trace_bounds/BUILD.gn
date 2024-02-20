@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("trace_bounds") {
   sources = [ "TraceBounds.ts" ]
@@ -17,4 +18,16 @@ devtools_entrypoint("bundle") {
   deps = [ ":trace_bounds" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "TraceBounds.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "../../models/trace:bundle",
+  ]
 }

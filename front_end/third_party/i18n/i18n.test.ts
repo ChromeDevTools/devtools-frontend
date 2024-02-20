@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import * as i18n from './i18n.js';
 
-import * as i18n from '../../../../../front_end/third_party/i18n/i18n.js';
+const {assert} = chai;
 
 describe('i18n', () => {
   let i18nInstance: i18n.I18n.I18n;

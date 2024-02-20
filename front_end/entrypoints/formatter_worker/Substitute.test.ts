@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as FormatterWorker from '../../../../../front_end/entrypoints/formatter_worker/formatter_worker.js';
+import * as FormatterWorker from './formatter_worker.js';
 
 const mapping = new Map<string, string|null>([
   ['varX', 'x'],

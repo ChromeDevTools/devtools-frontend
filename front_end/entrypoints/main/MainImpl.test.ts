@@ -4,17 +4,17 @@
 
 const {assert} = chai;
 
-import * as Host from '../../../../../front_end/core/host/host.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import * as Main from '../../../../../front_end/entrypoints/main/main.js';
-import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
+import * as Host from '../../core/host/host.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Main from './main.js';
+import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
 import {
   describeWithMockConnection,
-} from '../../helpers/MockConnection.js';
-import {describeWithRealConnection} from '../../helpers/RealConnection.js';
+} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 
 describeWithMockConnection('MainMenuItem', () => {
   const focusDebuggee = (targetFactory: () => SDK.Target.Target) => {

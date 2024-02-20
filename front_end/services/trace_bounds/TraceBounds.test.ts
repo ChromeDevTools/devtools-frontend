@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-import * as TraceBounds from '../../../../../front_end/services/trace_bounds/trace_bounds.js';
+import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from './trace_bounds.js';
 
 const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
   min: TraceEngine.Types.Timing.MicroSeconds(0),

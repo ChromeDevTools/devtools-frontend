@@ -83,7 +83,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: AutofillManager.AutofillManager.Match[] = [];
   #highlightedMatches: AutofillManager.AutofillManager.Match[] = [];
-  #autofillModel: SDK.AutofillModel.AutofillModel|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles];
@@ -94,7 +93,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         address: this.#address,
         filledFields: this.#filledFields,
         matches: this.#matches,
-        autofillModel: this.#autofillModel,
       } = formFilledEvent);
     }
     autofillManager.addEventListener(
@@ -114,7 +112,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     this.#filledFields = [];
     this.#matches = [];
     this.#highlightedMatches = [];
-    this.#autofillModel = null;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -124,7 +121,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       address: this.#address,
       filledFields: this.#filledFields,
       matches: this.#matches,
-      autofillModel: this.#autofillModel,
     } = data);
     this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
@@ -308,16 +304,16 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
 
     const backendNodeId = this.#filledFields[rowIndex].fieldId;
-    if (!this.#autofillModel) {
-      return;
-    }
-    const domModel = this.#autofillModel.target().model(SDK.DOMModel.DOMModel);
-    if (!domModel) {
-      return;
-    }
-    const deferredNode = new SDK.DOMModel.DeferredDOMNode(this.#autofillModel.target(), backendNodeId);
-    if (deferredNode) {
-      domModel.overlayModel().highlightInOverlay({deferredNode}, 'all');
+    const target = SDK.FrameManager.FrameManager.instance()
+                       .getFrame(this.#filledFields[rowIndex].frameId)
+                       ?.resourceTreeModel()
+                       .target();
+    if (target) {
+      const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      if (deferredNode && domModel) {
+        domModel.overlayModel().highlightInOverlay({deferredNode}, 'all');
+      }
     }
   }
 

@@ -228,6 +228,15 @@ describeWithMockConnection('AutofillView', () => {
 
   it('highlights corresponding address span and DOM node when hovering over grid row', async () => {
     stubNoopSettings();
+    const mockFrame = {
+      resourceTreeModel: () => ({
+        target: () => target,
+      }),
+    } as SDK.ResourceTreeModel.ResourceTreeFrame;
+    const getFrameStub = sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').callsFake(frameId => {
+      return frameId === addressFormFilledEvent.filledFields[3].frameId ? mockFrame : null;
+    });
+
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
@@ -260,5 +269,6 @@ describeWithMockConnection('AutofillView', () => {
     await coordinator.done({waitForWork: true});
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
     assert.isTrue(hideOverlaySpy.calledOnce);
+    getFrameStub.restore();
   });
 });

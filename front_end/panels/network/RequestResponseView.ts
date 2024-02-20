@@ -56,7 +56,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('response')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('response').track({resize: true})}`);
     this.request = request;
     this.contentViewPromise = null;
   }

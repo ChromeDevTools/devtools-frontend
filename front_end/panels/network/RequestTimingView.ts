@@ -363,7 +363,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
-    tableElement.setAttribute('jslog', `${VisualLogging.pane('timing')}`);
+    tableElement.setAttribute('jslog', `${VisualLogging.pane('timing').track({resize: true})}`);
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');

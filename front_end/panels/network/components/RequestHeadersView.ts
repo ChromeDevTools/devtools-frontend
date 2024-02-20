@@ -121,7 +121,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.#request = request;
-    this.setAttribute('jslog', `${VisualLogging.pane('headers')}`);
+    this.setAttribute('jslog', `${VisualLogging.pane('headers').track({resize: true})}`);
   }
 
   override wasShown(): void {

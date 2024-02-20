@@ -137,7 +137,8 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
     this.elementToCheckboxes = new WeakMap();
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.dom-breakpoints')}`);
+    this.contentElement.setAttribute(
+        'jslog', `${VisualLogging.section('sources.dom-breakpoints').track({resize: true})}`);
     this.#emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this.#emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
     this.#breakpoints = new UI.ListModel.ListModel();

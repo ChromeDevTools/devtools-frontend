@@ -56,7 +56,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(request);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('preview')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
   }
 
   override async showPreview(): Promise<UI.Widget.Widget> {

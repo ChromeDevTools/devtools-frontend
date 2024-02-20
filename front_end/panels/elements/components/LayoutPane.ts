@@ -189,6 +189,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       layoutPaneWrapperInstance = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new LayoutPane());
     }
     layoutPaneWrapperInstance.element.style.minWidth = 'min-content';
+    layoutPaneWrapperInstance.element.setAttribute('jslog', `${VisualLogging.pane('layout').track({resize: true})}`);
     return layoutPaneWrapperInstance.getComponent();
   }
 

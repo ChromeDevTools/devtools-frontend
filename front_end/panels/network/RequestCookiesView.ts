@@ -114,7 +114,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     super();
 
     this.element.classList.add('request-cookies-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('cookies')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('cookies').track({resize: true})}`);
 
     this.request = request;
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(

@@ -871,7 +871,7 @@ export class RecordingView extends HTMLElement {
           <div slot="main">
             ${this.#renderSections()}
           </div>
-          <div slot="sidebar" jslog=${VisualLogging.pane('source-code')}>
+          <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({resize: true})}>
             <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
               <${Menus.SelectMenu.SelectMenu.litTagName}
                 @selectmenuselected=${this.#onCodeFormatChange}

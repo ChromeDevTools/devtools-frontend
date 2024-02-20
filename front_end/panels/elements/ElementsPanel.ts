@@ -1005,11 +1005,13 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     const matchedStylePanesWrapper = new UI.Widget.VBox();
     matchedStylePanesWrapper.element.classList.add('style-panes-wrapper');
+    matchedStylePanesWrapper.element.setAttribute('jslog', `${VisualLogging.pane('styles').track({resize: true})}`);
     this.stylesWidget.show(matchedStylePanesWrapper.element);
     this.setupTextSelectionHack(matchedStylePanesWrapper.element);
 
     const computedStylePanesWrapper = new UI.Widget.VBox();
     computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
+    computedStylePanesWrapper.element.setAttribute('jslog', `${VisualLogging.pane('computed').track({resize: true})}`);
     this.computedStyleWidget.show(computedStylePanesWrapper.element);
 
     const stylesSplitWidget = new UI.SplitWidget.SplitWidget(

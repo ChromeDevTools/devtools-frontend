@@ -783,7 +783,7 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   readonly jsonEditor: Components.JSONEditor.JSONEditor;
   constructor() {
     super();
-    this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
     this.jsonEditor = new Components.JSONEditor.JSONEditor();
     this.jsonEditor.metadataByCommand = metadataByCommand;
     this.jsonEditor.typesByName = typesByName as Map<string, Components.JSONEditor.Parameter[]>;

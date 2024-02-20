@@ -125,7 +125,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-payload-view');
-    this.element.setAttribute('jslog', `${VisualLogging.pane('payload')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('payload').track({resize: true})}`);
 
     this.request = request;
     this.decodeRequestParameters = true;

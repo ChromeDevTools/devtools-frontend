@@ -40,7 +40,6 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ElementsComponents from './components/components.js';
 import {type ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';
@@ -279,7 +278,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     toolbar.appendToolbarItem(
         new UI.Toolbar.ToolbarSettingCheckbox(this.groupComputedStylesSetting, undefined, i18nString(UIStrings.group)));
 
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('computed')}`);
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 

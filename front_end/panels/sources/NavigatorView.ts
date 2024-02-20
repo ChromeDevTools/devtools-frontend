@@ -197,7 +197,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context(jslogContext)}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane(jslogContext).track({resize: true})}`);
     this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
 

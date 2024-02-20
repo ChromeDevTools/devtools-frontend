@@ -6,10 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("data_grid") {
   testonly = true
+
   sources = [
     "DataGrid.test.ts",
     "DataGridController.test.ts",
-    "DataGridHelpers.ts",
   ]
 
   deps = [

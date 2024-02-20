@@ -8,19 +8,6 @@ import * as IconButton from '../../../../../../front_end/ui/components/icon_butt
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../../front_end/ui/lit-html/lit-html.js';
 import {
-  assertElement,
-  assertShadowRoot,
-  dispatchClickEvent,
-  dispatchFocusOutEvent,
-  dispatchKeyDownEvent,
-  getEventPromise,
-  renderElementIntoDOM,
-  stripLitHtmlCommentNodes,
-} from '../../../helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
-import {withMutations} from '../../../helpers/MutationHelpers.js';
-
-import {
   assertCurrentFocusedCellIs,
   assertSelectedRowIs,
   emulateUserFocusingCellAt,
@@ -34,7 +21,19 @@ import {
   getHeaderCells,
   getValuesOfAllBodyRows,
   getValuesOfBodyRowByAriaIndex,
-} from './DataGridHelpers.js';
+} from '../../../helpers/DataGridHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchClickEvent,
+  dispatchFocusOutEvent,
+  dispatchKeyDownEvent,
+  getEventPromise,
+  renderElementIntoDOM,
+  stripLitHtmlCommentNodes,
+} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import {withMutations} from '../../../helpers/MutationHelpers.js';
 
 const {assert} = chai;
 

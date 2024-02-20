@@ -149,3 +149,33 @@ devtools_entrypoint("meta") {
     "../../entrypoints/*",
   ]
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "AccessibilityTreeView.test.ts",
+    "CSSRuleValidator.test.ts",
+    "ClassesPaneWidget.test.ts",
+    "DOMLinkifier.test.ts",
+    "ElementsPanel.test.ts",
+    "ElementsTreeElementHighlighter.test.ts",
+    "InspectElementModeController.test.ts",
+    "PlatformFontsWidget.test.ts",
+    "PropertiesWidget.test.ts",
+    "PropertyParser.test.ts",
+    "StylePropertiesSection.test.ts",
+    "StylePropertyHighlighter.test.ts",
+    "StylePropertyTreeElement.test.ts",
+    "StylePropertyUtils.test.ts",
+    "StylesSidebarPane.test.ts",
+    "TopLayerContainer.test.ts",
+    "WebCustomData.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "./components:unittests",
+  ]
+}

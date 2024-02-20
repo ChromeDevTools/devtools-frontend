@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/node.gni")
 import("../../../scripts/build/ninja/vars.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 node_action("generate_dcheck") {
   script = "front_end/core/platform/generate-dcheck.js"
@@ -65,4 +66,26 @@ devtools_entrypoint("bundle") {
   deps = [ ":platform" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "ArrayUtilities.test.ts",
+    "DOMUtilities.test.ts",
+    "DateUtilities.test.ts",
+    "DevToolsPath.test.ts",
+    "KeyboardUtilities.test.ts",
+    "MapUtilities.test.ts",
+    "MimeType.test.ts",
+    "NumberUtilities.test.ts",
+    "SetUtilities.test.ts",
+    "StringUtilities.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+  ]
 }

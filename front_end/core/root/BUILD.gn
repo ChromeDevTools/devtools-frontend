@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("root") {
   sources = [ "Runtime.ts" ]
@@ -17,4 +18,12 @@ devtools_entrypoint("bundle") {
   deps = [ ":root" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Runtime.test.ts" ]
+
+  deps = [ ":bundle" ]
 }

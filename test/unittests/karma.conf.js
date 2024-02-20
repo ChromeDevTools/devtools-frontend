@@ -110,7 +110,7 @@ if (SHUFFLE) {
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
 const DEFAULT_PREPROCESSING_FOLDERS = {
-  [path.join(GEN_DIRECTORY, 'front_end/!(third_party)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+  [path.join(GEN_DIRECTORY, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: [...coveragePreprocessors],
   [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
   [path.join(GEN_DIRECTORY, 'front_end/third_party/i18n/**/*.{js,mjs}')]: [...coveragePreprocessors],
 };

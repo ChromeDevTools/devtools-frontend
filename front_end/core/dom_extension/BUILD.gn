@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("dom_extension") {
   sources = [ "DOMExtension.ts" ]
@@ -17,8 +18,16 @@ devtools_entrypoint("bundle") {
   deps = [ ":dom_extension" ]
 
   visibility = [
-    "../../../test/unittests/front_end/core/dom_extension/*",
+    ":*",
     "../../entrypoints/*",
     "../../ui/legacy/*",
   ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "DOMExtension.test.ts" ]
+
+  deps = [ ":bundle" ]
 }

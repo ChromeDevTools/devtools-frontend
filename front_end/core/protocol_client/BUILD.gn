@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../third_party/typescript/typescript.gni")
 
 devtools_module("protocol_client") {
   sources = [
@@ -28,4 +29,15 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "NodeURL.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../host:bundle",
+  ]
 }

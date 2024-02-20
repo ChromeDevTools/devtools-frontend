@@ -186,17 +186,18 @@ async function process(): Promise<void> {
         element.addEventListener('keydown', logKeyDown(codes, keyboardLogThrottler), {capture: true});
       }
       if (loggingState.config.track?.has('resize')) {
-        new ResizeObserver(_ => {
-          const overlap = visibleOverlap(element, viewportRectFor(element));
-          if (!loggingState.size || !overlap) {
+        const updateSize = (): void => {
+          const overlap = visibleOverlap(element, viewportRectFor(element)) || new DOMRect(0, 0, 0, 0);
+          if (!loggingState.size) {
             return;
           }
           if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
               Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
-            loggingState.size = overlap;
-            void logResize(resizeLogThrottler)(element);
+            void logResize(element, overlap, resizeLogThrottler);
           }
-        }).observe(element);
+        };
+        new ResizeObserver(updateSize).observe(element);
+        new IntersectionObserver(updateSize).observe(element);
       }
       loggingState.processed = true;
     }

@@ -33,17 +33,23 @@ export async function logImpressions(loggables: Loggable[]): Promise<void> {
   }
 }
 
-export const logResize = (resizeLogThrottler: Common.Throttler.Throttler) => async (loggable: Loggable) => {
+export async function logResize(
+    loggable: Loggable, size: DOMRect, resizeLogThrottler?: Common.Throttler.Throttler): Promise<void> {
   const loggingState = getLoggingState(loggable);
-  if (!loggingState || !loggingState.size) {
+  if (!loggingState) {
     return;
   }
+  loggingState.size = size;
   const resizeEvent: Host.InspectorFrontendHostAPI
       .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
-  await resizeLogThrottler.schedule(async () => {
+  if (resizeLogThrottler) {
+    await resizeLogThrottler.schedule(async () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
+    });
+  } else {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
-  });
-};
+  }
+}
 
 export async function logClick(loggable: Loggable, event: Event, options?: {doubleClick?: boolean}): Promise<void> {
   if (!(event instanceof MouseEvent)) {

@@ -350,9 +350,8 @@ describe('LoggingDriver', () => {
   });
 
   it('logs resize', async () => {
-    const resizeLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler});
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
     const recordResize = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
@@ -362,17 +361,16 @@ describe('LoggingDriver', () => {
 
     element.style.height = '400px';
     await new Promise(resolve => new ResizeObserver(resolve).observe(element));
-    assert.exists(resizeLogThrottler.process);
+    assert.exists(throttler.process);
     assert.isFalse(recordResize.called);
 
-    await resizeLogThrottler.process?.();
+    await throttler.process?.();
     assert.isTrue(recordResize.calledOnce);
   });
 
   it('does not log resize if too small', async () => {
-    const resizeLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler});
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
     const recordResize = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
@@ -380,8 +378,60 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.style.height = '301px';
-    assert.isNull(resizeLogThrottler.process);
     assert.isFalse(recordResize.called);
+  });
+
+  it('logs resize on visibility change', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+
+    element.style.display = 'none';
+    await new Promise(resolve => new IntersectionObserver(resolve).observe(element));
+    assert.exists(throttler.process);
+    assert.isFalse(recordResize.called);
+
+    await throttler.process?.();
+    assert.isTrue(recordResize.calledOnce);
+    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
+
+    recordResize.resetHistory();
+
+    element.style.display = 'block';
+    await new Promise(resolve => new IntersectionObserver(resolve).observe(element));
+    assert.exists(throttler.process);
+    assert.isFalse(recordResize.called);
+
+    await throttler.process?.();
+    assert.isTrue(recordResize.calledOnce);
+    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 300, height: 300});
+  });
+
+  it('logs resize when removed from DOM', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({resizeLogThrottler: throttler});
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    const parent = document.getElementById('parent') as HTMLElement;
+
+    parent.removeChild(element);
+    await new Promise(resolve => new IntersectionObserver(resolve).observe(element));
+    await new Promise(resolve => new IntersectionObserver(resolve).observe(element));
+    assert.exists(throttler.process);
+    assert.isFalse(recordResize.called);
+
+    await throttler.process?.();
+    assert.isTrue(recordResize.calledOnce);
+    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
   });
 
   it('marks loggable elements for debugging', async () => {

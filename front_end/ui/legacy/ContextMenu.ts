@@ -602,6 +602,9 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+    if (this.openHostedMenu) {
+      void VisualLogging.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
+    }
     this.openHostedMenu = null;
     if (!this.keepOpen) {
       this.onSoftMenuClosed?.();

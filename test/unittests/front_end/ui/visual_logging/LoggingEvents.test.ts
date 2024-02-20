@@ -150,10 +150,18 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
     );
+    void VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50));
+    assert.isTrue(recordResize.calledOnce);
+    assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
+  });
+
+  it('throttles calls UI binding to log a resize event', async () => {
+    const recordResize = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordResize',
+    );
     const throttler = new Common.Throttler.Throttler(1000000);
-    const loggingState = VisualLogging.LoggingState.getLoggingState(element);
-    loggingState!.size = new DOMRect(0, 0, 100, 50);
-    void VisualLogging.LoggingEvents.logResize(throttler)(element);
+    void VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50), throttler);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(recordResize.called);
     await throttler.process?.();

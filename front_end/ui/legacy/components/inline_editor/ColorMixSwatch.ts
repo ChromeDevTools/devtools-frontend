@@ -50,6 +50,10 @@ export class ColorMixSwatch extends HTMLElement {
     this.#render();
   }
 
+  getText(): string {
+    return this.colorMixText;
+  }
+
   #render(): void {
     if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
       LitHtml.render(this.colorMixText, this.shadow, {host: this});

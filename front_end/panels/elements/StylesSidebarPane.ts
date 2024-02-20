@@ -2201,7 +2201,6 @@ export class StylesSidebarPropertyRenderer {
   private node: SDK.DOMModel.DOMNode|null;
   readonly propertyName: string;
   readonly propertyValue: string;
-  private colorMixHandler: ((arg0: string) => Node)|null;
   private bezierHandler: ((arg0: string) => Node)|null;
   private fontHandler: ((arg0: string) => Node)|null;
   private shadowHandler: ((arg0: string, arg1: string) => Node)|null;
@@ -2222,7 +2221,6 @@ export class StylesSidebarPropertyRenderer {
     this.node = node;
     this.propertyName = name;
     this.propertyValue = value;
-    this.colorMixHandler = null;
     this.bezierHandler = null;
     this.fontHandler = null;
     this.shadowHandler = null;
@@ -2235,10 +2233,6 @@ export class StylesSidebarPropertyRenderer {
     this.positionFallbackHandler = null;
     this.fontPaletteHandler = null;
     this.matchers = matchers;
-  }
-
-  setColorMixHandler(handler: (arg0: string) => Node): void {
-    this.colorMixHandler = handler;
   }
 
   setBezierHandler(handler: (arg0: string) => Node): void {
@@ -2341,15 +2335,6 @@ export class StylesSidebarPropertyRenderer {
       }
       return new RegExp(`^${source}$`, flags);
     };
-
-    // Push `color-mix` handler before pushing regex handler because
-    // `color-mix` can contain variables inside and we want to handle
-    // it as `color-mix` swatch that displays a variable swatch inside
-    // `color: color-mix(in srgb, var(--a), var(--b))` should be handled
-    // by colorMixHandler not varHandler.
-    if (this.colorMixHandler && metadata.isColorAwareProperty(this.propertyName)) {
-      matchers.push(new LegacyRegexMatcher(Common.Color.ColorMixRegex, this.colorMixHandler));
-    }
 
     matchers.push(new LegacyRegexMatcher(SDK.CSSMetadata.URLRegex, this.processURL.bind(this)));
     if (this.bezierHandler && metadata.isBezierAwareProperty(this.propertyName)) {

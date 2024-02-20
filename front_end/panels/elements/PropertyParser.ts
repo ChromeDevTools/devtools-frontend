@@ -29,7 +29,10 @@ export class SyntaxTree {
     this.trailingNodes = trailingNodes;
   }
 
-  text(node?: CodeMirror.SyntaxNode): string {
+  text(node?: CodeMirror.SyntaxNode|null): string {
+    if (node === null) {
+      return '';
+    }
     return nodeText(node ?? this.tree, this.rule);
   }
 
@@ -401,8 +404,110 @@ function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
   return result;
 }
 
-export function children(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode[] {
-  return siblings(node.firstChild);
+export function children(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
+  return siblings(node?.firstChild ?? null);
+}
+
+function* stripComments(nodes: CodeMirror.SyntaxNode[]): Generator<CodeMirror.SyntaxNode> {
+  for (const node of nodes) {
+    if (node.type.name !== 'Comment') {
+      yield node;
+    }
+  }
+}
+
+function split(nodes: CodeMirror.SyntaxNode[]): CodeMirror.SyntaxNode[][] {
+  const result = [];
+  let current = [];
+  for (const node of nodes) {
+    if (node.name === ',') {
+      result.push(current);
+      current = [];
+    } else {
+      current.push(node);
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+function callArgs(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode[][] {
+  const args = children(node.getChild('ArgList'));
+  const openParen = args.splice(0, 1)[0];
+  const closingParen = args.pop();
+
+  if (openParen?.name !== '(' || closingParen?.name !== ')') {
+    return [];
+  }
+
+  return split(args);
+}
+
+function literalToNumber(node: CodeMirror.SyntaxNode, ast: SyntaxTree): number|null {
+  if (node.type.name !== 'NumberLiteral') {
+    return null;
+  }
+  const text = ast.text(node);
+
+  return Number(text.substring(0, text.length - ast.text(node.getChild('Unit')).length));
+}
+
+export abstract class ColorMixMatch implements Match {
+  readonly type = 'color-mix';
+  constructor(
+      readonly text: string, readonly space: CodeMirror.SyntaxNode[], readonly color1: CodeMirror.SyntaxNode[],
+      readonly color2: CodeMirror.SyntaxNode[]) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class ColorMixMatcher extends MatcherBase<typeof ColorMixMatch> {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (matching.ast.propertyName && !SDK.CSSMetadata.cssMetadata().isColorAwareProperty(matching.ast.propertyName)) {
+      return null;
+    }
+    if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'color-mix') {
+      return null;
+    }
+
+    const computedValueTree = tokenizePropertyValue(matching.getComputedText(node));
+    if (!computedValueTree) {
+      return null;
+    }
+
+    const computedValueArgs = callArgs(computedValueTree.tree);
+    if (computedValueArgs.length !== 3) {
+      return null;
+    }
+
+    const [space, color1, color2] = computedValueArgs;
+    // Verify that all arguments are there, and that the space starts with a literal `in`.
+    if (space.length < 2 || computedValueTree.text(stripComments(space).next().value) !== 'in' || color1.length < 1 ||
+        color2.length < 1) {
+      return null;
+    }
+
+    // Verify there's at most one percentage value for each color.
+    const p1 =
+        color1.filter(n => n.type.name === 'NumberLiteral' && computedValueTree.text(n.getChild('Unit')) === '%');
+    const p2 =
+        color2.filter(n => n.type.name === 'NumberLiteral' && computedValueTree.text(n.getChild('Unit')) === '%');
+    if (p1.length > 1 || p2.length > 1) {
+      return null;
+    }
+
+    // Verify that if both colors carry percentages, they aren't both zero (which is an invalid property value).
+    if (p1[0] && p2[0] && (literalToNumber(p1[0], computedValueTree) ?? 0) === 0 &&
+        (literalToNumber(p2[0], computedValueTree) ?? 0) === 0) {
+      return null;
+    }
+
+    const args = callArgs(node);
+    if (args.length !== 3) {
+      return null;
+    }
+    return this.createMatch(matching.ast.text(node), args[0], args[1], args[2]);
+  }
 }
 
 export abstract class VariableMatch implements Match {

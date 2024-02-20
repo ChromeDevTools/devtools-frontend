@@ -42,7 +42,6 @@ devtools_module("inline_editor") {
     "CSSLinearEasingModel.ts",
     "CSSShadowEditor.ts",
     "CSSShadowModel.ts",
-    "ColorMixModel.ts",
     "ColorMixSwatch.ts",
     "ColorSwatch.ts",
     "FontEditor.ts",

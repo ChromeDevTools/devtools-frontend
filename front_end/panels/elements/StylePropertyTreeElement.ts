@@ -31,6 +31,8 @@ import {
   children,
   ColorMatch,
   ColorMatcher,
+  ColorMixMatch,
+  ColorMixMatcher,
   Renderer,
   RenderingContext,
   VariableMatch,
@@ -320,6 +322,54 @@ export class ColorRenderer extends ColorMatch {
   }
 }
 
+export class ColorMixRenderer extends ColorMixMatch {
+  override render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
+    const hookUpColorArg = (node: Node, onChange: (newColorText: string) => void): boolean => {
+      // TODO(chromium:1504820) Also accept ColorMix swatches?
+      if (node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
+        node.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => onChange(ev.data.text));
+        const color = node.getText();
+        if (color) {
+          onChange(color);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const contentChild = document.createElement('span');
+    contentChild.appendChild(document.createTextNode('color-mix('));
+    Renderer.renderInto(this.space, context, contentChild);
+    contentChild.appendChild(document.createTextNode(', '));
+    const color1 = Renderer.renderInto(this.color1, context, contentChild).cssControls.get('color') ?? [];
+    contentChild.appendChild(document.createTextNode(', '));
+    const color2 = Renderer.renderInto(this.color2, context, contentChild).cssControls.get('color') ?? [];
+    contentChild.appendChild(document.createTextNode(')'));
+
+    if (context.matchedResult.hasUnresolvedVars(node) || color1.length !== 1 || color2.length !== 1) {
+      return [contentChild];
+    }
+
+    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
+    if (!hookUpColorArg(color1[0], text => swatch.setFirstColor(text)) ||
+        !hookUpColorArg(color2[0], text => swatch.setSecondColor(text))) {
+      return [contentChild];
+    }
+
+    const space = this.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
+    const color1Text = this.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
+    const color2Text = this.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
+    swatch.appendChild(contentChild);
+    swatch.setColorMixText(`color-mix(${space}, ${color1Text}, ${color2Text})`);
+    context.addControl('color', swatch);
+    return [swatch];
+  }
+
+  static matcher(): ColorMixMatcher {
+    return new ColorMixMatcher((text, space, color1, color2) => new ColorMixRenderer(text, space, color1, color2));
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -549,123 +599,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contentChild.appendChild(swatch);
 
     return contentChild;
-  }
-
-  private processColorMix(text: string): Node {
-    let colorMixText = text;
-    let interpolationMethodResolvedCorrectly = false;
-    const paramColorValues: string[] = [];
-    const colorMixModel = InlineEditor.ColorMixModel.ColorMixModel.parse(text);
-    if (!colorMixModel) {
-      return document.createTextNode(text);
-    }
-
-    const handleInterpolationMethod = (interpolationMethod: string): void => {
-      const matches =
-          TextUtils.TextUtils.Utils.splitStringByRegexes(interpolationMethod, [SDK.CSSMetadata.VariableRegex]);
-      for (const match of matches) {
-        if (match.regexIndex === 0) {
-          const computedSingleValue = this.matchedStylesInternal.computeSingleVariableValue(this.style, match.value);
-          if (!computedSingleValue || !computedSingleValue.computedValue) {
-            return;
-          }
-
-          colorMixText = colorMixText.replace(match.value, computedSingleValue.computedValue);
-          const varSwatch = this.processVar(match.value);
-          contentChild.appendChild(varSwatch);
-        } else {
-          contentChild.appendChild(document.createTextNode(match.value));
-        }
-      }
-
-      interpolationMethodResolvedCorrectly = true;
-      return;
-    };
-
-    const handleValue = (value: string, onChange: (newColorText: string) => void): void => {
-      // Parameter is a CSS variable
-      if (value.match(SDK.CSSMetadata.VariableRegex)) {
-        const computedSingleValue = this.matchedStylesInternal.computeSingleVariableValue(this.style, value);
-        // The variable is not defined or it is not a color
-        if (!computedSingleValue || !computedSingleValue.computedValue ||
-            !Common.Color.parse(computedSingleValue.computedValue)) {
-          return;
-        }
-
-        const {computedValue} = computedSingleValue;
-        // Update `var` reference in the color mix text with the variable's
-        // computed value since the same variable is not defined in DevTools
-        // reference to that in the CSS will result in undefined color.
-        colorMixText = colorMixText.replace(value, computedValue);
-        const varSwatch = this.processVar(value);
-        if (varSwatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-          varSwatch.addEventListener(
-              InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-              (ev: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-                onChange(ev.data.text);
-              });
-        }
-        contentChild.appendChild(varSwatch);
-        paramColorValues.push(computedSingleValue.computedValue);
-        return;
-      }
-
-      // Parameter is specified as an actual color (i.e. #000)
-      if (value.match(Common.Color.Regex)) {
-        const colorSwatch = new ColorRenderer(this, value).renderColorSwatch();
-        if (colorSwatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-          colorSwatch.addEventListener(
-              InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-              (ev: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-                onChange(ev.data.text);
-              });
-        }
-
-        contentChild.appendChild(colorSwatch);
-        paramColorValues.push(value);
-      }
-    };
-
-    const handleParam =
-        (paramParts: InlineEditor.ColorMixModel.ParamPart[], onChange: (newColorText: string) => void): void => {
-          for (let i = 0; i < paramParts.length; i++) {
-            const part = paramParts[i];
-            if (part.name === InlineEditor.ColorMixModel.PartName.Value) {
-              handleValue(part.value, onChange);
-            } else {
-              contentChild.appendChild(document.createTextNode(part.value));
-            }
-
-            if (i !== paramParts.length - 1) {
-              contentChild.appendChild(document.createTextNode(' '));
-            }
-          }
-        };
-
-    const [interpolationMethod, firstParam, secondParam] = colorMixModel.parts;
-    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
-    const contentChild = document.createElement('span');
-    contentChild.appendChild(document.createTextNode('color-mix('));
-    handleInterpolationMethod(interpolationMethod.value);
-    contentChild.appendChild(document.createTextNode(', '));
-    handleParam(firstParam.value, (color: string) => {
-      swatch.setFirstColor(color);
-    });
-    contentChild.appendChild(document.createTextNode(', '));
-    handleParam(secondParam.value, (color: string) => {
-      swatch.setSecondColor(color);
-    });
-    contentChild.appendChild(document.createTextNode(')'));
-
-    if (paramColorValues.length !== 2 || !interpolationMethodResolvedCorrectly) {
-      return document.createTextNode(text);
-    }
-    swatch.appendChild(contentChild);
-    swatch.setFirstColor(paramColorValues[0]);
-    swatch.setSecondColor(paramColorValues[1]);
-    swatch.setColorMixText(colorMixText);
-
-    return swatch;
   }
 
   // TODO(chromium:1504820) Delete once callers are migrated
@@ -1115,11 +1048,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value, [
           VariableRenderer.matcher(this, this.style),
           ColorRenderer.matcher(this),
+          ColorMixRenderer.matcher(),
         ]);
     if (this.property.parsedOk) {
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
-      propertyRenderer.setColorMixHandler(this.processColorMix.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));

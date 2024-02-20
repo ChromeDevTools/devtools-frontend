@@ -36,7 +36,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {WebBundleInfoView} from './components/WebBundleInfoView.js';
+import * as NetworkComponents from './components/components.js';
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
@@ -98,7 +98,8 @@ export class RequestPreviewView extends RequestResponseView {
     }
 
     if (this.request.webBundleInfo()) {
-      return LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, new WebBundleInfoView(this.request));
+      return LegacyWrapper.LegacyWrapper.legacyWrapper(
+          UI.Widget.VBox, new NetworkComponents.WebBundleInfoView.WebBundleInfoView(this.request));
     }
 
     const htmlErrorPreview = await this.htmlPreview();

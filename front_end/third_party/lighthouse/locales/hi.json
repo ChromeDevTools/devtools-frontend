@@ -18,7 +18,7 @@
     "message": "`[aria-*]` विशेषताएं और उनकी भूमिकाएं एक-दूसरे से मेल खाती हैं"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`, वेब पेज पर हर एलिमेंट का रोल जानने के लिए सहायक टेक्नोलॉजी चालू करता है. अगर `role` वैल्यू की स्पेलिंग गलत है, लेकिन मौजूदा ARIA `role` वैल्यू या ऐब्सट्रैक्ट रोल वैल्यू की स्पेलिंग सही है, तब भी सहायक टेक्नोलॉजी इस्तेमाल करने वालों को एलिमेंट के मकसद के बारे में जानकारी नहीं मिल पाएगी. [ARIA रोल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA `role`, वेब पेज पर हर एलिमेंट का रोल जानने के लिए सहायक टेक्नोलॉजी चालू करता है. अगर `role` वैल्यू की स्पेलिंग गलत है, लेकिन मौजूदा ARIA `role` वैल्यू या ऐब्सट्रैक्ट रोल वैल्यू की स्पेलिंग सही है, तब भी सहायक टेक्नोलॉजी इस्तेमाल करने वालों को एलिमेंट के मकसद के बारे में जानकारी नहीं मिल पाएगी. [ARIA रोल के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"` को असाइन की गई वैल्यू, ARIA के मान्य रोल नहीं हैं."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "पेज ने, बैक-फ़ॉरवर्ड कैश मेमोरी सुविधा को पहले जैसा करने से नहीं रोका"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "बिना ग्राफ़िक यूज़र इंटरफ़ेस वाले पुराने Chrome (`--chrome-flags=\"--headless=old\"`) में, बैक/फ़ॉरवर्ड कैश मेमोरी की जांच नहीं की जा सकती. ऑडिट के नतीजे देखने के लिए, बिना ग्राफ़िक यूज़र इंटरफ़ेस वाले नए Chrome (`--chrome-flags=\"--headless=new\"`) या स्टैंडर्ड Chrome का इस्तेमाल करें."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome एक्सटेंशन ने इस पेज के लोड परफ़ॉर्मेंस पर नकारात्मक रूप से असर डाला है. 'गुप्त मोड' में या बिना किसी एक्सटेंशन के Chrome प्रोफ़ाइल से पेज ऑडिट करके देखें."
   },
@@ -1155,12 +1158,36 @@
     "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट वाला एलिमेंट"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "सीएलएस में योगदान"
+    "message": "लेआउट शिफ़्ट का असर"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "पेज के सीएलएस में सबसे ज़्यादा योगदान ये DOM एलिमेंट देते हैं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
+    "message": "इन डीओएम एलिमेंट पर, लेआउट शिफ़्ट का सबसे ज़्यादा असर हुआ है. [विंडोविंग](https://web.dev/articles/cls#what_is_cls) की वजह से, हो सकता है कि कुछ लेआउट शिफ़्ट, सीएलएस मेट्रिक की वैल्यू में शामिल न किए जाएं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "बड़े लेआउट शिफ़्ट से बचें"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "लेआउट शिफ़्ट स्कोर"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "इस पेज पर बड़े पैमाने पर लेआउट शिफ़्ट हुआ है. टेबल का हर आइटम एक लेआउट शिफ़्ट की जानकारी देता है. साथ ही, उस एलिमेंट की जानकारी दिखाता है जो सबसे ज़्यादा शिफ़्ट हुआ है. नीचे दिया गया हर आइटम लेआउट के शिफ़्ट होने की संभावित वजह हो सकता है. [विंडोविंग](https://web.dev/articles/cls#what_is_cls) की वजह से, हो सकता है कि इनमें से कुछ लेआउट शिफ़्ट, सीएलएस मेट्रिक की वैल्यू में शामिल न किए जाएं. [सीएलएस को बेहतर बनाने का तरीका जानें](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 लेआउट शिफ़्ट मिला}one{# लेआउट शिफ़्ट मिला}other{# लेआउट शिफ़्ट मिले}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "वेब फ़ॉन्ट लोड किया गया"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "इंजेक्ट किया गया iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "नेटवर्क के देर से अनुरोध करने की वजह से, पेज के लेआउट में बदलाव हुआ है"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "मीडिया एलिमेंट के साइज़ की जानकारी साफ़ तौर पर नहीं दी गई है"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "बड़े लेआउट शिफ़्ट से बचें"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "'पता बार' के लिए थीम का रंग सेट करता है."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chrome के आने वाले वर्शन में, तीसरे पक्ष की कुकी के साथ काम करने की सुविधा हटा दी जाएगी. [तीसरे पक्ष की कुकी का इस्तेमाल बंद करने के बारे में ज़्यादा जानें](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 कुकी मिली}one{# कुकी मिली}other{# कुकी मिलीं}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "तीसरे पक्ष की कुकी का इस्तेमाल किया जाता है"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "तीसरे पक्ष की कुकी का इस्तेमाल नहीं किया जाता"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (ग्राहक सहायता)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "पास हुए ऑडिट"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Chrome पर, इंस्टॉल करने की अपडेट की गई ज़रूरी शर्तों](https://developer.chrome.com/blog/update-install-criteria) के साथ-साथ, आने वाले समय में लाइटहाउस, पीडब्ल्यूए कैटगरी को बंद कर दिया जाएगा. आने वाले समय में पीडब्ल्यूए की टेस्टिंग के लिए, कृपया [पीडब्ल्यूए का अपडेट किया गया दस्तावेज़](https://developer.chrome.com/docs/devtools/progressive-web-apps/) देखें."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "शुरुआती पेज लोड"

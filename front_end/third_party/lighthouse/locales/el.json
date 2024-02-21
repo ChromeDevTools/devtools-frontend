@@ -18,7 +18,7 @@
     "message": "Τα χαρακτηριστικά `[aria-*]` αντιστοιχούν στους ρόλους τους"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Οι `role` ARIA επιτρέπουν στις τεχνολογίες υποβοήθησης να γνωρίζουν τον ρόλο του κάθε στοιχείου στην ιστοσελίδα. Εάν οι τιμές του `role` δεν έχουν γραφτεί σωστά, δεν υπάρχουν οι υπάρχουσες τιμές `role`ARIA ή οι αφηρημένοι ρόλοι, τότε ο σκοπός του στοιχείου δεν θα κοινοποιείται στους χρήστες τεχνολογιών υποβοήθησης. [Μάθετε περισσότερα σχετικά με τους ρόλους ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Οι `role` ARIA επιτρέπουν στις τεχνολογίες υποβοήθησης να γνωρίζουν τον ρόλο του κάθε στοιχείου στην ιστοσελίδα. Εάν οι τιμές του `role` δεν έχουν γραφτεί σωστά, δεν υπάρχουν οι υπάρχουσες τιμές `role`ARIA ή οι αφηρημένοι ρόλοι, τότε ο σκοπός του στοιχείου δεν θα κοινοποιείται στους χρήστες τεχνολογιών υποβοήθησης. [Μάθετε περισσότερα σχετικά με τους ρόλους ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Οι τιμές που έχουν εκχωρηθεί στο στοιχείο `role=\"\"` είναι έγκυροι ρόλοι ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Η σελίδα δεν εμπόδισε την επαναφορά της κρυφής μνήμης πίσω-εμπρός"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Δεν είναι δυνατή η δοκιμή της κρυφής μνήμης πίσω-εμπρός στο παλιό Headless Chrome (`--chrome-flags=\"--headless=old\"`). Για να δείτε τα αποτελέσματα του ελέγχου, χρησιμοποιήστε το νέο Headless Chrome (`--chrome-flags=\"--headless=new\"`) ή το βασικό Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Οι επεκτάσεις του Chrome επηρέασαν αρνητικά την απόδοση φόρτωσης αυτής της σελίδας. Δοκιμάστε να ελέγξετε τη σελίδα σε κατάσταση ανώνυμης περιήγησης ή από ένα προφίλ του Chrome χωρίς επεκτάσεις."
   },
@@ -1155,12 +1158,36 @@
     "message": "Στοιχείο Μεγαλύτερης σχεδίασης με περιεχόμενο"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Συνεισφορά CLS"
+    "message": "Αντίκτυπος αλλαγής διάταξης"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Αυτά είναι τα στοιχεία DOM με τη μεγαλύτερη συνεισφορά στο CLS της σελίδας. [Μάθετε πώς μπορείτε να βελτιώσετε το CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Αυτά τα στοιχεία DOM επηρεάστηκαν περισσότερο από τις αλλαγές διάταξης. Ορισμένες αλλαγές στη διάταξη ενδέχεται να μην περιλαμβάνονται στην τιμή της μέτρησης CLS λόγω της [προσαρμογής σε παράθυρο](https://web.dev/articles/cls#what_is_cls). [Μάθετε πώς μπορείτε να βελτιώσετε το CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Αποφύγετε τις μεγάλες μετατοπίσεις διάταξης"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Βαθμολογία αλλαγής διάταξης"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Αυτές είναι οι μεγαλύτερες αλλαγές διάταξης που παρατηρήθηκαν στη σελίδα. Κάθε στοιχείο πίνακα αντιπροσωπεύει μια μεμονωμένη αλλαγή διάταξης και εμφανίζει το στοιχείο που άλλαξε περισσότερο. Κάτω από κάθε στοιχείο, παρατίθενται οι πιθανές βασικές αιτίες που οδήγησαν στην αλλαγή διάταξης. Ορισμένες από αυτές τις αλλαγές διάταξης ενδέχεται να μην περιλαμβάνονται στην τιμή της μέτρησης CLS λόγω [προσαρμογής σε παράθυρο](https://web.dev/articles/cls#what_is_cls). [Μάθετε πώς μπορείτε να βελτιώσετε το CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Βρέθηκε 1 αλλαγή διάταξης}other{Βρέθηκαν # αλλαγές διάταξης}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Φορτώθηκε η γραμματοσειρά ιστού"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Έγινε εισαγωγή iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Ένα αίτημα δικτύου που έχει καθυστερήσει προσάρμοσε τη διάταξη της σελίδας"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Λείπει σαφές μέγεθος από το στοιχείο μέσων"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Αποφύγετε τις μεγάλες μετατοπίσεις διάταξης"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Ορίζει ένα χρώμα θέματος για τη γραμμή διευθύνσεων."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Η υποστήριξη για cookie τρίτου μέρους θα καταργηθεί σε μελλοντική έκδοση του Chrome. [Μάθετε περισσότερα σχετικά με τη σταδιακή κατάργηση των cookie τρίτου μέρους](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Βρέθηκε 1 cookie}other{Βρέθηκαν # cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Χρησιμοποιεί cookie τρίτου μέρους"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Αποφεύγει τη χρήση cookie τρίτου μέρους"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Επιτυχία πελάτη)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Έλεγχοι που ολοκληρώθηκαν επιτυχώς"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Μαζί με τα [ενημερωμένα κριτήρια για τη δυνατότητα εγκατάστασης του Chrome](https://developer.chrome.com/blog/update-install-criteria), το Lighthouse θα καταργήσει την κατηγορία PWA σε μια μελλοντική έκδοση. Ανατρέξτε στην [ενημερωμένη τεκμηρίωση PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) για μελλοντικές δοκιμές PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Αρχική φόρτωση σελίδας"

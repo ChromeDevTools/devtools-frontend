@@ -18,7 +18,7 @@
     "message": "Atrybuty `[aria-*]` odpowiadają swoim rolom"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Dzięki atrybutom `role` ARIA technologie wspomagające osoby z niepełnosprawnością umożliwiają poznanie roli każdego elementu na stronie internetowej. Jeśli wartości `role` są błędnie zapisane, nie są istniejącymi wartościami ARIA `role` ani rolami abstrakcyjnymi, to użytkownicy technologii wspomagających nie otrzymają informacji o przeznaczeniu danego elementu. [Więcej informacji o rolach ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Dzięki atrybutom `role` ARIA technologie wspomagające osoby z niepełnosprawnością umożliwiają poznanie roli każdego elementu na stronie internetowej. Jeśli wartości `role` są błędnie zapisane, nie są istniejącymi wartościami ARIA `role` ani rolami abstrakcyjnymi, to użytkownicy technologii wspomagających nie otrzymają informacji o przeznaczeniu danego elementu. [Więcej informacji o rolach ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Wartości przypisane do atrybutu `role=\"\"` nie są prawidłowymi rolami ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Strona nie uniemożliwiła przywrócenia pamięci podręcznej stanu strony internetowej"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "W starej wersji Chrome bez interfejsu graficznego (`--chrome-flags=\"--headless=old\"`) nie można przetestować pamięci podręcznej stanu strony internetowej. Aby zobaczyć wyniki kontroli, użyj nowej wersji Chrome bez interfejsu graficznego (`--chrome-flags=\"--headless=new\"`) lub wersji standardowej Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Rozszerzenia Chrome pogorszyły szybkość ładowania tej strony. Przeprowadź audyt strony w trybie incognito lub w profilu Chrome bez rozszerzeń."
   },
@@ -1155,12 +1158,36 @@
     "message": "Najwięszy wyrenderowany element"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Wpływ na CLS"
+    "message": "Wpływ przesunięcia układu"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Te elementy DOM mają największy wpływ na CLS strony. [Dowiedz się, jak poprawić wartość CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Przesunięcia układu miały największy wpływ na te elementy DOM. Niektóre przesunięcia układu mogą nie być uwzględnione w wartości danych CLS z powodu [okienkowania](https://web.dev/articles/cls#what_is_cls). [Dowiedz się, jak poprawić wartość CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Unikaj dużych przesunięć układu"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Wynik przesunięcia układu"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "To są największe przesunięcia układu zaobserwowane na stronie. Każdy element tabeli przedstawia jedno przesunięcie układu i pokazuje element, który przesunął się najbardziej. Pod każdym elementem znajdziesz listę możliwych głównych przyczyn, które doprowadziły do przesunięcia układu. Niektóre z tych przesunięć układu mogą nie być uwzględnione w wartości danych CLS z powodu [okienkowania](https://web.dev/articles/cls#what_is_cls). [Dowiedz się, jak poprawić wartość CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Znaleziono 1 przesunięcie układu}few{Znaleziono # przesunięcia układu}many{Znaleziono # przesunięć układu}other{Znaleziono # przesunięcia układu}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Czcionka internetowa została wczytana"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Wstrzyknięty element iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Spóźnione żądanie sieciowe spowodowało zmianę układu strony"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Element multimedialny nie ma wyraźnego rozmiaru"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Unikaj dużych przesunięć układu"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Ustawia motyw kolorystyczny paska adresu."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "W przyszłej wersji Chrome wycofamy obsługę plików cookie innych firm. [Więcej informacji o wycofywaniu plików cookie innych firm](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Znaleziono 1 plik cookie}few{Znaleziono # pliki cookie}many{Znaleziono # plików cookie}other{Znaleziono # pliku cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Używa plików cookie innych firm"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Nie używa plików cookie innych firm"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (sukcesy klientów)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Zaliczone audyty"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Oprócz [aktualizacji kryteriów instalacyjnych Chrome](https://developer.chrome.com/blog/update-install-criteria) w przyszłej wersji w Lighthouse wycofamy kategorię PWA. Aby dowiedzieć się, jak w przyszłości będzie wyglądać testowanie PWA, zapoznaj się ze [zaktualizowaną dokumentacją dotyczącą aplikacji PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Wstępne wczytanie strony"

@@ -18,7 +18,7 @@
     "message": "سمات `[aria-*]` هي مطابقة لأدوارها"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "يتيح `role` ARIA للتكنولوجيا المساعِدة معرفة دور كل عنصر على صفحة الويب. إذا كانت قيَم `role` مكتوبة بشكل خاطئ أو كانت قيَم `role` ARIA غير موجودة أو كانت الأدوار مجرّدة، لن يعرف مستخدمو التكنولوجيا المساعِدة الغرض من العنصر. [مزيد من المعلومات حول أدوار ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "يتيح `role` ARIA للتكنولوجيا المساعِدة معرفة دور كل عنصر على صفحة الويب. إذا كانت قيَم `role` مكتوبة بشكل خاطئ أو كانت قيَم `role` ARIA غير موجودة أو كانت الأدوار مجرّدة، لن يعرف مستخدمو التكنولوجيا المساعِدة الغرض من العنصر. [مزيد من المعلومات حول أدوار ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "القيَم التي تم تخصيصها للدور `role=\"\"` ليست أدوار ARIA صالحة"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "لم يتم منع استعادة الصفحة من عملية التخزين المؤقت باستخدام ميزة \"التخزين المؤقت للصفحات\""
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "لا يمكن اختبار ميزة \"التخزين المؤقت للصفحات\" في الإصدار القديم من \"Chrome بلا واجهة مستخدم رسومية\" (`--chrome-flags=\"--headless=old\"`). للاطّلاع على نتائج التدقيق، استخدِم الإصدار الجديد من \"Chrome بلا واجهة مستخدم رسومية\" (`--chrome-flags=\"--headless=new\"`) أو متصفّح Chrome العادي."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "أثّرت \"إضافات Chrome\" بشكلٍ سلبي في أداء التحميل لهذه الصفحة. ويمكنك تجربة تدقيق الصفحة في وضع التصفُّح المُتخفّي أو من ملف شخصي على Chrome بدون الإضافات."
   },
@@ -1155,12 +1158,36 @@
     "message": "عنصر \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "المساهمة في متغيّرات التصميم التراكمية (CLS)"
+    "message": "تأثير متغيّرات التصميم"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "تساهم عناصر DOM هذه أكثر في متغيّرات التصميم التراكمية (CLS) الخاصة بالصفحة. تعرَّف على [كيفية تحسين CLS](https://web.dev/articles/optimize-cls)."
+    "message": "عناصر DOM هذه كانت الأكثر تأثّرًا بمتغيّرات التصميم. قد لا يتم تضمين بعض متغيّرات التصميم في قيمة مقياس متغيّرات التصميم التراكمية (CLS) بسبب [عملية الاستقطاع](https://web.dev/articles/cls#what_is_cls). [التعرُّف على كيفية تحسين متغيّرات التصميم التراكمية](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "تجنُّب متغيّرات التصميم الكبيرة"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "نتيجة متغيّرات التصميم"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "هذه هي أكبر متغيّرات التصميم التي تم رصدها في الصفحة. يُمثّل كل عنصر في الجدول متغيّر تصميم واحدًا مع توضيح العنصر الأكثر تغيُّرًا. وتتوفّر أسفل كل عنصر الأسباب الأساسية المحتمَلة التي أدّت إلى حدوث متغيّرات التصميم. قد لا يتم تضمين بعض متغيّرات التصميم هذه في قيمة مقياس متغيّرات التصميم التراكمية (CLS) بسبب [المدة الزمنية المخصّصة لعرض الأحداث](https://web.dev/articles/cls#what_is_cls). [التعرُّف على كيفية تحسين متغيّرات التصميم التراكمية](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{تم العثور على متغيّر تصميم واحد.}zero{تم العثور على # متغيّر تصميم.}two{تم العثور على متغيّرَي تصميم.}few{تم العثور على # متغيّرات تصميم.}many{تم العثور على # متغيّر تصميم.}other{تم العثور على # متغيّر تصميم.}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "خط صفحة الويب الذي تم تحميله"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "إطار iframe الذي تم إدخاله"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "أدَّى طلب الشبكة المتأخّر إلى تعديل تصميم الصفحة."
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "لم يتم تحديد حجم واضح لعنصر الوسائط."
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "ضبط لون تصميم لشريط العناوين"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "ستتم إزالة إمكانية استخدام ملفات تعريف الارتباط التابعة لجهات خارجية في إصدار مستقبلي من Chrome. [معلومات أكثر حول الإيقاف التدريجي لملفات تعريف الارتباط التابعة لجهات خارجية](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{تم العثور على ملف تعريف ارتباط واحد}zero{تم العثور على # ملف تعريف ارتباط}two{تم العثور على ملفَي تعريف ارتباط}few{تم العثور على # ملفات تعريف ارتباط}many{تم العثور على # ملف تعريف ارتباط}other{تم العثور على # ملف تعريف ارتباط}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "هذه الصفحة تستخدم ملفات تعريف ارتباط تابعة لجهات خارجية"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "هذه الصفحة لا تستخدم ملفات تعريف ارتباط تابعة لجهات خارجية"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (منتج متعلق بخدمة العملاء)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "اجتياز عمليات التدقيق بنجاح"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "إلى جانب [معايير قابلية التثبيت المُعدَّلة في Chrome](https://developer.chrome.com/blog/update-install-criteria)، ستوقف أداة Lighthouse فئة تطبيقات الويب التقدّمية (PWA) نهائيًا في إصدار مستقبلي. يُرجى الرجوع إلى [مستندات تطبيقات الويب التقدّمية (PWA) المعدَّلة](https://developer.chrome.com/docs/devtools/progressive-web-apps/) لاختبار هذه التطبيقات في المستقبل."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "التحميل الأولي للصفحة"

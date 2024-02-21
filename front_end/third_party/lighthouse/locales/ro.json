@@ -18,7 +18,7 @@
     "message": "Atributele `[aria-*]` se potrivesc cu rolurile"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Cu ajutorul rolurilor ARIA `role`, tehnologiile de asistare pot să afle rolul fiecărui element din pagina web. Dacă valorile pentru `role` sunt scrise greșit și rezultă valori inexistente pentru rolurile ARIA `role` sau roluri abstracte, scopul elementului nu va fi comunicat utilizatorilor tehnologiilor de asistare. [Află mai multe despre rolurile ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Cu ajutorul rolurilor ARIA `role`, tehnologiile de asistare pot să afle rolul fiecărui element din pagina web. Dacă valorile pentru `role` sunt scrise greșit și rezultă valori inexistente pentru rolurile ARIA `role` sau roluri abstracte, scopul elementului nu va fi comunicat utilizatorilor tehnologiilor de asistare. [Află mai multe despre rolurile ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Valorile atribuite pentru `role=\"\"` nu sunt roluri ARIA valide."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Pagina nu a împiedicat restabilirea memoriei cache înainte-înapoi"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Memoria cache înainte-înapoi nu se poate testa în vechiul Chrome fără interfață grafică (`--chrome-flags=\"--headless=old\"`). Pentru a vedea rezultatele auditului, folosește noul Chrome fără interfață grafică (`--chrome-flags=\"--headless=new\"`) sau Chrome standard."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Extensiile Chrome au afectat performanța de încărcare a acestei pagini. Încearcă să auditezi pagina în modul incognito sau dintr-un profil Chrome fără extensii."
   },
@@ -1155,12 +1158,36 @@
     "message": "Elementul cu cea mai mare redare de conținut"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribuția la CLS"
+    "message": "Impactul schimbării aspectului"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Aceste elemente DOM contribuie cel mai mult la schimbarea cumulată a aspectului paginii. [Află cum să îmbunătățești CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Aceste elemente DOM au fost afectate cel mai mult de schimbările aspectului. Este posibil ca unele schimbări ale aspectului să nu fie incluse în valoarea CLS din cauza practicii de [windowing](https://web.dev/articles/cls#what_is_cls). [Află cum să îmbunătățești CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Evită schimbările majore ale aspectului"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Scorul pentru schimbarea aspectului"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Acestea sunt cele mai mari schimbări ale aspectului observate în pagină. Fiecare element din tabel reprezintă o singură schimbare a aspectului și prezintă elementul care s-a schimbat cel mai mult. Sub fiecare element sunt afișate cauzele principale posibile care au dus la schimbarea aspectului. Este posibil ca unele dintre aceste schimbări ale aspectului să nu fie incluse în valoarea CLS din cauza practicii de [windowing](https://web.dev/articles/cls#what_is_cls). [Află cum să îmbunătățești CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{S-a detectat o schimbare a aspectului}few{S-au detectat # schimbări ale aspectului}other{S-au detectat # de schimbări ale aspectului}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "S-a încărcat un font web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "S-a injectat un iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "O solicitare din rețea întârziată a ajustat aspectul paginii"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Elementul media nu are o dimensiune clară"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Evită schimbările majore ale aspectului"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Setează o culoare tematică pentru bara de adrese."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Compatibilitatea cu cookie-urile terță parte va fi eliminată într-o versiune viitoare de Chrome. [Află mai multe despre retragerea cookie-urilor terță parte](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{S-a găsit un cookie}few{S-au găsit # cookie-uri}other{S-au găsit # de cookie-uri}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Folosește cookie-uri terță parte"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evită cookie-urile terță parte"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Asistență pentru clienți)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditări trecute"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Pe lângă [Criteriile de instalare actualizate pentru Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse va renunța la dezvoltarea categoriei PWA într-o versiune viitoare. Consultă [documentația actualizată pentru PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) pentru testările viitoare ale aplicațiilor web progresive."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Încărcarea inițială a paginii"

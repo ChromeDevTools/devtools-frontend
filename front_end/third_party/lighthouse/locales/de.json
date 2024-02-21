@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-Attribute entsprechen ihren Rollen"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Durch ARIA-Rollen („`role`s“) wird die Rolle einzelner Elemente auf einer Webseite an Hilfstechnologien weitergegeben. Wenn die „`role`“-Werte falsch geschrieben sind, keine vorhandenen ARIA-„`role`“-Werte sind oder abstrakte Rollen sind, wird der Zweck des Elements nicht an Nutzer von Hilfstechnologien weitergegeben. [Weitere Informationen zu ARIA-Rollen](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Durch ARIA-Rollen („`role`s“) wird die Rolle einzelner Elemente auf einer Webseite an Hilfstechnologien weitergegeben. Wenn die „`role`“-Werte falsch geschrieben sind, keine vorhandenen ARIA-„`role`“-Werte sind oder abstrakte Rollen sind, wird der Zweck des Elements nicht an Nutzer von Hilfstechnologien weitergegeben. [Weitere Informationen zu ARIA-Rollen](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Werte, die „`role=\"\"`“ zugewiesen sind, sind keine gültigen ARIA-Rollen."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Seite hat die Wiederherstellung des Back-Forward-Caches nicht verhindert"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Der Back-Forward-Cache kann in der alten monitorlosen Chrome-Version (`--chrome-flags=\"--headless=old\"`) nicht getestet werden. Verwende zum Ansehen der Audit-Ergebnisse die neue monitorlose Chrome-Version (`--chrome-flags=\"--headless=new\"`) oder die Standardversion von Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome-Erweiterungen haben die Ladegeschwindigkeit dieser Seite beeinträchtigt. Versuche, die Seite im Inkognito-Modus oder mit einem Chrome-Profil ohne Erweiterungen zu überprüfen."
   },
@@ -1155,12 +1158,36 @@
     "message": "Largest Contentful Paint-Element"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-Beitrag"
+    "message": "Auswirkung von Layout Shifts"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Diese DOM-Elemente tragen am stärksten zur CLS der Seite bei. [Informationen zur Verbesserung der CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Diese DOM-Elemente wurden am stärksten von Layout Shifts beeinflusst. Einige Layout Shifts sind aufgrund von [Windowing](https://web.dev/articles/cls#what_is_cls) möglicherweise nicht im CLS-Messwert enthalten. [Informationen zur Verbesserung der CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Umfangreiche Layoutverschiebungen vermeiden"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Layout-Shift-Ergebnis"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Dies sind die größten Layout Shifts auf der Seite. Jedes Tabellenelement stellt einen einzelnen Layout Shift dar und zeigt das Element mit der größten Verschiebung. Unter jedem Element sind mögliche Ursachen aufgeführt, die zu einem Layout Shift geführt haben. Einige dieser Layout Shifts sind aufgrund von [Windowing](https://web.dev/articles/cls#what_is_cls) möglicherweise nicht im CLS-Messwert enthalten. [Informationen zur Verbesserung der CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 Layout Shift gefunden}other{# Layout Shifts gefunden}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webschriftart geladen"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Eingefügter iFrame"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Das Seitenlayout wurde durch eine späte Netzwerkanfrage angepasst"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Medienelement ohne explizite Größe"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Umfangreiche Layoutverschiebungen vermeiden"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Legt eine Designfarbe für die Adressleiste fest."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "In einer zukünftigen Version von Chrome werden Cookies von Drittanbietern nicht mehr unterstützt. [Weitere Informationen zur schrittweisen Einstellung von Drittanbieter-Cookies.](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 Cookie gefunden}other{# Cookies gefunden}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Verwendet Drittanbieter-Cookies"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Vermeidet Drittanbieter-Cookies"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Erfolgsgeschichten)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Bestandene Prüfungen"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Neben den [aktualisierten Kriterien für die Installierbarkeit von Chrome](https://developer.chrome.com/blog/update-install-criteria) wird die PWA-Kategorie in einer zukünftigen Version von Lighthouse eingestellt. Informationen zu zukünftigen Tests findest du in der [aktualisierten PWA-Dokumentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Erster Seitenaufbau"

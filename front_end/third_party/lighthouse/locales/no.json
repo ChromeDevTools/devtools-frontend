@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-attributtene samsvarer med rollene sine"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA-`role`-elementer gjør at assisterende teknologi vet rollen til hvert element på nettsiden. Hvis `role`-verdier er feilstavet, ikke er eksisterende ARIA-`role`-verdier eller er abstrakte roller, blir ikke formålet med elementet formidlet til brukere av assisterende teknologi. [Finn ut mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA-`role`-elementer gjør at assisterende teknologi vet rollen til hvert element på nettsiden. Hvis `role`-verdier er feilstavet, ikke er eksisterende ARIA-`role`-verdier eller er abstrakte roller, blir ikke formålet med elementet formidlet til brukere av assisterende teknologi. [Finn ut mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Verdier som er tilordnet `role=\"\"`, er ikke gyldige ARIA-roller."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Siden hindret ikke gjenoppretting i frem-og-tilbake-bufferen"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Frem-og-tilbake-bufferen kan ikke testes i gamle, hodeløse Chrome (`--chrome-flags=\"--headless=old\"`). For å se resultatene fra revisjonen må du bruke nye Hodeløs Chrome (`--chrome-flags=\"--headless=new\"`) eller standardversjonen av Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome-utvidelser gjør innlastingen av denne siden tregere. Prøv å revidere siden i inkognitomodus eller fra en Chrome-profil uten utvidelser."
   },
@@ -1155,12 +1158,36 @@
     "message": "Elementet med største innholdsrike opptegning (LCP)"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-bidrag"
+    "message": "Innvirkning på utseendeforskyvning"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Disse DOM-elementene bidrar mest til CLS på siden. [Finn ut hvordan du kan gjøre CLS bedre](https://web.dev/articles/optimize-cls)"
+    "message": "Disse DOM-elementene ble mest påvirket av utseendeforskyvninger. Det kan hende at visse utseendeforskyvninger ikke er tatt med i CLS-beregningsverdien på grunn av [vinduer](https://web.dev/articles/cls#what_is_cls). [Finn ut hvordan du kan gjøre CLS bedre](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Unngå store utseendeforskyvninger"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Poengsum for utseendeforskyvning"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Dette er de største utseendeforskyvningene som er observert på siden. Hvert tabellelement representerer én enkelt utseendeforskyvning og viser elementet som ble forskjøvet mest. Under hvert element ser du mulige rotårsaker til utseendeforskyvningen. Det kan hende at noen av disse utseendeforskyvningene ikke er tatt med i CLS-beregningsverdien, på grunn av [vindusvisning](https://web.dev/articles/cls#what_is_cls). [Finn ut hvordan du kan gjøre CLS (akkumulert utseendeforskyvning) bedre](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 utseendeforskyvning ble funnet}other{# utseendeforskyvninger ble funnet}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Skrifttype for nettet er lastet inn"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Injisert iframe-element"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "En sen nettverksforespørsel justerte sideutseendet"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Medieelement uten eksplisitt størrelse"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Unngå store utseendeforskyvninger"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Angir en temafarge for adressefeltet."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Støtte for informasjonskapsler fra tredjeparter blir fjernet i en fremtidig versjon av Chrome. [Finn ut mer om utfasing av informasjonskapsler fra tredjeparter](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Fant 1 informasjonskapsel}other{Fant # informasjonskapsler}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Bruker informasjonskapsler fra tredjeparter"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Unngår informasjonskapsler fra tredjeparter"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (kundestøtte)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Beståtte revisjoner"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "I tillegg til de [oppdaterte kriteriene for installasjon i Chrome](https://developer.chrome.com/blog/update-install-criteria) kommer Lighthouse til å avvikle kategorien for PWA (progressive web app – progressive nettprogrammer) i en fremtidig utgave. Se den [oppdaterte PWA-dokumentasjonen](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for fremtidig PWA-testing."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Første sideinnlasting"

@@ -18,7 +18,7 @@
     "message": "Los atributos `[aria-*]` coinciden con sus funciones"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Los `role`s de ARIA permiten que las tecnologías asistenciales sepan qué función realiza cada elemento de la página web. Si los valores de los `role`s están mal escritos, no hay valores de `role`s de ARIA o los roles son abstractos, no se comunicará a los usuarios de tecnologías asistenciales qué funciones realizan dichos elementos. [Más información sobre los roles de ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Los `role`s de ARIA permiten que las tecnologías asistenciales sepan qué función realiza cada elemento de la página web. Si los valores de los `role`s están mal escritos, no hay valores de `role`s de ARIA o los roles son abstractos, no se comunicará a los usuarios de tecnologías asistenciales qué funciones realizan dichos elementos. [Más información sobre los roles de ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Los valores asignados a `role=\"\"` no son roles de ARIA válidos."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "La página no ha impedido la restauración de la caché de páginas completas"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "La caché de páginas completas no se puede probar en la antigua versión de Chrome sin interfaz gráfica (`--chrome-flags=\"--headless=old\"`). Para ver los resultados de la auditoría, usa la nueva versión de Chrome sin interfaz gráfica (`--chrome-flags=\"--headless=new\"`) o la versión estándar de Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Las extensiones de Chrome han afectado de forma negativa al rendimiento de carga de esta página. Prueba a auditarla en modo incógnito o desde un perfil de Chrome sin extensiones."
   },
@@ -1155,12 +1158,36 @@
     "message": "Renderizado del mayor elemento con contenido"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribución al CLS"
+    "message": "Impacto de los cambios de diseño"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Estos elementos DOM son los que más contribuyen al CLS de la página. [Descubre cómo mejorar el CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Estos elementos DOM son los que se han visto más afectados por los cambios de diseño. Es posible que algunos cambios de diseño no se incluyan en el valor de la métrica CLS debido a la [normalización](https://web.dev/articles/cls#what_is_cls). [Descubre cómo mejorar el CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Evitar cambios de diseño importantes"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Puntuación del cambio de diseño"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Estos son los mayores cambios de diseño que se han observado en la página. Cada entrada de la tabla representa un solo cambio de diseño y muestra el elemento que más ha cambiado. Debajo de cada elemento se indican las posibles causas que han provocado el cambio de diseño. Puede que algunos de estos cambios de diseño no se incluyan en el valor de la métrica de CLS debido a la [normalización](https://web.dev/articles/cls#what_is_cls). [Descubre cómo mejorar el CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 cambio de diseño detectado}other{# cambios de diseño detectados}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Fuente web cargada"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Iframe inyectado"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una solicitud de red tardía ha cambiado el diseño de la página"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Elemento multimedia sin tamaño concreto"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Evitar cambios de diseño importantes"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Establece un color personalizado en la barra de direcciones."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "La compatibilidad con cookies de terceros se eliminará en una futura versión de Chrome. [Más información sobre la eliminación progresiva de las cookies de terceros](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie encontrada}other{# cookies encontradas}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Usa cookies de terceros"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "No usa cookies de terceros"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (casos de éxito de clientes)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditorías aprobadas"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Además de los [criterios de instalación actualizados de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse desactivará la categoría de PWA en una próxima versión. Consulta la [documentación actualizada sobre PWAs](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para futuras pruebas de PWAs."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Carga inicial de la página"

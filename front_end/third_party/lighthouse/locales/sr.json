@@ -18,7 +18,7 @@
     "message": "Атрибути `[aria-*]` се подударају са својим улогама"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role` омогућавају технологијама за помоћ особама са инвалидитетом да сазнају улогу сваког елемента на веб-страници. Ако су вредности за `role` погрешно написане, непостојеће вредности за ARIA `role` или апстрактне улоге, сврха елемента неће бити саопштена корисницима технологија за помоћ особама са инвалидитетом. [Сазнајте више о ARIA улогама](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA `role` омогућавају технологијама за помоћ особама са инвалидитетом да сазнају улогу сваког елемента на веб-страници. Ако су вредности за `role` погрешно написане, непостојеће вредности за ARIA `role` или апстрактне улоге, сврха елемента неће бити саопштена корисницима технологија за помоћ особама са инвалидитетом. [Сазнајте више о ARIA улогама](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Вредности додељене за `role=\"\"` нису важеће ARIA улоге."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Страница није спречила враћање кеширања целе странице"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Кеширање целе странице не може да се тестира у старом Chrome-у без графичког интерфејса (`--chrome-flags=\"--headless=old\"`). Да бисте видели резултате провере, користите нови Chrome без графичког интерфејса (`--chrome-flags=\"--headless=new\"`) или стандардни Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Додаци за Chrome су негативно утицали на брзину учитавања ове странице. Пробајте да проверите страницу у режиму без архивирања или са Chrome профила без додатака."
   },
@@ -1155,12 +1158,36 @@
     "message": "Елемент са највећим приказивањем садржаја"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS допринос"
+    "message": "Утицај промене распореда"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ови DOM елементи највише доприносе CLS-у странице. [Сазнајте како да побољшате CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Промене распореда су највише утицале на ове DOM елементе. Неке промене распореда можда нису уврштене у вредност CLS показатеља због [прозорског приказа](https://web.dev/articles/cls#what_is_cls). [Сазнајте како да побољшате CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Избегавајте велике промене распореда"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Резултат промене распореда"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Ово су највеће промене распореда забележене на страници. Свака ставка табеле представља једну промену распореда и приказује елемент који се највише померио. Испод сваке ставке су наведени могући основни узроци који су довели до промене распореда. Неке од ових промена распореда можда нису уврштене у вредност CLS показатеља због [прозорског приказа](https://web.dev/articles/cls#what_is_cls). [Сазнајте како да побољшате CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Пронађена је 1 промена распореда}one{Пронађено је # промена распореда}few{Пронађене су # промене распореда}other{Пронађено је # промена распореда}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Веб-фонт је учитан"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Уметнути iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Касни мрежни захтев је прилагодио распоред странице"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Медијски елемент нема експлицитну величину"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Избегавајте велике промене распореда"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Подешава боју теме за траку за адресу."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Подршка за колачиће треће стране ће бити уклоњена у будућој верзији Chrome-а. [Сазнајте више о постепеном укидању колачића треће стране](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Пронађен је 1 колачић}one{Пронађен је # колачић}few{Пронађена су # колачића}other{Пронађено је # колачића}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Користи колачиће треће стране"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Избегава колачиће треће стране"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (успех клијената)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Провере са задовољавајућом оценом"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Поред [Chrome-ових ажурираних критеријума за инсталирање](https://developer.chrome.com/blog/update-install-criteria), PWA категорија ће у једном од наредних издања Lighthouse-а постати застарела. Погледајте [ажурирану PWA документацију](https://developer.chrome.com/docs/devtools/progressive-web-apps/) за будућа PWA тестирања."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Почетно учитавање странице"

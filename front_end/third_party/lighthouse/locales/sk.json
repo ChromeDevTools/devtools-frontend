@@ -18,7 +18,7 @@
     "message": "Atribúty `[aria-*]` zodpovedajú svojim rolám"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Roly ARIA `role` umožňujú asistenčným technológiám poznať rolu jednotlivých prvkov na webovej stránke. Ak sú hodnoty rol `role` napísané nesprávne, hodnoty rol ARIA `role` neexistujú alebo sú roly abstraktné, účel prvku nebude používateľom asistenčných technológií komunikovaný. [Ďalšie informácie o rolách ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Roly ARIA `role` umožňujú asistenčným technológiám poznať rolu jednotlivých prvkov na webovej stránke. Ak sú hodnoty rol `role` napísané nesprávne, hodnoty rol ARIA `role` neexistujú alebo sú roly abstraktné, účel prvku nebude používateľom asistenčných technológií komunikovaný. [Ďalšie informácie o rolách ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Hodnoty priradené prvku `role=\"\"` nie sú platné roly ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Stránka nezabránila obnoveniu spätnej vyrovnávacej pamäte"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Spätná vyrovnávacia pamäť sa nedá testovať v starom Chrome bez grafického rozhrania (`--chrome-flags=\"--headless=old\"`). Ak si chcete pozrieť výsledky kontroly, použite nový Chrome bez grafického rozhrania (`--chrome-flags=\"--headless=new\"`) alebo štandardný Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Rozšírenia pre Chrome negatívne ovplyvnili výkonnosť načítania tejto stránky. Skúste stránku skontrolovať v režime inkognito alebo profile Chrome bez rozšírení."
   },
@@ -1155,12 +1158,36 @@
     "message": "Prvok vykreslenia najväčšieho obsahu"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Miera podielu na kumulatívnej zmene rozloženia"
+    "message": "Vplyv zmeny rozloženia"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ku kumulatívnej zmene rozloženia danej stránky prispievajú najviac tieto prvky modelu DOM. [Ako zlepšiť kumulatívnu zmenu rozloženia](https://web.dev/articles/optimize-cls)"
+    "message": "Tieto prvky DOM boli najviac ovplyvnené zmenami rozloženia. Niektoré zmeny rozloženia nemusia byť zahrnuté v hodnote metriky súhrnu posunov rozloženia stránky, pretože bol použitý [windowing](https://web.dev/articles/cls#what_is_cls). [Ako zlepšiť súhrn posunov rozloženia stránky](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Nepoužívajte veľké posuny rozloženia"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Skóre posunu rozloženia"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Toto sú najväčšie posuny rozloženia zaznamenané na danej stránke. Každá položka tabuľky predstavuje jeden posun rozloženia a zobrazuje prvok, ktorý sa posunul najviac. Pod každou položkou sú uvedené možné hlavné príčiny, ktoré viedli k posunu rozloženia. Niektoré z týchto posunov rozloženia nemusia byť zahrnuté v hodnote metriky Súhrn posunov rozloženia stránky v dôsledku [windowingu](https://web.dev/articles/cls#what_is_cls). [Ako zlepšiť súhrn posunov rozloženia stránky](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Bol nájdený 1 posun rozloženia}few{Boli nájdené # posuny rozloženia}many{# layout shifts found}other{Bolo nájdených # posunov rozloženia}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webové písmo bolo načítané"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Vložený prvok iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Posledná sieťová požiadavka upravila rozloženie stránky"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Mediálny prvok nemá explicitnú veľkosť"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Nepoužívajte veľké posuny rozloženia"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Nastavuje farbu motívu pre panel s adresou."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Podpora súborov cookie tretej strany bude v budúcej verzii Chromu odstránená. [Ďalšie informácie o ukončení používania súborov cookie tretej strany](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Bol nájdený 1 súbor cookie}few{Boli nájdené # súbory cookie}many{# cookies found}other{Bolo nájdených # súborov cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Používa súbory cookie tretej strany"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Nepoužíva súbory cookie tretej strany"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (zákaznícka podpora)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Absolvované kontroly"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Spolu s [aktualizovanými kritériami inštalovateľnosti Chromu](https://developer.chrome.com/blog/update-install-criteria) ukončí Lighthouse v budúcom vydaní aj podporu kategórie PWA. Ďalšie informácie o budúcom testovaní PWA nájdete v [aktualizovanej dokumentácii k PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Počiatočné načítanie stránky"

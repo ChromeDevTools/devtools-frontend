@@ -18,7 +18,7 @@
     "message": "Atributi `[aria-*]` se ujemajo s svojimi vlogami"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Vloge ARIA `role` podporni tehnologiji omogočajo poznavanje vlog posameznih elementov na spletni strani. Če so vrednosti vlog `role` napačno črkovane, niso obstoječe vrednosti ARIA `role` ali so abstraktne vloge, namen elementa ne bo posredovan uporabnikom podporne tehnologije. [Preberite več o vlogah ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Vloge ARIA `role` podporni tehnologiji omogočajo poznavanje vlog posameznih elementov na spletni strani. Če so vrednosti vlog `role` napačno črkovane, niso obstoječe vrednosti ARIA `role` ali so abstraktne vloge, namen elementa ne bo posredovan uporabnikom podporne tehnologije. [Preberite več o vlogah ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Vrednosti, dodeljene vlogi `role=\"\"`, niso veljavne vloge ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Stran ni preprečila obnovitve predpomnilnika za hitro obnovitev strani"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Predpomnilnika za hitro obnovitev strani ni mogoče preizkusiti v starem Chromu za okolje brez grafičnega uporabniškega vmesnika (`--chrome-flags=\"--headless=old\"`). Če si želite ogledati rezultate revizije, uporabite novi Chrome za okolje brez grafičnega uporabniškega vmesnika (`--chrome-flags=\"--headless=new\"`) ali standardni Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Razširitve za Chrome so negativno vplivale na nalaganje te strani. Poskusite pregledati to stran v anonimnem načinu ali v profilu za Chrome brez razširitev."
   },
@@ -1155,12 +1158,36 @@
     "message": "Element največjega vsebinskega izrisa"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Prispevek k CLS"
+    "message": "Vpliv spremembe postavitve"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ti elementi DOM največ prispevajo k CLS-ju strani. [Preberite, kako izboljšate CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Na te elemente DOM so spremembe postavitve vplivale najbolj. Nekatere spremembe postavitve morda niso vključene v vrednost meritve CLS zaradi [prikaza v oknu](https://web.dev/articles/cls#what_is_cls). [Preberite, kako izboljšate CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Izogibajte se velikim pomikom postavitve"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Rezultat spremembe postavitve"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "To so največje spremembe postavitve, zaznane na strani. Vsak element tabele predstavlja eno spremembo postavitve in prikazuje element, katerega postavitev je bila najbolj spremenjena. Pod vsakim elementom so možni temeljni vzroki, ki so privedli do spremembe postavitve. Nekatere od teh sprememb postavitev morda niso vključene v vrednost meritve CLS zaradi [prikaza v oknu](https://web.dev/articles/cls#what_is_cls). [Preberite, kako izboljšate CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Najdena je bila 1 sprememba postavitve}one{Najdena je bila # sprememba postavitve}two{Najdeni sta bili # spremembi postavitve}few{Najdene so bile # spremembe postavitve}other{Najdenih je bilo # sprememb postavitve}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Naložena spletna pisava"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Vstavljen okvir iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Pozna omrežna zahteva je prilagodila postavitev strani"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Predstavnostni element nima eksplicitne velikosti"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Izogibajte se velikim pomikom postavitve"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Nastavi barvo teme za naslovno vrstico."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Podpora za piškotke tretjih oseb bo v prihodnji različici Chroma odstranjena. [Preberite več o postopnem opuščanju piškotkov tretjih oseb](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Najden je bil 1 piškotek}one{Najden je bil # piškotek}two{Najdena sta bila # piškotka}few{Najdeni so # piškotki}other{Najdenih je bilo # piškotkov}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Uporablja piškotke tretjih oseb"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Izogiba se piškotkom tretjih oseb"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (podpora strankam)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Uspešni pregledi"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Poleg [posodobitev meril za izvedljivost namestitve v Chromu](https://developer.chrome.com/blog/update-install-criteria) bo Lighthouse v prihodnji izdaji opustil kategorijo MSA. Za prihodnje preizkušanje MSA-ja glejte [posodobljeno dokumentacijo za MSA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Začetno nalaganje st rani"

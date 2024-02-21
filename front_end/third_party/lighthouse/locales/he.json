@@ -18,7 +18,7 @@
     "message": "מאפייני ה-`[aria-*]`‎ תואמים לתפקידים שלהם"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "באמצעות מאפייני `role` של ARIA מציינים לאמצעי הטכנולוגיה המסייעת את התפקיד של כל רכיב בדף האינטרנט. אם יש שגיאות איות בערכים של `role`, אם הם לא ערכי `role` קיימים של ARIA או שהתפקידים מופשטים, המשתמשים באמצעי הטכנולוגיה המסייעת לא יוכלו להבין את מטרת הרכיב. [מידע נוסף על תפקידים ב-ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "באמצעות מאפייני `role` של ARIA מציינים לאמצעי הטכנולוגיה המסייעת את התפקיד של כל רכיב בדף האינטרנט. אם יש שגיאות איות בערכים של `role`, אם הם לא ערכי `role` קיימים של ARIA או שהתפקידים מופשטים, המשתמשים באמצעי הטכנולוגיה המסייעת לא יוכלו להבין את מטרת הרכיב. [מידע נוסף על תפקידים ב-ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "הערכים שהוקצו לרכיב `role=\"\"` הם לא תפקידים חוקיים של ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "הדף לא מנע שחזור מתוך המטמון לדף הקודם/הבא"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "לא ניתן לבדוק את התכונה 'מטמון לדף הקודם/הבא' בגרסה הישנה של Headless Chrome ‏(`--chrome-flags=\"--headless=old\"`). כדי לראות את תוצאות הבדיקה, יש להשתמש בגרסה החדשה של Headless Chrome ‏(`--chrome-flags=\"--headless=new\"`) או בגרסה הרגילה של Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "תוספים ל-Chrome השפיעו לרעה על ביצועי הטעינה של הדף הזה. כדאי לבדוק את הדף במצב גלישה בסתר או באמצעות פרופיל Chrome שאינו כולל תוספים."
   },
@@ -1155,12 +1158,36 @@
     "message": "רכיב ה-Largest Contentful Paint (‏LCP)"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "השפעה על CLS"
+    "message": "ההשפעה של שינוי הפריסה"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "רכיבי DOM האלה הם המרכיבים המשמעותיים ביותר ב-CLS של הדף. [איך לשפר את ה-CLS](https://web.dev/articles/optimize-cls)"
+    "message": "רכיבי ה-DOM האלה הושפעו הכי הרבה משינויים בפריסה. יכול להיות ששינויי פריסה מסוימים לא ייכללו בערך של מדד CLS בגלל [עיבוד החלק הנצפה בלבד](https://web.dev/articles/cls#what_is_cls). [איך לשפר את ה-CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "יש להימנע משינויים משמעותיים בפריסה"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "הציון של שינוי הפריסה"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "אלה שינויי הפריסה הגדולים ביותר שזוהו בדף. כל פריט בטבלה מייצג שינוי פריסה אחד, ומוצג בו הרכיב שהשתנה במידה הרבה ביותר. מתחת לכל פריט מופיעות הסיבות האפשריות לשינוי הפריסה. יכול להיות שחלק משינויי הפריסה האלה לא ייכללו בערך של מדד CLS בגלל [עיבוד החלק הנצפה בלבד](https://web.dev/articles/cls#what_is_cls). [איך לשפר את ה-CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{נמצא שינוי פריסה אחד}one{נמצאו # שינויי פריסה}two{נמצאו # שינויי פריסה}other{נמצאו # שינויי פריסה}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "טעינת גופן אינטרנט"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "החדרת iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "בקשת רשת מאוחרת גרמה לשינוי בפריסת הדף"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "רכיב מדיה שהגודל שלו לא מוגדר"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "יש להימנע משינויים משמעותיים בפריסה"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "מגדיר צבע עיצוב עבור סרגל הכתובות."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "התמיכה בקובצי Cookie של צד שלישי תוסר בגרסה עתידית של Chrome. [מידע נוסף על הוצאה משימוש בהדרגה של קובצי Cookie של צד שלישי](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{נמצא קובץ Cookie אחד}one{נמצאו # קובצי Cookie}two{נמצאו # קובצי Cookie}other{נמצאו # קובצי Cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "הדף משתמש בקובצי Cookie של צד שלישי"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "אין שימוש בקובצי Cookie של צד שלישי"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (הצלחה של לקוחות)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "בדיקות עם ציון 'עובר'"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "לצד [הקריטריונים המעודכנים של Chrome לגבי אפשרות ההתקנה](https://developer.chrome.com/blog/update-install-criteria), הקטגוריה PWA תצא משימוש בגרסה עתידית במסגרת Lighthouse. אפשר לעיין ב[מסמכי התיעוד המעודכנים בנושא PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) לצורך בדיקות עתידיות של PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "טעינת הדף הראשונית"

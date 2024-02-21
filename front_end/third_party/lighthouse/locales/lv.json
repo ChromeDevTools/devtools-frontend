@@ -18,7 +18,7 @@
     "message": "Atribūti `[aria-*]` atbilst savām lomām"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA atribūti `role` ļauj atbalsta tehnoloģijām noteikt katra elementa lomu tīmekļa lapā. Ja `role` vērtības ir nepareizi uzrakstītas, nav esošas ARIA `role` vērtības vai ir abstraktas lomas, elementa mērķis netiks paziņots atbalsta tehnoloģiju lietotājiem. [Uzziniet vairāk par ARIA lomām](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA atribūti `role` ļauj atbalsta tehnoloģijām noteikt katra elementa lomu tīmekļa lapā. Ja `role` vērtības ir nepareizi uzrakstītas, nav esošas ARIA `role` vērtības vai ir abstraktas lomas, elementa mērķis netiks paziņots atbalsta tehnoloģiju lietotājiem. [Uzziniet vairāk par ARIA lomām](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Elementam `role=\"\"` piešķirtās vērtības nav derīgas ARIA lomas."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Lapa neliedza veikt atjaunošanu no kešatmiņas"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Pilnīgu saglabāšanu kešatmiņā nevar testēt iepriekšējā Chrome bez grafiskās lietotāja saskarnes versijā (`--chrome-flags=\"--headless=old\"`). Lai skatītu pārbaudes rezultātus, izmantojiet jauno Chrome bez grafiskās lietotāja saskarnes versiju (`--chrome-flags=\"--headless=new\"`) vai standarta Chrome versiju."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome paplašinājumi negatīvi ietekmē šīs lapas ielādes veiktspēju. Mēģiniet lapas pārbaudi veikt inkognito režīmā vai no Chrome profila bez paplašinājumiem."
   },
@@ -1155,12 +1158,36 @@
     "message": "Largest Contentful Paint elements"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS daļa"
+    "message": "Izkārtojuma nobīdes ietekme"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Šie DOM elementi visvairāk veicina lapas CLS. [Uzziniet, kā uzlabot CLS](https://web.dev/articles/optimize-cls)."
+    "message": "Šos DOM elementus visvairāk ietekmēja izkārtojuma nobīdes. Dažas izkārtojuma nobīdes var nebūt iekļautas CLS metrikas vērtībā [logošanas](https://web.dev/articles/cls#what_is_cls) dēļ. [Uzziniet, kā uzlabot CLS](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Centieties novērst lielas izkārtojuma nobīdes"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Izkārtojuma nobīdes rādītājs"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Šīs ir lielākās lapā novērotās izkārtojuma nobīdes. Katrs tabulas vienums apzīmē vienu izkārtojuma nobīdi, un tajā tiek rādīts elements, kurā bija vislielākā nobīde. Zem katra vienuma ir norādīti iespējamie galvenie cēloņi, kas izraisīja izkārtojuma nobīdi. Dažas no šīm izkārtojuma nobīdēm var nebūt iekļautas CLS metrikas vērtībā [logošanas](https://web.dev/articles/cls#what_is_cls) dēļ. [Uzziniet, kā uzlabot CLS](https://web.dev/articles/optimize-cls)."
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Tika atrasta 1 izkārtojuma nobīde}zero{Tika atrastas # izkārtojuma nobīdes}one{Tika atrasta # izkārtojuma nobīde}other{Tika atrastas # izkārtojuma nobīdes}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Tika ielādēts tīmekļa fonts"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Tika iepludināts iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Tika pielāgots lapas izkārtojums novēlota tīkla pieprasījuma dēļ"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Multivides elementam nav skaidra lieluma"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Centieties novērst lielas izkārtojuma nobīdes"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Lapa iestata adreses joslas motīva krāsu."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chrome nākotnes versijā vairs netiks atbalstīti trešo pušu sīkfaili. [Uzziniet vairāk par trešo pušu sīkfailu lietošanas pārtraukšanu](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Atrasts 1 sīkfails}zero{Atrasti # sīkfaili}one{Atrasts # sīkfails}other{Atrasti # sīkfaili}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Izmanto trešo pušu sīkfailus"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Neizmanto trešo pušu sīkfailus"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (klientu atbalsts)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Izpildītās pārbaudes"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Saskaņā ar [Chrome atjauninātajiem instalējamības kritērijiem](https://developer.chrome.com/blog/update-install-criteria) turpmākajā laidienā vairs netiks atbalstīta PTL kategorija rīkā Lighthouse. Lūdzu, skatiet [atjaunināto PTL dokumentāciju](https://developer.chrome.com/docs/devtools/progressive-web-apps/), lai turpmāk veiktu PTL testēšanu."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Sākotnējā lapas ielāde"

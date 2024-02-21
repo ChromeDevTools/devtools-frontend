@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 屬性與其角色相符"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "「ARIA `role`」可協助輔助技術瞭解網頁中每個元素的角色。如果「`role`」值有錯字、不是現有的「ARIA `role`」值，或是抽象角色，系統就不會將元素的目的傳達給輔助技術的使用者。[進一步瞭解 ARIA 角色](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)。"
+    "message": "「ARIA `role`」可協助輔助技術瞭解網頁中每個元素的角色。如果「`role`」值有錯字、不是現有的「ARIA `role`」值，或是抽象角色，系統就不會將元素的目的傳達給輔助技術的使用者。[進一步瞭解 ARIA 角色](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)。"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "指派給 `role=\"\"` 的值不是有效的 ARIA 角色。"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "網頁未有禁止還原向前/返回快取"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "無法在舊版 Headless Chrome (`--chrome-flags=\"--headless=old\"`) 中測試向前/返回快取。如要查看審核結果，請使用新版 Headless Chrome (`--chrome-flags=\"--headless=new\"`) 或標準版 Chrome。"
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome 擴充程式會對此頁面的載入效能產生負面影響。建議透過無痕模式或使用未安裝擴充程式的 Chrome 設定檔來審核頁面。"
   },
@@ -1155,12 +1158,36 @@
     "message": "「最大內容繪製」元素"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "對 CLS 的影響"
+    "message": "受版面配置轉移影響的元素數量"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "這些 DOM 元素在頁面造成最多累計版面配置轉移 (CLS)。[瞭解如何改善累計版面配置轉移 (CLS)](https://web.dev/articles/optimize-cls)"
+    "message": "版面配置轉移對這些 DOM 元素造成的影響最大。由於[視窗化](https://web.dev/articles/cls#what_is_cls)，部分版面配置轉移可能不會包含在 CLS 數據值中。[瞭解如何改善累計版面配置轉移 (CLS)](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "避免大幅度的版面配置轉移"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "版面配置轉移分數"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "這些是網頁上發現的最大版面配置轉移。每個表格項目都代表一個版面配置轉移，並會顯示轉移最多的元素。每個項目下方是導致版面配置轉移的潛在根本原因。由於[視窗化](https://web.dev/articles/cls#what_is_cls)，部分版面配置轉移可能不會包含在 CLS 數據值中。[瞭解如何改善累計版面配置轉移 (CLS)](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{找到 1 項版面配置轉移}other{找到 # 項版面配置轉移}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "已載入網頁字型"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "已插入 iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "延遲的網絡要求導致網頁版面配置變更"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "媒體元素沒有明確尺寸"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "避免大幅度的版面配置轉移"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "設定網址列的主題顏色。"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "未來的 Chrome 版本將不再支援第三方 Cookie。[進一步瞭解 Chrome 如何逐步停止支援第三方 Cookie](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)。"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{找到 1 個 Cookie}other{找到 # 個 Cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "使用第三方 Cookie"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "避免使用第三方 Cookie"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (客戶支援)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "已通過的審核"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "除了[更新 Chrome 的安裝條件](https://developer.chrome.com/blog/update-install-criteria)，Lighthouse 亦將在之後的版本淘汰 PWA 類別。如果之後要進行 PWA 測試，請參閱[新版 PWA 說明文件](https://developer.chrome.com/docs/devtools/progressive-web-apps/)。"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初始頁面載入"

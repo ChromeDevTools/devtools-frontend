@@ -18,7 +18,7 @@
     "message": "Атрибути `[aria-*]` відповідають своїм ролям"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Елементи ARIA `role` дають змогу технологіям для людей з обмеженими можливостями дізнаватися роль кожного елемента на веб-сторінці. Якщо значення `role` написано з орфографічними помилками або вони є неіснуючими значеннями ARIA `role` чи абстрактними ролями, то призначення цього елемента не повідомлятиметься користувачам технологій для людей з обмеженими можливостями. [Докладніше про ролі ARIA.](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Елементи ARIA `role` дають змогу технологіям для людей з обмеженими можливостями дізнаватися роль кожного елемента на веб-сторінці. Якщо значення `role` написано з орфографічними помилками або вони є неіснуючими значеннями ARIA `role` чи абстрактними ролями, то призначення цього елемента не повідомлятиметься користувачам технологій для людей з обмеженими можливостями. [Докладніше про ролі ARIA.](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Значення, указані для елемента `role=\"\"`, не є дійсними ролями ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Сторінку вдалося відновити зі зворотного кешу"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Зворотний кеш не можна тестувати в старому веб-переглядачі Chrome без графічного інтерфейсу (`--chrome-flags=\"--headless=old\"`). Щоб переглянути результати перевірки, використовуйте новий веб-переглядач Chrome без графічного інтерфейсу (`--chrome-flags=\"--headless=new\"`) або стандартну версію Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Розширення Chrome негативно впливають на завантаження цієї сторінки. Спробуйте перевірити сторінку в режимі анонімного перегляду або в профілі Chrome без розширень."
   },
@@ -1155,12 +1158,36 @@
     "message": "Елемент візуалізації великого контенту"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Дані CLS"
+    "message": "Вплив зміщень макета"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ці елементи DOM найбільше впливають на сукупне зміщення макета (CLS) сторінки. [Дізнайтесь, як покращити показник CLS.](https://web.dev/articles/optimize-cls)"
+    "message": "Зміщення макета найбільше вплинули на ці елементи DOM. Деякі зміщення можуть не включатися в значення показника CLS через [віконізацію](https://web.dev/articles/cls#what_is_cls). [Дізнайтесь, як покращити показник CLS.](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Уникайте великих зсувів макета"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Показник зміщення макета"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Це найбільші зміщення макета, що спостерігаються на сторінці. Кожний елемент таблиці представляє одне зміщення макета й указує на об’єкт із найбільшим зміщенням. Під кожним об’єктом наведено можливі причини, які призвели до зміщення макета. Деякі із цих зміщень можуть не включатися в значення показника CLS через [віконізацію](https://web.dev/articles/cls#what_is_cls). [Дізнайтесь, як покращити показник CLS.](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Виявлено 1 зміщення макета}one{Виявлено # зміщення макета}few{Виявлено # зміщення макета}many{Виявлено # зміщень макета}other{Виявлено # зміщення макета}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Веб-шрифт завантажено"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Вставлено iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Макет сторінки змінено через запізній запит мережі"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Для медіаоб’єкта не вказано явний розмір"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Уникайте великих зсувів макета"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Змінює колір адресного рядка відповідно до теми."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "У майбутній версії Chrome сторонні файли cookie не підтримуватимуться. [Докладніше.](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Знайдено 1 файл cookie}one{Знайдено # файл cookie}few{Знайдено # файли cookie}many{Знайдено # файлів cookie}other{Знайдено # файлу cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Використовує сторонні файли cookie"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Уникає сторонніх файлів cookie"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (підтримка клієнтів)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Виконані перевірки"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "У майбутньому випуску Lighthouse більше не підтримуватиме категорію прогресивних веб-додатків. Крім того, буде [оновлено умови встановлення таких додатків у Chrome](https://developer.chrome.com/blog/update-install-criteria). Щоб підготуватися до тестування прогресивних веб-додатків, перегляньте [оновлену документацію](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Перше завантаження сторінки"

@@ -18,7 +18,7 @@
     "message": "Attributen av typen `[aria-*]` stämmer med elementets roll"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Med hjälp av ARIA-`role` kan hjälpmedelstekniken veta rollen för varje element på webbsidan. Om `role`-värdena är felstavade, inte befintliga ARIA-`role`-värden eller abstrakta roller kommer syftet med elementet inte att kommuniceras med användarna av hjälpmedelsteknik. [Läs mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Med hjälp av ARIA-`role` kan hjälpmedelstekniken veta rollen för varje element på webbsidan. Om `role`-värdena är felstavade, inte befintliga ARIA-`role`-värden eller abstrakta roller kommer syftet med elementet inte att kommuniceras med användarna av hjälpmedelsteknik. [Läs mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Värden som tilldelats till `role=\"\"` är inte giltiga ARIA-roller."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Sidan förhindrade inte återställning av vilocacheminnet"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Vilocacheminnet kan inte testas i den äldre fönsterlösa versionen av Chrome (`--chrome-flags=\"--headless=old\"`). Använd den nya fönsterlösa versionen av Chrome (`--chrome-flags=\"--headless=new\"`) eller standardversionen av Chrome om du vill se granskningsresultat."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Inläsningen av den här sidan påverkas negativt av tillägg i Chrome. Testa att granska sidan i inkognitoläge eller med en Chrome-profil utan tillägg."
   },
@@ -1155,12 +1158,36 @@
     "message": "Element som största uppritningen av innehåll gjordes för"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Bidrag till CLS"
+    "message": "Effekt av layoutförskjutning"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Dessa DOM-element bidrog mest till sidans CLS. [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Dessa DOM-element påverkades mest av layoutförskjutningar. Vissa layoutförskjutningar kanske inte tas med i CLS-mätvärdet på grund av [windowing](https://web.dev/articles/cls#what_is_cls). [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Undvik större layoutförskjutningar"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Resultat för layoutförskjutning"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Det här är de största layoutförskjutningarna som observerats på sidan. Varje tabellobjekt representerar en enskild layoutförskjutning och visar elementet som försköts mest. Under varje objekt visas möjliga grundorsaker till layoutförskjutningen. Vissa av dessa layoutförskjutningar kanske inte tas med i CLS-mätvärdet på grund av [windowing](https://web.dev/articles/cls#what_is_cls). [Läs mer om hur du kan förbättra CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 layoutförskjutning hittades}other{# layoutförskjutningar hittades}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webbteckensnittet har lästs in"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Injicerad iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "En sen nätverksbegäran justerade sidlayouten"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Medieelementet har ingen angiven storlek"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Undvik större layoutförskjutningar"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Anger ett färgtema för adressfältet."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Stödet för tredjepartscookies tas bort i en framtida version av Chrome. [Läs mer om utfasning av tredjepartscookies](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie hittades}other{# cookies hittades}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Använder tredjepartscookies"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Undviker tredjepartscookies"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (framgångshistorier)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Godkända granskningar"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Utöver att [Chromes installationskriterier uppdateras](https://developer.chrome.com/blog/update-install-criteria) fasar Lighthouse ut PWA-kategorin i en framtida version. Läs den [uppdaterade dokumentationen om PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) för framtida PWA-testning."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Första sidhämtningen"

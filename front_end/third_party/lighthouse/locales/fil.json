@@ -18,7 +18,7 @@
     "message": "Tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Nagbibigay-daan ang mga `role` ng ARIA para malaman ng mga pantulong na teknolohiya ang tungkulin ng bawat element sa web page. Kung ang mga value ng `role` ay mali ang pagbaybay, hindi value ng umiiral na `role` ng ARIA, o abstract na tungkulin, hindi maipagbibigay-alam ang layunin ng element sa mga user ng mga pantulong na teknolohiya. [Matuto pa tungkol sa mga tungkulin ng ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Nagbibigay-daan ang mga `role` ng ARIA para malaman ng mga pantulong na teknolohiya ang tungkulin ng bawat element sa web page. Kung ang mga value ng `role` ay mali ang pagbaybay, hindi value ng umiiral na `role` ng ARIA, o abstract na tungkulin, hindi maipagbibigay-alam ang layunin ng element sa mga user ng mga pantulong na teknolohiya. [Matuto pa tungkol sa mga tungkulin ng ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Hindi mga valid na tungkulin ng ARIA ang mga value na itinalaga sa `role=\"\"`."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Hindi pinigilan ng page ang pag-restore ng back/forward cache"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Hindi mate-test ang back/forward cache sa lumang Headless Chrome (`--chrome-flags=\"--headless=old\"`). Para makakita ng mga resulta ng pag-audit, gamitin ang bagong Headless Chrome (`--chrome-flags=\"--headless=new\"`) o karaniwang Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Nagkaroon ng negatibong epekto ang mga extension ng Chrome sa performance ng pag-load ng page na ito. Subukang i-audit ang page sa incognito mode o mula sa isang profile sa Chrome nang walang extension."
   },
@@ -1155,12 +1158,36 @@
     "message": "Element na Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Kontribusyon sa CLS"
+    "message": "Epekto ng pagbabago sa layout"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ang mga DOM element na ito ang may pinakamalaking kontribusyon sa CLS ng page. [Alamin kung paano pahusayin ang CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Ang mga element ng DOM na ito ang pinakanaapektuhan ng mga pagbabago sa layout. Posibleng hindi kasama ang ilang pagbabago sa layout sa metric value ng CLS dahil sa [pag-window](https://web.dev/articles/cls#what_is_cls). [Alamin kung paano pahusayin ang CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Iwasan ang malalaking pagbabago ng layout"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Score ng pagbabago sa layout"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Ang mga ito ang pinakamalaking pagbabago sa layout na naobserbahan sa page. Ang bawat item sa talahanayan ay kumakatawan sa isang pagbabago sa layout, at ipinapakita nito ang element na may pinakamalaking pagbabago. Nasa ibaba ng bawat item ang mga posibleng pinag-ugatang dahilan na humantong sa pagbabago sa layout. Posibleng hindi kasama ang ilan sa mga pagbabago sa layout na ito sa metric value ng CLS dahil sa [pag-window](https://web.dev/articles/cls#what_is_cls). [Alamin kung paano pahusayin ang CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 pagbabago sa layout ang nakita}one{# pagbabago sa layout ang nakita}other{# na pagbabago sa layout ang nakita}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Na-load na web font"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Na-inject na iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "In-adjust ng nahuling request sa network ang layout ng page"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Walang explicit na laki ang element ng media"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Iwasan ang malalaking pagbabago ng layout"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Nagtatakda ng kulay ng tema para sa address bar."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Aalisin ang suporta para sa third-party na cookies sa bersyon ng Chrome sa hinaharap. [Alamin pa ang tungkol sa pag-phase out ng third-party na cookies](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{May nakitang 1 cookie}one{May nakitang # cookies}other{May nakitang # na cookies}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Gumagamit ng third-party na cookies"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Iniiwasan ang third-party na cookies"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Tagumpay ng Customer)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Mga pumasang pag-audit"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Kasama ng [na-update na Pamantayan sa Installability ng Chrome](https://developer.chrome.com/blog/update-install-criteria), ihihinto na ng Lighthouse ang paggamit sa PWA na kategorya sa isang release sa hinaharap. Sumangguni sa [na-update na dokumentasyon ng PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para sa pagsusuri ng PWA sa hinaharap."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Paunang pag-load ng page"

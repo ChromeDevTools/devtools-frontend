@@ -18,7 +18,7 @@
     "message": "`[aria-*]` பண்புக்கூறுகள் அவற்றின் பங்களிப்புகளுடன் பொருந்துகின்றன"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "இணையப் பக்கத்தில் உள்ள ஒவ்வொரு உறுப்பின் பங்களிப்பையும் தெரிந்துகொள்ள உதவிகரமான தொழில்நுட்பங்களுக்கு ARIA `role`கள் உதவுகின்றன. `role` மதிப்புகளில் எழுத்துப் பிழை இருந்தாலோ, அவை ஏற்கெனவே இல்லாத `role` மதிப்புகளாக இருந்தாலோ, பங்களிப்புகள் தெளிவாக இல்லை என்றாலோ உதவிகரமான தொழில்நுட்பங்களைப் பயன்படுத்தும் பயனர்களை உறுப்பின் நோக்கம் சென்றடையாது. [ARIA பங்களிப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "இணையப் பக்கத்தில் உள்ள ஒவ்வொரு உறுப்பின் பங்களிப்பையும் தெரிந்துகொள்ள உதவிகரமான தொழில்நுட்பங்களுக்கு ARIA `role`கள் உதவுகின்றன. `role` மதிப்புகளில் எழுத்துப் பிழை இருந்தாலோ, அவை ஏற்கெனவே இல்லாத `role` மதிப்புகளாக இருந்தாலோ, பங்களிப்புகள் தெளிவாக இல்லை என்றாலோ உதவிகரமான தொழில்நுட்பங்களைப் பயன்படுத்தும் பயனர்களை உறுப்பின் நோக்கம் சென்றடையாது. [ARIA பங்களிப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"`க்கு ஒதுக்கப்பட்டுள்ள மதிப்புகள் சரியான ARIA பங்களிப்புகள் இல்லை."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் இருந்து மீட்டெடுப்பதைப் பக்கம் தடுக்கவில்லை"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் அம்சத்தைப் பழைய Headless Chromeமில் (`--chrome-flags=\"--headless=old\"`) பரிசோதிக்க முடியாது. தணிக்கை முடிவுகளைப் பார்க்க, புதிய Headless Chrome (`--chrome-flags=\"--headless=new\"`) அல்லது இயல்புநிலை Chromeமைப் பயன்படுத்தவும்."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome நீட்டிப்புகள் இந்தப் பக்கத்தின் ஏற்றுதல் செயல்திறனை எதிர்மறையாகப் பாதிக்கின்றன. மறைநிலையிலோ, நீட்டிப்புகள் இல்லாத ஒரு Chrome கணக்கிலிருந்தோ பக்கத்தைத் தணிக்கை செய்ய முயலவும்."
   },
@@ -1155,12 +1158,36 @@
     "message": "பெரிய பகுதியைக் காண்பிக்கும் நேரத்திற்கான உறுப்பு"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS பங்களிப்பு"
+    "message": "லே-அவுட் ஷிஃப்ட்டின் பாதிப்பு"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "பக்கத்தின் பெரும்பான்மையான CLSஸில் இந்த DOM உறுப்புகள் பங்களிக்கின்றன. [CLSஸை எப்படி மேம்படுத்துவது என அறிக](https://web.dev/articles/optimize-cls)"
+    "message": "லே-அவுட் ஷிஃப்ட்களால் இந்த DOM உறுப்புகள் அதிகம் பாதிக்கப்பட்டன. [விண்டோவிங்](https://web.dev/articles/cls#what_is_cls) காரணமாகச் சில லே-அவுட் ஷிஃப்ட்கள் CLS அளவீட்டு மதிப்பில் சேர்க்கப்படாமல் போகலாம். [CLSஸை எப்படி மேம்படுத்துவது என்று தெரிந்துகொள்ளுங்கள்](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "பெரிய தளவமைப்பு ஷிஃப்ட்களைத் தவிர்த்தல்"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "லே-அவுட் ஷிஃப்ட் ஸ்கோர்"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "இவை இணையப் பக்கத்தில் கண்டறியப்பட்ட பெரிய லே-அவுட் ஷிஃப்ட்கள் ஆகும். அட்டவணையின் ஒவ்வொரு கலமும் ஒரு லே-அவுட் ஷிஃப்டைக் குறிக்கும். மேலும் எந்த உறுப்பு அதிகம் ஷிஃப்ட் ஆகியுள்ளது என்பது அதில் குறிப்பிடப்பட்டிருக்கும். அவை ஒவ்வொன்றுக்கும் கீழே லே-அவுட் ஷிஃப்ட்டிற்கான சாத்தியமான மூலகாரணங்கள் இருக்கும். [விண்டோவிங்](https://web.dev/articles/cls#what_is_cls) காரணமாகச் சில லே-அவுட் ஷிஃப்ட்கள் CLS அளவீட்டு மதிப்பில் சேர்க்கப்படாமல் போகலாம். [CLSஸை எப்படி மேம்படுத்துவது என்று தெரிந்துகொள்ளுங்கள்](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 லே-அவுட் ஷிஃப்ட் கண்டறியப்பட்டது}other{# லே-அவுட் ஷிஃப்ட்கள் கண்டறியப்பட்டன}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "இணைய எழுத்து வடிவம் ஏற்றப்பட்டிருத்தல்"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iframe சேர்க்கப்பட்டிருத்தல்"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "தாமதமான நெட்வொர்க் கோரிக்கை காரணமாகப் பக்கத்தின் தளவமைப்பு மாறியிருக்கலாம்"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "மீடியா உறுப்பின் அளவு வரையறுக்கப்படாமல் இருத்தல்"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "பெரிய தளவமைப்பு ஷிஃப்ட்களைத் தவிர்த்தல்"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "முகவரிப் பட்டிக்கான தீம் வண்ணத்தை அமைக்கும்."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "இனி வரும் Chrome பதிப்புகளில் மூன்றாம் தரப்புக் குக்கீகளைப் பயன்படுத்த முடியாது. [மூன்றாம் தரப்புக் குக்கீகளைப் படிப்படியாகக் குறைப்பது குறித்து மேலும் தெரிந்துகொள்ளுங்கள்](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 குக்கீ கண்டறியப்பட்டது}other{# குக்கீகள் கண்டறியப்பட்டன}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "மூன்றாம் தரப்புக் குக்கீகளைப் பயன்படுத்துகிறது"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "மூன்றாம் தரப்புக் குக்கீகளைத் தவிர்க்கிறது"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (வாடிக்கையாளர் சேவை)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "தேர்ச்சி பெற்ற தணிக்கைகள்"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[நிறுவலுக்கான Chromeமின் புதுப்பிக்கப்பட்ட நிபந்தனைகளை](https://developer.chrome.com/blog/update-install-criteria) அடுத்து, எதிர்கால வெளியீட்டில் PWA வகையை Lighthouse நிறுத்தும். எதிர்கால PWA சோதனைக்கு, [புதுப்பிக்கப்பட்ட PWA ஆவணத்தைப்](https://developer.chrome.com/docs/devtools/progressive-web-apps/) பார்க்கவும்."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "பக்கத்தின் முதற்கட்ட ஏற்றம்"

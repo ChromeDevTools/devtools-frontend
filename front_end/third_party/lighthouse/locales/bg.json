@@ -18,7 +18,7 @@
     "message": "Атрибутите `[aria-*]` съответстват на ролите си"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Ролите на ARIA, задавани чрез атрибута `role`, информират помощните технологии каква функция изпълнява всеки елемент в уеб страницата. Ако стойностите на `role` са изписани неправилно, не са сред съществуващите за `role` или са абстрактни роли, предназначението на елемента няма да се съобщава на потребителите на помощни технологии. [Научете повече за ролите на ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Ролите на ARIA, задавани чрез атрибута `role`, информират помощните технологии каква функция изпълнява всеки елемент в уеб страницата. Ако стойностите на `role` са изписани неправилно, не са сред съществуващите за `role` или са абстрактни роли, предназначението на елемента няма да се съобщава на потребителите на помощни технологии. [Научете повече за ролите на ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Стойностите, зададени за `role=\"\"`, не са валидни роли на ARIA."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Страницата не предотврати възстановяването на кеша за назад/напред"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Кешът за назад/напред не може да бъде тестван в старата версия на Chrome без графичен потребителски интерфейс (`--chrome-flags=\"--headless=old\"`). За да видите резултатите от проверката, използвайте новата версия на Chrome без графичен потребителски интерфейс (`--chrome-flags=\"--headless=new\"`) или стандартната версия на Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Зареждането на тази страница се забавя от разширения за Chrome. Опитайте да я проверите в режим „инкогнито“ или от потребителски профил в Chrome без инсталирани разширения."
   },
@@ -1155,12 +1158,36 @@
     "message": "Елемент, рендериран при изобразяване на най-голямото съдържание (LCP)"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Принос към CLS"
+    "message": "Въздействие на структурните промени"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Тези елементи в DOM имат най-голям принос за CLS на страницата. [Научете как да подобрите CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Тези елементи на DOM са засегнати най-много от структурните промени. Някои структурни промени може да не са включени в стойността на показателя за CLS поради [рендериране на текущия прозорец](https://web.dev/articles/cls#what_is_cls). [Научете как да подобрите CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Избягвайте големи промени в оформлението"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Резултат за структурната промяна"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Това са най-големите структурни промени на страницата. Всеки елемент в таблицата представлява една структурна промяна и показва компонента с най-голямо изменение. Под всеки елемент са посочени възможните основни причини, довели до структурната промяна. Някои от тези структурни промени може да не бъдат включени в стойността на показателя CLS поради [рендериране на текущия прозорец](https://web.dev/articles/cls#what_is_cls). [Научете как да подобрите CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Намерена е 1 структурна промяна}other{Намерени са # структурни промени}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Зареден уеб шрифт"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Вмъкната вложена рамка"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Оформлението на страницата е коригирано заради закъсняла заявка в мрежата"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Липсва конкретен размер за мултимедийния елемент"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Избягвайте големи промени в оформлението"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Зададен е тематичен цвят за адресната лента."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Поддръжката за „бисквитки“ на трети страни ще бъде премахната в бъдеща версия на Chrome. [Научете повече за оттеглянето на „бисквитките“ на трети страни](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Намерена е 1 „бисквитка“}other{Намерени са # „бисквитки“}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Използва „бисквитки“ на трети страни"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Избягва „бисквитки“ на трети страни"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (поддръжка на клиенти)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Успешно преминати проверки"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Заедно с [актуализираните критерии на Chrome за инсталиране](https://developer.chrome.com/blog/update-install-criteria) Lighthouse ще оттегли категорията PWA в бъдеща версия. Моля, разгледайте [актуализираната документация за PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) за бъдещо тестване на PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Първоначално зареждане на страницата"

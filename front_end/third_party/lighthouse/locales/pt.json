@@ -18,7 +18,7 @@
     "message": "Os atributos `[aria-*]` correspondem às próprias funções"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Os `role`s ARIA permitem que as tecnologias adaptativas saibam a função de cada elemento na página da Web. Se os valores de `role` estiverem incorretos, se os valores ARIA `role` não estiverem presentes ou se as funções forem abstratas, a finalidade do elemento não será comunicada aos usuários de tecnologias adaptativas. [Saiba mais sobre os papéis ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Os `role`s ARIA permitem que as tecnologias adaptativas saibam a função de cada elemento na página da Web. Se os valores de `role` estiverem incorretos, se os valores ARIA `role` não estiverem presentes ou se as funções forem abstratas, a finalidade do elemento não será comunicada aos usuários de tecnologias adaptativas. [Saiba mais sobre os papéis ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Os valores atribuídos a `role=\"\"` não são papéis ARIA válidos."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "A página não impediu a restauração do cache de avanço e retorno"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Não é possível testar o cache de avanço e retorno na antiga versão headless do Chrome (`--chrome-flags=\"--headless=old\"`). Para acessar os resultados da auditoria, use a nova versão headless do Chrome (`--chrome-flags=\"--headless=new\"`) ou o Chrome padrão."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "As extensões do Chrome afetaram negativamente o desempenho de carregamento desta página. Tente fazer a auditoria da página no modo de navegação anônima ou em um perfil do Chrome sem extensões."
   },
@@ -1155,12 +1158,36 @@
     "message": "Elemento de Maior exibição de conteúdo"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribuição da CLS"
+    "message": "Impacto da troca de layout"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Estes elementos DOM contribuem principalmente para o CLS da página. [Aprenda a melhorar o CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Esses elementos DOM foram mais afetados pelas trocas de layout. Algumas trocas de layout podem não ser incluídas no valor da métrica de CLS devido ao [janelamento](https://web.dev/articles/cls#what_is_cls). [Aprenda a melhorar o CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Evite grandes mudanças no layout"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Pontuação da troca de layout"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Essas são as maiores trocas de layout observadas na página. Cada item da tabela representa uma única troca de layout e mostra o elemento que mais mudou. Abaixo de cada item estão as possíveis causas para a troca de layout. Algumas dessas trocas podem não ser incluídas no valor da métrica de CLS devido ao [janelamento](https://web.dev/articles/cls#what_is_cls). [Aprenda a melhorar o CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 troca de layout encontrada}one{# troca de layout encontrada}other{# trocas de layout encontradas}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Fonte da Web carregada"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iframe injetado"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Uma solicitação tardia de rede ajustou o layout da página"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Elemento de mídia sem tamanho explícito"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Evite grandes mudanças no layout"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1221,10 +1248,10 @@
     "message": "O manifesto tem um ícone mascarável"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "\"Mudança de layout cumulativa\" mede o movimento de elementos visíveis na janela de visualização. [Saiba mais sobre a métrica \"Mudança de layout cumulativa\"](https://web.dev/articles/cls)."
+    "message": "\"Cumulative Layout Shift\" mede o movimento de elementos visíveis na janela de visualização. [Saiba mais sobre a métrica \"Cumulative Layout Shift\"](https://web.dev/articles/cls)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "\"Primeira exibição de conteúdo\" marca o momento em que o primeiro texto ou imagem é disponibilizado. [Saiba mais sobre a métrica \"Primeira exibição de conteúdo\"](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
+    "message": "\"First Contentful Paint\" marca o momento em que o primeiro texto ou imagem é disponibilizado. [Saiba mais sobre a métrica \"First Contentful Paint\"](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "\"Primeira exibição significativa\" marca o momento em que o conteúdo principal de uma página se torna visível. [Saiba mais sobre a métrica \"Primeira exibição significativa\"](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
@@ -1239,7 +1266,7 @@
     "message": "\"Maior exibição de conteúdo\" marca o momento em que o maior texto ou imagem é exibido. [Saiba mais sobre a métrica \"Maior exibição de conteúdo\"](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/metrics/max-potential-fid.js | description": {
-    "message": "A possível latência máxima na primeira entrada que seus usuários notariam seria a duração da tarefa mais longa. [Saiba mais sobre a métrica \"Possível latência máxima na primeira entrada\"](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
+    "message": "A Maximum Potential First Input Delay que seus usuários notariam seria a duração da tarefa mais longa. [Saiba mais sobre a métrica \"Maximum Potential First Input Delay\"](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
   },
   "core/audits/metrics/speed-index.js | description": {
     "message": "\"Índice de velocidade\" mostra a rapidez com que o conteúdo de uma página é preenchido visivelmente. [Saiba mais sobre a métrica \"Índice de velocidade\"](https://developer.chrome.com/docs/lighthouse/performance/speed-index/)."
@@ -1532,6 +1559,18 @@
   "core/audits/themed-omnibox.js | title": {
     "message": "Foi definida uma cor de tema para a barra de endereços."
   },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "O suporte para cookies de terceiros será removido em uma versão futura do Chrome. [Saiba mais sobre a desativação gradual dos cookies de terceiros](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie encontrado}one{# cookie encontrado}other{# cookies encontrados}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Usa cookies de terceiros"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita cookies de terceiros"
+  },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (sucesso do cliente)"
   },
@@ -1770,7 +1809,7 @@
     "message": "Diagnóstico"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "O aspecto de desempenho mais importante é a rapidez com que os pixels são renderizados na tela. Principais métricas: Primeiro aparecimento com conteúdo, Primeira exibição importante"
+    "message": "O aspecto de desempenho mais importante é a rapidez com que os pixels são renderizados na tela. Principais métricas: First Contentful Paint, First Meaningful Paint"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "Melhorias do primeiro aparecimento"
@@ -2559,7 +2598,7 @@
     "message": "Largest Contentful Paint"
   },
   "core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
-    "message": "Possível latência máxima na primeira entrada"
+    "message": "Max Potential First Input Delay"
   },
   "core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Mídia"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditorias aprovadas"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Além dos [critérios de instalação atualizados do Chrome](https://developer.chrome.com/blog/update-install-criteria), o Lighthouse vai descontinuar a categoria PWA em uma versão futura. Consulte a [documentação atualizada do PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para testes futuros."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Carregamento inicial da página"

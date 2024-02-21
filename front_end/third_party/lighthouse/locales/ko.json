@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 속성이 역할과 일치함"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`을 통해 보조 기술은 웹페이지에서 각 요소의 역할을 파악할 수 있습니다. `role` 값의 철자가 틀렸거나 이 값이 기존 ARIA `role` 값 또는 추상 역할이 아닌 경우 요소의 목적이 보조 기술 사용자에게 전달되지 않습니다. [ARIA 역할에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "ARIA `role`을 통해 보조 기술은 웹페이지에서 각 요소의 역할을 파악할 수 있습니다. `role` 값의 철자가 틀렸거나 이 값이 기존 ARIA `role` 값 또는 추상 역할이 아닌 경우 요소의 목적이 보조 기술 사용자에게 전달되지 않습니다. [ARIA 역할에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"`에 할당된 값은 유효한 ARIA 역할이 아닙니다"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "페이지에서 뒤로-앞으로 캐시 복원을 차단하지 않음"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "이전 헤드리스 Chrome(`--chrome-flags=\"--headless=old\"`)에서는 뒤로/앞으로 캐시를 테스트할 수 없습니다. 감사 결과를 확인하려면 새로운 Headless Chrome(`--chrome-flags=\"--headless=new\"`) 또는 표준 Chrome을 사용하세요."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome 확장 프로그램이 이 페이지의 로드 성능에 부정적인 영향을 미쳤습니다. 시크릿 모드나 확장 프로그램이 없는 Chrome 프로필에서 페이지를 검사해 보세요."
   },
@@ -1155,12 +1158,36 @@
     "message": "콘텐츠가 포함된 최대 페인트 요소"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS에 기여한 양"
+    "message": "레이아웃 변경 영향"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "DOM 요소가 페이지 CLS의 대부분을 차지합니다. [CLS 개선 방법 알아보기](https://web.dev/articles/optimize-cls)"
+    "message": "이러한 DOM 요소는 레이아웃 변경의 영향을 가장 많이 받았습니다. [윈도잉](https://web.dev/articles/cls#what_is_cls)으로 인해 일부 레이아웃 변경은 CLS 측정항목 값에 포함되지 않을 수 있습니다. [CLS 개선 방법 알아보기](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "대규모 레이아웃 변경 피하기"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "레이아웃 변경 점수"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "페이지에서 관찰된 가장 큰 레이아웃 변화입니다. 각 표 항목은 단일 레이아웃 변경을 나타내며 가장 많이 변경된 요소를 표시합니다. 각 항목 아래에는 레이아웃이 변경된 예상 근본 원인이 나와 있습니다. [윈도잉](https://web.dev/articles/cls#what_is_cls)으로 인해 일부 레이아웃 변경은 CLS 측정항목 값에 포함되지 않을 수 있습니다. [CLS 개선 방법 알아보기](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{레이아웃 변경 1건 발견}other{레이아웃 변경 #건 발견}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "웹 글꼴 로드됨"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "삽입된 iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "네트워크 요청이 늦어져 페이지 레이아웃이 조정됨"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "명시적인 크기가 없는 미디어 요소"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "대규모 레이아웃 변경 피하기"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "주소 표시줄의 테마 색상을 설정함"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "서드 파티 쿠키에 대한 지원은 Chrome 향후 버전에서 삭제될 예정입니다. [서드 파티 쿠키의 단계적 지원 중단에 대해 자세히 알아보기](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{쿠키 1개 찾음}other{쿠키 #개 찾음}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "서드 파티 쿠키 사용"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "서드 파티 쿠키 방지"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName}(고객 성공 사례)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "통과한 감사"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Lighthouse는 [Chrome의 업데이트된 설치 가능 기준](https://developer.chrome.com/blog/update-install-criteria)과 함께 향후 버전에서 PWA 카테고리를 지원 중단할 예정입니다. 향후 PWA 테스트에 관해서는 [업데이트된 PWA 문서](https://developer.chrome.com/docs/devtools/progressive-web-apps/)를 참고하세요."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "초기 페이지 로드"

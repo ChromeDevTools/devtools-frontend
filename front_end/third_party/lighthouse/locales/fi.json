@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-määritteet vastaavat roolejaan"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA-roolit (`role`) auttavat avustavia teknologioita tuntemaan jokaisen verkkosivun elementin roolin. Jos roolin (`role`) arvot on kirjoitettu väärin, ARIA-roolin (`role`) arvoja ei ole olemassa tai roolit ovat abstrakteja, elementin tarkoitusta ei kerrota avustavan teknologian käyttäjille. [Lue lisää ARIA-rooleista](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA-roolit (`role`) auttavat avustavia teknologioita tuntemaan jokaisen verkkosivun elementin roolin. Jos roolin (`role`) arvot on kirjoitettu väärin, ARIA-roolin (`role`) arvoja ei ole olemassa tai roolit ovat abstrakteja, elementin tarkoitusta ei kerrota avustavan teknologian käyttäjille. [Lue lisää ARIA-rooleista](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Elementille (`role=\"\"`) määritetyt arvot eivät ole kelvollisia ARIA-rooleja."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Sivu ei estänyt siirtymisvälimuistin palauttamista"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Siirtymisvälimuistia ei voi testata vanhassa Headless Chromessa (`--chrome-flags=\"--headless=old\"`). Jos haluat nähdä tarkastuksen tulokset, käytä uutta Headless Chromea (`--chrome-flags=\"--headless=new\"`) tai tavallista Chromea."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chromen laajennukset heikensivät tämän sivun latausnopeutta. Yritä tarkastaa sivu incognito-tilassa tai Chrome-profiililla, johon ei ole lisätty laajennuksia."
   },
@@ -1155,12 +1158,36 @@
     "message": "Suurin renderöity sisältöosa"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-vaikuttavuus"
+    "message": "Asettelun muutoksen vaikutus"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Nämä DOM-elementit tuottavat suurimman osan sivun CLS-arvosta. [Katso, miten voit parantaa CLS:ää](https://web.dev/articles/optimize-cls)"
+    "message": "Asettelun muutokset vaikuttivat eniten näihin DOM-elementteihin. Joitakin asettelun muutoksia ei välttämättä sisällytetä CLS-mittarin arvoon [ikkunoinnin](https://web.dev/articles/cls#what_is_cls) takia. [Katso, miten voit parantaa CLS:ää](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Vältä suuria asettelun muutoksia"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Asettelun muutospisteet"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Nämä ovat suurimmat sivun asettelun muutokset. Kukin taulukon kohde vastaa yhtä asettelumuutosta ja näyttää eniten siirtyneen elementin. Jokaisen kohteen alla on mahdollisia juurisyitä, jotka ovat johtaneet asettelumuutokseen. Osa näistä asettelumuutoksista ei välttämättä sisälly CLS-mittarin arvoon [ikkunoinnin](https://web.dev/articles/cls#what_is_cls) takia. [Katso, miten voit parantaa CLS:ää](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 asettelumuutos löydetty}other{# asettelumuutosta löydetty}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Verkkofontti ladattu"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Lisätty iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Myöhästynyt verkkopyyntö muutti sivun asettelua"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Mediaelementiltä puuttuu tarkka koko"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Vältä suuria asettelun muutoksia"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Asettaa osoitepalkin teemavärin"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Kolmannen osapuolen evästeiden tuki poistetaan Chromen tulevasta versiosta. [Lue lisää kolmannen osapuolen evästeiden käytöstä poistamisesta](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 eväste löytyi}other{# evästettä löytyi}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Käyttää kolmannen osapuolen evästeitä"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Välttää kolmannen osapuolen evästeitä"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (asiakkaiden menestystarinat)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Hyväksytyt tarkastukset"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Chromen päivitettyjen asennettavuusehtojen](https://developer.chrome.com/blog/update-install-criteria) lisäksi Lighthouse poistaa PWA-kategorian käytöstä tulevassa julkaisussa. Lue lisää tulevasta PWA-testauksesta [päivitetystä PWA-dokumentaatiosta](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Ensimmäinen sivun lataus"

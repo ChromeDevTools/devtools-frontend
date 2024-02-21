@@ -18,7 +18,7 @@
     "message": "'`[aria-*]`' లక్షణాలు వాటి పాత్రలతో సరిపోలాలి"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`లు వెబ్ పేజీలోని ప్రతి ఎలిమెంట్ రోల్‌ను తెలుసుకోవడానికి సహాయక టెక్నాలజీలను ఎనేబుల్ చేస్తాయి. `role` విలువల స్పెల్లింగ్ తప్పుగా ఉంటే, ఇప్పటికే ఉన్న ARIA `role` విలువలు లేదా ఆబ్‌స్ట్రాక్ట్ రోల్స్ విలువల స్పెల్లింగ్ తప్పుగా లేకపోయినా కూడా, సహాయక టెక్నాలజీలను ఉపయోగించే యూజర్‌లకు ఎలిమెంట్ ఉద్దేశ్యాన్ని గురించిన సమాచారం అందదు. [ARIA రోల్స్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA `role`లు వెబ్ పేజీలోని ప్రతి ఎలిమెంట్ రోల్‌ను తెలుసుకోవడానికి సహాయక టెక్నాలజీలను ఎనేబుల్ చేస్తాయి. `role` విలువల స్పెల్లింగ్ తప్పుగా ఉంటే, ఇప్పటికే ఉన్న ARIA `role` విలువలు లేదా ఆబ్‌స్ట్రాక్ట్ రోల్స్ విలువల స్పెల్లింగ్ తప్పుగా లేకపోయినా కూడా, సహాయక టెక్నాలజీలను ఉపయోగించే యూజర్‌లకు ఎలిమెంట్ ఉద్దేశ్యాన్ని గురించిన సమాచారం అందదు. [ARIA రోల్స్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"`కు కేటాయించిన విలువలు చెల్లుబాటు అయ్యే ARIA రోల్స్ కావు."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "వెనుకకు/ముందుకు కాష్‌ను రీస్టోర్ అవ్వకుండా పేజీ నిరోధించలేదు"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "హెడ్‌లెస్ Chrome (`--chrome-flags=\"--headless=old\"`)లో బ్యాక్/ఫార్వర్డ్ కాష్ పరీక్షించడం సాధ్యం కాదు. ఆడిట్ ఫలితాలను చూడటానికి, కొత్త హెడ్‌లెస్ Chrome (`--chrome-flags=\"--headless=new\"`) లేదా స్టాండర్డ్ Chromeను ఉపయోగించండి."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome ఎక్స్‌టెన్షన్‌లు ఈ పేజీ లోడ్ పనితీరును ప్రతికూలంగా ప్రభావితం చేసాయి. ఎక్స్టెన్షన్‌లు లేకుండా పేజీని అజ్ఞాత మోడ్‌లో లేదా ఎక్స్‌టెన్షన్‌లు లేని Chrome ప్రొఫైల్‌లో ఆడిట్ చేయడాన్ని ప్రయత్నించండి."
   },
@@ -1155,12 +1158,36 @@
     "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ మూలకం"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS కంట్రిబ్యూషన్"
+    "message": "లేఅవుట్ షిఫ్ట్ ప్రభావం"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "ఈ పేజీ యొక్క CLSకు ఈ DOM ఎలిమెంట్‌లు అత్యధికంగా కంట్రిబ్యూట్ చేస్తాయి. [CLSని మెరుగుపరచడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/optimize-cls)"
+    "message": "ఈ DOM ఎలిమెంట్‌లు లేఅవుట్ షిఫ్ట్‌ల ద్వారా ఎక్కువగా ప్రభావితమయ్యాయి. [విండో తరహా](https://web.dev/articles/cls#what_is_cls) కారణంగా కొన్ని లేఅవుట్ షిఫ్ట్‌లు CLS మెట్రిక్ విలువలో చేర్చబడకపోవచ్చు. [CLSని మెరుగుపరచడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "పెద్ద లేఅవుట్ షిఫ్ట్‌లను నివారించండి"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "లేఅవుట్ షిఫ్ట్ స్కోర్"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "ఇవి ఈ పేజీలో అతిపెద్ద లేఅవుట్ షిఫ్ట్‌లు. టేబుల్‌లోని ప్రతి ఐటెమ్ లేఅవుట్ షిఫ్ట్‌ను సూచిస్తుంది, ప్రతి లేఅవుట్ షిఫ్ట్ ఎక్కువగా షిఫ్ట్ చేయబడిన ఎలిమెంట్‌ను సూచిస్తుంది. ప్రతి ఐటెమ్ కింద లేఅవుట్ షిఫ్ట్‌కు మూల కారణాలు ఉన్నాయి. [విండో తరహా](https://web.dev/articles/cls#what_is_cls) కారణంగా ఈ లేఅవుట్ షిఫ్ట్‌లలో కొన్ని CLS మెట్రిక్ విలువలో చేర్చబడకపోవచ్చు. [CLSను మెరుగుపరచడం ఎలాగో తెలుసుకోండి](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 లేఅవుట్ షిఫ్ట్ కనుగొనబడింది}other{# లేఅవుట్ షిఫ్ట్‌లు కనుగొనబడ్డాయి}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "వెబ్ ఫాంట్ లోడ్ చేయబడింది"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iframe ఇంజెక్ట్ చేయబడింది"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "లేట్ నెట్‌వర్క్ రిక్వెస్ట్ కారణంగా పేజీ లేఅవుట్ మార్చబడింది"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "మీడియా ఎలిమెంట్ సైజ్ తగినది కాదు"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "పెద్ద లేఅవుట్ షిఫ్ట్‌లను నివారించండి"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "అడ్రస్‌ బార్ కోసం థీమ్ రంగు సెట్ చేయబడింది."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chromeకు సంబంధించిన ఫ్యూచర్ వెర్షన్‌లో థర్డ్-పార్టీ కుక్కీలకు సపోర్ట్ తీసివేయబడుతుంది. [థర్డ్-పార్టీ కుక్కీలను దశలవారీగా నిలిపివేయడం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 కుక్కీ కనుగొనబడింది}other{# కుక్కీలు కనుగొనబడ్డాయి}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "థర్డ్-పార్టీ కుక్కీలను ఉపయోగిస్తుంది"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "థర్డ్-పార్టీ కుక్కీలను నివారిస్తుంది"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (కస్టమర్ విజయం)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "ఉత్తీర్ణత సాధించిన ఆడిట్‌లు"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Chrome అప్‌డేట్ చేసిన ఇన్‌స్టాల్ చేయతగిన ప్రమాణాలతో](https://developer.chrome.com/blog/update-install-criteria) పాటు, రాబోయే రిలీజ్‌లో Lighthouse, PWA కేటగిరీని విస్మరిస్తుంది. రాబోయే PWA టెస్టింగ్ కోసం దయచేసి [అప్‌డేట్ చేయబడిన PWA డాక్యుమెంట్](https://developer.chrome.com/docs/devtools/progressive-web-apps/)‌ను చూడండి."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "మొదటి పేజీ లోడ్"

@@ -18,7 +18,7 @@
     "message": "Los atributos `[aria-*]` coinciden con sus roles"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Los `role` de ARIA permiten que las tecnologías de accesibilidad conozcan el rol de cada elemento en la página web. Si los valores `role` están mal escritos, no son valores `role` de ARIA existentes o son roles abstractos, no se comunicará el propósito del elemento a los usuarios de tecnologías de accesibilidad. [Obtén más información sobre los roles de ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Los `role` de ARIA permiten que las tecnologías de accesibilidad conozcan el rol de cada elemento en la página web. Si los valores `role` están mal escritos, no son valores `role` de ARIA existentes o son roles abstractos, no se comunicará el propósito del elemento a los usuarios de tecnologías de accesibilidad. [Obtén más información sobre los roles de ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Los valores asignados a `role=\"\"` no son roles de ARIA válidos."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "La página no impidió el restablecimiento de la memoria caché atrás/adelante"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "No se puede probar la memoria caché atrás/adelante en la versión anterior de Chrome sin interfaz gráfica (`--chrome-flags=\"--headless=old\"`). Para ver los resultados de la auditoría, usa la nueva versión de Chrome sin interfaz gráfica (`--chrome-flags=\"--headless=new\"`) o la versión estándar de Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Las extensiones de Chrome afectaron de forma negativa al rendimiento de carga de esta página. Prueba a auditarla en modo incógnito o desde un perfil de Chrome sin extensiones."
   },
@@ -1155,12 +1158,36 @@
     "message": "Elemento del Procesamiento de imagen con contenido más grande"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribución en CLS"
+    "message": "Impacto del cambio de diseño"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Estos elementos de DOM contribuyen principalmente con el CLS de la página. [Más información para mejorar CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Estos elementos del DOM se vieron más afectados por los cambios de diseño. Es posible que algunos cambios de diseño no se incluyan en el valor de la métrica CLS debido a la [renderización de ventanas](https://web.dev/articles/cls#what_is_cls). [Más información para mejorar CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "No realices cambios grandes en el diseño"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Puntuación de cambio de diseño"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Estos son los mayores cambios de diseño que se observaron en la página. Cada elemento de la tabla representa un solo cambio de diseño y muestra el elemento que más se movió. Debajo de cada elemento, aparecen las posibles causas raíz que llevaron al cambio de diseño. Es posible que algunos de estos cambios de diseño no se incluyan en el valor de la métrica CLS debido a la [renderización de ventanas](https://web.dev/articles/cls#what_is_cls). [Más información para mejorar CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Se encontró 1 cambio de diseño}other{Se encontraron # cambios de diseño}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Se cargó la fuente de la web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iframe insertado"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una solicitud de red tardía ajustó el diseño de la página"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Elemento multimedia sin tamaño explícito"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "No realices cambios grandes en el diseño"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Establece un color de tema para la barra de direcciones."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "En una versión futura de Chrome, se quitará la compatibilidad con las cookies de terceros. [Obtén más información sobre la eliminación gradual de cookies de terceros](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Se encontró 1 cookie}other{Se encontraron # cookies}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utiliza cookies de terceros"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita las cookies de terceros"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (éxito de clientes)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditorías aprobadas"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Además de los [criterios actualizados de instalación de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse dará de baja la categoría AWP en una versión futura. Consulta la [documentación actualizada de la AWP](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para futuras pruebas de la AWP."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Carga inicial de la página"

@@ -18,7 +18,7 @@
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "`role` ARIA ช่วยให้เทคโนโลยีความช่วยเหลือพิเศษทราบถึงบทบาทของแต่ละองค์ประกอบในหน้าเว็บ หากค่า`role`สะกดผิด ไม่ใช่ค่า`role` ARIA ที่มีอยู่ หรือเป็นบทบาทนามธรรม ระบบก็จะไม่สื่อสารจุดประสงค์ขององค์ประกอบดังกล่าวไปยังผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "`role` ARIA ช่วยให้เทคโนโลยีความช่วยเหลือพิเศษทราบถึงบทบาทของแต่ละองค์ประกอบในหน้าเว็บ หากค่า`role`สะกดผิด ไม่ใช่ค่า`role` ARIA ที่มีอยู่ หรือเป็นบทบาทนามธรรม ระบบก็จะไม่สื่อสารจุดประสงค์ขององค์ประกอบดังกล่าวไปยังผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "ค่าที่กำหนดให้กับ `role=\"\"` ไม่ใช่บทบาท ARIA ที่ถูกต้อง"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "หน้าเว็บไม่ได้ป้องกันการกู้คืนฟีเจอร์ Back-Forward Cache"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "ไม่สามารถทดสอบ Back-Forward Cache ใน Chrome แบบ Headless เวอร์ชันเก่า (`--chrome-flags=\"--headless=old\"`) หากต้องการดูผลการตรวจสอบ ให้ใช้ Chrome แบบ Headless เวอร์ชันใหม่ (`--chrome-flags=\"--headless=new\"`) หรือ Chrome มาตรฐาน"
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "ส่วนขยาย Chrome ส่งผลเสียต่อประสิทธิภาพในการโหลดของหน้านี้ ลองตรวจสอบหน้าในโหมดไม่ระบุตัวตนหรือจากโปรไฟล์ Chrome ที่ไม่มีส่วนขยาย"
   },
@@ -1155,12 +1158,36 @@
     "message": "องค์ประกอบ Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "ปัจจัยที่ทำให้เกิด CLS"
+    "message": "ผลกระทบของการเปลี่ยนเลย์เอาต์"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "องค์ประกอบ DOM เหล่านี้มีส่วนอย่างมากที่สุดต่อ CLS ของหน้า [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
+    "message": "องค์ประกอบ DOM เหล่านี้ได้รับผลกระทบมากที่สุดจากการเปลี่ยนเลย์เอาต์ การเปลี่ยนเลย์เอาต์บางอย่างอาจไม่รวมอยู่ในค่าเมตริก CLS อันเนื่องมาจาก[การจัดกรอบเวลา](https://web.dev/articles/cls#what_is_cls) [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "คะแนนการเปลี่ยนเลย์เอาต์"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "สิ่งเหล่านี้เป็นการเปลี่ยนเลย์เอาต์ที่ใหญ่ที่สุดที่พบบนหน้าเว็บ แต่ละรายการในตารางจะแสดงการเปลี่ยนเลย์เอาต์รายการเดียว พร้อมระบุองค์ประกอบที่มีการเปลี่ยนแปลงมากที่สุด ด้านล่างของแต่ละรายการคือสาเหตุที่เป็นไปได้ซึ่งนำไปสู่การเปลี่ยนเลย์เอาต์ การเปลี่ยนเลย์เอาต์เหล่านี้บางรายการอาจไม่รวมอยู่ในค่าเมตริก CLS อันเนื่องมาจาก[การจัดกรอบเวลา](https://web.dev/articles/cls#what_is_cls) [ดูวิธีเพิ่มประสิทธิภาพ CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{พบการเปลี่ยนเลย์เอาต์ 1 รายการ}other{พบการเปลี่ยนเลย์เอาต์ # รายการ}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "มีการโหลดแบบอักษรเว็บ"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "มีการแทรก iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "คำขอเครือข่ายที่ส่งล่าช้าได้ปรับเลย์เอาต์ของหน้า"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "องค์ประกอบสื่อมีขนาดที่ไม่เหมาะสม"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "กำหนดสีธีมของแถบที่อยู่"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "เราจะหยุดรองรับคุกกี้ของบุคคลที่สามใน Chrome เวอร์ชันถัดไป [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเลิกใช้คุกกี้ของบุคคลที่สาม](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{พบคุกกี้ 1 รายการ}other{พบคุกกี้ # รายการ}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "ใช้คุกกี้ของบุคคลที่สาม"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "หลีกเลี่ยงการใช้คุกกี้ของบุคคลที่สาม"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (การสนับสนุนลูกค้า)"
@@ -2415,7 +2454,7 @@
     "message": "ข้อจำกัด `DtlsSrtpKeyAgreement` ถูกนำออกแล้ว คุณได้ระบุค่า `true` สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
   },
   "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
-    "message": "getStats() ที่อิงตามโค้ดเรียกกลับเลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
+    "message": "getStats() ที่อิงตาม Callback เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
   },
   "core/lib/deprecations-strings.js | RangeExpand": {
     "message": "Range.expand() เลิกใช้งานแล้ว โปรดใช้ Selection.modify() แทน"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "การตรวจสอบที่ผ่านแล้ว"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Lighthouse จะเลิกใช้งานหมวดหมู่ PWA ในรุ่นถัดไปพร้อมกับ[เกณฑ์ความสามารถในการติดตั้งที่อัปเดตของ Chrome](https://developer.chrome.com/blog/update-install-criteria) โปรดดู[เอกสารประกอบของ PWA ฉบับปรับปรุง](https://developer.chrome.com/docs/devtools/progressive-web-apps/)สำหรับการทดสอบ PWA ในอนาคต"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "การโหลดหน้าเว็บเริ่มต้น"

@@ -18,7 +18,7 @@
     "message": "`[aria-*]` özellikleri rolleriyle eşleşiyor"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Yardımcı teknolojiler, ARIA `role` sayesinde web sayfasındaki her bir öğenin rolünü öğrenebilir. `role` değerleri yanlış yazılmışsa, mevcut ARIA `role` değerleri değilse veya soyut roller kullanılmışsa öğenin amacı, yardımcı teknolojilerin kullanıcılarına bildirilmez. [ARIA rolleri hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Yardımcı teknolojiler, ARIA `role` sayesinde web sayfasındaki her bir öğenin rolünü öğrenebilir. `role` değerleri yanlış yazılmışsa, mevcut ARIA `role` değerleri değilse veya soyut roller kullanılmışsa öğenin amacı, yardımcı teknolojilerin kullanıcılarına bildirilmez. [ARIA rolleri hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"` öğesine atanan değerler geçerli ARIA rolleri değil."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Sayfa, geri-ileri önbelleğin geri yüklenmesini engellemedi"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Geri-ileri önbellek, eski Gözetimsiz Chrome'da (`--chrome-flags=\"--headless=old\"`) test edilemez. Denetleme sonuçlarını görmek için yeni Gözetimsiz Chrome'u (`--chrome-flags=\"--headless=new\"`) veya standart Chrome'u kullanın."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome uzantıları bu sayfanın yükleme performansını olumsuz etkilemiştir. Sayfayı gizli modda veya uzantı içermeyen bir Chrome profilinden denetlemeyi deneyin."
   },
@@ -1155,12 +1158,36 @@
     "message": "Largest Contentful Paint öğesi"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS Katkısı"
+    "message": "Düzen kaymasının etkisi"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Sayfanın CLS'sine en fazla bu DOM öğeleri katkıda bulunur. [CLS'yi nasıl iyileştireceğinizi öğrenin](https://web.dev/articles/optimize-cls)"
+    "message": "Düzen kaymalarından en çok bu DOM öğeleri etkilendi. [Pencereleme](https://web.dev/articles/cls#what_is_cls) nedeniyle CLS metriği değerine bazı düzen kaymaları dahil edilmeyebilir. [CLS'yi nasıl iyileştireceğinizi öğrenin](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Büyük düzen kaymalarından kaçının"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Düzen kayması puanı"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Bunlar, sayfada gözlemlenen en büyük düzen kaymalarıdır. Her tablo öğesi, tek bir düzen kaymasını temsil eder ve en çok kayan öğeyi gösterir. Her öğenin altında, düzen kaymasına yol açan olası temel nedenler yer alır. [Pencereleme](https://web.dev/articles/cls#what_is_cls) nedeniyle CLS metriği değerine bu düzen kaymalarından bazıları dahil edilmeyebilir. [CLS'yi nasıl iyileştireceğinizi öğrenin](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 düzen kayması bulundu}other{# düzen kayması bulundu}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Web yazı tipi yüklendi"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Yerleştirilen iFrame"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Geç gelen bir ağ isteği, sayfa düzenini değiştirdi"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Açık bir boyutu olmayan medya öğesi"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Büyük düzen kaymalarından kaçının"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1532,6 +1559,18 @@
   "core/audits/themed-omnibox.js | title": {
     "message": "Adres çubuğu için tema rengi ayarlar."
   },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chrome'un gelecekteki bir sürümünde üçüncü taraf çerezlerine yönelik destek kaldırılacaktır. [Üçüncü taraf çerezlerinin kullanımdan kaldırılması hakkında daha fazla bilgi edinin](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 çerez bulundu}other{# çerez bulundu}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Üçüncü taraf çerezlerini kullanır"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Üçüncü taraf çerezlerinden kaçınır"
+  },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Müşteri Başarısı)"
   },
@@ -1752,7 +1791,7 @@
     "message": "Genel"
   },
   "core/config/default-config.js | bestPracticesTrustSafetyGroupTitle": {
-    "message": "Güven ve Güvenlik"
+    "message": "Politika Değerlendirme"
   },
   "core/config/default-config.js | bestPracticesUXGroupTitle": {
     "message": "Kullanıcı Deneyimi"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Başarılı denetimler"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Lighthouse, [Chrome'un güncellenen Yüklenebilirlik Ölçütleri](https://developer.chrome.com/blog/update-install-criteria) ile birlikte, gelecekteki sürümlerden birinde PWA (progresif web uygulaması) kategorisi desteğini sonlandıracaktır. Gelecekteki PWA testleri için lütfen [güncellenmiş PWA dokümanlarına](https://developer.chrome.com/docs/devtools/progressive-web-apps/) göz atın."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "İlk sayfa yükleme"

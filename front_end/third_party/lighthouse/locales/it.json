@@ -18,7 +18,7 @@
     "message": "Gli attributi `[aria-*]` corrispondono ai rispettivi ruoli"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Gli attributi `role` ARIA consentono alle tecnologie per la disabilità di conoscere il ruolo di ogni elemento della pagina web. Se i valori `role` non vengono digitati correttamente, non sono presenti valori `role` ARIA o ruoli astratti, lo scopo dell'elemento non verrà comunicato agli utenti delle tecnologie per la disabilità. [Scopri di più sui ruoli ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Gli attributi `role` ARIA consentono alle tecnologie per la disabilità di conoscere il ruolo di ogni elemento della pagina web. Se i valori `role` non vengono digitati correttamente, non sono presenti valori `role` ARIA o ruoli astratti, lo scopo dell'elemento non verrà comunicato agli utenti delle tecnologie per la disabilità. [Scopri di più sui ruoli ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "I valori assegnati a `role=\"\"` non sono ruoli ARIA validi."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "La pagina non ha impedito il ripristino della cache back-forward"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "La cache back-forward non può essere testata nella versione precedente di Chrome headless (`--chrome-flags=\"--headless=old\"`). Per visualizzare i risultati del controllo, utilizza il nuovo Chrome Headless (`--chrome-flags=\"--headless=new\"`) o Chrome standard."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Le estensioni di Chrome incidono negativamente sulle prestazioni di caricamento di questa pagina. Prova a controllare la pagina in modalità di navigazione in incognito o da un profilo Chrome senza estensioni."
   },
@@ -1155,12 +1158,36 @@
     "message": "Elemento Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contributo a CLS"
+    "message": "Impatto della variazione del layout"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Questi elementi DOM contribuiscono maggiormente alla metrica CLS della pagina. [Scopri come migliorare il CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Questi elementi DOM sono stati maggiormente interessati dalle variazioni del layout. Alcune variazioni del layout potrebbero non essere incluse nel valore della metrica CLS a causa del [windowing](https://web.dev/articles/cls#what_is_cls). [Scopri come migliorare la metrica CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Evita significative variazioni di layout"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Punteggio della variazione del layout"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Queste sono le maggiori variazioni del layout osservate nella pagina. Ogni elemento della tabella rappresenta una singola variazione del layout e mostra l'elemento con la variazione maggiore. Sotto ogni elemento sono riportate le possibili cause principali che hanno portato alla variazione del layout. Alcune di queste variazioni del layout potrebbero non essere incluse nel valore della metrica CLS a causa dei [windowing](https://web.dev/articles/cls#what_is_cls). [Scopri come migliorare la metrica CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 variazione del layout trovata}other{# variazioni del layout trovate}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "È stato caricato un carattere web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "È stato inserito un iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una richiesta di rete in ritardo ha modificato il layout della pagina"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "L'elemento multimediale è privo di dimensioni esplicite"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Evita significative variazioni di layout"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Imposta un colore tema per la barra degli indirizzi."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Il supporto per i cookie di terze parti verrà rimosso in una versione futura di Chrome. [Scopri di più sull'eliminazione graduale dei cookie di terze parti](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie trovato}other{# cookie trovati}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utilizza cookie di terze parti"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita i cookie di terze parti"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Supporto ai clienti)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Controlli superati"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Oltre ai [criteri di installazione aggiornati di Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse ritirerà la categoria PWA in una release futura. Fai riferimento alla [documentazione aggiornata relativa alle PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) per i futuri test delle PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Caricamento pagina iniziale"

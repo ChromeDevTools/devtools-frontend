@@ -18,7 +18,7 @@
     "message": "Atributai „`[aria-*]`“ atitinka savo vaidmenis"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA „`role`“ leidžia pagalbinėms technologijoms sužinoti kiekvieno tinklalapio elemento vaidmenį. Jei „`role`“ vertės su klaidomis, nėra esamų ARIA „`role`“ verčių arba abstrakčių vaidmenų, elemento tikslas nebus pateiktas pagalbinių technologijų naudotojams. [Sužinokite daugiau apie ARIA vaidmenis](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA „`role`“ leidžia pagalbinėms technologijoms sužinoti kiekvieno tinklalapio elemento vaidmenį. Jei „`role`“ vertės su klaidomis, nėra esamų ARIA „`role`“ verčių arba abstrakčių vaidmenų, elemento tikslas nebus pateiktas pagalbinių technologijų naudotojams. [Sužinokite daugiau apie ARIA vaidmenis](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "„`role=\"\"`“ priskirtos vertės nėra tinkami ARIA vaidmenys."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Puslapiui nepavyko atkurti ilgalaikio viso puslapio saugojimo talpykloje funkcijos"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcijos negalima išbandyti naudojant seną „Chrome“ be grafinės naudotojo sąsajos (`--chrome-flags=\"--headless=old\"`). Norėdami peržiūrėti audito rezultatus, naudokite naują „Chrome“ be grafinės naudotojo sąsajos (`--chrome-flags=\"--headless=new\"`) arba įprastą „Chrome“."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "„Chrome“ plėtiniai neigiamai paveikė šio puslapio įkėlimo našumą. Pabandykite patikrinti puslapį inkognito režimu arba naudodami „Chrome“ profilį be plėtinių."
   },
@@ -1155,12 +1158,36 @@
     "message": "Didžiausio turiningo žymėjimo elementas"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Prisideda prie KIP rezultato"
+    "message": "Išdėstymo poslinkio poveikio"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Šie DOM elementai labiausiai prisideda prie puslapio KIP. [Sužinokite, kaip pagerinti KIP](https://web.dev/articles/optimize-cls)"
+    "message": "Šiems DOM elementams didžiausią poveikį turėjo išdėstymo poslinkiai. Kai kurie išdėstymo poslinkiai gali būti neįtraukti į KIP metrikos vertę dėl [pateikimo lange](https://web.dev/articles/cls#what_is_cls). [Sužinokite, kaip pagerinti KIP](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Venkite didelių išdėstymo poslinkių"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Išdėstymo poslinkio rezultatas"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Tai yra didžiausi puslapyje pastebėti išdėstymo poslinkiai. Kiekvienas lentelės elementas atspindi vieną išdėstymo poslinkį ir rodo labiausiai pasislinkusį elementą. Po kiekvienu elementu pateikiamos galimos pagrindinės priežastys, lėmusios išdėstymo poslinkį. Kai kurie iš šių išdėstymo poslinkių gali būti neįtraukti į KIP metrikos vertę dėl [pateikimo lange](https://web.dev/articles/cls#what_is_cls). [Sužinokite, kaip pagerinti KIP](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Rastas vienas išdėstymo poslinkis}one{Rastas # išdėstymo poslinkis}few{Rasti # išdėstymo poslinkiai}many{Rasta # išdėstymo poslinkio}other{Rasta # išdėstymo poslinkių}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Žiniatinklio šriftas įkeltas"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Įterptas „iframe“"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Pavėluota tinklo užklausa pakoregavo puslapio išdėstymą"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Trūksta aiškaus medijos elemento dydžio"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Venkite didelių išdėstymo poslinkių"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Nustatoma adreso juostos temos spalva."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Trečiųjų šalių slapukų palaikymas bus pašalintas būsimos versijos naršyklėje „Chrome“. [Sužinokite daugiau apie trečiųjų šalių slapukų atsisakymą](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Rastas 1 slapukas}one{Rastas # slapukas}few{Rasti # slapukai}many{Rasta # slapuko}other{Rasta # slapukų}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Naudojami trečiųjų šalių slapukai"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Vengiama trečiųjų šalių slapukų"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (klientų sėkmės istorijos)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Sėkmingos patikros"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Kartu su [atnaujintais „Chrome“ diegiamumo kriterijais](https://developer.chrome.com/blog/update-install-criteria), „Lighthouse“ būsimame leidime nebebus naudojama LŽP kategorija. Peržiūrėkite [atnaujintus LŽP dokumentus](https://developer.chrome.com/docs/devtools/progressive-web-apps/), skirtus būsimiems LŽP bandymams."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Pirminis puslapio įkėlimas"

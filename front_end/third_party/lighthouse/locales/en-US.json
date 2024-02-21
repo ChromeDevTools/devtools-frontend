@@ -3399,7 +3399,7 @@
     "message": "Passed audits"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Alongside [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse will be deprecating the PWA category in a future release. Please refer to the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for future PWA testing."
+    "message": "As per [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse will be deprecating the PWA category in a future release. Please refer to the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for future PWA testing."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Initial page load"

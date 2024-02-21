@@ -18,7 +18,7 @@
     "message": "Els atributs `[aria-*]` coincideixen amb les seves funcions"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Les funcions d'ARIA (`role`s) permeten que les tecnologies assistencials coneguin la funció de cada element a la pàgina web. Si els valors de `role` estan mal escrits, són valors de `role` d'ARIA inexistents o funcions abstractes, la finalitat de l'element no es comunicarà als usuaris de tecnologies assistencials. [Obtén més informació sobre les funcions d'ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Les funcions d'ARIA (`role`s) permeten que les tecnologies assistencials coneguin la funció de cada element a la pàgina web. Si els valors de `role` estan mal escrits, són valors de `role` d'ARIA inexistents o funcions abstractes, la finalitat de l'element no es comunicarà als usuaris de tecnologies assistencials. [Obtén més informació sobre les funcions d'ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Els valors assignats a `role=\"\"` no són funcions d'ARIA vàlides."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "La pàgina no ha impedit la restauració de la memòria cau endavant/enrere"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "La memòria cau endavant/enrere no es pot provar a la versió antiga de Chrome sense interfície gràfica (`--chrome-flags=\"--headless=old\"`). Per veure els resultats de l'auditoria, utilitza la nova versió de Chrome sense interfície gràfica (`--chrome-flags=\"--headless=new\"`) o la versió estàndard de Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Les extensions de Chrome han afectat negativament el rendiment de càrrega de la pàgina. Audita la pàgina en mode d'incògnit o des d'un perfil de Chrome sense extensions."
   },
@@ -1155,12 +1158,36 @@
     "message": "Element de renderització de l'element més gran amb contingut"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribució al CLS"
+    "message": "Impacte del canvi de disseny"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Aquests són els elements de DOM que més contribueixen al CLS de la pàgina. [Informació sobre com es pot millorar el CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Aquests són els elements de DOM que més s'han vist afectats pels canvis de disseny. És possible que alguns d'aquests canvis no s'incloguin al valor de la mètrica CLS a causa de la [normalització](https://web.dev/articles/cls#what_is_cls). [Informació sobre com pots millorar el CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Evita els canvis de disseny importants"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Puntuació del canvi de disseny"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Aquests són els canvis de disseny més importants que s'han observat a la pàgina. Cada element de la taula representa un sol canvi de disseny i mostra l'element que ha canviat més. A sota de cada element hi ha les causes arrel que poden haver provocat el canvi. És possible que alguns d'aquests canvis de disseny no s'incloguin al valor de la mètrica CLS a causa d'un [enfinestrament](https://web.dev/articles/cls#what_is_cls). [Informació sobre com pots millorar el CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{S'ha trobat 1 canvi de disseny}other{S'han trobat # canvis de disseny}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "S'ha carregat una font web"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "S'ha injectat un iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Una sol·licitud de xarxa amb retard ha ajustat el disseny de la pàgina"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "L'element multimèdia no té una mida explícita"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Evita els canvis de disseny importants"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Estableix un color temàtic per a la barra d'adreces."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "La compatibilitat amb les galetes de tercers se suprimirà en una versió futura de Chrome. [Obtén més informació sobre com pots retirar les galetes de tercers](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{S'ha trobat 1 galeta}other{S'han trobat # galetes}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utilitza galetes de tercers"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Evita les galetes de tercers"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (èxit del client)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Auditories aprovades"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Juntament amb els [criteris d'instal·labilitat actualitzats de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse discontinuarà la categoria PWA en una propera versió. Consulta la [documentació actualitzada sobre la PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) per consultar les futures proves de la PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Càrrega de la pàgina inicial"

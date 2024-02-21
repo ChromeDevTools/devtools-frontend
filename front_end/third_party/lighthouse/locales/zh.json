@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 属性与其角色匹配"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role` 让辅助技术能够了解网页上每个元素的角色。如果 `role` 值拼写有误、不是现有的 ARIA `role` 值或是抽象角色，系统便不会将相应元素的用途传达给使用辅助技术的用户。[详细了解 ARIA 角色](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)。"
+    "message": "ARIA `role` 让辅助技术能够了解网页上每个元素的角色。如果 `role` 值拼写有误、不是现有的 ARIA `role` 值或是抽象角色，系统便不会将相应元素的用途传达给使用辅助技术的用户。[详细了解 ARIA 角色](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)。"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "向 `role=\"\"` 分配的值不是有效的 ARIA 角色。"
@@ -390,7 +390,7 @@
     "message": "文档有一个主要位置标记。"
   },
   "core/audits/accessibility/link-in-text-block.js | description": {
-    "message": "对许多用户而言，对比度低的文本都是难以阅读或无法阅读的。清晰可辨的链接文本可改善弱视用户的体验。[了解如何让链接容易辨识](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)。"
+    "message": "对许多用户而言，对比度低的文本都是难以阅读或无法阅读的。清晰可辨的链接文本可改善低视力用户的体验。[了解如何让链接容易辨识](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)。"
   },
   "core/audits/accessibility/link-in-text-block.js | failureTitle": {
     "message": "必须依赖颜色才能辨识链接。"
@@ -435,7 +435,7 @@
     "message": "文档未使用 `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "对于必须依靠放大屏幕才能清晰看到网页内容的弱视用户而言，停用缩放功能会给他们带来问题。[详细了解视口元标记](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)。"
+    "message": "对于必须依靠放大屏幕才能清晰看到网页内容的低视力用户而言，停用缩放功能会给他们带来问题。[详细了解视口元标记](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)。"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`<meta name=\"viewport\">` 元素中使用了 `[user-scalable=\"no\"]`，或者 `[maximum-scale]` 属性小于 5。"
@@ -604,6 +604,9 @@
   },
   "core/audits/bf-cache.js | title": {
     "message": "网页并未阻止恢复往返缓存"
+  },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "在旧版无头 Chrome (`--chrome-flags=\"--headless=old\"`) 中无法测试往返缓存。要查看审核结果，请使用新版无头 Chrome (`--chrome-flags=\"--headless=new\"`) 或标准 Chrome。"
   },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome 扩展程序对此网页的加载性能产生了负面影响。请尝试在无痕模式下或使用未安装这些扩展程序的 Chrome 个人资料审核此网页。"
@@ -810,7 +813,7 @@
     "message": "正确地设定了字符集"
   },
   "core/audits/dobetterweb/doctype.js | description": {
-    "message": "指定 DOCTYPE 会阻止浏览器切换到怪异模式。[详细了解 DOCTYPE 声明](https://developer.chrome.com/docs/lighthouse/best-practices/doctype/)。"
+    "message": "指定 DOCTYPE 可阻止浏览器切换到 Quirks 模式。[详细了解 DOCTYPE 声明](https://developer.chrome.com/docs/lighthouse/best-practices/doctype/)。"
   },
   "core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
     "message": "DOCTYPE 名称必须为字符串 `html`"
@@ -831,7 +834,7 @@
     "message": "该文档包含会触发 `quirks-mode` 的 `doctype`"
   },
   "core/audits/dobetterweb/doctype.js | failureTitle": {
-    "message": "页面缺少 HTML DOCTYPE，从而触发了怪异模式"
+    "message": "页面缺少 HTML DOCTYPE，从而触发了 Quirks 模式"
   },
   "core/audits/dobetterweb/doctype.js | title": {
     "message": "页面包含 HTML DOCTYPE"
@@ -1155,12 +1158,36 @@
     "message": "最大内容渲染时间元素"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "对 CLS 的影响程度"
+    "message": "布局偏移的影响"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "这些 DOM 元素对该网页的 CLS 影响最大。[了解如何改善 CLS](https://web.dev/articles/optimize-cls)"
+    "message": "这些 DOM 元素受布局偏移的影响最大。由于[窗口化](https://web.dev/articles/cls#what_is_cls)的原因，某些布局偏移可能未包含在 CLS 指标值中。[了解如何改善 CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "请避免出现大幅度的布局偏移"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "布局偏移分数"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "这些是在网页上观察到的最大幅的布局偏移。表格中的每个项均表示一次布局偏移，并显示了发生最大幅偏移的元素。每个项的下方列出了哪些可能的根本原因导致了相应的布局偏移。由于[窗口化](https://web.dev/articles/cls#what_is_cls)的原因，所显示的某些布局偏移可能未包含在 CLS 指标值中。[了解如何改善 CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{发现了 1 次布局偏移}other{发现了 # 次布局偏移}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "加载了网络字体"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "注入的 iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "延迟的网络请求调整了页面布局"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "媒体元素缺少明确的大小"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "请避免出现大幅度的布局偏移"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "为地址栏设置主题背景颜色。"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "在 Chrome 的某个未来版本中，对第三方 Cookie 的支持将被彻底取消。[详细了解逐步停用第三方 Cookie](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)。"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{找到 1 个 Cookie}other{找到 # 个 Cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "使用第三方 Cookie"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "避免使用第三方 Cookie"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName}（客户成功案例）"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "已通过的审核"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "除了 [Chrome 更新后的可安装性标准](https://developer.chrome.com/blog/update-install-criteria)之外，Lighthouse 还将在未来的版本中弃用 PWA 类别。请参阅[更新后的 PWA 文档](https://developer.chrome.com/docs/devtools/progressive-web-apps/)，了解今后的 PWA 测试。"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初始网页加载"

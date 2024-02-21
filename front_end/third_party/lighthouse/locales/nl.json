@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-kenmerken komen overeen met hun rollen"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Met ARIA `role`len krijgen ondersteunende technologieën inzicht in de rol van elk element op de webpagina. Als de `role`-waarden verkeerd zijn gespeld, geen bestaande ARIA-`role`-waarden of abstracte rollen zijn, wordt het doel van het element niet gecommuniceerd aan gebruikers van de ondersteunende technologieën. [Meer informatie over ARIA-rollen](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Met ARIA `role`len krijgen ondersteunende technologieën inzicht in de rol van elk element op de webpagina. Als de `role`-waarden verkeerd zijn gespeld, geen bestaande ARIA-`role`-waarden of abstracte rollen zijn, wordt het doel van het element niet gecommuniceerd aan gebruikers van de ondersteunende technologieën. [Meer informatie over ARIA-rollen](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "De waarden die aan `role=\"\"` zijn toegewezen, zijn geen geldige ARIA-rollen."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Pagina heeft herstel van Back-Forward Cache niet voorkomen"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Back-Forward Cache kan niet worden getest in de oude Chrome zonder interface (`--chrome-flags=\"--headless=old\"`). Gebruik de nieuwe Chrome zonder interface (`--chrome-flags=\"--headless=new\"`) of de standaardversie van Chrome om controleresultaten te bekijken."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome-extensies hadden een negatieve invloed op de laadprestaties van deze pagina. Controleer de pagina in de incognitomodus of via een Chrome-profiel zonder extensies."
   },
@@ -1155,12 +1158,36 @@
     "message": "LCP-element (grootste weergave met content)"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-bijdrage"
+    "message": "Impact van indelingsverschuiving"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Deze DOM-elementen dragen het meeste bij aan de CLS van de pagina. [Meer informatie over hoe je CLS kunt verbeteren](https://web.dev/articles/optimize-cls)"
+    "message": "Deze DOM-elementen zijn het meest beïnvloed door indelingsverschuivingen. Sommige indelingsverschuivingen zijn misschien niet opgenomen in de statistiekwaarde CLS vanwege [normalisatie](https://web.dev/articles/cls#what_is_cls). [Meer informatie over hoe je CLS kunt verbeteren](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Grote indelingsverschuivingen vermijden"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Score voor indelingsverschuiving"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Dit zijn de grootste indelingsverschuivingen die zijn waargenomen op de pagina. Elk tabelitem vertegenwoordigt één indelingsverschuiving en toont het element dat het meest is verschoven. Onder elk item staan mogelijke oorzaken die tot de indelingsverschuiving hebben geleid. Sommige van deze indelingsverschuivingen zijn misschien niet opgenomen in de statistiekwaarde CLS vanwege de [vensterfunctie](https://web.dev/articles/cls#what_is_cls). [Meer informatie over hoe je CLS kunt verbeteren](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 indelingsverschuiving gevonden}other{# indelingsverschuivingen gevonden}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Weblettertype geladen"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Geïnjecteerd iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Door een laat netwerkverzoek is de pagina-indeling aangepast"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Media-element heeft geen expliciet formaat"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Grote indelingsverschuivingen vermijden"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Hiermee wordt een themakleur voor de adresbalk ingesteld."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Cookies van derden worden in een toekomstige versie van Chrome niet meer ondersteund. [Meer informatie over de uitfasering van cookies van derden](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie gevonden}other{# cookies gevonden}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Gebruikt van cookies van derden"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Vermijdt cookies van derden"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (succesverhalen)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Geslaagde controles"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Naast de [geüpdatete Installeerbaarheidscriteria van Chrome](https://developer.chrome.com/blog/update-install-criteria) beëindigt Lighthouse de categorie PWA in een toekomstige release. Raadpleeg de [geüpdatete PWA-documentatie](https://developer.chrome.com/docs/devtools/progressive-web-apps/) voor toekomstige PWA-tests."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Eerste keer laden van de pagina"

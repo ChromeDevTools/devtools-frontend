@@ -18,7 +18,7 @@
     "message": "A(z) `[aria-*]` attribútumok megfelelnek szerepüknek"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Az ARIA `role` elemek lehetővé teszik a segítő technológiák számára, hogy megismerjék a weboldalon található egyes elemek szerepét. Ha a(z) `role` értékeket hibásan írja be, nem létező ARIA `role` értékeket vagy absztrakt szerepköröket használ, akkor a rendszer nem közli az elem célját a segítő technológiák felhasználóival. [További információ az ARIA-szerepkörökről](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "Az ARIA `role` elemek lehetővé teszik a segítő technológiák számára, hogy megismerjék a weboldalon található egyes elemek szerepét. Ha a(z) `role` értékeket hibásan írja be, nem létező ARIA `role` értékeket vagy absztrakt szerepköröket használ, akkor a rendszer nem közli az elem célját a segítő technológiák felhasználóival. [További információ az ARIA-szerepkörökről](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "A(z) `role=\"\"` elemhez rendelt értékek nem érvényes ARIA-szerepek."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Az oldal nem akadályozta meg az előre-vissza gyorsítótárazás visszaállítását"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Az előre-vissza gyorsítótárazás nem tesztelhető a régi Headless Chrome-ban (`--chrome-flags=\"--headless=old\"`). Az auditeredmények megtekintéséhez használja az új Headless Chrome-ot (`--chrome-flags=\"--headless=new\"`) vagy a normál Chrome-ot."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Egyes Chrome-bővítmények kedvezőtlenül befolyásolták az oldal betöltési teljesítményét. Próbálkozzon az oldal inkognitó módban vagy bővítmények nélküli Chrome-profilból történő ellenőrzésével."
   },
@@ -1155,12 +1158,36 @@
     "message": "A legnagyobb vizuális tartalomválasz eleme"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-hozzájárulás"
+    "message": "Az elrendezésmozgás hatása"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ezek a DOM-elemek járulnak hozzá leginkább az oldal CLS-éhez. [További információ a CLS javításáról](https://web.dev/articles/optimize-cls)."
+    "message": "Ezeket a DOM-elemeket leginkább az elrendezésmozgások érintették. Előfordulhat, hogy a [csak a felhasználó által látható tartalom megjelenítése](https://web.dev/articles/cls#what_is_cls) miatt bizonyos elrendezésmozgások nem szerepelnek a CLS-mutató értékében. [További információ a CLS javításáról](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Az elrendezés nagy mértékű mozgásának elkerülése"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Elrendezésmozgás pontszáma"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Ezek az oldalon észlelt legnagyobb elrendezésmozgások. A táblázat egyes elemei egy-egy elrendezésmozgásnak felelnek meg, és a legnagyobb mértékben elmozdult elemet mutatják. Az egyes elemek alatt az elrendezésmozgást kiváltó lehetséges okok láthatók. Előfordulhat, hogy a [csak a felhasználó által látható tartalom megjelenítése](https://web.dev/articles/cls#what_is_cls) miatt ezen elrendezésmozgások közül néhány nem szerepel a CLS-mutató értékében. [További információ a CLS javításáról](https://web.dev/articles/optimize-cls)."
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 elrendezésmozgás észlelve}other{# elrendezésmozgás észlelve}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webes betűtípus került betöltésre"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Iframe került beszúrásra"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Egy későn beérkező hálózati kérelem módosította az oldal elrendezését"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Hiányzik egy médiaelem pontos mérete"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Az elrendezés nagy mértékű mozgásának elkerülése"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "A téma színét állítja be a címsávon."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "A harmadik féltől származó cookie-k támogatását megszüntetjük a Chrome egyik későbbi verziójában. [További információ a harmadik féltől származó cookie-k kivezetéséről](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie található}other{# cookie található}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Harmadik féltől származó cookie-kat használ"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Kerüli a harmadik féltől származó cookie-kat"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Ügyfélszolgálat)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Sikeresen teljesített ellenőrzések"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "A [Chrome telepíthetőségi feltételeinek módosítása](https://developer.chrome.com/blog/update-install-criteria) mellett a Lighthouse egy későbbi kiadásban megszünteti a PWA kategóriát. A PWA jövőbeli tesztelésével kapcsolatban tekintse át a [frissített PWA-dokumentációt](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Első oldalbetöltés"

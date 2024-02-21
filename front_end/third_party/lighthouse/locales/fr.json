@@ -18,7 +18,7 @@
     "message": "Les attributs `[aria-*]` correspondent à leurs rôles"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Les `role`s ARIA permettent aux technologies d'assistance de connaître le rôle de chaque élément sur la page Web. Si les valeurs des `role`s sont mal orthographiées, que la valeur des `role` ARIA n'existe pas ou que les rôles sont abstraits, l'objectif de l'élément ne sera pas communiqué aux utilisateurs de technologies d'assistance. [En savoir plus sur les rôles ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "Les `role`s ARIA permettent aux technologies d'assistance de connaître le rôle de chaque élément sur la page Web. Si les valeurs des `role`s sont mal orthographiées, que la valeur des `role` ARIA n'existe pas ou que les rôles sont abstraits, l'objectif de l'élément ne sera pas communiqué aux utilisateurs de technologies d'assistance. [En savoir plus sur les rôles ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Les valeurs attribuées à `role=\"\"` ne sont pas des rôles ARIA valides."
@@ -390,7 +390,7 @@
     "message": "Le document contient un repère principal"
   },
   "core/audits/accessibility/link-in-text-block.js | description": {
-    "message": "Un texte faiblement contrasté est difficile, voire impossible à lire pour de nombreux utilisateurs. Un texte de lien visible permet d'améliorer l'expérience des utilisateurs souffrant d'une déficience visuelle. [Découvrez comment rendre les liens identifiables.](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)"
+    "message": "Un texte faiblement contrasté est difficile, voire impossible à lire pour de nombreux utilisateurs. Un texte de lien visible permet d'améliorer l'expérience des personnes malvoyantes. [Découvrez comment rendre les liens identifiables.](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)"
   },
   "core/audits/accessibility/link-in-text-block.js | failureTitle": {
     "message": "Les liens sont identifiables grâce à leur couleur."
@@ -435,7 +435,7 @@
     "message": "Le document n'utilise pas de balise Meta `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "La désactivation de la fonction de zoom peut être problématique pour les utilisateurs qui souffrent d'une déficience visuelle et qui ont besoin d'agrandir le contenu d'une page Web pour en saisir le sens. [En savoir plus sur la balise Meta viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)"
+    "message": "Désactiver le zoom est problématique pour les utilisateurs malvoyants qui ont besoin d'agrandir le contenu d'une page Web pour le voir correctement. [En savoir plus sur la balise Meta viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "L'attribut `[user-scalable=\"no\"]` est utilisé dans l'élément `<meta name=\"viewport\">`, ou l'attribut `[maximum-scale]` est inférieur à 5."
@@ -604,6 +604,9 @@
   },
   "core/audits/bf-cache.js | title": {
     "message": "La page n'a pas empêché la restauration du cache amélioré"
+  },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Impossible de tester le cache amélioré dans l'ancienne version de Headless Chrome (`--chrome-flags=\"--headless=old\"`). Pour afficher les résultats d'un audit, utilisez la nouvelle version de Headless Chrome (`--chrome-flags=\"--headless=new\"`) ou Chrome standard."
   },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Les extensions Chrome ont eu un impact négatif sur les performances de chargement de la page. Essayez de contrôler la page en mode navigation privée ou depuis un profil Chrome sans extensions."
@@ -1155,12 +1158,36 @@
     "message": "Élément identifié comme \"Largest Contentful Paint\""
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Contribution au CLS"
+    "message": "Impact du décalage de mise en page"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Ces éléments DOM contribuent en grande partie au CLS de la page. [Découvrez comment améliorer le CLS.](https://web.dev/articles/optimize-cls)"
+    "message": "Ces éléments DOM ont été le plus affectés par des décalages de mise en page. Il est possible que certains décalages de mise en page ne soient pas inclus dans la valeur de la métrique CLS en raison du [fenêtrage](https://web.dev/articles/cls#what_is_cls). [Découvrez comment améliorer le CLS.](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Éviter les changements de mise en page importants"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Score de décalage de mise en page"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Voici les décalages de mise en page les plus importants observés sur la page. Chaque élément du tableau représente un unique décalage de mise en page et montre l'élément qui a été le plus décalé. Des causes possibles du décalage de mise en page se trouvent sous chaque élément. Il est possible que certains de ces décalages de mise en page ne soient pas inclus dans la valeur de la métrique CLS en raison du [fenêtrage](https://web.dev/articles/cls#what_is_cls). [Découvrez comment améliorer le CLS.](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 décalage de mise en page trouvé}one{# décalage de mise en page trouvé}other{# décalages de mise en page trouvés}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Police Web chargée"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iFrame injecté"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Une requête réseau tardive a ajusté la mise en page"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Élément multimédia sans taille explicite"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Éviter les changements de mise en page importants"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Une couleur de thème est configurée pour la barre d'adresse."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Les cookies tiers ne seront plus acceptés dans une prochaine version de Chrome. [En savoir plus sur la suppression progressive des cookies tiers](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 cookie trouvé}one{# cookie trouvé}other{# cookies trouvés}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Utilise des cookies tiers"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Évite les cookies tiers"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (témoignages)"
@@ -3057,7 +3096,7 @@
     "message": "Envisagez d'utiliser `Next.js Analytics` pour mesurer les performances réelles de votre appli. [En savoir plus.](https://nextjs.org/docs/advanced-features/measuring-performance)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
-    "message": "Configurez la mise en cache pour les assets et les pages `Server-side Rendered` (SSR) immuables. [En savoir plus.](https://nextjs.org/docs/going-to-production#caching)"
+    "message": "Configurez la mise en cache pour les composants et les pages `Server-side Rendered` (SSR) immuables. [En savoir plus.](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
     "message": "Utilisez le composant `next/image` au lieu de `<img>` pour ajuster la qualité d'image. [En savoir plus](https://nextjs.org/docs/basic-features/image-optimization)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Audits réussis"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Conformément aux [critères d'installabilité mis à jour de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse abandonnera la catégorie PWA dans une prochaine version. Veuillez consulter la [documentation actualisée sur les PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) pour en savoir plus sur les futurs tests de PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Chargement de page initial"

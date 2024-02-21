@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-attributterne stemmer overens med deres roller"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`r gør det muligt for hjælpeteknologier at forstå hvert elements rolle på websiden. Hvis `role`værdierne er stavet forkert, ikke er eksisterende ARIA-`role`værdier eller abstrakte roller, kommunikeres elementets formål ikke til brugere med hjælpeteknologier. [Få flere oplysninger om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "ARIA `role`r gør det muligt for hjælpeteknologier at forstå hvert elements rolle på websiden. Hvis `role`værdierne er stavet forkert, ikke er eksisterende ARIA-`role`værdier eller abstrakte roller, kommunikeres elementets formål ikke til brugere med hjælpeteknologier. [Få flere oplysninger om ARIA-roller](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "De værdier, der er tildelt `role=\"\"`, er ikke gyldige ARIA-roller."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Siden forhindrede ikke gendannelse af back/forward-cachen"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Back/forward-cachen kan ikke testes i den gamle Chrome-version uden grafisk brugerflade (`--chrome-flags=\"--headless=old\"`). Hvis du vil se auditresultater, skal du bruge den nye version af Chrome uden grafisk brugerflade (`--chrome-flags=\"--headless=new\"`) eller standard Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome-udvidelser påvirkede denne sides indlæsning negativt. Prøv at revidere siden i inkognitotilstand eller fra en Chrome-profil uden udvidelser."
   },
@@ -1155,12 +1158,36 @@
     "message": "Element med Largest Contentful Paint"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS-bidrag"
+    "message": "Effekt af layoutskift"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Disse DOM-elementer bidrager mest til sidens CLS. [Se, hvordan du forbedrer CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Disse DOM-elementer blev mest påvirket af layoutskift. Nogle layoutskift medtages muligvis ikke i CLS-metricværdien som følge af [windowing](https://web.dev/articles/cls#what_is_cls). [Se, hvordan du forbedrer CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Undgå store layoutskift"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Resultat for layoutskift"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Dette er de mest omfattende layoutskift, der er blevet registreret på siden. Hvert tabelelement repræsenterer et enkelt layoutskift og viser det element, hvor der er blevet foretaget de største ændringer. Under hvert element er der mulige årsager, der kan have forårsaget layoutskiftet. Nogle af disse layoutskift medtages muligvis ikke i CLS-metricværdien som følge af [windowing](https://web.dev/articles/cls#what_is_cls). [Se, hvordan du forbedrer CLS](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Der er blevet registreret 1 layoutskift}one{Der er blevet registreret # layoutskift}other{Der er blevet registreret # layoutskift}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Webskrifttypen er indlæst"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Iframe er indsat"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "En sen netværksanmodning har justeret sidens layout"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Medieelementet mangler en klar angivelse af størrelse"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Undgå store layoutskift"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1392,7 +1419,7 @@
     "message": "Dokumentet anvender læselige skriftstørrelser"
   },
   "core/audits/seo/hreflang.js | description": {
-    "message": "hreflang-links fortæller søgemaskiner, hvilken version af en side de skal angive på listen over søgeresultater for et vilkårligt sprog eller område. [Få flere oplysninger om `hreflang`](https://developer.chrome.com/docs/lighthouse/seo/hreflang/)."
+    "message": "hreflang-links fortæller søgemaskiner, hvilken version af en side de skal angive på listen over søgeresultater for et vilkårligt sprog eller en vilkårlig region. [Få flere oplysninger om `hreflang`](https://developer.chrome.com/docs/lighthouse/seo/hreflang/)."
   },
   "core/audits/seo/hreflang.js | failureTitle": {
     "message": "Dokumentet har ikke en gyldig `hreflang`"
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Angiver en temafarve til adresselinjen."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Understøttelse af tredjepartscookies fjernes i en fremtidig version af Chrome. [Få flere oplysninger om udfasningen af tredjepartscookies](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Der blev fundet 1 cookie}one{Der blev fundet # cookie}other{Der blev fundet # cookies}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Bruger tredjepartscookies"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Undgår tredjepartscookies"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (kundeservice)"
@@ -2865,16 +2904,16 @@
     "message": "Overvej at bruge [responsive billedformater](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) for at reducere størrelsen på de billeder, der indlæses på din side. Hvis du bruger Visninger til at vise flere indholdselementer på en side, kan du overveje at implementere sideinddeling for at begrænse mængden af indholdselementer, der vises på en bestemt side."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Sørg for, at du har aktiveret \"Sammenlæg CSS-filer\" på siden \"Administration » Konfiguration » Udvikling\".  Sørg for, at dit Drupal-website som minimum kører Drupal 10.1, så du kan få bedre understøttelse til sammenlægning af aktiver."
+    "message": "Sørg for, at du har aktiveret \"Sammenlæg CSS-filer\" på siden \"Administration » Konfiguration » Udvikling\".  Sørg for, at dit Drupal-website som minimum kører Drupal 10.1, så du kan få bedre understøttelse til aggregering af aktiver."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Sørg for, at du har aktiveret \"Sammenlæg JavaScript-filer\" på siden \"Administration » Konfiguration » Udvikling\".  Sørg for, at dit Drupal-website som minimum kører Drupal 10.1, så du kan få bedre understøttelse til sammenlægning af aktiver."
+    "message": "Sørg for, at du har aktiveret \"Sammenlæg JavaScript-filer\" på siden \"Administration » Konfiguration » Udvikling\".  Sørg for, at dit Drupal-website som minimum kører Drupal 10.1, så du kan få bedre understøttelse til aggregering af aktiver."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
-    "message": "Overvej at fjerne ubrugte CSS-regler og kun vedhæfte de nødvendige Drupal-samlinger til den relevante side eller komponent på en side. Du kan finde flere oplysninger via [linket til Drupal-dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Hvis du vil identificere vedhæftede samlinger, der tilføjer irrelevant CSS, kan du prøve at køre [kodedækning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan identificere det problematiske tema/modul via webadressen for typografiarket, når CSS-sammenlægning er deaktiveret på dit Drupal-website. Kig efter temaer/moduler med mange typografiark på listen, som indeholder meget rødt i kodedækningen. Et tema/modul bør kun sætte et typografiark i kø, hvis det rent faktisk anvendes på siden."
+    "message": "Overvej at fjerne ubrugte CSS-regler og kun vedhæfte de nødvendige Drupal-samlinger til den relevante side eller komponent på en side. Du kan finde flere oplysninger via [linket til Drupal-dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Hvis du vil identificere vedhæftede samlinger, der tilføjer irrelevant CSS, kan du prøve at køre [kodedækning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan identificere det problematiske tema/modul via webadressen for typografiarket, når CSS-aggregering er deaktiveret på dit Drupal-website. Kig efter temaer/moduler med mange typografiark på listen, som indeholder meget rødt i kodedækningen. Et tema/modul bør kun sætte et typografiark i kø, hvis det rent faktisk anvendes på siden."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Overvej at fjerne ubrugte JavaScript-aktiver og kun vedhæfte de nødvendige Drupal-samlinger til den relevante side eller komponent på en side. Du kan finde flere oplysninger via [linket til Drupal-dokumentationen](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Hvis du vil identificere vedhæftede samlinger, der tilføjer irrelevant JavaScript, kan du prøve at køre [kodedækning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan identificere det problematiske tema/modul via webadressen for scriptet, når JavaScript-sammenlægning er deaktiveret på dit Drupal-website. Kig efter temaer/moduler med mange scripts på listen, som indeholder meget rødt i kodedækningen. Et tema/modul bør kun sætte et script i kø, hvis det rent faktisk anvendes på siden."
+    "message": "Overvej at fjerne ubrugte JavaScript-aktiver og kun vedhæfte de nødvendige Drupal-samlinger til den relevante side eller komponent på en side. Du kan finde flere oplysninger via [linket til Drupal-dokumentationen](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Hvis du vil identificere vedhæftede samlinger, der tilføjer irrelevant JavaScript, kan du prøve at køre [kodedækning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan identificere det problematiske tema/modul via webadressen for scriptet, når JavaScript-aggregering er deaktiveret på dit Drupal-website. Kig efter temaer/moduler med mange scripts på listen, som indeholder meget rødt i kodedækningen. Et tema/modul bør kun sætte et script i kø, hvis det rent faktisk anvendes på siden."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "Angiv \"Maks. alder for browser- og proxycachelagring\" på siden \"Administration » Konfiguration » Udvikling\". Læs om [Drupal-cache og optimering for bedre ydeevne](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)."
@@ -2898,13 +2937,13 @@
     "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Lazy Load Images` for at udsætte indlæsning af billeder, der ikke vises på skærmen, indtil der er behov for dem."
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | render-blocking-resources": {
-    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Critical CSS` og `Script Delay` for at udsætte ikke-kritisk JavaScript/prissammenligningstjeneste (CSS)."
+    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Critical CSS` og `Script Delay` for at udsætte ikke-kritisk JavaScript/CSS  (CSS)."
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | server-response-time": {
     "message": "Brug [Ezoic Cloud Caching](https://pubdash.ezoic.com/speed/caching) for at cachelagre dit indhold på vores verdensomspændende netværk, hvilket forbedrer Time To First Byte."
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | unminified-css": {
-    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Minify CSS` for automatisk at formindske din prissammenligningstjeneste (CSS) med henblik på at reducere størrelsen på netværkets datapakker."
+    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Minify CSS` for automatisk at formindske din CSS  (CSS) med henblik på at reducere størrelsen på netværkets datapakker."
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | unminified-javascript": {
     "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Minify Javascript` for automatisk at formindske JavaScript med henblik på at reducere størrelsen på netværkets datapakker."
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Beståede revisioner"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "I forbindelse med [Chromes opdaterede kriterier for installerbarhed](https://developer.chrome.com/blog/update-install-criteria) udfaser Lighthouse PWA-kategorien i en kommende udgivelse. Se den [opdaterede PWA-dokumentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) vedrørende fremtidige PWA-tests."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Oprindelig sideindlæsning"

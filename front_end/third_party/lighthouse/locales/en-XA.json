@@ -18,7 +18,7 @@
     "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš måţçĥ ţĥéîŕ ŕöļéš one two three four five six seven]"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "[ÅŔÎÅ ᐅ`role`ᐊš éñåбļé åššîšţîvé ţéçĥñöļöĝîéš ţö ķñöŵ ţĥé ŕöļé öƒ éåçĥ éļéméñţ öñ ţĥé ŵéб þåĝé. Îƒ ţĥé ᐅ`role`ᐊ våļûéš åŕé mîššþéļļéð, ñöţ éxîšţîñĝ ÅŔÎÅ ᐅ`role`ᐊ våļûéš, öŕ åбšţŕåçţ ŕöļéš, ţĥéñ ţĥé þûŕþöšé öƒ ţĥé éļéméñţ ŵîļļ ñöţ бé çömmûñîçåţéð ţö ûšéŕš öƒ åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ÅŔÎÅ ŕöļéšᐅ](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
+    "message": "[ÅŔÎÅ ᐅ`role`ᐊš éñåбļé åššîšţîvé ţéçĥñöļöĝîéš ţö ķñöŵ ţĥé ŕöļé öƒ éåçĥ éļéméñţ öñ ţĥé ŵéб þåĝé. Îƒ ţĥé ᐅ`role`ᐊ våļûéš åŕé mîššþéļļéð, ñöţ éxîšţîñĝ ÅŔÎÅ ᐅ`role`ᐊ våļûéš, öŕ åбšţŕåçţ ŕöļéš, ţĥéñ ţĥé þûŕþöšé öƒ ţĥé éļéméñţ ŵîļļ ñöţ бé çömmûñîçåţéð ţö ûšéŕš öƒ åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ÅŔÎÅ ŕöļéšᐅ](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "[Våļûéš åššîĝñéð ţö ᐅ`role=\"\"`ᐊ åŕé ñöţ våļîð ÅŔÎÅ ŕöļéš. one two three four five six seven eight nine ten]"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "[Þåĝé ðîðñ'ţ þŕévéñţ бåçķ/ƒöŕŵåŕð çåçĥé ŕéšţöŕåţîöñ one two three four five six seven eight nine ten eleven]"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "[Бåçķ/ƒöŕŵåŕð çåçĥé çåññöţ бé ţéšţéð îñ öļð Ĥéåðļéšš Çĥŕömé (ᐅ`--chrome-flags=\"--headless=old\"`ᐊ). Ţö šéé åûðîţ ŕéšûļţš, ûšé ţĥé ñéŵ Ĥéåðļéšš Çĥŕömé (ᐅ`--chrome-flags=\"--headless=new\"`ᐊ) öŕ šţåñðåŕð Çĥŕömé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "[Çĥŕömé éxţéñšîöñš ñéĝåţîvéļý åƒƒéçţéð ţĥîš þåĝé'š ļöåð þéŕƒöŕmåñçé. Ţŕý åûðîţîñĝ ţĥé þåĝé îñ îñçöĝñîţö möðé öŕ ƒŕöm å Çĥŕömé þŕöƒîļé ŵîţĥöûţ éxţéñšîöñš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
@@ -1155,12 +1158,36 @@
     "message": "[Ļåŕĝéšţ Çöñţéñţƒûļ Þåîñţ éļéméñţ one two three four five six seven]"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "[ÇĻŠ Çöñţŕîбûţîöñ one two]"
+    "message": "[Ļåýöûţ šĥîƒţ îmþåçţ one two three]"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "[Ţĥéšé ÐÖM éļéméñţš çöñţŕîбûţé möšţ ţö ţĥé ÇĻŠ öƒ ţĥé þåĝé. ᐅ[ᐊĻéåŕñ ĥöŵ ţö îmþŕövé ÇĻŠᐅ](https://web.dev/articles/optimize-cls)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+    "message": "[Ţĥéšé ÐÖM éļéméñţš ŵéŕé möšţ åƒƒéçţéð бý ļåýöûţ šĥîƒţš. Šömé ļåýöûţ šĥîƒţš måý ñöţ бé îñçļûðéð îñ ţĥé ÇĻŠ méţŕîç våļûé ðûé ţö ᐅ[ᐊŵîñðöŵîñĝᐅ](https://web.dev/articles/cls#what_is_cls)ᐊ. ᐅ[ᐊĻéåŕñ ĥöŵ ţö îmþŕövé ÇĻŠᐅ](https://web.dev/articles/optimize-cls)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "[Åvöîð ļåŕĝé ļåýöûţ šĥîƒţš one two three four five six]"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "[Ļåýöûţ šĥîƒţ šçöŕé one two three]"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "[Ţĥéšé åŕé ţĥé ļåŕĝéšţ ļåýöûţ šĥîƒţš öбšéŕvéð öñ ţĥé þåĝé. Éåçĥ ţåбļé îţém ŕéþŕéšéñţš å šîñĝļé ļåýöûţ šĥîƒţ, åñð šĥöŵš ţĥé éļéméñţ ţĥåţ šĥîƒţéð ţĥé möšţ. Бéļöŵ éåçĥ îţém åŕé þöššîбļé ŕööţ çåûšéš ţĥåţ ļéð ţö ţĥé ļåýöûţ šĥîƒţ. Šömé öƒ ţĥéšé ļåýöûţ šĥîƒţš måý ñöţ бé îñçļûðéð îñ ţĥé ÇĻŠ méţŕîç våļûé ðûé ţö ᐅ[ᐊŵîñðöŵîñĝᐅ](https://web.dev/articles/cls#what_is_cls)ᐊ. ᐅ[ᐊĻéåŕñ ĥöŵ ţö îmþŕövé ÇĻŠᐅ](https://web.dev/articles/optimize-cls)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two]"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{[1 ļåýöûţ šĥîƒţ ƒöûñð one two three four five]}other{[# ļåýöûţ šĥîƒţš ƒöûñð one two three four five]}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "[Ŵéб ƒöñţ ļöåðéð one two]"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "[Îñĵéçţéð îƒŕåmé one two]"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "[Å ļåţé ñéţŵöŕķ ŕéqûéšţ åðĵûšţéð ţĥé þåĝé ļåýöûţ one two three four five six seven eight nine ten]"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "[Méðîå éļéméñţ ļåçķîñĝ åñ éxþļîçîţ šîžé one two three four five six seven eight]"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "[Åvöîð ļåŕĝé ļåýöûţ šĥîƒţš one two three four five six]"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "[Šéţš å ţĥémé çöļöŕ ƒöŕ ţĥé åððŕéšš бåŕ. one two three four five six seven eight]"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "[Šûþþöŕţ ƒöŕ ţĥîŕð-þåŕţý çööķîéš ŵîļļ бé ŕémövéð îñ å ƒûţûŕé véŕšîöñ öƒ Çĥŕömé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ þĥåšîñĝ öûţ ţĥîŕð-þåŕţý çööķîéšᐅ](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 çööķîé ƒöûñð one two]}other{[# çööķîéš ƒöûñð one two]}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "[Ûšéš ţĥîŕð-þåŕţý çööķîéš one two three]"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "[Åvöîðš ţĥîŕð-þåŕţý çööķîéš one two three]"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "[ᐅ{productName}ᐊ (Çûšţöméŕ Šûççéšš) one two three four five]"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "[Þåššéð åûðîţš one two]"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Åļöñĝšîðé ᐅ[ᐊÇĥŕömé’š ûþðåţéð Îñšţåļļåбîļîţý Çŕîţéŕîåᐅ](https://developer.chrome.com/blog/update-install-criteria)ᐊ, Ļîĝĥţĥöûšé ŵîļļ бé ðéþŕéçåţîñĝ ţĥé ÞŴÅ çåţéĝöŕý îñ å ƒûţûŕé ŕéļéåšé. Þļéåšé ŕéƒéŕ ţö ţĥé ᐅ[ᐊûþðåţéð ÞŴÅ ðöçûméñţåţîöñᐅ](https://developer.chrome.com/docs/devtools/progressive-web-apps/)ᐊ ƒöŕ ƒûţûŕé ÞŴÅ ţéšţîñĝ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "[Îñîţîåļ þåĝé ļöåð one two three]"

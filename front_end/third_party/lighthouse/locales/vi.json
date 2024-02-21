@@ -18,7 +18,7 @@
     "message": "Các thuộc tính `[aria-*]` khớp với vai trò tương ứng"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "`role` ARIA cho phép công nghệ hỗ trợ biết vai trò của từng phần tử trên trang web. Nếu các giá trị `role` bị sai chính tả, là vai trò trừu tượng hoặc không phải giá trị ARIA `role` hiện có, thì mục đích của phần tử này sẽ không được thông báo cho người dùng công nghệ hỗ trợ. [Tìm hiểu thêm về các vai trò ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)."
+    "message": "`role` ARIA cho phép công nghệ hỗ trợ biết vai trò của từng phần tử trên trang web. Nếu các giá trị `role` bị sai chính tả, là vai trò trừu tượng hoặc không phải giá trị ARIA `role` hiện có, thì mục đích của phần tử này sẽ không được thông báo cho người dùng công nghệ hỗ trợ. [Tìm hiểu thêm về các vai trò ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Giá trị được chỉ định cho `role=\"\"` không phải là vai trò ARIA hợp lệ."
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "Trang không ngăn việc khôi phục bộ nhớ đệm cho thao tác tiến/lùi"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "Không thể kiểm tra bộ nhớ đệm cho thao tác tiến/lùi trong Headless Chrome cũ (`--chrome-flags=\"--headless=old\"`). Để xem kết quả kiểm tra, hãy sử dụng Headless Chrome mới (`--chrome-flags=\"--headless=new\"`) hoặc Chrome tiêu chuẩn."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Các tiện ích của Chrome ảnh hưởng tiêu cực đến hiệu suất tải của trang này. Hãy thử kiểm tra trang ở chế độ ẩn danh hoặc từ một hồ sơ trên Chrome không có tiện ích."
   },
@@ -1155,12 +1158,36 @@
     "message": "Thành phần Thời gian hiển thị nội dung lớn nhất"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Mức đóng góp vào CLS"
+    "message": "Ảnh hưởng của việc thay đổi bố cục"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Những thành phần DOM này đóng góp nhiều nhất vào Điểm số tổng hợp về mức thay đổi bố cục (CLS) của trang. [Tìm hiểu cách cải thiện CLS](https://web.dev/articles/optimize-cls)"
+    "message": "Các phần tử DOM này là đối tượng chịu ảnh hưởng nhiều nhất của việc thay đổi bố cục. Một số thay đổi về bố cục có thể không được tính vào giá trị chỉ số CLS do phương pháp [chuẩn hoá](https://web.dev/articles/cls#what_is_cls). [Tìm hiểu cách cải thiện CLS](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Tránh các thay đổi lớn về bố cục"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Điểm số về mức thay đổi bố cục"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Đây là những thay đổi lớn nhất về bố cục được ghi nhận trên trang. Mỗi mục trong bảng đại diện cho một lần thay đổi bố cục và cho biết phần tử đã thay đổi nhiều nhất. Bên dưới mỗi mục là các nguyên nhân gốc có thể dẫn đến sự thay đổi bố cục. Một vài trong số những thay đổi về bố cục này có thể không được tính vào giá trị chỉ số CLS (Mức thay đổi bố cục tích luỹ) do phương pháp [kết xuất cửa sổ hiện tại](https://web.dev/articles/cls#what_is_cls). [Tìm hiểu cách cải thiện CLS (Mức thay đổi bố cục tích luỹ)](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{Đã nhận thấy 1 lần thay đổi bố cục}other{Đã nhận thấy # lần thay đổi bố cục}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Phông chữ trên web đã tải"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "iframe được chèn"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Yêu cầu kết nối mạng chậm trễ đã điều chỉnh bố cục trang"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "Phần tử nội dung đa phương tiện không có kích thước rõ ràng"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Tránh các thay đổi lớn về bố cục"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Đặt màu giao diện cho thanh địa chỉ."
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Các phiên bản Chrome sau này sẽ không hỗ trợ cookie của bên thứ ba nữa. [Tìm hiểu thêm về việc Chrome ngừng hỗ trợ cookie của bên thứ ba](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Đã tìm thấy 1 cookie}other{Đã tìm thấy # cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Sử dụng cookie của bên thứ ba"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Tránh sử dụng cookie của bên thứ ba"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (Sự thành công của khách hàng)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Số lần kiểm tra đạt yêu cầu"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "Ngoài [điểm mới trong Tiêu chí về khả năng cài đặt của Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse sẽ ngừng sử dụng danh mục PWA trong bản phát hành sau này. Vui lòng tham khảo [tài liệu mới nhất về PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) để biết quy trình kiểm thử PWA trong tương lai."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Lượt tải trang đầu tiên"

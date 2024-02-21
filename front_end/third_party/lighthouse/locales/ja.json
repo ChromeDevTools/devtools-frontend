@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 属性は役割と一致しています"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role` を指定すると、支援技術でウェブページ上の各要素の役割を把握するのに役立ちます。`role` の値にスペルミスがある場合、既存の ARIA `role` の値でない場合、または抽象ロールの場合、支援技術のユーザーに要素の目的が伝わりません。[ARIA ロールの詳細](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)"
+    "message": "ARIA `role` を指定すると、支援技術でウェブページ上の各要素の役割を把握するのに役立ちます。`role` の値にスペルミスがある場合、既存の ARIA `role` の値でない場合、または抽象ロールの場合、支援技術のユーザーに要素の目的が伝わりません。[ARIA ロールの詳細](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "`role=\"\"` に割り当てられた値は有効な ARIA ロールではありません。"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "ページでバックフォワード キャッシュの復元は妨げられませんでした"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "バックフォワード キャッシュは、古いヘッドレス Chrome（`--chrome-flags=\"--headless=old\"`）ではテストできません。監査結果を表示するには、新しいヘッドレス Chrome（`--chrome-flags=\"--headless=new\"`）または標準の Chrome を使用してください。"
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Chrome 拡張機能がこのページの読み込みに悪影響を及ぼしています。シークレット モードで、または拡張機能なしの Chrome プロファイルからページを監査してみてください。"
   },
@@ -1155,12 +1158,36 @@
     "message": "「最大コンテンツの描画」要素"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "CLS への影響"
+    "message": "レイアウト シフトの影響"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "ページの CLS への影響が特に大きい DOM 要素です。[CLS を改善する方法について](https://web.dev/articles/optimize-cls)"
+    "message": "これらの DOM 要素は、レイアウト シフトの影響を最も受けています。[ウィンドウ処理](https://web.dev/articles/cls#what_is_cls)が原因で、一部のレイアウト シフトが CLS 指標値に含まれていない場合があります。[CLS を改善する方法について](https://web.dev/articles/optimize-cls)"
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "レイアウトが大きく変わらないようにする"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "レイアウト シフトのスコア"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "これらは、ページで確認された最大のレイアウト シフトです。表の各項目は 1 つのレイアウト シフトを表し、最もシフトの大きかった要素が表示されます。各項目の下には、レイアウト シフトにつながったと考えられる根本原因が表示されます。[ウィンドウ処理](https://web.dev/articles/cls#what_is_cls)が原因で、これらのレイアウト シフトの一部が CLS 指標値に含まれていない場合があります。[CLS を改善する方法について](https://web.dev/articles/optimize-cls)"
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 件のレイアウト シフトが見つかりました}other{# 件のレイアウト シフトが見つかりました}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "ウェブフォントを読み込みました"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "挿入された iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "遅延したネットワーク リクエストによりページ レイアウトが調整されました"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "メディア要素に明示的なサイズが含まれていません"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "レイアウトが大きく変わらないようにする"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "アドレスバーにテーマの色が設定されています。"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "Chrome の今後のバージョンでは、サードパーティ Cookie のサポートを終了する予定です。[サードパーティ Cookie の段階的廃止に関する詳細](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 件の Cookie が見つかりました}other{# 件の Cookie が見つかりました}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "サードパーティ Cookie が使用されています"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "サードパーティ Cookie は使用されていません"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName}（カスタマー サポート）"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "合格した監査"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "[Chrome の更新されたインストール要件](https://developer.chrome.com/blog/update-install-criteria)に基づき、Lighthouse では今後のリリースで PWA カテゴリが廃止される予定です。今後の PWA テストについては、[最新の PWA のドキュメント](https://developer.chrome.com/docs/devtools/progressive-web-apps/)をご覧ください。"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "最初のページ読み込み"

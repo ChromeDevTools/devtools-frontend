@@ -18,7 +18,7 @@
     "message": "Атрибуты `[aria-*]` соответствуют своим ролям"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Благодаря параметрам ARIA (`role`) технологии специальных возможностей определяют роль каждого элемента на веб-странице. Если значения `role` написаны с ошибкой, содержат несуществующие роли ARIA (`role`) или абстрактные роли, то назначение элемента не будет сообщено пользователям технологий специальных возможностей. Подробнее [о ролях ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-roles)…"
+    "message": "Благодаря параметрам ARIA (`role`) технологии специальных возможностей определяют роль каждого элемента на веб-странице. Если значения `role` написаны с ошибкой, содержат несуществующие роли ARIA (`role`) или абстрактные роли, то назначение элемента не будет сообщено пользователям технологий специальных возможностей. Подробнее [о ролях ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)…"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "Значения, указанные для атрибута `role=\"\"`, не входят в список допустимых ролей ARIA"
@@ -605,6 +605,9 @@
   "core/audits/bf-cache.js | title": {
     "message": "На странице разрешено восстановление из возвратного кеша"
   },
+  "core/audits/bf-cache.js | warningHeadless": {
+    "message": "В старой версии Headless Chrome (`--chrome-flags=\"--headless=old\"`) невозможно проверить возвратный кеш. Чтобы посмотреть результаты, используйте новую версию Headless Chrome (`--chrome-flags=\"--headless=new\"`) или стандартный браузер Chrome."
+  },
   "core/audits/bootup-time.js | chromeExtensionsWarning": {
     "message": "Расширения Chrome замедляют загрузку этой страницы. Попробуйте использовать режим инкогнито или профиль Chrome без расширений."
   },
@@ -1155,12 +1158,36 @@
     "message": "Элемент \"Отрисовка самого крупного контента\""
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Фактор совокупного смещения макета"
+    "message": "Влияние смещения макета"
   },
   "core/audits/layout-shift-elements.js | description": {
-    "message": "Эти элементы DOM больше всего влияют на совокупное смещение макета страницы. Узнайте, [как его уменьшить](https://web.dev/articles/optimize-cls)."
+    "message": "Смещения макета больше всего повлияли на эти элементы DOM. Некоторые смещения макета, возможно, не были учтены в показателе CLS, так как использовалась [обработка методом окна](https://web.dev/articles/cls#what_is_cls). Узнайте, [как уменьшить CLS](https://web.dev/articles/optimize-cls)."
   },
   "core/audits/layout-shift-elements.js | title": {
+    "message": "Устраните большие смещения макета"
+  },
+  "core/audits/layout-shifts.js | columnScore": {
+    "message": "Показатель смещения макета"
+  },
+  "core/audits/layout-shifts.js | description": {
+    "message": "Это самые значительные смещения макета страницы. Каждый пункт таблицы относится к одному сдвигу и показывает, какой элемент затронут сильнее всего. Под пунктами таблицы приведены возможные причины смещения макета. Некоторые из приведенных случаев могли быть упущены при расчете показателя CLS, так как использовалась [обработка методом окна](https://web.dev/articles/cls#what_is_cls). Узнайте, [как уменьшить CLS](https://web.dev/articles/optimize-cls)."
+  },
+  "core/audits/layout-shifts.js | displayValueShiftsFound": {
+    "message": "{shiftCount,plural, =1{1 смещение макета}one{# смещение макета}few{# смещения макета}many{# смещений макета}other{# смещения макета}}"
+  },
+  "core/audits/layout-shifts.js | rootCauseFontChanges": {
+    "message": "Загрузка веб-шрифта"
+  },
+  "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
+    "message": "Внедрение окна iframe"
+  },
+  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
+    "message": "Изменение макета страницы при последнем сетевом запросе"
+  },
+  "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
+    "message": "У медиаэлемента нет заданного явным образом размера"
+  },
+  "core/audits/layout-shifts.js | title": {
     "message": "Устраните большие смещения макета"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
@@ -1531,6 +1558,18 @@
   },
   "core/audits/themed-omnibox.js | title": {
     "message": "Изменяет цвет адресной строки в соответствии с темой"
+  },
+  "core/audits/third-party-cookies.js | description": {
+    "message": "В будущей версии Chrome поддержка сторонних файлов cookie будет прекращена. Подробнее [об отказе от сторонних файлов cookie](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)…"
+  },
+  "core/audits/third-party-cookies.js | displayValue": {
+    "message": "{itemCount,plural, =1{Обнаружен 1 файл cookie}one{Обнаружен # файл cookie}few{Обнаружено # файла cookie}many{Обнаружено # файлов cookie}other{Обнаружено # файла cookie}}"
+  },
+  "core/audits/third-party-cookies.js | failureTitle": {
+    "message": "Используются сторонние файлы cookie"
+  },
+  "core/audits/third-party-cookies.js | title": {
+    "message": "Сторонние файлы cookie не используются"
   },
   "core/audits/third-party-facades.js | categoryCustomerSuccess": {
     "message": "{productName} (истории успеха)"
@@ -3358,6 +3397,9 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Успешные аудиты"
+  },
+  "report/renderer/report-utils.js | pwaRemovalMessage": {
+    "message": "В соответствии с [обновленными условиями установки Chrome](https://developer.chrome.com/blog/update-install-criteria) поддержка категории PWA в Lighthouse скоро будет прекращена. Информацию о том, как тестировать современные веб-приложения в дальнейшем, можно найти в [обновленной документации по PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Начальная загрузка страницы"

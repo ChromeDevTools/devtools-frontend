@@ -266,6 +266,7 @@ module.exports = {
         { 'name': 'describeWithLocale', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
         { 'name': 'describeWithMockConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
         { 'name': 'describeWithRealConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'itScreenshot', 'type': 'testCase', 'interfaces': [ 'BDD', 'TDD' ] },
       ]
     }
   }],

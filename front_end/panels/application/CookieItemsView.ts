@@ -192,6 +192,7 @@ export class CookieItemsView extends StorageItemsView {
     this.splitWidget.show(this.element);
 
     this.previewPanel = new UI.Widget.VBox();
+    this.previewPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
     const resizer = this.previewPanel.element.createChild('div', 'preview-panel-resizer');
 
     this.splitWidget.setMainWidget(this.cookiesTable);

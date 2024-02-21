@@ -62,10 +62,12 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     this.interestGroupGrid.addEventListener('cellfocused', this.onFocus.bind(this));
 
     this.noDisplayView.contentElement.classList.add('placeholder');
+    this.noDisplayView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
     const noDisplayDiv = this.noDisplayView.contentElement.createChild('div');
     noDisplayDiv.textContent = i18nString(UIStrings.clickToDisplayBody);
 
     this.noDataView.contentElement.classList.add('placeholder');
+    this.noDataView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
     const noDataDiv = this.noDataView.contentElement.createChild('div');
     noDataDiv.textContent = i18nString(UIStrings.noDataAvailable);
   }
@@ -121,6 +123,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
       const jsonView = await SourceFrame.JSONView.JSONView.createView(JSON.stringify(details));
       jsonView?.setMinimumSize(0, 40);
       if (jsonView) {
+        jsonView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
         this.setSidebarWidget(jsonView);
       }
     } else {

@@ -813,7 +813,6 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
 
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
-    this.element.setAttribute('jslog', `${VisualLogging.pane('security.sidebar')}`);
 
     this.appendChild(mainViewElement);
 

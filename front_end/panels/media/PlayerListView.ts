@@ -54,8 +54,6 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   constructor(mainContainer: MainView) {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('player-list')}`);
-
     this.playerEntryFragments = new Map();
     this.playerEntriesWithHostnameFrameTitle = new Set();
 

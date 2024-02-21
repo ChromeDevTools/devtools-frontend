@@ -37,6 +37,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
@@ -156,6 +157,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     super();
     this.requestInternal = request;
     this.element.classList.add('network-item-view');
+    this.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('request-details')}`);
 
     const headersTab = NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
     this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting(

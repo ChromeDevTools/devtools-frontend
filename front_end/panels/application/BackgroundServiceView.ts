@@ -212,6 +212,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.dataGrid = this.createDataGrid();
 
     this.previewPanel = new UI.Widget.VBox();
+    this.previewPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
 
     this.selectedEventNode = null;
 

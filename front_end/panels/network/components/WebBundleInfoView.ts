@@ -39,7 +39,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
 
     this.#webBundleInfo = webBundleInfo;
     this.#webBundleName = request.parsedURL.lastPathComponent;
-    this.setAttribute('jslog', `${VisualLogging.pane('webbundle')}`);
+    this.setAttribute('jslog', `${VisualLogging.pane('webbundle').track({resize: true})}`);
   }
 
   connectedCallback(): void {

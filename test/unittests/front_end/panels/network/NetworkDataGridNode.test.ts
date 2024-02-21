@@ -449,4 +449,26 @@ describeWithEnvironment('NetworkLogView', () => {
     networkRequestNode.renderCell(el, 'setcookies');
     assert.strictEqual(el.innerText, '1');
   });
+
+  it('shows transferred size when the matched ServiceWorker router source is network', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.resourceSize = 4;
+    request.setTransferSize(2);
+    request.statusCode = 200;
+    request.serviceWorkerRouterInfo = {
+      ruleIdMatched: 1,
+      matchedSourceType: Protocol.Network.ServiceWorkerRouterSource.Network,
+    };
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'size');
+    assert.strictEqual(el.innerText, '(ServiceWorker router)4\xa0B');
+    const tooltip = el.getAttribute('title')!;
+    const expected = 'Matched to ServiceWorker router#1, 2\xa0B transferred over network, resource size: 4\xa0B';
+    assert.strictEqual(tooltip, expected);
+  });
 });

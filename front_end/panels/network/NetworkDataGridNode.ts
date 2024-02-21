@@ -223,6 +223,15 @@ const UIStrings = {
    *@example {4 B} PH2
    */
   matchedToServiceWorkerRouter: 'Matched to `ServiceWorker router`#{PH1}, resource size: {PH2}',
+
+  /**
+   *@description Cell title in Network Data Grid Node of the Network panel
+   *@example {1} PH1
+   *@example {4 B} PH2
+   *@example {12 B} PH3
+   */
+  matchedToServiceWorkerRouterWithNetworkSource:
+      'Matched to `ServiceWorker router`#{PH1}, {PH2} transferred over network, resource size: {PH3}',
   /**
    *@description Text in Network Data Grid Node of the Network panel
    */
@@ -1517,10 +1526,19 @@ export class NetworkRequestNode extends NetworkNode {
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromMemoryCacheResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.serviceWorkerRouterInfo) {
-      const ruleIdMatched = this.requestInternal.serviceWorkerRouterInfo.ruleIdMatched;
+      const {serviceWorkerRouterInfo} = this.requestInternal;
+      const ruleIdMatched = serviceWorkerRouterInfo.ruleIdMatched;
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorkerRouter));
-      UI.Tooltip.Tooltip.install(
-          cell, i18nString(UIStrings.matchedToServiceWorkerRouter, {PH1: ruleIdMatched, PH2: resourceSize}));
+      let tooltipText;
+      if (serviceWorkerRouterInfo.matchedSourceType === Protocol.Network.ServiceWorkerRouterSource.Network) {
+        const transferSize = Platform.NumberUtilities.bytesToString(this.requestInternal.transferSize);
+        tooltipText = i18nString(
+            UIStrings.matchedToServiceWorkerRouterWithNetworkSource,
+            {PH1: ruleIdMatched, PH2: transferSize, PH3: resourceSize});
+      } else {
+        tooltipText = i18nString(UIStrings.matchedToServiceWorkerRouter, {PH1: ruleIdMatched, PH2: resourceSize});
+      }
+      UI.Tooltip.Tooltip.install(cell, tooltipText);
       cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.fetchedViaServiceWorker) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorker));

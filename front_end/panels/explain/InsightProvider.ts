@@ -40,11 +40,11 @@ export class InsightProvider {
       throw new Error('doAidaConversation is not available');
     }
     const stream = (() => {
-      let {promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<string|null>();
+      let {promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<string|null>();
       return {
         write: async(data: string): Promise<void> => {
           resolve(data);
-          ({promise, resolve} = Platform.PromiseUtilities.promiseWithResolvers<string|null>());
+          ({promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<string|null>());
         },
         close: async(): Promise<void> => {
           resolve(null);
@@ -52,20 +52,20 @@ export class InsightProvider {
         read: (): Promise<string|null> => {
           return promise;
         },
+        fail: (e: Error) => reject(e),
       };
     })();
     const streamId = Host.ResourceLoader.bindOutputStream(stream);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation(
         JSON.stringify(InsightProvider.buildApiRequest(input)), streamId, result => {
-          void stream.close();
           if (result.statusCode === 403) {
-            throw new Error('Server responded: permission denied');
-          }
-          if (result.error) {
-            throw new Error(`Cannot send request: ${result.error} ${result.detail || ''}`);
-          }
-          if (result.statusCode !== 200) {
-            throw new Error(`Request failed: ${JSON.stringify(result)}`);
+            stream.fail(new Error('Server responded: permission denied'));
+          } else if (result.error) {
+            stream.fail(new Error(`Cannot send request: ${result.error} ${result.detail || ''}`));
+          } else if (result.statusCode !== 200) {
+            stream.fail(new Error(`Request failed: ${JSON.stringify(result)}`));
+          } else {
+            void stream.close();
           }
         });
     let chunk;

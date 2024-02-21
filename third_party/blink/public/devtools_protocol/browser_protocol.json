@@ -19105,7 +19105,7 @@
                         },
                         {
                             "name": "hasBrowserHandler",
-                            "description": "True if browser is capable showing or acting on the given dialog. When browser has no\ndialog handler for given target, calling alert while Page domain is engaged will stall\nthe page execution. Execution can be resumed via calling Page.handleJavaScriptDialog.",
+                            "description": "True iff browser is capable showing or acting on the given dialog. When browser has no\ndialog handler for given target, calling alert while Page domain is engaged will stall\nthe page execution. Execution can be resumed via calling Page.handleJavaScriptDialog.",
                             "type": "boolean"
                         },
                         {
@@ -22236,11 +22236,11 @@
                         },
                         {
                             "name": "type",
+                            "description": "List of types: https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22",
                             "type": "string"
                         },
                         {
                             "name": "title",
-                            "description": "List of types: https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22",
                             "type": "string"
                         },
                         {
@@ -24877,7 +24877,7 @@
                         },
                         {
                             "name": "errorType",
-                            "description": "Error information\n`errorMessage` is null if `errorType` is null.",
+                            "description": "Error information\n`errorMessage` is null iff `errorType` is null.",
                             "optional": true,
                             "$ref": "RuleSetErrorType"
                         },

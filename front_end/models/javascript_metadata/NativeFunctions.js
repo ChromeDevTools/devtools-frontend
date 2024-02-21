@@ -3145,7 +3145,7 @@ export const NativeFunctions = [
   },
   {
     name: "initMutationEvent",
-    signatures: [["typeArg","?bubblesArg","?cancelableArg","?relatedNodeArg","?prevValueArg","?newValueArg","?attrNameArg","?attrChangeArg"],["?type","?bubbles","?cancelable","?relatedNode","?prevValue","?newValue","?attrName","?attrChange"]]
+    signatures: [["typeArg","?bubblesArg","?cancelableArg","?relatedNodeArg","?prevValueArg","?newValueArg","?attrNameArg","?attrChangeArg"],["type","?bubbles","?cancelable","?relatedNode","?prevValue","?newValue","?attrName","?attrChange"]]
   },
   {
     name: "getNamedItem",
@@ -6522,7 +6522,7 @@ export const NativeFunctions = [
   },
   {
     name: "initTextEvent",
-    signatures: [["?type","?bubbles","?cancelable","?view","?data"]]
+    signatures: [["type","?bubbles","?cancelable","?view","?data"]]
   },
   {
     name: "ToggleEvent",

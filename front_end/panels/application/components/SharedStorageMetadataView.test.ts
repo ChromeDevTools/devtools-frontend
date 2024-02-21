@@ -36,7 +36,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
-      bytesUsed: 2,
+      bytesUsed: 200,
     });
     renderElementIntoDOM(component);
 
@@ -54,7 +54,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
-      bytesUsed: 2,
+      bytesUsed: 200,
     });
     renderElementIntoDOM(component);
 
@@ -66,6 +66,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       'Origin',
       'Creation Time',
       'Number of Entries',
+      'Number of Bytes Used',
       'Entropy Budget for Fenced Frames',
     ]);
 
@@ -74,6 +75,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       'https://a.test',
       (new Date(10 * 1e3)).toLocaleString(),
       '4',
+      '200',
       '8.3',
     ]);
   });
@@ -90,6 +92,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
       'Origin',
       'Creation Time',
       'Number of Entries',
+      'Number of Bytes Used',
       'Entropy Budget for Fenced Frames',
     ]);
 
@@ -97,6 +100,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     assert.deepEqual(values, [
       '',
       'Not yet created',
+      '0',
       '0',
       '0',
     ]);
@@ -109,7 +113,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
           creationTime: 10 as Protocol.Network.TimeSinceEpoch,
           length: 4,
           remainingBudget: 8.3,
-          bytesUsed: 2,
+          bytesUsed: 200,
         },
         resetBudgetHandlerSpy);
     renderElementIntoDOM(component);

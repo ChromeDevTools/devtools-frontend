@@ -65,6 +65,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
       creationTime: 100 as Protocol.Network.TimeSinceEpoch,
       length: 3,
       remainingBudget: 2.5,
+      bytesUsed: 30,
     } as unknown as Protocol.Storage.SharedStorageMetadata;
 
     const ENTRIES = [

@@ -156,24 +156,28 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     creationTime: 100 as Protocol.Network.TimeSinceEpoch,
     length: 3,
     remainingBudget: 2.5,
+    bytesUsed: 30,
   } as Protocol.Storage.SharedStorageMetadata;
 
   const METADATA_NO_ENTRIES = {
     creationTime: 100 as Protocol.Network.TimeSinceEpoch,
     length: 0,
     remainingBudget: 2.5,
+    bytesUsed: 0,
   } as Protocol.Storage.SharedStorageMetadata;
 
   const METADATA_2_ENTRIES = {
     creationTime: 100 as Protocol.Network.TimeSinceEpoch,
     length: 2,
     remainingBudget: 2.5,
+    bytesUsed: 20,
   } as Protocol.Storage.SharedStorageMetadata;
 
   const METADATA_4_ENTRIES = {
     creationTime: 100 as Protocol.Network.TimeSinceEpoch,
     length: 4,
     remainingBudget: 2.5,
+    bytesUsed: 38,
   } as Protocol.Storage.SharedStorageMetadata;
 
   const ENTRIES = [
@@ -315,6 +319,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       'Origin',
       'Creation Time',
       'Number of Entries',
+      'Number of Bytes Used',
       'Entropy Budget for Fenced Frames',
     ]);
 
@@ -323,6 +328,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       TEST_ORIGIN,
       (new Date(100 * 1e3)).toLocaleString(),
       '3',
+      '30',
       '2.5',
     ]);
 
@@ -362,6 +368,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       'Origin',
       'Creation Time',
       'Number of Entries',
+      'Number of Bytes Used',
       'Entropy Budget for Fenced Frames',
     ]);
 
@@ -369,6 +376,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(values, [
       TEST_ORIGIN,
       'Not yet created',
+      '0',
       '0',
       '0',
     ]);

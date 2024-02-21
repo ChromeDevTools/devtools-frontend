@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -108,7 +109,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/network/*",
     "../../entrypoints/*",
     "../../ui/components/request_link_icon/*",
     "../application/*",
@@ -131,7 +131,38 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/panels/network/*",
+    ":unittests",
     "../../entrypoints/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BlockedURLsPane.test.ts",
+    "NetworkDataGridNode.test.ts",
+    "NetworkItemView.test.ts",
+    "NetworkLogView.test.ts",
+    "NetworkOverview.test.ts",
+    "NetworkPanel.test.ts",
+    "NetworkSearchScope.test.ts",
+    "RequestCookiesView.test.ts",
+    "RequestPayloadView.test.ts",
+    "RequestPreviewView.test.ts",
+    "RequestResponseView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    ":meta",
+    "../../../test/unittests/front_end/helpers",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../models/text_utils:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/components/source_frame:bundle",
+    "./components:bundle",
   ]
 }

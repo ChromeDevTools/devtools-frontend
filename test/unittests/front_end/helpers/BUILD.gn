@@ -72,3 +72,11 @@ ts_library("helpers") {
     "../../../../inspector_overlay",
   ]
 }
+
+ts_library("recorder_helpers") {
+  testonly = true
+
+  sources = [ "RecorderHelpers.ts" ]
+
+  deps = [ "../../../../front_end/panels/recorder/models:bundle" ]
+}

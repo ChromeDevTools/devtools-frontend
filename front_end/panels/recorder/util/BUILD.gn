@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("util") {
   sources = [ "SharedObject.ts" ]
@@ -21,7 +21,15 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
+    ":*",
     "../*",
-    "../../../../test/unittests/front_end/panels/recorder/*",
   ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "SharedObject.test.ts" ]
+
+  deps = [ ":bundle" ]
 }

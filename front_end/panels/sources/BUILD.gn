@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
@@ -136,4 +137,36 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "BreakpointEditDialog.test.ts",
+    "CSSPlugin.test.ts",
+    "CoveragePlugin.test.ts",
+    "DebuggerPausedMessage.test.ts",
+    "DebuggerPlugin.test.ts",
+    "FilePathScoreFunction.test.ts",
+    "FilteredUISourceCodeListProvider.test.ts",
+    "NavigatorView.test.ts",
+    "OutlineQuickOpen.test.ts",
+    "ResourceOriginPlugin.test.ts",
+    "SourcesNavigator.test.ts",
+    "SourcesView.test.ts",
+    "TabbedEditorContainer.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/breakpoints:bundle",
+    "../../third_party/codemirror.next:bundle",
+    "../../ui/components/text_editor:bundle",
+    "../../ui/legacy/components/source_frame:bundle",
+  ]
 }

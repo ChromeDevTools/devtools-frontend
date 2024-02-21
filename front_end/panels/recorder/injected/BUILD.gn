@@ -3,8 +3,7 @@
 # found in the LICENSE file.
 
 import("../../../../scripts/build/ninja/copy.gni")
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
 

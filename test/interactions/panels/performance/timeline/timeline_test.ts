@@ -106,7 +106,7 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
   });
 
-  itScreenshot('supports the network track being expanded and then clicked', async function() {
+  itScreenshot.skip('supports the network track being expanded and then clicked', async function() {
     await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');

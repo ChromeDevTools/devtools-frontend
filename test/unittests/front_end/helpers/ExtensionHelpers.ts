@@ -13,11 +13,15 @@ interface ExtensionContext {
   extensionDescriptor: Extensions.ExtensionAPI.ExtensionDescriptor;
 }
 
+export function getExtensionOrigin() {
+  return window.location.origin;
+}
+
 export function describeWithDevtoolsExtension(
     title: string, extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor>,
     fn: (this: Mocha.Suite, context: ExtensionContext) => void) {
   const extensionDescriptor = {
-    startPage: `${window.location.origin}/blank.html`,
+    startPage: `${getExtensionOrigin()}/blank.html`,
     name: 'TestExtension',
     exposeExperimentalAPIs: true,
     allowFileAccess: false,
@@ -34,7 +38,7 @@ export function describeWithDevtoolsExtension(
 
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setInjectedScriptForOrigin')
         .callsFake((origin, _script) => {
-          if (origin === window.location.origin) {
+          if (origin === getExtensionOrigin()) {
             const chrome: Partial<Chrome.DevTools.Chrome> = {};
             (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
             self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => {}, 1, window);

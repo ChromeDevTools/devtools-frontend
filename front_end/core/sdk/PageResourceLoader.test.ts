@@ -50,6 +50,34 @@ describeWithLocale('PageResourceLoader', () => {
     loads.length = 0;
   });
 
+  it('registers extension loads', async () => {
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});
+
+    const initiator: SDK.PageResourceLoader.ExtensionInitiator = {
+      extensionId: '123',
+      initiatorUrl: 'www.test.com/main.wasm.dwp' as Platform.DevToolsPath.UrlString,
+      target: null,
+      frameId: null,
+    };
+    const extensionResource: SDK.PageResourceLoader.PageResource = {
+      url: 'main.wasm.dwp' as Platform.DevToolsPath.UrlString,
+      success: true,
+      initiator,
+      size: null,
+    };
+
+    loader.resourceLoadedThroughExtension(extensionResource);
+    assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 0, resources: 1});
+    assert.deepEqual(loader.getNumberOfResources(), {loading: 0, queued: 0, resources: 1});
+
+    const resources = Array.from(loader.getResourcesLoaded().values());
+
+    assert.lengthOf(resources, 1);
+    assert.isTrue(resources[0].success);
+    assert.deepEqual(resources[0].initiator, initiator);
+  });
+
   it('loads resources correctly', async () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});

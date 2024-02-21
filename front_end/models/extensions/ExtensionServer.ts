@@ -209,6 +209,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
+    this.registerHandler(PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
     window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
@@ -369,6 +370,26 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const {pluginName, mediaType, port, capabilities} = message;
     RecorderPluginManager.instance().addPlugin(
         new RecorderExtensionEndpoint(pluginName, port, capabilities, mediaType));
+    return this.status.OK();
+  }
+
+  private onReportResourceLoad(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.ReportResourceLoad) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ReportResourceLoad}`);
+    }
+    const {resourceUrl, extensionId, status} = message;
+    const url = resourceUrl as Platform.DevToolsPath.UrlString;
+    const initiator: SDK.PageResourceLoader.ExtensionInitiator =
+        {target: null, frameId: null, initiatorUrl: extensionId as Platform.DevToolsPath.UrlString, extensionId};
+
+    const pageResource: SDK.PageResourceLoader.PageResource = {
+      url,
+      initiator,
+      errorMessage: status.errorMessage,
+      success: status.success ?? null,
+      size: status.size ?? null,
+    };
+    SDK.PageResourceLoader.PageResourceLoader.instance().resourceLoadedThroughExtension(pageResource);
     return this.status.OK();
   }
 

@@ -89,6 +89,7 @@ export namespace PrivateAPI {
     RegisterRecorderExtensionPlugin = 'registerRecorderExtensionPlugin',
     CreateRecorderView = 'createRecorderView',
     ShowRecorderView = 'showRecorderView',
+    ReportResourceLoad = 'reportResourceLoad',
   }
 
   export const enum LanguageExtensionPluginCommands {
@@ -226,6 +227,12 @@ export namespace PrivateAPI {
     stopId: unknown,
   };
   type GetWasmOpRequest = {command: Commands.GetWasmOp, op: number, stopId: unknown};
+  type ReportResourceLoadRequest = {
+    command: Commands.ReportResourceLoad,
+    extensionId: string,
+    resourceUrl: string,
+    status: {success: boolean, errorMessage?: string, size?: number},
+  };
 
   export type ServerRequests = ShowRecorderViewRequest|CreateRecorderViewRequest|RegisterRecorderExtensionPluginRequest|
       RegisterLanguageExtensionPluginRequest|SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|
@@ -234,7 +241,7 @@ export namespace PrivateAPI {
       OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
       EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
       ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|
-      GetWasmGlobalRequest|GetWasmOpRequest;
+      GetWasmGlobalRequest|GetWasmOpRequest|ReportResourceLoadRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -927,6 +934,20 @@ self.injectedExtensionAPI = function(
           return new Promise(
               resolve => extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmOp, op, stopId}, resolve));
         },
+
+    reportResourceLoad: function(resourceUrl: string, status: {success: boolean, errorMessage?: string, size?: number}):
+        Promise<void> {
+          return new Promise(
+              resolve => extensionServer.sendRequest(
+                  {
+                    command: PrivateAPI.Commands.ReportResourceLoad,
+                    extensionId: window.location.origin,
+                    resourceUrl,
+                    status,
+                  },
+                  resolve));
+        },
+
   };
 
   function declareInterfaceClass<ImplT extends APIImpl.Callable>(implConstructor: ImplT): (

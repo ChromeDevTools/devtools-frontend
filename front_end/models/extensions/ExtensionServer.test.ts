@@ -16,7 +16,10 @@ import * as Workspace from '../workspace/workspace.js';
 
 const {assert} = chai;
 
-import {describeWithDevtoolsExtension} from '../../../test/unittests/front_end/helpers/ExtensionHelpers.js';
+import {
+  describeWithDevtoolsExtension,
+  getExtensionOrigin,
+} from '../../../test/unittests/front_end/helpers/ExtensionHelpers.js';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {createTarget, expectConsoleLogs} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
@@ -722,5 +725,33 @@ describeWithDevtoolsExtension('Wasm extension API', {}, context => {
     assert.isTrue(log.calledOnce);
     assert.strictEqual(result.code, 'E_BADARG');
     assert.strictEqual(result.details[0], 'op');
+  });
+});
+
+describeWithDevtoolsExtension('Language Extension API', {}, context => {
+  it('reports loaded resources', async () => {
+    const target = createTarget();
+    target.setInspectedURL('http://example.com' as Platform.DevToolsPath.UrlString);
+
+    const pageResourceLoader =
+        SDK.PageResourceLoader.PageResourceLoader.instance({forceNew: true, loadOverride: null, maxConcurrentLoads: 1});
+    const spy = sinon.spy(pageResourceLoader, 'resourceLoadedThroughExtension');
+    await context.chrome.devtools?.languageServices.reportResourceLoad('test.dwo', {success: true, size: 10});
+
+    assert.isTrue(spy.calledOnce);
+    assert.strictEqual(pageResourceLoader.getNumberOfResources().resources, 1);
+
+    const resource = spy.args[0][0];
+    const extensionId = getExtensionOrigin();
+    const expectedInitiator =
+        {target: null, frameId: null, initiatorUrl: extensionId as Platform.DevToolsPath.UrlString, extensionId};
+    const expectedResource = {
+      url: 'test.dwo' as Platform.DevToolsPath.UrlString,
+      initiator: expectedInitiator,
+      success: true,
+      size: 10,
+      errorMessage: undefined,
+    };
+    assert.deepEqual(resource, expectedResource);
   });
 });

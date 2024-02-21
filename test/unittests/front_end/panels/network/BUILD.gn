@@ -17,11 +17,17 @@ ts_library("network") {
     "RequestCookiesView_test.ts",
     "RequestPayloadView_test.ts",
     "RequestPreviewView_test.ts",
+    "RequestResponseView_test.ts",
   ]
 
   deps = [
+    "../../../../../front_end/core/platform:bundle",
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/generated:protocol",
     "../../../../../front_end/panels/network:bundle",
     "../../../../../front_end/panels/network:meta",
+    "../../../../../front_end/ui/legacy:bundle",
+    "../../../../../front_end/ui/legacy/components/source_frame:bundle",
     "../../helpers",
   ]
 }

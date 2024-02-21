@@ -162,6 +162,7 @@ ts_library("unittests") {
     "ServiceWorkerManager.test.ts",
     "SourceMap.test.ts",
     "SourceMapManager.test.ts",
+    "SourceMapScopes.test.ts",
     "StorageBucketsModel.test.ts",
     "StorageKeyManager.test.ts",
     "Target.test.ts",

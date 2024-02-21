@@ -128,3 +128,62 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
     return array.length - 1;
   }
 }
+
+export class OriginalScopeBuilder {
+  #encodedScope = '';
+  #lastLine = 0;
+
+  start(line: number, column: number, kind: SDK.SourceMapScopes.ScopeKind, name?: number, variables?: number[]): this {
+    if (this.#encodedScope !== '') {
+      this.#encodedScope += ',';
+    }
+
+    const lineDiff = line - this.#lastLine;
+    this.#lastLine = line;
+    const flags = (name !== undefined ? 0x1 : 0x0) | (variables !== undefined ? 0x2 : 0x0);
+
+    this.#encodedScope += encodeVlqList([lineDiff, column, this.#encodeKind(kind), flags]);
+
+    if (name !== undefined) {
+      this.#encodedScope += encodeVlq(name);
+    }
+    if (variables !== undefined) {
+      this.#encodedScope += encodeVlq(variables.length);
+      this.#encodedScope += encodeVlqList(variables);
+    }
+
+    return this;
+  }
+
+  end(line: number, column: number): this {
+    if (this.#encodedScope !== '') {
+      this.#encodedScope += ',';
+    }
+
+    const lineDiff = line - this.#lastLine;
+    this.#lastLine = line;
+    this.#encodedScope += encodeVlqList([lineDiff, column]);
+
+    return this;
+  }
+
+  build(): string {
+    const result = this.#encodedScope;
+    this.#lastLine = 0;
+    this.#encodedScope = '';
+    return result;
+  }
+
+  #encodeKind(kind: SDK.SourceMapScopes.ScopeKind): number {
+    switch (kind) {
+      case 'global':
+        return 0x01;
+      case 'function':
+        return 0x02;
+      case 'class':
+        return 0x03;
+      case 'block':
+        return 0x04;
+    }
+  }
+}

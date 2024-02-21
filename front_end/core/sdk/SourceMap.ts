@@ -377,7 +377,12 @@ export class SourceMap {
   #ensureMappingsProcessed(): void {
     if (this.#mappingsInternal === null) {
       this.#mappingsInternal = [];
-      this.eachSection(this.parseMap.bind(this));
+      try {
+        this.eachSection(this.parseMap.bind(this));
+      } catch (e) {
+        console.error('Failed to parse source map', e);
+        this.#mappingsInternal = [];
+      }
 
       // As per spec, mappings are not necessarily sorted.
       this.mappings().sort(SourceMapEntry.compare);
@@ -816,8 +821,15 @@ export class StringCharIterator {
     let result = 0;
     let shift = 0;
     let digit: number = VLQ_CONTINUATION_MASK;
-    while (digit & VLQ_CONTINUATION_MASK && this.hasNext()) {
-      digit = Common.Base64.BASE64_CODES[this.nextCharCode()];
+    while (digit & VLQ_CONTINUATION_MASK) {
+      if (!this.hasNext()) {
+        throw new Error('Unexpected end of input while decodling VLQ number!');
+      }
+      const charCode = this.nextCharCode();
+      digit = Common.Base64.BASE64_CODES[charCode];
+      if (charCode !== 65 /* 'A' */ && digit === 0) {
+        throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
+      }
       result += (digit & VLQ_BASE_MASK) << shift;
       shift += VLQ_BASE_SHIFT;
     }

@@ -410,7 +410,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const cell = document.createElement('th');
-    cell.setAttribute('jslog', `${VisualLogging.tableHeader().track({click: column.sortable}).context(columnId)}`);
+    cell.setAttribute(
+        'jslog',
+        `${
+            VisualLogging.tableHeader()
+                .track({click: column.sortable})
+                .context(Platform.StringUtilities.toKebabCase(columnId))}`);
     cell.className = columnId + '-column';
     nodeToColumnIdMap.set(cell, columnId);
     this.dataTableHeaders[columnId] = cell;
@@ -1340,7 +1345,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         const headerCell = this.dataTableHeaders[column.id];
         sortMenu.defaultSection().appendItem(
             (column.title as string), this.sortByColumnHeaderCell.bind(this, headerCell), {
-              jslogContext: column.id,
+              jslogContext: Platform.StringUtilities.toKebabCase(column.id),
             });
       }
     }
@@ -1928,7 +1933,7 @@ export class DataGridNode<T> {
         `${
             VisualLogging.tableCell()
                 .track({click: true, keydown: Boolean(this.dataGrid?.columns[columnId].editable), resize: true})
-                .context(columnId)}`);
+                .context(Platform.StringUtilities.toKebabCase(columnId))}`);
     nodeToColumnIdMap.set(cell, columnId);
 
     if (this.dataGrid) {

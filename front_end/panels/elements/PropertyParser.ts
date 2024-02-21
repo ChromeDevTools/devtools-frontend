@@ -6,6 +6,8 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const cssParser = CodeMirror.css.cssLanguage.parser;
 
@@ -661,6 +663,36 @@ export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
     // Only animation-name is allowed to specify more than one name. We don't verify this for the other properties since
     // they would be reported as !parsedOk from the backend.
     return this.createMatch(text, propertyName);
+  }
+}
+
+export abstract class BezierMatch implements Match {
+  readonly type: string = 'bezier';
+  constructor(readonly text: string) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class BezierMatcher extends MatcherBase<typeof BezierMatch> {
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isBezierAwareProperty(propertyName);
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    const text = matching.ast.text(node);
+
+    const isCubicBezierKeyword = node.name === 'ValueName' && UI.Geometry.CubicBezier.KeywordValues.has(text);
+    const isCubicBezierOrLinearFunction = node.name === 'CallExpression' &&
+        ['cubic-bezier', 'linear'].includes(matching.ast.text(node.getChild('Callee')));
+
+    if (!isCubicBezierKeyword && !isCubicBezierOrLinearFunction) {
+      return null;
+    }
+
+    if (!InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text)) {
+      return null;
+    }
+    return this.createMatch(text);
   }
 }
 

@@ -267,16 +267,6 @@ describe('StylesSidebarPane', () => {
       const node = renderer.renderValue();
       assert.deepEqual(node.textContent, 'rotate(calc(MATCH + MATCH))', trace.toString());
     });
-
-    it('parses cubic bezier correctly', () => {
-      for (const bezier of ['linear', 'ease', 'cubic-bezier(.25 .25 0 0)']) {
-        const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-            null, null, 'transition', `display 1s ${bezier} 1s`);
-        renderer.setBezierHandler(() => document.createTextNode('MATCH'));
-        const node = renderer.renderValue();
-        assert.deepEqual(node.textContent, 'display 1s MATCH 1s', trace.toString());
-      }
-    });
   });
 
   describe('IdleCallbackManager', () => {

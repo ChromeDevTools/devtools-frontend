@@ -29,6 +29,8 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {
   AngleMatch,
   AngleMatcher,
+  BezierMatch,
+  BezierMatcher,
   type BottomUpTreeMatching,
   children,
   ColorMatch,
@@ -553,6 +555,36 @@ export class LinkableNameRenderer extends LinkableNameMatch {
   }
 }
 
+export class BezierRenderer extends BezierMatch {
+  readonly #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement, text: string) {
+    super(text);
+    this.#treeElement = treeElement;
+  }
+
+  override render(): Node[] {
+    return [this.renderSwatch()];
+  }
+
+  renderSwatch(): Node {
+    if (!this.#treeElement.editable()) {
+      return document.createTextNode(this.text);
+    }
+    const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
+    const swatch = InlineEditor.Swatches.BezierSwatch.create();
+    swatch.iconElement().addEventListener('click', () => {
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationTiming);
+    });
+    swatch.setBezierText(this.text);
+    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch});
+    return swatch;
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): BezierMatcher {
+    return new BezierMatcher(text => new BezierRenderer(treeElement, text));
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -701,7 +733,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           contentChild.appendChild(document.createTextNode(part.value));
           break;
         case InlineEditor.CSSAnimationModel.PartType.EasingFunction:
-          contentChild.appendChild(this.processBezier(part.value));
+          contentChild.appendChild(
+              this.editable() && InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(part.value) ?
+                  new BezierRenderer(this, part.value).renderSwatch() :
+                  document.createTextNode(part.value));
           break;
         case InlineEditor.CSSAnimationModel.PartType.AnimationName:
           contentChild.appendChild(
@@ -807,20 +842,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return '';
     }
     return this.nameElement.textContent + ': ' + this.valueElement.textContent;
-  }
-
-  private processBezier(text: string): Node {
-    if (!this.editable() || !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text)) {
-      return document.createTextNode(text);
-    }
-    const swatchPopoverHelper = this.parentPaneInternal.swatchPopoverHelper();
-    const swatch = InlineEditor.Swatches.BezierSwatch.create();
-    swatch.iconElement().addEventListener('click', () => {
-      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationTiming);
-    });
-    swatch.setBezierText(text);
-    new BezierPopoverIcon({treeElement: this, swatchPopoverHelper, swatch});
-    return swatch;
   }
 
   private processFont(text: string): Node {
@@ -1128,10 +1149,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           ColorMixRenderer.matcher(this.parentPaneInternal),
           AngleRenderer.matcher(this),
           LinkableNameRenderer.matcher(this),
+          BezierRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
-      propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));

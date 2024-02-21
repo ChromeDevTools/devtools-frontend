@@ -659,4 +659,23 @@ describe('PropertyParser', () => {
     assert.deepStrictEqual(match('font-palette', 'first'), ['first']);
     assert.deepStrictEqual(match('position-fallback', 'first'), ['first']);
   });
+
+  it('parses easing functions properly', () => {
+    for (const succeed
+             of ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'linear(0 0%, 1 100%)',
+                 'cubic-bezier(0.3, 0.3, 0.3, 0.3)']) {
+      const {ast, match, text} = matchSingleValue(
+          'animation-timing-function', succeed, Elements.PropertyParser.BezierMatch,
+          new Elements.PropertyParser.BezierMatcher(nilRenderer(Elements.PropertyParser.BezierMatch)));
+      Platform.assertNotNullOrUndefined(ast, succeed);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.text, succeed);
+    }
+
+    const {ast, match, text} = matchSingleValue(
+        'border', 'ease-in', Elements.PropertyParser.BezierMatch,
+        new Elements.PropertyParser.BezierMatcher(nilRenderer(Elements.PropertyParser.BezierMatch)));
+    Platform.assertNotNullOrUndefined(ast, 'border');
+    assert.isNull(match, text);
+  });
 });

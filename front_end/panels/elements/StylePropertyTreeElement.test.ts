@@ -23,7 +23,6 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
   let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
   let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;
   let mockMatchedStyles: sinon.SinonStubbedInstance<SDK.CSSMatchedStyles.CSSMatchedStyles>;
-  let mockCssProperty: sinon.SinonStubbedInstance<SDK.CSSProperty.CSSProperty>;
 
   beforeEach(async () => {
     stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
@@ -31,7 +30,6 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     mockStylePropertiesSection = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
     mockCssStyleDeclaration = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     mockMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
-    mockCssProperty = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
     mockMatchedStyles.keyframes.returns([]);
     mockMatchedStyles.computeSingleVariableValue.callsFake((_, param) => {
       const mockVariableMap: Record<string, string> = {
@@ -67,27 +65,30 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     mockCssStyleDeclaration.range = new TextUtils.TextRange.TextRange(0, 0, 10, 10);
   });
 
+  function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
+    const property = new SDK.CSSProperty.CSSProperty(
+        mockCssStyleDeclaration, 0, name, value, true, false, true, false, '', undefined, longhandProperties);
+    return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+      stylesPane: stylesSidebarPane,
+      section: mockStylePropertiesSection,
+      matchedStyles: mockMatchedStyles,
+      property,
+      isShorthand: longhandProperties.length > 0,
+      inherited: false,
+      overloaded: false,
+      newProperty: true,
+    });
+  }
+
   describe('updateTitle', () => {
     it('timing swatch, shadow swatch and length swatch are not shown for longhands expanded inside shorthands',
        async () => {
-         const cssAnimationShorthand = new SDK.CSSProperty.CSSProperty(
-             mockCssStyleDeclaration, 0, '', '', true, false, true, false, '', undefined, [
-               {name: 'animation-timing-function', value: 'linear'},
-               {name: 'text-shadow', value: '2px 2px #ff0000'},
-               {name: 'box-shadow', value: '2px 2px #ff0000'},
-               {name: 'margin-top', value: '10px'},
-             ]);
-         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-           stylesPane: stylesSidebarPane,
-           section: mockStylePropertiesSection,
-           matchedStyles: mockMatchedStyles,
-           property: cssAnimationShorthand,
-           isShorthand: true,
-           inherited: false,
-           overloaded: false,
-           newProperty: true,
-         });
-
+         const stylePropertyTreeElement = getTreeElement('', '', [
+           {name: 'animation-timing-function', value: 'linear'},
+           {name: 'text-shadow', value: '2px 2px #ff0000'},
+           {name: 'box-shadow', value: '2px 2px #ff0000'},
+           {name: 'margin-top', value: '10px'},
+         ]);
          await stylePropertyTreeElement.onpopulate();
 
          stylePropertyTreeElement.updateTitle();
@@ -108,20 +109,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
     describe('color-mix swatch', () => {
       it('should show color mix swatch when color-mix is used with a color', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, red, blue)', true, false, true, false, '',
-            undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, blue)');
         stylePropertyTreeElement.updateTitle();
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -133,20 +121,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       });
 
       it('should show color mix swatch when color-mix is used with a known variable as color', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, var(--a), var(--b))', true, false, true, false, '',
-            undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, var(--a), var(--b))');
         stylePropertyTreeElement.updateTitle();
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -158,20 +133,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       });
 
       it('should not show color mix swatch when color-mix is used with an unknown variable as color', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, var(--unknown-a), var(--b))', true, false, true,
-            false, '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, var(--unknown-a), var(--b))');
         stylePropertyTreeElement.updateTitle();
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -179,20 +141,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       });
 
       it('should show color mix swatch when color-mix is used with a known variable in interpolation method', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--space), var(--a), var(--b))', true, false,
-            true, false, '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in lch var(--space), var(--a), var(--b))');
         stylePropertyTreeElement.updateTitle();
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -202,20 +151,8 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
       it('should show color mix swatch when color-mix is used with an known variable in interpolation method even if it is not a valid method',
          () => {
-           const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-               mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--garbage-space), var(--a), var(--b))', true,
-               false, true, false, '', undefined);
-           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-             stylesPane: stylesSidebarPane,
-             section: mockStylePropertiesSection,
-             matchedStyles: mockMatchedStyles,
-             property: cssPropertyWithColorMix,
-             isShorthand: false,
-             inherited: false,
-             overloaded: false,
-             newProperty: true,
-           });
-
+           const stylePropertyTreeElement =
+               getTreeElement('color', 'color-mix(in lch var(--garbage-space), var(--a), var(--b))');
            stylePropertyTreeElement.updateTitle();
 
            const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -225,19 +162,8 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
       it('should not show color mix swatch when color-mix is used with an unknown variable in interpolation method',
          () => {
-           const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-               mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--not-existing-space), var(--a), var(--b))',
-               true, false, true, false, '', undefined);
-           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-             stylesPane: stylesSidebarPane,
-             section: mockStylePropertiesSection,
-             matchedStyles: mockMatchedStyles,
-             property: cssPropertyWithColorMix,
-             isShorthand: false,
-             inherited: false,
-             overloaded: false,
-             newProperty: true,
-           });
+           const stylePropertyTreeElement =
+               getTreeElement('color', 'color-mix(in lch var(--not-existing-space), var(--a), var(--b))');
 
            stylePropertyTreeElement.updateTitle();
 
@@ -338,19 +264,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
     describe('animation-name', () => {
       it('should link-swatch be rendered for animation-name declaration', () => {
-        const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe', true, false, true, false, '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssAnimationNameProperty,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('animation-name', 'first-keyframe');
         stylePropertyTreeElement.updateTitle();
 
         const animationNameSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch');
@@ -359,20 +273,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
       it('should two link-swatches be rendered for animation-name declaration that contains two keyframe references',
          () => {
-           const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
-               mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe, second-keyframe', true, false, true,
-               false, '', undefined);
-           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-             stylesPane: stylesSidebarPane,
-             section: mockStylePropertiesSection,
-             matchedStyles: mockMatchedStyles,
-             property: cssAnimationNameProperty,
-             isShorthand: false,
-             inherited: false,
-             overloaded: false,
-             newProperty: true,
-           });
-
+           const stylePropertyTreeElement = getTreeElement('animation-name', 'first-keyframe, second-keyframe');
            stylePropertyTreeElement.updateTitle();
 
            const animationNameSwatches =
@@ -383,19 +284,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
   });
 
   it('applies the new style when the color format is changed', async () => {
-    const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-        mockCssStyleDeclaration, 0, 'color', 'color(srgb .5 .5 1)', true, false, true, false, '', undefined);
-    const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-      stylesPane: stylesSidebarPane,
-      section: mockStylePropertiesSection,
-      matchedStyles: mockMatchedStyles,
-      property: cssPropertyWithColorMix,
-      isShorthand: false,
-      inherited: false,
-      overloaded: false,
-      newProperty: true,
-    });
-
+    const stylePropertyTreeElement = getTreeElement('color', 'color(srgb .5 .5 1)');
     const applyStyleTextStub = sinon.stub(stylePropertyTreeElement, 'applyStyleText');
     // Make sure we don't leave a dangling promise behind:
     const returnValue = (async () => {})();
@@ -434,17 +323,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
         const sectionItemLabels = sectionItems.map(item => item.buildDescriptor().label);
         assert.deepEqual(sectionItemLabels, expectedSectionItemLabels);
       };
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: mockCssProperty,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('', '');
       const event = new CustomEvent('contextmenu');
       const contextMenu = stylePropertyTreeElement.createCopyContextMenu(event);
 
@@ -460,11 +339,6 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
   });
 
   describe('CSS hints', () => {
-    let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
-    beforeEach(async () => {
-      stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
-    });
-
     it('should create a hint for inline elements', () => {
       sinon.stub(stylesSidebarPane, 'node').returns({
         localName() {
@@ -474,18 +348,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           return false;
         },
       } as SDK.DOMModel.DOMNode);
-      const cssPropertyWidth = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWidth,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
+      const stylePropertyTreeElement = getTreeElement('width', '100px');
       stylePropertyTreeElement.setComputedStyles(new Map([
         ['width', '100px'],
         ['display', 'inline'],
@@ -505,18 +368,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           return true;
         },
       } as SDK.DOMModel.DOMNode);
-      const cssPropertyWidth = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWidth,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
+      const stylePropertyTreeElement = getTreeElement('width', '100px');
       stylePropertyTreeElement.setComputedStyles(new Map([
         ['width', '100px'],
         ['display', 'inline'],
@@ -530,8 +382,6 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
   describe('custom-properties', () => {
     it('linkifies var functions to declarations', async () => {
-      const cssCustomPropertyUse = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'prop', 'var(--prop)', true, false, true, false, '', undefined);
       const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
           mockCssStyleDeclaration, 0, '--prop', 'value', true, false, true, false, '', undefined);
       mockMatchedStyles.computeCSSVariable.callsFake(
@@ -540,17 +390,8 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
               null);
       const renderValueSpy =
           sinon.spy(Elements.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssCustomPropertyUse,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
 
+      const stylePropertyTreeElement = getTreeElement('prop', 'var(--prop)');
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch =
@@ -564,20 +405,8 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('linkifies property definition to registrations', async () => {
-      const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, '--prop', 'value', true, false, true, false, '', undefined);
       const addElementPopoverHook = sinon.stub(stylesSidebarPane, 'addPopover');
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssCustomPropertyDef,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('--prop', 'value');
       stylePropertyTreeElement.updateTitle();
 
       assert.isTrue(addElementPopoverHook.calledOnce);
@@ -597,22 +426,11 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('linkifies var functions to initial-value registrations', async () => {
-      const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'prop', 'var(--prop)', true, false, true, false, '', undefined);
       mockMatchedStyles.computeCSSVariable.returns({value: 'computedvalue', declaration: null});
       const renderValueSpy =
           sinon.spy(Elements.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssCustomPropertyDef,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
 
+      const stylePropertyTreeElement = getTreeElement('prop', 'var(--prop)');
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch =
@@ -629,19 +447,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
   describe('CSSVarSwatch', () => {
     it('should render a CSSVarSwatch for variable usage without fallback', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'var(--a)', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--a)');
       stylePropertyTreeElement.updateTitle();
       assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -657,19 +463,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('should render a CSSVarSwatch for variable usage with fallback', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'var(--not-existing, red)', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--not-existing, red)');
       stylePropertyTreeElement.updateTitle();
       assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -685,20 +479,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('should render a CSSVarSwatch inside CSSVarSwatch for variable usage with another variable fallback', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'var(--not-existing, var(--a))', true, false, true, false, '',
-          undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--not-existing, var(--a))');
       stylePropertyTreeElement.updateTitle();
       assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -716,20 +497,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('should render a CSSVarSwatch inside CSSVarSwatch for variable usage with calc expression as fallback', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'var(--not-existing, calc(15px + 20px))', true, false, true, false, '',
-          undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--not-existing, calc(15px + 20px))');
       stylePropertyTreeElement.updateTitle();
       assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -745,20 +513,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
     it('should render a CSSVarSwatch inside CSSVarSwatch for variable usage with color and also a color swatch', () => {
       for (const varName of ['--a', '--not-existing']) {
-        const cssProperty = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', `var(${varName}, var(--blue))`, true, false, true, false, '',
-            undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssProperty,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement = getTreeElement('color', `var(${varName}, var(--blue))`);
         stylePropertyTreeElement.updateTitle();
         assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -778,19 +533,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('should render CSSVarSwatches for multiple var() usages in the same property declaration', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, '--shadow', 'var(--a) var(--b)', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('--shadow', 'var(--a) var(--b)');
       stylePropertyTreeElement.updateTitle();
 
       const cssVarSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch');
@@ -798,19 +541,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('should render a CSSVarSwatch for var() with spaces', () => {
-      const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'var( --test    )', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property: cssPropertyWithColorMix,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'var( --test    )');
       stylePropertyTreeElement.updateTitle();
       assertNotNullOrUndefined(stylePropertyTreeElement.valueElement);
 
@@ -925,23 +656,11 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
 
   describe('ColorRenderer', () => {
     it('correctly renders children of the color swatch', () => {
-      const property = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'rgb(255, var(--zero), var(--zero))', true, false, true, false, '',
-          undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const value = 'rgb(255, var(--zero), var(--zero))';
+      const stylePropertyTreeElement = getTreeElement('color', value);
       stylePropertyTreeElement.updateTitle();
 
-      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, property.value);
+      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, value);
       const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assertNotNullOrUndefined(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HEX), '#ff0000');
@@ -952,19 +671,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     });
 
     it('connects correctly with an inner angle swatch', () => {
-      const property = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, 'color', 'hsl(120deg, 50%, 25%))', true, false, true, false, '', undefined);
-      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-        stylesPane: stylesSidebarPane,
-        section: mockStylePropertiesSection,
-        matchedStyles: mockMatchedStyles,
-        property,
-        isShorthand: false,
-        inherited: false,
-        overloaded: false,
-        newProperty: true,
-      });
-
+      const stylePropertyTreeElement = getTreeElement('color', 'hsl(120deg, 50%, 25%)');
       stylePropertyTreeElement.updateTitle();
       const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assertNotNullOrUndefined(colorSwatch);
@@ -974,6 +681,14 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       assertNotNullOrUndefined(angleSwatch);
       angleSwatch.updateAngle({value: 130, unit: InlineEditor.CSSAngleUtils.AngleUnit.Deg});
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HSL), 'hsl(130deg 50% 25%)');
+    });
+  });
+
+  describe('BezierRenderer', () => {
+    it('renders the easing function swatch', () => {
+      const stylePropertyTreeElement = getTreeElement('animation-timing-function', 'ease-out');
+      stylePropertyTreeElement.updateTitle();
+      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild, InlineEditor.Swatches.BezierSwatch);
     });
   });
 });

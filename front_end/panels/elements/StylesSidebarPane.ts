@@ -238,8 +238,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly imagePreviewPopover: ImagePreviewPopover;
   #webCustomData?: WebCustomData;
   #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
-  #evaluatedCSSVarPopoverHelper: UI.PopoverHelper.PopoverHelper;
-  #elementPopoverHooks = new WeakMap<Node, () => HTMLElement | undefined>();
+  #genericPopoverHelper: UI.PopoverHelper.PopoverHelper;
+  #elementPopoverHooks = new WeakMap<Node, {contents: () => HTMLElement | undefined, jslogContext?: string}>();
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
@@ -394,16 +394,18 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.#hintPopoverHelper.setTimeout(300);
     this.#hintPopoverHelper.setHasPadding(true);
 
-    // Bind cssVarSwatch Popover.
-    this.#evaluatedCSSVarPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
+    this.#genericPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
       for (let e = event.composedPath().length - 1; e >= 0; --e) {
         const element = event.composedPath()[e] as Element;
         const hook = this.#elementPopoverHooks.get(element);
-        const contents = hook ? hook() : undefined;
+        const contents = hook ? hook.contents() : undefined;
         if (contents) {
           return {
             box: element.boxInWindow(),
             show: async (popover: UI.GlassPane.GlassPane) => {
+              popover.setJsLog(`${
+                  VisualLogging.popover(`${hook?.jslogContext ?? 'elements.generic-sidebar-popover'}`)
+                      .parent('popoverParent')}`);
               popover.contentElement.classList.add('borderless-popover');
               popover.contentElement.appendChild(contents);
               return true;
@@ -412,13 +414,13 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         }
       }
       return null;
-    }, 'elements.css-var');
-    this.#evaluatedCSSVarPopoverHelper.setDisableOnClick(true);
-    this.#evaluatedCSSVarPopoverHelper.setTimeout(500, 200);
+    }, 'elements.generic-sidebar-popover');
+    this.#genericPopoverHelper.setDisableOnClick(true);
+    this.#genericPopoverHelper.setTimeout(500, 200);
   }
 
-  addPopover(element: Node, contents: () => HTMLElement | undefined): void {
-    this.#elementPopoverHooks.set(element, contents);
+  addPopover(element: Node, popover: {contents: () => HTMLElement | undefined, jslogContext?: string}): void {
+    this.#elementPopoverHooks.set(element, popover);
   }
 
   private onScroll(_event: Event): void {
@@ -442,7 +444,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (title === null) {
       UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
-      this.addPopover(exclamationElement, () => title);
+      this.addPopover(exclamationElement, {contents: () => title});
     }
     const invalidString =
         i18nString(UIStrings.invalidString, {PH1: invalidMessage, PH2: property.name, PH3: property.value});
@@ -1333,7 +1335,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     this.#hintPopoverHelper?.hidePopover();
-    this.#evaluatedCSSVarPopoverHelper?.hidePopover();
+    this.#genericPopoverHelper?.hidePopover();
   }
 
   getSectionBlockByName(name: string): SectionBlock|undefined {

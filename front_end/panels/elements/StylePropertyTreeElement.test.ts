@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 import * as Common from '../../core/common/common.js';
@@ -243,6 +244,96 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
            const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
            assert.isNull(colorMixSwatch);
          });
+
+      it('shows a popover with it\'s computed color as RGB if possible', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, red 50%, yellow)', true, false, true, false, '',
+            undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+          stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
+          matchedStyles: mockMatchedStyles,
+          property: cssPropertyWithColorMix,
+          isShorthand: false,
+          inherited: false,
+          overloaded: false,
+          newProperty: true,
+        });
+
+        const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
+        stylePropertyTreeElement.updateTitle();
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assertNotNullOrUndefined(colorMixSwatch);
+        renderElementIntoDOM(colorMixSwatch);
+
+        assert.isTrue(addPopoverSpy.calledOnce);
+        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch.icon);
+        assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, '#ff8000');
+      });
+
+      it('shows a popover with it\'s computed color as wide gamut if necessary', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, oklch(.5 .5 .5) 50%, yellow)', true, false, true,
+            false, '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+          stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
+          matchedStyles: mockMatchedStyles,
+          property: cssPropertyWithColorMix,
+          isShorthand: false,
+          inherited: false,
+          overloaded: false,
+          newProperty: true,
+        });
+
+        const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
+        stylePropertyTreeElement.updateTitle();
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assertNotNullOrUndefined(colorMixSwatch);
+        renderElementIntoDOM(colorMixSwatch);
+
+        assert.isTrue(addPopoverSpy.calledOnce);
+        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch.icon);
+        assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, 'color(srgb 1 0.24 0.17)');
+      });
+
+      it('propagates updates to outer color-mixes', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, color-mix(in oklch, red, green), blue)', true,
+            false, true, false, '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+          stylesPane: stylesSidebarPane,
+          section: mockStylePropertiesSection,
+          matchedStyles: mockMatchedStyles,
+          property: cssPropertyWithColorMix,
+          isShorthand: false,
+          inherited: false,
+          overloaded: false,
+          newProperty: true,
+        });
+
+        stylePropertyTreeElement.updateTitle();
+
+        const outerColorMix = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assertNotNullOrUndefined(outerColorMix);
+        const handler = sinon.fake();
+        outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.Events.ColorChanged, handler);
+        const innerColorMix = outerColorMix.querySelector('devtools-color-mix-swatch');
+        assertNotNullOrUndefined(innerColorMix);
+        assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
+        assert.strictEqual(innerColorMix.getText(), 'color-mix(in oklch, red, green)');
+        innerColorMix.setFirstColor('blue');
+        assert.deepStrictEqual(
+            handler.args[0][0].data, {text: 'color-mix(in srgb, color-mix(in oklch, blue, green), blue)'});
+        assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, blue, green), blue)');
+
+        // setFirstColor does not actually update the rendered color swatches or the textContent, which is why the first
+        // color is still red here.
+        innerColorMix.querySelector('devtools-color-swatch')?.setFormat(Common.Color.Format.HEX);
+        assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, #ff0000, green), blue)');
+        assert.deepStrictEqual(
+            handler.args[1][0].data, {text: 'color-mix(in srgb, color-mix(in oklch, #ff0000, green), blue)'});
+      });
     });
 
     describe('animation-name', () => {
@@ -494,7 +585,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       const registration = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSRegisteredProperty);
       mockMatchedStyles.getRegisteredProperty.callsFake(name => name === '--prop' ? registration : undefined);
       mockMatchedStyles.computeCSSVariable.returns({value: 'computedvalue', declaration: null});
-      const popoverContents = addElementPopoverHook.args[0][1]();
+      const popoverContents = addElementPopoverHook.args[0][1].contents();
       assert.isTrue(popoverContents instanceof ElementsComponents.CSSVariableValueView.CSSVariableValueView);
       const {details} = popoverContents as ElementsComponents.CSSVariableValueView.CSSVariableValueView;
       assertNotNullOrUndefined(details);

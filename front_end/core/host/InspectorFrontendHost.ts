@@ -188,6 +188,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     window.open(url, '_blank');
   }
 
+  openSearchResultsInNewTab(query: string): void {
+    Common.Console.Console.instance().error(
+        'Search is not enabled in hosted mode. Please inspect using chrome://inspect');
+  }
+
   showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
     Common.Console.Console.instance().error(
         'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');

@@ -678,6 +678,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param {string} query
+   */
+  openSearchResultsInNewTab(query) {
+    DevToolsAPI.sendMessageToEmbedder('openSearchResultsInNewTab', [query], null);
+  }
+
+  /**
+   * @override
    * @param {string} fileSystemPath
    */
   showItemInFolder(fileSystemPath) {

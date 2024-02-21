@@ -256,6 +256,8 @@ export interface InspectorFrontendHostAPI {
 
   openInNewTab(url: Platform.DevToolsPath.UrlString): void;
 
+  openSearchResultsInNewTab(query: string): void;
+
   showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void;
 
   removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void;

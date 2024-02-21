@@ -760,7 +760,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     menuItem.setShortcut(createShortcut('X', modifier));
 
     // Place it here so that all "Copy"-ing items stick together.
-    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy));
+    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
     const section = copyMenu.section();
     if (!isShadowRoot) {
       menuItem = section.appendItem(

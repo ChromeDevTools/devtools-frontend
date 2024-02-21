@@ -49,7 +49,7 @@ export class Item {
   customElement?: Element;
   private shortcut?: string;
   #tooltip: Common.UIString.LocalizedString|undefined;
-  #jslogContext: string|undefined;
+  protected jslogContext: string|undefined;
 
   constructor(
       contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string, disabled?: boolean,
@@ -64,7 +64,7 @@ export class Item {
     if (type === 'item' || type === 'checkbox') {
       this.idInternal = contextMenu ? contextMenu.nextId() : 0;
     }
-    this.#jslogContext = jslogContext;
+    this.jslogContext = jslogContext;
   }
 
   id(): number {
@@ -97,7 +97,7 @@ export class Item {
           checked: undefined,
           subItems: undefined,
           tooltip: this.#tooltip,
-          jslogContext: this.#jslogContext,
+          jslogContext: this.jslogContext,
         };
         if (this.customElement) {
           result.element = this.customElement;
@@ -126,7 +126,7 @@ export class Item {
           enabled: !this.disabled,
           subItems: undefined,
           tooltip: this.#tooltip,
-          jslogContext: this.#jslogContext,
+          jslogContext: this.jslogContext,
         };
         if (this.customElement) {
           result.element = this.customElement;
@@ -301,6 +301,7 @@ export class SubMenu extends Item {
       subItems: [],
       id: undefined,
       checked: undefined,
+      jslogContext: this.jslogContext,
     };
 
     const nonEmptySections = this.sectionList.filter(section => Boolean(section.items.length));

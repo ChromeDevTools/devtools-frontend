@@ -15,7 +15,7 @@ import {StubIssue} from '../../helpers/StubIssue.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('AggregatedIssue', async () => {
+describeWithEnvironment('AggregatedIssue', () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
@@ -51,7 +51,7 @@ function createModel() {
   return model;
 }
 
-describeWithMockConnection('IssueAggregator', async () => {
+describeWithMockConnection('IssueAggregator', () => {
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
@@ -159,7 +159,7 @@ describeWithMockConnection('IssueAggregator', async () => {
   });
 });
 
-describeWithMockConnection('IssueAggregator', async () => {
+describeWithMockConnection('IssueAggregator', () => {
   it('aggregates heavy ad issues correctly', () => {
     const model = createModel();
     const details1 = {
@@ -193,7 +193,7 @@ describeWithMockConnection('IssueAggregator', async () => {
 
   const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 
-  describe('IssueAggregator', async () => {
+  describe('IssueAggregator', () => {
     it('aggregates affected locations correctly', () => {
       const model = createModel();
       const issue1 = StubIssue.createFromAffectedLocations([{url: 'foo', lineNumber: 1, columnNumber: 1}]);

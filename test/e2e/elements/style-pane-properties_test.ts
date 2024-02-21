@@ -55,7 +55,7 @@ const deletePropertyByBackspace = async (selector: string, root?: puppeteer.Elem
   await waitFor('.tree-outline .child-editing', root);
 };
 
-describe('The Styles pane', async () => {
+describe('The Styles pane', () => {
   it(
       'can display the CSS properties of the selected element', async () => {
         await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html');

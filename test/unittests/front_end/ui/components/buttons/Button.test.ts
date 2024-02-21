@@ -10,7 +10,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-describe('Button', async () => {
+describe('Button', () => {
   const iconUrl = new URL('../../../../../../front_end/Images/file-image.svg', import.meta.url).toString();
 
   async function renderButton(

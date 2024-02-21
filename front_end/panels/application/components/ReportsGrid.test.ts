@@ -46,7 +46,7 @@ const getHeaderText = (cell: HTMLTableCellElement) => {
   return ret;
 };
 
-describeWithEnvironment('ReportsGrid', async () => {
+describeWithEnvironment('ReportsGrid', () => {
   it('displays placeholder text if no data', async () => {
     const component = await renderReportsGrid();
     assertShadowRoot(component.shadowRoot);

@@ -9,7 +9,7 @@ import * as ElementsComponents from './components.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('CSSPropertyDocsView', async () => {
+describeWithEnvironment('CSSPropertyDocsView', () => {
   it('renders every section', async () => {
     const cssProperty = {
       'name': 'display',

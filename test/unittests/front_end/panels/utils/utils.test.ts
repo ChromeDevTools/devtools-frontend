@@ -7,7 +7,7 @@ import * as Diff from '../../../../../front_end/third_party/diff/diff.js';
 
 const {assert} = chai;
 
-describe('panels/utils', async () => {
+describe('panels/utils', () => {
   it('formats CSS changes from diff arrays', async () => {
     const original = `
       .container {

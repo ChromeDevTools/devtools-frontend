@@ -10,7 +10,7 @@ import * as ElementsComponents from './components.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('CSSHintDetailsView', async () => {
+describeWithEnvironment('CSSHintDetailsView', () => {
   it('renders every section', async () => {
     const hintMessage = new Elements.CSSRuleValidator.Hint(
         'This element has <code class="unbreakable-text"><span class="property">flex-wrap</span>: nowrap</code> rule, therefore <code class="unbreakable-text"><span class="property">align-content</span></code> has no effect.',

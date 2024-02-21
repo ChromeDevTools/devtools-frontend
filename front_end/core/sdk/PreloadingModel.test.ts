@@ -15,7 +15,7 @@ import * as SDK from './sdk.js';
 
 const {assert} = chai;
 
-describeWithMockConnection('PreloadingModel', async () => {
+describeWithMockConnection('PreloadingModel', () => {
   it('adds and deletes rule sets and preloeading attempts', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);

@@ -12,7 +12,7 @@ import {
   waitForConsoleMessagesToBeNonEmpty,
 } from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('shows BigInts formatted', async () => {
     const messages = await getConsoleMessages('big-int', false, () => waitForConsoleMessagesToBeNonEmpty(5));
 
@@ -243,7 +243,7 @@ describe('The Console Tab', async () => {
     ]);
   });
 
-  describe('shows messages from before', async () => {
+  describe('shows messages from before', () => {
     it('iframe removal', async () => {
       const messages =
           await getConsoleMessages('navigation/after-removal', false, () => waitForConsoleMessagesToBeNonEmpty(3));

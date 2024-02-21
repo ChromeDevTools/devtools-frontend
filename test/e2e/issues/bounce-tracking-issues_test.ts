@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Bounce Tracking issue', async () => {
+describe('Bounce Tracking issue', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

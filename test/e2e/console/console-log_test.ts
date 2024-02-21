@@ -41,7 +41,7 @@ import {
 
 /* eslint-disable no-console */
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   const tests = [
     {
       description: 'produces console messages when a page logs using console.log',

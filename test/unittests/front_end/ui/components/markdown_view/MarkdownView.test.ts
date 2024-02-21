@@ -23,8 +23,8 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;
 }
 
-describeWithEnvironment('MarkdownView', async () => {
-  describe('renderToken', async () => {
+describeWithEnvironment('MarkdownView', () => {
+  describe('renderToken', () => {
     const renderer = new MarkdownView.MarkdownView.MarkdownLitRenderer();
 
     it('wraps paragraph tokens in <p> tags', () => {

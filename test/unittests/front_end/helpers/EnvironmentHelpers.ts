@@ -344,7 +344,7 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
 describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
   reset: true,
 }) {
-  // eslint-disable-next-line rulesdir/no_only
+  // eslint-disable-next-line mocha/no-exclusive-tests
   return describe.only(title, function() {
     before(async () => await initializeGlobalVars(opts));
     fn.call(this);
@@ -386,7 +386,7 @@ export function describeWithLocale(title: string, fn: (this: Mocha.Suite) => voi
   });
 }
 describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line rulesdir/no_only
+  // eslint-disable-next-line mocha/no-exclusive-tests
   return describe.only(title, function() {
     before(async () => await initializeGlobalLocaleVars());
     fn.call(this);

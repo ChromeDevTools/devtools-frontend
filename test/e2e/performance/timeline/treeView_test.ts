@@ -79,7 +79,7 @@ async function validateTreeParentActivities(expectedActivities: string[]) {
   });
 }
 
-describe('The Performance tool, Bottom-up panel', async function() {
+describe('The Performance tool, Bottom-up panel', function() {
   // These tests have lots of waiting which might take more time to execute
   if (this.timeout() !== 0) {
     this.timeout(20000);

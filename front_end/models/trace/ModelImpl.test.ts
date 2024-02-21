@@ -8,7 +8,7 @@ import * as TraceModel from '../trace/trace.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('TraceModel', async function() {
+describeWithEnvironment('TraceModel', function() {
   it('dispatches an end event when the trace is done', function(done) {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
     const events: string[] = [];

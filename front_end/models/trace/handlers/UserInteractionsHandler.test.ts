@@ -149,110 +149,112 @@ describe('UserInteractionsHandler', function() {
       // keyup from typing character
       7378,
     ]);
+  });
 
-    it('detects correct events for a click and keydown interaction', async () => {
-      await processTrace(this, 'slow-interaction-keydown.json.gz');
-      const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
-      const foundInteractions = data.allEvents;
-      // We expect there to be 3 interactions:
-      // User clicks on input:
-      // 1.pointerdown, 2. pointerup, 3. click
-      // User types into input:
-      // 4. keydown, 5. keyup
-      assert.deepEqual(
-          foundInteractions.map(event => event.args.data?.type),
-          ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
+  // Failing after https://crrev.com/c/5309877
+  it.skip('[crbug.com/326206427] detects correct events for a click and keydown interaction', async () => {
+    await processTrace(this, 'slow-interaction-keydown.json.gz');
+    const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+    const foundInteractions = data.allEvents;
+    // We expect there to be 3 interactions:
+    // User clicks on input:
+    // 1.pointerdown, 2. pointerup, 3. click
+    // User types into input:
+    // 4. keydown, 5. keyup
+    assert.deepEqual(
+        foundInteractions.map(event => event.args.data?.type),
+        ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
 
-      assert.deepEqual(foundInteractions.map(e => e.args.data?.interactionId), [
-        // The first three events relate to the click, so they have the same InteractionID
-        7371,
-        7371,
-        7371,
-        // The final two relate to the keypress, so they have the same InteractionID
-        7378,
-        7378,
-      ]);
-    });
+    assert.deepEqual(foundInteractions.map(e => e.args.data?.interactionId), [
+      // The first three events relate to the click, so they have the same InteractionID
+      7371,
+      7371,
+      7371,
+      // The final two relate to the keypress, so they have the same InteractionID
+      7378,
+      7378,
+    ]);
+  });
 
-    it('finds all interaction events with a duration and interactionId', async () => {
-      const events = [
-        {
-          cat: 'devtools.timeline',
-          ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 16,
-              'interactionId': 9700,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
+  // Failing after https://crrev.com/c/5309877
+  it.skip('[crbug.com/326206427] finds all interaction events with a duration and interactionId', async () => {
+    const events = [
+      {
+        cat: 'devtools.timeline',
+        ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
+        pid: 1537729,  // the Renderer Thread
+        tid: 1,        // CrRendererMain
+        id: '1234',
+        ts: 10,
+        dur: 500,
+        scope: 'scope',
+        name: 'EventTiming',
+        args: {
+          data: {
+            'duration': 16,
+            'interactionId': 9700,
+            'nodeId': 0,
+            'processingEnd': 993,
+            'processingStart': 993,
+            'timeStamp': 985,
+            'type': 'pointerdown',
           },
         },
-        // Has an interactionId of 0, so should NOT be included.
-        {
-          cat: 'devtools.timeline',
-          ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 16,
-              'interactionId': 0,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
+      },
+      // Has an interactionId of 0, so should NOT be included.
+      {
+        cat: 'devtools.timeline',
+        ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
+        pid: 1537729,  // the Renderer Thread
+        tid: 1,        // CrRendererMain
+        id: '1234',
+        ts: 10,
+        dur: 500,
+        scope: 'scope',
+        name: 'EventTiming',
+        args: {
+          data: {
+            'duration': 16,
+            'interactionId': 0,
+            'nodeId': 0,
+            'processingEnd': 993,
+            'processingStart': 993,
+            'timeStamp': 985,
+            'type': 'pointerdown',
           },
         },
-        // Has an duration of 0, so should NOT be included.
-        {
-          cat: 'devtools.timeline',
-          ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 0,
-              'interactionId': 0,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
+      },
+      // Has an duration of 0, so should NOT be included.
+      {
+        cat: 'devtools.timeline',
+        ph: TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
+        pid: 1537729,  // the Renderer Thread
+        tid: 1,        // CrRendererMain
+        id: '1234',
+        ts: 10,
+        dur: 500,
+        scope: 'scope',
+        name: 'EventTiming',
+        args: {
+          data: {
+            'duration': 0,
+            'interactionId': 0,
+            'nodeId': 0,
+            'processingEnd': 993,
+            'processingStart': 993,
+            'timeStamp': 985,
+            'type': 'pointerdown',
           },
         },
-      ] as unknown as TraceModel.Types.TraceEvents.TraceEventEventTiming[];
-      TraceModel.Handlers.ModelHandlers.UserInteractions.reset();
-      for (const event of events) {
-        TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
-      }
-      await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
-      const timings = TraceModel.Handlers.ModelHandlers.UserInteractions.data().allEvents;
-      assert.lengthOf(timings, 1);
-    });
+      },
+    ] as unknown as TraceModel.Types.TraceEvents.TraceEventEventTiming[];
+    TraceModel.Handlers.ModelHandlers.UserInteractions.reset();
+    for (const event of events) {
+      TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
+    const timings = TraceModel.Handlers.ModelHandlers.UserInteractions.data().allEvents;
+    assert.lengthOf(timings, 1);
   });
 
   describe('collapsing nested interactions', () => {

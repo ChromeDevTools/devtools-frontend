@@ -25,7 +25,7 @@ function showFailureCallback(trigger: string, callback: SurveyLink.SurveyLink.Sh
 
 const empty = Common.UIString.LocalizedEmptyString;
 
-describeWithLocale('SurveyLink', async () => {
+describeWithLocale('SurveyLink', () => {
   it('shows no link when canShowSurvey is still pending', () => {
     const link = new SurveyLink.SurveyLink.SurveyLink();
     link.data = {trigger: 'test trigger', promptText: empty, canShowSurvey: () => {}, showSurvey: () => {}};

@@ -43,7 +43,7 @@ import {
   waitForVSCodeShortcutPreset,
 } from '../helpers/settings-shortcuts-helpers.js';
 
-describe('Shortcuts Settings tab', async () => {
+describe('Shortcuts Settings tab', () => {
   it('should update when the shortcuts preset is changed ', async () => {
     await openSettingsTab('Shortcuts');
     await selectKeyboardShortcutPreset('vsCode');

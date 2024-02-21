@@ -11,7 +11,7 @@ import {
   typeIntoConsole,
 } from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('recursively expands objects', async () => {
     const {frontend} = getBrowserAndPages();
 

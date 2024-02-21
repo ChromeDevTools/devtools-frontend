@@ -79,7 +79,7 @@ async function waitForExpandedIssueTitle(issueIconComponent: puppeteer.ElementHa
   });
 }
 
-describe('The row\'s icon bucket', async function() {
+describe('The row\'s icon bucket', function() {
   if (this.timeout()) {
     this.timeout(10000);
   }

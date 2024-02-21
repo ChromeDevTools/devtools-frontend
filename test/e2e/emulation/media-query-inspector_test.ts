@@ -10,7 +10,7 @@ import {openDeviceToolbar, reloadDockableFrontEnd, showMediaQueryInspector} from
 
 const MEDIA_INSPECTOR_MARKER_SELECTOR = '.media-inspector-marker';
 
-describe('Media query inspector', async () => {
+describe('Media query inspector', () => {
   beforeEach(async function() {
     await reloadDockableFrontEnd();
 

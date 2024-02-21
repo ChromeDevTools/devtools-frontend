@@ -10,7 +10,7 @@ import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/p
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
-describeWithMockConnection('LighthousePanel', async () => {
+describeWithMockConnection('LighthousePanel', () => {
   let LighthouseModule: typeof Lighthouse;
   const tests = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;

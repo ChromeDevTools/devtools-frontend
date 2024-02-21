@@ -23,7 +23,7 @@ import {
 } from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-describe('A user can navigate across', async function() {
+describe('A user can navigate across', function() {
   // These tests move between panels, which takes time.
   if (this.timeout() !== 0) {
     this.timeout(10000);
@@ -80,7 +80,7 @@ describe('A user can navigate across', async function() {
   });
 });
 
-describe('A user can move tabs', async function() {
+describe('A user can move tabs', function() {
   this.timeout(10000);
 
   it('Move Memory to drawer', async () => {
@@ -99,7 +99,7 @@ describe('A user can move tabs', async function() {
   });
 });
 
-describe('A user can open panels via the "panel" query param', async function() {
+describe('A user can open panels via the "panel" query param', function() {
   it('Layers is shown', async () => {
     await reloadDevTools({queryParams: {panel: 'layers'}});
     await tabExistsInMainPanel(LAYERS_TAB_SELECTOR);

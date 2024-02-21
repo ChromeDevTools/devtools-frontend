@@ -8,7 +8,7 @@ import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 
-describe('Issue links in the console tab', async () => {
+describe('Issue links in the console tab', () => {
   it('should reveal the right issue', async () => {
     await navigateToConsoleTab();
     await goToResource('issues/cors-issue-2.html');

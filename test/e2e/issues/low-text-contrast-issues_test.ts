@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Low contrast issues', async () => {
+describe('Low contrast issues', () => {
   it('should report low contrast issues', async () => {
     await enableExperiment('contrast-issues');
     await goToResource('elements/low-contrast.html');

@@ -14,7 +14,7 @@ import * as ElementsComponents from './components.js';
 
 const {assert} = chai;
 
-describeWithLocale('StylePropertyEditor', async () => {
+describeWithLocale('StylePropertyEditor', () => {
   function assertValues(component: HTMLElement, values: string[]) {
     assertShadowRoot(component.shadowRoot);
     const propertyElements = component.shadowRoot.querySelectorAll('.property');
@@ -25,7 +25,7 @@ describeWithLocale('StylePropertyEditor', async () => {
     assert.deepEqual(properties, values);
   }
 
-  describe('FlexboxEditor', async () => {
+  describe('FlexboxEditor', () => {
     it('renders the editor', async () => {
       const component = new ElementsComponents.StylePropertyEditor.FlexboxEditor();
       renderElementIntoDOM(component);
@@ -113,7 +113,7 @@ describeWithLocale('StylePropertyEditor', async () => {
     });
   });
 
-  describe('GridEditor', async () => {
+  describe('GridEditor', () => {
     it('renders the editor', async () => {
       const component = new ElementsComponents.StylePropertyEditor.GridEditor();
       renderElementIntoDOM(component);

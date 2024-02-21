@@ -35,7 +35,7 @@ const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
 let DOMAIN: string;
 let DOMAIN_SELECTOR: string;
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   before(async () => {
     DOMAIN = `https://localhost:${getTestServerPort()}`;
     DOMAIN_SELECTOR = `${SHARED_STORAGE_SELECTOR} + ol > [aria-label="${DOMAIN}"]`;

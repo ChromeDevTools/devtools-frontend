@@ -11,7 +11,7 @@ import {expandSelectedNodeRecursively, goToResourceAndWaitForStyleSection} from 
 /**
  * Skipping this test for now as it only works on non-headless chrome.
  */
-describe.skip('[crbug.com/1399414]: Element has violating properties', async function() {
+describe.skip('[crbug.com/1399414]: Element has violating properties', function() {
   beforeEach(async function() {
     await enableExperiment('highlight-errors-elements-panel');
     await goToResourceAndWaitForStyleSection('elements/form-with-issues.html');

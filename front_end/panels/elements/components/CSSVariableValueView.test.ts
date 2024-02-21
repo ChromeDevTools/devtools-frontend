@@ -9,7 +9,7 @@ import * as ElementsComponents from './components.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('CSSVariableValueView', async () => {
+describeWithEnvironment('CSSVariableValueView', () => {
   it('renders right tooltip', () => {
     const popupComponent = new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
       variableName: '--var-name',

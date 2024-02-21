@@ -16,7 +16,7 @@ import {
 const DUO_VERTICAL_SPANNED_WIDTH = '1114';
 const DUO_VERTICAL_WIDTH = '540';
 
-describe('Dual screen mode', async () => {
+describe('Dual screen mode', () => {
   beforeEach(async function() {
     await startEmulationWithDualScreenPage();
   });

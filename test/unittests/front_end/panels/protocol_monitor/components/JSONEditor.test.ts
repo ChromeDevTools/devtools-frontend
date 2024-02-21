@@ -1119,7 +1119,7 @@ describeWithEnvironment('JSONEditor', () => {
        });
   });
 
-  describe('Verify the type of the entered value', async () => {
+  describe('Verify the type of the entered value', () => {
     it('should show a warning icon if the type of the parameter is number but the entered value is not', async () => {
       const command = 'Test.test8';
 

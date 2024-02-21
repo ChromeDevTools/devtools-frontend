@@ -292,7 +292,7 @@ function createSummaryView(target: SDK.Target.Target): Resources.PreloadingView.
   return view;
 }
 
-describeWithMockConnection('PreloadingRuleSetView', async () => {
+describeWithMockConnection('PreloadingRuleSetView', () => {
   it('renders grid and details', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
@@ -497,7 +497,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
   });
 });
 
-describeWithMockConnection('PreloadingAttemptView', async () => {
+describeWithMockConnection('PreloadingAttemptView', () => {
   it('renders grid and details', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
@@ -944,7 +944,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
   });
 });
 
-describeWithMockConnection('PreloadingSummaryView', async () => {
+describeWithMockConnection('PreloadingSummaryView', () => {
   it('shows information of preloading of the last page', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
@@ -1009,7 +1009,7 @@ async function testWarnings(
   assert.deepEqual(zip2(headers, sections), sectionsExpected);
 }
 
-describeWithMockConnection('PreloadingWarningsView', async () => {
+describeWithMockConnection('PreloadingWarningsView', () => {
   it('shows no warnings if holdback flags are disabled', async () => {
     await testWarnings(
         {

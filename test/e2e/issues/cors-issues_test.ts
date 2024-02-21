@@ -15,7 +15,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('CORS issues', async () => {
+describe('CORS issues', () => {
   it('should display CORS violations with the correct affected resources', async () => {
     await goToResource('issues/cors-issue.html');
     const {target} = getBrowserAndPages();

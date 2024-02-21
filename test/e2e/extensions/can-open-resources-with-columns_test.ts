@@ -15,7 +15,7 @@ import {
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getResourcesPath} from '../../shared/helper.js';
 
-describe('The Extension API', async () => {
+describe('The Extension API', () => {
   it('can open wasm resources with offset', async () => {
     await waitForSourceFiles(
         SourceFileEvents.AddedToSourceTree, files => files.some(f => f.endsWith('scopes.wasm')),

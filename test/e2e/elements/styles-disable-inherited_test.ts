@@ -11,7 +11,7 @@ import {
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
 
-describe('The Elements tab', async function() {
+describe('The Elements tab', function() {
   it('does not break further style inspection if inherited style property was disabled', async () => {
     await goToResource('elements/styles-disable-inherited.html');
     await expandSelectedNodeRecursively();

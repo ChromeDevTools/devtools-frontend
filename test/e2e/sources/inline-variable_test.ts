@@ -13,7 +13,7 @@ async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
   return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   it('shows correct inline variable at definition', async () => {
     const {target, frontend} = getBrowserAndPages();
 

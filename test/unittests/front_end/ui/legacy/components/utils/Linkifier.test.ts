@@ -29,7 +29,7 @@ function foo(x) {
 }
 `;
 
-describeWithMockConnection('Linkifier', async () => {
+describeWithMockConnection('Linkifier', () => {
   let SDK: typeof SDKModule;
   let Components: typeof ComponentsModule;
   let Bindings: typeof BindingsModule;
@@ -378,7 +378,7 @@ describeWithMockConnection('Linkifier', async () => {
   });
 });
 
-describeWithEnvironment('ContentProviderContextMenuProvider', async () => {
+describeWithEnvironment('ContentProviderContextMenuProvider', () => {
   let Components: typeof ComponentsModule;
 
   before(async () => {

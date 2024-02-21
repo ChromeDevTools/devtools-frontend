@@ -59,7 +59,7 @@ async function testMessageFilter(filter: string, expectedMessageFilter: MessageC
   });
 }
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('shows logged messages', async () => {
     let messages: string[];
     const withAnchor = true;

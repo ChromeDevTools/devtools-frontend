@@ -73,7 +73,7 @@ const getFieldValuesTextContent = async () => {
   return undefined;
 };
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
@@ -191,7 +191,7 @@ describe('The Application Tab', async () => {
     assert.deepEqual(stackTraceRowsTextContent, expectedCollapsed);
   });
 
-  describe('', async () => {
+  describe('', () => {
     after(async () => {
       const {target} = getBrowserAndPages();
       await target.evaluate(() => {

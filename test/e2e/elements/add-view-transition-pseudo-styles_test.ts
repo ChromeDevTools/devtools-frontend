@@ -14,7 +14,7 @@ import {
   waitForExactStyleRule,
 } from '../helpers/elements-helpers.js';
 
-describe('View transition pseudo styles on inspector stylesheet', async () => {
+describe('View transition pseudo styles on inspector stylesheet', () => {
   it('should add view transition pseudo styles on inspector stylesheet when a view transition pseudo is added',
      async () => {
        const {frontend, target} = getBrowserAndPages();

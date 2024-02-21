@@ -6,7 +6,7 @@ import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourcesPanel, toggleDebuggerSidebar} from '../helpers/sources-helpers.js';
 
-describe('The Sources panel', async () => {
+describe('The Sources panel', () => {
   describe('contains a debugger sidebar', () => {
     it('which can be toggled via Ctrl+Shift+H shortcut keyboard', async () => {
       const {frontend} = getBrowserAndPages();

@@ -15,7 +15,7 @@ import {expandIssue, navigateToIssuesTab, revealNodeInElementsPanel} from '../he
 
 // TODO: Add a second node reveal test, where am issue is produced by an OOPIF
 
-describe('The Issues tab', async () => {
+describe('The Issues tab', () => {
   it('should reveal an element in the Elements panel when the node icon is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
 
@@ -27,7 +27,7 @@ describe('The Issues tab', async () => {
   });
 });
 
-describe('The Elements panel', async () => {
+describe('The Elements panel', () => {
   it('has a context menu link from an iframe to the corresponding frame details view', async () => {
     await goToResource('application/main-frame.html');
     await openSoftContextMenuAndClickOnItem('[aria-label="</iframe>"]', 'Show iframe details');

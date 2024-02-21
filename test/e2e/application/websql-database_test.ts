@@ -11,7 +11,7 @@ import {doubleClickSourceTreeItem, navigateToApplicationTab} from '../helpers/ap
 const WEB_SQL_SELECTOR = '[aria-label="Web SQL"]';
 const DATABASES_SELECTOR = `${WEB_SQL_SELECTOR} + ol`;
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   // WebSQL has been disabled by default in Chrome. We need to drop
   // support for it in devtools.
   it.skip('[crbug.com/1482175] shows WebSQL database', async () => {

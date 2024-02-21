@@ -17,7 +17,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-describe('The Layers Panel', async () => {
+describe('The Layers Panel', () => {
   // See crbug.com/1261763 for details.
   it.skip('[crbug.com/1261763] should keep the currently inspected url as an attribute', async () => {
     const {target, frontend} = getBrowserAndPages();

@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Quota Issues', async () => {
+describe('Quota Issues', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

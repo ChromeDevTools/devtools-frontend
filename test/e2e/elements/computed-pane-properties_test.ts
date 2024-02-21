@@ -21,7 +21,7 @@ import {
   waitForPartialContentOfSelectedElementsNode,
 } from '../helpers/elements-helpers.js';
 
-describe('The Computed pane', async function() {
+describe('The Computed pane', function() {
   beforeEach(async function() {
     await goToResource('elements/simple-styled-page.html');
     await navigateToSidePane('Computed');

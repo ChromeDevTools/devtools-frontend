@@ -26,7 +26,7 @@ import type * as Platform from '../../../../../../front_end/core/platform/platfo
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-describe('HeadersView', async () => {
+describe('HeadersView', () => {
   const commitWorkingCopySpy = sinon.spy();
 
   before(async () => {

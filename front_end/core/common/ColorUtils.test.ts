@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as Common from './common.js';
 
-describe('ColorUtils', async () => {
+describe('ColorUtils', () => {
   it('is able to blend two colors according to alpha blending', () => {
     const firstColor: Common.ColorUtils.Color4D = [1, 0, 0, 1];
     const secondColor: Common.ColorUtils.Color4D = [0, 0, 1, 1];

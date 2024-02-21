@@ -22,7 +22,7 @@ class FakeSettingStore {
   }
 }
 
-describe('AdornerManager', async () => {
+describe('AdornerManager', () => {
   it('can sync badge settings with the settings store correctly', () => {
     const nonexistentAdorner = '__SHOULD_NEVER_EXIST__';
     const settingStore = new FakeSettingStore([

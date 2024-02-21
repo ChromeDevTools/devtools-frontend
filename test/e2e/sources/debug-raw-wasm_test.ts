@@ -41,7 +41,7 @@ import {
   TURNED_OFF_PAUSE_BUTTON_SELECTOR,
 } from '../helpers/sources-helpers.js';
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   if (this.timeout() > 0) {
     this.timeout(10000);
@@ -507,7 +507,7 @@ describe('Sources Tab', async function() {
   });
 });
 
-describe('Raw-Wasm', async () => {
+describe('Raw-Wasm', () => {
   it('displays correct location in Wasm source', async () => {
     const {target} = getBrowserAndPages();
 

@@ -31,7 +31,7 @@ interface Navigator {
   };
 }
 
-describe('The Network Tab', async function() {
+describe('The Network Tab', function() {
   beforeEach(async () => {
     await navigateToNetworkTab('empty.html');
   });

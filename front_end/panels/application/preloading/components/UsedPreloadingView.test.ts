@@ -35,7 +35,7 @@ async function renderUsedPreloadingView(data: PreloadingComponents.UsedPreloadin
   return component;
 }
 
-describeWithEnvironment('UsedPreloadingView', async () => {
+describeWithEnvironment('UsedPreloadingView', () => {
   it('renderes prefetch used', async () => {
     const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
       pageURL: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,

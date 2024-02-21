@@ -13,7 +13,7 @@ function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
   );
 }
 
-describe('BreadcrumbsUI', async () => {
+describe('BreadcrumbsUI', () => {
   const {BreadcrumbsUI} = TimelineComponents.BreadcrumbsUI;
 
   function queryBreadcrumbs(component: HTMLElement): (string)[] {

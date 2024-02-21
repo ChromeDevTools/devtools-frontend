@@ -14,7 +14,7 @@ import * as Elements from './elements.js';
 
 const {assert} = chai;
 
-describe('StylePropertiesSection', async () => {
+describe('StylePropertiesSection', () => {
   it('contains specificity information', async () => {
     const specificity = {a: 0, b: 1, c: 0};
     const selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(

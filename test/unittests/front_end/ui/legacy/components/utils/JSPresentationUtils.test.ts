@@ -11,7 +11,7 @@ import {describeWithMockConnection} from '../../../../helpers/MockConnection.js'
 
 const {assert} = chai;
 
-describeWithMockConnection('JSPresentationUtils', async () => {
+describeWithMockConnection('JSPresentationUtils', () => {
   let Components: typeof ComponentsModule;
   let Bindings: typeof BindingsModule;
   let Workspace: typeof WorkspaceModule;

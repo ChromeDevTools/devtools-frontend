@@ -8,7 +8,7 @@ import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('interacts with the global scope correctly', async () => {
     const {frontend} = getBrowserAndPages();
 

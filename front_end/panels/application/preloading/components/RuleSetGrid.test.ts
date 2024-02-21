@@ -29,7 +29,7 @@ async function assertRenderResult(
   );
 }
 
-describeWithEnvironment('RuleSetGrid', async () => {
+describeWithEnvironment('RuleSetGrid', () => {
   it('renders grid', async () => {
     await assertRenderResult(
         {

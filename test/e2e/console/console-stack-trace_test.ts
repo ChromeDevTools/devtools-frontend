@@ -16,7 +16,7 @@ const CLOSE_SETTINGS_BUTTON = '.close-button[aria-label="Close"]';
 const SHOW_MORE_LINK = '.show-all-link .link';
 const SHOW_LESS_LINK = '.show-less-link .link';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('shows messages with stack traces', async () => {
     const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);

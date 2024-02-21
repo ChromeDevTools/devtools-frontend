@@ -14,7 +14,7 @@ function assertAlmostEqual(array1: number[], array2: number[], delta = 0.01) {
   assert.isTrue(almostEqual, `${array1} is not almost equal to ${array2} with delta ${delta}`);
 }
 
-describe('ColorConverter', async () => {
+describe('ColorConverter', () => {
   it('LabToXyzd50', () => {
     const colorCases = [
       [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],                // black

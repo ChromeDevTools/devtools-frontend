@@ -22,7 +22,7 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-describeWithMockConnection('LayoutPane', async () => {
+describeWithMockConnection('LayoutPane', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
   let overlayModel: SDK.OverlayModel.OverlayModel;

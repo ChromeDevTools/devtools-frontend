@@ -14,7 +14,7 @@ const OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR = 'div[data-id="summary"]';
 const COLORS_SIDEBAR_ITEM_SELECTOR = 'div[data-id="colors"]';
 const FONT_INFO_SIDEBAR_ITEM_SELECTOR = 'div[data-id="font-info"]';
 
-describe('CSS overview experiment', async () => {
+describe('CSS overview experiment', () => {
   it('can display low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToCssOverviewTab();

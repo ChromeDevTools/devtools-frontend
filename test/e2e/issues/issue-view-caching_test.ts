@@ -22,7 +22,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('IssueView cache', async () => {
+describe('IssueView cache', () => {
   it('should correctly update the issue', async () => {
     await goToResource('empty.html');
     const {target} = getBrowserAndPages();

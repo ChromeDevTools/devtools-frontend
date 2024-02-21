@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Expect-CT Issue', async () => {
+describe('Expect-CT Issue', () => {
   it('should display deprecation issue for Expect-CT header', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();

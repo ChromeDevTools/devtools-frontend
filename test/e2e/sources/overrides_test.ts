@@ -50,7 +50,7 @@ async function waitForOverrideContentMenuItemIsEnabled(requestName: string) {
   });
 }
 
-describe('Overrides panel', async function() {
+describe('Overrides panel', function() {
   afterEach(async () => {
     await openSourcesPanel();
     await click('[aria-label="Overrides"]');

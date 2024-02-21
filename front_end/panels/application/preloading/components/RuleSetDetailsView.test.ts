@@ -28,7 +28,7 @@ async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetail
   return component;
 }
 
-describeWithEnvironment('RuleSetDetailsView', async () => {
+describeWithEnvironment('RuleSetDetailsView', () => {
   it('renders nothing if not selected', async () => {
     const data = null;
 

@@ -14,7 +14,7 @@ import {
   typeIntoConsoleAndWaitForResult,
 } from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   it('exposes the last evaluation using "$_"', async () => {
     const {frontend} = getBrowserAndPages();
 

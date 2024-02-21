@@ -19,7 +19,7 @@ import {
   TURNED_OFF_PAUSE_BUTTON_SELECTOR,
 } from '../helpers/sources-helpers.js';
 
-describe('The Sources Tab', async () => {
+describe('The Sources Tab', () => {
   const fileName = 'with-sourcemap.ll';
 
   it('can add breakpoint for a sourcemapped wasm module', async () => {

@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Privacy Sandbox Extensions API', async () => {
+describe('Privacy Sandbox Extensions API', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

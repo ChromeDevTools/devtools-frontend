@@ -8,7 +8,7 @@ import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../s
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async function() {
+describe('The Console Tab', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 

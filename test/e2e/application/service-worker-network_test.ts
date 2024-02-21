@@ -13,7 +13,7 @@ const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_NETWORK_SELECTOR = '[aria-label="Network requests"]';
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   beforeEach(async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, TEST_HTML_FILE);

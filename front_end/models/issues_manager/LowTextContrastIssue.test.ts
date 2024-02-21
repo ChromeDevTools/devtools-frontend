@@ -11,7 +11,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {MockIssuesModel} from '../../../test/unittests/front_end/helpers/MockIssuesModel.js';
 import {MockIssuesManager} from '../../../test/unittests/front_end/helpers/MockIssuesManager.js';
 
-describe('LowTextContrastIssue', async () => {
+describe('LowTextContrastIssue', () => {
   it('aggregates multiple issues with duplicates correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;

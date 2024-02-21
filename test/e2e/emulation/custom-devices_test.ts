@@ -45,7 +45,7 @@ async function targetTextContent(selector: string): Promise<string> {
   return elementTextContent(handle);
 }
 
-describe('Custom devices', async () => {
+describe('Custom devices', () => {
   beforeEach(async function() {
     await reloadDockableFrontEnd();
     await goToResource('emulation/custom-ua-ch.html');

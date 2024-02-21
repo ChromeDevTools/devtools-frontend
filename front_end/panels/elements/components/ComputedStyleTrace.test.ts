@@ -8,7 +8,7 @@ import * as ElementsComponents from './components.js';
 
 const {assert} = chai;
 
-describe('ComputedStyleTrace', async () => {
+describe('ComputedStyleTrace', () => {
   it('renders ComputedStyleTrace selector correctly', () => {
     const component = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);

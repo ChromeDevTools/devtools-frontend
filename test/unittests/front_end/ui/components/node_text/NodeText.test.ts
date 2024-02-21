@@ -12,7 +12,7 @@ import {
 
 const {assert} = chai;
 
-describe('NodeText', async () => {
+describe('NodeText', () => {
   const NodeTextComponent = NodeText.NodeText.NodeText;
 
   it('renders element with a title', async () => {

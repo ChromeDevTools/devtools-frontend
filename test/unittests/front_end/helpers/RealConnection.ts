@@ -88,7 +88,7 @@ function describeBody(fn: () => void) {
 
 export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
   if (fn.toString().match(/(^|\s)(?:describe|it).only\(['|"][^]+['|"],.*\)/)?.length) {
-    // eslint-disable-next-line rulesdir/no_only
+    // eslint-disable-next-line mocha/no-exclusive-tests
     describeWithRealConnection.only(title, fn);
     return;
   }
@@ -108,7 +108,7 @@ export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite
 
 describeWithRealConnection.only = function(title: string, fn: (this: Mocha.Suite) => void) {
   hasOnly = true;
-  // eslint-disable-next-line rulesdir/no_only
+  // eslint-disable-next-line mocha/no-exclusive-tests
   describe.only(title, function() {
     describeBody(fn.bind(this));
   });

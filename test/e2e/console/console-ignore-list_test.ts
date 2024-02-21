@@ -17,7 +17,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
-describe('Ignore list', async function() {
+describe('Ignore list', function() {
   it('can be toggled on and off in console stack trace', async function() {
     await setIgnoreListPattern('thirdparty');
     const {target} = getBrowserAndPages();

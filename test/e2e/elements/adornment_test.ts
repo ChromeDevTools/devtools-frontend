@@ -20,7 +20,7 @@ const prepareElementsTab = async () => {
   await expandSelectedNodeRecursively();
 };
 
-describe('Adornment in the Elements Tab', async function() {
+describe('Adornment in the Elements Tab', function() {
   // This test relies on the context menu which takes a while to appear, so we bump the timeout a bit.
   if (this.timeout() > 0) {
     this.timeout(20000);

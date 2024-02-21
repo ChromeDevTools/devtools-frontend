@@ -11,7 +11,7 @@ import {
   waitForContentOfSelectedElementsNode,
 } from '../helpers/elements-helpers.js';
 
-describe('The Elements Tab', async () => {
+describe('The Elements Tab', () => {
   it('can show styles in shadow roots', async () => {
     const {frontend} = getBrowserAndPages();
 

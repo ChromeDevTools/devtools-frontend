@@ -9,7 +9,7 @@ import * as Elements from './elements.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('CSSRuleValidator', async () => {
+describeWithEnvironment('CSSRuleValidator', () => {
   const tests = [
     {
       description:

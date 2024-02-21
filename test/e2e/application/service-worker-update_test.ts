@@ -11,7 +11,7 @@ import {navigateToApplicationTab, navigateToServiceWorkers} from '../helpers/app
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR = '.service-worker-update-timing-table';
 
-describe('The Application Tab', async function() {
+describe('The Application Tab', function() {
   beforeEach(async function() {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, TEST_HTML_FILE);

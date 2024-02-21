@@ -451,7 +451,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     });
   });
 
-  describe('with ignore listing', async () => {
+  describe('with ignore listing', () => {
     let target: SDK.Target.Target;
     let resolveFn: (() => void)|null = null;
 

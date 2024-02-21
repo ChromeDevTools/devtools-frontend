@@ -11,7 +11,7 @@ import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/p
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
-describeWithMockConnection('LayersPanel', async () => {
+describeWithMockConnection('LayersPanel', () => {
   beforeEach(async () => {
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});

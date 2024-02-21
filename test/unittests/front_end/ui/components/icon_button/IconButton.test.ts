@@ -69,7 +69,7 @@ describe('IconButton', () => {
     assert.deepEqual(iconNames, ['cross-circle', 'warning']);
   });
 
-  describe('compact mode', async () => {
+  describe('compact mode', () => {
     it('renders correctly with one icon', () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], compact: true});
 

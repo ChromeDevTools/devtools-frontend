@@ -87,7 +87,7 @@ async function editHeaderItem(newValue: string, previousValue: string): Promise<
   await pressKey('Tab');
 }
 
-describe('The Overrides Panel', async function() {
+describe('The Overrides Panel', function() {
   this.timeout(10000);
 
   afterEach(async () => {

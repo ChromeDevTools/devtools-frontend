@@ -14,7 +14,7 @@ import {
   toggleGroupByCategory,
 } from '../helpers/issues-helpers.js';
 
-describe('IssueView', async () => {
+describe('IssueView', () => {
   it('should be parented in issueTree when not groupedByCategory', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

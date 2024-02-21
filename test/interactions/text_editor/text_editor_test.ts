@@ -22,7 +22,7 @@ async function getEditorSelection(textEditor: ElementHandle): Promise<{anchor: n
   }));
 }
 
-describe('text editor', async () => {
+describe('text editor', () => {
   preloadForCodeCoverage('text_editor/basic.html');
 
   it('can insert and delete some text', async () => {

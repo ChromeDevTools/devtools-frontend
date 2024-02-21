@@ -50,7 +50,7 @@ async function assertNoColorSwatch(container: puppeteer.ElementHandle|undefined)
   assert.isUndefined(swatch, 'No color swatch found');
 }
 
-describe('The color swatch', async () => {
+describe('The color swatch', () => {
   it('is displayed for color properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 

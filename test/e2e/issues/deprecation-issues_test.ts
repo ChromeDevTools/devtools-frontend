@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Deprecation Issues', async () => {
+describe('Deprecation Issues', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

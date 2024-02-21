@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Cookie Deprecation Metadata issue', async () => {
+describe('Cookie Deprecation Metadata issue', () => {
   beforeEach(async () => {
     await goToResource('empty.html');
   });

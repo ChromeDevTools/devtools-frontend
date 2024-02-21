@@ -13,7 +13,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Cookie attribute exceeds max size issues test', async () => {
+describe('Cookie attribute exceeds max size issues test', () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     const cookies = await target.cookies();

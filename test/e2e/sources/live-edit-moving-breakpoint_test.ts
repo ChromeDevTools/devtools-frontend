@@ -19,7 +19,7 @@ import {
   reloadPageAndWaitForSourceFile,
 } from '../helpers/sources-helpers.js';
 
-describe('Live edit', async () => {
+describe('Live edit', () => {
   it('moves the breakpoint after reload when changes are not persisted', async () => {
     const {frontend, target} = getBrowserAndPages();
     await openSourceCodeEditorForFile('live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html');

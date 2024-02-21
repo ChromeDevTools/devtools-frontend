@@ -16,7 +16,7 @@ async function assertChecked(checkbox: ElementHandle<HTMLInputElement>, expected
   assert.strictEqual(checked, expected);
 }
 
-describe('The Window Controls Overlay', async () => {
+describe('The Window Controls Overlay', () => {
   it('shows emulation controls when manifest with property display_overide is present', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, TEST_HTML_FILE);

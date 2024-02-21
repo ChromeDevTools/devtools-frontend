@@ -13,7 +13,7 @@ import {
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
 
-describe('Watch Expression Pane', async () => {
+describe('Watch Expression Pane', () => {
   it('collapses children when editing', async () => {
     const {frontend} = getBrowserAndPages();
     await openSourcesPanel();

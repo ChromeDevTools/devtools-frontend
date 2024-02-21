@@ -17,7 +17,7 @@ import {
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
 let DOMAIN_SELECTOR: string;
 
-describe('The Application Tab', async () => {
+describe('The Application Tab', () => {
   before(async () => {
     DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });

@@ -8,7 +8,7 @@ import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
-describe('Logging and preview of Trusted Types objects in the Console', async () => {
+describe('Logging and preview of Trusted Types objects in the Console', () => {
   it('Logging of Trusted Type HTML object', async () => {
     const {frontend} = getBrowserAndPages();
     await step('open the console tab and focus the prompt', async () => {

@@ -238,7 +238,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        assert.isUndefined(decorationsForEntry);
      });
 
-  describe('Context Menu Actions', async function() {
+  describe('Context Menu Actions', function() {
     let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
 
     this.beforeEach(async () => {

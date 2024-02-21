@@ -32,7 +32,7 @@ async function assertRenderResult(
   );
 }
 
-describeWithEnvironment('PreloadingGrid', async () => {
+describeWithEnvironment('PreloadingGrid', () => {
   it('renders grid', async () => {
     await assertRenderResult(
         {

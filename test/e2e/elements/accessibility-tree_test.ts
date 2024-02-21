@@ -15,7 +15,7 @@ import {
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 
-describe('Accessibility Tree in the Elements Tab', async function() {
+describe('Accessibility Tree in the Elements Tab', function() {
   it('displays the fuller accessibility tree', async () => {
     await enableExperiment('full-accessibility-tree');
     await enableExperiment('protocol-monitor');

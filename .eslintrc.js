@@ -203,7 +203,12 @@ module.exports = {
       'mocha/no-pending-tests' : 'error',
 
       // errors on {describe, it}.only
-      'rulesdir/no_only' : 'error',
+      'mocha/no-exclusive-tests' : 'error',
+
+      'mocha/no-async-describe': 'error',
+      'mocha/no-global-tests': 'error',
+      'mocha/no-nested-tests': 'error',
+
       'rulesdir/check_test_definitions' : 'error',
       'rulesdir/avoid_assert_equal' : 'error',
       'rulesdir/no_repeated_tests' : 'error',
@@ -254,6 +259,15 @@ module.exports = {
                                               ],
       '@typescript-eslint/no-non-null-assertion' : 'off',
     },
+    'settings': {
+      'mocha/additionalCustomNames': [
+        { 'name': 'describeWithDevtoolsExtension', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithEnvironment', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithLocale', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithMockConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+        { 'name': 'describeWithRealConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
+      ]
+    }
   }],
 };
 

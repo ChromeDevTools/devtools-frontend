@@ -25,7 +25,7 @@ const triggerQuirksModeIssueInIssuesTab = async (path: string) => {
   return issueElement;
 };
 
-describe('Quirks Mode issues', async () => {
+describe('Quirks Mode issues', () => {
   it('should report Quirks Mode issues', async () => {
     const issueElement = await triggerQuirksModeIssueInIssuesTab('elements/quirks-mode.html');
     const section = await getResourcesElement('1 element', issueElement);

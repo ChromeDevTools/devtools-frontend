@@ -10,7 +10,7 @@ import {click, getBrowserAndPages, hover, setDevToolsSettings, waitFor, waitForN
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
-describe('ConsoleInsight', async function() {
+describe('ConsoleInsight', function() {
   const CLICK_TARGET_SELECTOR = '.console-message-text';
   const EXPLAIN_LABEL = 'Explain this error';
 

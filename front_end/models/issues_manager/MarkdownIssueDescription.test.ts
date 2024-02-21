@@ -6,7 +6,7 @@ import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 const {assert} = chai;
 
-describe('createIssueDescriptionFromMarkdown', async () => {
+describe('createIssueDescriptionFromMarkdown', () => {
   it('only accepts Markdown where the first AST element is a heading, describing the title', () => {
     const emptyMarkdownDescription = {
       file: '<unused>',
@@ -34,7 +34,7 @@ describe('createIssueDescriptionFromMarkdown', async () => {
   });
 });
 
-describe('substitutePlaceholders', async () => {
+describe('substitutePlaceholders', () => {
   it('returns the input as-is, with no placeholders present in the input', () => {
     const str = 'Example string with no placeholders';
 

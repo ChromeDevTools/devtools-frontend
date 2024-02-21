@@ -33,7 +33,7 @@ import {
   stepOut,
 } from '../helpers/sources-helpers.js';
 
-describe('Ignore list', async function() {
+describe('Ignore list', function() {
   it('can be toggled on and off in call stack', async function() {
     await setIgnoreListPattern('thirdparty');
     const {target, frontend} = getBrowserAndPages();

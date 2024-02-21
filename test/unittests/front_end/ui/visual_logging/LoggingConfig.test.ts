@@ -75,7 +75,7 @@ describe('LoggingConfig', () => {
     assert.deepEqual(config.track, new Map([['click', undefined], ['keydown', 'Enter']]));
   });
 
-  it('can parse simple context attribute', () => {
+  describe('can parse simple context attribute', () => {
     it('for TreeItem', () => {
       element.setAttribute('jslog', 'TreeItem;context:42');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);

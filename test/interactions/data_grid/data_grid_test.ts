@@ -58,7 +58,7 @@ async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>
 
 // Constantly failing in autoroll not because of the tests itself but
 // because of the code coverage in afterEach.
-describe.skip('[crbug.com/1463394]: data grid', async () => {
+describe.skip('[crbug.com/1463394]: data grid', () => {
   preloadForCodeCoverage('data_grid/basic.html');
 
   it('lists the data grid contents', async () => {

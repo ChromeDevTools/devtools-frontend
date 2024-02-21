@@ -8,7 +8,7 @@ import {$, $$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFuncti
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {triggerFindDialog} from '../helpers/search-helpers.js';
 
-describe('The Search Panel', async () => {
+describe('The Search Panel', () => {
   it('provides results across scopes', async () => {
     const {frontend} = getBrowserAndPages();
     const SEARCH_QUERY = '[aria-label="Search Query"]';

@@ -14,7 +14,7 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('SAB issues test', async () => {
+describe('SAB issues test', () => {
   beforeEach(async () => {
     await goToResource('issues/sab-issue.rawresponse');
   });

@@ -8,7 +8,7 @@ import {click, getBrowserAndPages, typeText, waitForFunction} from '../../shared
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
-describe('The Console Tab', async function() {
+describe('The Console Tab', function() {
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();

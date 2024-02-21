@@ -24,7 +24,7 @@ async function getPanelWithFixture(fixture: string): Promise<ElementHandle> {
 describe('Performance panel trace load performance', () => {
   const allBenchmarks: Benchmark[] = [];
 
-  describe('Total trace load time', async () => {
+  describe('Total trace load time', () => {
     beforeEach(async () => {
       // Reload devtools to get a fresh version of the panel on each
       // run and prevent a skew due to caching, etc.

@@ -16,7 +16,7 @@ import {
   toggleNavigatorSidebar,
 } from '../helpers/sources-helpers.js';
 
-describe('The Sources panel', async () => {
+describe('The Sources panel', () => {
   describe('contains a Navigator view', () => {
     describe('with a Page tab', () => {
       it('which offers a context menu option "Search in all files" for top frames', async () => {

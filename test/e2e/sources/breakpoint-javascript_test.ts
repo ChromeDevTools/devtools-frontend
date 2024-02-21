@@ -47,7 +47,7 @@ async function assertScriptLocation(expectedLocation: string) {
   assert.isTrue(isEqualOrAbbreviation(scriptLocation, expectedLocation));
 }
 
-describe('The Sources Tab', async function() {
+describe('The Sources Tab', function() {
   const CLICK_BREAKPOINT_SCRIPT = 'click-breakpoint.js';
   const CLICK_BREAKPOINT_HTML = 'click-breakpoint.html';
 

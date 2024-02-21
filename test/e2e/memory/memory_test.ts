@@ -44,7 +44,7 @@ import {
   waitUntilRetainerChainSatisfies,
 } from '../helpers/memory-helpers.js';
 
-describe('The Memory Panel', async function() {
+describe('The Memory Panel', function() {
   // These tests render large chunks of data into DevTools and filter/search
   // through it. On bots with less CPU power, these can fail because the
   // rendering takes a long time, so we allow a much larger timeout.

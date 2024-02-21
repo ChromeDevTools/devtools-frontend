@@ -69,7 +69,7 @@ export function describeWithDevtoolsExtension(
 describeWithDevtoolsExtension.only = function(
     title: string, extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor>,
     fn: (this: Mocha.Suite, context: ExtensionContext) => void) {
-  // eslint-disable-next-line rulesdir/no_only
+  // eslint-disable-next-line mocha/no-exclusive-tests
   return describe.only('.only', function() {
     return describeWithDevtoolsExtension(title, extension, fn);
   });

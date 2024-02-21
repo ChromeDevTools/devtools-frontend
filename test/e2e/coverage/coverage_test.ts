@@ -20,7 +20,7 @@ import {
   waitForTheCoveragePanelToLoad,
 } from '../helpers/coverage-helpers.js';
 
-describe('The Coverage Panel', async () => {
+describe('The Coverage Panel', () => {
   it('Loads correctly', async () => {
     await waitForTheCoveragePanelToLoad();
   });

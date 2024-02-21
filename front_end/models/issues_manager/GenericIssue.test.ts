@@ -10,7 +10,7 @@ import {MockIssuesModel} from '../../../test/unittests/front_end/helpers/MockIss
 import * as Protocol from '../../generated/protocol.js';
 import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
-describeWithLocale('GenericIssue', async () => {
+describeWithLocale('GenericIssue', () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 
   function createProtocolIssueWithoutDetails(): Protocol.Audits.InspectorIssue {

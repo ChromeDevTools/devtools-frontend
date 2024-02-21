@@ -7,7 +7,7 @@ import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
-describe('The Console Tab', async () => {
+describe('The Console Tab', () => {
   beforeEach(async () => {
     await click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt();

@@ -14,7 +14,7 @@ import {
   toggleGroupByKind,
 } from '../helpers/issues-helpers.js';
 
-describe('The Issues tab group by kind checkbox', async () => {
+describe('The Issues tab group by kind checkbox', () => {
   it('should group issues by associated kinds when checked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

@@ -38,7 +38,7 @@ const renderEndpointsGrid = async (data?: ApplicationComponents.EndpointsGrid.En
   return datagrid;
 };
 
-describeWithLocale('EndpointsGrid', async () => {
+describeWithLocale('EndpointsGrid', () => {
   it('displays placeholder text if no data', async () => {
     const component = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
     renderElementIntoDOM(component);

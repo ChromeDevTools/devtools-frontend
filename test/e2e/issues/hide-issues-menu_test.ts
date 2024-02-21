@@ -186,7 +186,7 @@ describe('Hide issues menu', () => {
   });
 });
 
-describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
+describe('After enabling grouping by IssueKind, Hide issues menu', () => {
   it('should be appended to the issue kinds group header', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

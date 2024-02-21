@@ -18,7 +18,7 @@ import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../help
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
-describe('The Reporting API Page', async () => {
+describe('The Reporting API Page', () => {
   beforeEach(async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'empty');

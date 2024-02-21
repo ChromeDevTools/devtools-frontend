@@ -63,7 +63,7 @@ async function waitForTextContent(selector: string) {
 const DEVTOOLS_LINK = '.toolbar-item .devtools-link';
 const INFOBAR_TEXT = '.infobar-info-text';
 
-describe('The Sources Tab', async function() {
+describe('The Sources Tab', function() {
   // Some of these tests that use instrumentation breakpoints
   // can be slower on mac and windows. Increase the timeout for them.
   if (this.timeout() !== 0) {
@@ -695,7 +695,7 @@ describe('The Sources Tab', async function() {
   });
 });
 
-describe('The Elements Tab', async () => {
+describe('The Elements Tab', () => {
   async function clickStyleValueWithModifiers(selector: string, name: string, value: string, location: string) {
     const element = await waitForCSSPropertyValue(selector, name, value, location);
     // Click with offset to skip swatches.

@@ -17,7 +17,7 @@ import * as Elements from './elements.js';
 
 const {assert} = chai;
 
-describeWithRealConnection('StylePropertyTreeElement', async () => {
+describeWithRealConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
   let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;

@@ -77,7 +77,7 @@ const configureAndCheckHeaderOverrides = async () => {
   assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'Foo']);
 };
 
-describe('The Network Request view', async () => {
+describe('The Network Request view', () => {
   it('re-opens the same tab after switching to another panel and navigating back to the "Network" tab (https://crbug.com/1184578)',
      async () => {
        await navigateToNetworkTab(SIMPLE_PAGE_URL);

@@ -10,7 +10,7 @@ import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '
 
 const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 
-describe('Sources Tab', async function() {
+describe('Sources Tab', function() {
   it('shows correct preview for `object.foo` member expressions', async () => {
     const {target, frontend} = getBrowserAndPages();
 

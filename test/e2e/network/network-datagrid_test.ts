@@ -43,7 +43,7 @@ async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: st
   return {status: statusColumn[index], time: timeColumn[index], type: typeColumn[index]};
 }
 
-describe('The Network Tab', async function() {
+describe('The Network Tab', function() {
   if (this.timeout() !== 0.0) {
     // These tests take some time on slow windows machines.
     this.timeout(10000);

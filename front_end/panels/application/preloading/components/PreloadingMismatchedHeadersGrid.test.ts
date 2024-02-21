@@ -54,7 +54,7 @@ async function testPreloadingMismatchedHeadersGrid(
   );
 }
 
-describeWithEnvironment('PreloadingMismatchedHeadersGrid', async () => {
+describeWithEnvironment('PreloadingMismatchedHeadersGrid', () => {
   it('one mismatched header without missing', async () => {
     await testPreloadingMismatchedHeadersGrid(
         [

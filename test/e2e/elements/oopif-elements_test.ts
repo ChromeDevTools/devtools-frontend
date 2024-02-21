@@ -11,7 +11,7 @@ import {
   waitForElementWithPartialText,
 } from '../helpers/elements-helpers.js';
 
-describe('The Elements tab', async () => {
+describe('The Elements tab', () => {
   it('shows OOPIF frame error inline', async () => {
     await goToResource('elements/page-error.html');
     await waitForElementsStyleSection();

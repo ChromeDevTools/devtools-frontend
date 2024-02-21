@@ -26,7 +26,7 @@ import {
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
-describe('The Network Tab', async function() {
+describe('The Network Tab', function() {
   // The tests here tend to take time because they wait for requests to appear in the request panel.
   this.timeout(5000);
 

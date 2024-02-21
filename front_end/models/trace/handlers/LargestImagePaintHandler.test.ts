@@ -8,7 +8,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as TraceModel from '../trace.js';
 import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
 
-describe('LargestImagePaintHandler', async function() {
+describe('LargestImagePaintHandler', function() {
   beforeEach(async () => {
     TraceModel.Handlers.ModelHandlers.LargestImagePaint.reset();
   });

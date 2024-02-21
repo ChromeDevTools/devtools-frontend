@@ -42,7 +42,7 @@ async function breakAndCheckFocusedPanel(expectedPanel: string) {
   });
 }
 
-describe('Sources Panel', async () => {
+describe('Sources Panel', () => {
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
     installEventListener(frontend, DEBUGGER_PAUSED_EVENT);

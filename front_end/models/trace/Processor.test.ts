@@ -8,7 +8,7 @@ import * as TraceModel from '../trace/trace.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('TraceProcessor', async function() {
+describeWithEnvironment('TraceProcessor', function() {
   it('can use a trace processor', async function() {
     const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
     const file = await TraceLoader.rawEvents(this, 'basic.json.gz');

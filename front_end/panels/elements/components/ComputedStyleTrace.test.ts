@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -20,8 +20,7 @@ describe('ComputedStyleTrace', () => {
     };
     component.data = data;
 
-    assertShadowRoot(component.shadowRoot);
-    const renderedSelector = component.shadowRoot.querySelector('.trace-selector');
+    const renderedSelector = component.shadowRoot!.querySelector('.trace-selector');
     if (!renderedSelector) {
       assert.fail('selector was not rendered');
       return;
@@ -42,8 +41,7 @@ describe('ComputedStyleTrace', () => {
     };
     component.data = data;
 
-    assertShadowRoot(component.shadowRoot);
-    const goto = component.shadowRoot.querySelector<HTMLElement>('.goto');
+    const goto = component.shadowRoot!.querySelector<HTMLElement>('.goto');
     if (!goto) {
       assert.fail('goto did not exist');
       return;
@@ -51,7 +49,7 @@ describe('ComputedStyleTrace', () => {
     goto.click();
     assert.strictEqual(clickCounter, 1, 'goto icon should be clickable');
 
-    const traceValue = component.shadowRoot.querySelector<HTMLElement>('slot[name="trace-value"]');
+    const traceValue = component.shadowRoot!.querySelector<HTMLElement>('slot[name="trace-value"]');
     if (!traceValue) {
       assert.fail('trace value slot was not rendered');
       return;

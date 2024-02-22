@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Elements from '../elements.js';
 
@@ -21,17 +21,9 @@ describeWithEnvironment('CSSHintDetailsView', () => {
     const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hintMessage);
     renderElementIntoDOM(popupComponent);
 
-    assertShadowRoot(popupComponent.shadowRoot);
-
-    const shadowRoot = popupComponent.shadowRoot;
-
-    const popupReasonRendered = shadowRoot.querySelector('.hint-popup-reason') !== null;
-    const popupPossibleFixRendered = shadowRoot.querySelector('.hint-popup-possible-fix') !== null;
-    const popupLearnMoreRendered = shadowRoot.querySelector('#learn-more') !== null;
-
-    assert.isTrue(popupReasonRendered);
-    assert.isTrue(popupPossibleFixRendered);
-    assert.isTrue(popupLearnMoreRendered);
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-reason'));
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-possible-fix'));
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
   });
 
   it('does not render learn more', async () => {
@@ -43,12 +35,8 @@ describeWithEnvironment('CSSHintDetailsView', () => {
     const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
     renderElementIntoDOM(popupComponent);
 
-    assertShadowRoot(popupComponent.shadowRoot);
-
-    const shadowRoot = popupComponent.shadowRoot;
-
-    assert(shadowRoot.querySelector('.hint-popup-reason') !== null);
-    assert(shadowRoot.querySelector('.hint-popup-possible-fix') !== null);
-    assert(shadowRoot.querySelector('#learn-more') === null);
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-reason'));
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-possible-fix'));
+    assert.isNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
   });
 });

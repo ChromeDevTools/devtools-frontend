@@ -91,9 +91,8 @@ describeWithRealConnection('FrameDetailsView', () => {
     void component.render();
     await coordinator.done({waitForWork: true});
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-    assertShadowRoot(report.shadowRoot);
 
-    const titleElement = report.shadowRoot.querySelector('.report-title');
+    const titleElement = report.shadowRoot!.querySelector('.report-title');
     assert.strictEqual(titleElement?.textContent, frame.displayName());
   });
 

@@ -54,11 +54,10 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
-    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Force run',
@@ -75,11 +74,10 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
-    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Bounce tracking mitigations are disabled. To enable them, set the flag at Bounce Tracking Mitigations Feature Flag to "Enabled With Deletion".',
@@ -96,17 +94,16 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
-    const forceRunButton = component.shadowRoot.querySelector('[aria-label="Force run"]');
+    const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assertElement(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
     await coordinator.done();
 
-    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+    const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Force run',
@@ -126,8 +123,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
-    const forceRunButton = component.shadowRoot.querySelector('[aria-label="Force run"]');
+    const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assertElement(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 

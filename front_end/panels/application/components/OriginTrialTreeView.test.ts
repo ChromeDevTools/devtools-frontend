@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  assertElement,
   assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -136,13 +135,11 @@ const trialWithUnparsableToken: Protocol.Page.OriginTrial = {
 
 function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
   return [...node.querySelectorAll('devtools-resources-origin-trial-tree-view-badge')].map(badgeElement => {
-    assertShadowRoot(badgeElement.shadowRoot);
-    const adornerElement = badgeElement.shadowRoot.querySelector('devtools-adorner');
+    const adornerElement = badgeElement.shadowRoot!.querySelector('devtools-adorner');
     assert.isNotNull(adornerElement);
     if (adornerElement === null) {
       return '';
     }
-    assertShadowRoot(adornerElement.shadowRoot);
     const contentElement = adornerElement.querySelector('[slot="content"]');
     assert.isNotNull(contentElement);
     if (contentElement === null) {
@@ -292,9 +289,7 @@ describeWithLocale('OriginTrialTreeView', () => {
     assert.lengthOf(tokenDetailNodes, 2);
     const tokenFieldsNode = tokenDetailNodes[0];
     const rowsComponent = tokenFieldsNode.nodeElement.querySelector('devtools-resources-origin-trial-token-rows');
-    assertElement(rowsComponent, ApplicationComponents.OriginTrialTreeView.OriginTrialTokenRows);
-    assertShadowRoot(rowsComponent.shadowRoot);
-    const innerHTML = rowsComponent.shadowRoot.innerHTML;
+    const {innerHTML} = rowsComponent!.shadowRoot!;
     const parsedToken = trialWithSingleToken.tokensWithStatus[0].parsedToken;
     assert.isDefined(parsedToken);
     if (parsedToken === undefined) {
@@ -449,9 +444,7 @@ describeWithLocale('OriginTrialTreeView', () => {
     assert.lengthOf(tokenDetailNodes, 2);
     const tokenFieldsNode = tokenDetailNodes[0];
     const rowsComponent = tokenFieldsNode.nodeElement.querySelector('devtools-resources-origin-trial-token-rows');
-    assertElement(rowsComponent, ApplicationComponents.OriginTrialTreeView.OriginTrialTokenRows);
-    assertShadowRoot(rowsComponent.shadowRoot);
-    const innerHTML = rowsComponent.shadowRoot.innerHTML;
+    const {innerHTML} = rowsComponent!.shadowRoot!;
 
     assert.include(innerHTML, unknownTrialName);
   });

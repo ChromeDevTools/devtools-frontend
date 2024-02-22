@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import {
   assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   dispatchMouseUpEvent,
   raf,
@@ -899,9 +898,7 @@ function getMoreFiltersActiveCount(filterBar: UI.FilterBar.FilterBar): string {
 
 function getSoftMenu(): HTMLElement {
   const container = document.querySelector('div[data-devtools-glass-pane]');
-  assertElement(container, HTMLElement);
-  assertShadowRoot(container.shadowRoot);
-  const softMenu = container.shadowRoot.querySelector('.soft-context-menu');
+  const softMenu = container!.shadowRoot!.querySelector('.soft-context-menu');
   assertElement(softMenu, HTMLElement);
   return softMenu;
 }

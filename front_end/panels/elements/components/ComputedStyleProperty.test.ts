@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  assertShadowRoot,
-  getEventPromise,
-  renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {getEventPromise, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -19,9 +15,7 @@ describe('ComputedStyleProperty', () => {
     component.traceable = false;
     component.inherited = true;
 
-    assertShadowRoot(component.shadowRoot);
-
-    const wrapper = component.shadowRoot.querySelector('.computed-style-property.inherited');
+    const wrapper = component.shadowRoot!.querySelector('.computed-style-property.inherited');
     assert.exists(wrapper, 'it should add .inherited class to wrapper for inherited properties');
   });
 
@@ -34,8 +28,7 @@ describe('ComputedStyleProperty', () => {
     const navigateEvent =
         getEventPromise(component, ElementsComponents.ComputedStyleProperty.NavigateToSourceEvent.eventName);
 
-    assertShadowRoot(component.shadowRoot);
-    const goto = component.shadowRoot.querySelector<HTMLElement>('.goto');
+    const goto = component.shadowRoot!.querySelector<HTMLElement>('.goto');
     if (!goto) {
       assert.fail('goto icon should exist');
       return;

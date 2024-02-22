@@ -76,12 +76,11 @@ describeWithLocale('SharedStorageAccessGrid', () => {
 
   it('hides shared storage event table when there are no events', async () => {
     const component = await renderSharedStorageAccessGrid([]);
-    assertShadowRoot(component.shadowRoot);
 
-    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const noEventsElement = component.shadowRoot.querySelector('div.no-events-message');
+    const noEventsElement = component.shadowRoot!.querySelector('div.no-events-message');
     assertElement(noEventsElement, HTMLDivElement);
   });
 });

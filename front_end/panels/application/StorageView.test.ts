@@ -4,19 +4,15 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../core/sdk/sdk.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-import * as Protocol from '../../generated/protocol.js';
-import * as Resources from './application.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import {assertElement, dispatchFocusOutEvent} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {
-  assertElement,
-  assertShadowRoot,
-  dispatchFocusOutEvent,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Resources from './application.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -78,17 +74,16 @@ describeWithMockConnection('StorageView', () => {
       const view = new Resources.StorageView.StorageView();
       const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
       assertElement(container, HTMLDivElement);
-      assertShadowRoot(container.shadowRoot);
-      const customQuotaCheckbox = container.shadowRoot.querySelector('.quota-override-row span')
-                                      ?.shadowRoot?.querySelector('[title="Simulate custom storage quota"]') ||
-          null;
+      const customQuotaCheckbox =
+          container.shadowRoot!.querySelector('.quota-override-row span')!.shadowRoot!.querySelector(
+              '[title="Simulate custom storage quota"]');
       assertElement(customQuotaCheckbox, HTMLInputElement);
       customQuotaCheckbox.checked = true;
-      const errorDiv = container.shadowRoot.querySelector('.quota-override-error');
+      const errorDiv = container.shadowRoot!.querySelector('.quota-override-error');
       assertElement(errorDiv, HTMLDivElement);
       assert.strictEqual(errorDiv.textContent, '');
 
-      const editor = container.shadowRoot.querySelector('.quota-override-notification-editor');
+      const editor = container.shadowRoot!.querySelector('.quota-override-notification-editor');
       assertElement(editor, HTMLInputElement);
       editor.value = '9999999999999';
       dispatchFocusOutEvent(editor);

@@ -4,7 +4,6 @@
 
 import {
   assertElement,
-  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -43,9 +42,8 @@ describeWithEnvironment('ProtocolHandlersView', () => {
     const manifestURL = 'https://www.example.com/index.html/manifest-protocol.json' as Platform.DevToolsPath.UrlString;
     const component = await renderProtocolHandlersComponent(
         manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
-    assertShadowRoot(component.shadowRoot);
 
-    const statusElement = component.shadowRoot.querySelector('.protocol-handlers-row.status');
+    const statusElement = component.shadowRoot!.querySelector('.protocol-handlers-row.status');
     assertElement(statusElement, HTMLElement);
 
     // Tests if status message for when protocols are detected in the manifest is rendering
@@ -65,9 +63,8 @@ describeWithEnvironment('ProtocolHandlersView', () => {
     const manifestURL = 'https://www.example.com/index.html/manifest-protocol.json' as Platform.DevToolsPath.UrlString;
     const component = await renderProtocolHandlersComponent(
         manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
-    assertShadowRoot(component.shadowRoot);
 
-    const noStatusElement = component.shadowRoot.querySelector('.protocol-handlers-row.status');
+    const noStatusElement = component.shadowRoot!.querySelector('.protocol-handlers-row.status');
     assertElement(noStatusElement, HTMLElement);
 
     const protocolsNotDetectedMessage = getCleanTextContentFromElements(noStatusElement, 'span');

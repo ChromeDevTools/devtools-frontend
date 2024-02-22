@@ -43,10 +43,9 @@ describeWithLocale('SharedStorageMetadataView', () => {
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-    assertShadowRoot(report.shadowRoot);
 
-    const titleElement = report.shadowRoot.querySelector('.report-title');
-    assert.strictEqual(titleElement?.textContent, 'Shared storage');
+    const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
+    assert.strictEqual(textContent, 'Shared storage');
   });
 
   it('renders report keys and values', async () => {
@@ -118,10 +117,9 @@ describeWithLocale('SharedStorageMetadataView', () => {
         resetBudgetHandlerSpy);
     renderElementIntoDOM(component);
 
-    assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
 
-    const resetButtonComponent = component.shadowRoot.querySelector('devtools-button');
+    const resetButtonComponent = component.shadowRoot!.querySelector('devtools-button');
     assertElement(resetButtonComponent, HTMLElement);
     dispatchClickEvent(resetButtonComponent);
 

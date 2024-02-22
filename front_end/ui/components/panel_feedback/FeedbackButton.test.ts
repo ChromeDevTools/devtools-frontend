@@ -4,7 +4,6 @@
 
 import {
   assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
@@ -27,8 +26,7 @@ describeWithLocale('Feedback button', () => {
 
     renderElementIntoDOM(component);
     await coordinator.done();
-    assertShadowRoot(component.shadowRoot);
-    const button = component.shadowRoot.querySelector('devtools-button');
+    const button = component.shadowRoot!.querySelector('devtools-button');
     assertElement(button, HTMLElement);
     dispatchClickEvent(button);
     assert.strictEqual(openInNewTabStub.callCount, 1);

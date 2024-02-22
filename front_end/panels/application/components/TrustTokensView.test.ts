@@ -105,12 +105,11 @@ describeWithMockConnection('TrustTokensView', () => {
   it('hides trust token table when there are no trust tokens', async () => {
     sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({tokens: [], getError: () => undefined});
     const component = await renderTrustTokensView();
-    assertShadowRoot(component.shadowRoot);
 
-    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const noTrustTokensElement = component.shadowRoot.querySelector('div.no-tt-message');
+    const noTrustTokensElement = component.shadowRoot!.querySelector('div.no-tt-message');
     assertElement(noTrustTokensElement, HTMLDivElement);
   });
 

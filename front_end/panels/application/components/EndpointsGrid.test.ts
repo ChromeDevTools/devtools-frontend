@@ -42,10 +42,9 @@ describeWithLocale('EndpointsGrid', () => {
   it('displays placeholder text if no data', async () => {
     const component = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
     renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
 
-    const placeholder = component.shadowRoot.querySelector('.reporting-placeholder div');
+    const placeholder = component.shadowRoot!.querySelector('.reporting-placeholder div');
     assert.strictEqual(placeholder?.textContent, 'No endpoints to display');
   });
 

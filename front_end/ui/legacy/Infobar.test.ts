@@ -4,7 +4,6 @@
 
 import {
   assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
@@ -28,9 +27,8 @@ describe('Infobar', () => {
 
   const checkDetailsMessage = (component: UI.Infobar.Infobar, messageText: string) => {
     renderElementIntoDOM(component.element);
-    assertShadowRoot(component.element.shadowRoot);
 
-    const infobar = component.element.shadowRoot.querySelector('.infobar');
+    const infobar = component.element.shadowRoot!.querySelector('.infobar');
     assertElement(infobar, HTMLDivElement);
     const learnMoreButton = infobar.querySelector('button.text-button');
     assertElement(learnMoreButton, HTMLButtonElement);

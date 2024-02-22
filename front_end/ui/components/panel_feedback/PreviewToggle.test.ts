@@ -67,8 +67,7 @@ describeWithLocale('Preview toggle', () => {
     renderElementIntoDOM(component);
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
-    const input = component.shadowRoot.querySelector('input');
+    const input = component.shadowRoot!.querySelector('input');
     assertElement(input, HTMLElement);
     dispatchClickEvent(input);
     assert.strictEqual(setEnabledStub.callCount, 1);

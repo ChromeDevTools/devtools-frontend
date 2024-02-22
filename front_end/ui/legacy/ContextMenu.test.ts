@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  assertElement,
-  assertShadowRoot,
-  dispatchMouseUpEvent,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertElement, dispatchMouseUpEvent} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {stabilizeEvent, stabilizeImpressions} from '../../../test/unittests/front_end/helpers/VisualLoggingHelpers.js';
 import * as Common from '../../core/common/common.js';
@@ -17,9 +13,7 @@ import * as UI from './legacy.js';
 
 function getContextMenuElement(): HTMLElement {
   const container = document.querySelector('div[data-devtools-glass-pane]');
-  assertElement(container, HTMLElement);
-  assertShadowRoot(container.shadowRoot);
-  const softMenuElement = container.shadowRoot.querySelector('.widget > .soft-context-menu');
+  const softMenuElement = container!.shadowRoot!.querySelector('.widget > .soft-context-menu');
   assertElement(softMenuElement, HTMLElement);
   return softMenuElement;
 }

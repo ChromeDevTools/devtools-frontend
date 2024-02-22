@@ -92,8 +92,7 @@ describeWithLocale('StackTrace', () => {
     assertShadowRoot(component.shadowRoot);
     const expandableList =
         getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
-    assertShadowRoot(expandableList.shadowRoot);
-    const expandButton = expandableList.shadowRoot.querySelector('button.arrow-icon-button');
+    const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
     assertElement(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
 
@@ -146,8 +145,7 @@ describeWithLocale('StackTrace', () => {
     assertShadowRoot(component.shadowRoot);
     const expandableList =
         getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
-    assertShadowRoot(expandableList.shadowRoot);
-    const expandButton = expandableList.shadowRoot.querySelector('button.arrow-icon-button');
+    const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
     assertElement(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
     await new Promise<void>(resolve => {
@@ -156,7 +154,7 @@ describeWithLocale('StackTrace', () => {
       }, 1500);
     });
 
-    const stackTraceRows = Array.from(expandableList.shadowRoot.querySelectorAll('[data-stack-trace-row]'));
+    const stackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
@@ -171,12 +169,11 @@ describeWithLocale('StackTrace', () => {
 
     const stackTraceLinkButton = getElementWithinComponent(
         expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
-    assertShadowRoot(stackTraceLinkButton.shadowRoot);
-    const showAllButton = stackTraceLinkButton.shadowRoot.querySelector('.stack-trace-row button.link');
+    const showAllButton = stackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
     assertElement(showAllButton, HTMLButtonElement);
     dispatchClickEvent(showAllButton);
 
-    const openedStackTraceRows = Array.from(expandableList.shadowRoot.querySelectorAll('[data-stack-trace-row]'));
+    const openedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     let openedStackTraceText: string[] = [];
 
     openedStackTraceRows.forEach(row => {
@@ -193,12 +190,11 @@ describeWithLocale('StackTrace', () => {
 
     const newStackTraceLinkButton = getElementWithinComponent(
         expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
-    assertShadowRoot(newStackTraceLinkButton.shadowRoot);
-    const showLessButton = newStackTraceLinkButton.shadowRoot.querySelector('.stack-trace-row button.link');
+    const showLessButton = newStackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
     assertElement(showLessButton, HTMLButtonElement);
     dispatchClickEvent(showLessButton);
 
-    const reclosedStackTraceRows = Array.from(expandableList.shadowRoot.querySelectorAll('[data-stack-trace-row]'));
+    const reclosedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     stackTraceText = [];
 
     reclosedStackTraceRows.forEach(row => {

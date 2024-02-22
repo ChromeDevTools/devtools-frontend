@@ -2,13 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNodeTextContent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+
 import * as NodeText from './node_text.js';
-import {
-  assertElement,
-  assertNodeTextContent,
-  assertShadowRoot,
-  renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -64,13 +60,11 @@ describe('NodeText', () => {
       nodeId: 'id',
       nodeClasses: ['foo'],
     };
-    assertShadowRoot(component.shadowRoot);
-    const idLabel = component.shadowRoot.querySelector('.node-label-id');
-    const classLabel = component.shadowRoot.querySelector('.node-label-class');
-    assertElement(idLabel, HTMLSpanElement);
-    assertElement(classLabel, HTMLSpanElement);
-    assert.isTrue(idLabel.classList.contains('node-multiple-descriptors'));
-    assert.isTrue(classLabel.classList.contains('node-multiple-descriptors'));
+
+    const idLabel = component.shadowRoot!.querySelector('.node-label-id');
+    assert.isTrue(idLabel!.classList.contains('node-multiple-descriptors'));
+    const classLabel = component.shadowRoot!.querySelector('.node-label-class');
+    assert.isTrue(classLabel!.classList.contains('node-multiple-descriptors'));
   });
 
   it('does not apply the multiple descriptors class when the node has only an ID', () => {
@@ -81,9 +75,8 @@ describe('NodeText', () => {
       nodeId: 'id',
       nodeClasses: [],
     };
-    assertShadowRoot(component.shadowRoot);
-    const idLabel = component.shadowRoot.querySelector('.node-label-id');
-    assertElement(idLabel, HTMLSpanElement);
-    assert.isFalse(idLabel.classList.contains('node-multiple-descriptors'));
+
+    const idLabel = component.shadowRoot!.querySelector('.node-label-id');
+    assert.isFalse(idLabel!.classList.contains('node-multiple-descriptors'));
   });
 });

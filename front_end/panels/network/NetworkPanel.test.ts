@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement, assertShadowRoot} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertElement} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import * as Common from '../../core/common/common.js';
@@ -117,9 +117,7 @@ describeWithMockConnection('NetworkPanel', () => {
   it('clears network log on button click', async () => {
     const networkLogResetSpy = sinon.spy(Logs.NetworkLog.NetworkLog.instance(), 'reset');
     const toolbar = networkPanel.element.querySelector('.network-toolbar-container .toolbar');
-    assertElement(toolbar, HTMLDivElement);
-    assertShadowRoot(toolbar.shadowRoot);
-    const button = toolbar.shadowRoot.querySelector('[aria-label="Clear network log"]');
+    const button = toolbar!.shadowRoot!.querySelector('[aria-label="Clear network log"]');
     assertElement(button, HTMLButtonElement);
     button.click();
     await coordinator.done({waitForWork: true});

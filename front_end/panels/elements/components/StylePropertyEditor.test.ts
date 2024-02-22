@@ -4,7 +4,6 @@
 
 import {
   assertElement,
-  assertShadowRoot,
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
@@ -16,8 +15,7 @@ const {assert} = chai;
 
 describeWithLocale('StylePropertyEditor', () => {
   function assertValues(component: HTMLElement, values: string[]) {
-    assertShadowRoot(component.shadowRoot);
-    const propertyElements = component.shadowRoot.querySelectorAll('.property');
+    const propertyElements = component.shadowRoot!.querySelectorAll('.property');
     const properties = [];
     for (const propElement of propertyElements) {
       properties.push(propElement.textContent?.trim());
@@ -83,8 +81,7 @@ describeWithLocale('StylePropertyEditor', () => {
           component, ['flex-direction: row', 'flex-wrap:', 'align-content:', 'justify-content:', 'align-items:']);
       const eventPromise =
           getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
-      assertShadowRoot(component.shadowRoot);
-      const flexDirectionColumnButton = component.shadowRoot.querySelector('.row .buttons .button:nth-child(2)');
+      const flexDirectionColumnButton = component.shadowRoot!.querySelector('.row .buttons .button:nth-child(2)');
       assertElement(flexDirectionColumnButton, HTMLButtonElement);
       flexDirectionColumnButton.click();
       const event = await eventPromise;
@@ -104,8 +101,7 @@ describeWithLocale('StylePropertyEditor', () => {
           component, ['flex-direction: column', 'flex-wrap:', 'align-content:', 'justify-content:', 'align-items:']);
       const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
           component, 'propertydeselected');
-      assertShadowRoot(component.shadowRoot);
-      const flexDirectionColumnButton = component.shadowRoot.querySelector('.row .buttons .button:nth-child(2)');
+      const flexDirectionColumnButton = component.shadowRoot!.querySelector('.row .buttons .button:nth-child(2)');
       assertElement(flexDirectionColumnButton, HTMLButtonElement);
       flexDirectionColumnButton.click();
       const event = await eventPromise;
@@ -166,8 +162,7 @@ describeWithLocale('StylePropertyEditor', () => {
       assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items: normal']);
       const eventPromise =
           getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
-      assertShadowRoot(component.shadowRoot);
-      const justifyItemsButton = component.shadowRoot.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
       assertElement(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;
@@ -186,8 +181,7 @@ describeWithLocale('StylePropertyEditor', () => {
       assertValues(component, ['align-content:', 'justify-content:', 'align-items:', 'justify-items: center']);
       const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
           component, 'propertydeselected');
-      assertShadowRoot(component.shadowRoot);
-      const justifyItemsButton = component.shadowRoot.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
+      const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
       assertElement(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;

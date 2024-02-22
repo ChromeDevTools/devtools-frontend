@@ -4,7 +4,6 @@
 
 import {
   assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
@@ -26,9 +25,8 @@ describe('Elements tree expand button', () => {
 
     renderElementIntoDOM(component);
     await coordinator.done();
-    assertShadowRoot(component.shadowRoot);
 
-    const button = component.shadowRoot.querySelector('.expand-button');
+    const button = component.shadowRoot!.querySelector('.expand-button');
     assertElement(button, HTMLElement);
 
     dispatchClickEvent(button);
@@ -45,9 +43,8 @@ describe('Elements tree expand button', () => {
 
     renderElementIntoDOM(component);
     await coordinator.done();
-    assertShadowRoot(component.shadowRoot);
 
-    const button = component.shadowRoot.querySelector('.expand-button');
+    const button = component.shadowRoot!.querySelector('.expand-button');
     assertElement(button, HTMLElement);
 
     assert.strictEqual(button.innerText, '');

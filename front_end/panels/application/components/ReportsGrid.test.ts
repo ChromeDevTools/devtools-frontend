@@ -49,10 +49,9 @@ const getHeaderText = (cell: HTMLTableCellElement) => {
 describeWithEnvironment('ReportsGrid', () => {
   it('displays placeholder text if no data', async () => {
     const component = await renderReportsGrid();
-    assertShadowRoot(component.shadowRoot);
 
-    const placeholder = component.shadowRoot.querySelector('.reporting-placeholder div');
-    assert.strictEqual(placeholder?.textContent, 'No reports to display');
+    const placeholder = component.shadowRoot!.querySelector('.reporting-placeholder div');
+    assert.strictEqual(placeholder!.textContent, 'No reports to display');
   });
 
   it('renders grid with correct content', async () => {

@@ -100,8 +100,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
         },
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
-      assertShadowRoot(component.shadowRoot);
-      const renderedStatus = component.shadowRoot.querySelector('devtools-report-section');
+      const renderedStatus = component.shadowRoot!.querySelector('devtools-report-section');
       assert.strictEqual(renderedStatus?.textContent?.trim(), 'Successfully served from back/forward cache.');
     });
 
@@ -127,13 +126,11 @@ describeWithMockConnection('BackForwardCacheView', () => {
         },
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
-      assertShadowRoot(component.shadowRoot);
-
-      const sectionHeaders = component.shadowRoot.querySelectorAll('devtools-report-section-header');
+      const sectionHeaders = component.shadowRoot!.querySelectorAll('devtools-report-section-header');
       const sectionHeadersText = Array.from(sectionHeaders).map(sectionHeader => sectionHeader.textContent?.trim());
       assert.deepStrictEqual(sectionHeadersText, ['Actionable', 'Pending Support', 'Not Actionable']);
 
-      const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+      const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
       const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
       const expected = [
         'Not served from back/forward cache: to trigger back/forward cache, use Chrome\'s back/forward buttons, or use the test button below to automatically navigate away and back.',
@@ -179,9 +176,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
         },
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
-      assertShadowRoot(component.shadowRoot);
-
-      const treeOutline = component.shadowRoot.querySelector('devtools-tree-outline');
+      const treeOutline = component.shadowRoot!.querySelector('devtools-tree-outline');
       assertElement(treeOutline, TreeOutline.TreeOutline.TreeOutline);
       assertShadowRoot(treeOutline.shadowRoot);
 
@@ -247,13 +242,11 @@ describeWithMockConnection('BackForwardCacheView', () => {
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
 
       const component = await renderBackForwardCacheView();
-      assertShadowRoot(component.shadowRoot);
-
-      const sectionHeaders = component.shadowRoot.querySelectorAll('devtools-report-section-header');
+      const sectionHeaders = component.shadowRoot!.querySelectorAll('devtools-report-section-header');
       const sectionHeadersText = Array.from(sectionHeaders).map(sectionHeader => sectionHeader.textContent?.trim());
       assert.deepStrictEqual(sectionHeadersText, ['Pending Support']);
 
-      const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+      const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
       const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
       const expected = [
         'Not served from back/forward cache: to trigger back/forward cache, use Chrome\'s back/forward buttons, or use the test button below to automatically navigate away and back.',
@@ -263,13 +256,9 @@ describeWithMockConnection('BackForwardCacheView', () => {
       ];
       assert.deepStrictEqual(sectionsText, expected);
 
-      const details = component.shadowRoot.querySelector('.details-list devtools-expandable-list');
-      assertNotNullOrUndefined(details);
-      assertShadowRoot(details.shadowRoot);
-      const button = details.shadowRoot.querySelector('button');
-      assertElement(button, HTMLButtonElement);
-      button.click();
-      const items = details?.shadowRoot.querySelectorAll('.expandable-list-items .devtools-link');
+      const details = component.shadowRoot!.querySelector('.details-list devtools-expandable-list');
+      details!.shadowRoot!.querySelector('button')!.click();
+      const items = details!.shadowRoot!.querySelectorAll('.expandable-list-items .devtools-link');
       const detailsText = Array.from(items).map(detail => detail.textContent?.trim());
       assert.deepStrictEqual(detailsText, ['www.example.com/index.html:11:6', 'www.example.com/script.js:16:21']);
     });
@@ -317,8 +306,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
         },
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
-      assertShadowRoot(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('[aria-label="Test back/forward cache"]');
+      const button = component.shadowRoot!.querySelector('[aria-label="Test back/forward cache"]');
       assertElement(button, HTMLElement);
       dispatchClickEvent(button);
 

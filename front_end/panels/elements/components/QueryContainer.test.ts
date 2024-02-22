@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  assertNodeTextContent,
-  assertShadowRoot,
-  renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertNodeTextContent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
 
@@ -35,9 +31,8 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
 };
 
 const assertContainerContent = (container: HTMLElement, expectedContent: string) => {
-  assertShadowRoot(container.shadowRoot);
   const nodeText =
-      container.shadowRoot.querySelector<NodeText.NodeText.NodeText>(`${NodeText.NodeText.NodeText.litTagName.value}`);
+      container.shadowRoot!.querySelector<NodeText.NodeText.NodeText>(`${NodeText.NodeText.NodeText.litTagName.value}`);
   if (!nodeText || !nodeText.shadowRoot) {
     assert.fail('node text element and its shadowRoot should exist');
     return;
@@ -107,9 +102,7 @@ describe('QueryContainer', () => {
     };
     component.addEventListener('queriedsizerequested', queriedSizeRequestedListener);
 
-    assertShadowRoot(component.shadowRoot);
-
-    component.shadowRoot.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
+    component.shadowRoot!.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
     assert.strictEqual(
         queriedSizeRequestedListener.callCount, 1, 'queried size requested listener should be triggered by hovering');
   });
@@ -123,9 +116,7 @@ describe('QueryContainer', () => {
       onContainerLinkClick: () => {},
     };
 
-    assertShadowRoot(component.shadowRoot);
-
-    component.shadowRoot.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
+    component.shadowRoot!.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
 
     component.updateContainerQueriedSizeDetails({
       physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.None,
@@ -133,7 +124,7 @@ describe('QueryContainer', () => {
       width: '500px',
       height: '300px',
     });
-    const nonExistentDetailsElement = component.shadowRoot.querySelector<HTMLElement>('.queried-size-details');
+    const nonExistentDetailsElement = component.shadowRoot!.querySelector<HTMLElement>('.queried-size-details');
     assert.strictEqual(nonExistentDetailsElement, null, 'query details without any axis should not be rendered');
 
     component.updateContainerQueriedSizeDetails({
@@ -141,7 +132,7 @@ describe('QueryContainer', () => {
       queryAxis: SDK.CSSContainerQuery.QueryAxis.Inline,
       width: '500px',
     });
-    const detailsElement = component.shadowRoot.querySelector<HTMLElement>('.queried-size-details');
+    const detailsElement = component.shadowRoot!.querySelector<HTMLElement>('.queried-size-details');
     assert.strictEqual(detailsElement?.innerText, '(inline-size) 500px', 'queried size details are not correct');
 
     component.updateContainerQueriedSizeDetails({

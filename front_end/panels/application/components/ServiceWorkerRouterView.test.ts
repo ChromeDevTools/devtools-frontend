@@ -4,13 +4,12 @@
 
 const {assert} = chai;
 
-import * as ApplicationComponents from './components.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import {
-  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -39,18 +38,16 @@ describeWithLocale('ServiceWorkerRouterView', () => {
 
   it('shows nothing with empty rules', async () => {
     const component = await renderServiceWorkerRouterView();
-    assertShadowRoot(component.shadowRoot);
     component.update([]);
-    assert.isFalse(component.shadowRoot.hasChildNodes());
+    assert.isFalse(component.shadowRoot!.hasChildNodes());
   });
 
   it('shows the list of rules', async () => {
     const component = await renderServiceWorkerRouterView();
-    assertShadowRoot(component.shadowRoot);
-    await component.update(routerRules);
-    assert.isTrue(component.shadowRoot.hasChildNodes());
+    component.update(routerRules);
+    assert.isTrue(component.shadowRoot!.hasChildNodes());
 
-    const rules = Array.from(component.shadowRoot.querySelectorAll('.router-rule'));
+    const rules = Array.from(component.shadowRoot!.querySelectorAll('.router-rule'));
     assert.strictEqual(rules.length, 2);
 
     rules.map((rule, idx) => {

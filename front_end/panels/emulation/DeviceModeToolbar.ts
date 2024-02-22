@@ -419,8 +419,8 @@ export class DeviceModeToolbar {
   private appendDevicePostureItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     for (const title of ['Continuous', 'Folded']) {
       contextMenu.defaultSection().appendCheckboxItem(
-          title, this.spanClicked.bind(this), title === this.currentDevicePosture(), false, undefined, undefined,
-          title.toLowerCase());
+          title, this.spanClicked.bind(this),
+          {checked: title === this.currentDevicePosture(), jslogContext: title.toLowerCase()});
     }
   }
 
@@ -442,7 +442,7 @@ export class DeviceModeToolbar {
     }
     contextMenu.footerSection().appendCheckboxItem(
         i18nString(UIStrings.autoadjustZoom), this.onAutoAdjustScaleChanged.bind(this),
-        this.autoAdjustScaleSetting.get(), undefined, undefined, undefined, 'auto-adjust-zoom');
+        {checked: this.autoAdjustScaleSetting.get(), jslogContext: 'auto-adjust-zoom'});
     const boundAppendScaleItem = appendScaleItem.bind(this);
     boundAppendScaleItem('50%', 0.5);
     boundAppendScaleItem('75%', 0.75);
@@ -453,8 +453,8 @@ export class DeviceModeToolbar {
 
     function appendScaleItem(this: DeviceModeToolbar, title: string, value: number): void {
       contextMenu.defaultSection().appendCheckboxItem(
-          title, this.onScaleMenuChanged.bind(this, value), this.model.scaleSetting().get() === value, false, undefined,
-          undefined, title);
+          title, this.onScaleMenuChanged.bind(this, value),
+          {checked: this.model.scaleSetting().get() === value, jslogContext: title});
     }
   }
 
@@ -482,7 +482,7 @@ export class DeviceModeToolbar {
         section: UI.ContextMenu.Section, title: string, value: number, jslogContext: string): void {
       section.appendCheckboxItem(
           title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, value),
-          deviceScaleFactorSetting.get() === value, undefined, undefined, undefined, jslogContext);
+          {checked: deviceScaleFactorSetting.get() === value, jslogContext});
     }
   }
 
@@ -495,8 +495,7 @@ export class DeviceModeToolbar {
 
     function appendUAItem(title: string, value: EmulationModel.DeviceModeModel.UA): void {
       contextMenu.defaultSection().appendCheckboxItem(
-          title, uaSetting.set.bind(uaSetting, value), uaSetting.get() === value, undefined, undefined, undefined,
-          value);
+          title, uaSetting.set.bind(uaSetting, value), {checked: uaSetting.get() === value, jslogContext: value});
     }
   }
 
@@ -592,8 +591,7 @@ export class DeviceModeToolbar {
   private appendDeviceMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.headerSection().appendCheckboxItem(
         i18nString(UIStrings.responsive), this.switchToResponsive.bind(this),
-        this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive, false, undefined, undefined,
-        'responsive');
+        {checked: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive, jslogContext: 'responsive'});
     appendGroup.call(this, this.standardDevices());
     appendGroup.call(this, this.customDevices());
     contextMenu.footerSection().appendItem(
@@ -606,9 +604,10 @@ export class DeviceModeToolbar {
       }
       const section = contextMenu.section();
       for (const device of devices) {
-        section.appendCheckboxItem(
-            device.title, this.emulateDevice.bind(this, device), this.model.device() === device, false, undefined,
-            undefined, Platform.StringUtilities.toKebabCase(device.title));
+        section.appendCheckboxItem(device.title, this.emulateDevice.bind(this, device), {
+          checked: this.model.device() === device,
+          jslogContext: Platform.StringUtilities.toKebabCase(device.title),
+        });
       }
     }
   }
@@ -734,7 +733,8 @@ export class DeviceModeToolbar {
     }
 
     function addMode(mode: EmulationModel.EmulatedDevices.Mode, title: string): void {
-      contextMenu.defaultSection().appendCheckboxItem(title, applyMode.bind(null, mode), model.mode() === mode, false);
+      contextMenu.defaultSection().appendCheckboxItem(
+          title, applyMode.bind(null, mode), {checked: model.mode() === mode});
     }
 
     function applyMode(mode: EmulationModel.EmulatedDevices.Mode): void {

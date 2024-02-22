@@ -425,7 +425,7 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider<SDK.DOMModel
       const label = Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(type);
       if (label) {
         breakpointsMenu.defaultSection().appendCheckboxItem(
-            label(), toggleBreakpoint.bind(null, type), domDebuggerModel.hasDOMBreakpoint(node, type));
+            label(), toggleBreakpoint.bind(null, type), {checked: domDebuggerModel.hasDOMBreakpoint(node, type)});
       }
     }
   }

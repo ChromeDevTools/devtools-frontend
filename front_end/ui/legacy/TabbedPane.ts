@@ -637,7 +637,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
       if (this.numberOfTabsShown() === 0 && this.tabsHistory[0] === tab) {
         menu.defaultSection().appendCheckboxItem(
-            tab.title, this.dropDownMenuItemSelected.bind(this, tab), /* checked */ true);
+            tab.title, this.dropDownMenuItemSelected.bind(this, tab), {checked: true});
       } else {
         menu.defaultSection().appendItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab));
       }

@@ -2641,7 +2641,7 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     contextMenu.defaultSection().appendCheckboxItem(label, () => {
       this.setting.get()[name] = !this.setting.get()[name];
       this.toggleTypeFilter(name);
-    }, this.setting.get()[name], undefined, undefined, undefined, jslogContext);
+    }, {checked: this.setting.get()[name], jslogContext});
   }
 
   private toggleTypeFilter(typeName: string): void {
@@ -2853,31 +2853,41 @@ export class MoreFiltersDropDownUI extends
 
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hideDataUrls),
-        () => this.networkHideDataURLSetting.set(!this.networkHideDataURLSetting.get()),
-        this.networkHideDataURLSetting.get(), undefined, undefined, i18nString(UIStrings.hidesDataAndBlobUrls),
-        'hide-data-urls');
+        () => this.networkHideDataURLSetting.set(!this.networkHideDataURLSetting.get()), {
+          checked: this.networkHideDataURLSetting.get(),
+          tooltip: i18nString(UIStrings.hidesDataAndBlobUrls),
+          jslogContext: 'hide-data-urls',
+        });
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.chromeExtensions),
-        () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()),
-        this.networkHideChromeExtensionsSetting.get(), undefined, undefined, i18nString(UIStrings.hideChromeExtension),
-        'hide-extension-urls');
+        () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()), {
+          checked: this.networkHideChromeExtensionsSetting.get(),
+          tooltip: i18nString(UIStrings.hideChromeExtension),
+          jslogContext: 'hide-extension-urls',
+        });
     this.contextMenu.defaultSection().appendSeparator();
 
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hasBlockedCookies),
-        () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()),
-        this.networkShowBlockedCookiesOnlySetting.get(), undefined, undefined,
-        i18nString(UIStrings.onlyShowRequestsWithBlockedCookies), 'only-blocked-response-cookies');
+        () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()), {
+          checked: this.networkShowBlockedCookiesOnlySetting.get(),
+          tooltip: i18nString(UIStrings.onlyShowRequestsWithBlockedCookies),
+          jslogContext: 'only-blocked-response-cookies',
+        });
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.blockedRequests),
-        () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()),
-        this.networkOnlyBlockedRequestsSetting.get(), undefined, undefined,
-        i18nString(UIStrings.onlyShowBlockedRequests), 'only-blocked-requests');
+        () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()), {
+          checked: this.networkOnlyBlockedRequestsSetting.get(),
+          tooltip: i18nString(UIStrings.onlyShowBlockedRequests),
+          jslogContext: 'only-blocked-requests',
+        });
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.thirdParty),
-        () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()),
-        this.networkOnlyThirdPartySetting.get(), undefined, undefined, i18nString(UIStrings.onlyShowThirdPartyRequests),
-        'only-3rd-party-requests');
+        () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()), {
+          checked: this.networkOnlyThirdPartySetting.get(),
+          tooltip: i18nString(UIStrings.onlyShowThirdPartyRequests),
+          jslogContext: 'only-3rd-party-requests',
+        });
 
     void this.contextMenu.show();
   }

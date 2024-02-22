@@ -242,8 +242,8 @@ export class ThrottlingManager {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
-            conditions.title, selector.optionSelected.bind(selector, conditions as Conditions), selectedIndex === index,
-            undefined, undefined, undefined, conditions.jslogContext);
+            conditions.title, selector.optionSelected.bind(selector, conditions as Conditions),
+            {checked: selectedIndex === index, jslogContext: conditions.jslogContext});
       }
     }
 

@@ -42,7 +42,7 @@ export function addColumnVisibilityCheckboxes(
      */
     contextMenu.defaultSection().appendCheckboxItem(column.title, () => {
       toggleColumnVisibility(dataGrid, column);
-    }, column.visible);
+    }, {checked: column.visible});
   }
 }
 

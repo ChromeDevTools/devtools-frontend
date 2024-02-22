@@ -347,8 +347,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     for (const pseudoClass of pseudoClasses) {
       const pseudoClassForced = forcedPseudoState ? forcedPseudoState.indexOf(pseudoClass) >= 0 : false;
       stateMenu.defaultSection().appendCheckboxItem(
-          ':' + pseudoClass, setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced), pseudoClassForced,
-          false);
+          ':' + pseudoClass, setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced),
+          {checked: pseudoClassForced});
     }
 
     function setPseudoStateCallback(pseudoState: string, enabled: boolean): void {
@@ -802,7 +802,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     menuItem = contextMenu.debugSection().appendCheckboxItem(
         i18nString(UIStrings.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal),
-        treeOutline.isToggledToHidden(this.nodeInternal));
+        {checked: treeOutline.isToggledToHidden(this.nodeInternal)});
     menuItem.setShortcut(
         UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
 

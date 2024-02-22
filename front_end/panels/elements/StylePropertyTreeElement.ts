@@ -1419,7 +1419,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               event.consume();
               this.parentPaneInternal.continueEditingElement(sectionIndex, propertyIndex);
             }
-          }, !this.property.disabled);
+          }, {checked: !this.property.disabled});
     }
     const revealCallback = this.navigateToSource.bind(this) as () => void;
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.revealInSourcesPanel), revealCallback);

@@ -1759,7 +1759,8 @@ export class ConsoleViewFilter {
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.default), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()));
     for (const [level, levelText] of this.levelLabels.entries()) {
-      contextMenu.defaultSection().appendCheckboxItem(levelText, toggleShowLevel.bind(null, level), levels[level]);
+      contextMenu.defaultSection().appendCheckboxItem(
+          levelText, toggleShowLevel.bind(null, level), {checked: levels[level]});
     }
     void contextMenu.show();
 

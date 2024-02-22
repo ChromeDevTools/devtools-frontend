@@ -13,13 +13,13 @@ import {
   initFrameForGridLabels,
   initFrameForMultipleGridLabels,
   drawGridLineNamesAndAssertLabels,
-} from '../front_end/helpers/InspectorOverlayHelpers.js';
+} from '../test/unittests/front_end/helpers/InspectorOverlayHelpers.js';
 import {
   drawGridLineNumbers,
   drawGridTrackSizes,
   generateLegibleTextColor,
   normalizePositionData,
-} from '../../../inspector_overlay/css_grid_label_helpers.js';
+} from './css_grid_label_helpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);

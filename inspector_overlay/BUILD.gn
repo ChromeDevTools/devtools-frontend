@@ -102,3 +102,22 @@ ts_library("inspector_overlay") {
 
   deps = [ "../front_end/core/common:ColorUtils" ]
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "common.test.ts",
+    "css_grid_label_helpers.test.ts",
+    "highlight_common.test.ts",
+    "highlight_flex_common.test.ts",
+    "tool_highlight.test.ts",
+    "tool_source_order.test.ts",
+    "tool_window_controls.test.ts",
+  ]
+
+  deps = [
+    ":inspector_overlay",
+    "../test/unittests/front_end/helpers",
+  ]
+}

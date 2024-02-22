@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {createElement, Overlay, createTextChild} from '../../../inspector_overlay/common.js';
+import {createElement, Overlay, createTextChild} from './common.js';
 
 describe('common helper', () => {
   it('can create DOM elements', () => {

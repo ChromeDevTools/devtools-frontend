@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {applyMatrixToPoint, buildPath, emptyBounds} from '../../../inspector_overlay/highlight_common.js';
+import {applyMatrixToPoint, buildPath, emptyBounds} from './highlight_common.js';
 
 describe('highlight common helper', () => {
   it('can build a path and set bounds', () => {
@@ -16,10 +16,10 @@ describe('highlight common helper', () => {
     assert.strictEqual(bounds.minY, 60);
     assert.strictEqual(bounds.maxX, 420);
     assert.strictEqual(bounds.maxY, 204);
-    assert.deepStrictEqual(bounds.leftmostXForY, {'60': 100, '204': 100});
-    assert.deepStrictEqual(bounds.bottommostYForX, {'100': 204, '420': 204});
-    assert.deepStrictEqual(bounds.rightmostXForY, {'60': 420, '204': 420});
-    assert.deepStrictEqual(bounds.topmostYForX, {'100': 60, '420': 60});
+    assert.deepStrictEqual(bounds.leftmostXForY, {[60]: 100, [204]: 100});
+    assert.deepStrictEqual(bounds.bottommostYForX, {[100]: 204, [420]: 204});
+    assert.deepStrictEqual(bounds.rightmostXForY, {[60]: 420, [204]: 420});
+    assert.deepStrictEqual(bounds.topmostYForX, {[100]: 60, [420]: 60});
   });
 
   it('can map points using writing-mode matrices', () => {

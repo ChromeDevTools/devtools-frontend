@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {
   WindowControlsOverlay,
-} from '../../../inspector_overlay/tool_window_controls.js';
+} from './tool_window_controls.js';
 
 describe('WindowControlsOverlay', () => {
   const windowControlsOverlay = new WindowControlsOverlay(window, []);

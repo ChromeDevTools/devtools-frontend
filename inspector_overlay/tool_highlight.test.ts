@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {createElementDescription, type ElementInfo} from '../../../inspector_overlay/tool_highlight.js';
+import {createElementDescription, type ElementInfo} from './tool_highlight.js';
 
 function defaultElementInfo(): ElementInfo {
   return {

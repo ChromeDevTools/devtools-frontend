@@ -78,8 +78,8 @@ if (HTML_COVERAGE_ENABLED) {
 
 const TEST_SOURCES = [
   path.join('front_end', '**/*.test.ts'),
+  path.join('inspector_overlay', '**/*.test.ts'),
   path.join('test', 'unittests', 'front_end', '**/*.ts'),
-  path.join('test', 'unittests', 'inspector_overlay', '**/*.ts'),
 ].map(relativePath => path.join(ROOT_DIRECTORY, relativePath));
 
 // To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)

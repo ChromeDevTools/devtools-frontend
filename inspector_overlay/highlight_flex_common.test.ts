@@ -14,8 +14,8 @@ import {
   intersectSegments,
   segmentContains,
   uniteQuads,
-} from '../../../inspector_overlay/highlight_flex_common.js';
-import {type PathCommands, type Position, type Quad} from '../../../inspector_overlay/common.js';
+} from './highlight_flex_common.js';
+import {type PathCommands, type Position, type Quad} from './common.js';
 
 function createPathCommands(...points: number[]): PathCommands {
   if (points.length !== 8) {

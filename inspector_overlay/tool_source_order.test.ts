@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {getPositionFromLabelType, getLabelType, LabelTypes} from '../../../inspector_overlay/tool_source_order.js';
+import {getPositionFromLabelType, getLabelType, LabelTypes} from './tool_source_order.js';
 
 const positionTypes = Object.values(LabelTypes);
 const labelHeight = 22;

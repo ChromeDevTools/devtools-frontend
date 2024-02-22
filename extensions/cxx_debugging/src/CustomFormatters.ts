@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {type HostInterface} from './WorkerRPC.js';
+
 import {type WasmValue} from './WasmTypes.js';
+import {type HostInterface} from './WorkerRPC.js';
 
 export interface FieldInfo {
   typeId: string;
@@ -568,10 +569,10 @@ export class LocalLazyObject implements LazyObject {
   }
 
   async getProperties(): Promise<{name: string, property: LazyObject}[]> {
-    return Object
-        .keys(this.value)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .map(name => ({name, property: lazyObjectFromAny((this.value as any)[name], this.objectStore)}));
+    return Object.entries(this.value).map(([name, value]) => {
+      const property = lazyObjectFromAny(value, this.objectStore);
+      return {name, property};
+    });
   }
 
   async asRemoteObject(): Promise<Chrome.DevTools.RemoteObject> {

@@ -439,10 +439,10 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
         sortFunction = compareStartTime;
         break;
       case 'self':
-        sortFunction = compareNumericField.bind(null, 'selfTime');
+        sortFunction = compareSelfTime;
         break;
       case 'total':
-        sortFunction = compareNumericField.bind(null, 'totalTime');
+        sortFunction = compareTotalTime;
         break;
       case 'activity':
         sortFunction = compareName;
@@ -453,14 +453,12 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
     this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
 
-    function compareNumericField(
-        field: string, a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+    function compareSelfTime(
+        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
         b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
-      const nodeA = (a as TreeGridNode);
-      const nodeB = (b as TreeGridNode);
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (nodeA.profileNode as any)[field] - (nodeB.profileNode as any)[field];
+      const nodeA = a as TreeGridNode;
+      const nodeB = b as TreeGridNode;
+      return nodeA.profileNode.selfTime - nodeB.profileNode.selfTime;
     }
 
     function compareStartTime(
@@ -471,6 +469,14 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       const eventA = (nodeA.profileNode.event as TraceEngine.Legacy.Event);
       const eventB = (nodeB.profileNode.event as TraceEngine.Legacy.Event);
       return eventA.startTime - eventB.startTime;
+    }
+
+    function compareTotalTime(
+        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+      const nodeA = a as TreeGridNode;
+      const nodeB = b as TreeGridNode;
+      return nodeA.profileNode.totalTime - nodeB.profileNode.totalTime;
     }
 
     function compareName(

@@ -55,9 +55,7 @@ export class FormatterWorkerPool {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private onWorkerMessage(worker: Common.Worker.WorkerWrapper, event: MessageEvent<any>): void {
+  private onWorkerMessage(worker: Common.Worker.WorkerWrapper, event: MessageEvent): void {
     const task = this.workerTasks.get(worker);
     if (!task) {
       return;

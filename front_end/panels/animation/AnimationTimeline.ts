@@ -875,7 +875,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  private scrubberDragStart(event: Event): boolean {
+  private scrubberDragStart(event: MouseEvent): boolean {
     if (!this.#selectedGroup || !this.hasAnimationGroupActiveNodes()) {
       return false;
     }
@@ -889,7 +889,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#animationGroupPausedBeforeScrub =
         this.#selectedGroup.paused() || typeof currentTime === 'number' && currentTime >= this.duration();
 
-    const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
+    const {x} = event;
     const seekTime = Math.max(0, x - this.#gridOffsetLeft) / this.pixelMsRatio();
     this.#selectedGroup.seekTo(seekTime);
     this.togglePause(true);
@@ -901,8 +901,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     return true;
   }
 
-  private scrubberDragMove(event: Event): void {
-    const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
+  private scrubberDragMove(event: MouseEvent): void {
+    const {x} = event;
     const delta = x - (this.#originalMousePosition || 0);
     const currentTime =
         Math.max(0, Math.min((this.#originalScrubberTime || 0) + delta / this.pixelMsRatio(), this.duration()));

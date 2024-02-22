@@ -1,0 +1,6 @@
+monorail: {
+  component: "Platform>DevTools>Recorder"
+}
+buganizer_public: {
+  component_id: 1456922
+}

@@ -14,6 +14,7 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -26,6 +27,7 @@ import {
 import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
+import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {
   AngleMatch,
   AngleMatcher,
@@ -43,6 +45,8 @@ import {
   LinkableNameProperties,
   Renderer,
   type RenderingContext,
+  URLMatch,
+  URLMatcher,
   VariableMatch,
   VariableMatcher,
 } from './PropertyParser.js';
@@ -431,6 +435,44 @@ export class ColorMixRenderer extends ColorMixMatch {
   static matcher(pane: StylesSidebarPane): ColorMixMatcher {
     return new ColorMixMatcher(
         (text, space, color1, color2) => new ColorMixRenderer(pane, text, space, color1, color2));
+  }
+}
+
+export class URLRenderer extends URLMatch {
+  constructor(
+      private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null,
+      url: Platform.DevToolsPath.UrlString, text: string) {
+    super(url, text);
+  }
+  override render(): Node[] {
+    const container = document.createDocumentFragment();
+    UI.UIUtils.createTextChild(container, 'url(');
+    let hrefUrl: Platform.DevToolsPath.UrlString|null = null;
+    if (this.rule && this.rule.resourceURL()) {
+      hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), this.url);
+    } else if (this.node) {
+      hrefUrl = this.node.resolveURL(this.url);
+    }
+    const link = ImagePreviewPopover.setImageUrl(
+        Components.Linkifier.Linkifier.linkifyURL(hrefUrl || this.url, {
+          text: this.url,
+          preventClick: false,
+          // crbug.com/1027168
+          // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
+          // so that we don't have to keep two versions (original vs. trimmed) of URL
+          // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
+          bypassURLTrimming: true,
+          showColumnNumber: false,
+          inlineFrameIndex: 0,
+        }),
+        hrefUrl || this.url);
+    container.appendChild(link);
+    UI.UIUtils.createTextChild(container, ')');
+    return [container];
+  }
+
+  static matcher(rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null): URLMatcher {
+    return new URLMatcher((url, text) => new URLRenderer(rule, node, url, text));
   }
 }
 
@@ -1147,6 +1189,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           VariableRenderer.matcher(this, this.style),
           ColorRenderer.matcher(this),
           ColorMixRenderer.matcher(this.parentPaneInternal),
+          URLRenderer.matcher(this.style.parentRule, this.node()),
           AngleRenderer.matcher(this),
           LinkableNameRenderer.matcher(this),
           BezierRenderer.matcher(this),

@@ -49,6 +49,7 @@ import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
 import {ColorMatch, ColorMatcher, type RenderingContext} from './PropertyParser.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
+import {URLRenderer} from './StylePropertyTreeElement.js';
 import {StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 const UIStrings = {
@@ -114,8 +115,8 @@ function renderPropertyContents(
   if (valueFromCache) {
     return valueFromCache;
   }
-  const renderer =
-      new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue, [ColorRenderer.matcher()]);
+  const renderer = new StylesSidebarPropertyRenderer(
+      null, node, propertyName, propertyValue, [ColorRenderer.matcher(), URLRenderer.matcher(null, node)]);
   const name = renderer.renderName();
   name.slot = 'name';
   const value = renderer.renderValue();
@@ -156,7 +157,8 @@ const createTraceElement =
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const renderer = new StylesSidebarPropertyRenderer(
-          null, node, property.name, (property.value as string), [ColorRenderer.matcher()]);
+          null, node, property.name, (property.value as string),
+          [ColorRenderer.matcher(), URLRenderer.matcher(null, node)]);
       const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);

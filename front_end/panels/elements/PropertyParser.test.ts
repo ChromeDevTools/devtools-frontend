@@ -621,6 +621,24 @@ describe('PropertyParser', () => {
     }
   });
 
+  it('parses URLs', () => {
+    const url = 'http://example.com';
+    {
+      const {match, text} = matchSingleValue(
+          'background-image', `url(${url})`, Elements.PropertyParser.URLMatch,
+          new Elements.PropertyParser.URLMatcher(nilRenderer(Elements.PropertyParser.URLMatch)));
+      Platform.assertNotNullOrUndefined(match);
+      assert.strictEqual(match.url, url, text);
+    }
+    {
+      const {match, text} = matchSingleValue(
+          'background-image', `url("${url}")`, Elements.PropertyParser.URLMatch,
+          new Elements.PropertyParser.URLMatcher(nilRenderer(Elements.PropertyParser.URLMatch)));
+      Platform.assertNotNullOrUndefined(match);
+      assert.strictEqual(match.url, url, text);
+    }
+  });
+
   it('parses angles correctly', () => {
     for (const succeed of ['45deg', '1.3rad', '-25grad', '2.3turn']) {
       const {ast, match, text} = matchSingleValue(

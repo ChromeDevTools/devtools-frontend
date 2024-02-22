@@ -108,6 +108,12 @@ describe('Navigation', function() {
     assert.include(lhr.configSettings.emulatedUserAgent, 'Mobile');
     assert.include(lhr.environment.networkUserAgent, 'Mobile');
 
+    const trace = artifacts.Trace;
+    assert.notOk(
+        trace.traceEvents.some((e: Record<string, unknown>) => e.cat === 'disabled-by-default-v8.cpu_profiler'),
+        'Trace contained v8 profiler events',
+    );
+
     assert.deepStrictEqual(artifacts.ViewportDimensions, {
       innerHeight: 823,
       innerWidth: 412,
@@ -220,6 +226,7 @@ describe('Navigation', function() {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 
+    await setToolbarCheckboxWithText(true, 'Enable JS sampling');  // TODO: Use translated string once it's added
     await setToolbarCheckboxWithText(false, 'Borrar almacenamiento');
     await selectCategories(['performance', 'best-practices']);
     await selectDevice('desktop');
@@ -227,6 +234,12 @@ describe('Navigation', function() {
     await clickStartButton();
 
     const {reportEl, lhr, artifacts} = await waitForResult();
+
+    const trace = artifacts.Trace;
+    assert.ok(
+        trace.traceEvents.some((e: Record<string, unknown>) => e.cat === 'disabled-by-default-v8.cpu_profiler'),
+        'Trace did not contain any v8 profiler events',
+    );
 
     const {innerWidth, innerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
     // TODO: Figure out why outerHeight can be different depending on OS

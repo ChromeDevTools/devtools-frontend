@@ -176,7 +176,17 @@ const UIStrings = {
   resetStorageLocalstorage:
       'Reset storage (`cache`, `service workers`, etc) before auditing. (Good for performance & `PWA` testing)',
   /**
-   *@description Explanation for user that Ligthhouse can only audit when JavaScript is enabled
+   * @description Text of checkbox to enable JavaScript sampling while running audits in Lighthouse
+   */
+  enableSampling: 'Enable JS sampling',
+  /**
+   * @description Tooltip text of checkbox to enable JavaScript sampling while running audits in
+   * Lighthouse. Resetting the storage clears/empties it to a neutral state.
+   */
+  enableJavaScriptSampling:
+      'Enable JavaScript sampling during the Lighthouse run. This will provide more execution details in the performance panel when you view the trace, but has higher CPU overhead and may impact the performance of the page.',
+  /**
+   *@description Explanation for user that Lighthouse can only audit when JavaScript is enabled
    */
   javaScriptDisabled:
       'JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript.',
@@ -766,6 +776,21 @@ export const RuntimeSettings: RuntimeSetting[] = [
     description: i18nLazyString(UIStrings.resetStorageLocalstorage),
     setFlags: (flags: Flags, value: string|boolean) => {
       flags.disableStorageReset = !value;
+    },
+    options: undefined,
+    learnMore: undefined,
+  },
+  {
+    setting: Common.Settings.Settings.instance().createSetting(
+        'lighthouse.enable-sampling', false, Common.Settings.SettingStorageType.Synced),
+    title: i18nLazyString(UIStrings.enableSampling),
+    description: i18nLazyString(UIStrings.enableJavaScriptSampling),
+    setFlags: (flags: Flags, value: string|boolean) => {
+      if (value) {
+        flags.additionalTraceCategories = 'disabled-by-default-v8.cpu_profiler';
+      } else {
+        flags.additionalTraceCategories = '';
+      }
     },
     options: undefined,
     learnMore: undefined,

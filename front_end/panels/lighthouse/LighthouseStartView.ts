@@ -171,6 +171,7 @@ export class StartView extends UI.Widget.Widget {
 
   private render(): void {
     this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear-storage', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.enable-sampling', this.settingsToolbarInternal);
     this.populateRuntimeSettingAsToolbarDropdown('lighthouse.throttling', this.settingsToolbarInternal);
 
     const {mode} = this.controller.getFlags();

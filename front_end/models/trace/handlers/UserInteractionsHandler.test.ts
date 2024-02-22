@@ -151,11 +151,11 @@ describe('UserInteractionsHandler', function() {
     ]);
   });
 
-  // Failing after https://crrev.com/c/5309877
-  it.skip('[crbug.com/326206427] detects correct events for a click and keydown interaction', async () => {
+  it('detects correct events for a click and keydown interaction', async () => {
     await processTrace(this, 'slow-interaction-keydown.json.gz');
     const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
-    const foundInteractions = data.allEvents;
+    const foundInteractions =
+        data.allEvents.filter(e => e.args.data && e.args.data.duration > 1 && e.args.data.interactionId);
     // We expect there to be 3 interactions:
     // User clicks on input:
     // 1.pointerdown, 2. pointerup, 3. click
@@ -176,8 +176,7 @@ describe('UserInteractionsHandler', function() {
     ]);
   });
 
-  // Failing after https://crrev.com/c/5309877
-  it.skip('[crbug.com/326206427] finds all interaction events with a duration and interactionId', async () => {
+  it('finds all interaction events with a duration and interactionId', async () => {
     const events = [
       {
         cat: 'devtools.timeline',
@@ -254,7 +253,7 @@ describe('UserInteractionsHandler', function() {
     }
     await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
     const timings = TraceModel.Handlers.ModelHandlers.UserInteractions.data().allEvents;
-    assert.lengthOf(timings, 1);
+    assert.lengthOf(timings, 3);
   });
 
   describe('collapsing nested interactions', () => {

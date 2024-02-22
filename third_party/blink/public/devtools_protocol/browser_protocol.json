@@ -8895,6 +8895,7 @@
                 {
                     "name": "canEmulate",
                     "description": "Tells whether emulation is supported.",
+                    "deprecated": true,
                     "returns": [
                         {
                             "name": "result",

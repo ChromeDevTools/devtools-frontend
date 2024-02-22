@@ -706,11 +706,23 @@ export const NativeFunctions = [
   },
   {
     name: "map",
-    signatures: [["callbackfn","?thisArg"]]
+    signatures: [["callbackfn","?thisArg"]],
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "map",
+    signatures: [["mapper"]],
+    receivers: ["Observable"]
   },
   {
     name: "filter",
-    signatures: [["predicate","?thisArg"]]
+    signatures: [["predicate","?thisArg"]],
+    receivers: ["ReadonlyArray","Array","Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"]
+  },
+  {
+    name: "filter",
+    signatures: [["predicate"]],
+    receivers: ["Observable"]
   },
   {
     name: "reduce",
@@ -6373,6 +6385,10 @@ export const NativeFunctions = [
   {
     name: "takeUntil",
     signatures: [["notifier"]]
+  },
+  {
+    name: "take",
+    signatures: [["number_to_take"]]
   },
   {
     name: "getPartNode",

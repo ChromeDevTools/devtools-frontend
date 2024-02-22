@@ -13,7 +13,7 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {type InsightProvider} from '../InsightProvider.js';
+import {type AidaResponse, type InsightProvider} from '../InsightProvider.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
 import styles from './consoleInsight.css.js';
@@ -190,11 +190,10 @@ type StateData = {
   consentGiven: boolean,
 }|{
   type: State.INSIGHT,
-  explanation: string,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
   validMarkdown: boolean,
   sources: Source[],
-}|{
+}&AidaResponse|{
   type: State.ERROR,
   error: string,
 }|{
@@ -337,12 +336,25 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #onRating(event: Event): void {
+    if (this.#state.type !== State.INSIGHT) {
+      throw new Error('Unexpected state');
+    }
     this.#selectedRating = (event.target as HTMLElement).dataset.rating === 'true';
     if (this.#selectedRating) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
     } else {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
     }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
+      client: 'CHROME_DEVTOOLS',
+      event_time: new Date().toISOString(),
+      corresponding_aida_rpc_global_id: this.#state.metadata?.rpcGlobalId,
+      do_conversation_client_event: {
+        user_feedback: {
+          sentiment: this.#selectedRating ? 'POSITIVE' : 'NEGATIVE',
+        },
+      },
+    }));
     this.#openFeedbackFrom();
   }
 
@@ -352,7 +364,7 @@ export class ConsoleInsight extends HTMLElement {
       consentGiven: true,
     });
     try {
-      for await (const {sources, explanation} of this.#getInsight()) {
+      for await (const {sources, explanation, metadata} of this.#getInsight()) {
         const tokens = this.#validateMarkdown(explanation);
         const valid = tokens !== false;
         this.#transitionTo({
@@ -361,6 +373,7 @@ export class ConsoleInsight extends HTMLElement {
           validMarkdown: valid,
           explanation,
           sources,
+          metadata,
         });
       }
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
@@ -389,11 +402,11 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  async * #getInsight(): AsyncGenerator<{sources: Source[], explanation: string}, void, void> {
+  async * #getInsight(): AsyncGenerator<{sources: Source[]}&AidaResponse, void, void> {
     try {
       const {prompt, sources} = await this.#promptBuilder.buildPrompt();
-      for await (const explanation of this.#insightProvider.getInsights(prompt)) {
-        yield {sources, explanation};
+      for await (const response of this.#insightProvider.getInsights(prompt)) {
+        yield {sources, ...response};
       }
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredApi);

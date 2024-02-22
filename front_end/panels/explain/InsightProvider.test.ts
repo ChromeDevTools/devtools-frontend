@@ -103,7 +103,7 @@ describe('InsightProvider', () => {
     stub.restore();
   });
 
-  async function getAllResults(provider: Explain.InsightProvider): Promise<string[]> {
+  async function getAllResults(provider: Explain.InsightProvider): Promise<Explain.AidaResponse[]> {
     const results = [];
     for await (const result of provider.getInsights('foo')) {
       results.push(result);
@@ -115,20 +115,26 @@ describe('InsightProvider', () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
         .callsFake(async (_, streamId, callback) => {
           const response = JSON.stringify([
-            {textChunk: {text: 'hello '}},
-            {textChunk: {text: 'brave '}},
-            {textChunk: {text: 'new world!'}},
+            {textChunk: {text: 'hello '}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'brave '}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'new world!'}, metadata: {rpcGlobalId: 123}},
           ]);
-          for (const chunk of response.split(',')) {
+          let first = true;
+          for (const chunk of response.split(',{')) {
             await new Promise(resolve => setTimeout(resolve, 0));
-            Host.ResourceLoader.streamWrite(streamId, chunk);
+            Host.ResourceLoader.streamWrite(streamId, first ? chunk : ',{' + chunk);
+            first = false;
           }
           callback({statusCode: 200});
         });
 
     const provider = new Explain.InsightProvider();
     const results = await getAllResults(provider);
-    assert.deepStrictEqual(results, ['hello ', 'hello brave ', 'hello brave new world!']);
+    assert.deepStrictEqual(results, [
+      {explanation: 'hello ', metadata: {rpcGlobalId: 123}},
+      {explanation: 'hello brave ', metadata: {rpcGlobalId: 123}},
+      {explanation: 'hello brave new world!', metadata: {rpcGlobalId: 123}},
+    ]);
   });
 
   it('handles subsequent code chunks', async () => {
@@ -147,7 +153,7 @@ describe('InsightProvider', () => {
         });
 
     const provider = new Explain.InsightProvider();
-    const results = await getAllResults(provider);
+    const results = (await getAllResults(provider)).map(r => r.explanation);
     assert.deepStrictEqual(
         results, ['hello ', 'hello \n`````\nbrave \n`````\n', 'hello \n`````\nbrave new World()\n`````\n']);
   });

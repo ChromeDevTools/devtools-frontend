@@ -359,6 +359,7 @@ export interface InspectorFrontendHostAPI {
   initialTargetId(): Promise<string|null>;
 
   doAidaConversation: (request: string, streamId: number, cb: (result: DoAidaConversationResult) => void) => void;
+  registerAidaClientEvent: (request: string) => void;
 
   recordImpression(event: ImpressionEvent): void;
   recordClick(event: ClickEvent): void;

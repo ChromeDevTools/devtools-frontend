@@ -475,6 +475,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     });
   }
 
+  registerAidaClientEvent(request: string): void {
+  }
+
   recordImpression(event: ImpressionEvent): void {
   }
   recordResize(event: ResizeEvent): void {

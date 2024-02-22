@@ -1126,10 +1126,19 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @param {string} request
+   * @param {number} streamId
    * @param {function(!InspectorFrontendHostAPI.DoAidaConversationResult): void} cb
    */
   doAidaConversation(request, streamId, cb) {
     DevToolsAPI.sendMessageToEmbedder('doAidaConversation', [request, streamId], cb);
+  }
+
+  /**
+   * @param {string} request
+   * @param {function(!InspectorFrontendHostAPI.DoAidaConversationResult): void} cb
+   */
+  registerAidaClientEvent(request) {
+    DevToolsAPI.sendMessageToEmbedder('registerAidaClientEvent', [request]);
   }
 };
 

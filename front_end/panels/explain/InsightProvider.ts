@@ -16,6 +16,13 @@ export interface AidaRequest {
   };
 }
 
+export interface AidaResponse {
+  explanation: string;
+  metadata: {
+    rpcGlobalId?: number,
+  };
+}
+
 export class InsightProvider {
   static buildApiRequest(input: string): AidaRequest {
     const request: AidaRequest = {
@@ -35,7 +42,7 @@ export class InsightProvider {
     return request;
   }
 
-  async * getInsights(input: string): AsyncGenerator<string, void, void> {
+  async * getInsights(input: string): AsyncGenerator<AidaResponse, void, void> {
     if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation) {
       throw new Error('doAidaConversation is not available');
     }
@@ -100,7 +107,10 @@ export class InsightProvider {
       } else {
         throw new Error('Unknown chunk result');
       }
-      yield text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : '');
+      yield {
+        explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
+        metadata: {rpcGlobalId: result?.metadata?.rpcGlobalId},
+      };
     }
   }
 }

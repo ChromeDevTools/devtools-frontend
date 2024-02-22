@@ -62,6 +62,7 @@ devtools_entrypoint("bundle") {
     "../../panels/profiler/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
+    "../../panels/timeline/*",
     "../../ui/components/docs/performance_panel/*",
     "../../ui/components/linkifier/*",
     "../../ui/legacy/components/inline_editor/*",

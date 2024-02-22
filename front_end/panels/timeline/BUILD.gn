@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/ninja/node.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 node_action("generate_easter_egg_file") {
@@ -132,7 +133,6 @@ devtools_entrypoint("bundle") {
     "../../../test/perf/*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/helpers",
-    "../../../test/unittests/front_end/panels/timeline/*",
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
     "../../ui/components/docs/performance_panel/*",
@@ -140,6 +140,7 @@ devtools_entrypoint("bundle") {
     "../js_profiler/*",
     "../lighthouse/*",
     "../recorder/*",
+    "./track_appenders:unittests",
   ]
 
   visibility += devtools_panels_visibility
@@ -159,4 +160,41 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "Breadcrumbs.test.ts",
+    "EventTypeHelpers.test.ts",
+    "Initiators.test.ts",
+    "SaveFileFormatter.test.ts",
+    "SourceMapsResolver.test.ts",
+    "TimelineController.test.ts",
+    "TimelineDetailsView.test.ts",
+    "TimelineFilters.test.ts",
+    "TimelineFlameChartDataProvider.test.ts",
+    "TimelineFlameChartNetworkDataProvider.test.ts",
+    "TimelineFlameChartView.test.ts",
+    "TimelineHistoryManager.test.ts",
+    "TimelineLoader.test.ts",
+    "TimelineMiniMap.test.ts",
+    "TimelineSelection.test.ts",
+    "TimelineTreeView.test.ts",
+    "TimelineUIUtils.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/timeline_model:bundle",
+    "../../models/trace:bundle",
+    "../../models/workspace:bundle",
+    "./components:bundle",
+  ]
 }

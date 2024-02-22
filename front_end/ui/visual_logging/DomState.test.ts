@@ -121,7 +121,6 @@ describe('DomState', () => {
   });
 
   it('walks slots in the assigned order', () => {
-    // eslint-disable-next-line rulesdir/custom_element_definitions_location
     class TestComponent extends HTMLElement {
       private render() {
         const shadow = this.attachShadow({mode: 'open'});

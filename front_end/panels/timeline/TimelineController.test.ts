@@ -54,7 +54,6 @@ describeWithRealConnection('TimelineController', () => {
 
     const controller = new Timeline.TimelineController.TimelineController(root, primaryPage, client);
 
-    // eslint-disable-next-line rulesdir/custom_element_definitions_location
     class TestTracingComponent extends HTMLElement {
       connectedCallback() {
         const newDiv = document.createElement('div');

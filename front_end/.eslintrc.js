@@ -153,6 +153,8 @@ module.exports = {
     {
       'files': ['*.test.ts'],
       'rules': {
+        'rulesdir/check_component_naming': 'off',
+        'rulesdir/custom_element_definitions_location': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },

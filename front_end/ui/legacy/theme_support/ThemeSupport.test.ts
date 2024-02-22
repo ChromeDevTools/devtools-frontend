@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/check_component_naming, rulesdir/custom_element_definitions_location */
-
 import type * as Common from '../../../core/common/common.js';
 import * as ThemeSupport from './theme_support.js';
 import {assertShadowRoot} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';

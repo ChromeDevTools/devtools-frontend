@@ -38,6 +38,32 @@ export class Printer extends Elements.PropertyParser.TreeWalker {
   }
 }
 
+class TreeSearch extends Elements.PropertyParser.TreeWalker {
+  #found: CodeMirror.SyntaxNode|null = null;
+  #predicate: (node: CodeMirror.SyntaxNode) => boolean;
+
+  constructor(ast: Elements.PropertyParser.SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean) {
+    super(ast);
+    this.#predicate = predicate;
+  }
+
+  protected override enter({node}: Elements.PropertyParser.SyntaxNodeRef): boolean {
+    if (this.#found) {
+      return false;
+    }
+    if (this.#predicate(node)) {
+      this.#found = node;
+      return false;
+    }
+    return true;
+  }
+
+  static find(ast: Elements.PropertyParser.SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean):
+      CodeMirror.SyntaxNode|null {
+    return TreeSearch.walk(ast, predicate).#found;
+  }
+}
+
 function textFragments(nodes: Node[]): Array<string|null> {
   return nodes.map(n => n.textContent);
 }
@@ -262,6 +288,21 @@ describe('PropertyParser', () => {
           'width', fail, Elements.PropertyParser.ColorMatch,
           new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch)));
       assert.isNull(match, text);
+    }
+  });
+
+  it('parses colors in masks', () => {
+    for (const succeed of ['mask', 'mask-image', 'mask-border', 'mask-border-source']) {
+      const ast = Elements.PropertyParser.tokenizePropertyValue('linear-gradient(to top, red, var(--other))', succeed);
+      Platform.assertNotNullOrUndefined(ast, succeed);
+      const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(
+          ast, [new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch))]);
+      const colorNode = TreeSearch.find(ast, node => ast.text(node) === 'red');
+      Platform.assertNotNullOrUndefined(colorNode);
+      const match = matching.getMatch(colorNode);
+      Platform.assertNotNullOrUndefined(match);
+      assert.instanceOf(match, Elements.PropertyParser.ColorMatch);
+      assert.strictEqual(match.text, 'red');
     }
   });
 

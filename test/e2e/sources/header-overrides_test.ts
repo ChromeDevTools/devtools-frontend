@@ -97,8 +97,7 @@ describe('The Overrides Panel', function() {
     await waitFor(ENABLE_OVERRIDES_SELECTOR);
   });
 
-  // Skip until flake is fixed
-  it.skip('[crbug.com/1432925]: can create header overrides', async () => {
+  it('can create header overrides', async () => {
     await goToResource('empty.html');
     await openSourcesPanel();
     await enableLocalOverrides();

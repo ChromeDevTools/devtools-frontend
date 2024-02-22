@@ -5,6 +5,7 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("legacy_css_files") {
@@ -82,4 +83,24 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../../../entrypoints/*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "ResourceSourceFrame.test.ts",
+    "SourceFrame.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../core/common:bundle",
+    "../../../../core/platform:bundle",
+    "../../../../core/root:bundle",
+    "../../../../models/text_utils:bundle",
+    "../../../../third_party/codemirror.next:bundle",
+    "../../../../ui/legacy:bundle",
+  ]
 }

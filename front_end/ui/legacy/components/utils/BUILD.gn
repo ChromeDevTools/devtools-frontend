@@ -5,6 +5,7 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -49,7 +50,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../../../test/unittests/front_end/panels/console/*",
-    "../../../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../../../entrypoints/*",
     "../../../../models/extensions/*",
     "../../../../models/persistence/*",
@@ -61,4 +61,21 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_ui_legacy_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "JSPresentationUtils.test.ts",
+    "Linkifier.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../core/sdk:bundle",
+    "../../../../models/bindings:bundle",
+    "../../../../models/workspace:bundle",
+  ]
 }

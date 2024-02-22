@@ -39,3 +39,17 @@ devtools_entrypoint("bundle") {
 
   visibility += default_components_visibility
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "helpers.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../../test/unittests/front_end/helpers",
+    "../../legacy/theme_support:bundle",
+    "../../lit-html:bundle",
+    "../render_coordinator:bundle",
+  ]
+}

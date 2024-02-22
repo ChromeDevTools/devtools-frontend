@@ -5,6 +5,7 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../../third_party/typescript/typescript.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
@@ -44,7 +45,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../../test/unittests/front_end/ui/legacy/components/color_picker/*",
     "../../../../panels/css_overview/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",
@@ -52,4 +52,19 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_ui_legacy_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "ColorFormatSpec.test.ts",
+    "Spectrum.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../legacy:bundle",
+  ]
 }

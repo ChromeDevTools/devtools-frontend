@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../third_party/typescript/typescript.gni")
 import("./visibility.gni")
 
 generate_css("css_files") {
@@ -168,9 +169,11 @@ devtools_entrypoint("bundle") {
     "../../services/window_bounds/*",
     "../components/data_grid:*",
     "../components/docs/performance_panel/*",
+    "../components/issue_counter:unittests",
     "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
+    "../components/request_link_icon:unittests",
     "./*",
 
     # Required for x-link
@@ -179,4 +182,35 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_ui_legacy_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "ActionRegistration.test.ts",
+    "Context.test.ts",
+    "ContextMenu.test.ts",
+    "DockController.test.ts",
+    "Fragment.test.ts",
+    "Geometry.test.ts",
+    "Infobar.test.ts",
+    "KeyboardShortcut.test.ts",
+    "ListModel.test.ts",
+    "ListWidget.test.ts",
+    "ShortcutRegistry.test.ts",
+    "SuggestBox.test.ts",
+    "Toolbar.test.ts",
+    "Treeoutline.test.ts",
+    "UIUtils.test.ts",
+    "View.test.ts",
+    "XLink.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+  ]
 }

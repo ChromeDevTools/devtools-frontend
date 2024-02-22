@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("theme_support") {
   sources = [ "ThemeSupport.ts" ]
@@ -26,11 +27,21 @@ devtools_entrypoint("bundle") {
     "../*",
     "../../../../test/unittests/front_end/test_setup/*",
     "../../../../test/unittests/front_end/ui/components/helpers/*",
-    "../../../../test/unittests/front_end/ui/legacy/theme_support/*",
     "../../../entrypoints/main/*",
     "../../../models/extensions/*",
     "../../../panels/*",
     "../../components/docs/*",
     "../../components/helpers/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ThemeSupport.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../../test/unittests/front_end/helpers",
   ]
 }

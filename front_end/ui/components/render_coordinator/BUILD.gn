@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("render_coordinator") {
@@ -13,7 +14,16 @@ devtools_module("render_coordinator") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "render_coordinator.ts"
+
   deps = [ ":render_coordinator" ]
 
   visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "render_coordinator.test.ts" ]
+
+  deps = [ ":bundle" ]
 }

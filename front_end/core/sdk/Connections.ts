@@ -287,7 +287,15 @@ function createMainConnection(websocketConnectionLost: () => void): ProtocolClie
   const wsParam = Root.Runtime.Runtime.queryParam('ws');
   const wssParam = Root.Runtime.Runtime.queryParam('wss');
   if (wsParam || wssParam) {
-    const ws = (wsParam ? `ws://${wsParam}` : `wss://${wssParam}`) as Platform.DevToolsPath.UrlString;
+    const scheme = wsParam ? 'ws' : 'wss';
+    // ws[s]Param is either:
+    // 1. The hierarchical part of a URL (with the scheme and :// removed).
+    // 2. A path-absolute URL (beginning with `/`) relative to the current host. This is only meaningful in hosted mode.
+    let schemelessUrl = (wsParam ? wsParam : wssParam) as string;
+    if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() && schemelessUrl.startsWith('/')) {
+      schemelessUrl = `${window.location.host}${schemelessUrl}`;
+    }
+    const ws = `${scheme}://${schemelessUrl}` as Platform.DevToolsPath.UrlString;
     return new WebSocketConnection(ws, websocketConnectionLost);
   }
   if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {

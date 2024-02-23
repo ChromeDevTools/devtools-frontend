@@ -922,7 +922,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.debugSection().appendItem(
-            i18nString(UIStrings.continueToHere), this.continueToLocation.bind(this, uiLocation));
+            i18nString(UIStrings.continueToHere), this.continueToLocation.bind(this, uiLocation),
+            {jslogContext: 'continue-to-here'});
       }
 
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
@@ -949,7 +950,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
         i18nString(UIStrings.storeAsGlobalVariable),
         () => executionContext?.target()
                   .model(SDK.ConsoleModel.ConsoleModel)
-                  ?.saveToTempVariable(executionContext, remoteObject));
+                  ?.saveToTempVariable(executionContext, remoteObject),
+        {jslogContext: 'store-as-global-variable'});
 
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
     const inspectorFrontendHost = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
@@ -957,19 +959,19 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (remoteObject.type === 'string') {
       ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyStringContents), () => {
         inspectorFrontendHost.copyText(remoteObject.value);
-      });
+      }, {jslogContext: 'copy-string-contents'});
       ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyStringAsJSLiteral), () => {
         inspectorFrontendHost.copyText(Platform.StringUtilities.formatAsJSLiteral(remoteObject.value));
-      });
+      }, {jslogContext: 'copy-string-as-js-literal'});
       ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyStringAsJSONLiteral), () => {
         inspectorFrontendHost.copyText(JSON.stringify(remoteObject.value));
-      });
+      }, {jslogContext: 'copy-string-as-json-literal'});
     }
     // We are trying to copy a primitive value.
     else if (primitiveRemoteObjectTypes.has(remoteObject.type)) {
       ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyS, {PH1: String(copyContextMenuTitle)}), () => {
         inspectorFrontendHost.copyText(remoteObject.description);
-      });
+      }, {jslogContext: 'copy-primitive'});
     }
     // We are trying to copy a remote object.
     else if (remoteObject.type === 'object') {
@@ -984,12 +986,14 @@ export class SourcesPanel extends UI.Panel.Panel implements
       };
 
       ctxMenuClipboardSection.appendItem(
-          i18nString(UIStrings.copyS, {PH1: String(copyContextMenuTitle)}), copyDecodedValueHandler);
+          i18nString(UIStrings.copyS, {PH1: String(copyContextMenuTitle)}), copyDecodedValueHandler,
+          {jslogContext: 'copy-object'});
     }
 
     else if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject));
+          i18nString(UIStrings.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject),
+          {jslogContext: 'show-function-definition'});
     }
 
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -1036,7 +1040,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
     const openText = i18nString(UIStrings.openInSourcesPanel);
     const callback: () => void = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
-    contextMenu.revealSection().appendItem(openText, callback);
+    contextMenu.revealSection().appendItem(openText, callback, {jslogContext: 'reveal-in-sources'});
   }
 
   private showFunctionDefinition(remoteObject: SDK.RemoteObject.RemoteObject): void {

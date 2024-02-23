@@ -359,7 +359,8 @@ export class SnippetsNavigatorView extends NavigatorView {
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.createNewSnippet),
         () => this.create(
-            Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString));
+            Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString),
+        {jslogContext: 'create-new-snippet'});
     void contextMenu.show();
   }
 
@@ -367,11 +368,14 @@ export class SnippetsNavigatorView extends NavigatorView {
     const uiSourceCode = node.uiSourceCode();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode));
-    contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false));
+        i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
+        {jslogContext: 'run'});
     contextMenu.editSection().appendItem(
-        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));
-    contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode));
+        i18nString(UIStrings.rename), () => this.rename(node, false), {jslogContext: 'rename'});
+    contextMenu.editSection().appendItem(
+        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), {jslogContext: 'remove'});
+    contextMenu.saveSection().appendItem(
+        i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode), {jslogContext: 'save-as'});
     void contextMenu.show();
   }
 

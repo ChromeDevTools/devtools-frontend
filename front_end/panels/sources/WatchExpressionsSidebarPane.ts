@@ -287,7 +287,8 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
       if (!target.property.synthetic) {
         contextMenu.debugSection().appendItem(
-            i18nString(UIStrings.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()));
+            i18nString(UIStrings.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()),
+            {jslogContext: 'add-property-path-to-watch'});
       }
       return;
     }

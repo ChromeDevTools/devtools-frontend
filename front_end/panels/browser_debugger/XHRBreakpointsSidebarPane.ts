@@ -299,8 +299,9 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this),
         {jslogContext: 'sources.add-xhr-fetch-breakpoint'});
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this)),
-        {jslogContext: 'sources.remove-xhr-fetch-breakpoint'};
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this),
+        {jslogContext: 'sources.remove-xhr-fetch-breakpoint'});
     contextMenu.defaultSection().appendItem(
         removeAllTitle, removeAllBreakpoints.bind(this), {jslogContext: 'sources.remove-all-xhr-fetch-breakpoints'});
     void contextMenu.show();

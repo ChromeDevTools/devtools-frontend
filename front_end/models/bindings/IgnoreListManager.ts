@@ -488,20 +488,22 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   getIgnoreListFolderContextMenuItems(url: Platform.DevToolsPath.UrlString, options?: IgnoreListGeneralRules):
-      Array<{text: string, callback: () => void}> {
-    const menuItems: Array<{text: string, callback: () => void}> = [];
+      Array<{text: string, callback: () => void, jslogContext: string}> {
+    const menuItems: Array<{text: string, callback: () => void, jslogContext: string}> = [];
 
     const regexValue = '^' + Platform.StringUtilities.escapeForRegExp(url) + '/';
     if (this.ignoreListHasPattern(regexValue, true)) {
       menuItems.push({
         text: i18nString(UIStrings.removeFromIgnoreList),
         callback: this.removeIgnoreListPattern.bind(this, regexValue),
+        jslogContext: 'remove-from-ignore-list',
       });
     } else if (this.isUserIgnoreListedURL(url, options)) {
       // This specific url isn't on the ignore list, but there are rules that match it.
       menuItems.push({
         text: i18nString(UIStrings.removeFromIgnoreList),
         callback: this.unIgnoreListURL.bind(this, url, options),
+        jslogContext: 'remove-from-ignore-list',
       });
     } else if (!options?.isCurrentlyIgnoreListed) {
       // Provide options to add to ignore list, unless folder currently displays
@@ -509,6 +511,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       menuItems.push({
         text: i18nString(UIStrings.addDirectoryToIgnoreList),
         callback: this.ignoreListRegex.bind(this, regexValue),
+        jslogContext: 'add-directory-to-ignore-list',
       });
       menuItems.push(...this.getIgnoreListGeneralContextMenuItems(options));
     }

@@ -464,13 +464,13 @@ export class IDBDataView extends UI.View.SimpleView {
           return;
         }
         void node.valueObjectPresentation.objectTreeElement().expandRecursively();
-      });
+      }, {jslogContext: 'expand-recursively'});
       contextMenu.revealSection().appendItem(i18nString(UIStrings.collapse), () => {
         if (!node.valueObjectPresentation) {
           return;
         }
         node.valueObjectPresentation.objectTreeElement().collapse();
-      });
+      }, {jslogContext: 'collapse'});
     }
   }
 

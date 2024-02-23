@@ -1310,7 +1310,8 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this), {jslogContext: 'refresh-indexeddb'});
     void contextMenu.show();
   }
 
@@ -1420,7 +1421,8 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this), {jslogContext: 'refresh-indexeddb'});
     void contextMenu.show();
   }
 
@@ -1553,7 +1555,8 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), this.clearObjectStore.bind(this));
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.clear), this.clearObjectStore.bind(this), {jslogContext: 'clear'});
     void contextMenu.show();
   }
 
@@ -1761,7 +1764,8 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), () => this.domStorage.clear());
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.clear), () => this.domStorage.clear(), {jslogContext: 'clear'});
     void contextMenu.show();
   }
 }
@@ -1803,7 +1807,8 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.clear), () => this.resourcesPanel.clearCookies(this.target, this.cookieDomainInternal));
+        i18nString(UIStrings.clear), () => this.resourcesPanel.clearCookies(this.target, this.cookieDomainInternal),
+        {jslogContext: 'clear'});
     void contextMenu.show();
   }
 

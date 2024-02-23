@@ -19,6 +19,7 @@ node_action("generate_easter_egg_file") {
   }
 
   outputs = [ "$target_gen_dir/EasterEgg.js" ]
+  data = outputs
   if (is_debug) {
     metadata = {
       grd_files = outputs

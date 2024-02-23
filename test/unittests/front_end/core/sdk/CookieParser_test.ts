@@ -52,6 +52,18 @@ describe('CookieParser', () => {
           [{name: 'a', value: 'b', size: 10}, {name: 'c', value: 'd', size: 10}, {name: '', value: 'f', size: 1}]);
     });
 
+    it('handles multiple SetCookies ending with value and no semicolon separated by line breaks', () => {
+      parseAndExpectSetCookies(
+          `a=b; Secure
+      c=d; Secure
+      f`,
+          [
+            {name: 'a', value: 'b', size: 18, secure: true},
+            {name: 'c', value: 'd', size: 18, secure: true},
+            {name: '', value: 'f', size: 1},
+          ]);
+    });
+
     it('handles path and domain values ', () => {
       parseAndExpectSetCookies(
           'cookie1 = value; Path=/; Domain=.example.com;',

@@ -155,7 +155,7 @@ export class CookieParser {
     // and http://crbug.com/12361). The logic below matches latest versions of IE, Firefox,
     // Chrome and Safari on some old platforms. The latest version of Safari supports quoted
     // cookie values, though.
-    const keyValueMatch = /^[ \t]*([^=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this.#input);
+    const keyValueMatch = /^[ \t]*([^=;\n]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this.#input);
     if (!keyValueMatch) {
       console.error('Failed parsing cookie header before: ' + this.#input);
       return null;

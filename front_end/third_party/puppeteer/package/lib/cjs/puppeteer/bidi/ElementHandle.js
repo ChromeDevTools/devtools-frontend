@@ -141,7 +141,8 @@ let BidiElementHandle = (() => {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {
                 const handle = __addDisposableResource(env_1, (await this.evaluateHandle(element => {
-                    if (element instanceof HTMLIFrameElement) {
+                    if (element instanceof HTMLIFrameElement ||
+                        element instanceof HTMLFrameElement) {
                         return element.contentWindow;
                     }
                     return;

@@ -105,8 +105,8 @@ describeWithMockConnection('TraceSDKServices', function() {
 
       // The model data is only used as a cache key, so we don't need it to be real to test this.
       const modelData = {} as unknown as TraceEngine.Handlers.Types.TraceParseData;
-      const result = await TraceEngine.Extras.FetchNodes.domNodesForMultipleBackendNodeIds(
-          modelData, new Set([nodeId(2), nodeId(3)]));
+      const result =
+          await TraceEngine.Extras.FetchNodes.domNodesForMultipleBackendNodeIds(modelData, [nodeId(2), nodeId(3)]);
       assert.isNotNull(result);
       const entries = Array.from(result.entries());
       assert.deepEqual(entries, [

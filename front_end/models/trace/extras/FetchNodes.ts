@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../../generated/protocol.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
 const domLookUpSingleNodeCache =
     new Map<Handlers.Types.TraceParseData, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
 const domLookUpBatchNodesCache = new Map<
     Handlers.Types.TraceParseData,
-    Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
+    Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function _TEST_clearCache(): void {
@@ -51,12 +51,27 @@ export async function domNodeForBackendNodeID(
 }
 
 /**
+ * Looks up for backend node ids in different types of trace events
+ * and resolves them into related DOM nodes.
+ * This method should be progressively updated to support more events
+ * containing node ids which we want to resolve.
+ */
+export async function extractRelatedDOMNodesFromEvent(
+    modelData: Handlers.Types.TraceParseData,
+    event: Types.TraceEvents.TraceEventData): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
+  if (Types.TraceEvents.isSyntheticLayoutShift(event) && event.args.data?.impacted_nodes) {
+    return domNodesForMultipleBackendNodeIds(modelData, event.args.data.impacted_nodes.map(node => node.node_id));
+  }
+  return null;
+}
+
+/**
  * Takes a set of Protocol.DOM.BackendNodeId ids and will return a map of NodeId=>DOMNode.
  * Results are cached based on 1) the provided TraceParseData and 2) the provided set of IDs.
  */
 export async function domNodesForMultipleBackendNodeIds(
     modelData: Handlers.Types.TraceParseData,
-    nodeIds: Set<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
+    nodeIds: Array<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const fromCache = domLookUpBatchNodesCache.get(modelData)?.get(nodeIds);
   if (fromCache) {
     return fromCache;
@@ -67,10 +82,10 @@ export async function domNodesForMultipleBackendNodeIds(
     return new Map();
   }
 
-  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(nodeIds) || new Map();
+  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(new Set(nodeIds)) || new Map();
 
   const cacheForModel = domLookUpBatchNodesCache.get(modelData) ||
-      new Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
+      new Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
   cacheForModel.set(nodeIds, domNodesMap);
   domLookUpBatchNodesCache.set(modelData, cacheForModel);
 

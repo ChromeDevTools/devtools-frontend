@@ -271,20 +271,6 @@ export class TimelineModelImpl {
     this.minimumRecordTimeInternal = tracingModel.minimumRecordTime();
     this.maximumRecordTimeInternal = tracingModel.maximumRecordTime();
 
-    // Remove LayoutShift events from the main thread list of events because they are
-    // represented in the experience track. This is done prior to the main thread being processed for its own events.
-    const layoutShiftEvents = [];
-    for (const process of tracingModel.sortedProcesses()) {
-      if (process.name() !== 'Renderer') {
-        continue;
-      }
-
-      for (const thread of process.sortedThreads()) {
-        const shifts = thread.removeEventsByName(RecordType.LayoutShift);
-        layoutShiftEvents.push(...shifts);
-      }
-    }
-
     this.processSyncBrowserEvents(tracingModel);
     if (this.browserFrameTracking) {
       this.processThreadsForBrowserFrames(tracingModel);

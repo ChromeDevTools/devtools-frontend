@@ -22,12 +22,14 @@ import {
 import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Elements from '../../panels/elements/elements.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Timeline from './timeline.js';
@@ -627,6 +629,23 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('renders the details for a layout shift properly', async function() {
+      // Set related CDP methods responses to return our mock document and node.
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assertNotNullOrUndefined(domModel);
+      const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
+      const docc = new SDK.DOMModel.DOMNode(domModel) as SDK.DOMModel.DOMDocument;
+      const domNode2 = new SDK.DOMModel.DOMNode(domModel);
+      const domID = 58 as Protocol.DOM.NodeId;
+      domNode2.id = domID;
+
+      setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domID]}));
+
+      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
+      await domModel.requestDocument();
+      domModel.registerNode(domNode2);
+      domNode2.init(docc, false, {nodeName: 'A test node name', nodeId: domID} as Protocol.DOM.Node);
+      const data = await TraceLoader.allModels(this, 'cls-single-frame.json.gz');
+      const layoutShift = data.traceParsedData.LayoutShifts.clusters[0].events[0];
       Common.Linkifier.registerLinkifier({
         contextTypes() {
           return [Timeline.CLSLinkifier.CLSRect];
@@ -635,9 +654,17 @@ describeWithMockConnection('TimelineUIUtils', function() {
           return Timeline.CLSLinkifier.Linkifier.instance();
         },
       });
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [
+            SDK.DOMModel.DOMNode,
+          ];
+        },
+        async loadLinkifier() {
+          return Elements.DOMLinkifier.Linkifier.instance();
+        },
+      });
 
-      const data = await TraceLoader.allModels(this, 'cls-single-frame.json.gz');
-      const layoutShift = data.traceParsedData.LayoutShifts.clusters[0].events[0];
       if (!layoutShift) {
         throw new Error('Could not find LayoutShift event.');
       }
@@ -664,8 +691,17 @@ describeWithMockConnection('TimelineUIUtils', function() {
             {title: 'Had recent input', value: 'No'},
             {title: 'Moved from', value: 'Location: [120,670], Size: [900x900]'},
             {title: 'Moved to', value: 'Location: [120,1270], Size: [900x478]'},
+            // The related node link value is under shadow root so it
+            // can't be accessed at this point.
+            {title: 'Related Node', value: ''},
           ],
       );
+      // Test the related node link.
+      const relatedNodeRow =
+          details.querySelector('.timeline-details-view-row:nth-of-type(9) .timeline-details-view-row-value span')
+              ?.shadowRoot;
+      relatedNodeRow?.querySelector<HTMLDivElement>('div')?.innerText;
+      assert.strictEqual(relatedNodeRow?.querySelector<HTMLDivElement>('div')?.innerText, 'A test node name');
     });
 
     it('renders the details for a profile call properly', async function() {

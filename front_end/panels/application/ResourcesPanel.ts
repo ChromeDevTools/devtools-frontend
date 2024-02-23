@@ -150,14 +150,11 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 
   showCategoryView(categoryName: string, categoryLink: Platform.DevToolsPath.UrlString|null): void {
-    function kebapCase(paneName: string): string {
-      return paneName.replace(/[\s]+/g, '-').toLowerCase();
-    }
-
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
-    this.categoryView.element.setAttribute('jslog', `${VisualLogging.pane().context(kebapCase(categoryName))}`);
+    this.categoryView.element.setAttribute(
+        'jslog', `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(categoryName))}`);
     this.categoryView.setText(categoryName);
     this.categoryView.setLink(categoryLink);
     const categoryWarning = categoryName === 'Web SQL' ? UIStrings.webSqlDeprecation : null;

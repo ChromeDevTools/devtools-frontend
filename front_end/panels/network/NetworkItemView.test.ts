@@ -83,7 +83,7 @@ describeWithEnvironment('NetworkItemView', () => {
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headersComponent');
+    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headers-component');
     const responseIcon = getIconDataInTab(networkItemView['tabs'], 'response');
 
     networkItemView.detach();
@@ -98,7 +98,7 @@ describeWithEnvironment('NetworkItemView', () => {
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headersComponent');
+    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headers-component');
     const responseIcon = getIconDataInTab(networkItemView['tabs'], 'response');
 
     networkItemView.detach();
@@ -112,7 +112,7 @@ describeWithEnvironment('NetworkItemView', () => {
     request.hasOverriddenContent = true;
 
     const networkItemView = renderNetworkItemView(request);
-    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headersComponent');
+    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headers-component');
     const responseIcon = getIconDataInTab(networkItemView['tabs'], 'response');
 
     networkItemView.detach();
@@ -123,7 +123,7 @@ describeWithEnvironment('NetworkItemView', () => {
 
   it('does not show indicator for unoverriden request', () => {
     const networkItemView = renderNetworkItemView(request);
-    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headersComponent');
+    const headersIcon = getIconDataInTab(networkItemView['tabs'], 'headers-component');
     const responseIcon = getIconDataInTab(networkItemView['tabs'], 'response');
 
     networkItemView.detach();

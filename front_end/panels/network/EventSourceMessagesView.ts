@@ -57,7 +57,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   private filterRegex: RegExp|null;
 
   private messageFilterSetting: Common.Settings.Setting<string> =
-      Common.Settings.Settings.instance().createSetting('networkEventSourceMessageFilter', '');
+      Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();

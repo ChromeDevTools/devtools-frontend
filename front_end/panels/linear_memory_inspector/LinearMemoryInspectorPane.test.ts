@@ -34,7 +34,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
   it('can be created', () => {
     const instance = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane.instance();
     const arrayWrapper = new Uint8Wrapper(createArray());
-    const scriptId = 'scriptId';
+    const scriptId = 'script-id';
     const title = 'Test Title';
     instance.create(scriptId, title, arrayWrapper, 10);
 

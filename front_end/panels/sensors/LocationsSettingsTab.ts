@@ -210,7 +210,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     location.lat = lat ? parseFloat(lat) : 0;
     const long = editor.control('long').value.trim();
     location.long = long ? parseFloat(long) : 0;
-    const timezoneId = editor.control('timezoneId').value.trim();
+    const timezoneId = editor.control('timezone-id').value.trim();
     location.timezoneId = timezoneId;
     const locale = editor.control('locale').value.trim();
     location.locale = locale;
@@ -227,7 +227,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     editor.control('title').value = location.title;
     editor.control('lat').value = String(location.lat);
     editor.control('long').value = String(location.long);
-    editor.control('timezoneId').value = location.timezoneId;
+    editor.control('timezone-id').value = location.timezoneId;
     editor.control('locale').value = location.locale;
     return editor;
   }
@@ -267,7 +267,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text locations-input-container');
-    cell.appendChild(editor.createInput('timezoneId', 'text', i18nString(UIStrings.timezoneId), timezoneIdValidator));
+    cell.appendChild(editor.createInput('timezone-id', 'text', i18nString(UIStrings.timezoneId), timezoneIdValidator));
     fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
 
     cell = fields.createChild('div', 'locations-list-text locations-input-container');

@@ -864,7 +864,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         buttons[index].element.focus();
         event.consume(true);
       });
-      contextMenu.headerSection().appendCustomItem(dockItemElement, 'dockSide');
+      contextMenu.headerSection().appendCustomItem(dockItemElement, 'dock-side');
     }
 
     const button = (this.#itemInternal.element as HTMLButtonElement);

@@ -473,10 +473,10 @@ export class DeviceModeToolbar {
         EmulationModel.DeviceModeModel.defaultMobileScaleFactor :
         window.devicePixelRatio;
     appendDeviceScaleFactorItem(
-        contextMenu.headerSection(), i18nString(UIStrings.defaultF, {PH1: defaultValue}), 0, 'DPR: default');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '1', 1, 'DPR: 1');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '2', 2, 'DPR: 2');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '3', 3, 'DPR: 3');
+        contextMenu.headerSection(), i18nString(UIStrings.defaultF, {PH1: defaultValue}), 0, 'dpr-default');
+    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '1', 1, 'dpr-1');
+    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '2', 2, 'dpr-2');
+    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '3', 3, 'dpr-3');
 
     function appendDeviceScaleFactorItem(
         section: UI.ContextMenu.Section, title: string, value: number, jslogContext: string): void {
@@ -495,7 +495,8 @@ export class DeviceModeToolbar {
 
     function appendUAItem(title: string, value: EmulationModel.DeviceModeModel.UA): void {
       contextMenu.defaultSection().appendCheckboxItem(
-          title, uaSetting.set.bind(uaSetting, value), {checked: uaSetting.get() === value, jslogContext: value});
+          title, uaSetting.set.bind(uaSetting, value),
+          {checked: uaSetting.get() === value, jslogContext: Platform.StringUtilities.toKebabCase(value)});
     }
   }
 

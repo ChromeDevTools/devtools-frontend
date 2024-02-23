@@ -29,7 +29,7 @@ describe('The Network Tab', function() {
     await selectRequestByName('json-subtype-ld.rawresponse');
 
     const networkView = await waitFor('.network-item-view');
-    await click('#tab-headersComponent', {
+    await click('#tab-headers-component', {
       root: networkView,
     });
 
@@ -94,7 +94,7 @@ describe('The Network Tab', function() {
     await selectRequestByName('json-subtype-ld.rawresponse');
 
     const networkView = await waitFor('.network-item-view');
-    await click('#tab-headersComponent', {
+    await click('#tab-headers-component', {
       root: networkView,
     });
 

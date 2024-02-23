@@ -680,8 +680,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.updateFileTitle(uiSourceCode);
   }
 
-  private generateTabId(): string {
-    return 'tab_' + (tabId++);
+  private generateTabId(): Lowercase<string> {
+    return 'tab-' + (tabId++) as Lowercase<string>;
   }
 
   currentFile(): Workspace.UISourceCode.UISourceCode|null {

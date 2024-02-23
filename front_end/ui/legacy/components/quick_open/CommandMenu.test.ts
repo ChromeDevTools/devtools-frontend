@@ -10,9 +10,9 @@ import {createFakeSetting, describeWithLocale} from '../../../../../test/unittes
 
 function createCommandMenuProvider(
     deprecationNotice: Common.SettingRegistration.SettingRegistration['deprecationNotice']) {
-  const setting = createFakeSetting<boolean>('Test Setting', false);
+  const setting = createFakeSetting<boolean>('test-setting', false);
   setting.setRegistration({
-    settingName: 'Test Setting',
+    settingName: 'test-setting',
     settingType: Common.SettingRegistration.SettingType.BOOLEAN,
     category: Common.SettingRegistration.SettingCategory.APPEARANCE,
     defaultValue: false,

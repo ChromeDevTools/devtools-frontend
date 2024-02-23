@@ -271,7 +271,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     this.#availableAuthenticatorSetting =
         Common.Settings.Settings.instance().createSetting<AvailableAuthenticatorOptions[]>(
-            'webauthnAuthenticators', []);
+            'webauthn-authenticators', []);
 
     this.#createToolbar();
     this.#authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');

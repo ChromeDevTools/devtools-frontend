@@ -373,10 +373,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 }
 
 export enum Tab {
-  Details = 'Details',
-  EventLog = 'EventLog',
-  CallTree = 'CallTree',
-  BottomUp = 'BottomUp',
-  PaintProfiler = 'PaintProfiler',
-  LayerViewer = 'LayerViewer',
+  Details = 'details',
+  EventLog = 'event-log',
+  CallTree = 'call-tree',
+  BottomUp = 'bottom-up',
+  PaintProfiler = 'paint-profiler',
+  LayerViewer = 'layer-viewer',
 }

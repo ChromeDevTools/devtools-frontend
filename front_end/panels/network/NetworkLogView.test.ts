@@ -86,7 +86,7 @@ describeWithMockConnection('NetworkLogView', () => {
     }
 
     function createEnvironment() {
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.markAsRoot();
       networkLogView.show(document.body);
@@ -157,7 +157,7 @@ describeWithMockConnection('NetworkLogView', () => {
       }
       return new Network.NetworkLogView.NetworkLogView(
           filterBar, document.createElement('div'),
-          Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false));
+          Common.Settings.Settings.instance().createSetting('network-log-large-rows', false));
     }
 
     const tests = (inScope: boolean) => () => {
@@ -734,7 +734,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('can apply filter - has-overrides:yes', async () => {
       const {urlHeaderOverridden, urlContentOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
 
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.setTextFilterValue('has-overrides:yes');
 
@@ -754,7 +754,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('can apply filter - has-overrides:no', async () => {
       const {urlNotOverridden} = createOverrideRequests();
 
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.setTextFilterValue('has-overrides:no');
 
@@ -772,7 +772,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('can apply filter - has-overrides:headers', async () => {
       const {urlHeaderOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
 
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.setTextFilterValue('has-overrides:headers');
 
@@ -791,7 +791,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('can apply filter - has-overrides:content', async () => {
       const {urlContentOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
 
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.setTextFilterValue('has-overrides:content');
 
@@ -810,7 +810,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('can apply filter - has-overrides:tent', async () => {
       const {urlHeaderAndContentOverridden, urlContentOverridden} = createOverrideRequests();
 
-      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
       networkLogView = createNetworkLogView(filterBar);
       networkLogView.setTextFilterValue('has-overrides:tent');  // partial text
 

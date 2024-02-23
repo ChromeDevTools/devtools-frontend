@@ -136,7 +136,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   private readonly sidebar: PlayerListView;
 
   constructor(downloadStore: PlayerDataDownloadManager = new PlayerDataDownloadManager()) {
-    super('Media');
+    super('media');
     this.detailPanels = new Map();
 
     this.deletedPlayers = new Set();

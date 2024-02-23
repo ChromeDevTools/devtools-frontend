@@ -134,7 +134,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
       bucketInfo: Protocol.Storage.StorageBucketInfo) {
     const {bucket} = bucketInfo;
     const {origin} = SDK.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
-    super(resourcesPanel, `${bucket.name} - ${origin}`, `storage-bucket-${bucket.name}-${bucket.storageKey}`);
+    super(resourcesPanel, `${bucket.name} - ${origin}`, 'storage-bucket');
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
     const icon = IconButton.Icon.create('database');

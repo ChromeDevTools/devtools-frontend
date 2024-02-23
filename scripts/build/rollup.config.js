@@ -9,7 +9,7 @@ import {terser} from 'rollup-plugin-terser';
 
 const devtools_plugin = require('./devtools_plugin.js');
 
-/** @type {function({configDCHECK: boolean, configSourcemaps: boolean}): import("rollup").MergedRollupOptions} */
+/** @type {function({configSourcemaps: boolean}): import("rollup").MergedRollupOptions} */
 // eslint-disable-next-line import/no-default-export
 export default commandLineArgs => ({
   treeshake: false,
@@ -19,11 +19,7 @@ export default commandLineArgs => ({
     sourcemap: Boolean(commandLineArgs.configSourcemaps),
   }],
   plugins: [
-    terser({
-      compress: {
-        pure_funcs: commandLineArgs.configDCHECK ? ['Platform.DCHECK'] : [],
-      },
-    }),
+    terser(),
     {
       name: 'devtools-plugin',
       resolveId(source, importer) {

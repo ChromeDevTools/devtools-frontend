@@ -5,37 +5,8 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
-import("../../../scripts/build/ninja/node.gni")
 import("../../../scripts/build/ninja/vars.gni")
 import("../../../third_party/typescript/typescript.gni")
-
-node_action("generate_dcheck") {
-  script = "front_end/core/platform/generate-dcheck.js"
-
-  args = [ rebase_path(target_gen_dir, root_build_dir) ]
-
-  if (devtools_dcheck_always_on) {
-    args += [ "--should-dcheck" ]
-  }
-
-  outputs = [ "$target_gen_dir/dcheck.js" ]
-  data = outputs
-
-  if (is_debug) {
-    metadata = {
-      grd_files = outputs
-    }
-  }
-}
-
-devtools_pre_built("dcheck") {
-  sources = [
-    "dcheck-tsconfig.json",
-    "dcheck.d.ts",
-  ]
-
-  deps = [ ":generate_dcheck" ]
-}
 
 devtools_module("platform") {
   sources = [
@@ -56,8 +27,6 @@ devtools_module("platform") {
     "UIString.ts",
     "UserVisibleError.ts",
   ]
-
-  deps = [ ":dcheck" ]
 }
 
 devtools_entrypoint("bundle") {

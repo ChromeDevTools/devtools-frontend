@@ -2322,9 +2322,9 @@ const COLOR_TO_RGBA_ENTRIES: Array<readonly[string, number[]]> = [
   ['transparent', [0, 0, 0, 0]],
 ];
 
-Platform.DCHECK(() => {
-  return COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname);
-}, 'All color nicknames must be lowercase.');
+console.assert(
+    COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname),
+    'All color nicknames must be lowercase.');
 
 export const Nicknames = new Map(COLOR_TO_RGBA_ENTRIES);
 

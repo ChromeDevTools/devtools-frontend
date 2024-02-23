@@ -98,10 +98,6 @@ template("bundle") {
         rebase_path(invoker.output_file_location, root_build_dir),
       ]
 
-      if (!devtools_dcheck_always_on) {
-        args += [ "--configDCHECK" ]
-      }
-
       if (devtools_release_sourcemaps) {
         args += [ "--configSourcemaps" ]
       }

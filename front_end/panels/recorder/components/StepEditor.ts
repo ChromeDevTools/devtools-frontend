@@ -1202,14 +1202,11 @@ export class StepEditor extends LitElement {
     `;
 
     // clang-format on
-    Platform.DCHECK(() => {
-      for (const key of Object.keys(dataTypeByAttribute)) {
-        if (!this.#renderedAttributes.has(key as Attribute)) {
-          return false;
-        }
+    for (const key of Object.keys(dataTypeByAttribute)) {
+      if (!this.#renderedAttributes.has(key as Attribute)) {
+        throw new Error(`The editable attribute ${key} does not have UI`);
       }
-      return true;
-    }, 'One of the editable attributes does not have UI');
+    }
 
     return result;
   }

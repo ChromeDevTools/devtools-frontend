@@ -142,8 +142,9 @@ export class ExperimentsSupport {
   register(
       experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string,
       feedbackLink?: string): void {
-    Platform.DCHECK(
-        () => !this.#experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
+    if (this.#experimentNames.has(experimentName)) {
+      throw new Error(`Duplicate registraction of experiment '${experimentName}'`);
+    }
     this.#experimentNames.add(experimentName);
     this.#experiments.push(new Experiment(
         this, experimentName, experimentTitle, Boolean(unstable),
@@ -231,7 +232,9 @@ export class ExperimentsSupport {
   }
 
   private checkExperiment(experimentName: string): void {
-    Platform.DCHECK(() => this.#experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
+    if (!this.#experimentNames.has(experimentName)) {
+      throw new Error(`Unknown experiment '${experimentName}'`);
+    }
   }
 }
 

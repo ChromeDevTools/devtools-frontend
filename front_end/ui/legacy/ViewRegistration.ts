@@ -3,12 +3,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {type ViewLocationResolver} from './View.js';
 import {PreRegisteredView} from './ViewManager.js';
-
 import {type Widget} from './Widget.js';
 
 const UIStrings = {
@@ -156,7 +155,9 @@ export interface ViewRegistration {
 const viewIdSet = new Set<string>();
 export function registerViewExtension(registration: ViewRegistration): void {
   const viewId = registration.id;
-  Platform.DCHECK(() => !viewIdSet.has(viewId), `Duplicate view id '${viewId}'`);
+  if (viewIdSet.has(viewId)) {
+    throw new Error(`Duplicate view id '${viewId}'`);
+  }
   viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }

@@ -1408,9 +1408,10 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
     const currentPseudoElements = parent.pseudoElements().get(pseudoType);
     if (currentPseudoElements) {
-      Platform.DCHECK(
-          () => pseudoType.startsWith('view-transition'),
-          'DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* pseudo elements can coexist under the same parent.');
+      if (!pseudoType.startsWith('view-transition')) {
+        throw new Error(
+            'DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* pseudo elements can coexist under the same parent.');
+      }
       currentPseudoElements.push(node);
     } else {
       parent.pseudoElements().set(pseudoType, [node]);

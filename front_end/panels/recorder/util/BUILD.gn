@@ -15,10 +15,7 @@ devtools_module("util") {
 devtools_entrypoint("bundle") {
   entrypoint = "util.ts"
 
-  deps = [
-    ":util",
-    "../../../core/platform:bundle",
-  ]
+  deps = [ ":util" ]
 
   visibility = [
     ":*",

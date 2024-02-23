@@ -714,7 +714,7 @@ export class StepView extends HTMLElement {
         this.#handleStepAction(
             new Menus.Menu.MenuItemSelectedEvent(item.id),
         );
-      });
+      }, {jslogContext: item.id});
     }
 
     const preferredCopyAction = copyActions.find(
@@ -726,11 +726,11 @@ export class StepView extends HTMLElement {
         this.#handleStepAction(
             new Menus.Menu.MenuItemSelectedEvent(preferredCopyAction.id),
         );
-      });
+      }, {jslogContext: preferredCopyAction.id});
     }
 
     if (copyActions.length) {
-      const copyAs = menu.section('copy').appendSubMenuItem(i18nString(UIStrings.copyAs));
+      const copyAs = menu.section('copy').appendSubMenuItem(i18nString(UIStrings.copyAs), false, 'copy');
       for (const item of copyActions) {
         if (item === preferredCopyAction) {
           continue;
@@ -739,7 +739,7 @@ export class StepView extends HTMLElement {
           this.#handleStepAction(
               new Menus.Menu.MenuItemSelectedEvent(item.id),
           );
-        });
+        }, {jslogContext: item.id});
       }
     }
 

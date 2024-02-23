@@ -123,11 +123,11 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     const item = (gridNode as GridNode).item;
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyUrl), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
-    }, {jslogContext: 'copyURL'});
+    }, {jslogContext: 'copy-url'});
     if (item.initiator.initiatorUrl) {
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyInitiatorUrl), () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.initiator.initiatorUrl);
-      }, {jslogContext: 'copyInitiatorURL'});
+      }, {jslogContext: 'copy-initiator-url'});
     }
   }
 

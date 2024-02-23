@@ -67,7 +67,8 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
     }
 
     contextMenu.revealSection().appendItem(
-        i18nString(UIStrings.revealInSummaryView), revealInView.bind(this, 'Summary'));
+        i18nString(UIStrings.revealInSummaryView), revealInView.bind(this, 'Summary'),
+        {jslogContext: 'reveal-in-summary'});
   }
 
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {

@@ -678,7 +678,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null): void {
     contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSummaryView), () => {
       dataDisplayDelegate.showObject(String(this.snapshotNodeId), i18nString(UIStrings.summary));
-    });
+    }, {jslogContext: 'reveal-in-summary-view'});
 
     if (this.referenceName) {
       for (const match of this.referenceName.matchAll(/\((?<objectName>[^@)]*) @(?<snapshotNodeId>\d+)\)/g)) {
@@ -689,7 +689,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
         contextMenu.revealSection().appendItem(
             i18nString(UIStrings.revealObjectSWithIdSInSummary, {PH1: objectName, PH2: snapshotNodeId}), () => {
               dataDisplayDelegate.showObject(snapshotNodeId, i18nString(UIStrings.summary));
-            });
+            }, {jslogContext: 'reveal-in-summary'});
       }
     }
 
@@ -704,7 +704,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
           await consoleModel?.saveToTempVariable(
               UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObject);
         }
-      });
+      }, {jslogContext: 'store-as-global-variable'});
     }
   }
 }

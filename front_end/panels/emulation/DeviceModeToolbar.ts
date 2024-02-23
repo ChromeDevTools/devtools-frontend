@@ -734,7 +734,7 @@ export class DeviceModeToolbar {
 
     function addMode(mode: EmulationModel.EmulatedDevices.Mode, title: string): void {
       contextMenu.defaultSection().appendCheckboxItem(
-          title, applyMode.bind(null, mode), {checked: model.mode() === mode});
+          title, applyMode.bind(null, mode), {checked: model.mode() === mode, jslogContext: 'device-mode'});
     }
 
     function applyMode(mode: EmulationModel.EmulatedDevices.Mode): void {

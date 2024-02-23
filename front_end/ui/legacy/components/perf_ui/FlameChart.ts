@@ -2307,8 +2307,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
 
-    for (let i = 0; i < this.selectedEntryIndex; ++i) {
-      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this.chartViewport.windowLeftTime()) {
+    for (let i = 0; i < td.flowEndTimes.length; ++i) {
+      if (td.flowEndTimes[i] < this.chartViewport.windowLeftTime()) {
         continue;
       }
       const startX = this.chartViewport.timeToPosition(td.flowStartTimes[i]);

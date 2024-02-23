@@ -75,4 +75,27 @@ describe('Initiators', () => {
       assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
     }
   });
+
+  it('will walk forward to find the events initiated by the selected entry', async function() {
+    const traceData = await TraceLoader.traceEngine(this, 'nested-initiators.json.gz');
+
+    // Find any of the InstallTimer calls; they initiate other events.
+    const timerInstall = traceData.Renderer.allTraceEntries.find(entry => {
+      return entry.name === TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall;
+    });
+    assertNotNullOrUndefined(timerInstall);
+
+    // Find the initator pairs starting at the TimerInstall
+    // call. We expect to find one pair here:
+    // TimerFire that was initiated by the entry we found - TimerInstall
+
+    const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, timerInstall);
+
+    assert.lengthOf(initiatorPairs, 1);
+    for (const pair of initiatorPairs) {
+      // Ensure the pair is a TimerInstall>TimerFire pair.
+      assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+      assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+    }
+  });
 });

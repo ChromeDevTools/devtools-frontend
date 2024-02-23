@@ -7,6 +7,7 @@ group("front_end") {
     "../../../front_end/Images:optimize_images",
     "../../../front_end/core/common:unittests",
     "../../../front_end/core/dom_extension:unittests",
+    "../../../front_end/core/host:unittests",
     "../../../front_end/core/i18n:unittests",
     "../../../front_end/core/platform:unittests",
     "../../../front_end/core/protocol_client:unittests",

@@ -20,7 +20,7 @@ const component = new ConsoleInsight(
     {
       async *
           // eslint-disable-next-line require-yield
-          getInsights() {
+          fetch() {
             throw new Error('Could not connect to the server');
           },
     },

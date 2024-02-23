@@ -37,10 +37,10 @@ describeWithLocale('ConsoleInsight', () => {
   });
 
   describe('ConsoleInsight', () => {
-    function getTestInsightProvider() {
+    function getTestAidaClient() {
       return {
         async *
-            getInsights() {
+            fetch() {
               yield {explanation: 'test', metadata: {}};
             },
       };
@@ -67,7 +67,7 @@ describeWithLocale('ConsoleInsight', () => {
     }
 
     it('shows the consent flow for signed-in users', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
         isSyncActive: true,
         accountEmail: 'some-email',
       });
@@ -78,7 +78,7 @@ describeWithLocale('ConsoleInsight', () => {
     });
 
     it('consent can be accepted', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
         isSyncActive: true,
         accountEmail: 'some-email',
       });
@@ -100,7 +100,7 @@ describeWithLocale('ConsoleInsight', () => {
       const registerAidaClientEvent =
           sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
 
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
         isSyncActive: true,
         accountEmail: 'some-email',
       });
@@ -129,7 +129,7 @@ describeWithLocale('ConsoleInsight', () => {
     it('reports negative rating', reportsRating(false));
 
     it('report if the user is not logged in', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
         isSyncActive: false,
       });
       renderElementIntoDOM(component);
@@ -140,7 +140,7 @@ describeWithLocale('ConsoleInsight', () => {
     });
 
     it('report if the sync is not enabled', async () => {
-      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+      const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
         isSyncActive: false,
         accountEmail: 'some-email',
       });
@@ -159,7 +159,7 @@ describeWithLocale('ConsoleInsight', () => {
       });
 
       try {
-        const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestInsightProvider(), '', {
+        const component = new Explain.ConsoleInsight(getTestPromptBuilder(), getTestAidaClient(), '', {
           isSyncActive: false,
           accountEmail: 'some-email',
         });

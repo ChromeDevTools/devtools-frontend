@@ -19,7 +19,7 @@ const component = new ConsoleInsight(
     },
     {
       async *
-          getInsights() {
+          fetch() {
             yield {
               explanation: `## Result
 

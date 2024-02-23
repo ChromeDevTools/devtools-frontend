@@ -13,7 +13,6 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {type AidaResponse, type InsightProvider} from '../InsightProvider.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
 import styles from './consoleInsight.css.js';
@@ -130,7 +129,7 @@ export class CloseEvent extends Event {
 }
 
 type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'>;
-type PublicInsightProvider = Pick<InsightProvider, 'getInsights'>;
+type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'fetch'>;
 
 function localizeType(sourceType: SourceType): string {
   switch (sourceType) {
@@ -193,7 +192,7 @@ type StateData = {
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
   validMarkdown: boolean,
   sources: Source[],
-}&AidaResponse|{
+}&Host.AidaClient.AidaResponse|{
   type: State.ERROR,
   error: string,
 }|{
@@ -208,7 +207,7 @@ type StateData = {
 };
 
 export class ConsoleInsight extends HTMLElement {
-  static async create(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionTitle?: string):
+  static async create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient, actionTitle?: string):
       Promise<ConsoleInsight> {
     const syncData = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(resolve => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
@@ -216,7 +215,7 @@ export class ConsoleInsight extends HTMLElement {
       });
     });
 
-    return new ConsoleInsight(promptBuilder, insightProvider, actionTitle, syncData);
+    return new ConsoleInsight(promptBuilder, aidaClient, actionTitle, syncData);
   }
 
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
@@ -225,7 +224,7 @@ export class ConsoleInsight extends HTMLElement {
   #actionTitle = '';
 
   #promptBuilder: PublicPromptBuilder;
-  #insightProvider: PublicInsightProvider;
+  #aidaClient: PublicAidaClient;
   #renderer = new MarkdownRenderer();
 
   // Main state.
@@ -235,11 +234,11 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRating?: boolean;
 
   constructor(
-      promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider, actionTitle?: string,
+      promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient, actionTitle?: string,
       syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation) {
     super();
     this.#promptBuilder = promptBuilder;
-    this.#insightProvider = insightProvider;
+    this.#aidaClient = aidaClient;
     this.#actionTitle = actionTitle ?? '';
     this.#state = {
       type: State.NOT_LOGGED_IN,
@@ -402,10 +401,10 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  async * #getInsight(): AsyncGenerator<{sources: Source[]}&AidaResponse, void, void> {
+  async * #getInsight(): AsyncGenerator<{sources: Source[]}&Host.AidaClient.AidaResponse, void, void> {
     try {
       const {prompt, sources} = await this.#promptBuilder.buildPrompt();
-      for await (const response of this.#insightProvider.getInsights(prompt)) {
+      for await (const response of this.#aidaClient.fetch(prompt)) {
         yield {sources, ...response};
       }
     } catch (err) {

@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
-
-import * as Explain from './explain.js';
+import * as Host from './host.js';
+import * as Root from '../root/root.js';
 
 const {assert} = chai;
 
 const TEST_MODEL_ID = 'testModelId';
 
-describe('InsightProvider', () => {
+describe('AidaClient', () => {
   it('adds no model temperature if there is no aidaTemperature query param', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaTemperature').returns(null);
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -26,7 +24,7 @@ describe('InsightProvider', () => {
   it('adds a model temperature', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaTemperature').returns('0.5');
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -40,7 +38,7 @@ describe('InsightProvider', () => {
   it('adds a model temperature of 0', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaTemperature').returns('0');
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -54,7 +52,7 @@ describe('InsightProvider', () => {
   it('adds no model temperature if the aidaTemperature query param cannot be parsed into a float', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaTemperature').returns('not a number');
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -65,7 +63,7 @@ describe('InsightProvider', () => {
   it('adds no model id if there is no aidaModelId query param', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaModelId').returns(null);
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -76,7 +74,7 @@ describe('InsightProvider', () => {
   it('adds a model id', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaModelId').returns(TEST_MODEL_ID);
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -91,7 +89,7 @@ describe('InsightProvider', () => {
     const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     stub.withArgs('aidaModelId').returns(TEST_MODEL_ID);
     stub.withArgs('aidaTemperature').returns('0.5');
-    const request = Explain.InsightProvider.buildApiRequest('foo');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
     assert.deepStrictEqual(request, {
       input: 'foo',
       client: 'CHROME_DEVTOOLS',
@@ -103,9 +101,9 @@ describe('InsightProvider', () => {
     stub.restore();
   });
 
-  async function getAllResults(provider: Explain.InsightProvider): Promise<Explain.AidaResponse[]> {
+  async function getAllResults(provider: Host.AidaClient.AidaClient): Promise<Host.AidaClient.AidaResponse[]> {
     const results = [];
-    for await (const result of provider.getInsights('foo')) {
+    for await (const result of provider.fetch('foo')) {
       results.push(result);
     }
     return results;
@@ -128,7 +126,7 @@ describe('InsightProvider', () => {
           callback({statusCode: 200});
         });
 
-    const provider = new Explain.InsightProvider();
+    const provider = new Host.AidaClient.AidaClient();
     const results = await getAllResults(provider);
     assert.deepStrictEqual(results, [
       {explanation: 'hello ', metadata: {rpcGlobalId: 123}},
@@ -152,7 +150,7 @@ describe('InsightProvider', () => {
           callback({statusCode: 200});
         });
 
-    const provider = new Explain.InsightProvider();
+    const provider = new Host.AidaClient.AidaClient();
     const results = (await getAllResults(provider)).map(r => r.explanation);
     assert.deepStrictEqual(
         results, ['hello ', 'hello \n`````\nbrave \n`````\n', 'hello \n`````\nbrave new World()\n`````\n']);
@@ -162,10 +160,10 @@ describe('InsightProvider', () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
       'statusCode': 403,
     });
-    const provider = new Explain.InsightProvider();
+    const provider = new Host.AidaClient.AidaClient();
     try {
       await getAllResults(provider);
-      expect.fail('provider.getInsights did not throw');
+      expect.fail('provider.fetch did not throw');
     } catch (err) {
       expect(err.message).equals('Server responded: permission denied');
     }
@@ -175,10 +173,10 @@ describe('InsightProvider', () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
       'statusCode': 418,
     });
-    const provider = new Explain.InsightProvider();
+    const provider = new Host.AidaClient.AidaClient();
     try {
       await getAllResults(provider);
-      expect.fail('provider.getInsights did not throw');
+      expect.fail('provider.fetch did not throw');
     } catch (err) {
       expect(err.message).equals('Request failed: {"statusCode":418}');
     }
@@ -189,10 +187,10 @@ describe('InsightProvider', () => {
       'error': 'Cannot get OAuth credentials',
       'detail': '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
     });
-    const provider = new Explain.InsightProvider();
+    const provider = new Host.AidaClient.AidaClient();
     try {
       await getAllResults(provider);
-      expect.fail('provider.getInsights did not throw');
+      expect.fail('provider.fetch did not throw');
     } catch (err) {
       expect(err.message)
           .equals(

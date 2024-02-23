@@ -18,7 +18,6 @@ generate_css("css_files") {
 devtools_module("explain") {
   sources = [
     "ActionDelegate.ts",
-    "InsightProvider.ts",
     "PromptBuilder.ts",
     "components/ConsoleInsight.ts",
   ]
@@ -73,7 +72,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "InsightProvider.test.ts",
     "PromptBuilder.test.ts",
     "components/ConsoleInsight.test.ts",
   ]

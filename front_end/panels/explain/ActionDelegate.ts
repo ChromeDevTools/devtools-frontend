@@ -7,7 +7,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from '../console/console.js';
 
 import {ConsoleInsight} from './components/ConsoleInsight.js';
-import {InsightProvider} from './InsightProvider.js';
 import {PromptBuilder} from './PromptBuilder.js';
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
@@ -27,8 +26,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRequestedViaHoverButton);
           }
           const promptBuilder = new PromptBuilder(consoleViewMessage);
-          const insightProvider = new InsightProvider();
-          void ConsoleInsight.create(promptBuilder, insightProvider, action?.title()).then(insight => {
+          const aidaClient = new Host.AidaClient.AidaClient();
+          void ConsoleInsight.create(promptBuilder, aidaClient, action?.title()).then(insight => {
             consoleViewMessage.setInsight(insight);
           });
           return true;

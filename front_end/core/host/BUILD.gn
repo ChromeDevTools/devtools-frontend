@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("host") {
   sources = [
+    "AidaClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",
     "Platform.ts",
@@ -28,4 +29,15 @@ devtools_entrypoint("bundle") {
   deps = [ ":host" ]
 
   visibility = [ "*" ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "AidaClient.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../test/unittests/front_end/helpers",
+  ]
 }

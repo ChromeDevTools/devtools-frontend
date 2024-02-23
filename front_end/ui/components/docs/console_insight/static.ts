@@ -46,7 +46,7 @@ Response status: 404`,
     },
     {
       async *
-          getInsights() {
+          fetch() {
             yield {
               explanation: `## Result
 

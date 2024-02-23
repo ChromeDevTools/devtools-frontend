@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
+import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
+import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+import {bindOutputStream} from './ResourceLoader.js';
 
 export interface AidaRequest {
   input: string;
@@ -23,7 +24,7 @@ export interface AidaResponse {
   };
 }
 
-export class InsightProvider {
+export class AidaClient {
   static buildApiRequest(input: string): AidaRequest {
     const request: AidaRequest = {
       input,
@@ -42,8 +43,8 @@ export class InsightProvider {
     return request;
   }
 
-  async * getInsights(input: string): AsyncGenerator<AidaResponse, void, void> {
-    if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation) {
+  async * fetch(input: string): AsyncGenerator<AidaResponse, void, void> {
+    if (!InspectorFrontendHostInstance.doAidaConversation) {
       throw new Error('doAidaConversation is not available');
     }
     const stream = (() => {
@@ -62,9 +63,9 @@ export class InsightProvider {
         fail: (e: Error) => reject(e),
       };
     })();
-    const streamId = Host.ResourceLoader.bindOutputStream(stream);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation(
-        JSON.stringify(InsightProvider.buildApiRequest(input)), streamId, result => {
+    const streamId = bindOutputStream(stream);
+    InspectorFrontendHostInstance.doAidaConversation(
+        JSON.stringify(AidaClient.buildApiRequest(input)), streamId, result => {
           if (result.statusCode === 403) {
             stream.fail(new Error('Server responded: permission denied'));
           } else if (result.error) {

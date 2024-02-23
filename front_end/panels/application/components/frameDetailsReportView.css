@@ -84,8 +84,8 @@ button.text-link {
 }
 
 .link:not(button):has(devtools-icon) {
-  vertical-align: sub;
-  padding-left: 2px;
+  vertical-align: baseline;
+  margin-inline-start: 3px;
 }
 
 .inline-icon {

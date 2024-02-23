@@ -106,7 +106,7 @@ export class TimelineMiniMap extends
     this.breadcrumbsActivated = true;
     this.element.prepend(this.#breadcrumbsUI);
     this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OverviewPaneBreadcrumbAdded, event => {
-      this.#addBreadcrumb(event.data);
+      this.addBreadcrumb(event.data);
     });
 
     this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbRemovedEvent.eventName, event => {
@@ -116,7 +116,7 @@ export class TimelineMiniMap extends
     this.#overviewComponent.enableCreateBreadcrumbsButton();
   }
 
-  #addBreadcrumb({startTime, endTime}: PerfUI.TimelineOverviewPane.OverviewPaneBreadcrumbAddedEvent): void {
+  addBreadcrumb({startTime, endTime}: PerfUI.TimelineOverviewPane.OverviewPaneBreadcrumbAddedEvent): void {
     // The OverviewPane can emit 0 and Infinity as numbers for the range; in
     // this case we change them to be the min and max values of the minimap
     // bounds.
@@ -253,7 +253,7 @@ export class TimelineMiniMap extends
     if (!traceBounds) {
       return;
     }
-    this.#addBreadcrumb(
+    this.addBreadcrumb(
         {startTime: traceBounds.milli.entireTraceBounds.min, endTime: traceBounds.milli.entireTraceBounds.max});
   }
 }

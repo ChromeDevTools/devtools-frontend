@@ -490,6 +490,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return this.flameChart;
   }
 
+  getMinimap(): TimelineMiniMap {
+    return this.#minimapComponent;
+  }
+
   #onChartPlayableStateChange(event: Common.EventTarget.EventTargetEvent<boolean, unknown>): void {
     if (event.data) {
       const dateObj = new Date();

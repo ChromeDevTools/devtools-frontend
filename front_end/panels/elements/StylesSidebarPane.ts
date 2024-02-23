@@ -2205,17 +2205,11 @@ export class StylesSidebarPropertyRenderer {
   private node: SDK.DOMModel.DOMNode|null;
   readonly propertyName: string;
   readonly propertyValue: string;
-  private bezierHandler: ((arg0: string) => Node)|null;
   private fontHandler: ((arg0: string) => Node)|null;
   private shadowHandler: ((arg0: string, arg1: string) => Node)|null;
   private gridHandler: ((arg0: string, arg1: string) => Node)|null;
-  private varHandler: ((arg0: string) => Node)|null;
-  private angleHandler: ((arg0: string, readonly: boolean) => Node)|null;
   private lengthHandler: ((arg0: string) => Node)|null;
-  private animationNameHandler: ((data: string) => Node)|null;
   private animationHandler: ((data: string) => Node)|null;
-  private positionFallbackHandler: ((data: string) => Node)|null;
-  private fontPaletteHandler: ((data: string) => Node)|null;
   matchers: Matcher[];
 
   constructor(
@@ -2225,22 +2219,12 @@ export class StylesSidebarPropertyRenderer {
     this.node = node;
     this.propertyName = name;
     this.propertyValue = value;
-    this.bezierHandler = null;
     this.fontHandler = null;
     this.shadowHandler = null;
     this.gridHandler = null;
-    this.varHandler = document.createTextNode.bind(document);
-    this.animationNameHandler = null;
-    this.angleHandler = null;
     this.lengthHandler = null;
     this.animationHandler = null;
-    this.positionFallbackHandler = null;
-    this.fontPaletteHandler = null;
     this.matchers = matchers;
-  }
-
-  setBezierHandler(handler: (arg0: string) => Node): void {
-    this.bezierHandler = handler;
   }
 
   setFontHandler(handler: (arg0: string) => Node): void {
@@ -2255,32 +2239,12 @@ export class StylesSidebarPropertyRenderer {
     this.gridHandler = handler;
   }
 
-  setVarHandler(handler: (arg0: string) => Node): void {
-    this.varHandler = handler;
-  }
-
-  setAnimationNameHandler(handler: (arg0: string) => Node): void {
-    this.animationNameHandler = handler;
-  }
-
   setAnimationHandler(handler: (arg0: string) => Node): void {
     this.animationHandler = handler;
   }
 
-  setAngleHandler(handler: (arg0: string, readonly: boolean) => Node): void {
-    this.angleHandler = handler;
-  }
-
   setLengthHandler(handler: (arg0: string) => Node): void {
     this.lengthHandler = handler;
-  }
-
-  setPositionFallbackHandler(handler: (arg0: string) => Node): void {
-    this.positionFallbackHandler = handler;
-  }
-
-  setFontPaletteHandler(handler: (arg0: string) => Node): void {
-    this.fontPaletteHandler = handler;
   }
 
   renderName(): Element {
@@ -2323,10 +2287,6 @@ export class StylesSidebarPropertyRenderer {
       return valueElement;
     }
 
-    if (metadata.isStringProperty(this.propertyName)) {
-      UI.Tooltip.Tooltip.install(valueElement, unescapeCssString(this.propertyValue));
-    }
-
     const matchers: Matcher[] = [...this.matchers];
 
     // AST matching applies regexes bottom-up to subexpressions. This requires the regexes to be explicit enough to only
@@ -2340,10 +2300,6 @@ export class StylesSidebarPropertyRenderer {
       return new RegExp(`^${source}$`, flags);
     };
 
-    if (this.angleHandler && metadata.isAngleAwareProperty(this.propertyName)) {
-      // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
-      matchers.push(new LegacyRegexMatcher(asLineMatch(InlineEditor.CSSAngleUtils.CSSAngleRegex), this.angleHandler));
-    }
     if (this.fontHandler && metadata.isFontAwareProperty(this.propertyName)) {
       matchers.push(new LegacyRegexMatcher(
           this.propertyName === 'font-family' ? InlineEditor.FontEditorUtils.FontFamilyRegex :
@@ -2354,16 +2310,6 @@ export class StylesSidebarPropertyRenderer {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
       matchers.push(
           new LegacyRegexMatcher(asLineMatch(InlineEditor.CSSLengthUtils.CSSLengthRegex), this.lengthHandler));
-    }
-    if (this.propertyName === 'animation-name' && this.animationNameHandler) {
-      matchers.push(new LegacyRegexMatcher(/^[^,]*$/g, this.animationNameHandler));
-    }
-    if (this.propertyName === 'font-palette' && this.fontPaletteHandler) {
-      matchers.push(new LegacyRegexMatcher(/^.*$/g, this.fontPaletteHandler));
-    }
-
-    if (this.positionFallbackHandler && this.propertyName === 'position-fallback') {
-      matchers.push(new LegacyRegexMatcher(/^.*$/g, this.positionFallbackHandler));
     }
 
     renderPropertyValue(this.propertyValue, matchers, this.propertyName)

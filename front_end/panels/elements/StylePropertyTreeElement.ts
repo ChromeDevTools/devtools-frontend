@@ -45,6 +45,8 @@ import {
   LinkableNameProperties,
   Renderer,
   type RenderingContext,
+  StringMatch,
+  StringMatcher,
   URLMatch,
   URLMatcher,
   VariableMatch,
@@ -58,6 +60,7 @@ import {
   REGISTERED_PROPERTY_SECTION_NAME,
   StylesSidebarPane,
   StylesSidebarPropertyRenderer,
+  unescapeCssString,
 } from './StylesSidebarPane.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
@@ -442,7 +445,7 @@ export class URLRenderer extends URLMatch {
   constructor(
       private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null,
       url: Platform.DevToolsPath.UrlString, text: string) {
-    super(url, text);
+    super(unescapeCssString(url) as Platform.DevToolsPath.UrlString, text);
   }
   override render(): Node[] {
     const container = document.createDocumentFragment();
@@ -624,6 +627,19 @@ export class BezierRenderer extends BezierMatch {
 
   static matcher(treeElement: StylePropertyTreeElement): BezierMatcher {
     return new BezierMatcher(text => new BezierRenderer(treeElement, text));
+  }
+}
+
+export class StringRenderer extends StringMatch {
+  override render(): Node[] {
+    const element = document.createElement('span');
+    element.innerText = this.text;
+    UI.Tooltip.Tooltip.install(element, unescapeCssString(this.text));
+    return [element];
+  }
+
+  static matcher(): StringMatcher {
+    return new StringMatcher(text => new StringRenderer(text));
   }
 }
 
@@ -1193,6 +1209,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           AngleRenderer.matcher(this),
           LinkableNameRenderer.matcher(this),
           BezierRenderer.matcher(this),
+          StringRenderer.matcher(),
         ]);
     if (this.property.parsedOk) {
       propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));

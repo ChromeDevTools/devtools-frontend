@@ -726,6 +726,19 @@ export class BezierMatcher extends MatcherBase<typeof BezierMatch> {
   }
 }
 
+export abstract class StringMatch implements Match {
+  type: string = 'string';
+  constructor(readonly text: string) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class StringMatcher extends MatcherBase<typeof StringMatch> {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    return node.name === 'StringLiteral' ? this.createMatch(matching.ast.text(node)) : null;
+  }
+}
+
 type LegacyRegexHandler = (text: string, readonly: boolean) => Node|null;
 
 class LegacyRegexMatch implements Match {

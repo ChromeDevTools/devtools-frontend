@@ -161,39 +161,6 @@ describe('StylesSidebarPane', () => {
 
     afterEach(() => trace.reset());
 
-    it('parses animation-name correctly', () => {
-      const throwingHandler = () => {
-        throw new Error('Invalid handler called');
-      };
-      const renderer =
-          new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'animation-name', 'foobar');
-      renderer.setBezierHandler(throwingHandler);
-      renderer.setFontHandler(throwingHandler);
-      renderer.setShadowHandler(throwingHandler);
-      renderer.setGridHandler(throwingHandler);
-      renderer.setVarHandler(throwingHandler);
-      renderer.setAngleHandler(throwingHandler);
-      renderer.setLengthHandler(throwingHandler);
-
-      const nodeContents = `NAME: ${name}`;
-      renderer.setAnimationNameHandler(() => document.createTextNode(nodeContents));
-
-      const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, nodeContents, trace.toString());
-    });
-
-    it('does not call bezier handler when color() value contains srgb-linear color space in a variable definition',
-       () => {
-         const bezierHandler = sinon.fake.returns(document.createTextNode('bezierHandler'));
-         const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-             null, null, '--color', 'color(srgb-linear 1 0.55 0.72)');
-         renderer.setBezierHandler(bezierHandler);
-
-         renderer.renderValue();
-
-         assert.isFalse(bezierHandler.called, trace.toString());
-       });
-
     it('runs animation handler for animation property', () => {
       const renderer =
           new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'animation', 'example 5s');
@@ -202,17 +169,6 @@ describe('StylesSidebarPane', () => {
       const nodeContents = 'nodeContents';
 
       const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, nodeContents, trace.toString());
-    });
-
-    it('runs positionFallbackHandler for position-fallback property', () => {
-      const nodeContents = 'nodeContents';
-      const renderer =
-          new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'position-fallback', '--compass');
-      renderer.setPositionFallbackHandler(() => document.createTextNode(nodeContents));
-
-      const node = renderer.renderValue();
-
       assert.deepEqual(node.textContent, nodeContents, trace.toString());
     });
 
@@ -258,14 +214,6 @@ describe('StylesSidebarPane', () => {
       renderer.setFontHandler(() => document.createTextNode('MATCH'));
       const node = renderer.renderValue();
       assert.deepEqual(node.textContent, 'MATCH, MATCH', trace.toString());
-    });
-
-    it('parses angles correctly', () => {
-      const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-          null, null, 'transform', 'rotate(calc(45deg + 3.141rad))');
-      renderer.setAngleHandler(() => document.createTextNode('MATCH'));
-      const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, 'rotate(calc(MATCH + MATCH))', trace.toString());
     });
   });
 

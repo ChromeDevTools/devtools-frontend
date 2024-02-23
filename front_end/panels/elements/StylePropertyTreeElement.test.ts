@@ -691,4 +691,24 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild, InlineEditor.Swatches.BezierSwatch);
     });
   });
+
+  describe('UrlRenderer', () => {
+    it('linkifies and unescapes urls', () => {
+      const stylePropertyTreeElement = getTreeElement('--url', 'url(devtools:\\/\\/abc)');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, 'url(devtools://abc)');
+    });
+  });
+
+  describe('StringRenderer', () => {
+    it('unescapes strings', () => {
+      const stylePropertyTreeElement = getTreeElement('content', '"\\2716"');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.strictEqual(
+          (stylePropertyTreeElement.valueElement?.firstElementChild as HTMLElement | null | undefined)?.title,
+          '"\u2716"');
+    });
+  });
 });

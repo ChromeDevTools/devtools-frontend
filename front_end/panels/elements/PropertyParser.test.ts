@@ -737,4 +737,21 @@ describe('PropertyParser', () => {
     Platform.assertNotNullOrUndefined(ast, 'border');
     assert.isNull(match, text);
   });
+
+  it('parses strings correctly', () => {
+    function match(property: string, value: string) {
+      const ast = Elements.PropertyParser.tokenizePropertyValue(value, property);
+      Platform.assertNotNullOrUndefined(ast);
+      const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(
+          ast, [new Elements.PropertyParser.StringMatcher(nilRenderer(Elements.PropertyParser.StringMatch))]);
+      Platform.assertNotNullOrUndefined(matchedResult);
+
+      const match =
+          TreeSearch.find(ast, node => matchedResult.getMatch(node) instanceof Elements.PropertyParser.StringMatch);
+      Platform.assertNotNullOrUndefined(match);
+    }
+    match('quotes', '"\'" "\'"');
+    match('content', '"foobar"');
+    match('--image-file-accelerometer-back', 'url("devtools\:\/\/devtools\/bundled\/Images\/accelerometer-back\.svg")');
+  });
 });

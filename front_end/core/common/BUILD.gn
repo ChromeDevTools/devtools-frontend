@@ -92,6 +92,7 @@ ts_library("unittests") {
     "ResourceType.test.ts",
     "Revealer.test.ts",
     "SegmentedRange.test.ts",
+    "SettingRegistration.test.ts",
     "Settings.test.ts",
     "SimpleHistoryManager.test.ts",
     "StringOutputStream.test.ts",
@@ -104,5 +105,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../test/unittests/front_end/helpers",
+    "../../ui/legacy/components/quick_open:bundle",
+    "../i18n:bundle",
   ]
 }

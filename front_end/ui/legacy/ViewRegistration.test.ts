@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
-import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as i18n from '../../core/i18n/i18n.js';
+
+import * as QuickOpen from './components/quick_open/quick_open.js';
+import * as UI from './legacy.js';
 
 const {assert} = chai;
+
 class MockView extends UI.Widget.Widget implements UI.View.ViewLocationResolver {
   resolveLocation(_location: string) {
     return UI.ViewManager.ViewManager.instance().createStackLocation();
@@ -17,7 +19,8 @@ const viewId = 'mock-view';
 const viewTitle = 'Mock';
 const commandPrompt = 'Show Mock';
 const order = 10;
-describeWithEnvironment('View registration', () => {
+
+describeWithEnvironment('ViewRegistration', () => {
   before(() => {
     UI.ViewManager.registerViewExtension({
       location: UI.ViewManager.ViewLocationValues.PANEL,

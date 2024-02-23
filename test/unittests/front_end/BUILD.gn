@@ -126,7 +126,6 @@ group("front_end") {
     "../../../front_end/ui/legacy/utils:unittests",
     "../../../front_end/ui/lit-html:unittests",
     "../../../front_end/ui/visual_logging:unittests",
-    "entrypoints/meta",
     "entrypoints/missing_entrypoints",
     "test_setup",
   ]

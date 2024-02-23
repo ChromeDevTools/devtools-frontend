@@ -2,18 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../../front_end/core/common/common.js';
-import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
-import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
-import {deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {
+  deinitializeGlobalVars,
+  initializeGlobalVars,
+} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
+import * as i18n from '../i18n/i18n.js';
+
+import * as Common from './common.js';
 
 const {assert} = chai;
+
 const settingName = 'mock-setting';
 const settingTitle = 'Mock setting';
 const enableTitle = 'Enable mock setting';
 const disableTitle = 'Disable mock setting';
 
-describe('Setting registration', () => {
+describe('SettingRegistration', () => {
   // const enum `SettingCategory` not available in top level scope, thats why
   // its initialized here.
   const settingCategory = Common.Settings.SettingCategory.CONSOLE;

@@ -204,6 +204,7 @@ ts_library("unittests") {
     "Treeoutline.test.ts",
     "UIUtils.test.ts",
     "View.test.ts",
+    "ViewRegistration.test.ts",
     "XLink.test.ts",
   ]
 
@@ -211,6 +212,9 @@ ts_library("unittests") {
     ":bundle",
     "../../../test/unittests/front_end/helpers",
     "../../core/common:bundle",
+    "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "./components/quick_open:bundle",
   ]
 }

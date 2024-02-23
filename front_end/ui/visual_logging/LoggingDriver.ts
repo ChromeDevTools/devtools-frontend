@@ -237,6 +237,12 @@ async function process(): Promise<void> {
         debugElement.style.zIndex = '100000';
         debugElement.textContent = debugString(config);
         nonDomDebugElements.set(loggable, debugElement);
+        setTimeout(() => {
+          if (!loggingState.size?.width || !loggingState.size?.height) {
+            debugElement?.parentElement?.removeChild(debugElement);
+            nonDomDebugElements.delete(loggable);
+          }
+        }, 10000);
       }
       const parentDebugElement =
           parent instanceof HTMLElement ? parent : nonDomDebugElements.get(parent as Loggable) || debugPopover;

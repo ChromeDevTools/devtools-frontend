@@ -373,7 +373,6 @@ export interface ContextMenuOptions {
   onSoftMenuClosed?: () => void;
   x?: number;
   y?: number;
-  jsLogContext?: string;
 }
 
 export class ContextMenu extends SubMenu {
@@ -392,6 +391,7 @@ export class ContextMenu extends SubMenu {
   private contextMenuLabel?: string;
   private openHostedMenu: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[]|null;
   private eventTarget: EventTarget|null;
+  private loggableParent: Element|null = null;
 
   constructor(event: Event, options: ContextMenuOptions = {}) {
     super(null);
@@ -406,14 +406,17 @@ export class ContextMenu extends SubMenu {
     this.x = options.x === undefined ? mouseEvent.x : options.x;
     this.y = options.y === undefined ? mouseEvent.y : options.y;
     this.onSoftMenuClosed = options.onSoftMenuClosed;
-    this.jsLogContext = options.jsLogContext;
     this.handlers = new Map();
     this.idInternal = 0;
     this.openHostedMenu = null;
 
-    const target = deepElementFromEvent(event);
+    let target = (deepElementFromEvent(event) || event.target) as Element | null;
     if (target) {
       this.appendApplicableItems((target as Object));
+      while (target instanceof Element && !target.hasAttribute('jslog')) {
+        target = target.parentElementOrShadowHost() ?? null;
+      }
+      this.loggableParent = target;
     }
   }
 
@@ -516,7 +519,7 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       this.softMenu = new SoftContextMenu(
           (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), this.keepOpen, undefined,
-          this.onSoftMenuClosed);
+          this.onSoftMenuClosed, this.loggableParent);
       // let soft context menu focus on the first item when the event is triggered by a non-mouse event
       // add another check of button value to differentiate mouse event with 'shift + f10' keyboard event
       const isMouseEvent =
@@ -536,11 +539,7 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       }
-      const visualElement = VisualLogging.menu();
-      if (this.jsLogContext) {
-        visualElement.context(this.jsLogContext);
-      }
-      VisualLogging.registerLoggable(menuObject, `${visualElement}`, null);
+      VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, this.loggableParent);
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),

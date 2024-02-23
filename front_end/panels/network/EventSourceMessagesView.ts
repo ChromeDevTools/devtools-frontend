@@ -180,7 +180,8 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     contextMenu.clipboardSection().appendItem(
         i18nString(UIStrings.copyMessage),
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data));
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data),
+        {jslogContext: 'copy'});
   }
 
   refresh(): void {

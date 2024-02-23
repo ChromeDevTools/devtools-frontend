@@ -652,7 +652,8 @@ export class NetworkLogViewColumns {
         const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
 
         contextMenu.headerSection().appendCheckboxItem(
-            title, this.toggleColumnVisibility.bind(this, columnConfig), {checked: columnConfig.visible, disabled});
+            title, this.toggleColumnVisibility.bind(this, columnConfig),
+            {checked: columnConfig.visible, disabled, jslogContext: columnConfig.id});
       }
 
       contextMenu.headerSection().appendSeparator();
@@ -662,37 +663,42 @@ export class NetworkLogViewColumns {
     for (const columnConfig of nonResponseHeadersWithoutGroup) {
       const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
       contextMenu.headerSection().appendCheckboxItem(
-          title, this.toggleColumnVisibility.bind(this, columnConfig), {checked: columnConfig.visible});
+          title, this.toggleColumnVisibility.bind(this, columnConfig),
+          {checked: columnConfig.visible, jslogContext: columnConfig.id});
     }
 
-    const responseSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.responseHeaders));
+    const responseSubMenu =
+        contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.responseHeaders), false, 'response-headers');
     const responseHeaders = columnConfigs.filter(columnConfig => columnConfig.isResponseHeader);
     for (const columnConfig of responseHeaders) {
       const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
       responseSubMenu.defaultSection().appendCheckboxItem(
-          title, this.toggleColumnVisibility.bind(this, columnConfig), {checked: columnConfig.visible});
+          title, this.toggleColumnVisibility.bind(this, columnConfig),
+          {checked: columnConfig.visible, jslogContext: columnConfig.id});
     }
 
     responseSubMenu.footerSection().appendItem(
-        i18nString(UIStrings.manageHeaderColumns), this.manageCustomHeaderDialog.bind(this));
+        i18nString(UIStrings.manageHeaderColumns), this.manageCustomHeaderDialog.bind(this),
+        {jslogContext: 'manage-header-columns'});
 
     const waterfallSortIds = WaterfallSortIds;
-    const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.waterfall));
+    const waterfallSubMenu =
+        contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.waterfall), false, 'waterfall');
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.startTime), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
-        {checked: this.activeWaterfallSortId === waterfallSortIds.StartTime});
+        {checked: this.activeWaterfallSortId === waterfallSortIds.StartTime, jslogContext: 'start-time'});
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.responseTime), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
-        {checked: this.activeWaterfallSortId === waterfallSortIds.ResponseTime});
+        {checked: this.activeWaterfallSortId === waterfallSortIds.ResponseTime, jslogContext: 'response-time'});
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.endTime), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
-        {checked: this.activeWaterfallSortId === waterfallSortIds.EndTime});
+        {checked: this.activeWaterfallSortId === waterfallSortIds.EndTime, jslogContext: 'end-time'});
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.totalDuration), setWaterfallMode.bind(this, waterfallSortIds.Duration),
-        {checked: this.activeWaterfallSortId === waterfallSortIds.Duration});
+        {checked: this.activeWaterfallSortId === waterfallSortIds.Duration, jslogContext: 'total-duration'});
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.latency), setWaterfallMode.bind(this, waterfallSortIds.Latency),
-        {checked: this.activeWaterfallSortId === waterfallSortIds.Latency});
+        {checked: this.activeWaterfallSortId === waterfallSortIds.Latency, jslogContext: 'latency'});
 
     function setWaterfallMode(this: NetworkLogViewColumns, sortId: WaterfallSortIds): void {
       let calculator = this.calculatorsMap.get(CalculatorTypes.Time);

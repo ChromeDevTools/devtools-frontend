@@ -361,7 +361,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       if (!showFull) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         const section = contextMenu.newSection();
-        section.appendItem(i18nString(UIStrings.showMore), showMore);
+        section.appendItem(i18nString(UIStrings.showMore), showMore, {jslogContext: 'show-more'});
         void contextMenu.show();
       }
     };

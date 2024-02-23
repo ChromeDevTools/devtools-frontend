@@ -168,7 +168,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(decodedValue);
       };
-      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyDecodedValueHandler);
+      contextMenu.clipboardSection().appendItem(
+          i18nString(UIStrings.copyValue), copyDecodedValueHandler, {jslogContext: 'copy-value'});
       void contextMenu.show();
     });
   }
@@ -270,7 +271,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     function onContextMenuShowMore(event: Event): void {
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
-      section.appendItem(i18nString(UIStrings.showMore), showMore);
+      section.appendItem(i18nString(UIStrings.showMore), showMore, {jslogContext: 'show-more'});
       void contextMenu.show();
     }
     sourceTreeElement.listItemElement.addEventListener('contextmenu', onContextMenuShowMore);
@@ -320,7 +321,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
         return;
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
+      contextMenu.newSection().appendItem(
+          i18nString(UIStrings.viewParsed), viewParsed.bind(this, event), {jslogContext: 'view-parsed'});
       void contextMenu.show();
     };
 
@@ -374,10 +376,11 @@ export class RequestPayloadView extends UI.Widget.VBox {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
-      section.appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
+      section.appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event), {jslogContext: 'view-source'});
       const viewURLEncodedText =
           this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
-      section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event));
+      section.appendItem(
+          viewURLEncodedText, toggleURLDecoding.bind(this, event), {jslogContext: 'toggle-url-decoding'});
       void contextMenu.show();
     };
 
@@ -433,7 +436,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
         return;
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
+      contextMenu.newSection().appendItem(
+          i18nString(UIStrings.viewParsed), viewParsed.bind(this, event), {jslogContext: 'view-parsed'});
       void contextMenu.show();
     };
 
@@ -470,7 +474,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
         return;
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
+      contextMenu.newSection().appendItem(
+          i18nString(UIStrings.viewSource), viewSource.bind(this, event), {jslogContext: 'view-source'});
       void contextMenu.show();
     };
 

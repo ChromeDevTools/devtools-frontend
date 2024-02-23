@@ -139,12 +139,12 @@ export class ContextMenuProvider implements Provider<Node> {
       if (node.href) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(node.href);
       }
-    });
+    }, {jslogContext: 'open-in-new-tab'});
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
       if (node.href) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
       }
-    });
+    }, {jslogContext: 'copy-link-address'});
   }
 }
 

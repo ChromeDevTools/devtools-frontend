@@ -1015,12 +1015,15 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (colorIndex !== -1) {
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.removeColor), this.deletePaletteColors.bind(this, colorIndex, false));
+          i18nString(UIStrings.removeColor), this.deletePaletteColors.bind(this, colorIndex, false),
+          {jslogContext: 'remove-color'});
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.removeAllToTheRight), this.deletePaletteColors.bind(this, colorIndex, true));
+          i18nString(UIStrings.removeAllToTheRight), this.deletePaletteColors.bind(this, colorIndex, true),
+          {jslogContext: 'remove-all-to-the-right'});
     }
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.clearPalette), this.deletePaletteColors.bind(this, -1, true));
+        i18nString(UIStrings.clearPalette), this.deletePaletteColors.bind(this, -1, true),
+        {jslogContext: 'clear-palette'});
     void contextMenu.show();
   }
 

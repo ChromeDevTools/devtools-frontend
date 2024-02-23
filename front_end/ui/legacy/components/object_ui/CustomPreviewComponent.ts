@@ -207,7 +207,9 @@ export class CustomPreviewComponent {
   private contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.customPreviewSection) {
-      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this));
+      contextMenu.revealSection().appendItem(
+          i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this),
+          {jslogContext: 'show-as-javascript-object'});
     }
     contextMenu.appendApplicableItems(this.object);
     void contextMenu.show();

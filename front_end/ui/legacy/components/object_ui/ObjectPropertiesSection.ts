@@ -626,10 +626,12 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     if (this.object instanceof SDK.RemoteObject.LocalJSONObject) {
       contextMenu.viewSection().appendItem(
           i18nString(UIStrings.expandRecursively),
-          this.objectTreeElementInternal.expandRecursively.bind(this.objectTreeElementInternal, EXPANDABLE_MAX_DEPTH));
+          this.objectTreeElementInternal.expandRecursively.bind(this.objectTreeElementInternal, EXPANDABLE_MAX_DEPTH),
+          {jslogContext: 'expand-recursively'});
       contextMenu.viewSection().appendItem(
           i18nString(UIStrings.collapseChildren),
-          this.objectTreeElementInternal.collapseChildren.bind(this.objectTreeElementInternal));
+          this.objectTreeElementInternal.collapseChildren.bind(this.objectTreeElementInternal),
+          {jslogContext: 'collapse-children'});
     }
     void contextMenu.show();
   }
@@ -726,12 +728,15 @@ export class RootElement extends UI.TreeOutline.TreeElement {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((propertyValue as string | undefined));
       };
-      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler);
+      contextMenu.clipboardSection().appendItem(
+          i18nString(UIStrings.copyValue), copyValueHandler, {jslogContext: 'copy-value'});
     }
 
     contextMenu.viewSection().appendItem(
-        i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH));
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this));
+        i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH),
+        {jslogContext: 'expand-recursively'});
+    contextMenu.viewSection().appendItem(
+        i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), {jslogContext: 'collapse-children'});
     void contextMenu.show();
   }
 
@@ -1214,18 +1219,23 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((propertyValue as string | undefined));
         };
-        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler);
+        contextMenu.clipboardSection().appendItem(
+            i18nString(UIStrings.copyValue), copyValueHandler, {jslogContext: 'copy-value'});
       }
     }
     if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
       const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
           Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.nameElement.title);
-      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyPropertyPath), copyPathHandler);
+      contextMenu.clipboardSection().appendItem(
+          i18nString(UIStrings.copyPropertyPath), copyPathHandler, {jslogContext: 'copy-property-path'});
     }
     if (parentMap.get(this.property) instanceof SDK.RemoteObject.LocalJSONObject) {
       contextMenu.viewSection().appendItem(
-          i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH));
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this));
+          i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH),
+          {jslogContext: 'expand-recursively'});
+      contextMenu.viewSection().appendItem(
+          i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this),
+          {jslogContext: 'collapse-children'});
     }
     if (this.propertyValue) {
       this.propertyValue.appendApplicableItems(event, contextMenu, {});
@@ -1821,9 +1831,10 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
 
   override appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void {
     if (this.text.length < this.maxDisplayableTextLength && this.expandElement) {
-      contextMenu.clipboardSection().appendItem(this.expandElementText || '', this.expandText.bind(this));
+      contextMenu.clipboardSection().appendItem(
+          this.expandElementText || '', this.expandText.bind(this), {jslogContext: 'show-more'});
     }
-    contextMenu.clipboardSection().appendItem(this.copyButtonText, this.copyText.bind(this));
+    contextMenu.clipboardSection().appendItem(this.copyButtonText, this.copyText.bind(this), {jslogContext: 'copy'});
   }
 
   private expandText(): void {

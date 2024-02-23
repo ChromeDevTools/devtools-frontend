@@ -872,34 +872,37 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
-      });
+      }, {jslogContext: 'hide-function'});
       item.setShortcut('H');
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideChildren), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, this.selectedEntryIndex);
-      });
+      }, {jslogContext: 'hide-children'});
       item.setShortcut('C');
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, this.selectedEntryIndex);
-      });
+      }, {jslogContext: 'hide-repeating-children'});
       item.setShortcut('R');
     }
 
     if (possibleActions?.[TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN]) {
       const item = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetChildren), () => {
         this.modifyTree(TraceEngine.EntriesFilter.FilterAction.RESET_CHILDREN, this.selectedEntryIndex);
-      });
+      }, {jslogContext: 'reset-children'});
       item.setShortcut('U');
     }
 
     this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetTrace), () => {
       this.modifyTree(TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS, this.selectedEntryIndex);
-    }, {disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS]});
+    }, {
+      disabled: !possibleActions?.[TraceEngine.EntriesFilter.FilterAction.UNDO_ALL_ACTIONS],
+      jslogContext: 'reset-trace',
+    });
 
     void this.contextMenu.show();
   }

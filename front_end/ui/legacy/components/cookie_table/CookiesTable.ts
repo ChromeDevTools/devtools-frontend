@@ -731,12 +731,12 @@ export class CookiesTable extends UI.Widget.VBox {
         },
       ]);
       void Common.Revealer.reveal(requestFilter);
-    });
+    }, {jslogContext: 'show-requests-with-this-cookie'});
     if (IssuesManager.RelatedIssue.hasIssues(cookie)) {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.showIssueAssociatedWithThis), () => {
         // TODO(chromium:1077719): Just filter for the cookie instead of revealing one of the associated issues.
         void IssuesManager.RelatedIssue.reveal(cookie);
-      });
+      }, {jslogContext: 'show-issue-associated-with-this'});
     }
   }
 }

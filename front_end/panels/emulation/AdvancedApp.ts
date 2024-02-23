@@ -8,8 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
-
-import {Events, InspectedPagePlaceholder, type Bounds} from './InspectedPagePlaceholder.js';
+import {type Bounds, Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let appInstance: AdvancedApp;
 
@@ -28,7 +27,7 @@ export class AdvancedApp implements Common.App.App {
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, async () => {
-          await UI.Utils.DynamicTheming.fetchColors(this.toolboxDocument);
+          await ThemeSupport.ThemeSupport.fetchColors(this.toolboxDocument);
         }, this);
   }
 
@@ -150,9 +149,9 @@ export class AdvancedApp implements Common.App.App {
 
   private updateForDocked(dockSide: UI.DockController.DockState): void {
     const resizerElement = (this.rootSplitWidget.resizerElement() as HTMLElement);
-    resizerElement.style.transform = dockSide === UI.DockController.DockState.RIGHT ?
-        'translateX(2px)' :
-        dockSide === UI.DockController.DockState.LEFT ? 'translateX(-2px)' : '';
+    resizerElement.style.transform = dockSide === UI.DockController.DockState.RIGHT ? 'translateX(2px)' :
+        dockSide === UI.DockController.DockState.LEFT                               ? 'translateX(-2px)' :
+                                                                                      '';
     this.rootSplitWidget.setVertical(
         dockSide === UI.DockController.DockState.RIGHT || dockSide === UI.DockController.DockState.LEFT);
     this.rootSplitWidget.setSecondIsSidebar(

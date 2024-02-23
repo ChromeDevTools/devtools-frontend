@@ -4,12 +4,13 @@
 
 const {assert} = chai;
 
+import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Host from '../../core/host/host.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Main from './main.js';
-import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
 import {
   describeWithMockConnection,
@@ -78,7 +79,7 @@ describeWithMockConnection('MainMenuItem', () => {
 
 describeWithRealConnection('MainImpl', () => {
   it('calls fetchColors on ColorThemeChanged', async () => {
-    const colorFetchSpy = sinon.spy(UI.Utils.DynamicTheming, 'fetchColors');
+    const colorFetchSpy = sinon.spy(ThemeSupport.ThemeSupport, 'fetchColors');
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);

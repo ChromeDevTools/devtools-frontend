@@ -4,16 +4,16 @@
 
 const {assert} = chai;
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as Emulation from './emulation.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
 } from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as Emulation from './emulation.js';
 
 describeWithMockConnection('AdvancedApp', () => {
   beforeEach(async () => {
@@ -61,7 +61,7 @@ describeWithMockConnection('AdvancedApp', () => {
     const advancedApp = Emulation.AdvancedApp.AdvancedApp.instance();
     Platform.assertNotNullOrUndefined(advancedApp);
 
-    const fetchColorsSpy = sinon.spy(UI.Utils.DynamicTheming, 'fetchColors');
+    const fetchColorsSpy = sinon.spy(ThemeSupport.ThemeSupport, 'fetchColors');
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);

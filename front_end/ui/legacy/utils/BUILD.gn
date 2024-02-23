@@ -8,7 +8,6 @@ import("../../../../third_party/typescript/typescript.gni")
 
 devtools_module("ui_utils") {
   sources = [
-    "DynamicTheming.ts",
     "create-shadow-root-with-core-styles.ts",
     "focus-changed.ts",
     "inject-core-styles.ts",
@@ -39,10 +38,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [
-    "DynamicTheming.test.ts",
-    "measured-scrollbar-width.test.ts",
-  ]
+  sources = [ "measured-scrollbar-width.test.ts" ]
 
   deps = [
     ":bundle",

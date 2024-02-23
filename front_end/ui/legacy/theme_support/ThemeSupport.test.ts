@@ -2,29 +2,49 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../../core/common/common.js';
-import * as ThemeSupport from './theme_support.js';
-import {assertShadowRoot} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import type * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+
+import * as ThemeSupport from './theme_support.js';
 
 const {assert} = chai;
 
-class StyledComponent extends HTMLElement {
-  #shadow = this.attachShadow({mode: 'open'});
+describe('ThemeSupport', () => {
+  describe('fetchColors', () => {
+    it('fetchColors updates color node url', () => {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+      const originalColorHref = 'devtools://theme/colors.css?sets=ui,chrome';
 
-  constructor() {
-    super();
+      const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
+      const doc = document.implementation.createHTMLDocument();
+      const colorsLink = doc.createElement('link');
+      colorsLink.href = originalColorHref;
+      colorsLink.rel = 'stylesheet';
+      doc.head.appendChild(colorsLink);
 
-    this.#shadow.innerHTML = `<style>
-      :host {
-        --color-primary-old: red;
+      void ThemeSupport.ThemeSupport.fetchColors(doc);
+
+      const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
+      assert.notEqual(updatedHref, originalColorHref);
+    });
+  });
+
+  describeWithEnvironment('getComputedValue', () => {
+    class StyledComponent extends HTMLElement {
+      #shadow = this.attachShadow({mode: 'open'});
+
+      constructor() {
+        super();
+
+        this.#shadow.innerHTML = `<style>
+          :host {
+            --color-primary-old: red;
+          }
+          </style>`;
       }
-      </style>`;
-  }
-}
+    }
 
-describe('Theme Support', () => {
-  describeWithEnvironment('Computed Values', () => {
     let themeSupport: ThemeSupport.ThemeSupport;
     before(() => {
       const setting = {
@@ -80,9 +100,8 @@ describe('Theme Support', () => {
       // value is still returned.
       const newStyle = document.createElement('style');
       newStyle.textContent = ':root { --color-primary-old: green; }';
-      assertShadowRoot(element.shadowRoot);
 
-      element.shadowRoot.appendChild(newStyle);
+      element.shadowRoot!.appendChild(newStyle);
       const updatedElementValue = themeSupport.getComputedValue('--color-primary-old', element);
 
       assert.strictEqual(elementValue, updatedElementValue);

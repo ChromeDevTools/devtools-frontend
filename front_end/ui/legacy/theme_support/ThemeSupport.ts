@@ -34,6 +34,7 @@
  */
 
 import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
 import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.legacy.js';
 
 let themeSupportInstance: ThemeSupport;
@@ -150,6 +151,30 @@ export class ThemeSupport extends EventTarget {
       themeValuesCache.clear();
       this.customSheets.clear();
       this.dispatchEvent(new ThemeChangeEvent());
+    }
+  }
+
+  static async fetchColors(document: Document|undefined): Promise<void> {
+    if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+      return;
+    }
+    if (!document) {
+      return;
+    }
+    const newColorsCssLink = document.createElement('link');
+    newColorsCssLink.setAttribute(
+        'href', `devtools://theme/colors.css?sets=ui,chrome&version=${(new Date()).getTime().toString()}`);
+    newColorsCssLink.setAttribute('rel', 'stylesheet');
+    newColorsCssLink.setAttribute('type', 'text/css');
+    const newColorsLoaded = new Promise<boolean>(resolve => {
+      newColorsCssLink.onload = resolve.bind(this, true);
+      newColorsCssLink.onerror = resolve.bind(this, false);
+    });
+    const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
+    const colorCssNode = document.querySelector(COLORS_CSS_SELECTOR);
+    document.body.appendChild(newColorsCssLink);
+    if (colorCssNode && await newColorsLoaded) {
+      colorCssNode.remove();
     }
   }
 }

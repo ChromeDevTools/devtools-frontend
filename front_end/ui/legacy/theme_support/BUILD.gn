@@ -11,7 +11,7 @@ devtools_module("theme_support") {
 
   deps = [
     "../../../core/common:bundle",
-    "../../../core/root:bundle",
+    "../../../core/host:bundle",
   ]
 }
 
@@ -43,5 +43,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../../test/unittests/front_end/helpers",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
   ]
 }

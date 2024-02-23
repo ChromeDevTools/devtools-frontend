@@ -521,6 +521,11 @@ export class AngleRenderer extends AngleMatch {
 
       section.element.classList.toggle('has-open-popover', data.open);
       this.#treeElement.parentPane().setEditingStyle(data.open);
+
+      // Commit the value as a major change after the angle popover is closed.
+      if (!data.open) {
+        void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), true);
+      }
     });
     cssAngle.addEventListener('valuechanged', async ({data}) => {
       valueElement.textContent = data.value;

@@ -233,7 +233,7 @@ export class CSSAngle extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="css-angle" @keydown=${this.onKeydown} tabindex="-1">
+      <div class="css-angle" @focusout=${this.minify} @keydown=${this.onKeydown} tabindex="-1">
         <div class="preview">
           <${CSSAngleSwatch.litTagName}
             @click=${this.onMiniIconClick}

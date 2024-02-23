@@ -1419,10 +1419,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               event.consume();
               this.parentPaneInternal.continueEditingElement(sectionIndex, propertyIndex);
             }
-          }, {checked: !this.property.disabled});
+          }, {checked: !this.property.disabled, jslogContext: 'toggle-property-and-continue-editing'});
     }
     const revealCallback = this.navigateToSource.bind(this) as () => void;
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.revealInSourcesPanel), revealCallback);
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.revealInSourcesPanel), revealCallback, {jslogContext: 'reveal-in-sources-panel'});
     void contextMenu.show();
   }
 
@@ -1443,46 +1444,48 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const propertyText = `${this.property.name}: ${this.property.value};`;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationViaContextMenu);
-    });
+    }, {jslogContext: 'copy-declaration'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyProperty), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.name);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.PropertyViaContextMenu);
-    });
+    }, {jslogContext: 'copy-property'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyValue), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ValueViaContextMenu);
-    });
+    }, {jslogContext: 'copy-value'});
 
     contextMenu.headerSection().appendItem(i18nString(UIStrings.copyRule), () => {
       const ruleText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RuleViaContextMenu);
-    });
+    }, {jslogContext: 'copy-rule'});
 
     contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.copyCssDeclarationAsJs), this.copyCssDeclarationAsJs.bind(this));
+        i18nString(UIStrings.copyCssDeclarationAsJs), this.copyCssDeclarationAsJs.bind(this),
+        {jslogContext: 'copy-css-declaration-as-js'});
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
       const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this.#parentSection).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsViaContextMenu);
-    });
+    }, {jslogContext: 'copy-all-declarations'});
 
     contextMenu.clipboardSection().appendItem(
-        i18nString(UIStrings.copyAllCssDeclarationsAsJs), this.copyAllCssDeclarationAsJs.bind(this));
+        i18nString(UIStrings.copyAllCssDeclarationsAsJs), this.copyAllCssDeclarationAsJs.bind(this),
+        {jslogContext: 'copy-all-css-declarations-as-js'});
 
     // TODO(changhaohan): conditionally add this item only when there are changes to copy
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyAllCSSChanges), async () => {
       const allChanges = await this.parentPane().getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
       Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
-    });
+    }, {jslogContext: 'copy-all-css-changes'});
 
     contextMenu.footerSection().appendItem(i18nString(UIStrings.viewComputedValue), () => {
       void this.viewComputedValue();
-    });
+    }, {jslogContext: 'view-computed-value'});
 
     return contextMenu;
   }

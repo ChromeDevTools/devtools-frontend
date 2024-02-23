@@ -634,10 +634,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     for (let i = 0; i < contextMenuDescriptors.length; ++i) {
       const descriptor = contextMenuDescriptors[i];
-      contextMenu.defaultSection().appendItem(descriptor.text, descriptor.handler);
+      contextMenu.defaultSection().appendItem(
+          descriptor.text, descriptor.handler, {jslogContext: 'style-sheet-header'});
     }
     contextMenu.footerSection().appendItem(
-        'inspector-stylesheet', this.createNewRuleInViaInspectorStyleSheet.bind(this));
+        'inspector-stylesheet', this.createNewRuleInViaInspectorStyleSheet.bind(this),
+        {jslogContext: 'inspector-stylesheet'});
     void contextMenu.show();
 
     function compareDescriptors(
@@ -1572,16 +1574,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         autoDarkModeSetting.set(false);
         prefersColorSchemeSetting.set(isLightColorScheme ? '' : 'light');
         button.setToggled(Boolean(prefersColorSchemeSetting.get()));
-      });
+      }, {jslogContext: 'prefer-light-color-scheme'});
       menu.defaultSection().appendItem(darkColorSchemeOption, () => {
         autoDarkModeSetting.set(false);
         prefersColorSchemeSetting.set(isDarkColorScheme ? '' : 'dark');
         button.setToggled(Boolean(prefersColorSchemeSetting.get()));
-      });
+      }, {jslogContext: 'prefer-dark-color-scheme'});
       menu.defaultSection().appendItem(autoDarkModeOption, () => {
         autoDarkModeSetting.set(!isAutoDarkEnabled);
         button.setToggled(Boolean(prefersColorSchemeSetting.get()));
-      });
+      }, {jslogContext: 'auto-dark-color-scheme'});
 
       void menu.show();
       event.stopPropagation();

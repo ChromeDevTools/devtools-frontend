@@ -529,12 +529,13 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (header && !header.isAnonymousInlineStyleSheet()) {
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.navigateToSelectorSource), () => {
           StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
-        });
+        }, {jslogContext: 'navigate-to-selector-source'});
       }
     }
 
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property));
+        i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property),
+        {jslogContext: 'navigate-to-style'});
     void contextMenu.show();
   }
 

@@ -586,12 +586,12 @@ export class DataGrid extends HTMLElement {
 
     const menu = new UI.ContextMenu.ContextMenu(event);
     addColumnVisibilityCheckboxes(this, menu);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy));
+    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy), false, 'sort-by');
     addSortableColumnItems(this, sortMenu);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
-    });
+    }, {jslogContext: 'reset-columns'});
 
     if (this.#contextMenus && this.#contextMenus.headerRow) {
       // Let the user append things to the menu
@@ -624,14 +624,15 @@ export class DataGrid extends HTMLElement {
     const rowThatWasClicked = this.#rows[rowIndex - 1];
 
     const menu = new UI.ContextMenu.ContextMenu(event);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy));
+    const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy), false, 'sort-by');
     addSortableColumnItems(this, sortMenu);
 
-    const headerOptionsMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.headerOptions));
+    const headerOptionsMenu =
+        menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.headerOptions), false, 'header-options');
     addColumnVisibilityCheckboxes(this, headerOptionsMenu);
     headerOptionsMenu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
-    });
+    }, {jslogContext: 'reset-columns'});
 
     if (this.#contextMenus && this.#contextMenus.bodyRow) {
       this.#contextMenus.bodyRow(menu, this.#columns, rowThatWasClicked);

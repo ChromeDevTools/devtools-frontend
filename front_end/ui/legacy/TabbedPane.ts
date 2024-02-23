@@ -637,9 +637,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
       if (this.numberOfTabsShown() === 0 && this.tabsHistory[0] === tab) {
         menu.defaultSection().appendCheckboxItem(
-            tab.title, this.dropDownMenuItemSelected.bind(this, tab), {checked: true});
+            tab.title, this.dropDownMenuItemSelected.bind(this, tab), {checked: true, jslogContext: tab.id});
       } else {
-        menu.defaultSection().appendItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab));
+        menu.defaultSection().appendItem(
+            tab.title, this.dropDownMenuItemSelected.bind(this, tab), {jslogContext: tab.id});
       }
     }
     void menu.show().then(() => ARIAUtils.setExpanded(this.dropDownButton, menu.isHostedMenuOpen()));
@@ -1263,10 +1264,14 @@ export class TabbedPaneTab {
 
     const contextMenu = new ContextMenu(event);
     if (this.closeable) {
-      contextMenu.defaultSection().appendItem(i18nString(UIStrings.close), close.bind(this));
-      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeOthers), closeOthers.bind(this));
-      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeTabsToTheRight), closeToTheRight.bind(this));
-      contextMenu.defaultSection().appendItem(i18nString(UIStrings.closeAll), closeAll.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.close), close.bind(this), {jslogContext: 'close'});
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.closeOthers), closeOthers.bind(this), {jslogContext: 'close-others'});
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.closeTabsToTheRight), closeToTheRight.bind(this),
+          {jslogContext: 'close-tabs-to-the-right'});
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.closeAll), closeAll.bind(this), {jslogContext: 'close-all'});
     }
     if (this.delegate) {
       this.delegate.onContextMenu(this.id, contextMenu);

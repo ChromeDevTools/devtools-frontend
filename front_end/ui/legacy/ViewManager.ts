@@ -698,11 +698,12 @@ class TabbedLocation extends Location implements TabbedViewLocation {
         contextMenu.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           void this.showView(view, undefined, true);
-        });
+        }, {jslogContext: 'issues-pane'});
         continue;
       }
 
-      contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, undefined, true));
+      contextMenu.defaultSection().appendItem(
+          title, this.showView.bind(this, view, undefined, true), {jslogContext: view.viewId()});
     }
   }
 

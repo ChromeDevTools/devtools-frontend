@@ -76,6 +76,9 @@ export class SoftDropDown<T> implements ListDelegate<T> {
         })
         .appendChild(this.list.element);
     ARIAUtils.markAsMenu(this.list.element);
+    parentsForLogging.set(this.list.element, this.element);
+    this.list.element.setAttribute(
+        'jslog', `${VisualLogging.menu().parent('softDropDownParent').track({resize: true})}`);
 
     this.listWasShowing200msAgo = false;
     this.element.addEventListener('mousedown', event => {
@@ -323,3 +326,6 @@ export interface Delegate<T> {
   itemSelected(item: T|null): void;
   highlightedItemChanged(from: T|null, to: T|null, fromElement: Element|null, toElement: Element|null): void;
 }
+
+const parentsForLogging = new WeakMap<Element, Element>();
+VisualLogging.registerParentProvider('softDropDownParent', (e: Element) => parentsForLogging.get(e));

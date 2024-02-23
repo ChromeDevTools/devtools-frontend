@@ -49,6 +49,7 @@
   border: none;
   white-space: pre;
   overflow: hidden;
+  max-width: 100%;
 }
 
 devtools-adorner.fix-perf-icon {

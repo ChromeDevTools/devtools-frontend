@@ -6391,6 +6391,10 @@ export const NativeFunctions = [
     signatures: [["number_to_take"]]
   },
   {
+    name: "drop",
+    signatures: [["number_to_drop"]]
+  },
+  {
     name: "getPartNode",
     signatures: [["index"]]
   },
@@ -6733,6 +6737,10 @@ export const NativeFunctions = [
   {
     name: "setReportEventDataForAutomaticBeacons",
     signatures: [["event"]]
+  },
+  {
+    name: "notifyEvent",
+    signatures: [["triggering_event"]]
   },
   {
     name: "FencedFrameConfig",

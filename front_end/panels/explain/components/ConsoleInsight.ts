@@ -38,7 +38,7 @@ const UIStrings = {
   /**
    * @description The title that is shown while the insight is being generated.
    */
-  generating: 'Coming up with an explanation…',
+  generating: 'Insight generation is in progress…',
   /**
    * @description The header that indicates that the content shown is a console
    * insight.
@@ -76,11 +76,6 @@ const UIStrings = {
    */
   opensInNewTab: '(opens in a new tab)',
   /**
-   * @description The legal disclaimer for using the Console Insights feature.
-   */
-  disclaimer:
-      'The following data will be sent to Google to find an explanation for the console message. They may be reviewed by humans and used to improve products.',
-  /**
    * @description The title of the button that records the consent of the user
    * to send the data to the backend.
    */
@@ -89,7 +84,7 @@ const UIStrings = {
    * @description The title of a link that allows the user to learn more about
    * the feature.
    */
-  learnMore: 'Learn more about AI in DevTools',
+  learnMore: 'Learn more',
   /**
    * @description The title of the message when the console insight is not available for some reason.
    */
@@ -106,10 +101,6 @@ const UIStrings = {
    * @description The title of the button that opens Chrome settings.
    */
   goToSettings: 'Go to settings',
-  /**
-   * @description Fine print to set expectations for users.
-   */
-  finePrint: 'This is an experimental AI insights tool and won’t always get it right.',
   /**
    * @description Message shown when the user is offline.
    */
@@ -463,7 +454,10 @@ export class ConsoleInsight extends HTMLElement {
       case State.CONSENT:
         return html`
           <main>
-            <p>${i18nString(UIStrings.disclaimer)}</p>
+            <p>The following data will be sent to Google to understand the context for the console message.
+            Human reviewers may process this information for quality purposes.
+            Don’t submit sensitive information. Read Google’s <x-link href="https://policies.google.com/terms" class="link">Terms of Service</x-link> and
+            the <x-link href=${'https://policies.google.com/terms/gener' + 'ative-ai'} class="link">${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</p>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
@@ -489,6 +483,13 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderFooter(): LitHtml.LitTemplate {
     // clang-format off
+    const disclaimer =
+        LitHtml
+            .html`<span>
+                Console insights may display inaccurate or offensive information that doesn't represent Google's views.
+                <x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link>
+                ${this.#state.type === State.INSIGHT ? LitHtml.html` - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>`: LitHtml.nothing}
+            </span>`;
     switch (this.#state.type) {
       case State.LOADING:
       case State.ERROR:
@@ -514,8 +515,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.CONSENT:
         return html`<footer>
           <div class="disclaimer">
-            <span>${i18nString(UIStrings.finePrint)}</span>
-            <span><x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link></span>
+            ${disclaimer}
           </div>
           <div class="filler"></div>
           <div>
@@ -536,8 +536,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.INSIGHT:
         return html`<footer>
         <div class="disclaimer">
-          <span>${i18nString(UIStrings.finePrint)}</span>
-          <span><x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link> - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link></span>
+          ${disclaimer}
         </div>
         <div class="filler"></div>
         <div class="rating">

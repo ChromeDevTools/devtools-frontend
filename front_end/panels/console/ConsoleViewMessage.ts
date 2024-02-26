@@ -190,15 +190,15 @@ const UIStrings = {
   /**
    *@description Message to offer insights for a console error message
    */
-  explainThisError: 'Explain this error',
+  explainThisError: 'Understand this error',
   /**
    *@description Message to offer insights for a console warning message
    */
-  explainThisWarning: 'Explain this warning',
+  explainThisWarning: 'Understand this warning',
   /**
    *@description Message to offer insights for a console message
    */
-  explainThisMessage: 'Explain this message',
+  explainThisMessage: 'Understand this message',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

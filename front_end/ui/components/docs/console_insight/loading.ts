@@ -36,7 +36,7 @@ Images: ![https://example.com](https://example.com)
             };
           },
     },
-    'Explain this error', {
+    'Understand this error', {
       isSyncActive: true,
       accountEmail: 'some-email',
     });

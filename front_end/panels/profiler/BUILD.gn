@@ -74,9 +74,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/core/sdk/*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/profiler/*",
     "../../entrypoints/*",
     "../js_profiler/*",
     "../timeline/*",

@@ -132,7 +132,6 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/interactions/panels/performance/timeline/*",
     "../../../test/perf/*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/helpers",
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",

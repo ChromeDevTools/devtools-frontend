@@ -57,8 +57,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/css_overview/*",
     "../../entrypoints/*",
     "../../ui/legacy/components/inline_editor/*",
   ]

@@ -51,6 +51,7 @@ copy_to_gen("traces") {
     "redirects.json.gz",
     "reload-and-trace-page.json.gz",
     "reload-no-tti.json.gz",
+    "render-blocking-in-iframe.json.gz",
     "request-with-query-param.json.gz",
     "set-timeout-long-task.json.gz",
     "simple-js-program.json.gz",

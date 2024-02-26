@@ -54,7 +54,9 @@ describeWithEnvironment('TraceModel', function() {
 
     assert.strictEqual(model.size(), 2);
     assert.isNotNull(model.traceParsedData(0));
+    assert.isNotNull(model.traceInsights(0));
     assert.isNotNull(model.traceParsedData(1));
+    assert.isNotNull(model.traceInsights(1));
   });
 
   it('supports deleting traces', async function() {
@@ -72,10 +74,12 @@ describeWithEnvironment('TraceModel', function() {
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 1);
     assert.isNotNull(model.traceParsedData(0));
+    assert.isNotNull(model.traceInsights(0));
 
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 0);
     assert.isNull(model.traceParsedData(0));
+    assert.isNull(model.traceInsights(0));
   });
 
   it('names traces using their origin and defaults to "Trace n" when no origin is found', async function() {

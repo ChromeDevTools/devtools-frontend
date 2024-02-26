@@ -6,6 +6,7 @@ import * as EntriesFilter from './EntriesFilter.js';
 import * as Extras from './extras/extras.js';
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
+import * as Insights from './insights/insights.js';
 // Purposefully use a shorter name here so references to this are
 // Legacy.TracingModel.
 import * as Legacy from './LegacyTracingModel.js';
@@ -20,6 +21,7 @@ export {
   Extras,
   Handlers,
   Helpers,
+  Insights,
   Legacy,
   Processor,
   RootCauses,

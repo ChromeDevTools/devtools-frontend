@@ -6,6 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
+import type * as Insights from './insights/insights.js';
 import {TraceParseProgressEvent, TraceProcessor} from './Processor.js';
 import * as Types from './types/types.js';
 
@@ -107,13 +108,14 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       traceEvents,
       metadata,
       traceParsedData: null,
+      traceInsights: null,
     };
 
     try {
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
       await this.#processor.parse(traceEvents, isFreshRecording);
-      this.#storeParsedFileData(file, this.#processor.data);
+      this.#storeParsedFileData(file, this.#processor.traceParsedData, this.#processor.insights);
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.
       this.#traces.push(file);
@@ -129,8 +131,10 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
 
   #storeParsedFileData(
       file: ParsedTraceFile<EnabledModelHandlers>,
-      data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null): void {
+      data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null,
+      insights: Insights.Types.TraceInsightData|null): void {
     file.traceParsedData = data;
+    file.traceInsights = insights;
     this.#lastRecordingIndex++;
     let recordingName = `Trace ${this.#lastRecordingIndex}`;
     let origin: string|null = null;
@@ -156,6 +160,14 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     }
 
     return this.#traces[index].traceParsedData;
+  }
+
+  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightData|null {
+    if (!this.#traces[index]) {
+      return null;
+    }
+
+    return this.#traces[index].traceInsights;
   }
 
   metadata(index: number): Types.File.MetaData|null {
@@ -199,6 +211,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
  */
 export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = Types.File.TraceFile&{
   traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<Handlers>| null,
+  traceInsights: Insights.Types.TraceInsightData | null,
 };
 
 export const enum ModelUpdateType {

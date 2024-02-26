@@ -1634,6 +1634,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (!cookieModel) {
       return;
     }
+    for (const exemptedCookie of this.#exemptedResponseCookiesInternal) {
+      cookieModel.removeBlockedCookie(exemptedCookie.cookie);
+    }
     for (const blockedCookie of this.#blockedResponseCookiesInternal) {
       const cookie = blockedCookie.cookie;
       if (!cookie) {

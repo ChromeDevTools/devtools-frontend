@@ -243,9 +243,10 @@ describeWithMockConnection('NetworkRequest', () => {
   let cookie: SDK.Cookie.Cookie;
   let addBlockedCookieSpy: sinon.SinonSpy;
   let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+  let target: SDK.Target.Target;
 
   beforeEach(() => {
-    const target = createTarget();
+    target = createTarget();
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assertNotNullOrUndefined(networkManager);
     networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
@@ -258,10 +259,15 @@ describeWithMockConnection('NetworkRequest', () => {
     networkManagerForRequestStub.restore();
   });
 
-  it('adds blocked response cookies to cookieModel', () => {
+  it('adds blocked response cookies to - and removes exempted cookies from cookieModel', async () => {
+    const removeBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'removeBlockedCookie');
+    setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: []}));
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assertNotNullOrUndefined(cookieModel);
+    const url = 'url' as Platform.DevToolsPath.UrlString;
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'url' as Platform.DevToolsPath.UrlString,
-        'documentURL' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, url, 'documentURL' as Platform.DevToolsPath.UrlString, null, null,
+        null);
 
     request.addExtraResponseInfo({
       responseHeaders: [{name: 'Set-Cookie', value: 'name=value; Path=/'}],
@@ -281,6 +287,19 @@ describeWithMockConnection('NetworkRequest', () => {
           attribute: null,
           uiString: 'Setting this cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
         }]));
+    assert.deepStrictEqual(await cookieModel.getCookies([url]), [cookie]);
+
+    request.addExtraResponseInfo({
+      responseHeaders: [{name: 'Set-Cookie', value: 'name=value; Path=/'}],
+      blockedResponseCookies: [],
+      resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+      statusCode: undefined,
+      cookiePartitionKey: undefined,
+      cookiePartitionKeyOpaque: undefined,
+      exemptedResponseCookies: [{cookie, exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics}],
+    });
+    assert.isTrue(removeBlockedCookieSpy.calledOnceWith(cookie));
+    assert.isEmpty(await cookieModel.getCookies([url]));
   });
 
   it('adds blocked request cookies to cookieModel', () => {

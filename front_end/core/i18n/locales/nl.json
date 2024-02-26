@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Deze cookie is geblokkeerd, omdat het domein van de URL van het verzoek niet exact overeenstemt met het domein van de cookie en omdat het domein van de URL van het verzoek geen subdomein is van het kenmerk Domain van de cookie."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Deze cookie wordt toegestaan door de CORS-toestemming. Meer informatie: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Deze cookie wordt toegestaan op basis van het Chrome Enterprise-beleid. Meer informatie: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Deze cookie wordt toegestaan door de Storage Access API. Meer informatie: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Deze cookie wordt toegestaan tijdens de proefperiode na beëindiging van cookies van derden."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Deze cookie wordt toegestaan door heuristieken voor de beëindiging van cookies van derden. Meer informatie: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Deze cookie wordt toegestaan na een respijtperiode voor de proefperiode na beëindiging van cookies van derden. Meer informatie: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Deze cookie wordt toegestaan door de Storage Access API op het hoogste niveau. Meer informatie: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Deze cookie wordt toegestaan op basis van gebruikersvoorkeur."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "De cookie is geblokkeerd omdat deze te groot is. De naam en waarde mogen samen maximaal 4096 tekens lang zijn."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Asynchrone stacktraces opnemen"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Aangepaste opmaaktools"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopie (geen groen)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Frames voor advertenties markeren"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Blokkering voor netwerkverzoeken"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Geen emulatie"
   },
@@ -738,7 +768,7 @@
     "message": "Automatische donkere modus aanzetten"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emuleert een pagina met focus."
+    "message": "Houd de pagina gefocust. Wordt vaak gebruikt voor foutopsporing voor verdwijnende elementen."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Zet de automatische donkere modus aan en stelt prefers-color-scheme in op dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Algemeen"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Scripts"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Scripts tonen"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools aanpassen en beheren"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Autorisatie wordt niet gedekt door het jokerteken (*) voor het gebruik van Access-Control-Allow-Headers in CORS."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename is beëindigd. Gebruik in plaats daarvan de :state(customstatename)-syntaxis."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "In plaats van de kiezer -internal-media-controls-overlay-cast-button moet het kenmerk disableRemotePlayback worden gebruikt om de standaardintegratie van Cast uit te zetten."
@@ -4821,7 +4860,7 @@
     "message": "Consoleprompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Waarschuwing: Plak geen code in de DevTools-console die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met dergelijke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' om plakken toe te staan."
+    "message": "Waarschuwing: Plak geen code in de DevTools-console die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met dergelijke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' en druk op Enter om plakken toe te staan."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Geen fouten}=1{# fout}other{# fouten}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Tijdstempels tonen"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Tijdstempels"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Console aan- of uitzetten"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Pagina met focus emuleren"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Houd de pagina gefocust. Wordt vaak gebruikt voor foutopsporing voor verdwijnende elementen."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Elementstatus afdwingen"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Inzicht sluiten"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Doorgaan"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Consolebericht"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "De volgende gegevens worden naar Google gestuurd om een uitleg te vinden voor het consolebericht. Ze kunnen door mensen worden beoordeeld en worden gebruikt om producten te verbeteren."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Er is iets misgegaan…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Dit is een experimentele tool voor AI-inzichten die het niet altijd juist heeft."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Maken…"
+    "message": "Een uitleg zoeken…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Naar instellingen"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Gegevens die zijn gebruikt om dit inzicht te maken"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Inzicht"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Meer informatie over AI in DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Netwerkverzoek"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Console-inzichten zijn niet beschikbaar"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Deze functie is alleen beschikbaar als je bent ingelogd bij Chrome met je Google-account."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Er is op dit moment geen internetverbinding beschikbaar."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(wordt in een nieuw tabblad geopend)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Feedback sturen"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Deze functie is alleen beschikbaar als je Chrome-synchronisatie hebt aangezet."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Niet leuk"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Leuk"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Console-inzichten aanzetten"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Leg deze fout uit"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Leg deze waarschuwing uit"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Alleen Engelstalige landen worden ondersteund."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Geblokkeerde resource"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "De reeks geaccepteerde Content-Encoding-headers is aangepast door DevTools. Zie het deelvenster Netwerkvoorwaarden."
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Browsercachegeheugen staat uit"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Netwerkbeperking is aangezet"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Tekstpatroon om overeenkomende verzoeken te blokkeren, gebruik * als jokerteken"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Alles wissen"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Bericht kopiëren"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Gegevens"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Voer regex in, bijvoorbeeld: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Gebeurtenisbron"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Samples berekenen…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Ondiepe grootten berekenen…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Statistieken berekenen…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Kies CSS, Pierce of XPath als een van je opties. Alleen deze kiezers worden gegarandeerd opgenomen, aangezien ARIA en tekstkiezers mogelijk niet uniek zijn."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Meer informatie"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Naam van opname"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Sneltoets verwijderen"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Wijzigingen in sneltoets toegepast"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Wijzigingen in sneltoets verwijderd"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Wijzigingen in sneltoets hersteld naar standaardwaarde"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Sneltoets aangepast"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Sneltoets voor {PH1} verwijderd"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Sneltoetsen"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Voorwaarde: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Alle breakpoints uitzetten"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand uitzetten"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Logboekpunt bewerken"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Alle breakpoints lezen"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand aanzetten"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Nieuw fragment maken"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Css-bronkaarten"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Breakpoints deactiveren"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Css-bronkaarten uitzetten"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "JavaScript-bronkaarten uitzetten"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Focus niet verplaatsen met Tab"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Css-bronkaarten aanzetten"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "JavaScript-bronkaarten aanzetten"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Focus verplaatsen met Tab"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Css-eenheid verhogen met {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript-bronkaarten"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Springen naar volgende bewerkingslocatie"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Symbool"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab verplaatst de focus"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Threads"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Kan tijdlijn niet opslaan: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Oplossen"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profiler initialiseren…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Gecachete Wasm-module"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Aanroepstacks"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Callbackfunctie"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Oorspronkelijke prioriteit"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Initiator"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Gestart door"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Initiator voor"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Invoervertraging"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Verzoekmethode"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Weergeven"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Microtaken uitvoeren"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "De eigenschap is berekend met een getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Gefeliciteerd, je hebt gewonnen!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "Opmerking: Je kunt de game ook openen door fixme te typen"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Dubbelklik om in te zoomen op de afbeelding. Klik om de voorgaande verzoeken te bekijken."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Terugkerende onderliggende items verbergen"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Onderliggende items resetten"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Spoor resetten"

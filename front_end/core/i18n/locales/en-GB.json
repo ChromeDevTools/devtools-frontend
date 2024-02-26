@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "This cookie was blocked because the request URL's domain did not exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "This cookie is allowed by CORS opt-in. Learn more: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "This cookie is allowed by the Storage Access API. Learn more: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "This cookie is allowed by a third-party cookie phaseout deprecation trial."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "This cookie is allowed by third-party cookie phaseout heuristics. Learn more: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "This cookie is allowed by a third-party cookie deprecation trial grace period. Learn more: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "This cookie is allowed by the top-level Storage Access API. Learn more: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "This cookie is allowed by user preference."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "This cookie was blocked because it was too large. The combined size of the name and value must be less than or equal to 4,096 characters."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capture async stack traces"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Custom formatters"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (no green)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Highlight ad frames"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Network request blocking"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "No emulation"
   },
@@ -738,7 +768,7 @@
     "message": "Enable automatic dark mode"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emulates a focused page."
+    "message": "Keep page focused. Commonly used for debugging disappearing elements."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Main"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Scripts"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Show scripts"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Customise and control DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Authorisation will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename is deprecated. Please use the :state(customstatename) syntax instead."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
@@ -4821,7 +4860,7 @@
     "message": "Console prompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type '{PH1}' below to allow pasting."
+    "message": "Warning: Don't paste code into the DevTools Console that you don't understand or haven't reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘{PH1}’ below and hit Enter to allow pasting."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{No errors}=1{# error}other{# errors}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Show timestamps"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Timestamps"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Toggle console"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emulate a focused page"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Keep page focused. Commonly used for debugging disappearing elements."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Force element state"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Close insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Continue"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Console message"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "The following data will be sent to Google to find an explanation for the console message. They may be reviewed by humans and used to improve products."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Something went wrong…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "This is an experimental AI insights tool and won't always get it right."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Generating…"
+    "message": "Coming up with an explanation…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Go to settings"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Data used to create this insight"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Learn more about AI in DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Network request"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Console insights is not available"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "This feature is only available if you are signed into Chrome with your Google Account."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Internet connection is currently not available."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(opens in a new tab)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Submit feedback"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "This feature is only available if you have Chrome Sync turned on."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Thumbs down"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Thumbs up"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Enable console insights"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Explain this error"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Explain this warning"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Only English locales are currently supported."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blocked resource"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "The set of accepted Content-Encoding headers has been modified by DevTools; see the network conditions panel"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Browser cache is disabled"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Clear all"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Copy message"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Data"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Enter regex, for example: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Event source"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Calculating samples…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Calculating shallow sizes…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Calculating statistics…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "You must choose CSS, Pierce or XPath as one of your options. Only these selectors are guaranteed to be recorded since ARIA and text selectors may not be unique."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Recording name"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Remove shortcut"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Changes to shortcut applied"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Changes to shortcut discarded"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Changes to shortcut restored to default"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Shortcut modified"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} Shortcut removed"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Shortcuts"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Condition: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Disable all breakpoints"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Disable all breakpoints in file"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Edit logpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Enable all breakpoints"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Enable all breakpoints in file"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Create new snippet"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS source maps"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Disable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Disable JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Disable tab moves focus"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Enable CSS source maps"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Enable JavaScript source maps"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Enable tab moves focus"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Increment CSS unit by {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Jump to next editing location"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Symbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab moves focus"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Threads"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Failed to save timeline: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Fix me"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialising profiler…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cached wasm module"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Call stacks"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Callback function"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Initial priority"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Initiator"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Initiated by"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Initiator for"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Input delay"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Request method"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Reveal"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Run microtasks"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Congrats, you win!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PS: You can also open the game by typing fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Double-click to zoom image. Click to view preceding requests."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Hide repeating children"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Reset children"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Reset trace"

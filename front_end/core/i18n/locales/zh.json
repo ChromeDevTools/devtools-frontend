@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "此 Cookie 已被屏蔽，因为请求网址的网域与此 Cookie 的网域不完全一致，也不是此 Cookie 的“Domain”属性值的子网域。"
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "选择启用 CORS 后，可以使用此 Cookie。如需了解详情，请访问：goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Chrome 企业版政策允许使用此 Cookie。如需了解详情，请访问：goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Storage Access API 允许使用此 Cookie。如需了解详情，请访问：goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "在第三方 Cookie 逐步淘汰弃用试用期内允许使用此 Cookie。"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "根据过去的第三方 Cookie 逐步淘汰经验，这是允许使用的 Cookie。如需了解详情，请访问：goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "在第三方 Cookie 弃用试用宽限期内允许使用此 Cookie。如需了解详情，请访问：goo.gle/ps-dt。"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "顶级 Storage Access API 允许使用此 Cookie。如需了解详情，请访问：goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "用户偏好设置允许使用此 Cookie。"
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "此 Cookie 已被屏蔽，因为它太大。名称和值的总大小不得超过 4096 个字符。"
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "捕获异步堆栈轨迹"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "自定义格式设置工具"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "绿色盲（无法感知绿色）"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "突出显示广告框架"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "屏蔽网络请求"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "无模拟"
   },
@@ -738,7 +768,7 @@
     "message": "启用自动深色模式"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "模拟所聚焦的网页。"
+    "message": "使页面保持聚焦状态。常用于调试消失的元素。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "启用自动深色模式并将 prefers-color-scheme 设为 dark。"
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "主要"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "脚本"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "显示脚本"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "自定义和控制 DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "处理 CORS Access-Control-Allow-Headers 时，授权将不在通配符 (*) 的涵盖范围内。"
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename 已被弃用。请改用 :state(customstatename) 语法。"
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "若要停用默认 Cast 集成，应使用 disableRemotePlayback 属性，而非 -internal-media-controls-overlay-cast-button 选择器。"
@@ -4821,7 +4860,7 @@
     "message": "控制台提示"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "警告：请勿将您不理解或未自行检查的代码粘贴到开发者工具控制台中。这可能会导致攻击者趁机窃取您的身份信息或控制您的计算机。请在下方输入“{PH1}”以允许粘贴。"
+    "message": "警告：请勿将您不理解或未自行检查的代码粘贴到开发者工具控制台中。这可能会导致攻击者趁机窃取您的身份信息或控制您的计算机。请在下方输入“{PH1}”，然后按 Enter 键允许粘贴。"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{无错误}=1{# 个错误}other{# 个错误}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "显示时间戳"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "时间戳"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "切换控制台"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<节点>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "模拟已聚焦的网页"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "使页面保持聚焦状态。常用于调试消失的元素。"
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "强制设置元素状态"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "关闭数据分析"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "继续"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "控制台消息"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "系统会将以下数据发送给 Google，以便查找针对控制台消息的说明。它们可能会经过人工审核，并用于改进商品。"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "出了点问题…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "这是一项实验性 AI 数据分析工具，并非始终准确无误。"
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "正在生成…"
+    "message": "正在给出解释…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "前往“设置”"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "用于创建此数据分析的数据"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "数据分析"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "详细了解开发者工具中的 AI 功能"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "网络请求"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "控制台数据分析不可用"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "只有当您使用 Google 账号登录 Chrome 时，此功能才可用。"
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "当前无法连接互联网。"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "（在新标签页中打开）"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "提交反馈"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "您必须开启 Chrome 同步功能，才能使用此功能。"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "不喜欢"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "我喜欢"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "启用控制台数据分析"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "解释此错误"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "解释此警告"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "目前仅支持英语语言区域。"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已拦截的资源"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "接受的 Content-Encoding 标头集合已被开发者工具修改，请查看“网络状况”面板"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "浏览器缓存已停用"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "已启用网络节流"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "用于屏蔽匹配请求的文本模式；请使用 * 作为通配符"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "全部清除"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "复制消息"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "数据"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "输入正则表达式，例如：https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "事件来源"
@@ -8961,7 +9054,7 @@
     "message": "网络状况"
   },
   "panels/network/network-meta.ts | networkRequestBlocking": {
-    "message": "网络请求屏蔽"
+    "message": "屏蔽网络请求"
   },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "网络节流"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "正在计算样本…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "正在计算浅层大小…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "正在计算统计值…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "您必须选择 CSS、Pierce 或 XPath 作为您的选项之一。仅这些选择器保证会被记录，因为 ARIA 和文本选择器未必是独一无二的。"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "了解详情"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "录制内容名称"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "移除快捷键"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "已应用对快捷方式所做的更改"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "已舍弃对快捷方式所做的更改"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "对快捷方式所做的更改已恢复为默认值"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "快捷方式已修改"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "已移除{PH1}快捷方式"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "快捷键"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "条件：{PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "停用所有断点"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "停用文件内所有断点"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "修改日志点"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "启用所有断点"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "启用文件内所有断点"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "创建新代码段"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS 源代码映射"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "停用断点"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "停用 CSS 源代码映射"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "停用 JavaScript 源代码映射"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "停用通过 Tab 键移动焦点功能"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "启用 CSS 源代码映射"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "启用 JavaScript 源代码映射"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "启用通过 Tab 键移动焦点功能"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "将 CSS 单位增加 {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript 源代码映射"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "跳转到下一个修改位置"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "符号"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "按 Tab 键可移动焦点"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "线程"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "未能保存时间轴：{PH1}（{PH2}）"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "修复"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "正在初始化性能剖析器…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "缓存的 Wasm 模块"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "调用堆栈"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "回调函数"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "初始优先级"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "启动器"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "发起者"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "发起者"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "输入延迟"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "请求方法"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "显示"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "运行微任务"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "此属性使用 getter 计算得出"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "恭喜，您赢了！"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "附注：您还可以输入 fixme 来打开游戏"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "双击即可缩放图片。点击即可查看之前的请求。"
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "隐藏重复的子项"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "重置子项"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "重置跟踪记录"

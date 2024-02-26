@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Тази „бисквитка“ бе блокирана, тъй като домейнът в URL адреса на заявката не съответстваше точно на нейния, нито е поддомейн на стойността, зададена за атрибута Domain на „бисквитката“."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Тази „бисквитка“ е разрешена чрез включване в CORS. Научете повече на адрес goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Тази „бисквитка“ е разрешена от правило на Chrome Enterprise. Научете повече на адрес goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Тази „бисквитка“ е разрешена от API за достъп до хранилището. Научете повече на адрес goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Тази „бисквитка“ е разрешена за временно използване при поетапното оттегляне на „бисквитките“ на трети страни."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Тази „бисквитка“ е разрешена от евристични методи при поетапното оттегляне на „бисквитките“ на трети страни. Научете повече на адрес goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Тази „бисквитка“ е разрешена от преходен период за временно използване на оттеглените „бисквитки“ на трети страни. Научете повече на адрес goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Тази „бисквитка“ е разрешена от API за достъп до хранилището от първо ниво. Научете повече на адрес goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Тази „бисквитка“ е разрешена от предпочитание на потребителя."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Тази „бисквитка“ бе блокирана, тъй като е твърде голяма. Общият размер на името и стойността трябва да е по-малък или равен на 4096 знака."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Записване на асинхронните трасирания на стека"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Персонализирани инструменти за форматиране"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Деутеранопия (без зелено)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Открояване на рекламните рамки"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Блокиране на заявките в мрежата"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Без емулация"
   },
@@ -738,7 +768,7 @@
     "message": "Активиране на автоматичния тъмен режим"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Емулиране на страница, върху която е поставен фокусът."
+    "message": "Фокусът трябва да остане върху страницата. Обикновено се използва за отстраняване на грешки при изчезващи елементи."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Активира автоматичния тъмен режим и задава dark за prefers-color-scheme."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Основно"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Скриптове"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Показване на инструмента за скриптове"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Персонализиране и управление на DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Заместващият знак (*) няма да обхваща заглавката Authorization при обработване на Access-Control-Allow-Headers в CORS."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename е оттеглено. Вместо това използвайте синтаксиса :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "За деактивиране на стандартната интеграция на функцията за предаване трябва да се използва атрибутът disableRemotePlayback, а не селекторът -internal-media-controls-overlay-cast-button."
@@ -4821,7 +4860,7 @@
     "message": "Команден ред на конзолата"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Предупреждение: Не поставяйте в конзолата на DevTools код, който не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Моля, въведете „{PH1}“ по-долу, за да разрешите поставянето."
+    "message": "Предупреждение: Не поставяйте в конзолата на DevTools код, който не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Въведете {PH1} по-долу и натиснете Enter, за да разрешите поставянето."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Няма грешки}=1{# грешка}other{# грешки}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Показване на клеймата за дата и час"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Клейма за дата и час"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Превключване на конзолата"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<възел>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Емулиране на страница, върху която е поставен фокусът"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Фокусът трябва да остане върху страницата. Обикновено се използва за отстраняване на грешки при изчезващи елементи."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Налагане на състояние за елемента"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Затваряне на статистиката"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Напред"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Съобщение в конзолата"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Следните данни ще бъдат изпратени до Google с цел обясняване на съобщението в конзолата. Те може да бъдат прегледани от хора и използвани за подобряване на продуктите."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Нещо се обърка…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Това е експериментален инструмент за статистика с AI и понякога греши."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Генерира се…"
+    "message": "Генерира се обяснение…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Към настройките"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Данни, използвани за създаването на тази статистика"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Статистика"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Научете повече за AI в DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Заявка в мрежата"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Статистиката в конзолата не е налице"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Тази функция е налице само ако сте влезли в Chrome с профила си в Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "В момента няма връзка с интернет."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(отваря се в нов раздел)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Изпращане на отзиви"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Тази функция е налице само ако сте включили синхронизирането в Chrome."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Не ми харесва"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Харесва ми"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Активиране на статистиката в конзолата"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Информация за тази грешка"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Информация за това предупреждение"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Понастоящем се поддържат само локали с английски език."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Блокиран ресурс"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Наборът от приемани заглавки Content-Encoding бе променен чрез DevTools. Вижте панела „Мрежови условия“"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Кешът на браузъра е деактивиран"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Ограничаването на мрежата е активирано"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Текстов образец за блокиране на съответстващи заявки. Използвайте * като заместващ знак"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Изчистване на всички"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Копиране на съобщението"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Данни"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Въведете регулярен израз, като например https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Източник за събитието"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Извадките се изчисляват…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Размерите на обектите се изчисляват…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Статистическите данни се изчисляват…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Трябва да изберете CSS, Pierce или XPath като една от опциите. Гарантирано е записването само на тези селектори, тъй като селекторите на ARIA и текстовите селектори може да не са уникални."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Научете повече"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Име на записа"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Премахване на комбинацията"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Промените в клавишната комбинация са приложени"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Промените в клавишната комбинация са отхвърлени"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Възстановена е стандартната клавишна комбинация"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Прекият път е променен"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Клавишната комбинация за {PH1} бе премахната"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Клавишни комбинации"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Условие: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Деактивиране на всички точки на прекъсване"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Деактивиране на всички точки на прекъсване във файла"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Редактиране на регистрационната точка"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Активиране на всички точки на прекъсване"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Активиране на всички точки на прекъсване във файла"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Създаване на нов фрагмент"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Карти на изходния CSS код"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Деактивиране на точките на прекъсване"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Деактивиране на картите на изходния CSS код"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Деактивиране на картите на изходния JavaScript код"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Деактивиране на преместването на фокуса с клавиша Tab"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Активиране на картите на изходния CSS код"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Активиране на картите на изходния JavaScript код"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Активиране на преместването на фокуса с клавиша Tab"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Увеличаване на единицата на CSS със: {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Карти на изходния JavaScript код"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Преминаване към следващото място на редактиране"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Символ"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Преместване на фокуса чрез клавиша Tab"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Нишки"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Запазването на хронологията не бе успешно: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Поправка"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Инструментът за анализ се инициализира…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кеширан Wasm модул"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Стекове за извиквания"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Функция за обратно извикване"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Първоначален приоритет"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Инициатор"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Стартирано от"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Инициатор за"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Забавяне след входящи данни от действие"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Метод на заявката"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Показване"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Изпълнение на микрозадачи"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Свойството е изчислено чрез метод за извеждане"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Поздравления, спечелихте!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "Бележка: Можете също да отворите играта, като въведете fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Кликнете два пъти, за да промените мащаба на изображението. Кликнете, за да прегледате предишните заявки."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Скриване на повтарящите се дъщерни елементи"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Нулиране на дъщерните елементи"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Нулиране на трасирането"

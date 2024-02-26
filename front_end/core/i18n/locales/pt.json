@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Esse cookie foi bloqueado porque o domínio do URL da solicitação não era idêntico ao domínio do cookie nem um subdomínio do valor de atributo do domínio do cookie."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Esse cookie é permitido pela ativação do CORS. Saiba mais: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Esse cookie é permitido pela política do Chrome Enterprise. Saiba mais: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Esse cookie é permitido pela API Storage Access. Saiba mais: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Esse cookie é permitido pelo teste de descontinuação gradual de cookies de terceiros."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Esse cookie é permitido pela heurística da descontinuação gradual de cookies de terceiros. Saiba mais: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Esse cookie é permitido por um período de carência do teste de descontinuação de cookies de terceiros. Saiba mais: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Esse cookie é permitido pela API Storage Access de nível superior. Saiba mais: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Esse cookie é permitido de acordo com a preferência do usuário."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "O cookie foi bloqueado por ser grande demais. O tamanho combinado do nome e valor precisa ser de no máximo 4.096 caracteres."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capturar stack traces assíncronos"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Formatadores personalizados"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (sem verde)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Destacar frames de anúncios"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Bloqueios de solicitação de rede"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Sem emulação"
   },
@@ -738,7 +768,7 @@
     "message": "Ativar modo escuro automático"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emula uma página em foco."
+    "message": "Mantém a página em foco. Essa configuração geralmente é usada para depurar elementos que desaparecem."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Ativa o modo escuro automático e define prefers-color-scheme como dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Principal"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Scripts"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Mostrar scripts"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Personalizar e controlar DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "A autorização não será coberta pelo caractere curinga (*) no gerenciamento do CORS de Access-Control-Allow-Headers."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": "O uso de :--customstatename foi descontinuado. Use a sintaxe :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Use o atributo disableRemotePlayback para desativar a integração padrão do Google Cast em vez de usar o seletor -internal-media-controls-overlay-cast-button."
@@ -2178,7 +2217,7 @@
     "message": "documentação de ícones mascaráveis"
   },
   "panels/application/AppManifestView.ts | downloadedIconWasEmptyOr": {
-    "message": "O ícone transferido por download está vazio ou corrompido"
+    "message": "O ícone baixado está vazio ou corrompido"
   },
   "panels/application/AppManifestView.ts | errorsAndWarnings": {
     "message": "Erros e avisos"
@@ -4821,7 +4860,7 @@
     "message": "Solicitação do console"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Aviso: não cole no Console do DevTools um código que você não entende ou que não verificou. Isso pode permitir que invasores roubem sua identidade ou controlem seu computador. Digite \"{PH1}\" abaixo para permitir a colagem."
+    "message": "Aviso: não cole no Console do DevTools um código que você não entende ou que não verificou. Isso pode permitir que invasores roubem sua identidade ou controlem seu computador. Digite \"{PH1}\" abaixo e pressione Enter para permitir a colagem."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Nenhum erro}=1{# erro}one{# erro}other{# erros}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Mostrar carimbos de data/hora"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Carimbos de data/hora"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Alternar para o Console"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<nó>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emular uma página em foco"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Mantém a página em foco. Essa configuração geralmente é usada para depurar elementos que desaparecem."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Forçar estado do elemento"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Fechar insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Continuar"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Mensagem do console"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Os dados a seguir serão enviados ao Google para encontrar uma explicação para a mensagem do console. Eles podem ser analisados por humanos e usados para melhorar produtos."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Algo deu errado…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Esta é uma ferramenta experimental de insights de IA que nem sempre acerta."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Gerando…"
+    "message": "Gerando uma explicação…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Acessar as configurações"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Dados usados para criar esse insight"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Saiba mais sobre a IA no DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Solicitação de rede"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Os insights do console não estão disponíveis"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Esse recurso só estará disponível se você tiver feito login no Chrome com sua Conta do Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "A conexão de Internet não está disponível no momento."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(abre em uma nova guia)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Enviar feedback"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Esse recurso só estará disponível se a sincronização do Chrome estiver ativada."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Não gostei"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Gostei"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Ativar insights do console"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Explique este erro"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Explicar este aviso"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "No momento, só há suporte para localidades do inglês."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Recurso bloqueado"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "O conjunto de cabeçalhos Content-Encoding aceitos foi modificado pelo DevTools, consulte o painel de condições de rede"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "O cache do navegador está desativado"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "A limitação de rede está ativada"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Padrão de texto para bloquear solicitações correspondentes. Use * como caractere curinga"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Remover tudo"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Copiar mensagem"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Dados"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Insira um regex, por exemplo: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Fonte do evento"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Calculando amostras…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Calculando tamanhos superficiais…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Calculando estatísticas…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Escolha CSS, Pierce ou XPath como uma das opções. Apenas esses seletores têm garantia de serem registrados, já que ARIA e seletores de texto podem não ser exclusivos."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Saiba mais"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Nome da gravação"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Remover atalho"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Mudanças no atalho aplicadas"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Mudanças no atalho descartadas"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Mudanças no atalho restauradas para o padrão"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Atalho modificado"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "O atalho \"{PH1}\" foi removido"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Atalhos"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Estado: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Desativar todos os pontos de interrupção"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Desativar todos os pontos de interrupção no arquivo"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Editar logpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Ativar todos os pontos de interrupção"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Ativar todos os pontos de interrupção no arquivo"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Criar novo snippet"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Mapas de origem de CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Desativar pontos de interrupção"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Desativar mapas de origem CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Desativar mapas de origem JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Desativar a troca de foco com a tecla Tab"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Ativar mapas de origem de CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Ativar mapas de origem do JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Ativar mudança de foco com a tecla Tab"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Aumentar a unidade CSS em {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Mapas de origem JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Pular para o próximo local de edição"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Símbolo"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "A tecla Tab move o foco"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Linhas de execução"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Não foi possível salvar a linha do tempo: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Corrigir"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicializando o criador de perfil…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Módulo Wasm armazenado em cache"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Pilha de chamadas"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Função de callback"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Prioridade inicial"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Iniciador"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Iniciado por"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Iniciador de"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Latência na entrada"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Método da solicitação"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Revelar"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Executar microtarefas"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "A propriedade é calculada com um getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Parabéns, você ganhou!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "Observação: você também pode abrir o jogo digitando fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Clique duas vezes para aplicar zoom na imagem. Clique para ver as solicitações anteriores."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Ocultar filhos recorrentes"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Redefinir filhos"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Redefinir rastros"

@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Cookie ini diblokir karena domain URL permintaan juga tidak sama persis dengan domain cookie, dan domain URL permintaan bukanlah subdomain dari nilai atribut Domain cookie."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Cookie ini diizinkan oleh keikutsertaan CORS. Pelajari lebih lanjut: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Cookie ini diizinkan oleh kebijakan Chrome Enterprise. Pelajari lebih lanjut: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Cookie ini diizinkan oleh Storage Access API. Pelajari lebih lanjut: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Cookie ini diizinkan oleh uji coba penghentian bertahap penggunaan cookie pihak ketiga."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Cookie ini diizinkan oleh heuristik penghentian bertahap cookie pihak ketiga. Pelajari lebih lanjut: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Cookie ini diizinkan oleh masa tenggang uji coba penghentian penggunaan cookie pihak ketiga. Pelajari lebih lanjut: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Cookie ini diizinkan oleh Storage Access API tingkat atas. Pelajari lebih lanjut: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Cookie ini diizinkan oleh preferensi pengguna."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Cookie ini diblokir karena terlalu besar. Ukuran gabungan nama dan nilai harus kurang dari atau sama dengan 4096 karakter."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Ambil pelacakan tumpukan asinkron"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Pemformat kustom"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (tanpa warna hijau)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Tandai frame iklan"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Pemblokiran permintaan jaringan"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Tidak ada emulasi"
   },
@@ -738,7 +768,7 @@
     "message": "Aktifkan mode gelap otomatis"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Mengemulasi halaman terfokus."
+    "message": "Menjaga fokus tetap pada halaman. Umumnya digunakan untuk melakukan proses debug pada elemen yang menghilang."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Mengaktifkan mode gelap otomatis dan menyetel prefers-color-scheme ke dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Utama"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Skrip"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Tampilkan Skrip"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Sesuaikan dan kontrol DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Otorisasi tidak akan dicakup oleh simbol karakter pengganti (*) dalam penanganan Access-Control-Allow-Headers CORS."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename tidak digunakan lagi. Sebagai gantinya, gunakan sintaksis :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Daripada menggunakan pemilih -internal-media-controls-overlay-cast-button, sebaiknya gunakan disableRemotePlayback untuk menonaktifkan integrasi Cast default."
@@ -4821,7 +4860,7 @@
     "message": "Perintah konsol"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Peringatan: Jangan menempelkan kode ke DevTools Console yang tidak Anda pahami atau belum Anda tinjau sendiri. Hal ini dapat memungkinkan penyerang mencuri identitas Anda atau mengambil alih komputer Anda. Ketik ‘{PH1}’ di bawah untuk mengizinkan penempelan."
+    "message": "Peringatan: Jangan menempelkan kode ke DevTools Console yang tidak Anda pahami atau belum Anda tinjau sendiri. Hal ini dapat memungkinkan penyerang mencuri identitas Anda atau mengambil alih komputer Anda. Ketik '{PH1}' di bawah ini dan tekan Enter untuk mengizinkan penempelan."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Tidak ada error}=1{# error}other{# error}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Tampilkan stempel waktu"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Stempel waktu"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Beralih Konsol"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emulasikan halaman terfokus"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Menjaga fokus tetap pada halaman. Umumnya digunakan untuk melakukan proses debug pada elemen yang menghilang."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Paksa status elemen"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Tutup insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Lanjutkan"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Pesan konsol"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Data berikut akan dikirim ke Google untuk menemukan penjelasan pesan konsol. Data tersebut mungkin akan ditinjau secara manual dan digunakan untuk meningkatkan kualitas produk."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Terjadi error…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Fitur ini adalah alat insight AI eksperimental dan tidak selalu benar."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Membuat…"
+    "message": "Memberikan penjelasan…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Buka setelan"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Data yang digunakan untuk membuat insight ini"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Insight"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Pelajari lebih lanjut AI di DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Permintaan jaringan"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Console insights tidak tersedia"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Fitur ini hanya tersedia jika Anda login ke Chrome dengan Akun Google Anda."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Koneksi internet saat ini tidak tersedia."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(dibuka di tab baru)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Kirim masukan"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Fitur ini hanya tersedia jika Anda mengaktifkan sinkronisasi Chrome."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Tidak suka"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Suka"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Aktifkan Console Insights"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Jelaskan error ini"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Jelaskan peringatan ini"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Saat ini hanya mendukung lokalitas bahasa Inggris."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resource yang Diblokir"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Set header Content-Encoding yang diterima telah diubah oleh DevTools. Lihat panel Kondisi jaringan"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Cache browser dinonaktifkan"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Throttling jaringan diaktifkan"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Pola teks untuk memblokir permintaan yang sesuai; gunakan * sebagai karakter pengganti"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Hapus semua"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Salin pesan"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Data"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Masukkan ekspresi reguler, misalnya: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Sumber Peristiwa"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Menghitung sampel …"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Menghitung shallow size…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Menghitung statistik…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Anda harus memilih CSS, Pierce, atau XPath sebagai salah satu opsi Anda. Hanya pemilih ini yang dijamin akan direkam karena pemilih ARIA dan teks mungkin tidak unik."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Pelajari lebih lanjut"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Nama rekaman"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Hapus pintasan"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Perubahan pada pintasan diterapkan"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Perubahan pada pintasan dihapus"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Perubahan pada pintasan dipulihkan ke default"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Pintasan diubah"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Pintasan {PH1} dihapus"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Pintasan"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Kondisi: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Nonaktifkan semua titik henti sementara"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Nonaktifkan semua titik henti sementara dalam file"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Edit logpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Aktifkan semua titik henti sementara"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktifkan semua titik henti sementara dalam file"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Buat cuplikan baru"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Peta sumber CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Nonaktifkan titik henti sementara"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Nonaktifkan peta sumber CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Nonaktifkan peta sumber JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Nonaktifkan tab memindahkan fokus"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Aktifkan peta sumber CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Aktifkan peta sumber JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktifkan tab memindahkan fokus"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Penambahan unit CSS sebanyak {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Peta sumber JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Lompat ke lokasi pengeditan berikutnya"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Simbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab untuk memindahkan fokus"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Thread"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Gagal menyimpan linimasa: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Perbaiki saya"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Melakukan inisialisasi profiler…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm dalam Cache"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Stack panggilan"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Fungsi Callback"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Prioritas Awal"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Inisiator"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Dimulai oleh"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Inisiator untuk"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Penundaan input"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Metode Permintaan"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Tampilkan"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Jalankan Microtask"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Properti dikomputasi dengan pengambil"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Selamat, Anda menang!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "Catatan: Anda juga dapat membuka game dengan mengetik fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Klik dua kali untuk melakukan zoom pada gambar. Klik untuk melihat permintaan sebelumnya."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Sembunyikan turunan yang berulang"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Reset turunan"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Reset rekaman aktivitas"

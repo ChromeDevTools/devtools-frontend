@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "요청 URL의 도메인이 쿠키의 도메인과 정확하게 일치하지 않고 요청 URL의 도메인이 쿠키 도메인 속성 값의 하위 도메인도 아니므로 이 쿠키가 차단되었습니다."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "이 쿠키는 CORS 선택에 의해 허용됩니다. 자세히 알아보기: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "이 쿠키는 Chrome Enterprise 정책에 의해 허용됩니다. 자세히 알아보기: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "이 쿠키는 Storage Access API에 의해 허용됩니다. 자세히 알아보기: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "이 쿠키는 서드 파티 쿠키의 단계적 지원 중단 기능 트라이얼에 의해 허용됩니다."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "이 쿠키는 서드 파티 쿠키의 단계적 지원 중단 휴리스틱에 의해 허용됩니다. 자세히 알아보기: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "이 쿠키는 서드 파티 쿠키의 지원 중단 기능 트라이얼 유예 기간에 의해 허용됩니다. 자세히 알아보기: goo.gle/ps-dt"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "이 쿠키는 최상위 Storage Access API에 의해 허용됩니다. 자세히 알아보기: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "이 쿠키는 사용자 환경설정에 의해 허용됩니다."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "쿠키가 너무 커서 차단되었습니다. 이름과 값을 합쳐서 4,096자 이하여야 합니다."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "비동기 스택 트레이스 캡처"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "맞춤 형식 지정 도구"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "제2색맹(녹색맹)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "광고 프레임 강조표시"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "네트워크 요청 차단"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "에뮬레이션 없음"
   },
@@ -738,7 +768,7 @@
     "message": "자동 어두운 모드 사용 설정"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "포커스된 페이지를 에뮬레이션합니다."
+    "message": "페이지에 포커스를 유지합니다. 사라지는 요소를 디버깅하는 데 흔히 사용됩니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "자동 어두운 모드를 사용 설정하고 prefers-color-scheme을(를) dark(으)로 설정합니다."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "기본"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "스크립트"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "스크립트 표시"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools 맞춤 설정 및 제어"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORS Access-Control-Allow-Headers 처리 시 와일드 카드 기호(*)를 사용하면 승인되지 않습니다."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename은 지원 중단되었습니다. 대신 :state(customstatename) 문법을 사용하세요."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "기본 Cast 통합을 사용 중지하려면 -internal-media-controls-overlay-cast-button 선택기 대신 disableRemotePlayback 속성을 사용해야 합니다."
@@ -4821,7 +4860,7 @@
     "message": "콘솔 메시지"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "경고: 이해하지 못했거나 직접 검토하지 않은 코드는 DevTools 콘솔에 붙여넣지 마세요. 이렇게 하면 공격자가 신원을 도용하거나 내 컴퓨터를 제어할 수 있습니다. 붙여넣기를 허용하려면 아래에 ‘{PH1}’ 문구를 입력하세요."
+    "message": "경고: 이해하지 못했거나 직접 검토하지 않은 코드는 DevTools 콘솔에 붙여넣지 마세요. 이렇게 하면 공격자가 신원을 도용하거나 내 컴퓨터를 제어할 수 있습니다. 붙여넣기를 허용하려면 아래에 '{PH1}'을 입력하고 Enter 키를 누르세요."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{오류 없음}=1{오류 #개}other{오류 #개}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "타임스탬프 표시"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "타임스탬프"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "콘솔 전환"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "포커스된 페이지 에뮬레이션"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "페이지에 포커스를 유지합니다. 사라지는 요소를 디버깅하는 데 흔히 사용됩니다."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "요소 상태 강제 적용"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "통계 닫기"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "계속"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "콘솔 메시지"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "콘솔 메시지에 대한 설명을 찾기 위해 다음 데이터가 Google로 전송됩니다. 해당 데이터는 검토자가 확인할 수 있으며 제품을 개선하는 데 사용될 수 있습니다."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "문제가 발생했습니다…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "이는 실험용 AI 인사이트 도구이므로 정확하지 않을 수 있습니다."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "생성 중…"
+    "message": "설명을 만드는 중…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "설정으로 이동"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "이 인사이트를 만드는 데 사용된 데이터"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "통계"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "DevTools의 AI에 대해 자세히 알아보기"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "네트워크 요청"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Console 인사이트를 사용할 수 없음"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "이 기능은 Google 계정으로 Chrome에 로그인한 경우에만 사용할 수 있습니다."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "현재 인터넷 연결을 사용할 수 없습니다."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(새 탭에서 열기)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "의견 보내기"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "이 기능은 Chrome 동기화가 사용 설정된 경우에만 사용할 수 있습니다."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "싫어요"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "좋아요"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Console 인사이트 사용 설정"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "이 오류 설명"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "이 경고 설명"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "현재 영어만 지원됩니다."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "차단된 리소스"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "수락된 Content-Encoding 헤더 세트가 DevTools에 의해 수정되었습니다. 네트워크 조건 패널을 참고하세요"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "브라우저 캐시 사용 중지됨"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "네트워크 제한이 사용 설정됨"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "일치하는 요청을 차단하기 위한 텍스트 패턴, 와일드 카드로 * 사용"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "모두 지우기"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "메시지 복사"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "데이터"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "정규식을 입력하세요(예: https?)"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "이벤트 소스"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "샘플 계산 중…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Shallow Size 계산 중…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "통계 계산 중…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "옵션으로 CSS, Pierce 또는 XPath를 선택해야 합니다. ARIA 및 텍스트 선택기가 고유하지 않을 수 있으므로 이러한 선택기만 기록이 보장됩니다."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "자세히 알아보기"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "녹음 파일 이름"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "바로가기 삭제"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "단축키 변경사항이 적용됨"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "단축키 변경사항이 삭제됨"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "단축키 변경사항이 기본값으로 복원됨"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "단축키 수정됨"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} 단축키 삭제됨"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "단축키"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "조건: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "모든 중단점 사용 중지"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "파일의 모든 중단점 사용 중지"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "로그 지점 수정"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "모든 중단점 사용 설정"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "파일의 모든 중단점 사용 설정"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "새 스니펫 만들기"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS 소스 맵"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "중단점 비활성화"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "CSS 소스 맵 사용 중지"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "자바스크립트 소스 맵 사용 중지"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "탭 이동 포커스 사용 중지"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "CSS 소스 맵 사용 설정"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "자바스크립트 소스 맵 사용 설정"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "탭 이동 포커스 사용 설정"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS 단위 {PH1}씩 증가"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript 소스 맵"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "다음 수정 위치로 이동"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "기호"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "탭으로 포커스 이동"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "스레드"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "타임라인을 저장할 수 없음: {PH1}({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "문제 해결"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "프로파일러 초기화 중…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "캐시된 Wasm 모듈"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "호출 스택"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "콜백 함수"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "초기 우선순위"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "시작점"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "개시자:"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "다음의 개시자:"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "입력 지연"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "요청 메서드"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "표시"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "마이크로 태스크 실행"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "속성이 getter를 사용해 계산되었습니다"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "축하합니다. 이겼습니다!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "참고: fixme를 입력하여 게임을 열 수도 있습니다."
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "더블클릭하여 이미지를 확대/축소합니다. 이전 요청을 보려면 클릭하세요."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "반복되는 하위 항목 숨기기"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "자녀 재설정"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "trace 재설정"

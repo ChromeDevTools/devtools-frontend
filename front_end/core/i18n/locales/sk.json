@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Tento súbor cookie bol zablokovaný, pretože sa doména webovej adresy požiadavky presne nezhodovala s jeho doménou ani nebola subdoménou jeho hodnoty atribútu Domain."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Tento súbor cookie je povolený prihlásením v systéme CORS. Viac sa dozviete na goo.gle/cors."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Tento súbor cookie je povolený pravidlami licencie Chrome Enterprise. Viac sa dozviete na goo.gle/ce-3pc."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Tento súbor cookie je povolený rozhraním Storage Access API. Viac sa dozviete na goo.gle/saa."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Tento súbor cookie je povolený dočasným predĺžením podpory súboru cookie tretej strany."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Tento súbor cookie je povolený heuristikou súboru cookie tretej strany, ktorého podpora sa končí Viac sa dozviete na goo.gle/hbe."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Tento súbor cookie je povolený ochrannou lehotou v rámci dočasného predĺženia podpory súboru cookie tretej strany. Viac sa dozviete na goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Tento súbor cookie je povolený rozhraním Storage Access API najvyššej úrovne. Viac sa dozviete na goo.gle/saa-top."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Tento súbor cookie je povolený predvoľbou používateľa."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Tento súbor cookie bol zablokovaný, pretože je príliš veľký. Názov a hodnota môžu mať spoločne najviac 4 096 znakov."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Zaznamenať asynchrónne sledovania zásobníka"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Vlastné formátovače"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (žiadna zelená)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Zvýrazniť rámy reklám"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Blokovanie požiadavky siete"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Bez emulácie"
   },
@@ -738,7 +768,7 @@
     "message": "Povoliť automatický tmavý režim"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emuluje zameranú stránku."
+    "message": "Majte stránku naďalej označenú. Bežne sa používa na ladenie miznúcich prvkov."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Aktivuje automatický tmavý režim a nastaví parameter prefers-color-scheme na dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Hlavné"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Skripty"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Zobraziť skripty"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Prispôsobiť a ovládať Nástroje pre vývojárov"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Autorizácie sa nebude týkať zástupný symbol (*) pri spracovaní CORS Access-Control-Allow-Headers."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": "Podpora syntaxe :--customstatename bola ukončená. Použite namiesto nej syntax :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Ak chcete zakázať predvolenú integráciu prenosu, použite namiesto selektora -internal-media-controls-overlay-cast-button atribút disableRemotePlayback."
@@ -4821,7 +4860,7 @@
     "message": "Výzva konzoly"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Upozornenie: Neprilepujte kód do konzoly nástrojov pre vývojárov, ktorému nerozumiete alebo ste ho neskontrolovali. Útočníci by mohli ukradnúť vašu totožnosť alebo ovládnuť váš počítač. Ak chcete povoliť prilepovanie, nižšie zadajte {PH1}."
+    "message": "Upozornenie: Neprilepujte do konzoly nástrojov pre vývojárov kód, ktorému nerozumiete alebo ste ho neskontrolovali. Útočníci by mohli ukradnúť vašu totožnosť alebo ovládnuť váš počítač. Prilepovanie povolíte zadaním reťazca {PH1} nižšie a stlačením klávesa Enter."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Žiadne chyby}=1{# chyba}few{# chyby}many{# errors}other{# chýb}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Zobraziť časové pečiatky"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Časové pečiatky"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Prepnúť konzolu"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<uzol>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emulovať zameranú stránku"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Majte stránku naďalej označenú. Bežne sa používa na ladenie miznúcich prvkov."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Vynútenie stavu prvku"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Zavrieť štatistiku"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Pokračovať"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Správa v konzole"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Nasledujúce údaje sa odošlú Googlu, aby bolo možné nájsť vysvetlenie správy v konzole. Môžu byť skontrolované ľuďmi a použité na zlepšovanie služieb."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Niečo sa pokazilo…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Toto je experimentálny nástroj na získavanie štatistík využívajúcich umelú inteligenciu a nie vždy funguje správne."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Generuje sa…"
+    "message": "Načítava sa vysvetlenie…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Prejsť do nastavení"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Údaje použité na vytvorenie tejto štatistiky"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Štatistika"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Ďalšie informácie o umelej inteligencii v nástrojoch pre vývojárov"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Požiadavka siete"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Štatistiky služby Console nie sú k dispozícii"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Táto funkcia je k dispozícii, iba ak sa do Chromu prihlásite svojím účtom Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Internetové pripojenie nie je momentálne k dispozícii."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(otvorí sa na novej karte)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Odoslať spätnú väzbu"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Táto funkcia je k dispozícii, iba ak máte zapnutú synchronizáciu Chromu."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Palec dole"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Palec hore"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Povoliť Štatistiky služby Console"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Vysvetliť túto chybu"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Vysvetliť toto upozornenie"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Momentálne sú podporované iba miestne nastavenia v angličtine."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokovaný zdroj"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Skupina akceptovaných hlavičiek (Content-Encoding) bola upravená nástrojmi pre vývojárov, pozrite si panel stavov siete"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Vyrovnávacia pamäť prehliadača je deaktivovaná"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Obmedzovanie rýchlosti je povolené"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Textový vzor na blokovanie zhodných požiadaviek, použite zástupný znak *"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Vymazať všetko"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Kopírovať správu"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Dáta"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Zadajte regulárny výraz, napríklad https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Zdroj udalosti"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Vypočítavajú sa vzorky…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Vypočítavajú sa plytké veľkosti…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Počítajú sa štatistiky…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Ako jednu z možností musíte vybrať porovnávač cien, Pierce alebo XPath. Iba tieto selektory budú zaručene zaznamenané, pretože selektory ARIA a Text nemusia byť jedinečné."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Ďalšie informácie"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Názov záznamu"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Odstrániť skratku"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Zmeny skratky boli použité"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Zmeny skratky boli zahodené"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Zmeny skratky boli obnovené na predvolené nastavenie"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Skratka bola upravená"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Skratka {PH1} bola odstránená"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Skratky"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Podmienka: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Deaktivovať všetky zlomové body"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Deaktivovať všetky zlomové body v súbore"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Upraviť bod denníka"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Povoliť všetky zlomové body"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Povoliť všetky zlomové body v súbore"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Vytvoriť nový úryvok"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Mapy zdroja šablón CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktivovať zlomové body"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Zakázať mapy zdroja šablón CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Deaktivovať mapy zdroja JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Deaktivovať zameranie pohybov karty"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Povoliť mapy zdroja šablón CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Povoliť mapy zdrojov JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Povoliť zameranie na pohyby karty"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Zvýšiť jednotku CSS o {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Mapy zdroja JavaScriptu"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Prejsť na ďalšie miesto úprav"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Symbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab posunie označenie"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Vlákna"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Časovú os sa nepodarilo uložiť: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Opraviť"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicializuje sa profilovač…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm uložený do vyrovnávacej pamäte"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Zásobníky volaní"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Funkcia spätného volania"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Počiatočná priorita"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Pôvodca"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Spustila udalosť"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Udalosť spúšťajúca"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Oneskorenie vstupu"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Metóda požiadavky"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Zobraziť"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Spustenie mikroúloh"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Vlastníctvo je počítané metódou getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Blahoželáme, vyhrali ste!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PS: Hru môžete otvoriť aj zadaním výrazu fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Dvojitým kliknutím priblížite obrázok. Kliknutím zobrazíte predchádzajúce požiadavky."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Skryť opakujúce sa podradené položky"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Reset podradených položiek"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Resetovať stopu"

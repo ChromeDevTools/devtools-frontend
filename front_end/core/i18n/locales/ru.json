@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Файл cookie заблокирован, потому что ни домен запрошенного URL, ни субдомен значения атрибута Domain не совпадают с доменом файла cookie"
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Этот файл cookie разрешен в рамках согласия на использование технологии CORS. Подробнее: goo.gle/cors."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Этот файл cookie разрешен правилом Chrome Enterprise. Подробнее: goo.gle/ce-3pc."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Этот файл cookie разрешен Storage Access API. Подробнее: goo.gle/saa."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Этот файл cookie разрешен в рамках эксперимента с устаревшей функцией постепенного отключения сторонних файлов cookie"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Этот файл cookie разрешен эвристическими алгоритмами функции постепенного отключения сторонних файлов cookie. Подробнее: goo.gle/hbe."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Этот файл cookie разрешен в рамках продления эксперимента с устаревшей функцией сторонних файлов cookie. Подробнее: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Этот файл cookie разрешен Storage Access API высшего уровня. Подробнее: goo.gle/saa-top."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Этот файл cookie разрешен в настройках пользователя"
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Файл cookie заблокирован, потому что он слишком большой. Общая длина названия и значения не должна превышать 4096 символов."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Записать асинхронные трассировки стека"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Пользовательские форматировщики"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Дейтеранопия (без зеленого)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Выделять фреймы объявлений"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Блокировка сетевых запросов"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Без эмуляции"
   },
@@ -738,7 +768,7 @@
     "message": "Автоматически включать тёмную тему"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Эмулирует страницу в фокусе."
+    "message": "Не менять фокус на странице. Часто используется при отладке исчезающих элементов."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Автоматически включает тёмную тему и меняет prefers-color-scheme на dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Основная"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Скрипты"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Показать инструмент \"Скрипты\""
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Настройка инструментов разработчика и управление ими"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Авторизация не будет выполняться, если в заголовке CORS Access-Control-Allow-Headers вместо необходимых данных указан подстановочный знак (*)."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename больше не поддерживается. Используйте синтаксис :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Чтобы отключить интеграцию Google Cast по умолчанию, вместо селектора -internal-media-controls-overlay-cast-button используйте атрибут disableRemotePlayback."
@@ -4821,7 +4860,7 @@
     "message": "Командная строка консоли"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Внимание! Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Так злоумышленники могут украсть у вас данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите ''{PH1}'' ниже."
+    "message": "Важно! Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Злоумышленники могут воспользоваться этим, чтобы украсть ваши личные данные или получить контроль над вашим компьютером. Чтобы разрешить вставку кода, введите \"{PH1}\" ниже и нажмите Ввод."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Нет ошибок}=1{# ошибка}one{# ошибка}few{# ошибки}many{# ошибок}other{# ошибки}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Показать временные метки"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Временные метки"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Показать или скрыть консоль"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<узел>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Эмулировать страницу в фокусе"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Не менять фокус на странице. Часто используется при отладке исчезающих элементов."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Установить состояние элемента"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Закрыть подсказку"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Продолжить"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Сообщение из консоли"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Указанные ниже данные будут отправлены в Google, чтобы вы получили объяснение сообщения из консоли. Они могут быть проверены нашими специалистами и использованы для улучшения продуктов."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Что-то пошло не так"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Это экспериментальная функция для получения статистики с помощью ИИ, которая не всегда дает правильный результат."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Создание…"
+    "message": "Подготовка объяснения…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Перейти в настройки"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Данные, на основе которых получена эта статистика"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Подсказка"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Подробнее об ИИ в инструментах разработчика…"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Сетевой запрос"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Функция Console Insights недоступна"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Эта функция доступна, только когда выполнен вход в Chrome с аккаунтом Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Подключение к интернету недоступно."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(ссылка откроется в новой вкладке)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Отправить отзыв"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Эта функция доступна, только когда включена синхронизация Chrome."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Не нравится"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Нравится"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Включить функцию Console Insights"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Объяснить эту ошибку"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Объяснить это предупреждение"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "В настоящее время в региональных настройках поддерживается только английский язык."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Заблокированный ресурс"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Набор разрешенных заголовков Content-Encoding изменен в инструментах разработчика. Узнать больше можно на панели \"Условия работы сети\"."
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Кеш в браузере отключен"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Включено ограничение пропускной способности сети"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Текстовый шаблон для блокировки совпадающих запросов; в качестве подстановочного знака используйте \"*\""
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Очистить все"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Копировать сообщение"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Wi-Fi и мобильный интернет"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Введите регулярное выражение, например: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Источник события"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Вычисление образцов…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Вычисление объема памяти, занимаемого объектом…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Подсчет статистики…"
   },
@@ -9753,7 +9849,7 @@
     "message": "Показать монитор протокола"
   },
   "panels/recorder/RecorderController.ts | continueReplay": {
-    "message": "Продолжить воспроизведение"
+    "message": "Продолжить"
   },
   "panels/recorder/RecorderController.ts | copyShortcut": {
     "message": "Копировать запись или выбранный шаг"
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Необходимо выбрать CSS, Pierce, или XPath в качестве одного из вариантов. Только они будут гарантированно записаны, так как селекторы ARIA и текстовые селекторы могут быть не уникальными."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Подробнее…"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Название записи"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Удалить сочетание клавиш"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Сочетание клавиш изменено"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Изменение сочетания клавиш отменено"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Для сочетания клавиш восстановлены настройки по умолчанию"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Сочетание клавиш изменено"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Сочетание клавиш {PH1} удалено"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Сочетания клавиш"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Условие: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Отключить все точки останова"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Отключить все точки останова в файле"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Изменить точку записи"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Включить все точки останова"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Включить все точки останова в файле"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Создать фрагмент"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Карты исходного кода CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Отключить точки останова"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Отключить карты исходного кода CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Отключить карты исходного кода JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Отключить перемещение фокуса вкладками"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Включить карты исходного кода CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Включить карты исходного кода JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Включить перемещение фокуса вкладками"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Увеличить значение свойства CSS на {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Карты исходного кода JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Перейти к следующему месту редактирования"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Символ"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Перемещение фокуса клавишей Tab"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Потоки"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Не удалось сохранить хронологию: {PH1} ({PH2})."
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Исправить"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Запуск профилировщика…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кешированный модуль Wasm"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Стеки вызовов"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Функция обратного вызова"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Первоначальный приоритет"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Инициатор"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Инициирующее событие:"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Инициирующее событие для события"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Задержка ввода"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Метод запроса"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Показать"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Запуск микрозадач"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Свойство вычисляется с помощью геттера"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Поздравляем, вы выиграли!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PostScript. Чтобы открыть игру, можно также нажать fixme."
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Чтобы увеличить изображение, нажмите дважды. Нажмите, чтобы посмотреть предыдущие запросы."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Скрыть повторяющиеся дочерние элементы"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Сбросить дочерние элементы"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Сбросить трассировку"

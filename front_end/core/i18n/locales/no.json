@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Denne informasjonskapselen ble blokkert fordi verken nettadressens domene samsvarte nøyaktig med informasjonskapselens domene, og heller ikke forespørselens URL-domene var et underdomene av informasjonskapselens domeneattributtverdi."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Denne informasjonskapselen tillates av CORS-registrering. Finn ut mer: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Denne informasjonskapselen tillates av Chrome Enterprise-reglene. Finn ut mer: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Denne informasjonskapselen tillates av Storage Access API. Finn ut mer: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Denne informasjonskapselen tillates av prøveperioden for avvikling av informasjonskapsler fra tredjeparter."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Denne informasjonskapselen tillates av heuristikk for utfasing av informasjonskapsler fra tredjeparter. Finn ut mer: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Denne informasjonskapselen tillates av en utsatt tidsfrist for prøveperioden for avvikling av informasjonskapsler fra tredjeparter. Finn ut mer: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Denne informasjonskapselen tillates av Storage Access API på øverste nivå. Finn ut mer: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Denne informasjonskapselen tillates av brukerinnstillingene."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Denne informasjonskapselen ble blokkert fordi den var for stor. Navnet og verdien må til sammen være på 4096 tegn eller mindre."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Ta opp asynkroniserte stabelsporinger"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Tilpassede formaterere"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Grønnblindhet"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Uthev annonserammer"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Blokkering av nettverksforespørsler"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Ingen emulering"
   },
@@ -738,7 +768,7 @@
     "message": "Aktiver automatisk mørk modus"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emulerer en fokusert side."
+    "message": "Hold siden fokusert. Brukes vanligvis for feilsøking av elementer som forsvinner."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Aktiverer automatisk mørk modus og setter prefers-color-scheme til dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Primært"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Skript"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Vis skript"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Tilpasning og kontroll av utviklerverktøy."
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Autorisasjon kommer ikke til å bli dekket av jokertegnet (*) ved håndtering av CORS-hodet Access-Control-Allow-Headers."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename er avviklet. Bruk :state(customstatename)-syntaksen i stedet."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "For å slå av Cast-integreringen som brukes som standard, bruk disableRemotePlayback-attributtet i stedet for -internal-media-controls-overlay-cast-button-velgeren."
@@ -3681,7 +3720,7 @@
     "message": "Opphav"
   },
   "panels/application/components/FrameDetailsView.ts | originTrialsExplanation": {
-    "message": "Med prøvefunksjoner for opphav får du tilgang til nye funksjoner og funksjoner på forsøksstadiet."
+    "message": "Med prøvefunksjoner for opphav får du tilgang til nye og eksperimentelle funksjoner."
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Eierelement"
@@ -4821,7 +4860,7 @@
     "message": "Konsoll-ledetekst"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Advarsel: Ikke lim inn kode i Utviklerverktøy-konsollen som du ikke forstår eller ikke har gjennomgått selv. Dette kan gjøre det mulig for angripere å stjele identiteten din eller ta kontroll over datamaskinen din. Skriv inn «{PH1}» under for å tillate innliming."
+    "message": "Advarsel: Ikke lim inn kode i Utviklerverktøy-konsollen som du ikke forstår eller ikke har gjennomgått selv. Dette kan gjøre det mulig for angripere å stjele identiteten din eller ta kontroll over datamaskinen din. Skriv inn «{PH1}» under, og trykk på Enter for å tillate innliming."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ingen feil}=1{# feil}other{# feil}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Vis tidsstempler"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Tidsstempler"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Slå av/på konsollen"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emuler en fokusert side"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Hold siden fokusert. Brukes vanligvis for feilsøking av elementer som forsvinner."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Tving elementtilstand"
@@ -6338,23 +6386,50 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Lukk statistikken"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Fortsett"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Konsollmelding"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Følgende data sendes til Google, slik at Google kan finne en forklaring på konsollmeldingen. Dataene kan bli gjennomgått av mennesker og brukt til å gjøre produkter bedre."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Noe gikk galt"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Dette er et AI-statistikkverktøy på forsøksstadiet. Feil kan forekomme."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Genererer …"
+    "message": "Finner en forklaring …"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Gå til innstillingene"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Dataene som er brukt til å utarbeide denne statistikken"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Statistikk"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Finn ut mer om AI i Utviklerverktøy"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Nettverksforespørsel"
   },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Konsollstatistikk er ikke tilgjengelig"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Denne funksjonen er bare tilgjengelig hvis du er logget på Chrome med Google-kontoen din."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Internettilkoblingen er ikke tilgjengelig for øyeblikket."
+  },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
-    "message": "(åpnes på en ny fane)"
+    "message": "(åpnes i en ny fane)"
   },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Relatert kode"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Send tilbakemelding"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Denne funksjonen er bare tilgjengelig hvis du har slått på Chrome-synkronisering."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Liker ikke"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Liker"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Slå på konsollstatistikk"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Forklar denne feilen"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Forklar denne advarselen"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Foreløpig støttes bare engelske lokaliteter."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokkert ressurs"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Settet med godkjente Content-Encoding-hoder er endret av Utviklerverktøy. Se panelet for nettverksbetingelser"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Nettleserbufferen er deaktivert"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Nettverksstruping er påslått"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Tekstmønster for å blokkere samsvarende forespørsler – bruk * som jokertegn"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Fjern alt"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Kopiér meldingen"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Data"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Skriv inn et regulært uttrykk, for eksempel https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Hendelseskilde"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Beregner sampler …"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Beregner grunne størrelser …"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Beregner statistikk …"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Du må velge CSS, Pierce eller XPath som et av alternativene. Kun disse velgerne er garantert å bli registrert, siden det ikke er sikkert at ARIA- og tekstvelgere er unike."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Finn ut mer"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Opptaksnavn"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Fjern hurtigtasten"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Snarveiendringene er tatt i bruk"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Snarveiendringene er forkastet"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Snarveiendringene er gjenopprettet til standard"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Hurtigtasten er endret"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1}-snarveien er fjernet"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Hurtigtaster"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Vilkår: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Deaktiver alle stoppunkter"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Deaktiver alle stoppunkter i filen"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Endre loggpunktet"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Aktiver alle stoppunkter"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktiver alle stoppunkter i filen"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Opprett nytt tekstutdrag"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS-kildekart"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktiver stoppunkter"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Deaktiver CSS-kildekart"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Deaktiver JavaScript-kildekart"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Deaktiver fane, flytter fokus"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Aktiver CSS-kildekart"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Aktiver kildekart for JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktiver fane, flytter fokus"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Økning CSS-enhet med {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript-kildekart"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Hopp til neste utgavelokasjon"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Symbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab flytter fokus"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Tråder"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Kunne ikke lagre tidslinjen: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Fiks meg"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profiler …"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Bufret Wasm-modul"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Anropsstabler"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Tilbakekallfunksjon"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Innledende prioritet"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Igangsetter"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Startet av"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Igangsetter for"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Inndataforsinkelse"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Forespørselsmetode"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Vis"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Kjør mikrooppgaver"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Egenskapen beregnes med en getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Gratulerer, du vant!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PS: Du kan også åpne spillet ved å skrive fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Dobbeltklikk for å zoome bildet. Klikk for å se forutgående forespørsler."
   },
@@ -14520,7 +14658,10 @@
     "message": "Skjul funksjonen"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
-    "message": "Skjul underordnede elementer som gjentas"
+    "message": "Skjul gjentatte underordnede elementer"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Tilbakestill underordnede elementer"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Tilbakestill sporing"

@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Denna cookie blockerades eftersom domänen i webbadressen för denna begäran varken var en exakt matchning med cookiens domän eller var en underdomän i cookiens attributvärde Domain."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Den här cookien på grund av att CORS används. Läs mer: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Denna cookie tillåts enligt Chrome Enterprise-policyn. Läs mer: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Denna cookie tillåts av Storage Access API. Läs mer: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Denna cookie tillåts på grund av temporär återanvändning av utfasad funktion från tredje part"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Denna cookie tillåts på grund av heuristik för utfasning av tredjepartscookies. Läs mer: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Denna cookie tillåts på grund av en respitperiod för temporär återanvändning av utfasade tredjepartscookies. Läs mer på goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Denna cookie tillåts av Storage Access API på högsta nivå. Läs mer: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Denna cookie tillåts enligt användarens inställningar."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Denna cookie blockerades eftersom den var för stor. Den kombinerade storleken av namnet och värdet måste vara mindre än eller lika med 4 096 tecken."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Ta skärmbild/skärminspelning av stackspårning"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Anpassade formaterare"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopi (inget grönt)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Markera annonsbildrutor"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Blockering av nätverksbegäranden"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Ingen emulering"
   },
@@ -738,7 +768,7 @@
     "message": "Aktivera automatiskt mörkt läge"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Emulerar en sida med fokus."
+    "message": "Låt sidan vara i fokus. Används ofta för att felsöka element som försvinner."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Aktiverar automatiskt mörkt läge och ställer in prefers-color-scheme på dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Primär"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Skript"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Visa skript"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Anpassa och kontrollera Verktyg för programmerare"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Auktorisering omfattas inte av jokertecknet (*) i CORS Access-Control-Allow-Headers-hantering."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename har fasats ut. Använd syntaxen :state(customstatename) i stället."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Attributet disableRemotePlayback ska användas för att inaktivera standardintegreringen av Cast i stället för väljaren -internal-media-controls-overlay-cast-button."
@@ -4821,7 +4860,7 @@
     "message": "Uppmaningstext i konsol"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Varning! Klistra inte in kod som du inte förstår eller inte har granskat i konsolen Verktyg för programmerare. Detta kan göra det möjligt för angripare att stjäla din identitet eller ta kontroll över din dator. Skriv ”{PH1}” nedan för att tillåta inklistring."
+    "message": "Varning! Klistra inte in kod som du inte förstår eller inte har granskat i konsolen Verktyg för programmerare. Detta kan göra det möjligt för angripare att stjäla din identitet eller ta kontroll över din dator. Skriv ”{PH1}” nedan och tryck på Retur för att tillåta inklistring."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Inga fel}=1{# fel}other{# fel}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Visa tidsstämplar"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Tidsstämplar"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Växla konsol"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<nod>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emulera en sida med fokus"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Låt sidan vara i fokus. Används ofta för att felsöka element som försvinner."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Tvinga fram elementstatus"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Stäng insikt"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Fortsätt"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Konsolmeddelande"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Följande data skickas till Google för att hitta en förklaring för konsolmeddelandet. Datan kan granskas av människor och användas för att förbättra produkter."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Något gick fel …"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Det här är en experimentell AI-funktion för underlag som inte alltid fungerar som den ska."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Genererar …"
+    "message": "Genererar en förklaring …"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Öppna inställningarna"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Data som används för att skapa underlaget"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Insikt"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Läs mer om AI i Verktyg för programmerare"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Nätverksbegäran"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Console Insights är inte tillgängligt"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Den här funktionen är endast tillgänglig om du är inloggad i Chrome med ditt Google-konto."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Internetanslutning är inte tillgänglig för närvarande."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(öppnas på en ny flik)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Skicka feedback"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Den här funktionen är endast tillgänglig om du har aktiverat Chrome Sync."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Gillar inte"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Gillar"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Aktivera Console Insights"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Förklara det här felet"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Förklara den här varningen"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "För närvarande stöds endast engelska språkkoder."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Spärrad resurs"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Uppsättningen med godkända Content-Encoding-sidhuvuden har ändrats av Verktyg för programmerare. Se panelen Nätverksförhållanden."
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Webbläsarcache har inaktiverats"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Nätverksbegränsning har aktiverats"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Textmönster för att blockera matchande förfrågningar. Använd * som jokertecken"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Rensa alla"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Kopiera meddelande"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Data"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Ange reguljärt uttryck, till exempel: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Händelsekälla"
@@ -8961,7 +9054,7 @@
     "message": "Nätverksförhållanden"
   },
   "panels/network/network-meta.ts | networkRequestBlocking": {
-    "message": "Blockering av nätverksförfrågningar"
+    "message": "Blockering av nätverksbegäranden"
   },
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "nätverksbegränsning"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Beräknar samplingar …"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Beräknar storlek för själva objektet …"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Beräknar statistik …"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Du måste välja CSS, Pierce eller XPath som ett av dina alternativ. Det är bara dessa väljare som garanterat registreras eftersom ARIA och textväljare kanske inte är unika."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Läs mer"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Inspelningsnamn"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Ta bort kortkommando"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Kortkommandot har ändrats"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Ändringar av kortkommando har slängts"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Ändringar av kortkommando har återställts till standardinställning"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Kortkommandot har ändrats"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Kortkommandot för {PH1} har tagits bort"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Genvägar"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Villkor: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Inaktivera alla brytpunkter"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Inaktivera alla brytpunkter i filen"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Redigera loggpunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Aktivera alla brytpunkter"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktivera alla brytpunkter i filen"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Skapa nytt kodavsnitt"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Källkartor för CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Inaktivera brytpunkter"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Inaktivera källkartor för CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Inaktivera källkartor för JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Inaktivera att tabb flyttar fokus"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Aktivera källkartor för CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Aktivera källkartor för JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktivera att tabb flyttar fokus"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Öka CSS-enheten med {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Källkartor för JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Hoppa till nästa redigeringsplats"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Symbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tabb flyttar fokus"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Trådar"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Det gick inte att spara tidslinjen: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Åtgärda"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initierar profilerare …"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cachelagrad Wasm-modul"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Anropsstackar"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Återanropsfunktion"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Första prioritet"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Initierare"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Initierades av"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Initierare för"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Inmatningsfördröjning"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Metod för begäran"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Visa"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Kör mikrouppgifter"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Denna egendom har beräknats med en getter"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Grattis, du vann!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PS: Du kan även öppna spelet genom att skriva fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Dubbelklicka för att zooma in på bilden. Klicka för att visa föregående förfrågningar."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Dölj återkommande underordnade poster"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Återställ underordnade"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Återställ spårning"

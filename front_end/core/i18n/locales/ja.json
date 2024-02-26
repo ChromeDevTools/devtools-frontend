@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "この Cookie は、リクエスト URL のドメインが Cookie のドメインと完全に一致せず、リクエスト URL のドメインが Cookie の Domain 属性の値のサブドメインでもなかったため、ブロックされました。"
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "この Cookie は、CORS オプトインで許可されています。詳細: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "この Cookie は、Chrome Enterprise のポリシーで許可されています。詳細: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "この Cookie は Storage Access API で許可されています。詳細: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "この Cookie は、サードパーティ Cookie の段階的廃止のデプリケーション トライアルで許可されています。"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "この Cookie は、サードパーティ Cookie の段階的廃止のヒューリスティックで許可されています。詳細: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "この Cookie は、サードパーティ Cookie のデプリケーション トライアルの猶予期間で許可されています。詳細: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "この Cookie は、トップレベルの Storage Access API で許可されています。詳細: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "この Cookie は、ユーザー設定で許可されています。"
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "この Cookie はサイズが大きすぎたため、ブロックされました。名前と値の合計サイズは、4096 文字以下にする必要があります。"
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "非同期スタック トレースをキャプチャ"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "カスタム フォーマッタ"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "2 型 2 色覚（緑色の識別不可）"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "広告フレームをハイライト表示"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "ネットワーク リクエストのブロック"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "エミュレーションなし"
   },
@@ -738,7 +768,7 @@
     "message": "自動ダークモードを有効にする"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "フォーカスのあるページをエミュレートします。"
+    "message": "ページにフォーカスしたままにします。消失要素のデバッグに主に使用されます。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "自動ダークモードを有効にして、prefers-color-scheme を dark に設定します。"
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "メイン"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "スクリプト"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "スクリプトを表示"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevTools のカスタマイズと管理"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORS の Access-Control-Allow-Headers の処理では、Authorization はワイルドカード記号（*）で表されなくなります。"
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename が非推奨となりました。代わりに :state(customstatename) 構文を使用してください。"
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "デフォルトの Cast の統合を無効にするには、-internal-media-controls-overlay-cast-button セレクタではなく disableRemotePlayback 属性を使用する必要があります。"
@@ -4821,7 +4860,7 @@
     "message": "コンソールのプロンプト"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "警告: 理解できないコードや自分で確認していないコードを DevTools コンソールに貼り付けないでください。攻撃者に個人情報を盗まれたり、パソコンを乗っ取られたりする恐れがあります。貼り付けを許可するには、下に「{PH1}」と入力してください。"
+    "message": "警告: 理解できないコードや自分で確認していないコードを DevTools コンソールに貼り付けないでください。攻撃者に個人情報を盗まれたり、パソコンを乗っ取られたりする恐れがあります。貼り付けを許可するには、下に「{PH1}」と入力して Enter キーを押してください。"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{エラーなし}=1{# 件のエラー}other{# 件のエラー}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "タイムスタンプを表示"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "タイムスタンプ"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "コンソールを切り替える"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<ノード>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "フォーカスのあるページをエミュレート"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "ページにフォーカスしたままにします。消失要素のデバッグに主に使用されます。"
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "要素の状態を強制"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "インサイトを閉じる"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "続行"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "コンソール メッセージ"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "コンソール メッセージの説明を探すため、次のデータが Google に送信されます。データは人間が確認し、サービスの改善に使用されることがあります。"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "エラーが発生しました…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "これは試験運用版の AI インサイト ツールで、常に適切な結果が得られるとは限りません。"
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "生成しています..."
+    "message": "説明を生成しています…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "設定に移動"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "このインサイトの作成に使用されたデータ"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "インサイト"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "DevTools の AI の詳細"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "ネットワーク リクエスト"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "コンソールのインサイトがありません"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "この機能は、Google アカウントで Chrome にログインしている場合にのみご利用いただけます。"
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "現在、インターネットに接続できません。"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "（新しいタブで開きます）"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "フィードバックを送信"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "この機能は、Chrome 同期を有効にしている場合にのみご利用いただけます。"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "親指を下げた手"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "親指を立てた手"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Console Insights を有効にする"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "このエラーの説明"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "この警告の説明"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "現在、英語の言語 / 地域のみがサポートされています。"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ブロックしたリソース"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "受け入れられた一連の Content-Encoding ヘッダーが DevTools で修正されました。[ネットワーク状態] パネルをご覧ください"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "ブラウザ キャッシュが無効になっています"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "ネットワーク スロットリングが有効です"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "一致したリクエストをブロックするテキスト パターン。ワイルドカードとして * を使用してください"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "すべてクリア"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "メッセージをコピー"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "データ"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "正規表現を入力（例: https?）"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "イベントソース"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "サンプルを計算しています…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "シャローサイズを計算しています…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "統計情報を計算しています…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "オプションとして CSS、Pierce、XPath のいずれかを選択する必要があります。ARIA とテキスト セレクタが一意ではない場合があるため、確実に記録されるのはこれらのセレクタのみです。"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "詳細"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "記録名"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "ショートカットを削除"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "ショートカットに変更を適用しました"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "ショートカットの変更が破棄されました"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "ショートカットの変更を初期設定に戻しました"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "変更済ショートカット"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} 個のショートカットを削除しました"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "ショートカット"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "条件: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "ブレークポイントをすべて無効にする"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ファイル内のブレークポイントをすべて無効にする"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "ログポイントを編集"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "ブレークポイントをすべて有効にする"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ファイル内のブレークポイントをすべて有効にする"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "新しいスニペットを作成"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS ソースマップ"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "ブレークポイントを無効化"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "CSS ソースマップを無効にする"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "JavaScript のソースマップを無効にする"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "タブのフォーカス移動を無効にする"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "CSS ソースマップを有効にする"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "JavaScript のソースマップを有効にする"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "タブのフォーカス移動を有効にする"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS 単位を {PH1} 増やす"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript ソースマップ"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "次の編集場所に移動"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "記号"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "タブでフォーカスを移動"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "スレッド"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "タイムフレームの保存に失敗しました（{PH1}（{PH2}））"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "修正"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "プロファイラを初期化しています…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "キャッシュに保存された Wasm モジュール"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "コールスタック"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "コールバック関数"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "初期優先度"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "イニシエータ"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "開始"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "イニシエータ:"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "入力遅延"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "リクエスト メソッド"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "表示"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Microtasks の実行"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "プロパティはゲッターで計算されます"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "あなたの勝ちです。"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "ヒント: fixme と入力してゲームを開始することもできます。"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "ダブルクリックで画像を拡大できます。クリックすると前回のリクエストが表示されます。"
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "繰り返しの子を非表示"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "子をリセットする"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "トレースをリセット"

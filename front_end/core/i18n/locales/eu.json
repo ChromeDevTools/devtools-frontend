@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Cookie hau blokeatu egin da eskatutako URLaren domeinuak ez duelako guztiz bat egiten cookiearen domeinuarekin eta eskatutako URLaren domeinua ez delako cookiearen Domain atributuaren balioaren azpidomeinu bat."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "CORS erabiltzea aukeratzeko eginbide batek eman du cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Chrome Enterprise-ren gidalerroek eman dute cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Storage Access APIak eman du cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Hirugarrenen cookieak pixkanaka kentzearen eginbide zaharkitu bat berriro gaitzeko proba batek eman du cookie hau erabiltzeko baimena."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Hirugarrenen cookieak pixkanaka kentzearen heuristikak eman du cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Hirugarrenen cookieen eginbide zaharkitu bat berriro gaitzeko proba baten graziazko epeak eman du cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Goi-mailako Storage Access APIak eman du cookie hau erabiltzeko baimena. Lortu informazio gehiago: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Erabiltzailearen hobespenek eman dute cookie hau erabiltzeko baimena."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Blokeatu egin da cookiea, handiegia delako. Izena eta balioa gehituta, 4.096 karaktere ere erabil daitezke."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Kapturatu pilaren arrasto asinkronoak"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Formateatzaile pertsonalizatuak"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (berderik ez)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Nabarmendu iragarki-markoak"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Sareko eskaerak blokeatzeko aukera"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Emulaziorik ez"
   },
@@ -738,7 +768,7 @@
     "message": "Gaitu modu ilun automatikoa"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Fokuratutako orri bat emulatzen du."
+    "message": "Mantendu orria fokuratuta. Desagertzen ari diren elementuak arazteko erabili ohi da."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Modu ilun automatikoa gaitzen du, eta dark gisa ezartzen prefers-color-scheme."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Nagusia"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Scriptak"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Erakutsi scriptak"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Pertsonalizatu eta kontrolatu DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORSeko Access-Control-Allow-Headers kudeatzean komodinaren ikurrak (*) ez du estaliko baimena."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename zaharkituta dago. Haren ordez, erabili :state(customstatename) sintaxia."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "-internal-media-controls-overlay-cast-button hautatzailea erabili beharrean disableRemotePlayback atributua erabili beharko litzateke Cast-en integrazio lehenetsia desgaitzeko."
@@ -4821,7 +4860,7 @@
     "message": "Kontsolaren onarpen-mezua"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Abisua: ez itsatsi ulertzen ez duzun edo berrikusi ez duzun koderik garatzaileentzako tresnen kontsolan. Bestela, baliteke erasotzaileek zure identitatea lapurtzea edo ordenagailua kontrolatzea. Itsasteko baimena emateko, idatzi \"{PH1}'' behean."
+    "message": "Abisua: ez itsatsi ulertzen ez duzun edo berrikusi ez duzun koderik garatzaileentzako tresnen kontsolan. Bestela, baliteke erasotzaileek zure identitatea lapurtzea edo ordenagailua kontrolatzea. Idatzi \"{PH1}\" azpian eta sakatu Sartu botoia itsatsi ahal izateko."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ez dago errorerik}=1{1 errore}other{# errore}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Erakutsi denbora-zigiluak"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Denbora-zigiluak"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Aktibatu/Desaktibatu kontsola"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<nodoa>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Emulatu orri fokuratua"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Mantendu orria fokuratuta. Desagertzen ari diren elementuak arazteko erabili ohi da."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Behartu elementuaren egoera"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Itxi estatistika"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Egin aurrera"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Kontsolako mezua"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Hurrengo informazioa Google-ri bidaliko zaio kontsolako mezuari azalpena bilatzeko. Baliteke gizakiek berrikustea eta produktuak hobetzeko erabiltzea."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Arazoren bat izan da…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "AAren estatistika-tresna esperimental bat da hau, eta ez du beti dena ongi egingo."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Sortzen…"
+    "message": "Azalpen bat bilatzen…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Joan ezarpenetara"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Estatistika hau sortzeko erabilitako datuak"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Estatistikak"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Lortu informazio gehiago garatzaileentzako tresnekin AA erabiltzeari buruz"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Sareko eskaera"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Kontsolaren estatistikak ez daude erabilgarri"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Eginbide hau Chrome-n zure Google-ko kontuarekin saioa hasi baduzu bakarrik dago erabilgarri."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Interneteko konexioa ez dago erabilgarri une honetan."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(beste fitxa batean irekiko da)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Bidali oharrak"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Eginbide hau Chrome-ren sinkronizazioa aktibatuta badaukazu bakarrik dago erabilgarri."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Ez zait gustatu"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Gustatu zait"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Gaitu kontsolaren estatistikak"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Azaldu errore hau"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Azaldu abisu hau"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Oraingoz, ingelesez mintzo diren lurraldeetako ezarpenak bakarrik onartzen dira."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokeatutako baliabidea"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Garatzaileentzako tresnek aldatu egin dute onartutako Content-Encoding goiburuen multzoa. Ikusi sarearen baldintzen panela"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Arakatzailearen cachea desgaituta dago"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Sarea moteltzeko aukera gaituta dago"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Bat datozen eskaerak blokeatzeko testu-eredua. \"*\" erabil dezakezu komodin gisa."
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Garbitu guztiak"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Kopiatu mezua"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Datuak"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Idatzi adierazpen erregularra, adibidez: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Gertaeraren iturburua"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Laginak kalkulatzen…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Atxikitako memoriaren tamaina kalkulatzen…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Estatistikak kalkulatzen…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Zure aukeretako bat CSS, Pierce edo XPath izan behar da. Hautatzaile horiekin soilik berma dezakegu grabatuko direla, agian ARIA eta testu gisako hautatzaileak ez baitira esklusiboak."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Lortu informazio gehiago"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Grabaketaren izena"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Kendu lasterbidea"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Aldaketak egin zaizkio lasterbideari"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Lasterbidearen aldaketak baztertu dira"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Lasterbideen aldaketak balio lehenetsira leheneratu dira"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Lasterbidea aldatu egin da"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} lasterbidea kendu da"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Lasterbideak"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Baldintza: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Desgaitu eten-puntu guztiak"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Desgaitu fitxategiko eten-puntu guztiak"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Editatu saioa hasteko puntua"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Gaitu eten-puntu guztiak"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Gaitu fitxategiko eten-puntu guztiak"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Sortu ebakin bat"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS iturburuen mapak"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Desaktibatu eten-puntuak"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Desgaitu CSSren iturburu-mapak"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Desgaitu JavaScript-eko iturburu-mapak"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Desgaitu fitxen fokuratzea mugitzeko aukera"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Gaitu CSSren iturburu-mapak"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Gaitu JavaScript-eko iturburu-mapak"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Gaitu fitxak fokuratzea mugitzeko aukera"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Handitu {PH1} aldiz CSSren unitatea"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript-eko iturburuen mapak"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Joan hurrengo editatze-kokapenera"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Ikurra"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tabuladoreak fokua aldatzen du"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Hariak"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Ezin izan da gorde kronologia: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Konpondu"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Errendimendu-analizatzailea hasieratzen…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cachean dagoen WASM modulua"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Exekuzio sortak"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Atzeradei-funtzioa"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Hasierako lehentasuna"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Abiarazlea"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Abiarazlea:"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Honen abiarazlea:"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Sarreraren atzerapena"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Eskaera-metodoa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Erakutsi"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Exekutatu mikrozereginak"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Hartzaile baten bidez kalkulatzen da propietatea"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Zorionak, irabazi duzu!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "P.D.: jokoa fixme idatziz ere ireki dezakezu"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Sakatu birritan irudia handitzeko. Egin klik aurreko eskaerak ikusteko."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Ezkutatu bigarren mailako sarrera errepikatuak"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Berrezarri bigarren mailako sarrerak"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Berrezarri arrastoa"

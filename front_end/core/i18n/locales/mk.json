@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Колачево е блокирано бидејќи доменот на URL-адресата на барањето ниту одговара точно на доменот на колачето, ниту е поддомен на вредноста на атрибутот „Domain“ на колачето."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Колачево го дозволува учеството во CORS. Дознајте повеќе: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Колачево го дозволуваат правилата на Chrome Enterprise. Дознајте повеќе: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Колачево го дозволува Storage Access API. Дознајте повеќе: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Колачево го дозволува пробниот период на неподдржана функција за исфрлање од употреба колачиња од трети страни."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Колачево го дозволува хевристиката за исфрлање од употреба колачиња од трети страни. Дознајте повеќе: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Колачево го дозволува периодот на пречекорување во пробен период на неподдржана функција за колачиња од трети страни. Дознајте повеќе: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Колачево го дозволува Storage Access API на највисоко ниво. Дознајте повеќе: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Колачево го дозволуваат корисничките поставки."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Колачево е блокирано бидејќи е преголемо. Комбинираната големина на името и вредноста мора да биде помала или еднаква на 4.096 знаци."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Снимај несинхронизирани траги за напластување"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Приспособени опции за форматирање"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Девтеранопија (непрепознавање зелена боја)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Нагласи ги кадрите на рекламите"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Блокирање мрежни барања"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Без емулација"
   },
@@ -738,7 +768,7 @@
     "message": "Овозможи автоматски темен режим"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Емулира нагласена страница."
+    "message": "Страницата нека остане фокусирана. Обично се користи за отстранување грешки од елементи што исчезнуваат."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Овозможува автоматски темен режим и ја поставува prefers-color-scheme на dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Главна"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Скрипти"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Прикажи ја Scripts"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Приспособување и контрола на DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Овластувањето нема да биде покриено со симболот за џокер (*) во ракувањето на Access-Control-Allow-Headers со CORS."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename не се поддржува. Наместо тоа, користете ја синтаксата на :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "За да се оневозможи стандардната интеграција на Cast, треба да се користи атрибутот disableRemotePlayback наместо избирачот -internal-media-controls-overlay-cast-button."
@@ -4821,7 +4860,7 @@
     "message": "Известување на конзолата"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Предупредување: не лепете код во конзолата на „Алатки за програмери“ што не го разбирате или не сте го прегледале лично. Тоа би можело да им овозможи на напаѓачите да го украдат вашиот идентитет или да ја преземат контролата над вашиот компјутер. Напишете „{PH1}“ подолу за да дозволите лепење."
+    "message": "Предупредување: не лепете код во конзолата на „Алатки за програмери“ што не го разбирате или не сте го прегледале лично. Тоа би можело да им овозможи на напаѓачите да го украдат вашиот идентитет или да ја преземат контролата над вашиот компјутер. Внесете „{PH1}“ подолу, па притиснете Enter за да се дозволи залепување."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Нема грешки}=1{# грешка}one{# грешка}other{# грешки}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Прикажи ги временските печати"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Временски печати"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Вклучување/Исклучување на конзолата"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<јазол>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Емулирај фокусирана страница"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Страницата нека остане фокусирана. Обично се користи за отстранување грешки од елементи што исчезнуваат."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Присилно активирај ја состојбата на елементот"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Затворање на увидот"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Продолжи"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Порака во конзолата"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Следниве податоци ќе се испратат до Google за да се најде објаснување за пораката во конзолата. Можно е да ги прегледуваат луѓе и да се користат за подобрување на производите."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Нешто тргна наопаку…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Ова е експериментална алатка за увиди со AI, па нема секогаш да прикажува точни информации."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Се генерира…"
+    "message": "Се генерира објаснување…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Одете во поставките"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Податоци користени за создавање на увидов"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Увид"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Дознајте повеќе за AI во „Алатки за програмери“"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Мрежно барање"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "„Увиди во конзола“ не е достапна"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Функцијава е достапна само ако сте најавени во Chrome со вашата сметка на Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Во моментов не е достапна интернет-врска."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(се отвора во нова картичка)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Испратете повратни информации"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Функцијава е достапна само ако имате вклучено „Синхронизација на Chrome“."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Не ми се допаѓа"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Ми се допаѓа"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Овозможување „Увиди во конзола“"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Објаснете ја грешкава"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Објаснете го предупредувањево"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Во моментов се поддржуваат само локални стандарди на англиски."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Блокиран ресурс"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Збирката прифатени заглавја Content-Encoding е изменета од „Алатките за програмери“. Погледнете ја таблата за одредби за мрежи."
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Кешот на прелистувачот е оневозможен"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Регулирањето на мрежата е овозможено"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Текстуална шема за блокирање барања што се совпаѓаат, користете * како џокер"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Избриши ги сите"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Копирај порака"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Податоци"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Да се внесе вообичаен израз, на пример: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Извор на настанот"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Се пресметуваат примероци…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Се пресметуваат плитки големини…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Се пресметува статистиката…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Мора да изберете CSS, Pierce или XPath како една од вашите опции. Само овие избирачи гарантирано ќе се евидентираат затоа што избирачите на ARIA и текст може да не се единствени."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Дознајте повеќе"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Име на снимка"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Отстрани кратенка"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "Промените на кратенката се применети"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "Промените на кратенката се отфрлени"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Промените на кратенката се вратени на стандардните"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Кратенката е изменета"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "Кратенката за {PH1} е отстранета"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Кратенки"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Состојба: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Оневозможи ги сите точки на прекин"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Оневозможи ги сите точки на прекин во редот"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Измени точка на евиденција"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Овозможи ги сите точки на прекин"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Овозможи ги сите точки на прекин во датотеката"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Создајте нов исечок"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Изворни карти за CSS"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Деактивирај ги точките на прекин"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Оневозможи изворни карти на CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Оневозможи ги изворните карти на JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Оневозможи нагласување на преместените картички"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Овозможи изворни карти на CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Овозможи изворни карти на JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Овозможи нагласување на преместените картички"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Зголемете ја CSS-единицата за {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Изворни карти за JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Скокни на следната локација за менување"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Симбол"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tab го преместува фокусот"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Низи"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "„Времепловот“ не можеше да се зачува: {PH1} ({PH2}, )"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Поправање"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Профилерот се иницијализира…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Модул на кеширан Wasm"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Купчиња со повици"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Функција од повисок ред"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Почетен приоритет"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Иницијатор"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Започнато од:"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Иницијатор за"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Доцнење на влезните податоци"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Метод на барање"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Прикажи"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Извршување микрозадачи"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Својството е форматирано со преземач"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Честитки, победивте!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "Забелешка: играта може да ја отворите и ако напишете fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Двоен клик за да ја зумирате сликата. Кликнете за да се прикажат барањата што претходеле."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Криење на повторливите деца"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Ресетирање на децата"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Ресетирање трага"

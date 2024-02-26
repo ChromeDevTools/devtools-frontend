@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "ఈ కుకీ బ్లాక్ చేయబడింది ఎందుకంటే రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్‌తో సరిగ్గా మ్యాచ్ అవ్వలేదు, లేదా రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్ లక్షణ విలువ సబ్-డొమైన్‌ కాదు."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "ఈ కుక్కీ CORS సమ్మతి ద్వారా అనుమతించబడింది. మరింత తెలుసుకోండి: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "ఈ కుక్కీ Chrome Enterprise పాలసీ ద్వారా అనుమతించబడింది. మరింత తెలుసుకోండి: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "ఈ కుక్కీ స్టోరేజ్ యాక్సెస్ API ద్వారా అనుమతించబడింది. మరింత తెలుసుకోండి: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "ఈ కుక్కీ థర్డ్-పార్టీ కుక్కీ ఫేజ్అవుట్ విస్మరించిన ఫీచర్ ట్రయల్ ఆధారంగా అనుమతించబడుతుంది."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "ఈ కుక్కీ థర్డ్-పార్టీ కుక్కీ ఫేజ్అవుట్ స్వీయ పరిశోధన పద్ధతుల ఆధారంగా అనుమతించబడుతుంది. మరింత తెలుసుకోండి: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "ఈ కుక్కీ థర్డ్-పార్టీ కుక్కీ విస్మరించిన ఫీచర్ ట్రయల్ అదనపు గడువు ద్వారా అనుమతించబడుతుంది. మరింత తెలుసుకోండి: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "ఈ కుక్కీ టాప్-లెవెల్ స్టోరేజ్ యాక్సెస్ API ద్వారా అనుమతించబడుతుంది. మరింత తెలుసుకోండి: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "ఈ కుక్కీ యూజర్ ప్రాధాన్యత ద్వారా అనుమతించబడుతుంది."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "ఈ కుక్కీ చాలా పెద్దగా ఉన్నందున ఇది బ్లాక్ చేయబడింది. పేరు, విలువ రెండింటి సైజ్ కలిపి 4096 అక్షరాలు కంటే తక్కువ లేదా సమానంగా ఉండాలి."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "అసమకాలిక స్టాక్ ట్రేస్‌లను క్యాప్చర్ చేయండి"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "అనుకూల ఫార్మాటర్‌లు"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "డ్యూటెరానోపియా (ఆకుపచ్చ ఉండదు)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "యాడ్ ఫ్రేమ్‌లను హైలైట్ చేయండి"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "అనుకరణ లేదు"
   },
@@ -738,7 +768,7 @@
     "message": "ఆటోమేటిక్ డార్క్ మోడ్‌ను ఎనేబుల్ చేయండి"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "ఫోకస్ చేయబడిన పేజీని అనుకరిస్తుంది."
+    "message": "పేజీని ఫోకస్ చేస్తూ ఉండండి. కనిపించకుండా పోతున్న ఎలిమెంట్‌లను డీబగ్గింగ్ చేయడానికి సాధారణంగా ఉపయోగిస్తారు."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "ఆటోమేటిక్ డార్క్ మోడ్‌ను ఎనేబుల్ చేసి, prefers-color-schemeను darkకు సెట్ చేస్తుంది."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "ప్రధానమైనది"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "స్క్రిప్ట్‌లు"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "స్క్రిప్ట్‌లను చూపండి"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "DevToolsను అనుకూలంగా మార్చండి, కంట్రోల్ చేయండి"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORS Access-Control-Allow-Headers హ్యాండ్లింగ్‌లో ప్రామాణీకరణ వైల్డ్ కార్డ్ చిహ్నం (*) ద్వారా కవర్ కాదు."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename విస్మరించబడింది. దయచేసి బదులుగా :state(customstatename) సింటాక్స్‌ను ఉపయోగించండి."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "కాస్ట్ ఇంటిగ్రేషన్ ఆటోమేటిక్ సెట్టింగ్‌ను డిజేబుల్ చేయడానికి -internal-media-controls-overlay-cast-button ఎంపిక సాధనానికి బదులుగా disableRemotePlayback ఫీచర్‌ను ఉపయోగించండి."
@@ -4821,7 +4860,7 @@
     "message": "కన్సోల్ ప్రాంప్ట్"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "హెచ్చరిక: DevTools కన్సోల్‌లో మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌పై కంట్రోల్‌ను సాధించవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి '{PH1}' అని టైప్ చేయండి."
+    "message": "హెచ్చరిక: DevTools కన్సోల్‌లో మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌పై కంట్రోల్‌ను సాధించవచ్చు. దయచేసి పేస్ట్ చేయడాన్ని అనుమతించడానికి దిగువున ఉన్న '{PH1}' అని టైప్ చేసి, ఎంటర్‌ను నొక్కండి."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{ఎర్రర్‌లు ఏవీ లేవు}=1{# ఎర్రర్}other{# ఎర్రర్‌లు}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "టైమ్ స్టాంప్‌లను చూపించు‌"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "టైమ్ స్టాంప్"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "టోగుల్ కన్సోల్"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<నోడ్>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "ఫోకస్ చేయబడిన పేజీని అనుకరించండి"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "పేజీని ఫోకస్ చేస్తూ ఉండండి. కనిపించకుండా పోతున్న ఎలిమెంట్‌లను డీబగ్గింగ్ చేయడానికి సాధారణంగా ఉపయోగిస్తారు."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "ఎలిమెంట్ స్థితిని ఫోర్స్ చేయండి"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "గణాంకాలను మూసివేయండి"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "కొనసాగించండి"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "కన్సోల్ మెసేజ్"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "కన్సోల్ మెసేజ్‌కు వివరణను కనుగొనడానికి కింది డేటా Googleకు పంపబడుతుంది. వాటిని మానవులు రివ్యూ చేయవచ్చు, ప్రోడక్ట్లను‌ మెరుగుపరచడానికి ఉపయోగించవచ్చు."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "ఏదో తప్పు జరిగింది…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "ఇది ప్రయోగాత్మక AI గణాంకాల టూల్, ఇది నూటికి నూరు శాతం సరైనదని చెప్పలేము."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "జెనరేట్ అవుతోంది…"
+    "message": "వివరణతో వస్తోంది…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "సెట్టింగ్‌లకు వెళ్లండి"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "ఈ గణాంకాలను క్రియేట్ చేయడానికి ఉపయోగించే డేటా"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "గణాంకాలు"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "DevToolsలో AI గురించి మరింత తెలుసుకోండి"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "నెట్‌వర్క్ రిక్వెస్ట్"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "కన్సోల్ గణాంకాలు అందుబాటులో లేవు"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "మీరు మీ Google ఖాతాతో Chromeకి సైన్ ఇన్ చేసినట్లయితే మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "ఇంటర్నెట్ కనెక్షన్ ప్రస్తుతం అందుబాటులో లేదు."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(కొత్త ట్యాబ్‌లో తెరవబడుతుంది)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "ఫీడ్‌బ్యాక్‌ను సమర్పించండి"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "మీరు Chrome సింక్‌ను ఆన్ చేసి ఉంటే మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "బాగాలేదు"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "బాగుంది"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "కన్సోల్ గణాంకాలను ఎనేబుల్ చేయండి"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "ఈ ఎర్రర్‌ను వివరించండి"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "ఈ హెచ్చరికను వివరించండి"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "ప్రస్తుతం ఇంగ్లీష్ భాషలకు మాత్రమే సపోర్ట్ ఉంది."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "బ్లాక్ చేసిన రిసోర్స్"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "అంగీకరించబడిన Content-Encoding హెడర్‌ల సెట్, DevTools ద్వారా ఎడిట్ చేయబడింది, నెట్‌వర్క్ కండీషన్ల ప్యానెల్‌ను చూడండి"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "బ్రౌజర్ కాష్ డిజేబుల్ చేయబడింది"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "నెట్‌వర్క్ త్రోట్లింగ్‌ను ఎనేబుల్ చేయండి"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "మ్యాచ్ అయిన రిక్వెస్ట్‌లను బ్లాక్ చేయడానికి టెక్స్ట్ ఆకృతి; వైల్డ్ కార్డ్ కోసం *ను ఉపయోగించండి"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "అన్నింటినీ క్లియర్ చేయండి"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "మెసేజ్‌ను కాపీ చేయి"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "డేటా"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "రెగ్యులర్ ఎక్స్‌ప్రెషన్‌ను ఎంటర్ చేయండి, ఉదాహరణకు: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "ఈవెంట్ సోర్స్"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "నమూనాలను గణిస్తోంది…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "ఆబ్జెక్ట్ హోల్డ్‌లోని మెమరీ సైజ్‌లను కాలిక్యులేట్ చేస్తోంది…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "గణాంకాలను గణిస్తోంది…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "మీరు తప్పనిసరిగా CSS, Pierce లేదా XPathని మీ ఎంపికలలో ఒకటిగా ఎంచుకోవాలి. ARIA మరియు టెక్స్ట్ సెలెక్టర్‌లు ప్రత్యేకంగా ఉండకపోవచ్చు కాబట్టి ఈ సెలెక్టర్‌లు మాత్రమే రికార్డ్ అవుతాయని హామీ ఇచ్చారు."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "మరింత తెలుసుకోండి"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "రికార్డింగ్ పేరు"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "షార్ట్‌కట్‌ను తీసివేయండి"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "షార్ట్‌కట్‌కు మార్పులు వర్తింపజేయబడ్డాయి"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "షార్ట్‌కట్‌కు మార్పులు విస్మరించబడ్డాయి"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "షార్ట్‌కట్‌కు మార్పులు ఆటోమేటిక్ సెట్టింగ్‌కి రీస్టోర్ చేయబడ్డాయి"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "ఎడిట్ చేసిన షార్ట్‌కట్"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} షార్ట్‌కట్ తీసివేయబడింది"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "షార్ట్‌కట్‌లు"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "స్థితి: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "బ్రేక్ పాయింట్‌లు అన్నింటినీ డిజేబుల్ చేయండి"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ఫైల్‌లోని బ్రేక్ పాయింట్‌లు అన్నింటినీ డిజేబుల్ చేయండి"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "లాగ్‌పాయింట్‌ను ఎడిట్ చేయండి"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "అన్ని బ్రేక్ పాయింట్‌లను తీఎనేబుల్ చేయండి"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ఫైల్‌లోని బ్రేక్ పాయింట్‌లు అన్నింటినీ ఎనేబుల్ చేయండి"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "కొత్త స్నిప్పెట్‌ను క్రియేట్ చేయండి"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS సోర్స్ మ్యాప్‌లు"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "బ్రేక్ పాయింట్‌లను డీయాక్టివేట్ చేయండి"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "CSS సోర్స్ మ్యాప్‌లను డిజేబుల్ చేయండి"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "JavaScript సోర్స్ మ్యాప్‌లను డిజేబుల్ చేయండి"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "ట్యాబ్ ఫోకస్‌ను తరలించడాన్ని డిజేబుల్ చేయండి"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "CSS సోర్స్ మ్యాప్‌లను ఎనేబుల్ చేయండి"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "JavaScript సోర్స్ మ్యాప్‌లను ఎనేబుల్ చేయండి"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "ట్యాబ్ ఫోకస్‌ను తరలించడాన్ని ఎనేబుల్ చేయండి"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS యూనిట్‌ను {PH1} పెంచండి"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript సోర్స్ మ్యాప్‌లు"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "తర్వాతి ఎడిట్ చేస్తున్న లొకేషన్‌కు వెళ్ళండి"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "గుర్తు"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "ట్యాబ్ ఫోకస్‌ను కదిలిస్తుంది"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "థ్రెడ్‌లు"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "టైమ్‌లైన్‌ను సేవ్ చేయడం విఫలమైంది: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "ఏదోఒకటి పరిష్కరించండి"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "ప్రొఫైలర్‌ను ప్రారంభిస్తోంది…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "కాష్ చేయబడిన Wasm మాడ్యూల్"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "కాల్ స్ట్యాక్‌లు"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "కాల్‌బ్యాక్ ఫంక్షన్"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "ప్రారంభ ప్రాధాన్యత"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "ఇనిషియేటర్"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "దీని ద్వారా ప్రారంభించబడినది"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "మరొకదాని కోసం ఇనిషియేటర్"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "ఇన్‌పుట్ ఆలస్యం"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "రిక్వెస్ట్ పద్ధతి"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "బహిరంగపరచండి"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "మైక్రో టాస్క్‌లను రన్ చేయండి"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "ప్రాపర్టీ గెట్టర్ ద్వారా లెక్కించబడుతుంది"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "అభినందనలు, మీరు గెలిచారు!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "PS: మీరు fixme అని టైప్ చేయడం ద్వారా కూడా గేమ్‌ను తెరవవచ్చు"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "ఇమేజ్‌ను జూమ్ చేయడానికి రెండు సార్లు క్లిక్ చేయండి. మునుపటి రిక్వెస్ట్‌లను చూడడానికి క్లిక్ చేయండి."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "రిపీట్ అయ్యే పిల్లలను దాచండి"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "పిల్లలను రీసెట్ చేయండి"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "ట్రేస్‌ను రీసెట్ చేయండి"

@@ -329,6 +329,30 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Acest cookie a fost blocat deoarece domeniul adresei URL din solicitare nu se potrivea exact cu domeniul cookie-ului și domeniul adresei URL din solicitare nu era un subdomeniu al valorii atributului Domain a cookie-ului."
   },
+  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
+    "message": "Acest cookie este permis prin înscrierea la CORS. Află mai multe: goo.gle/cors"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
+    "message": "Acest cookie este permis de politica Chrome Enterprise. Află mai multe: goo.gle/ce-3pc"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
+    "message": "Acest cookie este permis de API-ul Storage Access. Află mai multe: goo.gle/saa"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
+    "message": "Acest cookie este permis de perioada de încercare a unei funcții învechite pentru retragerea cookie-urilor terță parte."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
+    "message": "Acest cookie este permis de metodele euristice de eliminare a cookie-urilor terță parte. Află mai multe: goo.gle/hbe"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
+    "message": "Acest cookie este permis de o perioadă de grație pentru renunțarea la dezvoltarea cookie-urilor terță parte. Află mai multe: goo.gle/ps-dt."
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
+    "message": "Acest cookie este permis de API-ul Storage Access de nivel superior. Află mai multe: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
+    "message": "Acest cookie este permis de preferința utilizatorului."
+  },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "Cookie-ul a fost blocat pentru că era prea mare. Dimensiunea combinată a numelui și valorii trebuie să aibă cel mult 4096 de caractere."
   },
@@ -478,6 +502,9 @@
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capturează urmăririle de stivă asincrone"
+  },
+  "core/sdk/sdk-meta.ts | customFormatters": {
+    "message": "Instrumente de formatare personalizate"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopie (fără verde)"
@@ -629,6 +656,9 @@
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Evidențiază cadrele de anunț"
   },
+  "core/sdk/sdk-meta.ts | networkRequestBlocking": {
+    "message": "Blocarea solicitărilor din rețea"
+  },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Fără simulare"
   },
@@ -738,7 +768,7 @@
     "message": "Activează modul întunecat automat"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
-    "message": "Simulează o pagină focalizată."
+    "message": "Menține pagina focalizată. Se folosește de obicei pentru remedierea erorilor elementelor care dispar."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
     "message": "Activează modul întunecat automat și setează prefers-color-scheme la dark."
@@ -868,6 +898,12 @@
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "Principal"
+  },
+  "entrypoints/js_app/js_app.ts | networkTitle": {
+    "message": "Scripturi"
+  },
+  "entrypoints/js_app/js_app.ts | showNode": {
+    "message": "Afișează scripturile"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
     "message": "Personalizează și gestionează DevTools"
@@ -1087,6 +1123,9 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Autorizarea nu va fi acoperită de simbolul pentru metacaracter (*) în cadrul gestionării Access-Control-Allow-Headers prin CORS."
+  },
+  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
+    "message": ":--customstatename s-a învechit. Folosește sintaxa :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Pentru a dezactiva integrarea Cast prestabilită, trebuie folosit atributul disableRemotePlayback în locul selectorului -internal-media-controls-overlay-cast-button."
@@ -4821,7 +4860,7 @@
     "message": "Solicitare de la consolă"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Atenționare: nu insera cod pe care nu îl înțelegi sau pe care nu l-ai examinat în consola DevTools. Acest lucru le poate permite atacatorilor să îți fure identitatea sau să preia controlul asupra computerului tău. Introdu {PH1} mai jos pentru a permite inserarea."
+    "message": "Atenționare: nu insera cod pe care nu îl înțelegi sau pe care nu l-ai examinat în consola DevTools. Acest lucru le poate permite atacatorilor să îți fure identitatea sau să preia controlul asupra computerului tău. Introdu {PH1} mai jos și apasă pe Enter pentru a permite inserarea."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Nu există erori}=1{# eroare}few{# erori}other{# de erori}}"
@@ -5155,6 +5194,9 @@
   },
   "panels/console/console-meta.ts | showTimestamps": {
     "message": "Afișează marcajele temporale"
+  },
+  "panels/console/console-meta.ts | timestamps": {
+    "message": "Marcaje temporale"
   },
   "panels/console/console-meta.ts | toggleConsole": {
     "message": "Activează / dezactivează consola"
@@ -5584,6 +5626,12 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<nod>"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
+    "message": "Simulează o pagină focalizată"
+  },
+  "panels/elements/ElementStatePaneWidget.ts | emulatesAFocusedPage": {
+    "message": "Menține pagina focalizată. Se folosește de obicei pentru remedierea erorilor elementelor care dispar."
   },
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Forțează starea elementului"
@@ -6338,20 +6386,47 @@
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "Închide statisticile"
   },
+  "panels/explain/components/ConsoleInsight.ts | consentButton": {
+    "message": "Continuă"
+  },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Mesaj de pe consolă"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
+    "message": "Următoarele date se vor trimite la Google pentru a găsi o explicație pentru mesajul din consolă. Acestea pot fi examinate de oameni și folosite pentru a îmbunătăți produsele."
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "A apărut o eroare…"
   },
+  "panels/explain/components/ConsoleInsight.ts | finePrint": {
+    "message": "Acesta este un instrument experimental de statistică bazat pe AI și nu va răspunde întotdeauna corect."
+  },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Se generează…"
+    "message": "Urmează o explicație…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
+    "message": "Accesează setările"
+  },
+  "panels/explain/components/ConsoleInsight.ts | inputData": {
+    "message": "Datele folosite pentru a crea această statistică"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
     "message": "Statistici"
   },
+  "panels/explain/components/ConsoleInsight.ts | learnMore": {
+    "message": "Află mai multe despre AI în DevTools"
+  },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Solicitare din rețea"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
+    "message": "Statisticile de pe consolă nu sunt disponibile"
+  },
+  "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
+    "message": "Această funcție este disponibilă numai dacă te-ai conectat la Chrome cu Contul Google."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offline": {
+    "message": "Conexiunea la internet nu este disponibilă momentan."
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(se deschide într-o filă nouă)"
@@ -6365,6 +6440,18 @@
   "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
     "message": "Trimite feedback"
   },
+  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
+    "message": "Această funcție este disponibilă numai dacă ai activat Sincronizarea Chrome."
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
+    "message": "Nu îmi place"
+  },
+  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
+    "message": "Îmi place"
+  },
+  "panels/explain/explain-meta.ts | enableConsoleInsights": {
+    "message": "Activează statisticile Console"
+  },
   "panels/explain/explain-meta.ts | explainThisError": {
     "message": "Explică această eroare"
   },
@@ -6373,6 +6460,9 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Explică acest avertisment"
+  },
+  "panels/explain/explain-meta.ts | wrongLocale": {
+    "message": "Momentan, se acceptă numai limba engleză."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resursă blocată"
@@ -7499,9 +7589,6 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
     "message": "Setul de anteturi Content-Encoding acceptate a fost modificat de DevTools. Consultă panoul Condiții de rețea."
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | browserCacheDisabled": {
-    "message": "Memoria cache a browserului este dezactivată"
-  },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Limitarea rețelei este activată"
   },
@@ -7706,11 +7793,17 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Model de text pentru blocarea solicitărilor corespunzătoare; folosește * pentru metacaracter"
   },
+  "panels/network/EventSourceMessagesView.ts | clearAll": {
+    "message": "Șterge tot"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Copiază mesajul"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Date"
+  },
+  "panels/network/EventSourceMessagesView.ts | enterRegex": {
+    "message": "Introduci regex, de exemplu: https?"
   },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Sursa evenimentului"
@@ -9476,6 +9569,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingSamples": {
     "message": "Se calculează eșantioanele…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingShallowSizes": {
+    "message": "Se calculează dimensiunile deținute de obiectul propriu-zis…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingStatistics": {
     "message": "Se calculează statisticile…"
   },
@@ -9808,6 +9904,9 @@
   },
   "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "Trebuie să alegi CSS, Pierce sau XPath drept una dintre opțiuni. Este garantat că vor fi înregistrați doar acești selectori, deoarece selectorii ARIA și Text pot să nu fie unici."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+    "message": "Află mai multe"
   },
   "panels/recorder/components/CreateRecordingView.ts | recordingName": {
     "message": "Numele înregistrării"
@@ -10820,8 +10919,20 @@
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Elimină comanda rapidă"
   },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesApplied": {
+    "message": "S-au aplicat modificările comenzii rapide"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesDiscared": {
+    "message": "S-a renunțat la modificările comenzii rapide"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutChangesRestored": {
+    "message": "Modificările comenzii rapide au fost restabilite la valoarea prestabilită"
+  },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Comanda rapidă s-a modificat"
+  },
+  "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
+    "message": "{PH1} comandă rapidă eliminată"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Comenzi rapide"
@@ -11675,6 +11786,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Condiție: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpoints": {
+    "message": "Dezactivează toate punctele de întrerupere"
+  },
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Dezactivează toate punctele de întrerupere din fișier"
   },
@@ -11683,6 +11797,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | editLogpoint": {
     "message": "Editează punctul de înregistrare"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpoints": {
+    "message": "Activează toate punctele de întrerupere"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Activează toate punctele de întrerupere din fișier"
@@ -11780,6 +11897,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Creează un fragment nou"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "Hărțile sursă SCP"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Dezactivează punctele de întrerupere"
   },
@@ -11803,6 +11923,9 @@
   },
   "panels/sources/sources-meta.ts | disableCssSourceMaps": {
     "message": "Dezactivează hărțile sursă CSS"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Dezactivează hărțile sursă JavaScript"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Dezactivează mutarea focalizării pentru file"
@@ -11846,6 +11969,9 @@
   "panels/sources/sources-meta.ts | enableCssSourceMaps": {
     "message": "Activează hărțile sursă CSS"
   },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Activează hărțile sursă JavaScript"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Activează mutarea focalizării pentru file"
   },
@@ -11869,6 +11995,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Mărește unitatea CSS cu {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "Hărțile sursă JavaScript"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Accesează următoarea locație de editare"
@@ -11989,6 +12118,9 @@
   },
   "panels/sources/sources-meta.ts | symbol": {
     "message": "Simbol"
+  },
+  "panels/sources/sources-meta.ts | tabMovesFocus": {
+    "message": "Tasta Tab mută focalizarea"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Fire"
@@ -12650,6 +12782,9 @@
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Cronologia nu a fost salvată: {PH1} ({PH2})"
   },
+  "panels/timeline/TimelinePanel.ts | fixMe": {
+    "message": "Remediază"
+  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Se inițializează profilerul…"
   },
@@ -12853,9 +12988,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm stocat în memoria cache"
-  },
-  "panels/timeline/TimelineUIUtils.ts | callStacks": {
-    "message": "Stive de apel"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Funcție callback"
@@ -13073,8 +13205,11 @@
   "panels/timeline/TimelineUIUtils.ts | initialPriority": {
     "message": "Prioritatea inițială"
   },
-  "panels/timeline/TimelineUIUtils.ts | initiator": {
-    "message": "Inițiator"
+  "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
+    "message": "Inițiat de"
+  },
+  "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
+    "message": "Inițiator pentru"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Întârziere la introducere"
@@ -13282,9 +13417,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Metoda de solicitare"
-  },
-  "panels/timeline/TimelineUIUtils.ts | reveal": {
-    "message": "Afișează"
   },
   "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
     "message": "Rulează Microactivități"
@@ -14495,6 +14627,12 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Proprietatea este calculată cu o metodă de preluare"
   },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
+    "message": "Felicitări, ai câștigat!"
+  },
+  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
+    "message": "P.S.: poți deschide jocul și tastând fixme"
+  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Dă dublu clic pentru a mări imaginea. Dă clic pentru a vedea solicitările anterioare."
   },
@@ -14521,6 +14659,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | hideRepeatingChildren": {
     "message": "Ascunde elementele subordonate care se repetă"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | resetChildren": {
+    "message": "Resetează elementele subordonate"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | resetTrace": {
     "message": "Resetează urmărirea"

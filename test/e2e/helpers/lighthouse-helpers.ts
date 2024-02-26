@@ -2,29 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+import {type ElementHandle} from 'puppeteer-core';
+
 import {
   $,
   click,
+  clickMoreTabsButton,
   getBrowserAndPages,
   goToResource,
   waitFor,
-  waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
 
 import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
 
-import {type ElementHandle} from 'puppeteer-core';
-import {assert} from 'chai';
-
 export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
   let lighthouseTabButton = await $('#tab-lighthouse');
 
   // Lighthouse tab can be hidden if the frontend is in a dockable state.
   if (!lighthouseTabButton) {
-    const moreTabsButton = await waitForAria('More tabs');
-    await moreTabsButton.click();
+    await clickMoreTabsButton();
     lighthouseTabButton = await waitForElementWithTextContent('Lighthouse');
   }
 

@@ -334,8 +334,8 @@ export class ViewManager {
     return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
   }
 
-  createStackLocation(revealCallback?: (() => void), location?: string): ViewLocation {
-    return new StackLocation(this, revealCallback, location);
+  createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation {
+    return new StackLocation(this, revealCallback, location, jslogContext);
   }
 
   hasViewsForLocation(location: string): boolean {
@@ -835,9 +835,9 @@ class StackLocation extends Location implements ViewLocation {
   private readonly vbox: VBox;
   private readonly expandableContainers: Map<string, ExpandableContainerWidget>;
 
-  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string) {
+  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string) {
     const vbox = new VBox();
-    vbox.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
+    vbox.element.setAttribute('jslog', `${VisualLogging.pane(jslogContext || 'sidebar').track({resize: true})}`);
     super(manager, vbox, revealCallback);
     this.vbox = vbox;
     ARIAUtils.markAsTree(vbox.element);

@@ -9,11 +9,8 @@ import * as Components from './components.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {
-  dispatchClickEvent,
-  dispatchKeyDownEvent,
-renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
+import {dispatchClickEvent, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

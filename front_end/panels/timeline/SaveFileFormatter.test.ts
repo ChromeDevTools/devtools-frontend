@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {defaultTraceEvent} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import type * as TraceEngine from '../../models/trace/trace.js';
+import {defaultTraceEvent} from '../../testing/TraceHelpers.js';
 
 import * as Timeline from './timeline.js';
 

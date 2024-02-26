@@ -23,7 +23,7 @@ ts_library("unittests") {
     "../../../core/sdk:bundle",
     "../../../models/timeline_model:bundle",
     "../../../panels/timeline:bundle",
+    "../../../testing",
     "../../../ui/legacy/components/perf_ui:bundle",
-    "../../../../test/unittests/front_end/helpers",
   ]
 }

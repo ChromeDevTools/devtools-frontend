@@ -15,7 +15,6 @@ ts_library("ts") {
     "track_example.ts",
   ]
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../core/common:bundle",
     "../../../../core/sdk:bundle",
     "../../../../models/bindings:bundle",
@@ -23,6 +22,7 @@ ts_library("ts") {
     "../../../../models/trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../panels/timeline:bundle",
+    "../../../../testing",
     "../../../legacy:bundle",
     "../../../legacy/components/perf_ui:bundle",
     "../../helpers:bundle",

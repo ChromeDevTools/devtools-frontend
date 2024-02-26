@@ -108,8 +108,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
     "../../../core/sdk:bundle",
+    "../../../testing",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy/components/inline_editor:bundle",

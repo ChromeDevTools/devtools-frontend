@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';

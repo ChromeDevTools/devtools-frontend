@@ -5,8 +5,8 @@
 const {assert} = chai;
 
 import * as TraceModel from '../trace.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 function countMetricOcurrences(
     scoresByMetricName:

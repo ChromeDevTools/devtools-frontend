@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as SDK from './sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import {expectCookie, type CookieExpectation} from '../../../test/unittests/front_end/helpers/Cookies.js';
+import {expectCookie, type CookieExpectation} from '../../testing/Cookies.js';
 
 function ensureCookiesExistOrFailTest(cookies: SDK.Cookie.Cookie[]|null): cookies is SDK.Cookie.Cookie[] {
   if (!cookies) {

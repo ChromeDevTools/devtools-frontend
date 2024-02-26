@@ -8,7 +8,7 @@ import * as Models from './models.js';
 import * as Common from '../../../core/common/common.js';
 import {
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 describeWithEnvironment('RecorderSettings', () => {
   let recorderSettings: Models.RecorderSettings.RecorderSettings;

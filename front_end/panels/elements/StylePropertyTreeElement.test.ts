@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 import * as Common from '../../core/common/common.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type * as LegacyUI from '../../ui/legacy/legacy.js';
 

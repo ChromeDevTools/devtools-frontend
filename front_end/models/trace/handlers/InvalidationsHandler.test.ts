@@ -5,7 +5,7 @@
 const {assert} = chai;
 import * as TraceEngine from '../trace.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 function invalidationDataForTestAssertion(invalidation: TraceEngine.Types.TraceEvents.SyntheticInvalidation): {
   nodeId: Protocol.DOM.BackendNodeId,

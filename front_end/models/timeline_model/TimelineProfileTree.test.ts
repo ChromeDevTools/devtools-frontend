@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as Timeline from '../../panels/timeline/timeline.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   getMainThread,
   makeCompleteEvent,
   makeProfileCall,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
-import type * as Protocol from '../../generated/protocol.js';
-import * as Timeline from '../../panels/timeline/timeline.js';
+} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
 

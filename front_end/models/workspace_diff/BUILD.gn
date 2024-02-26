@@ -43,8 +43,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/common:bundle",
+    "../../testing",
     "../persistence:bundle",
     "../workspace:bundle",
   ]

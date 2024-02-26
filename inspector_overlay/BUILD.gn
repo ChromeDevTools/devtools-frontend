@@ -118,6 +118,6 @@ ts_library("unittests") {
 
   deps = [
     ":inspector_overlay",
-    "../test/unittests/front_end/helpers",
+    "./testing",
   ]
 }

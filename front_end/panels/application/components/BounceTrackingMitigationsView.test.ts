@@ -2,19 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getValuesOfAllBodyRows} from '../../../../test/unittests/front_end/helpers/DataGridHelpers.js';
+import {getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
   assertElement,
   assertShadowRoot,
   dispatchClickEvent,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/DOMHelpers.js';
+import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../../testing/MockConnection.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 

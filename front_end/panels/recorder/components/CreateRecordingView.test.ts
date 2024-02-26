@@ -9,8 +9,8 @@ import * as Models from '../models/models.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 describeWithEnvironment('CreateRecordingView', () => {
   setupActionRegistry();

@@ -9,20 +9,20 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {MockProtocolBackend} from '../../../test/unittests/front_end/helpers/MockScopeChain.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import type * as Platform from '../../core/platform/platform.js';
 
 import {
   describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/MockConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-import {createFileSystemFileForPersistenceTests} from '../../../test/unittests/front_end/helpers/PersistenceHelpers.js';
+import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
 import {
   createContentProviderUISourceCode,
   createFileSystemUISourceCode,
-} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
+} from '../../testing/UISourceCodeHelpers.js';
 
 describeWithMockConnection('PersistenceImpl', () => {
   const FILE_SYSTEM_BREAK_ID = 'BREAK_ID' as Protocol.Debugger.BreakpointId;

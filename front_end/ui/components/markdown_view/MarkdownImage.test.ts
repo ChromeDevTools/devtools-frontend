@@ -6,7 +6,7 @@ import {
   assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 

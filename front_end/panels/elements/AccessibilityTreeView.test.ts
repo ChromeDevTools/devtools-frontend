@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 import * as Elements from './elements.js';

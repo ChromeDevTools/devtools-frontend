@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import {
   dispatchClickEvent,
   renderElementIntoDOM,
   resetTestDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Host from '../../../core/host/host.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as MarkdownView from './markdown_view.js';
 

@@ -13,7 +13,7 @@ import * as Components from './components/components.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

@@ -9,10 +9,10 @@ import * as SDK from './sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 import {
   createTarget,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 const TARGET_ID = 'TARGET_ID' as Protocol.Target.TargetID;
 const TITLE = 'TITLE';

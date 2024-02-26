@@ -78,12 +78,12 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../../test/unittests/*",
     "../../../../panels/layer_viewer/*",
     "../../../../panels/media/*",
     "../../../../panels/network/*",
     "../../../../panels/profiler/*",
     "../../../../panels/timeline/*",
+    "../../../../testing/*",
     "../../../components/docs/perf_piechart/*",
     "../../../components/docs/performance_panel/*",
   ]
@@ -118,8 +118,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../core/sdk:bundle",
+    "../../../../testing",
     "../../../../ui/legacy:bundle",
   ]
 }

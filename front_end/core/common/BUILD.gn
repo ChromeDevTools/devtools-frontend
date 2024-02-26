@@ -104,7 +104,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
+    "../../testing",
     "../../ui/legacy/components/quick_open:bundle",
     "../i18n:bundle",
   ]

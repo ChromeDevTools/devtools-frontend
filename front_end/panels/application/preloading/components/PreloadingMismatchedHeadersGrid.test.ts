@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertGridContents} from '../../../../../test/unittests/front_end/helpers/DataGridHelpers.js';
-import {
-  assertShadowRoot,
-  renderElementIntoDOM,
-} from '../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
+import {assertGridContents} from '../../../../testing/DataGridHelpers.js';
+import {
+  assertShadowRoot,
+  renderElementIntoDOM,
+} from '../../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';

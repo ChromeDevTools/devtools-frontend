@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Network from './network.js';
 

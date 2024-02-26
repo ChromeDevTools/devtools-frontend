@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {TestPlugin} from '../../../test/unittests/front_end/helpers/LanguagePluginHelpers.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 
 import * as Bindings from './bindings.js';
 

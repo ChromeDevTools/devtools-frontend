@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {makeFakeEventPayload} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
+} from '../../testing/MockConnection.js';
+import {makeFakeEventPayload} from '../../testing/TraceHelpers.js';
 import * as TraceEngine from '../trace/trace.js';
 
 class FakeClient implements TraceEngine.TracingManager.TracingManagerClient {

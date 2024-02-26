@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 

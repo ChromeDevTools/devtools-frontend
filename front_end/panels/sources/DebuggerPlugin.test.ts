@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTarget, describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {MockProtocolBackend, parseScopeChain} from '../../../test/unittests/front_end/helpers/MockScopeChain.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {MockProtocolBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 

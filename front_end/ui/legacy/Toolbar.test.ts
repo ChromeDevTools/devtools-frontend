@@ -6,7 +6,7 @@ import {
   assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../testing/DOMHelpers.js';
 
 import * as UI from './legacy.js';
 

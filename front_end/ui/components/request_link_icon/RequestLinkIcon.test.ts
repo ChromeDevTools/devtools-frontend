@@ -8,12 +8,13 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Logs from '../../../models/logs/logs.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import * as UI from '../../legacy/legacy.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
 import * as RequestLinkIcon from './request_link_icon.js';
-import * as UI from '../../legacy/legacy.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 

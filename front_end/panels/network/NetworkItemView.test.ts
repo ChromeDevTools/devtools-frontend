@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {
-  deinitializeGlobalVars,
-  describeWithEnvironment,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {setUpEnvironment} from '../../../test/unittests/front_end/helpers/OverridesHelpers.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {
+  deinitializeGlobalVars,
+  describeWithEnvironment,
+} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 

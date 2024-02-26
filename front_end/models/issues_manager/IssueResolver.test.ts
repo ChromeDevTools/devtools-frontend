@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {MockIssuesManager} from '../../../test/unittests/front_end/helpers/MockIssuesManager.js';
-import {StubIssue} from '../../../test/unittests/front_end/helpers/StubIssue.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
+import {StubIssue} from '../../testing/StubIssue.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 const {assert} = chai;

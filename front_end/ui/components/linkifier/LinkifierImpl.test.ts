@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as Linkifier from './linkifier.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+
+import * as Linkifier from './linkifier.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -15,7 +16,7 @@ import {
   dispatchClickEvent,
   getEventPromise,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 const {assert} = chai;
 
 describeWithLocale('Linkifier', () => {

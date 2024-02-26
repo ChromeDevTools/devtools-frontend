@@ -8,7 +8,7 @@ import * as Search from './search.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 const {lineSegmentForMatch} = Search.SearchResultsPane;
 

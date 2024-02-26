@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Dialogs from './dialogs.js';
-import * as Helpers from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import type * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as Platform from '../../../core/platform/platform.js';

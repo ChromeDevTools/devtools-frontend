@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as EnvHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
+import * as EnvHelpers from '../../../../testing/EnvironmentHelpers.js';
+import * as FrontendHelpers from '../../../../testing/TraceHelpers.js';
 import type * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 

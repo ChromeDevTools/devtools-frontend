@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Profiler from './profiler.js';

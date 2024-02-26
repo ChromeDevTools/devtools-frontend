@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import type * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 
 import * as SourceFrame from './source_frame.js';

@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as Recorder from './models.js';
 import {
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 describeWithEnvironment('RecordingStorage', () => {
   beforeEach(() => {

@@ -171,13 +171,13 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
+    "../../testing",
     "../common:bundle",
     "../protocol_client:bundle",
   ]

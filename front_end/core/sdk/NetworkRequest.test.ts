@@ -9,12 +9,12 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 import * as SDK from './sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {expectCookie} from '../../../test/unittests/front_end/helpers/Cookies.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {expectCookie} from '../../testing/Cookies.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 
 describe('NetworkRequest', () => {
   it('can parse statusText from the first line of responseReceivedExtraInfo\'s headersText', () => {

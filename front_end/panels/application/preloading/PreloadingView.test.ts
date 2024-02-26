@@ -2,21 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertGridContents} from '../../../../test/unittests/front_end/helpers/DataGridHelpers.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
+import {assertGridContents} from '../../../testing/DataGridHelpers.js';
 import {
   assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/DOMHelpers.js';
+import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
-} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
+} from '../../../testing/MockConnection.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';

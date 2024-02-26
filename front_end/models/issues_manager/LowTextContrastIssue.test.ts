@@ -8,8 +8,8 @@ import * as Issues from '../../panels/issues/issues.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {MockIssuesModel} from '../../../test/unittests/front_end/helpers/MockIssuesModel.js';
-import {MockIssuesManager} from '../../../test/unittests/front_end/helpers/MockIssuesManager.js';
+import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
+import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 
 describe('LowTextContrastIssue', () => {
   it('aggregates multiple issues with duplicates correctly', () => {

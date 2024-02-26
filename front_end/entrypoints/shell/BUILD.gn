@@ -34,7 +34,7 @@ devtools_entrypoint("shell") {
 
   visibility = [
     "../..:*",
-    "../../../test/unittests/front_end/helpers/*",
+    "../../testing/*",
     "../devtools_app:*",
     "../js_app:*",
     "../ndb_app:*",

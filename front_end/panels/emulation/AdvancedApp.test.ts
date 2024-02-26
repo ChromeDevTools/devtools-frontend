@@ -7,8 +7,8 @@ const {assert} = chai;
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';

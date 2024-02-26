@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
-import {StubIssue} from '../../../test/unittests/front_end/helpers/StubIssue.js';
-import {recordedMetricsContain} from '../../../test/unittests/front_end/helpers/UserMetricsHelpers.js';
 import * as Host from '../../core/host/host.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import {StubIssue} from '../../testing/StubIssue.js';
+import {recordedMetricsContain} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';

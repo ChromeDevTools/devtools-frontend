@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ExpandableList from './expandable_list.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {MutationType, withMutations} from '../../../testing/MutationHelpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {MutationType, withMutations} from '../../../../test/unittests/front_end/helpers/MutationHelpers.js';
+
+import * as ExpandableList from './expandable_list.js';
 
 describe('ExpandableList', () => {
   it('can be expanded', async () => {

@@ -7,8 +7,8 @@ const {assert} = chai;
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Application from './application.js';
 import * as ApplicationComponents from './components/components.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 describeWithMockConnection('ReportingApiView', () => {

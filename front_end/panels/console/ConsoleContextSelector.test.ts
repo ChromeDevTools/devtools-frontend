@@ -9,13 +9,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from './console.js';
 import {
   createTarget,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 
 describeWithMockConnection('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;

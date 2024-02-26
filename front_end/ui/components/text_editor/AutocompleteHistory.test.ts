@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../core/common/common.js';
 import {
   createFakeSetting,
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import type * as Common from '../../../core/common/common.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 import * as TextEditor from './text_editor.js';
 

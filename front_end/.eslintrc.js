@@ -151,7 +151,7 @@ module.exports = {
       }
     },
     {
-      'files': ['*.test.ts'],
+      'files': ['*.test.ts', '**/testing/*.ts'],
       'rules': {
         'rulesdir/check_component_naming': 'off',
         'rulesdir/custom_element_definitions_location': 'off',

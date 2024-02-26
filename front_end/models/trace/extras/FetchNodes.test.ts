@@ -8,14 +8,14 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as TraceEngine from '../trace.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {createTarget} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {
   clearAllMockConnectionResponseHandlers,
   clearMockConnectionResponseHandler,
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
+} from '../../../testing/MockConnection.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: number): T {
   return x as T;

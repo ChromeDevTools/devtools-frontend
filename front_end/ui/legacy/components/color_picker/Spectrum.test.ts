@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Common from '../../../../core/common/common.js';
+} from '../../../../testing/EnvironmentHelpers.js';
 import * as UI from '../../legacy.js';
 
 import * as ColorPicker from './color_picker.js';

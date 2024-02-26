@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ReportView from './report_view.js';
+import {getElementWithinComponent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import {getElementWithinComponent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+
+import * as ReportView from './report_view.js';
 
 const {assert} = chai;
 

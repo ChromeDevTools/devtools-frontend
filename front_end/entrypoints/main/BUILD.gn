@@ -46,7 +46,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/helpers/*",
+    "../../testing/*",
     "../devtools_app:*",
     "../js_app:*",
     "../ndb_app:*",
@@ -84,11 +84,11 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/common:bundle",
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../testing",
     "../../ui/legacy:bundle",
   ]
 }

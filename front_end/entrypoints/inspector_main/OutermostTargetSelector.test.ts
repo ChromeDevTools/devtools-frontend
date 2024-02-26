@@ -9,11 +9,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as InspectorMain from './inspector_main.js';
 import {
   createTarget,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 import {
   describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 
 describeWithMockConnection('OutermostTargetSelector', () => {
   let tabTarget: SDK.Target.Target;

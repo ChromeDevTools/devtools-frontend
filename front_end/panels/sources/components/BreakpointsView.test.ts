@@ -2,25 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  assertElement,
-  assertElements,
-  assertShadowRoot,
-  dispatchClickEvent,
-  dispatchKeyDownEvent,
-  renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {
-  createTarget,
-  describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
-import {describeWithRealConnection} from '../../../../test/unittests/front_end/helpers/RealConnection.js';
-import {
-  createContentProviderUISourceCode,
-  createFakeScriptMapping,
-  setupMockedUISourceCode,
-} from '../../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
 import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
@@ -29,6 +10,25 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
+import {
+  assertElement,
+  assertElements,
+  assertShadowRoot,
+  dispatchClickEvent,
+  dispatchKeyDownEvent,
+  renderElementIntoDOM,
+} from '../../../testing/DOMHelpers.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithRealConnection} from '../../../testing/RealConnection.js';
+import {
+  createContentProviderUISourceCode,
+  createFakeScriptMapping,
+  setupMockedUISourceCode,
+} from '../../../testing/UISourceCodeHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 

@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as PanelComponents from './components.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {createFakeSetting, describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../ui/components/settings/settings.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createFakeSetting, describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+
+import * as PanelComponents from './components.js';
 
 async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionData):
     Promise<{section: PanelComponents.SyncSection.SyncSection, shadowRoot: ShadowRoot}> {

@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
 import {
   assertShadowRoot,
   getCleanTextContentFromElements,
   getElementsWithinComponent,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithRealConnection} from '../../../../test/unittests/front_end/helpers/RealConnection.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithRealConnection} from '../../../testing/RealConnection.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';

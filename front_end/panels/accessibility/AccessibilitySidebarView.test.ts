@@ -6,9 +6,10 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+
 import * as Accessibility from './accessibility.js';
-import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 
 const {assert} = chai;
 

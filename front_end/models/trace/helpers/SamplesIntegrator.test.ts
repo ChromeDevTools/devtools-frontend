@@ -6,9 +6,9 @@ const {assert} = chai;
 
 import * as TraceModel from '../trace.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
-import {makeCompleteEvent} from '../../../../test/unittests/front_end/helpers/TraceHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {makeCompleteEvent} from '../../../testing/TraceHelpers.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
 describeWithEnvironment('SamplesIntegrator', function() {

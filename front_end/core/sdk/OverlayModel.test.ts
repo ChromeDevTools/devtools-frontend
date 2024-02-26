@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import * as Protocol from '../../generated/protocol.js';
+} from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
 import {assertNotNullOrUndefined} from '../platform/platform.js';
 

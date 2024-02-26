@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
+import type * as Protocol from '../../../generated/protocol.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {
   assertElement,
   assertShadowRoot,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Common from '../../../core/common/common.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 

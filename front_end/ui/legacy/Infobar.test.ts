@@ -6,11 +6,11 @@ import {
   assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../testing/DOMHelpers.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 

@@ -10,8 +10,8 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Search from './search.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {dispatchKeyDownEvent} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 interface PerformSearchArgs {
   searchConfig: Workspace.SearchConfig.SearchConfig;

@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {stabilizeEvent, stabilizeImpressions} from '../../../test/unittests/front_end/helpers/VisualLoggingHelpers.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {stabilizeEvent, stabilizeImpressions} from '../../testing/VisualLoggingHelpers.js';
 
 import * as VisualLoggingTesting from './visual_logging-testing.js';
 

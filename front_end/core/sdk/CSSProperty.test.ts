@@ -4,7 +4,7 @@
 const {assert} = chai;
 import * as SDK from './sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 describeWithEnvironment('CSSProperty', () => {
   describe('formatStyle', () => {

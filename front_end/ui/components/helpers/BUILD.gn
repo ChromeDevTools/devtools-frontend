@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../../../../test/unittests/front_end/test_setup/*",
+    "../../../testing/*",
     "../../legacy/*",
     "../../legacy/components/inline_editor/*",
   ]
@@ -47,7 +48,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
+    "../../../testing",
     "../../legacy/theme_support:bundle",
     "../../lit-html:bundle",
     "../render_coordinator:bundle",

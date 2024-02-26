@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 

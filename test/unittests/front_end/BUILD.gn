@@ -77,6 +77,7 @@ group("front_end") {
     "../../../front_end/panels/recorder/converters:unittests",
     "../../../front_end/panels/recorder/injected/selectors:unittests",
     "../../../front_end/panels/recorder/models:unittests",
+    "../../../front_end/panels/recorder/testing",
     "../../../front_end/panels/recorder/util:unittests",
     "../../../front_end/panels/screencast:unittests",
     "../../../front_end/panels/search:unittests",
@@ -94,6 +95,7 @@ group("front_end") {
     "../../../front_end/panels/web_audio:unittests",
     "../../../front_end/panels/webauthn:unittests",
     "../../../front_end/services/trace_bounds:unittests",
+    "../../../front_end/testing",
     "../../../front_end/third_party/chromium/client-variations:unittests",
     "../../../front_end/third_party/i18n:unittests",
     "../../../front_end/ui/components/adorners:unittests",
@@ -135,6 +137,5 @@ group("front_end") {
     "../../../front_end/ui/legacy/utils:unittests",
     "../../../front_end/ui/lit-html:unittests",
     "../../../front_end/ui/visual_logging:unittests",
-    "test_setup",
   ]
 }

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TraceEngine from '../../models/trace/trace.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
 
 import * as Timeline from './timeline.js';
 

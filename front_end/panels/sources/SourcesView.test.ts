@@ -19,12 +19,12 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {
   createTarget,
   describeWithEnvironment,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import {
   createFileSystemUISourceCode,
   createContentProviderUISourceCodes,
-} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/UISourceCodeHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {

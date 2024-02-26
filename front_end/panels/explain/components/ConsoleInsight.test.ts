@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {dispatchClickEvent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Host from '../../../core/host/host.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Explain from '../explain.js';
 

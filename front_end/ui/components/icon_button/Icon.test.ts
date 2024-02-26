@@ -6,7 +6,7 @@ import {
   assertElement,
   assertShadowRoot,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 
 import * as IconButton from './icon_button.js';
 

@@ -10,7 +10,7 @@ import {
   createCustomStep,
   installMocksForRecordingPlayer,
   installMocksForTargetManager,
-} from '../../../../test/unittests/front_end/helpers/RecorderHelpers.js';
+} from '../testing/RecorderHelpers.js';
 
 describe('RecordingPlayer', () => {
   let recordingPlayer: Models.RecordingPlayer.RecordingPlayer;

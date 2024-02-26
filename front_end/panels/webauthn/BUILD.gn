@@ -61,9 +61,9 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../testing",
   ]
 }

@@ -9,8 +9,8 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 import * as SDK from './sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {encodeSourceMap} from '../../../test/unittests/front_end/helpers/SourceMapEncoder.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 const sourceUrlFoo = '<foo>' as Platform.DevToolsPath.UrlString;
 

@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
+import * as Root from '../../../../core/root/root.js';
+import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
   assertElement,
   assertShadowRoot,
   dispatchInputEvent,
   dispatchPasteEvent,
-} from '../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Common from '../../../../core/common/common.js';
-import * as Root from '../../../../core/root/root.js';
-import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+} from '../../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as UI from '../../legacy.js';
 
 import * as SourceFrame from './source_frame.js';

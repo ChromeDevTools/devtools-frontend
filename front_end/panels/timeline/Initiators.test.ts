@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Timeline from './timeline.js';
 
 describe('Initiators', () => {

@@ -4,8 +4,8 @@
 const {assert} = chai;
 import * as SDK from './sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 function assertPropertValues<T>(object: T, expectedKeyValuePairs: [key: string, value: unknown][]): void {
   for (const [key, value] of expectedKeyValuePairs) {

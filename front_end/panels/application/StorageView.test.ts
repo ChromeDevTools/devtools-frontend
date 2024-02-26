@@ -4,9 +4,9 @@
 
 const {assert} = chai;
 
-import {assertElement, dispatchFocusOutEvent} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {assertElement, dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';

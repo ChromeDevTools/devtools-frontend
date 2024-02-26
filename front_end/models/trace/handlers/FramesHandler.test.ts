@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 import * as TraceEngine from '../trace.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
-import {describeWithMockConnection} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 
 async function processTrace(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
   // The FramesHandler depends on a few other handlers, so we run all of them as part of these tests.

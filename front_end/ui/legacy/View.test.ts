@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as UI from './legacy.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 describe('View', () => {
   describeWithEnvironment('TabbedViewLocation', () => {

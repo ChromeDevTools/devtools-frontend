@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TraceEngine from '../../models/trace/trace.js';
 import {
   defaultTraceEvent,
   type FakeEventPayload,
   makeFakeEventPayload,
   makeFakeSDKEventFromPayload,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+} from '../../testing/TraceHelpers.js';
 
 describe('EventTypeHelpers', () => {
   describe('timesForEventInMilliseconds', () => {

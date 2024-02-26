@@ -26,10 +26,10 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/*",
     "../../core/sdk/*",
     "../../panels/profiler/*",
     "../../panels/timeline/*",
+    "../../testing/*",
     "../../ui/legacy/components/perf_ui/*",
     "../timeline_model/*",
     "../trace/*",
@@ -43,6 +43,6 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
+    "../../testing",
   ]
 }

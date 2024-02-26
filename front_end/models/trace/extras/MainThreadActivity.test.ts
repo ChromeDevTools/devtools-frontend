@@ -5,7 +5,7 @@
 import {
   type FakeEventPayload,
   makeFakeEventPayload,
-} from '../../../../test/unittests/front_end/helpers/TraceHelpers.js';
+} from '../../../testing/TraceHelpers.js';
 import * as TraceEngine from '../trace.js';
 
 const {assert} = chai;

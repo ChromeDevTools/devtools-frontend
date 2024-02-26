@@ -7,9 +7,9 @@ const {assert} = chai;
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Coverage from './coverage.js';
-import {createTarget, registerNoopActions} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 

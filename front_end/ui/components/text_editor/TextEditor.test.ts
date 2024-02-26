@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {
-  createTarget,
-  describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TestPlugin} from '../../../../test/unittests/front_end/helpers/LanguagePluginHelpers.js';
-import {describeWithMockConnection} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
-import {MockExecutionContext} from '../../../../test/unittests/front_end/helpers/MockExecutionContext.js';
 import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+} from '../../../testing/EnvironmentHelpers.js';
+import {TestPlugin} from '../../../testing/LanguagePluginHelpers.js';
+import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {MockExecutionContext} from '../../../testing/MockExecutionContext.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 

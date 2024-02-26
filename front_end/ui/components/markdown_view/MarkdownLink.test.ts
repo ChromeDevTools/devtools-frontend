@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
 import {
   assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import type * as Platform from '../../../core/platform/platform.js';
+} from '../../../testing/DOMHelpers.js';
 import * as UI from '../../legacy/legacy.js';
 
 import * as MarkdownView from './markdown_view.js';

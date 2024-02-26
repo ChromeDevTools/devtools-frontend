@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import * as Common from '../../core/common/common.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import {assertElement} from '../../testing/DOMHelpers.js';
+import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 

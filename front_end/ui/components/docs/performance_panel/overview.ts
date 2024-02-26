@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as TraceLoader from '../../../../../test/unittests/front_end/helpers/TraceLoader.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
 import * as TraceBounds from '../../../../services/trace_bounds/trace_bounds.js';
+import * as EnvironmentHelpers from '../../../../testing/EnvironmentHelpers.js';
+import * as TraceLoader from '../../../../testing/TraceLoader.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 
 await EnvironmentHelpers.initializeGlobalVars();

@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
-import {StubIssue} from '../../../test/unittests/front_end/helpers/StubIssue.js';
+import {StubIssue} from '../../testing/StubIssue.js';
 
 describe('issuesAssociatedWith', () => {
   const requestId1 = 'r0' as Protocol.Network.RequestId;

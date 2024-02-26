@@ -84,10 +84,10 @@ ts_library("unittests") {
   ]
 
   deps = [
-    "../../../../test/unittests/front_end/helpers",
     "../../../core/platform:bundle",
     "../../../generated",
     "../../../models/trace:bundle",
     "../../../panels/timeline:bundle",
+    "../../../testing",
   ]
 }

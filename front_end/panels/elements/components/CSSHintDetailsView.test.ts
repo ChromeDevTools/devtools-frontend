@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Elements from '../elements.js';
 
 import * as ElementsComponents from './components.js';

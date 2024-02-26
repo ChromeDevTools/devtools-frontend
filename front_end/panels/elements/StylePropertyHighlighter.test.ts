@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
 

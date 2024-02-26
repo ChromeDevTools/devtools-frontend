@@ -3,27 +3,6 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TestPlugin} from '../../../test/unittests/front_end/helpers/LanguagePluginHelpers.js';
-import {
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  dispatchEvent,
-  registerListenerOnOutgoingMessage,
-  setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {MockProtocolBackend} from '../../../test/unittests/front_end/helpers/MockScopeChain.js';
-import {createFileSystemFileForPersistenceTests} from '../../../test/unittests/front_end/helpers/PersistenceHelpers.js';
-import {encodeSourceMap} from '../../../test/unittests/front_end/helpers/SourceMapEncoder.js';
-import {setupPageResourceLoaderForSourceMap} from '../../../test/unittests/front_end/helpers/SourceMapHelpers.js';
-import {
-  createContentProviderUISourceCode,
-  createFakeScriptMapping,
-} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
-import {
-  recordedMetricsContain,
-  resetRecordedMetrics,
-} from '../../../test/unittests/front_end/helpers/UserMetricsHelpers.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -31,6 +10,27 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
+import {
+  clearMockConnectionResponseHandler,
+  describeWithMockConnection,
+  dispatchEvent,
+  registerListenerOnOutgoingMessage,
+  setMockConnectionResponseHandler,
+} from '../../testing/MockConnection.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
+import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
+import {
+  createContentProviderUISourceCode,
+  createFakeScriptMapping,
+} from '../../testing/UISourceCodeHelpers.js';
+import {
+  recordedMetricsContain,
+  resetRecordedMetrics,
+} from '../../testing/UserMetricsHelpers.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Persistence from '../persistence/persistence.js';

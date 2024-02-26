@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
   registerNoopActions,
   stubNoopSettings,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+} from '../../testing/MockConnection.js';
 
 import * as Elements from './elements.js';
 

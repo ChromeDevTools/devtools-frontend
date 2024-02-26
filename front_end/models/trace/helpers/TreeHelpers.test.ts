@@ -7,7 +7,7 @@ import {
   makeCompleteEvent,
   makeProfileCall,
   prettyPrint,
-} from '../../../../test/unittests/front_end/helpers/TraceHelpers.js';
+} from '../../../testing/TraceHelpers.js';
 import * as TraceModel from '../trace.js';
 
 describe('TreeHelpers', () => {

@@ -35,7 +35,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/*",
     "../../core/sdk:unittests",
     "../../legacy_test_runner/*",
     "../../panels/lighthouse/*",
@@ -44,6 +43,8 @@ devtools_entrypoint("bundle") {
     "../../panels/timeline/*",
     "../../services/trace_bounds/*",
     "../../services/tracing/*",
+    "../../testing/*",
+    "../../testing/*",
     "../../ui/components/docs/*",
     "../timeline_model/*",
     "./*",
@@ -65,6 +66,6 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
+    "../../testing",
   ]
 }

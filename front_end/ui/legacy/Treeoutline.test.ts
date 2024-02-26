@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from './legacy.js';
 
-import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 describe('TreeOutline', () => {
   describe('correctly reacts to Enter key', () => {

@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as i18n from './i18n.js';
 import * as i18nRaw from '../../third_party/i18n/i18n.js';
 
-import {assertElement} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertElement} from '../../testing/DOMHelpers.js';
 
 describe('serializeUIString', () => {
   it('serializes strings without placeholders', () => {

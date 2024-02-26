@@ -6,12 +6,12 @@ const {assert} = chai;
 
 import * as SDK from './sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
   clearMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 describeWithMockConnection('ServiceWorkerCacheModel', () => {

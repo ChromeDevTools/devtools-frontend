@@ -5,8 +5,8 @@
 import {
   describeWithEnvironment,
   registerNoopActions,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
+} from '../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 const {assert} = chai;
 import * as TraceEngine from '../trace.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 describe('WorkersHandler', () => {
   beforeEach(async function() {

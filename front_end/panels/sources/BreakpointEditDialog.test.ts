@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 
 import * as Sources from './sources.js';

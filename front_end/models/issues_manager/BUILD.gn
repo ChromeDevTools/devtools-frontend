@@ -190,7 +190,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/helpers/*",
     "../../../test/unittests/front_end/models/issues_manager/*",
     "../../../test/unittests/front_end/panels/console/*",
     "../../../test/unittests/front_end/ui/components/issue_counter/*",
@@ -202,6 +201,7 @@ devtools_entrypoint("bundle") {
     "../../panels/issues/*",
     "../../panels/network/*",
     "../../panels/sources/*",
+    "../../testing/*",
     "../../ui/components/docs/issue_counter/*",
     "../../ui/components/issue_counter/*",
     "../../ui/legacy/components/cookie_table/*",
@@ -230,8 +230,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../testing",
   ]
 }

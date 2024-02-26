@@ -56,13 +56,13 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/*",
     "../../core/sdk:unittests",
     "../../entrypoints/main/*",
     "../../panels/network/*",
     "../../panels/recorder/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
+    "../../testing/*",
     "../bindings:unittests",
     "../workspace:unittests",
     "../workspace_diff/*",
@@ -97,8 +97,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../testing",
   ]
 }

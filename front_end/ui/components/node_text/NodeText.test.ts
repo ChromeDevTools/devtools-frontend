@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNodeTextContent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertNodeTextContent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 import * as NodeText from './node_text.js';
 

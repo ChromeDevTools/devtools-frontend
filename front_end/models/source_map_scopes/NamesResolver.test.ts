@@ -10,9 +10,9 @@ import * as Workspace from '../workspace/workspace.js';
 import * as Bindings from '../bindings/bindings.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {MockProtocolBackend} from '../../../test/unittests/front_end/helpers/MockScopeChain.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 describeWithMockConnection('NameResolver', () => {

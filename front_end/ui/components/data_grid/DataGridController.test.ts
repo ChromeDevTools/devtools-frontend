@@ -7,14 +7,14 @@ import {
   getHeaderCellForColumnId,
   getValuesForColumn,
   getValuesOfAllBodyRows,
-} from '../../../../test/unittests/front_end/helpers/DataGridHelpers.js';
+} from '../../../testing/DataGridHelpers.js';
 import {
   assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TEXT_NODE, withMutations} from '../../../../test/unittests/front_end/helpers/MutationHelpers.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import {TEXT_NODE, withMutations} from '../../../testing/MutationHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as DataGrid from './data_grid.js';

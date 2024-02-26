@@ -142,9 +142,9 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/helpers/*",
     "../../../test/unittests/front_end/panels/elements/*",
     "../../entrypoints/*",
+    "../../testing/*",
   ]
 }
 
@@ -173,7 +173,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
+    "../../testing",
     "./components:unittests",
   ]
 }

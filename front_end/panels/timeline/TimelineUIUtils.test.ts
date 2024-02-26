@@ -2,24 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {doubleRaf, renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {
-  loadBasicSourceMapExample,
-  setupPageResourceLoaderForSourceMap,
-} from '../../../test/unittests/front_end/helpers/SourceMapHelpers.js';
-import {
-  getMainThread,
-  makeCompleteEvent,
-  makeMockSamplesHandlerData,
-  makeProfileCall,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
@@ -30,6 +12,24 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Elements from '../../panels/elements/elements.js';
+import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {
+  clearMockConnectionResponseHandler,
+  describeWithMockConnection,
+  setMockConnectionResponseHandler,
+} from '../../testing/MockConnection.js';
+import {
+  loadBasicSourceMapExample,
+  setupPageResourceLoaderForSourceMap,
+} from '../../testing/SourceMapHelpers.js';
+import {
+  getMainThread,
+  makeCompleteEvent,
+  makeMockSamplesHandlerData,
+  makeProfileCall,
+} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Timeline from './timeline.js';

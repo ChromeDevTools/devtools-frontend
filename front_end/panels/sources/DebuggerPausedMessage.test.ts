@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {assertElement} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Sources from './sources.js';
 

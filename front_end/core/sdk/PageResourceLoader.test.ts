@@ -13,11 +13,11 @@ import {
   createTarget,
   describeWithEnvironment,
   describeWithLocale,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 
 interface LoadResult {
   success: boolean;

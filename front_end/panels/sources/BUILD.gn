@@ -157,11 +157,11 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
+    "../../testing",
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/legacy/components/source_frame:bundle",

@@ -15,8 +15,8 @@ ts_library("ts") {
   ]
 
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../panels/explain:bundle",
+    "../../../../testing",
     "../../../../third_party/marked:bundle",
     "../../../../ui/components/helpers:bundle",
   ]

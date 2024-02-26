@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -11,19 +14,16 @@ import {
   dispatchKeyDownEvent,
   dispatchPasteEvent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {createFileSystemUISourceCode} from '../../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
+import {createFileSystemUISourceCode} from '../../../testing/UISourceCodeHelpers.js';
 import {
   recordedMetricsContain,
   resetRecordedMetrics,
-} from '../../../../test/unittests/front_end/helpers/UserMetricsHelpers.js';
-import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
+} from '../../../testing/UserMetricsHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 

@@ -15,10 +15,10 @@ import {
   dispatchClickEvent,
   getEventPromise,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

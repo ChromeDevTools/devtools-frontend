@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Protocol from '../../../generated/protocol.js';
 import {
   assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
   stripLitHtmlCommentNodes,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Protocol from '../../../generated/protocol.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 

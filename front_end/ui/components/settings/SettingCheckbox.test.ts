@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import {
   assertElement,
   assertShadowRoot,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createFakeSetting} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
+} from '../../../testing/DOMHelpers.js';
+import {createFakeSetting} from '../../../testing/EnvironmentHelpers.js';
 
 import * as Settings from './settings.js';
 

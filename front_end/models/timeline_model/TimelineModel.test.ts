@@ -8,13 +8,13 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   DevToolsTimelineCategory,
   makeFakeSDKEventFromPayload,
   StubbedThread,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
+} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 
 // Various events listing processes and threads used by all the tests.
 const preamble = [

@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TraceEngine from '../../../../models/trace/trace.js';
 import {
   dispatchClickEvent,
   dispatchKeyDownEvent,
   querySelectorErrorOnMissing,
   raf,
   renderElementIntoDOM,
-} from '../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../../../test/unittests/front_end/helpers/TraceLoader.js';
-import * as TraceEngine from '../../../../models/trace/trace.js';
+} from '../../../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../../testing/TraceLoader.js';
 
 import * as PerfUI from './perf_ui.js';
 

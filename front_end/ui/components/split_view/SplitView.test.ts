@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as SplitView from './split_view.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 

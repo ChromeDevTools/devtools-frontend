@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../../test/unittests/front_end/helpers/TraceLoader.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as TimelineComponents from './components.js';
 

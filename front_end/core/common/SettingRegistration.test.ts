@@ -5,7 +5,7 @@
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
 

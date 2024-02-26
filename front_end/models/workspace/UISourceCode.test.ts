@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {setupMockedUISourceCode} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
+import {setupMockedUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from './workspace.js';

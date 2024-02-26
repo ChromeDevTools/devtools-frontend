@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Buttons from './buttons.js';
+import {assertElement, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
-import {assertElement, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+
+import * as Buttons from './buttons.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

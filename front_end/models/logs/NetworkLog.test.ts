@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Logs from '../logs/logs.js';
 
 const {assert} = chai;
@@ -197,30 +197,29 @@ describe('NetworkLog', () => {
       });
     });
 
-    it('returns the initiator info if the initiator is a script without a stack',
-       () => {
-         const request = {
-           initiator() {
-             return {
-               type: Protocol.Network.InitiatorType.Script,
-               url: url('http://localhost:3000/example.js'),
-             } as unknown as Protocol.Network.Initiator;
-           },
-           redirectSource() {
-             return null;
-           },
-         } as unknown as SDK.NetworkRequest.NetworkRequest;
-         const info = initiatorInfoForRequest(request);
-         assert.deepEqual(info, {
-           type: SDK.NetworkRequest.InitiatorType.Script,
-           url: url('http://localhost:3000/example.js'),
-           lineNumber: undefined,
-           columnNumber: undefined,
-           scriptId: null,
-           stack: null,
-           initiatorRequest: null,
-         });
-       });
+    it('returns the initiator info if the initiator is a script without a stack', () => {
+      const request = {
+        initiator() {
+          return {
+            type: Protocol.Network.InitiatorType.Script,
+            url: url('http://localhost:3000/example.js'),
+          } as unknown as Protocol.Network.Initiator;
+        },
+        redirectSource() {
+          return null;
+        },
+      } as unknown as SDK.NetworkRequest.NetworkRequest;
+      const info = initiatorInfoForRequest(request);
+      assert.deepEqual(info, {
+        type: SDK.NetworkRequest.InitiatorType.Script,
+        url: url('http://localhost:3000/example.js'),
+        lineNumber: undefined,
+        columnNumber: undefined,
+        scriptId: null,
+        stack: null,
+        initiatorRequest: null,
+      });
+    });
 
     it('returns the info for a Preload request', () => {
       const request = {

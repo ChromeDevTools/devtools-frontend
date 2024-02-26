@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElements, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {assertElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 import * as TextPrompt from './text_prompt.js';
 

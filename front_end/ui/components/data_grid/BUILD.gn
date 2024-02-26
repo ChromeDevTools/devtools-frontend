@@ -38,7 +38,7 @@ devtools_module("data_grid") {
     "../../../ui/lit-html:bundle",
   ]
 
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+  visibility = [ ":*" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -63,8 +63,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
     "../../../core/platform:bundle",
+    "../../../testing",
     "../../lit-html:bundle",
     "../icon_button:bundle",
     "../render_coordinator:bundle",

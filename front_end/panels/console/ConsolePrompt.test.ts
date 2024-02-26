@@ -14,13 +14,13 @@ import type * as TextEditor from '../../ui/components/text_editor/text_editor.js
 import {
   createTarget,
   registerNoopActions,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 
 describeWithMockConnection('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;

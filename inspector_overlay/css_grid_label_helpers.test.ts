@@ -13,7 +13,7 @@ import {
   initFrameForGridLabels,
   initFrameForMultipleGridLabels,
   drawGridLineNamesAndAssertLabels,
-} from '../test/unittests/front_end/helpers/InspectorOverlayHelpers.js';
+} from './testing/InspectorOverlayHelpers.js';
 import {
   drawGridLineNumbers,
   drawGridTrackSizes,

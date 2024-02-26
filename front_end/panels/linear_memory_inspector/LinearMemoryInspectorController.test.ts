@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components/components.js';
 import * as LinearMemoryInspector from './linear_memory_inspector.js';

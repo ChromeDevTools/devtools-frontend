@@ -7,10 +7,10 @@ const {assert} = chai;
 import * as Issues from '../../panels/issues/issues.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import {MockIssuesModel} from '../../../test/unittests/front_end/helpers/MockIssuesModel.js';
+import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {MockIssuesManager} from '../../../test/unittests/front_end/helpers/MockIssuesManager.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 
 describeWithLocale('DeprecationIssue', () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;

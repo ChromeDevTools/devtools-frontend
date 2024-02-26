@@ -11,12 +11,12 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
   raf,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 import * as ProtocolComponents from './components.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as Host from '../../../core/host/host.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -788,7 +788,6 @@ describeWithEnvironment('JSONEditor', () => {
 
          assert.deepStrictEqual(numberOfInputs, 2);
        });
-
   });
 
   describe('Reset to default values', () => {

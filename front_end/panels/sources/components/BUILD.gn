@@ -64,12 +64,12 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
     "../../../core/common:bundle",
     "../../../core/sdk:bundle",
     "../../../models/bindings:bundle",
     "../../../models/breakpoints:bundle",
     "../../../models/workspace:bundle",
+    "../../../testing",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
   ]

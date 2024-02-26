@@ -10,7 +10,7 @@ import {
   getElementWithinComponent,
   getEventPromise,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+} from '../../../testing/DOMHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 

@@ -4,8 +4,8 @@
 
 import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();

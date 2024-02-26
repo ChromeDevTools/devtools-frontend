@@ -9,7 +9,7 @@ import * as Common from '../../../core/common/common.js';
 
 import {
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 let instance: Recorder.ScreenshotStorage.ScreenshotStorage;
 

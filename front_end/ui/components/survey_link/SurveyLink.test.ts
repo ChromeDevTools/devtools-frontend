@@ -7,8 +7,8 @@ const {assert} = chai;
 import * as SurveyLink from './survey_link.js';
 import * as Common from '../../../core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 function canShowSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: true});

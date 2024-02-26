@@ -3,15 +3,16 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Persistence from '../../models/persistence/persistence.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {MockExecutionContext} from '../../testing/MockExecutionContext.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import * as Snippets from './snippets.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {MockExecutionContext} from '../../../test/unittests/front_end/helpers/MockExecutionContext.js';
 
 describeWithMockConnection('ScriptSnippetFileSystem', () => {
   it('evaluates snippets with user gesture', async () => {

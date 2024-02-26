@@ -11,10 +11,10 @@ import type * as Platform from '../platform/platform.js';
 
 import {
   describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 import {
   createTarget,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
 
 import {assertNotNullOrUndefined} from '../platform/platform.js';
 

@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   createFakeSetting,
   describeWithEnvironment,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
 import * as TextEditor from './text_editor.js';

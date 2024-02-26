@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
 import * as TwoStatesCounter from './two_states_counter.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

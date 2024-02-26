@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as UI from '../../../legacy/legacy.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 

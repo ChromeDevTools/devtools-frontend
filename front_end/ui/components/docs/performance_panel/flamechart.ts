@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as TraceHelpers from '../../../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
-import * as ComponentSetup from '../../helpers/helpers.js';
-
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as EnvironmentHelpers from '../../../../testing/EnvironmentHelpers.js';
+import * as TraceHelpers from '../../../../testing/TraceHelpers.js';
+import * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
+import * as ComponentSetup from '../../helpers/helpers.js';
 
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentSetup.ComponentServerSetup.setup();

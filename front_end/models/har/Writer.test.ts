@@ -11,7 +11,7 @@ import * as HAR from '../har/har.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 const simulateRequestWithStartTime = (startTime: number) => {
   const requestId = 'r0' as Protocol.Network.RequestId;

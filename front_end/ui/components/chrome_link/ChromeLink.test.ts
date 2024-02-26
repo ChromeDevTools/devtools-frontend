@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
-import * as ChromeLink from './chrome_link.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {createTarget} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../../test/unittests/front_end/helpers/MockConnection.js';
+import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
+import * as ChromeLink from './chrome_link.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

@@ -5,12 +5,12 @@
 const {assert} = chai;
 
 import * as TraceEngine from '../trace/trace.js';
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   StubbedThread,
   makeFakeEventPayload,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
-import {TraceLoader} from '../../../test/unittests/front_end/helpers/TraceLoader.js';
+} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 
 describeWithEnvironment('TracingModel', function() {
   it('can create events from an EventPayload[] and finds the correct number of processes', async function() {

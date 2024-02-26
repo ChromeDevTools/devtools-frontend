@@ -7,8 +7,8 @@ const {assert} = chai;
 import * as Resources from './application.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 
 describeWithMockConnection('InterestGroupTreeElement', () => {
   const OWNER = 'OWNER';

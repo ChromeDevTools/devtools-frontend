@@ -157,7 +157,6 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
     "../../models/autofill_manager:*",
@@ -167,6 +166,7 @@ devtools_entrypoint("bundle") {
     "../../models/persistence:*",
     "../../panels/*",
     "../../services/window_bounds/*",
+    "../../testing/*",
     "../components/data_grid:*",
     "../components/docs/performance_panel/*",
     "../components/issue_counter:unittests",
@@ -210,11 +210,11 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
+    "../../testing",
     "./components/quick_open:bundle",
   ]
 }

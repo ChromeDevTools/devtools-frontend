@@ -132,9 +132,10 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/interactions/panels/performance/timeline/*",
     "../../../test/perf/*",
-    "../../../test/unittests/front_end/helpers",
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
+    "../../testing",
+    "../../testing/*",
     "../../ui/components/docs/performance_panel/*",
     "../input/*",
     "../js_profiler/*",
@@ -187,7 +188,6 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
@@ -195,6 +195,7 @@ ts_library("unittests") {
     "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
+    "../../testing",
     "./components:bundle",
   ]
 }

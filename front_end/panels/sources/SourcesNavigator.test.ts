@@ -21,10 +21,10 @@ import {
   describeWithMockConnection,
   dispatchEvent,
   setMockConnectionResponseHandler,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {MockProtocolBackend} from '../../../test/unittests/front_end/helpers/MockScopeChain.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {createContentProviderUISourceCodes} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
+} from '../../testing/MockConnection.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 describeWithMockConnection('NetworkNavigatorView', () => {

@@ -40,11 +40,11 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
-    "../../../test/unittests/*",
     "../../core/sdk/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/test_runner/*",
     "../../panels/*",
+    "../../testing/*",
     "../../ui/components/data_grid/*",
     "../../ui/components/docs/data_grid_controller/*",
     "../../ui/components/highlighting/*",

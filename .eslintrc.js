@@ -197,7 +197,7 @@ module.exports = {
       'rulesdir/inline_type_imports': 'error',
     }
   }, {
-    'files': ['*.test.ts', 'test/**/*.ts'],
+    'files': ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
     'rules': {
       // errors on it('test') with no body
       'mocha/no-pending-tests' : 'error',

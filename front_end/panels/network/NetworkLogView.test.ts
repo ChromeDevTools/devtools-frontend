@@ -1,14 +1,6 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import {
-  assertElement,
-  dispatchClickEvent,
-  dispatchMouseUpEvent,
-  raf,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../../test/unittests/front_end/helpers/MockConnection.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -19,6 +11,14 @@ import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {
+  assertElement,
+  dispatchClickEvent,
+  dispatchMouseUpEvent,
+  raf,
+} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 

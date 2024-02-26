@@ -6,13 +6,13 @@ const {assert} = chai;
 
 import * as Menus from './menus.js';
 import * as Dialogs from '../dialogs/dialogs.js';
-import * as Helpers from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import {
   describeWithLocale,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

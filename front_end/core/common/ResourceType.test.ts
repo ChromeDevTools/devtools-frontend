@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as Common from './common.js';
 import type * as Platform from '../platform/platform.js';
 
-import {describeWithEnvironment} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 const ResourceType = Common.ResourceType.ResourceType;
 const ResourceCategory = Common.ResourceType.ResourceCategory;

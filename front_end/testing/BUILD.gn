@@ -1,0 +1,79 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../third_party/typescript/typescript.gni")
+
+ts_library("testing") {
+  testonly = true
+
+  sources = [
+    "ConsoleHelpers.ts",
+    "Cookies.ts",
+    "DOMHelpers.ts",
+    "DataGridHelpers.ts",
+    "EnvironmentHelpers.ts",
+    "ExtensionHelpers.ts",
+    "LanguagePluginHelpers.ts",
+    "MockConnection.ts",
+    "MockExecutionContext.ts",
+    "MockIssuesManager.ts",
+    "MockIssuesModel.ts",
+    "MockNetworkLog.ts",
+    "MockScopeChain.test.ts",
+    "MockScopeChain.ts",
+    "MutationHelpers.test.ts",
+    "MutationHelpers.ts",
+    "OverridesHelpers.ts",
+    "PersistenceHelpers.ts",
+    "RealConnection.ts",
+    "SourceMapEncoder.test.ts",
+    "SourceMapEncoder.ts",
+    "SourceMapHelpers.ts",
+    "StubIssue.ts",
+    "TraceHelpers.ts",
+    "TraceLoader.ts",
+    "TrackAsyncOperations.ts",
+    "UISourceCodeHelpers.ts",
+    "UserMetricsHelpers.ts",
+    "VisualLoggingHelpers.ts",
+    "test_setup.ts",
+  ]
+
+  deps = [
+    "../../extension-api",
+    "../../inspector_overlay",
+    "../core/common:bundle",
+    "../core/common:bundle",
+    "../core/host:bundle",
+    "../core/i18n:bundle",
+    "../core/protocol_client:bundle",
+    "../core/root:bundle",
+    "../core/sdk:bundle",
+    "../core/sdk:bundle",
+    "../entrypoints/inspector_main:meta",
+    "../entrypoints/main:bundle",
+    "../entrypoints/shell",
+    "../generated:protocol",
+    "../models/bindings:bundle",
+    "../models/extensions:bundle",
+    "../models/issues_manager:bundle",
+    "../models/text_utils:bundle",
+    "../models/timeline_model:bundle",
+    "../models/trace:bundle",
+    "../models/trace:bundle",
+    "../models/workspace:bundle",
+    "../panels/elements:meta",
+    "../panels/sensors:meta",
+    "../panels/timeline:bundle",
+    "../panels/timeline:bundle",
+    "../services/trace_bounds:bundle",
+    "../ui/components/data_grid:bundle",
+    "../ui/components/node_text:bundle",
+    "../ui/components/render_coordinator:bundle",
+    "../ui/legacy:bundle",
+    "../ui/legacy/components/perf_ui:bundle",
+    "../ui/legacy/theme_support:bundle",
+    "../ui/lit-html:bundle",
+  ]
+}

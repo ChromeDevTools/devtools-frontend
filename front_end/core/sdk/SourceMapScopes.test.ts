@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {encodeVlq, OriginalScopeBuilder} from '../../../test/unittests/front_end/helpers/SourceMapEncoder.js';
+import {encodeVlq, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
 
 import * as SDK from './sdk.js';
 

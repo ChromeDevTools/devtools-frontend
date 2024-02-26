@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../helpers/helpers.js';
-
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import type * as RequestLinkIconModule from '../../../../ui/components/request_link_icon/request_link_icon.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();

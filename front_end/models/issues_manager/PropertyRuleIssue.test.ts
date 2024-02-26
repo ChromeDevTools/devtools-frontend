@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {MockIssuesManager} from '../../../test/unittests/front_end/helpers/MockIssuesManager.js';
-import {MockIssuesModel} from '../../../test/unittests/front_end/helpers/MockIssuesModel.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Issues from '../../panels/issues/issues.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
+import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 function createProtocolIssue(propertyRuleIssueDetails: Protocol.Audits.PropertyRuleIssueDetails):

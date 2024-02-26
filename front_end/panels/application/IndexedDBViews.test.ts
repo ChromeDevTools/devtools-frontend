@@ -8,8 +8,8 @@ import {
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';

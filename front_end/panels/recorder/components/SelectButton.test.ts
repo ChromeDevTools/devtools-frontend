@@ -9,7 +9,7 @@ import * as Menus from '../../../ui/components/menus/menus.js';
 
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
-import {renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

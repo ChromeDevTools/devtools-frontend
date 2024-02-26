@@ -56,7 +56,7 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/helpers/*",
     "../../entrypoints/*",
+    "../../testing/*",
   ]
 }

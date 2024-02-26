@@ -72,7 +72,7 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
   }
 
   if (importingFileName.startsWith(COMPONENT_DOCS_DIRECTORY) &&
-      importPath.includes(path.join('front_end', 'helpers'))) {
+      importPath.includes([path.sep, 'testing', path.sep].join(''))) {
     return;
   }
 
@@ -201,7 +201,7 @@ module.exports = {
         } else {
           if (computeTopLevelFolder(importingFileName) !== computeTopLevelFolder(exportingFileName)) {
             if (importingFileName.endsWith('.test.ts') &&
-                importPath.includes([path.sep, 'helpers', path.sep].join(''))) {
+                importPath.includes([path.sep, 'testing', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.
                */
               return;
@@ -226,8 +226,8 @@ module.exports = {
               },
             });
           } else if (isModuleEntrypoint(importingFileName)) {
-            if (importingFileName.includes(['test_setup', 'test_setup.ts'].join(path.sep)) &&
-                importPath.includes([path.sep, 'helpers', path.sep].join(''))) {
+            if (importingFileName.includes(['testing', 'test_setup.ts'].join(path.sep)) &&
+                importPath.includes([path.sep, 'testing', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.
                * The entry point detection detects test_setup.ts as an
                * entrypoint, but we don't treat it as such, it's just a file
@@ -253,9 +253,14 @@ module.exports = {
               return;
             }
 
+            const importingDirectoryName = path.basename(path.dirname(importingFileName));
+            if (importingDirectoryName === 'testing') {
+              // Special case of Foo.test.ts for a helper Foo.ts.
+              return;
+            }
+
             // Unit tests must import from the entry points even for same-namespace
             // imports, as we otherwise break the module system (in Release builds).
-            const importingDirectoryName = path.basename(path.dirname(importingFileName));
             if (!isModuleEntrypoint(exportingFileName)) {
               const namespaceNameForErrorMessage =
                   importingDirectoryName.substring(0, 1).toUpperCase() + importingDirectoryName.substring(1);

@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {TestPlugin} from '../../../test/unittests/front_end/helpers/LanguagePluginHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {loadBasicSourceMapExample} from '../../../test/unittests/front_end/helpers/SourceMapHelpers.js';
-import {
-  makeMockSamplesHandlerData,
-  makeProfileCall,
-} from '../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
+import {
+  describeWithMockConnection,
+} from '../../testing/MockConnection.js';
+import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
+import {
+  makeMockSamplesHandlerData,
+  makeProfileCall,
+} from '../../testing/TraceHelpers.js';
 
 import * as Timeline from './timeline.js';
 

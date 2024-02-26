@@ -7,13 +7,14 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import * as Autofill from './autofill.js';
+import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../testing/DataGridHelpers.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../../test/unittests/front_end/helpers/DataGridHelpers.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+
+import * as Autofill from './autofill.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

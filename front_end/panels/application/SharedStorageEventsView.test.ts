@@ -6,9 +6,9 @@ const {assert} = chai;
 
 import * as Resources from './application.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import {raf} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
+import {raf} from '../../testing/DOMHelpers.js';
 
 import View = Resources.SharedStorageEventsView;
 

@@ -58,13 +58,13 @@ ruleTester.run('es_modules_import', rule, {
     },
     // Importing test helpers directly is allowed in the test setup
     {
-      code: 'import {resetTestDOM} from \'../helpers/DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/test_setup/test_setup.ts',
+      code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
+      filename: 'front_end/testing/test_setup.ts',
     },
     // Importing test helpers directly is allowed in test files
     {
-      code: 'import {resetTestDOM} from \'../helpers/DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/elements/ElementsBreadcrumbs.test.ts',
+      code: 'import {resetTestDOM} from \'../testing/DOMHelpers.js\';',
+      filename: 'front_end/elements/ElementsBreadcrumbs.test.ts',
     },
     {
       code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',
@@ -72,7 +72,7 @@ ruleTester.run('es_modules_import', rule, {
     },
     {
       code: 'import * as fs from \'fs\';',
-      filename: 'test/unittests/front_end/Unit_test.ts',
+      filename: 'front_end/Unit.test.ts',
     },
     {
       code: 'import {terser} from \'rollup-plugin-terser\';',
@@ -121,17 +121,16 @@ ruleTester.run('es_modules_import', rule, {
     },
     // Tests are allowed to import helpers
     {
-      code:
-          'import {createContentProviderUISourceCode} from \'../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js\';',
+      code: 'import {createContentProviderUISourceCode} from \'../../testing/UISourceCodeHelpers.js\';',
       filename: 'front_end/models/bindings/IgnoreListManager.test.ts',
     },
     {
       code: 'import {renderElementIntoDOM} from \'./DOMHelpers.js\';',
-      filename: 'test/unittests/front_end/helpers/MutationHelpers.test.ts',
+      filename: 'front_end/testing/MutationHelpers.test.ts',
     },
     // Component doc files can reach into the test directory to use the helpers
     {
-      code: 'import * as FrontendHelpers from \'../../../test/unittests/front_end/helpers/EnvironmentHelpers.js\'',
+      code: 'import * as FrontendHelpers from \'../../testing/EnvironmentHelpers.js\'',
       filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
     {

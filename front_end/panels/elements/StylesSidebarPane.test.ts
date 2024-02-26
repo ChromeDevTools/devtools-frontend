@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {
-  describeWithEnvironment,
-  describeWithLocale,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithRealConnection} from '../../../test/unittests/front_end/helpers/RealConnection.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {
+  describeWithEnvironment,
+  describeWithLocale,
+} from '../../testing/EnvironmentHelpers.js';
+import {describeWithRealConnection} from '../../testing/RealConnection.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as Elements from './elements.js';

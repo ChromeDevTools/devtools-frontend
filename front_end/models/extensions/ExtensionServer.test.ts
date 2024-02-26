@@ -19,9 +19,9 @@ const {assert} = chai;
 import {
   describeWithDevtoolsExtension,
   getExtensionOrigin,
-} from '../../../test/unittests/front_end/helpers/ExtensionHelpers.js';
+} from '../../testing/ExtensionHelpers.js';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {createTarget, expectConsoleLogs} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 
 describeWithDevtoolsExtension('Extensions', {}, context => {
   it('are initialized after the target is initialized and navigated to a non-privileged URL', async () => {

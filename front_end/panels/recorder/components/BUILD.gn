@@ -100,9 +100,9 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
-    "../../../../test/unittests/front_end/helpers:recorder_helpers",
+    "../../../testing",
     "../../../ui/components/text_editor:bundle",
     "../models:bundle",
+    "../testing",
   ]
 }

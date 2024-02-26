@@ -47,13 +47,13 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/helpers",
     "../../../test/unittests/front_end/models/extensions:extensions",
     "../../entrypoints/main/*",
     "../../panels/elements/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
+    "../../testing",
   ]
 
   visibility += devtools_models_visibility
@@ -70,6 +70,6 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../test/unittests/front_end/helpers",
+    "../../testing",
   ]
 }

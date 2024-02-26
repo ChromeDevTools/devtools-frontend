@@ -14,15 +14,15 @@ import * as Resources from './application.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   describeWithMockConnection,
-} from '../../../test/unittests/front_end/helpers/MockConnection.js';
+} from '../../testing/MockConnection.js';
 import {
   assertShadowRoot,
   dispatchClickEvent,
   dispatchKeyDownEvent,
   getCleanTextContentFromElements,
   raf,
-} from '../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {createTarget} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import View = Resources.SharedStorageItemsView;

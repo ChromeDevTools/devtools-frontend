@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TraceEngine from '../trace.js';
-import {describeWithEnvironment} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 describeWithEnvironment('Trace Metadata', () => {
   it('returns the associated metadata', async () => {
     const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});

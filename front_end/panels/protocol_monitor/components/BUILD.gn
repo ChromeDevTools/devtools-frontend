@@ -56,7 +56,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../test/unittests/front_end/helpers",
+    "../../../testing",
     "../../../ui/components/suggestion_input:bundle",
   ]
 }

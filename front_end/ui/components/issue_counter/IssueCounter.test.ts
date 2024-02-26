@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {
   assertElement,
   assertElements,
   assertShadowRoot,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {MockIssuesManager} from '../../../../test/unittests/front_end/helpers/MockIssuesManager.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import {MockIssuesManager} from '../../../testing/MockIssuesManager.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import * as IssueCounter from './issue_counter.js';

@@ -13,12 +13,13 @@ import * as Host from '../../../core/host/host.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
-} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+} from '../../../testing/EnvironmentHelpers.js';
 import {
   dispatchClickEvent,
   dispatchMouseOverEvent,
   getEventPromise,
-renderElementIntoDOM} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
+  renderElementIntoDOM,
+} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 

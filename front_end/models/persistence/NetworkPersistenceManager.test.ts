@@ -15,10 +15,10 @@ import {
   createTarget,
   deinitializeGlobalVars,
   initializeGlobalVars,
-} from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../test/unittests/front_end/helpers/MockConnection.js';
-import {createWorkspaceProject, setUpEnvironment} from '../../../test/unittests/front_end/helpers/OverridesHelpers.js';
-import {createFileSystemUISourceCode} from '../../../test/unittests/front_end/helpers/UISourceCodeHelpers.js';
+} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 const setUpEnvironmentWithUISourceCode =
     (url: string, resourceType: Common.ResourceType.ResourceType, project?: Workspace.Workspace.Project) => {

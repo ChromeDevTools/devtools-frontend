@@ -10,8 +10,8 @@ ts_library("ts") {
   sources = [ "start_view.ts" ]
 
   deps = [
-    "../../../../../test/unittests/front_end/helpers",
     "../../../../panels/css_overview/components:bundle",
+    "../../../../testing",
     "../../../../ui/components/helpers:bundle",
   ]
 }

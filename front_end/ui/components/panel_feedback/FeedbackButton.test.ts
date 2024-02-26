@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import {
   assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
-} from '../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-import {describeWithLocale} from '../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+} from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';

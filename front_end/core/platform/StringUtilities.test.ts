@@ -635,6 +635,10 @@ describe('StringUtilities', () => {
       assert.strictEqual(toKebabCase('recorder_preferred_copy_format'), 'recorder-preferred-copy-format');
     });
 
+    it('should convert UPPER_SNAKE_CASE to kebab-case', () => {
+      assert.strictEqual(toKebabCase('REGULAR_BREAKPOINT'), 'regular-breakpoint');
+    });
+
     it('should handle uppercase acronyms as words', () => {
       assert.strictEqual(toKebabCase('showUAShadowDOM'), 'show-ua-shadow-dom');
     });

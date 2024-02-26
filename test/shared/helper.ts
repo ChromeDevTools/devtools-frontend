@@ -581,6 +581,10 @@ export const selectTextFromNodeToNode = async (
   }, await from, await to, direction);
 };
 
+export const clickMoreTabsButton = async (root?: puppeteer.ElementHandle<Element>) => {
+  await click('aria/More tabs', {root});
+};
+
 export const closePanelTab = async (panelTabSelector: string) => {
   // Get close button from tab element
   const selector = `${panelTabSelector} > .tabbed-pane-close-button`;

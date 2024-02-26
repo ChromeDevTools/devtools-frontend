@@ -4,7 +4,7 @@
 
 import("../../../../scripts/build/ninja/copy.gni")
 
-copy_to_gen("images") {
+copy_to_gen("fixtures") {
   sources = [
     "320x320.png",
     "640x320.png",

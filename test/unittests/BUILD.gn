@@ -13,10 +13,10 @@ group("unittests") {
     ":copy_debug_check",
     ":copy_to_gen",
     "../../front_end/core/i18n/locales",
+    "../../front_end/panels/application/fixtures",
     "../../front_end/ui/legacy:copy_stylesheets_for_server",
     "../../inspector_overlay:unittests",
     "../shared",
-    "fixtures/images",
     "fixtures/traces",
     "front_end",
   ]

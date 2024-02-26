@@ -69,7 +69,11 @@ const UIStrings = {
   /**
    * @description The text of the header inside the console insight pane when there was an error generating an insight.
    */
-  error: 'Something went wrong…',
+  error: 'Console insights has encountered an error',
+  /**
+   * @description The message shown when an error has been encountered.
+   */
+  errorBody: 'Something went wrong. Try again.',
   /**
    * @description Label for screenreaders that is added to the end of the link
    * title to indicate that the link will be opened in a new tab.
@@ -92,19 +96,28 @@ const UIStrings = {
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
-  notLoggedIn: 'This feature is only available if you are signed into Chrome with your Google account.',
+  notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
-  syncIsOff: 'This feature is only available if you have Chrome sync turned on.',
+  syncIsOff: 'This feature requires you to turn on Chrome sync.',
   /**
    * @description The title of the button that opens Chrome settings.
    */
-  goToSettings: 'Go to settings',
+  updateSettings: 'Update Settings',
+  /**
+   * @description The header shown when the internet connection is not
+   * available.
+   */
+  offlineHeader: 'Console insights can’t reach the internet',
   /**
    * @description Message shown when the user is offline.
    */
-  offline: 'Internet connection is currently not available.',
+  offline: 'Check your internet connection and try again.',
+  /**
+   * @description The message shown if the user is not logged in.
+   */
+  signInToUse: 'Sign in to use Console insights',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -449,7 +462,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.ERROR:
         return html`
         <main>
-          <div class="error">${this.#state.error}</div>
+          <div class="error">${i18nString(UIStrings.errorBody)}</div>
         </main>`;
       case State.CONSENT:
         return html`
@@ -508,7 +521,7 @@ export class ConsoleInsight extends HTMLElement {
               } as Buttons.Button.ButtonData
             }
           >
-            ${UIStrings.goToSettings}
+            ${UIStrings.updateSettings}
           </${Buttons.Button.Button.litTagName}>
         </div>
       </footer>`;
@@ -575,10 +588,12 @@ export class ConsoleInsight extends HTMLElement {
 
   #getHeader(): string {
     switch (this.#state.type) {
-      case State.SYNC_IS_OFF:
       case State.NOT_LOGGED_IN:
-      case State.OFFLINE:
+        return i18nString(UIStrings.signInToUse);
+      case State.SYNC_IS_OFF:
         return i18nString(UIStrings.notAvailable);
+      case State.OFFLINE:
+        return i18nString(UIStrings.offlineHeader);
       case State.LOADING:
         return i18nString(UIStrings.generating);
       case State.INSIGHT:

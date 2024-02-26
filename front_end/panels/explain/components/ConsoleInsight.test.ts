@@ -135,8 +135,7 @@ describeWithLocale('ConsoleInsight', () => {
       renderElementIntoDOM(component);
       await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-      assert.strictEqual(
-          content, 'This feature is only available if you are signed into Chrome with your Google account.');
+      assert.strictEqual(content, 'This feature is only available when you sign into Chrome with your Google account.');
     });
 
     it('report if the sync is not enabled', async () => {
@@ -147,7 +146,7 @@ describeWithLocale('ConsoleInsight', () => {
       renderElementIntoDOM(component);
       await drainMicroTasks();
       const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-      assert.strictEqual(content, 'This feature is only available if you have Chrome sync turned on.');
+      assert.strictEqual(content, 'This feature requires you to turn on Chrome sync.');
     });
 
     it('report if the navigator is offline', async () => {
@@ -166,7 +165,7 @@ describeWithLocale('ConsoleInsight', () => {
         renderElementIntoDOM(component);
         await drainMicroTasks();
         const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-        assert.strictEqual(content, 'Internet connection is currently not available.');
+        assert.strictEqual(content, 'Check your internet connection and try again.');
       } finally {
         Object.defineProperty(globalThis, 'navigator', navigatorDescriptor);
       }

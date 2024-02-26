@@ -17,6 +17,7 @@ generate_css("css_files") {
 
 devtools_module("animation") {
   sources = [
+    "AnimationDOMNode.ts",
     "AnimationGroupPreviewUI.ts",
     "AnimationModel.ts",
     "AnimationScreenshotPopover.ts",

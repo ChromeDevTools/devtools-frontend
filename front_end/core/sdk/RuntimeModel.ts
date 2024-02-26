@@ -315,6 +315,10 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     return await this.agent.invoke_addBinding(event);
   }
 
+  async removeBinding(request: Protocol.Runtime.RemoveBindingRequest): Promise<Protocol.ProtocolResponseWithError> {
+    return await this.agent.invoke_removeBinding(request);
+  }
+
   bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void {
     this.dispatchEventToListeners(Events.BindingCalled, event);
   }

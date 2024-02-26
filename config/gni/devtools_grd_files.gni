@@ -988,6 +988,7 @@ grd_files_debug_sources = [
   "front_end/panels/accessibility/accessibilityNode.css.js",
   "front_end/panels/accessibility/accessibilityProperties.css.js",
   "front_end/panels/accessibility/axBreadcrumbs.css.js",
+  "front_end/panels/animation/AnimationDOMNode.js",
   "front_end/panels/animation/AnimationGroupPreviewUI.js",
   "front_end/panels/animation/AnimationModel.js",
   "front_end/panels/animation/AnimationScreenshotPopover.js",

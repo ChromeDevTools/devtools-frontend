@@ -43,7 +43,7 @@ import * as Root from '../root/root.js';
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
-import {type RemoteObject} from './RemoteObject.js';
+import {RemoteObject} from './RemoteObject.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
@@ -878,8 +878,10 @@ export class DOMNode {
     this.#domModelInternal.overlayModel().highlightInOverlayForTwoSeconds({node: this, selectorList: undefined});
   }
 
-  async resolveToObject(objectGroup?: string): Promise<RemoteObject|null> {
-    const {object} = await this.#agent.invoke_resolveNode({nodeId: this.id, backendNodeId: undefined, objectGroup});
+  async resolveToObject(objectGroup?: string, executionContextId?: Protocol.Runtime.ExecutionContextId):
+      Promise<RemoteObject|null> {
+    const {object} = await this.#agent.invoke_resolveNode(
+        {nodeId: this.id, backendNodeId: undefined, executionContextId, objectGroup});
     return object && this.#domModelInternal.runtimeModelInternal.createRemoteObject(object) || null;
   }
 
@@ -923,20 +925,37 @@ export class DOMNode {
     return node;
   }
 
+  async callFunction<T, U extends string|number>(fn: (this: HTMLElement, ...args: U[]) => T, args: U[] = []):
+      Promise<{value: T}|null> {
+    const object = await this.resolveToObject();
+    if (!object) {
+      return null;
+    }
+
+    const result = await object.callFunction(fn, args.map(arg => RemoteObject.toCallArgument(arg)));
+    object.release();
+    if (result.wasThrown || !result.object) {
+      return null;
+    }
+    return {
+      value: result.object.value as T,
+    };
+  }
+
   async scrollIntoView(): Promise<void> {
     const node = this.enclosingElementOrSelf();
     if (!node) {
       return;
     }
-    const object = await node.resolveToObject();
-    if (!object) {
+
+    const result = await node.callFunction(scrollIntoViewInPage);
+    if (!result) {
       return;
     }
-    await object.callFunction(scrollIntoView);
-    object.release();
+
     node.highlightForTwoSeconds();
 
-    function scrollIntoView(this: Element): void {
+    function scrollIntoViewInPage(this: Element): void {
       this.scrollIntoViewIfNeeded(true);
     }
   }
@@ -946,12 +965,11 @@ export class DOMNode {
     if (!node) {
       throw new Error('DOMNode.focus expects node to not be null.');
     }
-    const object = await node.resolveToObject();
-    if (!object) {
+    const result = await node.callFunction(focusInPage);
+    if (!result) {
       return;
     }
-    await object.callFunction(focusInPage);
-    object.release();
+
     node.highlightForTwoSeconds();
     await this.#domModelInternal.target().pageAgent().invoke_bringToFront();
 

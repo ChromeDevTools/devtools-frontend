@@ -700,6 +700,12 @@ export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRende
       case 'link':
       case 'image':
         return LitHtml.html`${UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'token')}`;
+      case 'code':
+        return LitHtml.html`<${MarkdownView.CodeBlock.CodeBlock.litTagName}
+          .code=${this.unescape(token.text)}
+          .codeLang=${token.lang}
+          .displayNotice=${true}>
+        </${MarkdownView.CodeBlock.CodeBlock.litTagName}>`;
     }
     return super.templateForToken(token);
   }

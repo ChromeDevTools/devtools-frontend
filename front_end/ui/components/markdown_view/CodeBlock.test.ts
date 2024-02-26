@@ -45,4 +45,30 @@ describeWithEnvironment('CodeBlock', () => {
       resetTestDOM();
     }
   });
+
+  it('renders no legal notice by default', () => {
+    try {
+      const component = new MarkdownView.CodeBlock.CodeBlock();
+      component.code = 'test';
+      renderElementIntoDOM(component);
+      const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
+      assert(notice === null, '.notice was found');
+    } finally {
+      resetTestDOM();
+    }
+  });
+
+  it('renders legal notice if configured', () => {
+    try {
+      const component = new MarkdownView.CodeBlock.CodeBlock();
+      component.code = 'test';
+      component.displayNotice = true;
+      renderElementIntoDOM(component);
+      const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
+      assertNotNullOrUndefined(notice);
+      assert.strictEqual(notice!.innerText, 'Use code snippets with caution.');
+    } finally {
+      resetTestDOM();
+    }
+  });
 });

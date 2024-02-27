@@ -262,6 +262,14 @@ let BidiFrame = (() => {
         isolatedRealm() {
             return this.realms.internal;
         }
+        realm(id) {
+            for (const realm of Object.values(this.realms)) {
+                if (realm.realm.id === id) {
+                    return realm;
+                }
+            }
+            return;
+        }
         page() {
             let parent = this.#parent;
             while (parent instanceof BidiFrame) {

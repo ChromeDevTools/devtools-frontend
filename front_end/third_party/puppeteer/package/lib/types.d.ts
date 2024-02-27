@@ -2267,6 +2267,8 @@ export declare class FileChooser {
     cancel(): Promise<void>;
 }
 
+/* Excluded from this release type: filterAsync */
+
 /* Excluded from this release type: FilteredLocator */
 
 /* Excluded from this release type: FirefoxLauncher */

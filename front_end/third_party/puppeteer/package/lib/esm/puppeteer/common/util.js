@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { map, NEVER, Observable, timer } from '../../third_party/rxjs/rxjs.js';
+import { filter, from, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
 import { assert } from '../util/assert.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
@@ -368,6 +368,18 @@ export function fromEmitterEvent(emitter, eventName) {
         return () => {
             emitter.off(eventName, listener);
         };
+    });
+}
+/**
+ * @internal
+ */
+export function filterAsync(predicate) {
+    return mergeMap((value) => {
+        return from(Promise.resolve(predicate(value))).pipe(filter(isMatch => {
+            return isMatch;
+        }), map(() => {
+            return value;
+        }));
     });
 }
 //# sourceMappingURL=util.js.map

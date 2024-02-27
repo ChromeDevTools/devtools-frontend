@@ -56,6 +56,7 @@ let UserContext = (() => {
     let _remove_decorators;
     let _getCookies_decorators;
     let _setCookie_decorators;
+    let _setPermissions_decorators;
     return class UserContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -64,6 +65,7 @@ let UserContext = (() => {
             __esDecorate(this, null, _remove_decorators, { kind: "method", name: "remove", static: false, private: false, access: { has: obj => "remove" in obj, get: obj => obj.remove }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setPermissions_decorators, { kind: "method", name: "setPermissions", static: false, private: false, access: { has: obj => "setPermissions" in obj, get: obj => obj.setPermissions }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static DEFAULT = 'default';
@@ -174,6 +176,15 @@ let UserContext = (() => {
                 },
             });
         }
+        async setPermissions(origin, descriptor, state) {
+            await this.#session.send('permissions.setPermission', {
+                origin,
+                descriptor,
+                state,
+                // @ts-expect-error not standard implementation.
+                'goog:userContext': this.#id,
+            });
+        }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _createBrowsingContext_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
@@ -184,6 +195,9 @@ let UserContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _setCookie_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setPermissions_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], disposable_js_1.disposeSymbol)]() {

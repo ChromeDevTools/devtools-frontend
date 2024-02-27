@@ -123,12 +123,20 @@ let EmulationManager = (() => {
                         : { angle: 0, type: 'portraitPrimary' };
                     const hasTouch = viewport.hasTouch || false;
                     await Promise.all([
-                        client.send('Emulation.setDeviceMetricsOverride', {
+                        client
+                            .send('Emulation.setDeviceMetricsOverride', {
                             mobile,
                             width,
                             height,
                             deviceScaleFactor,
                             screenOrientation,
+                        })
+                            .catch(err => {
+                            if (err.message.includes('Target does not support metrics override')) {
+                                (0, util_js_1.debugError)(err);
+                                return;
+                            }
+                            throw err;
                         }),
                         client.send('Emulation.setTouchEmulationEnabled', {
                             enabled: hasTouch,

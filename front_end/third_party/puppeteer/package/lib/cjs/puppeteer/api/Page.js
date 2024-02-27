@@ -651,7 +651,7 @@ let Page = (() => {
                     return request.url() === url;
                 };
             }
-            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "request" /* PageEvent.Request */).pipe((0, util_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Page closed!');
             }))));
             return (0, rxjs_js_1.firstValueFrom)(observable$);
@@ -691,7 +691,7 @@ let Page = (() => {
                     return response.url() === url;
                 };
             }
-            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+            const observable$ = (0, util_js_1.fromEmitterEvent)(this, "response" /* PageEvent.Response */).pipe((0, util_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Page closed!');
             }))));
             return (0, rxjs_js_1.firstValueFrom)(observable$);
@@ -737,7 +737,7 @@ let Page = (() => {
                     return urlOrPredicate === frame.url();
                 };
             }
-            return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "frameattached" /* PageEvent.FrameAttached */), (0, util_js_1.fromEmitterEvent)(this, "framenavigated" /* PageEvent.FrameNavigated */), (0, rxjs_js_1.from)(this.frames())).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.first)(), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
+            return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "frameattached" /* PageEvent.FrameAttached */), (0, util_js_1.fromEmitterEvent)(this, "framenavigated" /* PageEvent.FrameNavigated */), (0, rxjs_js_1.from)(this.frames())).pipe((0, util_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.first)(), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, util_js_1.fromEmitterEvent)(this, "close" /* PageEvent.Close */).pipe((0, rxjs_js_1.map)(() => {
                 throw new Errors_js_1.TargetCloseError('Page closed.');
             })))));
         }

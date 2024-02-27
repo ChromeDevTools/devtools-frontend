@@ -48,6 +48,7 @@ export declare class UserContext extends EventEmitter<{
     remove(): Promise<void>;
     getCookies(options?: GetCookiesOptions, sourceOrigin?: string | undefined): Promise<Bidi.Network.Cookie[]>;
     setCookie(cookie: Bidi.Storage.PartialCookie, sourceOrigin?: string): Promise<void>;
+    setPermissions(origin: string, descriptor: Bidi.Permissions.PermissionDescriptor, state: Bidi.Permissions.PermissionState): Promise<void>;
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=UserContext.d.ts.map

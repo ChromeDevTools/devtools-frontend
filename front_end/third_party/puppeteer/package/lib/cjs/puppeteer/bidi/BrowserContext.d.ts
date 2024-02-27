@@ -3,6 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { Permission } from '../api/Browser.js';
 import type { BrowserContextEvents } from '../api/BrowserContext.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
@@ -33,8 +34,8 @@ export declare class BidiBrowserContext extends BrowserContext {
     browser(): BidiBrowser;
     pages(): Promise<BidiPage[]>;
     isIncognito(): boolean;
-    overridePermissions(): never;
-    clearPermissionOverrides(): never;
+    overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
+    clearPermissionOverrides(): Promise<void>;
     get id(): string | undefined;
 }
 //# sourceMappingURL=BrowserContext.d.ts.map

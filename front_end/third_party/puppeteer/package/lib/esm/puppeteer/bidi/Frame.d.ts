@@ -27,8 +27,9 @@ export declare class BidiFrame extends Frame {
     readonly client: BidiCdpSession;
     private constructor();
     get timeoutSettings(): TimeoutSettings;
-    mainRealm(): BidiRealm;
-    isolatedRealm(): BidiRealm;
+    mainRealm(): BidiFrameRealm;
+    isolatedRealm(): BidiFrameRealm;
+    realm(id: string): BidiRealm | undefined;
     page(): BidiPage;
     isOOPFrame(): never;
     url(): string;

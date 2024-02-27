@@ -40,8 +40,8 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowserContext = void 0;
+const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
-const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -78,6 +78,7 @@ let BidiBrowserContext = (() => {
         userContext;
         #pages = new WeakMap();
         #targets = new Map();
+        #overrides = [];
         constructor(browser, userContext, options) {
             super();
             this.#browser = browser;
@@ -198,11 +199,39 @@ let BidiBrowserContext = (() => {
         isIncognito() {
             return this.userContext.id !== UserContext_js_1.UserContext.DEFAULT;
         }
-        overridePermissions() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async overridePermissions(origin, permissions) {
+            const permissionsSet = new Set(permissions.map(permission => {
+                const protocolPermission = Browser_js_1.WEB_PERMISSION_TO_PROTOCOL_PERMISSION.get(permission);
+                if (!protocolPermission) {
+                    throw new Error('Unknown permission: ' + permission);
+                }
+                return permission;
+            }));
+            await Promise.all(Array.from(Browser_js_1.WEB_PERMISSION_TO_PROTOCOL_PERMISSION.keys()).map(permission => {
+                const result = this.userContext.setPermissions(origin, {
+                    name: permission,
+                }, permissionsSet.has(permission)
+                    ? "granted" /* Bidi.Permissions.PermissionState.Granted */
+                    : "denied" /* Bidi.Permissions.PermissionState.Denied */);
+                this.#overrides.push({ origin, permission });
+                // TODO: some permissions are outdated and setting them to denied does
+                // not work.
+                if (!permissionsSet.has(permission)) {
+                    return result.catch(util_js_1.debugError);
+                }
+                return result;
+            }));
         }
-        clearPermissionOverrides() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async clearPermissionOverrides() {
+            const promises = this.#overrides.map(({ permission, origin }) => {
+                return this.userContext
+                    .setPermissions(origin, {
+                    name: permission,
+                }, "prompt" /* Bidi.Permissions.PermissionState.Prompt */)
+                    .catch(util_js_1.debugError);
+            });
+            this.#overrides = [];
+            await Promise.all(promises);
         }
         get id() {
             if (this.userContext.id === UserContext_js_1.UserContext.DEFAULT) {

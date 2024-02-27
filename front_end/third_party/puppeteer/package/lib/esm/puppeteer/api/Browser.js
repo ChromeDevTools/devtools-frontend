@@ -3,9 +3,9 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { filterAsync, firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
+import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, fromEmitterEvent, timeout } from '../common/util.js';
+import { debugError, fromEmitterEvent, filterAsync, timeout, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 /**
  * @internal

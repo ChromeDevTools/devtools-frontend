@@ -385,6 +385,8 @@ export class Editor<T> {
       const option = (select.createChild('option') as HTMLOptionElement);
       option.value = options[index];
       option.textContent = options[index];
+      option.setAttribute(
+          'jslog', `${VisualLogging.item(Platform.StringUtilities.toKebabCase(options[index])).track({click: true})}`);
     }
     if (title) {
       Tooltip.install(select, title);

@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -501,7 +502,9 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
         @change=${onEnumSettingChange}>
         ${
         setting.options.map(
-            opt => html`<option value=${opt.value} .selected=${setting.value === opt.value}>${opt.title}</option>`)}
+            opt => html`<option value=${opt.value} .selected=${setting.value === opt.value} jslog=${
+                VisualLogging.item(Platform.StringUtilities.toKebabCase(opt.value)).track({click: true})}>${
+                opt.title}</option>`)}
       </select>
     </label>`;
   }

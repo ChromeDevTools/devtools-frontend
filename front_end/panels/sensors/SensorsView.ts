@@ -258,7 +258,8 @@ export class SensorsView extends UI.Widget.VBox {
     UI.ARIAUtils.bindLabelToControl(geogroupTitle, this.locationSelectElement);
 
     // No override
-    this.locationSelectElement.appendChild(new Option(noOverrideOption.title, noOverrideOption.location));
+    this.locationSelectElement.appendChild(
+        UI.UIUtils.createOption(noOverrideOption.title, noOverrideOption.location, 'no-override'));
     this.customLocationsGroup = (this.locationSelectElement.createChild('optgroup') as HTMLOptGroupElement);
     this.customLocationsGroup.label = i18nString(UIStrings.overrides);
     const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
@@ -273,7 +274,8 @@ export class SensorsView extends UI.Widget.VBox {
       }
       this.customLocationsGroup.removeChildren();
       for (const [i, customLocation] of customLocations.get().entries()) {
-        this.customLocationsGroup.appendChild(new Option(customLocation.title, JSON.stringify(customLocation)));
+        this.customLocationsGroup.appendChild(
+            UI.UIUtils.createOption(customLocation.title, JSON.stringify(customLocation), 'custom'));
         if (location.latitude === customLocation.lat && location.longitude === customLocation.long) {
           // If the location coming from settings matches the custom location, use its index to select the option
           selectedIndex = i + 1;
@@ -285,12 +287,14 @@ export class SensorsView extends UI.Widget.VBox {
 
     // Other location
     const customLocationOption = {title: i18nString(UIStrings.other), location: NonPresetOptions.Custom};
-    this.locationSelectElement.appendChild(new Option(customLocationOption.title, customLocationOption.location));
+    this.locationSelectElement.appendChild(
+        UI.UIUtils.createOption(customLocationOption.title, customLocationOption.location, 'other'));
 
     // Error location.
     const group = (this.locationSelectElement.createChild('optgroup') as HTMLOptGroupElement);
     group.label = i18nString(UIStrings.error);
-    group.appendChild(new Option(i18nString(UIStrings.locationUnavailable), NonPresetOptions.Unavailable));
+    group.appendChild(UI.UIUtils.createOption(
+        i18nString(UIStrings.locationUnavailable), NonPresetOptions.Unavailable, 'unavailable'));
 
     this.locationSelectElement.selectedIndex = selectedIndex;
     this.locationSelectElement.addEventListener('change', this.LocationSelectChanged.bind(this));
@@ -442,7 +446,11 @@ export class SensorsView extends UI.Widget.VBox {
     const orientationContent = orientationGroup.createChild('div', 'orientation-content');
     const fields = orientationContent.createChild('div', 'orientation-fields');
 
-    const orientationOffOption = {title: i18nString(UIStrings.off), orientation: NonPresetOptions.NoOverride};
+    const orientationOffOption = {
+      title: i18nString(UIStrings.off),
+      orientation: NonPresetOptions.NoOverride,
+      jslogContext: 'off',
+    };
     const customOrientationOption = {
       title: i18nString(UIStrings.customOrientation),
       orientation: NonPresetOptions.Custom,
@@ -450,27 +458,32 @@ export class SensorsView extends UI.Widget.VBox {
     const orientationGroups = [{
       title: i18nString(UIStrings.presets),
       value: [
-        {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]'},
-        {title: i18nString(UIStrings.portraitUpsideDown), orientation: '[180, -90, 0]'},
-        {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]'},
-        {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]'},
-        {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]'},
-        {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]'},
+        {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]', jslogContext: 'portrait'},
+        {
+          title: i18nString(UIStrings.portraitUpsideDown),
+          orientation: '[180, -90, 0]',
+          jslogContext: 'portrait-upside-down',
+        },
+        {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]', jslogContext: 'landscape-left'},
+        {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]', jslogContext: 'landscape-right'},
+        {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]', jslogContext: 'display-up'},
+        {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]', jslogContext: 'displayUp-down'},
       ],
     }];
     this.orientationSelectElement = (this.contentElement.createChild('select', 'chrome-select') as HTMLSelectElement);
     this.orientationSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(orientationTitle, this.orientationSelectElement);
-    this.orientationSelectElement.appendChild(new Option(orientationOffOption.title, orientationOffOption.orientation));
+    this.orientationSelectElement.appendChild(UI.UIUtils.createOption(
+        orientationOffOption.title, orientationOffOption.orientation, orientationOffOption.jslogContext));
     this.orientationSelectElement.appendChild(
-        new Option(customOrientationOption.title, customOrientationOption.orientation));
+        UI.UIUtils.createOption(customOrientationOption.title, customOrientationOption.orientation, 'custom'));
 
     for (let i = 0; i < orientationGroups.length; ++i) {
       const groupElement = (this.orientationSelectElement.createChild('optgroup') as HTMLOptGroupElement);
       groupElement.label = orientationGroups[i].title;
       const group = orientationGroups[i].value;
       for (let j = 0; j < group.length; ++j) {
-        groupElement.appendChild(new Option(group[j].title, group[j].orientation));
+        groupElement.appendChild(UI.UIUtils.createOption(group[j].title, group[j].orientation, group[j].jslogContext));
       }
     }
     this.orientationSelectElement.selectedIndex = 0;

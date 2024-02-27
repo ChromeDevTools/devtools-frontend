@@ -231,6 +231,68 @@ describe('LoggingDriver', () => {
         stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 0, doubleClick: false});
   });
 
+  const logsSelectOptions = (event: Event) => async () => {
+    const parent = document.createElement('div') as HTMLElement;
+    parent.innerHTML = `
+      <select jslog="TreeItem; context: 0" id="select" style="width: 30px; height: 20px">
+        <option jslog="TreeItem; context: 1">1</option>
+        <option jslog="TreeItem; context: 2">2</option>
+      </select>`;
+    renderElementIntoDOM(parent);
+
+    await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
+
+    assert.isTrue(recordImpression.calledOnce);
+    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
+      {id: 0, type: 1, 'width': 30, 'height': 20},
+    ]);
+
+    recordImpression.resetHistory();
+
+    const select = document.getElementById('select');
+    assertNotNullOrUndefined(select);
+    select.dispatchEvent(event);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.exists(throttler.process);
+    await throttler.process?.();
+
+    assert.isTrue(recordImpression.calledOnce);
+    assert.sameDeepMembers(
+        stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
+        [{'id': 0, 'type': 1, 'parent': 1, 'context': 1}, {'id': 2, 'type': 1, 'parent': 1, 'context': 2}]);
+  };
+
+  it('logs impressions on select options on click', logsSelectOptions(new MouseEvent('click')));
+  it('logs impressions on select options on space press', logsSelectOptions(new KeyboardEvent('keypress', {key: ' '})));
+  it('logs impressions on select options on F4', logsSelectOptions(new KeyboardEvent('keydown', {code: 'F4'})));
+
+  it('logs option click on select change', async () => {
+    const parent = document.createElement('div') as HTMLElement;
+    parent.innerHTML = `
+      <select jslog="TreeItem; context: 0" id="select">
+        <option jslog="TreeItem; context: 1; track: click">1</option>
+        <option jslog="TreeItem; context: 2; track: click">2</option>
+      </select>`;
+    renderElementIntoDOM(parent);
+
+    await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const select = document.getElementById('select') as HTMLSelectElement;
+    assertNotNullOrUndefined(select);
+    select.selectedIndex = 1;
+    select.dispatchEvent(new Event('change'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isTrue(recordClick.calledOnce);
+    assert.deepStrictEqual(
+        stabilizeEvent(recordClick.firstCall.firstArg),
+        {'veid': 0, 'mouseButton': 0, 'doubleClick': false, 'context': 2});
+  });
+
   it('logs keydown', async () => {
     const keyboardLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();

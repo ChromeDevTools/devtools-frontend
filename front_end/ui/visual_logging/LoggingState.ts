@@ -13,6 +13,7 @@ export interface LoggingState {
   parent: LoggingState|null;
   processedForDebugging?: boolean;
   size?: DOMRect;
+  selectOpen?: boolean;
 }
 
 const state = new WeakMap<Loggable, LoggingState>();

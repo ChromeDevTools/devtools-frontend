@@ -1123,15 +1123,23 @@ export function createSelect(name: string, options: string[]|Map<string, string[
         optGroup.label = key;
         for (const child of value) {
           if (typeof child === 'string') {
-            optGroup.appendChild(new Option(child, child));
+            optGroup.appendChild(createOption(child, child, Platform.StringUtilities.toKebabCase(child)));
           }
         }
       }
     } else if (typeof option === 'string') {
-      select.add(new Option(option, option));
+      select.add(createOption(option, option, Platform.StringUtilities.toKebabCase(option)));
     }
   }
   return select;
+}
+
+export function createOption(title: string, value?: string, jslogContext?: string): HTMLOptionElement {
+  const result = new Option(title, value || title);
+  if (jslogContext) {
+    result.setAttribute('jslog', `${VisualLogging.item(jslogContext).track({click: true})}`);
+  }
+  return result;
 }
 
 export function createLabel(title: string, className?: string, associatedControl?: Element): Element {

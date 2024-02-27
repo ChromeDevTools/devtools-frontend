@@ -52,15 +52,13 @@ export async function logResize(
 }
 
 export async function logClick(loggable: Loggable, event: Event, options?: {doubleClick?: boolean}): Promise<void> {
-  if (!(event instanceof MouseEvent)) {
-    return;
-  }
   const loggingState = getLoggingState(loggable);
   if (!loggingState) {
     return;
   }
+  const button = event instanceof MouseEvent ? event.button : 0;
   const clickEvent: Host.InspectorFrontendHostAPI
-      .ClickEvent = {veid: loggingState.veid, mouseButton: event.button, doubleClick: Boolean(options?.doubleClick)};
+      .ClickEvent = {veid: loggingState.veid, mouseButton: button, doubleClick: Boolean(options?.doubleClick)};
   const context = await loggingState.context(event);
   if (context) {
     clickEvent.context = context;

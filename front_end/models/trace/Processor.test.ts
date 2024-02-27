@@ -289,7 +289,7 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 1);
-      assert.strictEqual(insights[0].RenderBlocking?.renderBlockingRequests.length, 2);
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 2);
     });
 
     it('returns insights for multiple navigations', async function() {
@@ -303,9 +303,9 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 3);
-      assert.strictEqual(insights[0].RenderBlocking?.renderBlockingRequests.length, 5);
-      assert.strictEqual(insights[1].RenderBlocking?.renderBlockingRequests.length, 5);
-      assert.strictEqual(insights[2].RenderBlocking?.renderBlockingRequests.length, 10);
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 5);
+      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 5);
+      assert.strictEqual(insights[2].RenderBlocking.renderBlockingRequests.length, 10);
     });
   });
 });

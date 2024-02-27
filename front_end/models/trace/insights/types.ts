@@ -19,26 +19,29 @@ type InsightRunnersType = typeof InsightsRunners;
 /**
  * Contains insights for a specific navigation.
  */
-export type NavigationInsightData = {
-  [I in keyof InsightRunnersType]?: ReturnType<InsightRunnersType[I]['generateInsight']>;
+export type NavigationInsightData<H extends {[key: string]: Handlers.Types.TraceEventHandler}> = {
+  [I in keyof EnabledInsightRunners<H>]: ReturnType<EnabledInsightRunners<H>[I]>;
 };
 
 /**
  * Contains insights for the entire trace. Insights are grouped by `navigationId`.
  */
-export type TraceInsightData = Map<string, NavigationInsightData>;
+export type TraceInsightData<H extends {[key: string]: Handlers.Types.TraceEventHandler}> =
+    Map<string, NavigationInsightData<H>>;
 
 /**
- * Maps each enabled insight name to its generate function. Insights that are disabled (i.e. missing one or more dependencies) will be unset/undefined.
+ * Maps each enabled insight name to its generate function. Insights that are disabled (i.e. missing one or more dependencies) will be unset.
  */
-export type EnabledInsightRunners<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = {
-  [I in keyof InsightRunnersType]?: (
-      traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>,
-      context: NavigationInsightContext) => ReturnType<InsightRunnersType[I]['generateInsight']>;
+export type EnabledInsightRunners<H extends {[key: string]: Handlers.Types.TraceEventHandler}> = {
+  [I in keyof InsightRunnersType]:
+      [Handlers.Types.EnabledHandlerDataWithMeta<H>] extends [Parameters<InsightRunnersType[I]['generateInsight']>[0]] ?
+      (traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<H>, context: NavigationInsightContext) =>
+          ReturnType<InsightRunnersType[I]['generateInsight']>:
+      never;
 };
 
 /**
- * Represents the narrow set of dependencies defined by an insight's `deps()` function.
+ * Represents the narrow set of dependencies defined by an insight's `deps()` function. `Meta` is always included regardless of `deps()`.
  */
 export type RequiredData<D extends() => Array<keyof typeof Handlers.ModelHandlers>> =
-    Pick<Handlers.Types.EnabledHandlerDataWithMeta<typeof Handlers.ModelHandlers>, ReturnType<D>[number]>;
+    Handlers.Types.EnabledHandlerDataWithMeta<Pick<typeof Handlers.ModelHandlers, ReturnType<D>[number]>>;

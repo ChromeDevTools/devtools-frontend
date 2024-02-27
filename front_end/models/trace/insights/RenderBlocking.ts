@@ -7,8 +7,8 @@ import type * as Types from '../types/types.js';
 
 import {type NavigationInsightContext, type RequiredData} from './types.js';
 
-export function deps(): ['NetworkRequests', 'Meta'] {
-  return ['NetworkRequests', 'Meta'];
+export function deps(): ['NetworkRequests'] {
+  return ['NetworkRequests'];
 }
 
 export function generateInsight(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext):

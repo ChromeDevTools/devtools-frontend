@@ -36,7 +36,7 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
   readonly #traceHandlers: Handlers.Types.HandlersWithMeta<EnabledModelHandlers>;
   #status = Status.IDLE;
   #modelConfiguration = Types.Configuration.DEFAULT;
-  #insights: Insights.Types.TraceInsightData|null = null;
+  #insights: Insights.Types.TraceInsightData<EnabledModelHandlers>|null = null;
 
   static createWithAllHandlers(): TraceProcessor<typeof Handlers.ModelHandlers> {
     return new TraceProcessor(Handlers.ModelHandlers, Types.Configuration.DEFAULT);
@@ -200,7 +200,7 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
     return enabledInsights;
   }
 
-  get insights(): Insights.Types.TraceInsightData|null {
+  get insights(): Insights.Types.TraceInsightData<EnabledModelHandlers>|null {
     if (!this.traceParsedData) {
       return null;
     }
@@ -223,7 +223,7 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
         navigationId: nav.args.data.navigationId,
       };
 
-      const navInsightData = {} as Insights.Types.NavigationInsightData;
+      const navInsightData = {} as Insights.Types.NavigationInsightData<EnabledModelHandlers>;
       for (const [name, generateInsight] of Object.entries(enabledInsightRunners)) {
         Object.assign(navInsightData, {[name]: generateInsight(this.traceParsedData, context)});
       }

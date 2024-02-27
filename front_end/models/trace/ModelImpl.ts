@@ -132,7 +132,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
   #storeParsedFileData(
       file: ParsedTraceFile<EnabledModelHandlers>,
       data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null,
-      insights: Insights.Types.TraceInsightData|null): void {
+      insights: Insights.Types.TraceInsightData<EnabledModelHandlers>|null): void {
     file.traceParsedData = data;
     file.traceInsights = insights;
     this.#lastRecordingIndex++;
@@ -162,7 +162,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#traces[index].traceParsedData;
   }
 
-  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightData|null {
+  traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightData<EnabledModelHandlers>|null {
     if (!this.#traces[index]) {
       return null;
     }
@@ -211,7 +211,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
  */
 export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = Types.File.TraceFile&{
   traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<Handlers>| null,
-  traceInsights: Insights.Types.TraceInsightData | null,
+  traceInsights: Insights.Types.TraceInsightData<Handlers>| null,
 };
 
 export const enum ModelUpdateType {

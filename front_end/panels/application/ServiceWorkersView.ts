@@ -231,7 +231,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
         UI.Fragment
             .html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${
                 i18nString(UIStrings.seeAllRegistrations)}</a>`;
-    seeOthers.setAttribute('jslog', `${VisualLogging.link('see-all-registrations').track({click: true})}`);
+    seeOthers.setAttribute('jslog', `${VisualLogging.link('view-all').track({click: true})}`);
     self.onInvokeElement(seeOthers, event => {
       const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
       rootTarget &&

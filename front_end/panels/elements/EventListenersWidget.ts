@@ -103,7 +103,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.showFrameworkListenersSetting.addChangeListener(this.showFrameworkListenersChanged.bind(this));
     this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
     this.eventListenersView.show(this.element);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('event-listeners').track({resize: true})}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('elements.event-listeners').track({resize: true})}`);
 
     this.toolbarItemsInternal.push(UI.Toolbar.Toolbar.createActionButtonForId('elements.refresh-event-listeners'));
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(

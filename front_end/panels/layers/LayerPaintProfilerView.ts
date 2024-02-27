@@ -12,7 +12,7 @@ export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly paintProfilerView: LayerViewer.PaintProfilerView.PaintProfilerView;
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true, false);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('layers-paint-profiler').track({resize: true})}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('layers.paint-profiler').track({resize: true})}`);
 
     this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
     this.setSidebarWidget(this.logTreeView);

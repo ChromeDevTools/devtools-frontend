@@ -274,7 +274,7 @@ describe('The Network Tab', function() {
       const expectedValues = JSON.stringify(['Remote Address Space', 'Local', 'Local']);
       await waitForFunction(async () => {
         const remoteAddressSpaceValues = await frontend.$$eval(
-            'pierce/.remoteaddress-space-column',
+            'pierce/.remote-address-space-column',
             cells => cells.map(element => element.textContent),
         );
         return JSON.stringify(remoteAddressSpaceValues) === expectedValues;

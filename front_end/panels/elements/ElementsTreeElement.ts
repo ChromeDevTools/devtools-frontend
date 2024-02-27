@@ -742,7 +742,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isEditable = this.hasEditableNode();
     // clang-format off
     if (isEditable && !this.editing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), {jslogContext: 'edit-as-html'});
+      contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this), {jslogContext: 'elements.edit-as-html'});
     }
     // clang-format on
     const isShadowRoot = this.nodeInternal.isShadowRoot();
@@ -775,7 +775,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       section.appendItem(
           i18nString(UIStrings.copyJsPath), this.copyJSPath.bind(this),
           {disabled: !canGetJSPath(this.nodeInternal), jslogContext: 'copy-js-path'});
-      section.appendItem(i18nString(UIStrings.copyStyles), this.copyStyles.bind(this), {jslogContext: 'copy-styles'});
+      section.appendItem(
+          i18nString(UIStrings.copyStyles), this.copyStyles.bind(this), {jslogContext: 'elements.copy-styles'});
     }
     if (!isShadowRoot) {
       section.appendItem(i18nString(UIStrings.copyXpath), this.copyXPath.bind(this), {jslogContext: 'copy-xpath'});
@@ -792,8 +793,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       // Duplicate element, disabled on root element and ShadowDOM.
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === '#document';
       menuItem = contextMenu.editSection().appendItem(
-          i18nString(UIStrings.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal),
-          {disabled: (this.nodeInternal.isInShadowTree() || isRootElement), jslogContext: 'duplicate-element'});
+          i18nString(UIStrings.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal), {
+            disabled: (this.nodeInternal.isInShadowTree() || isRootElement),
+            jslogContext: 'elements.duplicate-element',
+          });
     }
 
     menuItem = contextMenu.clipboardSection().appendItem(
@@ -803,7 +806,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     menuItem = contextMenu.debugSection().appendCheckboxItem(
         i18nString(UIStrings.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal),
-        {checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: 'hide-element'});
+        {checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: 'elements.hide-element'});
     menuItem.setShortcut(
         UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
 
@@ -820,7 +823,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         i18nString(UIStrings.captureNodeScreenshot),
         deviceModeWrapperAction.handleAction.bind(
             null, UI.Context.Context.instance(), 'emulation.capture-node-screenshot'),
-        {jslogContext: 'capture-node-screenshot'});
+        {jslogContext: 'emulation.capture-node-screenshot'});
     if (this.nodeInternal.frameOwnerFrameId()) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.showFrameDetails), () => {
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();

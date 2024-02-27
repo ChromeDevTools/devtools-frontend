@@ -134,7 +134,7 @@ export class CSSVarSwatch extends HTMLElement {
     // clang-format off
     render(
         html`<span data-title=${data.computedValue || ''}
-          jslog=${VisualLogging.link('css-var').track({click: true, hover: true})}
+          jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
         >var(${this.#link}<slot name="fallback">${data.fallbackText ? `, ${data.fallbackText}` : ''}</slot>)</span>`,
         this.shadow, {host: this});
     // clang-format on

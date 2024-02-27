@@ -1583,7 +1583,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       menu.defaultSection().appendItem(autoDarkModeOption, () => {
         autoDarkModeSetting.set(!isAutoDarkEnabled);
         button.setToggled(Boolean(prefersColorSchemeSetting.get()));
-      }, {jslogContext: 'auto-dark-color-scheme'});
+      }, {jslogContext: 'emulate-auto-dark-mode'});
 
       void menu.show();
       event.stopPropagation();

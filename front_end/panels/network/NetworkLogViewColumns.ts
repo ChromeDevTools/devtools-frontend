@@ -954,14 +954,14 @@ const _temporaryDefaultColumns = [
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'domain'),
   },
   {
-    id: 'remoteaddress',
+    id: 'remote-address',
     title: i18nLazyString(UIStrings.remoteAddress),
     weight: 10,
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.RemoteAddressComparator,
   },
   {
-    id: 'remoteaddress-space',
+    id: 'remote-address-space',
     title: i18nLazyString(UIStrings.remoteAddressSpace),
     visible: false,
     weight: 10,
@@ -994,7 +994,7 @@ const _temporaryDefaultColumns = [
     sortingFunction: NetworkRequestNode.RequestCookiesCountComparator,
   },
   {
-    id: 'setcookies',
+    id: 'set-cookies',
     title: i18nLazyString(UIStrings.setCookies),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.ResponseCookiesCountComparator,
@@ -1017,7 +1017,7 @@ const _temporaryDefaultColumns = [
   },
   {id: 'priority', title: i18nLazyString(UIStrings.priority), sortingFunction: NetworkRequestNode.PriorityComparator},
   {
-    id: 'connectionid',
+    id: 'connection-id',
     title: i18nLazyString(UIStrings.connectionId),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'connectionId'),
   },

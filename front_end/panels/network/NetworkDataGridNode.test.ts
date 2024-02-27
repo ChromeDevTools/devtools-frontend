@@ -447,7 +447,7 @@ describeWithEnvironment('NetworkLogView', () => {
     const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
         {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
     const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'setcookies');
+    networkRequestNode.renderCell(el, 'set-cookies');
     assert.strictEqual(el.innerText, '1');
   });
 

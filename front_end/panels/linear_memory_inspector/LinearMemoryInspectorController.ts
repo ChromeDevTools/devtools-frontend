@@ -331,7 +331,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.revealInMemoryInspectorPanel),
           this.reveal.bind(this, new SDK.RemoteObject.LinearMemoryInspectable(object, expression)),
-          {jslogContext: 'reveal-in-memory-inspector-panel'});
+          {jslogContext: 'reveal-in-memory-inspector'});
     }
   }
   static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string):

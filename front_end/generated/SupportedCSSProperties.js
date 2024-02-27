@@ -3361,6 +3361,9 @@ export const generatedProperties = [
   "name": "text-autospace"
  },
  {
+  "name": "text-box-edge"
+ },
+ {
   "keywords": [
    "none",
    "start",

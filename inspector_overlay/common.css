@@ -12,7 +12,7 @@ body {
 }
 
 body.platform-linux {
-  font-family: Roboto, Ubuntu, Arial, sans-serif;
+  font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
 }
 
 body.platform-mac {

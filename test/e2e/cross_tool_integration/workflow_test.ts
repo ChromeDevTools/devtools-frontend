@@ -52,7 +52,8 @@ describe('A user can navigate across', function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  it('Performance -> Sources', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/327072692] Performance -> Sources', async () => {
     await navigateToPerformanceTab();
 
     await startRecording();

@@ -138,7 +138,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         <main>
           <div class="top-right-corner">
             <label class="checkbox-label">
-              <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
+              <input type="checkbox" ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
               <span>${i18nString(UIStrings.autoShow)}</span>
             </label>
           </div>
@@ -159,7 +159,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
             <div class="label-container">
               <label class="checkbox-label">
-                <input type="checkbox" tabindex=-1 ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
+                <input type="checkbox" ?checked=${this.#autoOpenViewSetting?.get()} @change=${this.#onAutoOpenCheckboxChanged.bind(this)} jslog=${VisualLogging.toggle('auto-open').track({ change: true })}>
                 <span>${i18nString(UIStrings.autoShow)}</span>
               </label>
             </div>

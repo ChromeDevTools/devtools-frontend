@@ -2,6 +2,7 @@
 
 You can run the unit tests with `npm run auto-unittest`.
 Unit tests are written using [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/) and run with [Karma](https://karma-runner.github.io/latest/index.html) in a web browser.
+The unit tests live next to the source code they are testing and follow the naming convention `Foo.test.ts` for `Foo.ts`.
 
 ## Running a subset of unit tests
 If you want to run a specific (set of) unit test, you can use `it.only` or `describe.only` for those tests that you want to run.

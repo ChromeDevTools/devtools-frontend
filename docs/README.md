@@ -36,7 +36,7 @@ below.**
 ### Testing
 *   [Testing Chromium DevTools](testing.md)
 *   [E2E test guide](../test/e2e/README.md)
-*   [Unit test guide](../test/unittests/README.md)
+*   [Unit test guide](unit_testing.md)
 
 ### Architectural Documentation
 *   [Architecture of DevTools](architecture_of_devtools.md)

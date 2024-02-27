@@ -9,7 +9,7 @@ Follow the steps outlined in [Get the Code](get_the_code.md) to checkout the Dev
 Test are available by running scripts in `scripts/test/`. Please refer to the [overview document](https://docs.google.com/document/d/1c2KLKoFMqLB2A9sNAHIhYb70XFyfBUBs5BZSYfQAT-Y/edit). The current test status can be seen at the [test waterfall](https://ci.chromium.org/p/devtools-frontend/g/main/console).
 
 *   [E2E test guide](../test/e2e/README.md)
-*   [Unit test guide](../test/unittests/README.md)
+*   [Unit test guide](unit_testing.md)
 
 
 ## Layout tests

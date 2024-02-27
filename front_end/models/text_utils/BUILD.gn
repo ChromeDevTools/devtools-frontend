@@ -27,9 +27,6 @@ devtools_module("text_utils") {
     "../../third_party/codemirror",
     "../../third_party/codemirror.next:bundle",
   ]
-
-  visibility =
-      [ "../../../test/unittests/front_end/models/text_utils:text_utils" ]
 }
 
 devtools_entrypoint("bundle") {

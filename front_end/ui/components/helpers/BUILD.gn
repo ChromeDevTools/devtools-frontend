@@ -32,7 +32,6 @@ devtools_entrypoint("bundle") {
   deps = [ ":helpers" ]
 
   visibility = [
-    "../../../../test/unittests/front_end/test_setup/*",
     "../../../testing/*",
     "../../legacy/*",
     "../../legacy/components/inline_editor/*",

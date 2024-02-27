@@ -68,7 +68,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/unittests/front_end/panels/network/components/*",
   ]
 
   visibility += devtools_panels_visibility

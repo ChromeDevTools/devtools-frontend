@@ -19,7 +19,6 @@ devtools_module("text_prompt") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/lit-html:bundle",
   ]
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

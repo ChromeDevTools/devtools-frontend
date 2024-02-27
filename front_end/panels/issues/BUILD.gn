@@ -58,8 +58,6 @@ devtools_module("issues") {
     "../../ui/lit-html:bundle",
     "./components:bundle",
   ]
-
-  visibility = [ "../../../test/unittests/front_end/issues" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -31,7 +31,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/source_map_scopes/*",
     "../../panels/console/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",

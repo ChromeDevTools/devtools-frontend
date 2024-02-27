@@ -19,8 +19,6 @@ devtools_module("text_editor") {
     "theme.ts",
   ]
 
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
-
   deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",

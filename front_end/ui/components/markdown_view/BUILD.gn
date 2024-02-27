@@ -42,8 +42,6 @@ devtools_module("markdown_view") {
     "../../../ui/lit-html:bundle",
     "../../../ui/visual_logging:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

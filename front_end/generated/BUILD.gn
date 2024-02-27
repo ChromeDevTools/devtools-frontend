@@ -18,7 +18,6 @@ devtools_module("generated") {
 
   visibility = [
     "../../test/e2e/network:*",
-    "../../test/unittests/front_end/models/trace/*",
     "../core/protocol_client:*",
     "../core/sdk:*",
     "../models/cpu_profile:*",

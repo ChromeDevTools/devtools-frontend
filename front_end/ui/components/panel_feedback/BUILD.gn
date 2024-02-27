@@ -31,8 +31,6 @@ devtools_module("panel_feedback") {
     "../buttons:bundle",
     "../input:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

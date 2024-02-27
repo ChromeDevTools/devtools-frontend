@@ -25,8 +25,6 @@ devtools_module("report_view") {
     "../../components/helpers:bundle",
     "../../lit-html:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

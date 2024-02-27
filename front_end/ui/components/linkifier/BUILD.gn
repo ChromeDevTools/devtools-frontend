@@ -23,8 +23,6 @@ devtools_module("linkifier") {
     "../../../ui/lit-html:bundle",
     "../helpers:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

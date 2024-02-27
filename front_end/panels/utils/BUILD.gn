@@ -15,10 +15,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/diff_view:bundle",
   ]
 
-  visibility = [
-    "../*",
-    "../../../test/unittests/front_end/panels/utils/*",
-  ]
+  visibility = [ "../*" ]
 
   visibility += devtools_panels_visibility
 }

@@ -83,8 +83,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../../../test/unittests/front_end/panels/elements/*",
-    "../../../../../test/unittests/front_end/ui/legacy/components/inline_editor/*",
     "../../../../panels/animation/*",
     "../../../../panels/application/*",
     "../../../../panels/elements/*",

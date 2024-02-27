@@ -15,8 +15,6 @@ generate_css("css_files") {
 devtools_module("diff_view") {
   sources = [ "DiffView.ts" ]
 
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
-
   deps = [
     ":css_files",
     "../../../core/common:bundle",

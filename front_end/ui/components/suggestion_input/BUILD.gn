@@ -19,9 +19,6 @@ devtools_module("suggestion_input") {
     "../../../ui/lit-html:bundle",
     "../../../ui/visual_logging:bundle",
   ]
-
-  visibility =
-      [ "../../../../test/unittests/front_end/panels/protocol_monitor/*" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -32,6 +29,5 @@ devtools_entrypoint("bundle") {
     ":suggestion_input",
   ]
 
-  visibility = [ "../../../../test/unittests/front_end/*" ]
-  visibility += default_components_visibility
+  visibility = default_components_visibility
 }

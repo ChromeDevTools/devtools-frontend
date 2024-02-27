@@ -34,8 +34,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/models/formatter/*",
-    "../../../test/unittests/front_end/models/source_map_scopes/*",
     "../../entrypoints/formatter_worker/*",
     "../../models/breakpoints/*",
     "../../models/source_map_scopes/*",

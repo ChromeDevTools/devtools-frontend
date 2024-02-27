@@ -15,8 +15,6 @@ generate_css("css_files") {
 devtools_module("highlighting") {
   sources = [ "HighlightManager.ts" ]
   deps = [ "../../../models/text_utils:bundle" ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -61,10 +61,7 @@ devtools_module("perf_ui") {
     "../../../../ui/lit-html:bundle",
   ]
 
-  visibility = [
-    "../../../../../test/unittests/front_end/perf_ui",
-    "../../../../component_docs/perf_piechart",
-  ]
+  visibility = [ "../../../../component_docs/perf_piechart" ]
 }
 
 devtools_entrypoint("bundle") {

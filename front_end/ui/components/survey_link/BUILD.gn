@@ -22,8 +22,6 @@ devtools_module("survey_link") {
     "../../../ui/lit-html:bundle",
     "../icon_button:bundle",
   ]
-
-  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
 }
 
 devtools_entrypoint("bundle") {

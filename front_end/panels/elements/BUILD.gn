@@ -99,10 +99,7 @@ devtools_module("elements") {
     "./components:bundle",
   ]
 
-  visibility = [
-    "../../../test/unittests/front_end/elements",
-    "../../component_docs/*",
-  ]
+  visibility = [ "../../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -142,7 +139,6 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    "../../../test/unittests/front_end/panels/elements/*",
     "../../entrypoints/*",
     "../../testing/*",
   ]

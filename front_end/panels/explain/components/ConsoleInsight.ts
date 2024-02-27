@@ -118,6 +118,10 @@ const UIStrings = {
    * @description The message shown if the user is not logged in.
    */
   signInToUse: 'Sign in to use Console insights',
+  /**
+   * @description The title of the button that cancels a console insight flow.
+   */
+  cancel: 'Cancel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -531,7 +535,18 @@ export class ConsoleInsight extends HTMLElement {
             ${disclaimer}
           </div>
           <div class="filler"></div>
-          <div>
+          <div class="buttons">
+            <${Buttons.Button.Button.litTagName}
+              class="cancel-button"
+              @click=${this.#onClose}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.SECONDARY,
+                } as Buttons.Button.ButtonData
+              }
+            >
+              ${UIStrings.cancel}
+            </${Buttons.Button.Button.litTagName}>
             <${Buttons.Button.Button.litTagName}
               class="consent-button"
               @click=${this.#onConsent}

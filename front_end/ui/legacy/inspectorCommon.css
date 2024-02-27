@@ -99,7 +99,7 @@ body {
 
 /* Default fonts */
 .platform-linux {
-  --default-font-family: roboto, ubuntu, arial, sans-serif;
+  --default-font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
 }
 
 .platform-mac {

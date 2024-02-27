@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { SocksClientOptions, SocksClientChainOptions } from '../client/socksclient';
 /**
  * Validates the provided SocksClientOptions
@@ -11,3 +12,6 @@ declare function validateSocksClientOptions(options: SocksClientOptions, accepte
  */
 declare function validateSocksClientChainOptions(options: SocksClientChainOptions): void;
 export { validateSocksClientOptions, validateSocksClientChainOptions };
+export declare function ipv4ToInt32(ip: string): number;
+export declare function int32ToIpv4(int32: number): string;
+export declare function ipToBuffer(ip: string): Buffer;

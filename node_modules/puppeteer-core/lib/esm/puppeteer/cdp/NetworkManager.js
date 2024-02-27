@@ -429,7 +429,7 @@ export class NetworkManager extends EventEmitter {
         this.#networkEventManager.responseExtraInfo(event.requestId).push(event);
     }
     #forgetRequest(request, events) {
-        const requestId = request._requestId;
+        const requestId = request.id;
         const interceptionId = request._interceptionId;
         this.#networkEventManager.forgetRequest(requestId);
         interceptionId !== undefined &&

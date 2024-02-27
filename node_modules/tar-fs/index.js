@@ -1,10 +1,9 @@
 const tar = require('tar-stream')
 const pump = require('pump')
-const mkdirp = require('mkdirp-classic')
 const fs = require('fs')
 const path = require('path')
 
-const win32 = process.platform === 'win32'
+const win32 = (global.Bare?.platform || process.platform) === 'win32'
 
 exports.pack = function pack (cwd, opts) {
   if (!cwd) cwd = '.'
@@ -298,7 +297,7 @@ exports.extract = function extract (cwd, opts) {
     xfs.stat(name, function (err) {
       if (!err) return cb(null)
       if (err.code !== 'ENOENT') return cb(err)
-      mkdirp(name, { fs: opts.fs, mode: opts.mode }, function (err, made) {
+      xfs.mkdir(name, { mode: opts.mode, recursive: true }, function (err, made) {
         if (err) return cb(err)
         chperm(name, opts, cb)
       })

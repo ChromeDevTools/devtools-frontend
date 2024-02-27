@@ -6,6 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebWorker = void 0;
+const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
@@ -100,6 +101,9 @@ class WebWorker extends EventEmitter_js_1.EventEmitter {
     async evaluateHandle(func, ...args) {
         func = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluateHandle.name, func);
         return await this.mainRealm().evaluateHandle(func, ...args);
+    }
+    async close() {
+        throw new Errors_js_1.UnsupportedOperation('WebWorker.close() is not supported');
     }
 }
 exports.WebWorker = WebWorker;

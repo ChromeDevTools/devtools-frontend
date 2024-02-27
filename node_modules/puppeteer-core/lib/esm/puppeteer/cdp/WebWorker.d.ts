@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Realm } from '../api/Realm.js';
+import { TargetType } from '../api/Target.js';
 import { WebWorker } from '../api/WebWorker.js';
 import { CdpJSHandle } from './JSHandle.js';
 /**
@@ -21,8 +22,9 @@ export type ExceptionThrownCallback = (event: Protocol.Runtime.ExceptionThrownEv
  */
 export declare class CdpWebWorker extends WebWorker {
     #private;
-    constructor(client: CDPSession, url: string, consoleAPICalled: ConsoleAPICalledCallback, exceptionThrown: ExceptionThrownCallback);
+    constructor(client: CDPSession, url: string, targetId: string, targetType: TargetType, consoleAPICalled: ConsoleAPICalledCallback, exceptionThrown: ExceptionThrownCallback);
     mainRealm(): Realm;
     get client(): CDPSession;
+    close(): Promise<void>;
 }
 //# sourceMappingURL=WebWorker.d.ts.map

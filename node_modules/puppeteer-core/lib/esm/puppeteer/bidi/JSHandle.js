@@ -6,24 +6,20 @@
 import { JSHandle } from '../api/JSHandle.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { BidiDeserializer } from './Deserializer.js';
-import { releaseReference } from './util.js';
 /**
  * @internal
  */
 export class BidiJSHandle extends JSHandle {
-    #disposed = false;
-    #sandbox;
+    static from(value, realm) {
+        return new BidiJSHandle(value, realm);
+    }
     #remoteValue;
-    constructor(sandbox, remoteValue) {
+    realm;
+    #disposed = false;
+    constructor(value, realm) {
         super();
-        this.#sandbox = sandbox;
-        this.#remoteValue = remoteValue;
-    }
-    context() {
-        return this.realm.environment.context();
-    }
-    get realm() {
-        return this.#sandbox;
+        this.#remoteValue = value;
+        this.realm = realm;
     }
     get disposed() {
         return this.#disposed;
@@ -41,9 +37,7 @@ export class BidiJSHandle extends JSHandle {
             return;
         }
         this.#disposed = true;
-        if ('handle' in this.#remoteValue) {
-            await releaseReference(this.context(), this.#remoteValue);
-        }
+        await this.realm.destroyHandles([this]);
     }
     get isPrimitiveValue() {
         switch (this.#remoteValue.type) {

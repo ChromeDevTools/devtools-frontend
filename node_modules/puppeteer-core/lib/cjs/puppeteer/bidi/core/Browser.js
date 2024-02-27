@@ -88,6 +88,7 @@ exports.Browser = void 0;
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const decorators_js_1 = require("../../util/decorators.js");
 const disposable_js_1 = require("../../util/disposable.js");
+const Realm_js_1 = require("./Realm.js");
 const UserContext_js_1 = require("./UserContext.js");
 /**
  * @internal
@@ -121,13 +122,13 @@ let Browser = (() => {
         #disposables = new disposable_js_1.DisposableStack();
         #userContexts = new Map();
         session;
+        #sharedWorkers = new Map();
         // keep-sorted end
         constructor(session) {
             super();
             // keep-sorted start
             this.session = session;
             // keep-sorted end
-            this.#userContexts.set(UserContext_js_1.UserContext.DEFAULT, UserContext_js_1.UserContext.create(this, UserContext_js_1.UserContext.DEFAULT));
         }
         async #initialize() {
             const sessionEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.session));
@@ -135,9 +136,10 @@ let Browser = (() => {
                 this.dispose(reason);
             });
             sessionEmitter.on('script.realmCreated', info => {
-                if (info.type === 'shared-worker') {
-                    // TODO: Create a SharedWorkerRealm.
+                if (info.type !== 'shared-worker') {
+                    return;
                 }
+                this.#sharedWorkers.set(info.realm, Realm_js_1.SharedWorkerRealm.from(this, info.realm, info.origin));
             });
             await this.#syncUserContexts();
             await this.#syncBrowsingContexts();
@@ -145,10 +147,7 @@ let Browser = (() => {
         async #syncUserContexts() {
             const { result: { userContexts }, } = await this.session.send('browser.getUserContexts', {});
             for (const context of userContexts) {
-                if (context.userContext === UserContext_js_1.UserContext.DEFAULT) {
-                    continue;
-                }
-                this.#userContexts.set(context.userContext, UserContext_js_1.UserContext.create(this, context.userContext));
+                this.#createUserContext(context.userContext);
             }
         }
         async #syncBrowsingContexts() {
@@ -163,9 +162,6 @@ let Browser = (() => {
                     sessionEmitter.on('browsingContext.contextCreated', info => {
                         contextIds.add(info.context);
                     });
-                    sessionEmitter.on('browsingContext.contextDestroyed', info => {
-                        contextIds.delete(info.context);
-                    });
                     const { result } = await this.session.send('browsingContext.getTree', {});
                     contexts = result.contexts;
                 }
@@ -179,13 +175,23 @@ let Browser = (() => {
             }
             // Simulating events so contexts are created naturally.
             for (const info of contexts) {
-                if (contextIds.has(info.context)) {
+                if (!contextIds.has(info.context)) {
                     this.session.emit('browsingContext.contextCreated', info);
                 }
                 if (info.children) {
                     contexts.push(...info.children);
                 }
             }
+        }
+        #createUserContext(id) {
+            const userContext = UserContext_js_1.UserContext.create(this, id);
+            this.#userContexts.set(userContext.id, userContext);
+            const userContextEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(userContext));
+            userContextEmitter.once('closed', () => {
+                userContextEmitter.removeAllListeners();
+                this.#userContexts.delete(userContext.id);
+            });
+            return userContext;
         }
         // keep-sorted start block=yes
         get closed() {
@@ -235,14 +241,7 @@ let Browser = (() => {
         }
         async createUserContext() {
             const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {});
-            const userContext = UserContext_js_1.UserContext.create(this, context);
-            this.#userContexts.set(userContext.id, userContext);
-            const userContextEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(userContext));
-            userContextEmitter.once('closed', () => {
-                userContextEmitter.removeAllListeners();
-                this.#userContexts.delete(context);
-            });
-            return userContext;
+            return this.#createUserContext(context);
         }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _close_decorators = [(0, decorators_js_1.throwIfDisposed)(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.

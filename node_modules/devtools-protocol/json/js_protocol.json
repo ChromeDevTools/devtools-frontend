@@ -3466,7 +3466,6 @@
                 {
                     "name": "addBinding",
                     "description": "If executionContextId is empty, adds binding with the given name on the\nglobal objects of all inspected contexts, including those created later,\nbindings survive reloads.\nBinding function takes exactly one argument, this argument should be string,\nin case of any other input, function throws an exception.\nEach binding function call produces Runtime.bindingCalled notification.",
-                    "experimental": true,
                     "parameters": [
                         {
                             "name": "name",
@@ -3475,6 +3474,7 @@
                         {
                             "name": "executionContextId",
                             "description": "If specified, the binding would only be exposed to the specified\nexecution context. If omitted and `executionContextName` is not set,\nthe binding is exposed to all execution contexts of the target.\nThis parameter is mutually exclusive with `executionContextName`.\nDeprecated in favor of `executionContextName` due to an unclear use case\nand bugs in implementation (crbug.com/1169639). `executionContextId` will be\nremoved in the future.",
+                            "experimental": true,
                             "deprecated": true,
                             "optional": true,
                             "$ref": "ExecutionContextId"
@@ -3482,7 +3482,6 @@
                         {
                             "name": "executionContextName",
                             "description": "If specified, the binding is exposed to the executionContext with\nmatching name, even for contexts created after the binding is added.\nSee also `ExecutionContext.name` and `worldName` parameter to\n`Page.addScriptToEvaluateOnNewDocument`.\nThis parameter is mutually exclusive with `executionContextId`.",
-                            "experimental": true,
                             "optional": true,
                             "type": "string"
                         }
@@ -3491,7 +3490,6 @@
                 {
                     "name": "removeBinding",
                     "description": "This method does not remove binding function from global object but\nunsubscribes current runtime agent from Runtime.bindingCalled notifications.",
-                    "experimental": true,
                     "parameters": [
                         {
                             "name": "name",

@@ -1,13 +1,7 @@
-/**
- * @license
- * Copyright 2024 Google Inc.
- * SPDX-License-Identifier: Apache-2.0
- */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { EventEmitter } from '../common/EventEmitter.js';
+import { Realm } from '../api/Realm.js';
+import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
-import { PuppeteerURL, SOURCE_URL_REGEX, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, } from '../common/util.js';
-import { disposeSymbol } from '../util/disposable.js';
+import { debugError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, PuppeteerURL, SOURCE_URL_REGEX, } from '../common/util.js';
 import { stringifyFunction } from '../util/Function.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiElementHandle } from './ElementHandle.js';
@@ -17,40 +11,20 @@ import { createEvaluationError } from './util.js';
 /**
  * @internal
  */
-export class BidiRealm extends EventEmitter {
-    connection;
-    #id;
-    #sandbox;
-    constructor(connection) {
-        super();
-        this.connection = connection;
+export class BidiRealm extends Realm {
+    realm;
+    constructor(realm, timeoutSettings) {
+        super(timeoutSettings);
+        this.realm = realm;
     }
-    get target() {
-        return {
-            context: this.#sandbox.environment._id,
-            sandbox: this.#sandbox.name,
-        };
-    }
-    handleRealmDestroyed = async (params) => {
-        if (params.realm === this.#id) {
-            // Note: The Realm is destroyed, so in theory the handle should be as
-            // well.
+    initialize() {
+        this.realm.on('destroyed', ({ reason }) => {
+            this.taskManager.terminateAll(new Error(reason));
+        });
+        this.realm.on('updated', () => {
             this.internalPuppeteerUtil = undefined;
-            this.#sandbox.environment.clearDocumentHandle();
-        }
-    };
-    handleRealmCreated = (params) => {
-        if (params.type === 'window' &&
-            params.context === this.#sandbox.environment._id &&
-            params.sandbox === this.#sandbox.name) {
-            this.#id = params.realm;
-            void this.#sandbox.taskManager.rerunAll();
-        }
-    };
-    setSandbox(sandbox) {
-        this.#sandbox = sandbox;
-        this.connection.on(Bidi.ChromiumBidi.Script.EventNames.RealmCreated, this.handleRealmCreated);
-        this.connection.on(Bidi.ChromiumBidi.Script.EventNames.RealmDestroyed, this.handleRealmDestroyed);
+            void this.taskManager.rerunAll();
+        });
     }
     internalPuppeteerUtil;
     get puppeteerUtil() {
@@ -76,7 +50,6 @@ export class BidiRealm extends EventEmitter {
     async #evaluate(returnByValue, pageFunction, ...args) {
         const sourceUrlComment = getSourceUrlComment(getSourcePuppeteerURLIfAvailable(pageFunction)?.toString() ??
             PuppeteerURL.INTERNAL_URL);
-        const sandbox = this.#sandbox;
         let responsePromise;
         const resultOwnership = returnByValue
             ? "none" /* Bidi.Script.ResultOwnership.None */
@@ -91,11 +64,8 @@ export class BidiRealm extends EventEmitter {
             const expression = SOURCE_URL_REGEX.test(pageFunction)
                 ? pageFunction
                 : `${pageFunction}\n${sourceUrlComment}\n`;
-            responsePromise = this.connection.send('script.evaluate', {
-                expression,
-                target: this.target,
+            responsePromise = this.realm.evaluate(expression, true, {
                 resultOwnership,
-                awaitPromise: true,
                 userActivation: true,
                 serializationOptions,
             });
@@ -105,40 +75,141 @@ export class BidiRealm extends EventEmitter {
             functionDeclaration = SOURCE_URL_REGEX.test(functionDeclaration)
                 ? functionDeclaration
                 : `${functionDeclaration}\n${sourceUrlComment}\n`;
-            responsePromise = this.connection.send('script.callFunction', {
-                functionDeclaration,
+            responsePromise = this.realm.callFunction(functionDeclaration, 
+            /* awaitPromise= */ true, {
                 arguments: args.length
                     ? await Promise.all(args.map(arg => {
-                        return BidiSerializer.serialize(sandbox, arg);
+                        return this.serialize(arg);
                     }))
                     : [],
-                target: this.target,
                 resultOwnership,
-                awaitPromise: true,
                 userActivation: true,
                 serializationOptions,
             });
         }
-        const { result } = await responsePromise;
+        const result = await responsePromise;
         if ('type' in result && result.type === 'exception') {
             throw createEvaluationError(result.exceptionDetails);
         }
         return returnByValue
             ? BidiDeserializer.deserialize(result.result)
-            : createBidiHandle(sandbox, result.result);
+            : this.createHandle(result.result);
     }
-    [disposeSymbol]() {
-        this.connection.off(Bidi.ChromiumBidi.Script.EventNames.RealmCreated, this.handleRealmCreated);
-        this.connection.off(Bidi.ChromiumBidi.Script.EventNames.RealmDestroyed, this.handleRealmDestroyed);
+    createHandle(result) {
+        if ((result.type === 'node' || result.type === 'window') &&
+            this instanceof BidiFrameRealm) {
+            return BidiElementHandle.from(result, this);
+        }
+        return BidiJSHandle.from(result, this);
+    }
+    async serialize(arg) {
+        if (arg instanceof LazyArg) {
+            arg = await arg.get(this);
+        }
+        if (arg instanceof BidiJSHandle || arg instanceof BidiElementHandle) {
+            if (arg.realm !== this) {
+                if (!(arg.realm instanceof BidiFrameRealm) ||
+                    !(this instanceof BidiFrameRealm)) {
+                    throw new Error("Trying to evaluate JSHandle from different global types. Usually this means you're using a handle from a worker in a page or vice versa.");
+                }
+                if (arg.realm.environment !== this.environment) {
+                    throw new Error("Trying to evaluate JSHandle from different frames. Usually this means you're using a handle from a page on a different page.");
+                }
+            }
+            if (arg.disposed) {
+                throw new Error('JSHandle is disposed!');
+            }
+            return arg.remoteValue();
+        }
+        return BidiSerializer.serialize(arg);
+    }
+    async destroyHandles(handles) {
+        const handleIds = handles
+            .map(({ id }) => {
+            return id;
+        })
+            .filter((id) => {
+            return id !== undefined;
+        });
+        if (handleIds.length === 0) {
+            return;
+        }
+        await this.realm.disown(handleIds).catch(error => {
+            // Exceptions might happen in case of a page been navigated or closed.
+            // Swallow these since they are harmless and we don't leak anything in this case.
+            debugError(error);
+        });
+    }
+    async adoptHandle(handle) {
+        return (await this.evaluateHandle(node => {
+            return node;
+        }, handle));
+    }
+    async transferHandle(handle) {
+        if (handle.realm === this) {
+            return handle;
+        }
+        const transferredHandle = this.adoptHandle(handle);
+        await handle.dispose();
+        return await transferredHandle;
     }
 }
 /**
  * @internal
  */
-export function createBidiHandle(sandbox, result) {
-    if (result.type === 'node' || result.type === 'window') {
-        return new BidiElementHandle(sandbox, result);
+export class BidiFrameRealm extends BidiRealm {
+    static from(realm, frame) {
+        const frameRealm = new BidiFrameRealm(realm, frame);
+        frameRealm.#initialize();
+        return frameRealm;
     }
-    return new BidiJSHandle(sandbox, result);
+    #frame;
+    constructor(realm, frame) {
+        super(realm, frame.timeoutSettings);
+        this.#frame = frame;
+    }
+    #initialize() {
+        // This should run first.
+        this.realm.on('updated', () => {
+            this.environment.clearDocumentHandle();
+        });
+        super.initialize();
+    }
+    get sandbox() {
+        return this.realm.sandbox;
+    }
+    get environment() {
+        return this.#frame;
+    }
+    async adoptBackendNode(backendNodeId) {
+        const { object } = await this.#frame.client.send('DOM.resolveNode', {
+            backendNodeId,
+        });
+        return BidiElementHandle.from({
+            handle: object.objectId,
+            type: 'node',
+        }, this);
+    }
+}
+/**
+ * @internal
+ */
+export class BidiWorkerRealm extends BidiRealm {
+    static from(realm, worker) {
+        const workerRealm = new BidiWorkerRealm(realm, worker);
+        workerRealm.initialize();
+        return workerRealm;
+    }
+    #worker;
+    constructor(realm, frame) {
+        super(realm, frame.timeoutSettings);
+        this.#worker = frame;
+    }
+    get environment() {
+        return this.#worker;
+    }
+    async adoptBackendNode() {
+        throw new Error('Cannot adopt DOM nodes into a worker.');
+    }
 }
 //# sourceMappingURL=Realm.js.map

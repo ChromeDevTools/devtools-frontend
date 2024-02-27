@@ -14,7 +14,6 @@ import type {
   WaitTimeoutOptions,
 } from '../api/Page.js';
 import type {DeviceRequestPrompt} from '../cdp/DeviceRequestPrompt.js';
-import type {IsolatedWorldChart} from '../cdp/IsolatedWorld.js';
 import type {PuppeteerLifeCycleEvent} from '../cdp/LifecycleWatcher.js';
 import {EventEmitter, type EventType} from '../common/EventEmitter.js';
 import {getQueryHandlerAndSelector} from '../common/GetQueryHandler.js';
@@ -38,8 +37,8 @@ import type {CDPSession} from './CDPSession.js';
 import type {KeyboardTypeOptions} from './Input.js';
 import {
   FunctionLocator,
-  type Locator,
   NodeLocator,
+  type Locator,
 } from './locators/locators.js';
 import type {Realm} from './Realm.js';
 
@@ -273,11 +272,6 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   /**
    * @internal
    */
-  worlds!: IsolatedWorldChart;
-
-  /**
-   * @internal
-   */
   _name?: string;
 
   /**
@@ -339,12 +333,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    */
   abstract goto(
     url: string,
-    options?: {
-      referer?: string;
-      referrerPolicy?: string;
-      timeout?: number;
-      waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-    }
+    options?: GoToOptions
   ): Promise<HTTPResponse | null>;
 
   /**
@@ -425,12 +414,12 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
       return null;
     }
     using list = await parentFrame.isolatedRealm().evaluateHandle(() => {
-      return document.querySelectorAll('iframe');
+      return document.querySelectorAll('iframe,frame');
     });
     for await (using iframe of transposeIterableHandle(list)) {
       const frame = await iframe.contentFrame();
-      if (frame._id === this._id) {
-        return iframe.move();
+      if (frame?._id === this._id) {
+        return (iframe as HandleFor<HTMLIFrameElement>).move();
       }
     }
     return null;
@@ -749,13 +738,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    * @param options - Options to configure how long before timing out and at
    * what point to consider the content setting successful.
    */
-  abstract setContent(
-    html: string,
-    options?: {
-      timeout?: number;
-      waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-    }
-  ): Promise<void>;
+  abstract setContent(html: string, options?: WaitForOptions): Promise<void>;
 
   /**
    * @internal

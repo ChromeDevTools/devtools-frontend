@@ -3,6 +3,7 @@
  * Copyright 2018 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { withSourcePuppeteerURLIfNone } from '../common/util.js';
@@ -97,6 +98,9 @@ export class WebWorker extends EventEmitter {
     async evaluateHandle(func, ...args) {
         func = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, func);
         return await this.mainRealm().evaluateHandle(func, ...args);
+    }
+    async close() {
+        throw new UnsupportedOperation('WebWorker.close() is not supported');
     }
 }
 //# sourceMappingURL=WebWorker.js.map

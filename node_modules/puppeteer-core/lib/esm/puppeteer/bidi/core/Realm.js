@@ -37,6 +37,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+var _a;
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed, throwIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
@@ -71,15 +72,6 @@ let Realm = (() => {
             this.id = id;
             this.origin = origin;
             // keep-sorted end
-        }
-        initialize() {
-            const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
-            sessionEmitter.on('script.realmDestroyed', info => {
-                if (info.realm !== this.id) {
-                    return;
-                }
-                this.dispose('Realm already destroyed.');
-            });
         }
         // keep-sorted start block=yes
         get disposed() {
@@ -142,17 +134,14 @@ export { Realm };
 export class WindowRealm extends Realm {
     static from(context, sandbox) {
         const realm = new WindowRealm(context, sandbox);
-        realm.initialize();
+        realm.#initialize();
         return realm;
     }
     // keep-sorted start
     browsingContext;
     sandbox;
     // keep-sorted end
-    #workers = {
-        dedicated: new Map(),
-        shared: new Map(),
-    };
+    #workers = new Map();
     constructor(context, sandbox) {
         super('', '');
         // keep-sorted start
@@ -160,15 +149,21 @@ export class WindowRealm extends Realm {
         this.sandbox = sandbox;
         // keep-sorted end
     }
-    initialize() {
-        super.initialize();
+    #initialize() {
+        const browsingContextEmitter = this.disposables.use(new EventEmitter(this.browsingContext));
+        browsingContextEmitter.on('closed', ({ reason }) => {
+            this.dispose(reason);
+        });
         const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
         sessionEmitter.on('script.realmCreated', info => {
-            if (info.type !== 'window') {
+            if (info.type !== 'window' ||
+                info.context !== this.browsingContext.id ||
+                info.sandbox !== this.sandbox) {
                 return;
             }
             this.id = info.realm;
             this.origin = info.origin;
+            this.emit('updated', this);
         });
         sessionEmitter.on('script.realmCreated', info => {
             if (info.type !== 'dedicated-worker') {
@@ -178,25 +173,13 @@ export class WindowRealm extends Realm {
                 return;
             }
             const realm = DedicatedWorkerRealm.from(this, info.realm, info.origin);
-            this.#workers.dedicated.set(realm.id, realm);
+            this.#workers.set(realm.id, realm);
             const realmEmitter = this.disposables.use(new EventEmitter(realm));
             realmEmitter.once('destroyed', () => {
                 realmEmitter.removeAllListeners();
-                this.#workers.dedicated.delete(realm.id);
+                this.#workers.delete(realm.id);
             });
             this.emit('worker', realm);
-        });
-        this.browsingContext.userContext.browser.on('sharedworker', ({ realm }) => {
-            if (!realm.owners.has(this)) {
-                return;
-            }
-            this.#workers.shared.set(realm.id, realm);
-            const realmEmitter = this.disposables.use(new EventEmitter(realm));
-            realmEmitter.once('destroyed', () => {
-                realmEmitter.removeAllListeners();
-                this.#workers.shared.delete(realm.id);
-            });
-            this.emit('sharedworker', realm);
         });
     }
     get session() {
@@ -211,8 +194,8 @@ export class WindowRealm extends Realm {
  */
 export class DedicatedWorkerRealm extends Realm {
     static from(owner, id, origin) {
-        const realm = new DedicatedWorkerRealm(owner, id, origin);
-        realm.initialize();
+        const realm = new _a(owner, id, origin);
+        realm.#initialize();
         return realm;
     }
     // keep-sorted start
@@ -223,9 +206,14 @@ export class DedicatedWorkerRealm extends Realm {
         super(id, origin);
         this.owners = new Set([owner]);
     }
-    initialize() {
-        super.initialize();
+    #initialize() {
         const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
+        sessionEmitter.on('script.realmDestroyed', info => {
+            if (info.realm !== this.id) {
+                return;
+            }
+            this.dispose('Realm already destroyed.');
+        });
         sessionEmitter.on('script.realmCreated', info => {
             if (info.type !== 'dedicated-worker') {
                 return;
@@ -233,7 +221,7 @@ export class DedicatedWorkerRealm extends Realm {
             if (!info.owners.includes(this.id)) {
                 return;
             }
-            const realm = DedicatedWorkerRealm.from(this, info.realm, info.origin);
+            const realm = _a.from(this, info.realm, info.origin);
             this.#workers.set(realm.id, realm);
             const realmEmitter = this.disposables.use(new EventEmitter(realm));
             realmEmitter.once('destroyed', () => {
@@ -247,26 +235,32 @@ export class DedicatedWorkerRealm extends Realm {
         return this.owners.values().next().value.session;
     }
 }
+_a = DedicatedWorkerRealm;
 /**
  * @internal
  */
 export class SharedWorkerRealm extends Realm {
-    static from(owners, id, origin) {
-        const realm = new SharedWorkerRealm(owners, id, origin);
-        realm.initialize();
+    static from(browser, id, origin) {
+        const realm = new SharedWorkerRealm(browser, id, origin);
+        realm.#initialize();
         return realm;
     }
     // keep-sorted start
     #workers = new Map();
-    owners;
+    browser;
     // keep-sorted end
-    constructor(owners, id, origin) {
+    constructor(browser, id, origin) {
         super(id, origin);
-        this.owners = new Set(owners);
+        this.browser = browser;
     }
-    initialize() {
-        super.initialize();
+    #initialize() {
         const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
+        sessionEmitter.on('script.realmDestroyed', info => {
+            if (info.realm !== this.id) {
+                return;
+            }
+            this.dispose('Realm already destroyed.');
+        });
         sessionEmitter.on('script.realmCreated', info => {
             if (info.type !== 'dedicated-worker') {
                 return;
@@ -284,8 +278,7 @@ export class SharedWorkerRealm extends Realm {
         });
     }
     get session() {
-        // SAFETY: At least one owner will exist.
-        return this.owners.values().next().value.session;
+        return this.browser.session;
     }
 }
 //# sourceMappingURL=Realm.js.map

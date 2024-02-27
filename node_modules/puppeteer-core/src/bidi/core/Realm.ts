@@ -10,6 +10,7 @@ import {EventEmitter} from '../../common/EventEmitter.js';
 import {inertIfDisposed, throwIfDisposed} from '../../util/decorators.js';
 import {DisposableStack, disposeSymbol} from '../../util/disposable.js';
 
+import type {Browser} from './Browser.js';
 import type {BrowsingContext} from './BrowsingContext.js';
 import type {Session} from './Session.js';
 
@@ -33,6 +34,8 @@ export type EvaluateOptions = Omit<
  * @internal
  */
 export abstract class Realm extends EventEmitter<{
+  /** Emitted whenever the realm has updated. */
+  updated: Realm;
   /** Emitted when the realm is destroyed. */
   destroyed: {reason: string};
   /** Emitted when a dedicated worker is created in the realm. */
@@ -55,22 +58,12 @@ export abstract class Realm extends EventEmitter<{
     // keep-sorted end
   }
 
-  protected initialize(): void {
-    const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
-    sessionEmitter.on('script.realmDestroyed', info => {
-      if (info.realm !== this.id) {
-        return;
-      }
-      this.dispose('Realm already destroyed.');
-    });
-  }
-
   // keep-sorted start block=yes
   get disposed(): boolean {
     return this.#reason !== undefined;
   }
   protected abstract get session(): Session;
-  protected get target(): Bidi.Script.Target {
+  get target(): Bidi.Script.Target {
     return {realm: this.id};
   }
   // keep-sorted end
@@ -144,7 +137,7 @@ export abstract class Realm extends EventEmitter<{
 export class WindowRealm extends Realm {
   static from(context: BrowsingContext, sandbox?: string): WindowRealm {
     const realm = new WindowRealm(context, sandbox);
-    realm.initialize();
+    realm.#initialize();
     return realm;
   }
 
@@ -153,13 +146,7 @@ export class WindowRealm extends Realm {
   readonly sandbox?: string;
   // keep-sorted end
 
-  readonly #workers: {
-    dedicated: Map<string, DedicatedWorkerRealm>;
-    shared: Map<string, SharedWorkerRealm>;
-  } = {
-    dedicated: new Map(),
-    shared: new Map(),
-  };
+  readonly #workers = new Map<string, DedicatedWorkerRealm>();
 
   private constructor(context: BrowsingContext, sandbox?: string) {
     super('', '');
@@ -169,16 +156,26 @@ export class WindowRealm extends Realm {
     // keep-sorted end
   }
 
-  override initialize(): void {
-    super.initialize();
+  #initialize(): void {
+    const browsingContextEmitter = this.disposables.use(
+      new EventEmitter(this.browsingContext)
+    );
+    browsingContextEmitter.on('closed', ({reason}) => {
+      this.dispose(reason);
+    });
 
     const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
     sessionEmitter.on('script.realmCreated', info => {
-      if (info.type !== 'window') {
+      if (
+        info.type !== 'window' ||
+        info.context !== this.browsingContext.id ||
+        info.sandbox !== this.sandbox
+      ) {
         return;
       }
       (this as any).id = info.realm;
       (this as any).origin = info.origin;
+      this.emit('updated', this);
     });
     sessionEmitter.on('script.realmCreated', info => {
       if (info.type !== 'dedicated-worker') {
@@ -189,31 +186,15 @@ export class WindowRealm extends Realm {
       }
 
       const realm = DedicatedWorkerRealm.from(this, info.realm, info.origin);
-      this.#workers.dedicated.set(realm.id, realm);
+      this.#workers.set(realm.id, realm);
 
       const realmEmitter = this.disposables.use(new EventEmitter(realm));
       realmEmitter.once('destroyed', () => {
         realmEmitter.removeAllListeners();
-        this.#workers.dedicated.delete(realm.id);
+        this.#workers.delete(realm.id);
       });
 
       this.emit('worker', realm);
-    });
-
-    this.browsingContext.userContext.browser.on('sharedworker', ({realm}) => {
-      if (!realm.owners.has(this)) {
-        return;
-      }
-
-      this.#workers.shared.set(realm.id, realm);
-
-      const realmEmitter = this.disposables.use(new EventEmitter(realm));
-      realmEmitter.once('destroyed', () => {
-        realmEmitter.removeAllListeners();
-        this.#workers.shared.delete(realm.id);
-      });
-
-      this.emit('sharedworker', realm);
     });
   }
 
@@ -244,7 +225,7 @@ export class DedicatedWorkerRealm extends Realm {
     origin: string
   ): DedicatedWorkerRealm {
     const realm = new DedicatedWorkerRealm(owner, id, origin);
-    realm.initialize();
+    realm.#initialize();
     return realm;
   }
 
@@ -262,10 +243,14 @@ export class DedicatedWorkerRealm extends Realm {
     this.owners = new Set([owner]);
   }
 
-  override initialize(): void {
-    super.initialize();
-
+  #initialize(): void {
     const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
+    sessionEmitter.on('script.realmDestroyed', info => {
+      if (info.realm !== this.id) {
+        return;
+      }
+      this.dispose('Realm already destroyed.');
+    });
     sessionEmitter.on('script.realmCreated', info => {
       if (info.type !== 'dedicated-worker') {
         return;
@@ -296,34 +281,30 @@ export class DedicatedWorkerRealm extends Realm {
  * @internal
  */
 export class SharedWorkerRealm extends Realm {
-  static from(
-    owners: [WindowRealm, ...WindowRealm[]],
-    id: string,
-    origin: string
-  ): SharedWorkerRealm {
-    const realm = new SharedWorkerRealm(owners, id, origin);
-    realm.initialize();
+  static from(browser: Browser, id: string, origin: string): SharedWorkerRealm {
+    const realm = new SharedWorkerRealm(browser, id, origin);
+    realm.#initialize();
     return realm;
   }
 
   // keep-sorted start
   readonly #workers = new Map<string, DedicatedWorkerRealm>();
-  readonly owners: Set<WindowRealm>;
+  readonly browser: Browser;
   // keep-sorted end
 
-  private constructor(
-    owners: [WindowRealm, ...WindowRealm[]],
-    id: string,
-    origin: string
-  ) {
+  private constructor(browser: Browser, id: string, origin: string) {
     super(id, origin);
-    this.owners = new Set(owners);
+    this.browser = browser;
   }
 
-  override initialize(): void {
-    super.initialize();
-
+  #initialize(): void {
     const sessionEmitter = this.disposables.use(new EventEmitter(this.session));
+    sessionEmitter.on('script.realmDestroyed', info => {
+      if (info.realm !== this.id) {
+        return;
+      }
+      this.dispose('Realm already destroyed.');
+    });
     sessionEmitter.on('script.realmCreated', info => {
       if (info.type !== 'dedicated-worker') {
         return;
@@ -345,7 +326,6 @@ export class SharedWorkerRealm extends Realm {
   }
 
   override get session(): Session {
-    // SAFETY: At least one owner will exist.
-    return this.owners.values().next().value.session;
+    return this.browser.session;
   }
 }

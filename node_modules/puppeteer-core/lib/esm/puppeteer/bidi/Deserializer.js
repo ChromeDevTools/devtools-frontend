@@ -8,39 +8,29 @@ import { debugError } from '../common/util.js';
  * @internal
  */
 export class BidiDeserializer {
-    static deserializeNumber(value) {
-        switch (value) {
-            case '-0':
-                return -0;
-            case 'NaN':
-                return NaN;
-            case 'Infinity':
-                return Infinity;
-            case '-Infinity':
-                return -Infinity;
-            default:
-                return value;
+    static deserialize(result) {
+        if (!result) {
+            debugError('Service did not produce a result.');
+            return undefined;
         }
-    }
-    static deserializeLocalValue(result) {
         switch (result.type) {
             case 'array':
                 return result.value?.map(value => {
-                    return BidiDeserializer.deserializeLocalValue(value);
+                    return this.deserialize(value);
                 });
             case 'set':
                 return result.value?.reduce((acc, value) => {
-                    return acc.add(BidiDeserializer.deserializeLocalValue(value));
+                    return acc.add(this.deserialize(value));
                 }, new Set());
             case 'object':
                 return result.value?.reduce((acc, tuple) => {
-                    const { key, value } = BidiDeserializer.deserializeTuple(tuple);
+                    const { key, value } = this.#deserializeTuple(tuple);
                     acc[key] = value;
                     return acc;
                 }, {});
             case 'map':
                 return result.value?.reduce((acc, tuple) => {
-                    const { key, value } = BidiDeserializer.deserializeTuple(tuple);
+                    const { key, value } = this.#deserializeTuple(tuple);
                     return acc.set(key, value);
                 }, new Map());
             case 'promise':
@@ -54,7 +44,7 @@ export class BidiDeserializer {
             case 'null':
                 return null;
             case 'number':
-                return BidiDeserializer.deserializeNumber(result.value);
+                return this.#deserializeNumber(result.value);
             case 'bigint':
                 return BigInt(result.value);
             case 'boolean':
@@ -65,19 +55,26 @@ export class BidiDeserializer {
         debugError(`Deserialization of type ${result.type} not supported.`);
         return undefined;
     }
-    static deserializeTuple([serializedKey, serializedValue]) {
+    static #deserializeNumber(value) {
+        switch (value) {
+            case '-0':
+                return -0;
+            case 'NaN':
+                return NaN;
+            case 'Infinity':
+                return Infinity;
+            case '-Infinity':
+                return -Infinity;
+            default:
+                return value;
+        }
+    }
+    static #deserializeTuple([serializedKey, serializedValue]) {
         const key = typeof serializedKey === 'string'
             ? serializedKey
-            : BidiDeserializer.deserializeLocalValue(serializedKey);
-        const value = BidiDeserializer.deserializeLocalValue(serializedValue);
+            : this.deserialize(serializedKey);
+        const value = this.deserialize(serializedValue);
         return { key, value };
-    }
-    static deserialize(result) {
-        if (!result) {
-            debugError('Service did not produce a result.');
-            return undefined;
-        }
-        return BidiDeserializer.deserializeLocalValue(result);
     }
 }
 //# sourceMappingURL=Deserializer.js.map

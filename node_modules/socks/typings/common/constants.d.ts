@@ -3,9 +3,8 @@
 /// <reference types="node" />
 import { Duplex } from 'stream';
 import { Socket, SocketConnectOpts } from 'net';
-import { RequireOnlyOne } from './util';
 declare const DEFAULT_TIMEOUT = 30000;
-declare type SocksProxyType = 4 | 5;
+type SocksProxyType = 4 | 5;
 declare const ERRORS: {
     InvalidSocksCommand: string;
     InvalidSocksCommandForOperation: string;
@@ -44,7 +43,7 @@ declare const SOCKS_INCOMING_PACKET_SIZES: {
     Socks5ResponseHostname: (hostNameLength: number) => number;
     Socks4Response: number;
 };
-declare type SocksCommandOption = 'connect' | 'bind' | 'associate';
+type SocksCommandOption = 'connect' | 'bind' | 'associate';
 declare enum SocksCommand {
     connect = 1,
     bind = 2,
@@ -98,7 +97,7 @@ declare enum SocksClientState {
 /**
  * Represents a SocksProxy
  */
-declare type SocksProxy = RequireOnlyOne<{
+interface SocksProxy {
     ipaddress?: string;
     host?: string;
     port: number;
@@ -109,7 +108,7 @@ declare type SocksProxy = RequireOnlyOne<{
     custom_auth_request_handler?: () => Promise<Buffer>;
     custom_auth_response_size?: number;
     custom_auth_response_handler?: (data: Buffer) => Promise<boolean>;
-}, 'host' | 'ipaddress'>;
+}
 /**
  * Represents a remote host
  */
@@ -143,7 +142,7 @@ interface SocksClientEstablishedEvent {
     socket: Socket;
     remoteHost?: SocksRemoteHost;
 }
-declare type SocksClientBoundEvent = SocksClientEstablishedEvent;
+type SocksClientBoundEvent = SocksClientEstablishedEvent;
 interface SocksUDPFrameDetails {
     frameNumber?: number;
     remoteHost: SocksRemoteHost;

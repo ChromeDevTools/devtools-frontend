@@ -3,7 +3,6 @@
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Helper to manage DEPS. Use this script to update node_modules instead of
 running npm install manually. To upgrade a dependency, change the version
@@ -41,7 +40,6 @@ LICENSES = [
 # List all DEPS here.
 DEPS = {
     "@istanbuljs/schema": "0.1.3",
-    "@puppeteer/replay": "2.13.4",
     "@types/chai": "4.3.0",
     "@types/codemirror": "5.60.7",
     "@types/estree": "0.0.50",
@@ -92,7 +90,7 @@ DEPS = {
     "postcss": "8.4.5",
     "cssnano": "5.1.14",
     "cssnano-preset-lite": "2.1.3",
-    "puppeteer-core": "22.0.0",
+    "puppeteer-core": "22.3.0",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup": "2.63.0",
@@ -115,8 +113,11 @@ DEPS = {
 
 ADDITIONAL_NPM_ARGS = [
     # This is to avoid downloading esbuild-* package.
-    '--omit', 'optional', '--ignore-scripts'
+    '--omit',
+    'optional',
+    '--ignore-scripts'
 ]
+
 
 def load_json_file(location):
     # By default, json load uses a standard Python dictionary, which is not ordered.
@@ -128,6 +129,7 @@ def load_json_file(location):
     # how an NPM package is loaded. If you would change the order, it could break loading
     # that package.
     return json.load(location, object_pairs_hook=OrderedDict)
+
 
 def exec_command(cmd):
     try:
@@ -145,8 +147,7 @@ def exec_command(cmd):
 def ensure_licenses():
     cmd = [
         devtools_paths.node_path(),
-        devtools_paths.license_checker_path(),
-        '--onlyAllow',
+        devtools_paths.license_checker_path(), '--onlyAllow',
         ('%s' % (';'.join(LICENSES)))
     ]
 
@@ -174,7 +175,10 @@ def strip_private_fields():
 
                 pkg_file.truncate(0)
                 pkg_file.seek(0)
-                json.dump(updated_pkg_data, pkg_file, indent=2, separators=(',', ': '))
+                json.dump(updated_pkg_data,
+                          pkg_file,
+                          indent=2,
+                          separators=(',', ': '))
                 pkg_file.write('\n')
             except:
                 print('Unable to fix: %s, %s' % (pkg, sys.exc_info()))
@@ -193,7 +197,8 @@ def install_missing_deps():
 
             # Find any new DEPS and add them in.
             for dep, version in DEPS.items():
-                if not dep in existing_deps or not existing_deps[dep]['version'] == version:
+                if not dep in existing_deps or not existing_deps[dep][
+                        'version'] == version:
                     new_deps.append("%s@%s" % (dep, version))
 
             # Now install.
@@ -255,7 +260,8 @@ def remove_package_json_entries():
 
 
 def addClangFormat():
-    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'), 'w+') as clang_format_file:
+    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'),
+              'w+') as clang_format_file:
         try:
             clang_format_file.write('DisableFormat: true\n')
         except:
@@ -274,12 +280,17 @@ def addOwnersFile():
             return True
     return False
 
+
 def addChromiumReadme():
     with open(path.join(devtools_paths.node_modules_path(), 'README.chromium'),
               'w+') as readme_file:
         try:
-            readme_file.write('This directory hosts all packages downloaded from NPM that are used in either the build system or infrastructure scripts.\n')
-            readme_file.write('If you want to make any changes to this directory, please see "scripts/deps/manage_node_deps.py".\n')
+            readme_file.write(
+                'This directory hosts all packages downloaded from NPM that are used in either the build system or infrastructure scripts.\n'
+            )
+            readme_file.write(
+                'If you want to make any changes to this directory, please see "scripts/deps/manage_node_deps.py".\n'
+            )
         except:
             print('Unable to write README.chromium file')
             return True
@@ -289,7 +300,9 @@ def addChromiumReadme():
 def run_npm_command(npm_command_args=None):
     for (name, version) in DEPS.items():
         if (version.find('^') == 0):
-            print('Versions must be locked to a specific version; remove ^ from the start of the version.')
+            print(
+                'Versions must be locked to a specific version; remove ^ from the start of the version.'
+            )
             return True
 
     run_custom_command = npm_command_args is not None

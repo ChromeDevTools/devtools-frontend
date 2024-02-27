@@ -259,11 +259,6 @@ export class CdpBrowserContext extends BrowserContext {
             return target.browserContext() === this;
         });
     }
-    waitForTarget(predicate, options = {}) {
-        return this.#browser.waitForTarget(target => {
-            return target.browserContext() === this && predicate(target);
-        }, options);
-    }
     async pages() {
         const pages = await Promise.all(this.targets()
             .filter(target => {

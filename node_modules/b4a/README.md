@@ -142,4 +142,4 @@ See https://nodejs.org/api/buffer.html#bufreadint32leoffset
 
 ## License
 
-ISC
+Apache 2.0

@@ -48,6 +48,7 @@ const disposable_js_1 = require("../../util/disposable.js");
  * @internal
  */
 let Navigation = (() => {
+    var _a;
     let _classSuper = EventEmitter_js_1.EventEmitter;
     let _instanceExtraInitializers = [];
     let _dispose_decorators;
@@ -64,6 +65,7 @@ let Navigation = (() => {
         }
         // keep-sorted start
         #request = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        #navigation;
         #browsingContext;
         #disposables = new disposable_js_1.DisposableStack();
         #id = new Deferred_js_1.Deferred();
@@ -83,28 +85,36 @@ let Navigation = (() => {
                 });
                 this.dispose();
             });
-            this.#browsingContext.on('request', ({ request }) => {
-                if (request.navigation === this.#id.value()) {
-                    this.#request = request;
-                    this.emit('request', request);
+            browsingContextEmitter.on('request', ({ request }) => {
+                if (request.navigation === undefined ||
+                    this.#request !== undefined ||
+                    // If a request with a navigation ID comes in, then the navigation ID is
+                    // for this navigation.
+                    !this.#matches(request.navigation)) {
+                    return;
                 }
+                this.#request = request;
+                this.emit('request', request);
             });
             const sessionEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.#session));
-            // To get the navigation ID if any.
+            sessionEmitter.on('browsingContext.navigationStarted', info => {
+                if (info.context !== this.#browsingContext.id ||
+                    this.#navigation !== undefined) {
+                    return;
+                }
+                this.#navigation = Navigation.from(this.#browsingContext);
+            });
             for (const eventName of [
                 'browsingContext.domContentLoaded',
                 'browsingContext.load',
             ]) {
                 sessionEmitter.on(eventName, info => {
-                    if (info.context !== this.#browsingContext.id) {
+                    if (info.context !== this.#browsingContext.id ||
+                        info.navigation === null ||
+                        !this.#matches(info.navigation)) {
                         return;
                     }
-                    if (!info.navigation) {
-                        return;
-                    }
-                    if (!this.#id.resolved()) {
-                        this.#id.resolve(info.navigation);
-                    }
+                    this.dispose();
                 });
             }
             for (const [eventName, event] of [
@@ -113,16 +123,10 @@ let Navigation = (() => {
                 ['browsingContext.navigationAborted', 'aborted'],
             ]) {
                 sessionEmitter.on(eventName, info => {
-                    if (info.context !== this.#browsingContext.id) {
-                        return;
-                    }
-                    if (!info.navigation) {
-                        return;
-                    }
-                    if (!this.#id.resolved()) {
-                        this.#id.resolve(info.navigation);
-                    }
-                    if (this.#id.value() !== info.navigation) {
+                    if (info.context !== this.#browsingContext.id ||
+                        // Note we don't check if `navigation` is null since `null` means the
+                        // fragment navigated.
+                        !this.#matches(info.navigation)) {
                         return;
                     }
                     this.emit(event, {
@@ -133,6 +137,16 @@ let Navigation = (() => {
                 });
             }
         }
+        #matches(navigation) {
+            if (this.#navigation !== undefined && !this.#navigation.disposed) {
+                return false;
+            }
+            if (!this.#id.resolved()) {
+                this.#id.resolve(navigation);
+                return true;
+            }
+            return this.#id.value() === navigation;
+        }
         // keep-sorted start block=yes
         get #session() {
             return this.#browsingContext.userContext.browser.session;
@@ -142,6 +156,9 @@ let Navigation = (() => {
         }
         get request() {
             return this.#request;
+        }
+        get navigation() {
+            return this.#navigation;
         }
         // keep-sorted end
         dispose() {

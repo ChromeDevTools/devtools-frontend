@@ -5,57 +5,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BiDiPageTarget = exports.BiDiBrowsingContextTarget = exports.BiDiBrowserTarget = exports.BidiTarget = void 0;
+exports.BidiWorkerTarget = exports.BidiFrameTarget = exports.BidiPageTarget = exports.BidiBrowserTarget = void 0;
 const Target_js_1 = require("../api/Target.js");
 const Errors_js_1 = require("../common/Errors.js");
-const BrowsingContext_js_1 = require("./BrowsingContext.js");
 const Page_js_1 = require("./Page.js");
 /**
  * @internal
  */
-class BidiTarget extends Target_js_1.Target {
-    _browserContext;
-    constructor(browserContext) {
-        super();
-        this._browserContext = browserContext;
-    }
-    _setBrowserContext(browserContext) {
-        this._browserContext = browserContext;
-    }
-    asPage() {
-        throw new Errors_js_1.UnsupportedOperation();
-    }
-    browser() {
-        return this._browserContext.browser();
-    }
-    browserContext() {
-        return this._browserContext;
-    }
-    opener() {
-        throw new Errors_js_1.UnsupportedOperation();
-    }
-    createCDPSession() {
-        throw new Errors_js_1.UnsupportedOperation();
-    }
-}
-exports.BidiTarget = BidiTarget;
-/**
- * @internal
- */
-class BiDiBrowserTarget extends Target_js_1.Target {
+class BidiBrowserTarget extends Target_js_1.Target {
     #browser;
     constructor(browser) {
         super();
         this.#browser = browser;
     }
+    asPage() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
     url() {
         return '';
     }
+    createCDPSession() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
     type() {
         return Target_js_1.TargetType.BROWSER;
-    }
-    asPage() {
-        throw new Errors_js_1.UnsupportedOperation();
     }
     browser() {
         return this.#browser;
@@ -66,51 +39,115 @@ class BiDiBrowserTarget extends Target_js_1.Target {
     opener() {
         throw new Errors_js_1.UnsupportedOperation();
     }
-    createCDPSession() {
-        throw new Errors_js_1.UnsupportedOperation();
-    }
 }
-exports.BiDiBrowserTarget = BiDiBrowserTarget;
+exports.BidiBrowserTarget = BidiBrowserTarget;
 /**
  * @internal
  */
-class BiDiBrowsingContextTarget extends BidiTarget {
-    _browsingContext;
-    constructor(browserContext, browsingContext) {
-        super(browserContext);
-        this._browsingContext = browsingContext;
-    }
-    url() {
-        return this._browsingContext.url;
-    }
-    async createCDPSession() {
-        const { sessionId } = await this._browsingContext.cdpSession.send('Target.attachToTarget', {
-            targetId: this._browsingContext.id,
-            flatten: true,
-        });
-        return new BrowsingContext_js_1.CdpSessionWrapper(this._browsingContext, sessionId);
-    }
-    type() {
-        return Target_js_1.TargetType.PAGE;
-    }
-}
-exports.BiDiBrowsingContextTarget = BiDiBrowsingContextTarget;
-/**
- * @internal
- */
-class BiDiPageTarget extends BiDiBrowsingContextTarget {
+class BidiPageTarget extends Target_js_1.Target {
     #page;
-    constructor(browserContext, browsingContext) {
-        super(browserContext, browsingContext);
-        this.#page = new Page_js_1.BidiPage(browsingContext, browserContext, this);
+    constructor(page) {
+        super();
+        this.#page = page;
     }
     async page() {
         return this.#page;
     }
-    _setBrowserContext(browserContext) {
-        super._setBrowserContext(browserContext);
-        this.#page._setBrowserContext(browserContext);
+    async asPage() {
+        return Page_js_1.BidiPage.from(this.browserContext(), this.#page.mainFrame().browsingContext);
+    }
+    url() {
+        return this.#page.url();
+    }
+    createCDPSession() {
+        return this.#page.createCDPSession();
+    }
+    type() {
+        return Target_js_1.TargetType.PAGE;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#page.browserContext();
+    }
+    opener() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
-exports.BiDiPageTarget = BiDiPageTarget;
+exports.BidiPageTarget = BidiPageTarget;
+/**
+ * @internal
+ */
+class BidiFrameTarget extends Target_js_1.Target {
+    #frame;
+    #page;
+    constructor(frame) {
+        super();
+        this.#frame = frame;
+    }
+    async page() {
+        if (this.#page === undefined) {
+            this.#page = Page_js_1.BidiPage.from(this.browserContext(), this.#frame.browsingContext);
+        }
+        return this.#page;
+    }
+    async asPage() {
+        return Page_js_1.BidiPage.from(this.browserContext(), this.#frame.browsingContext);
+    }
+    url() {
+        return this.#frame.url();
+    }
+    createCDPSession() {
+        return this.#frame.createCDPSession();
+    }
+    type() {
+        return Target_js_1.TargetType.PAGE;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#frame.page().browserContext();
+    }
+    opener() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+}
+exports.BidiFrameTarget = BidiFrameTarget;
+/**
+ * @internal
+ */
+class BidiWorkerTarget extends Target_js_1.Target {
+    #worker;
+    constructor(worker) {
+        super();
+        this.#worker = worker;
+    }
+    async page() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    async asPage() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    url() {
+        return this.#worker.url();
+    }
+    createCDPSession() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    type() {
+        return Target_js_1.TargetType.OTHER;
+    }
+    browser() {
+        return this.browserContext().browser();
+    }
+    browserContext() {
+        return this.#worker.frame.page().browserContext();
+    }
+    opener() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+}
+exports.BidiWorkerTarget = BidiWorkerTarget;
 //# sourceMappingURL=Target.js.map

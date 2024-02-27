@@ -39,10 +39,6 @@ export class HTTPRequest {
     /**
      * @internal
      */
-    _requestId = '';
-    /**
-     * @internal
-     */
     _interceptionId;
     /**
      * @internal

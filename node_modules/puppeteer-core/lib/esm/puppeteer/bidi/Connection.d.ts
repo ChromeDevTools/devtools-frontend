@@ -7,8 +7,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { EventsWithWildcard } from '../common/EventEmitter.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { type BrowsingContext } from './BrowsingContext.js';
-import type { BidiEvents, Commands as BidiCommands, Connection } from './core/Connection.js';
+import type { Commands as BidiCommands, BidiEvents, Connection } from './core/Connection.js';
 /**
  * @internal
  */
@@ -39,10 +38,6 @@ export declare class BidiConnection extends EventEmitter<BidiEvents> implements 
      * @internal
      */
     protected onMessage(message: string): Promise<void>;
-    registerBrowsingContexts(context: BrowsingContext): void;
-    getBrowsingContext(contextId: string): BrowsingContext;
-    getTopLevelContext(contextId: string): BrowsingContext;
-    unregisterBrowsingContexts(id: string): void;
     /**
      * Unbinds the connection, but keeps the transport open. Useful when the transport will
      * be reused by other connection e.g. with different protocol.

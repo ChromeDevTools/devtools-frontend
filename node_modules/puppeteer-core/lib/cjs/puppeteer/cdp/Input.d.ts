@@ -6,7 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Point } from '../api/ElementHandle.js';
-import { Keyboard, type KeyDownOptions, type KeyPressOptions, Mouse, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions, Touchscreen, type KeyboardTypeOptions } from '../api/Input.js';
+import { Keyboard, Mouse, Touchscreen, type KeyDownOptions, type KeyPressOptions, type KeyboardTypeOptions, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions } from '../api/Input.js';
 import { type KeyInput } from '../common/USKeyboardLayout.js';
 /**
  * @internal

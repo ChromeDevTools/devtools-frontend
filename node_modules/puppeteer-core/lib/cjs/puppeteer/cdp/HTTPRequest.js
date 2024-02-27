@@ -8,6 +8,7 @@ const assert_js_1 = require("../util/assert.js");
  * @internal
  */
 class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
+    id;
     #client;
     #isNavigationRequest;
     #allowInterception;
@@ -33,7 +34,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
         this.#client = client;
-        this._requestId = data.requestId;
+        this.id = data.requestId;
         this.#isNavigationRequest =
             data.requestId === data.loaderId && data.type === 'Document';
         this._interceptionId = interceptionId;
@@ -114,7 +115,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     async fetchPostData() {
         try {
             const result = await this.#client.send('Network.getRequestPostData', {
-                requestId: this._requestId,
+                requestId: this.id,
             });
             return result.postData;
         }

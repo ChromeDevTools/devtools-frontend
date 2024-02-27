@@ -104,21 +104,19 @@ let BidiElementHandle = (() => {
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        constructor(sandbox, remoteValue) {
-            super(new BidiJSHandle(sandbox, remoteValue));
+        static from(value, realm) {
+            return new BidiElementHandle(value, realm);
+        }
+        constructor(value, realm) {
+            super(BidiJSHandle.from(value, realm));
             __runInitializers(this, _instanceExtraInitializers);
         }
         get realm() {
+            // SAFETY: See the super call in the constructor.
             return this.handle.realm;
         }
         get frame() {
             return this.realm.environment;
-        }
-        context() {
-            return this.handle.context();
-        }
-        get isPrimitiveValue() {
-            return this.handle.isPrimitiveValue;
         }
         remoteValue() {
             return this.handle.remoteValue();
@@ -140,14 +138,20 @@ let BidiElementHandle = (() => {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {
                 const handle = __addDisposableResource(env_1, (await this.evaluateHandle(element => {
-                    if (element instanceof HTMLIFrameElement) {
+                    if (element instanceof HTMLIFrameElement ||
+                        element instanceof HTMLFrameElement) {
                         return element.contentWindow;
                     }
                     return;
                 })), false);
                 const value = handle.remoteValue();
                 if (value.type === 'window') {
-                    return this.frame.page().frame(value.value.context);
+                    return (this.frame
+                        .page()
+                        .frames()
+                        .find(frame => {
+                        return frame._id === value.value.context;
+                    }) ?? null);
                 }
                 return null;
             }

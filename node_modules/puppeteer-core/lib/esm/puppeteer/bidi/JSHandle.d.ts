@@ -7,15 +7,14 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
 import { JSHandle } from '../api/JSHandle.js';
 import type { BidiRealm } from './Realm.js';
-import type { Sandbox } from './Sandbox.js';
 /**
  * @internal
  */
 export declare class BidiJSHandle<T = unknown> extends JSHandle<T> {
     #private;
-    constructor(sandbox: Sandbox, remoteValue: Bidi.Script.RemoteValue);
-    context(): BidiRealm;
-    get realm(): Sandbox;
+    static from<T>(value: Bidi.Script.RemoteValue, realm: BidiRealm): BidiJSHandle<T>;
+    readonly realm: BidiRealm;
+    constructor(value: Bidi.Script.RemoteValue, realm: BidiRealm);
     get disposed(): boolean;
     jsonValue(): Promise<T>;
     asElement(): ElementHandle<Node> | null;

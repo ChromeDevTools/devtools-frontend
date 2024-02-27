@@ -122,6 +122,9 @@ The default byteLength function returns the byte length of buffers and `1024`
 for any other object. This means the buffer will contain around 16 non buffers
 or buffers worth 16kb when full if the defaults are used.
 
+If you set highWaterMark to `0` then all read ahead buffering on the stream
+is disabled and it will only call `_read` when a user reads rather than ahead of time.
+
 #### `rs._read(cb)`
 
 This function is called when the stream wants you to push new data.

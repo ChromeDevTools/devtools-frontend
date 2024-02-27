@@ -19,8 +19,17 @@ export interface Credentials {
  * @public
  */
 export interface NetworkConditions {
+    /**
+     * Download speed (bytes/s)
+     */
     download: number;
+    /**
+     * Upload speed (bytes/s)
+     */
     upload: number;
+    /**
+     * Latency (ms)
+     */
     latency: number;
 }
 /**

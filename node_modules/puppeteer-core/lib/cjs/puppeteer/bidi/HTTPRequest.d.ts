@@ -4,20 +4,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import type { Frame } from '../api/Frame.js';
+import type { CDPSession } from '../api/CDPSession.js';
 import type { ContinueRequestOverrides, ResponseForRequest } from '../api/HTTPRequest.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
-import type { BidiHTTPResponse } from './HTTPResponse.js';
+import type { Request } from './core/Request.js';
+import type { BidiFrame } from './Frame.js';
+import { BidiHTTPResponse } from './HTTPResponse.js';
+export declare const requests: WeakMap<Request, BidiHTTPRequest>;
 /**
  * @internal
  */
 export declare class BidiHTTPRequest extends HTTPRequest {
     #private;
-    _response: BidiHTTPResponse | null;
-    _redirectChain: BidiHTTPRequest[];
-    _navigationId: string | null;
-    constructor(event: Bidi.Network.BeforeRequestSentParameters, frame: Frame | null, redirectChain?: BidiHTTPRequest[]);
-    get client(): never;
+    static from(bidiRequest: Request, frame: BidiFrame | undefined): BidiHTTPRequest;
+    readonly id: string;
+    private constructor();
+    get client(): CDPSession;
     url(): string;
     resourceType(): ResourceType;
     method(): string;
@@ -26,11 +28,14 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     fetchPostData(): Promise<string | undefined>;
     headers(): Record<string, string>;
     response(): BidiHTTPResponse | null;
+    failure(): {
+        errorText: string;
+    } | null;
     isNavigationRequest(): boolean;
     initiator(): Bidi.Network.Initiator;
     redirectChain(): BidiHTTPRequest[];
     enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
-    frame(): Frame | null;
+    frame(): BidiFrame | null;
     continueRequestOverrides(): never;
     continue(_overrides?: ContinueRequestOverrides): never;
     responseForRequest(): never;
@@ -40,6 +45,5 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     finalizeInterceptions(): never;
     abort(): never;
     respond(_response: Partial<ResponseForRequest>, _priority?: number): never;
-    failure(): never;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

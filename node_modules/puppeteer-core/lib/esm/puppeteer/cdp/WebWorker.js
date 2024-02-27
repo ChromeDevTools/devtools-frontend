@@ -1,3 +1,4 @@
+import { TargetType } from '../api/Target.js';
 import { WebWorker } from '../api/WebWorker.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { debugError } from '../common/util.js';
@@ -10,9 +11,13 @@ import { CdpJSHandle } from './JSHandle.js';
 export class CdpWebWorker extends WebWorker {
     #world;
     #client;
-    constructor(client, url, consoleAPICalled, exceptionThrown) {
+    #id;
+    #targetType;
+    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown) {
         super(url);
+        this.#id = targetId;
         this.#client = client;
+        this.#targetType = targetType;
         this.#world = new IsolatedWorld(this, new TimeoutSettings());
         this.#client.once('Runtime.executionContextCreated', async (event) => {
             this.#world.setContext(new ExecutionContext(client, event.context, this.#world));
@@ -36,6 +41,26 @@ export class CdpWebWorker extends WebWorker {
     }
     get client() {
         return this.#client;
+    }
+    async close() {
+        switch (this.#targetType) {
+            case TargetType.SERVICE_WORKER:
+            case TargetType.SHARED_WORKER: {
+                // For service and shared workers we need to close the target and detach to allow
+                // the worker to stop.
+                await this.client.connection()?.send('Target.closeTarget', {
+                    targetId: this.#id,
+                });
+                await this.client.connection()?.send('Target.detachFromTarget', {
+                    sessionId: this.client.id(),
+                });
+                break;
+            }
+            default:
+                await this.evaluate(() => {
+                    self.close();
+                });
+        }
     }
 }
 //# sourceMappingURL=WebWorker.js.map

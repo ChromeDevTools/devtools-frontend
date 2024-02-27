@@ -5,28 +5,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEvaluationError = exports.releaseReference = void 0;
+exports.rewriteNavigationError = exports.createEvaluationError = void 0;
+const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const Deserializer_js_1 = require("./Deserializer.js");
-/**
- * @internal
- */
-async function releaseReference(client, remoteReference) {
-    if (!remoteReference.handle) {
-        return;
-    }
-    await client.connection
-        .send('script.disown', {
-        target: client.target,
-        handles: [remoteReference.handle],
-    })
-        .catch(error => {
-        // Exceptions might happen in case of a page been navigated or closed.
-        // Swallow these since they are harmless and we don't leak anything in this case.
-        (0, util_js_1.debugError)(error);
-    });
-}
-exports.releaseReference = releaseReference;
 /**
  * @internal
  */
@@ -59,4 +41,19 @@ function createEvaluationError(details) {
     return error;
 }
 exports.createEvaluationError = createEvaluationError;
+/**
+ * @internal
+ */
+function rewriteNavigationError(message, ms) {
+    return error => {
+        if (error instanceof Errors_js_1.ProtocolError) {
+            error.message += ` at ${message}`;
+        }
+        else if (error instanceof Errors_js_1.TimeoutError) {
+            error.message = `Navigation timeout of ${ms} ms exceeded`;
+        }
+        throw error;
+    };
+}
+exports.rewriteNavigationError = rewriteNavigationError;
 //# sourceMappingURL=util.js.map

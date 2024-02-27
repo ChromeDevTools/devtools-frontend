@@ -67,6 +67,7 @@ let CdpFrame = (() => {
         #url = (__runInitializers(this, _instanceExtraInitializers), '');
         #detached = false;
         #client;
+        worlds;
         _frameManager;
         _id;
         _loaderId = '';

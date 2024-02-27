@@ -13,6 +13,7 @@ import type { CdpHTTPResponse } from './HTTPResponse.js';
  */
 export declare class CdpHTTPRequest extends HTTPRequest {
     #private;
+    id: string;
     _redirectChain: CdpHTTPRequest[];
     _response: CdpHTTPResponse | null;
     get client(): CDPSession;

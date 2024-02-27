@@ -10,7 +10,6 @@ import {
   concat,
   EMPTY,
   filter,
-  filterAsync,
   first,
   firstValueFrom,
   from,
@@ -63,6 +62,7 @@ import type {
 import {
   debugError,
   fromEmitterEvent,
+  filterAsync,
   importFSPromises,
   isString,
   NETWORK_IDLE_TIME,
@@ -616,7 +616,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
               )
             ).pipe(
               filter(request => {
-                return request._requestId === originalRequest._requestId;
+                return request.id === originalRequest.id;
               }),
               take(1),
               map(() => {
@@ -757,6 +757,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * A target this page was created from.
+   *
+   * @deprecated Use {@link Page.createCDPSession} directly.
    */
   abstract target(): Target;
 

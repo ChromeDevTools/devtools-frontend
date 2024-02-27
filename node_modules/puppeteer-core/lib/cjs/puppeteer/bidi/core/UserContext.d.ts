@@ -7,6 +7,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { Browser } from './Browser.js';
+import type { GetCookiesOptions } from './BrowsingContext.js';
 import { BrowsingContext } from './BrowsingContext.js';
 /**
  * @internal
@@ -34,7 +35,7 @@ export declare class UserContext extends EventEmitter<{
     };
 }> {
     #private;
-    static DEFAULT: string;
+    static DEFAULT: "default";
     static create(browser: Browser, id: string): UserContext;
     readonly browser: Browser;
     private constructor();
@@ -45,6 +46,9 @@ export declare class UserContext extends EventEmitter<{
     private dispose;
     createBrowsingContext(type: Bidi.BrowsingContext.CreateType, options?: CreateBrowsingContextOptions): Promise<BrowsingContext>;
     remove(): Promise<void>;
+    getCookies(options?: GetCookiesOptions, sourceOrigin?: string | undefined): Promise<Bidi.Network.Cookie[]>;
+    setCookie(cookie: Bidi.Storage.PartialCookie, sourceOrigin?: string): Promise<void>;
+    setPermissions(origin: string, descriptor: Bidi.Permissions.PermissionDescriptor, state: Bidi.Permissions.PermissionState): Promise<void>;
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=UserContext.d.ts.map

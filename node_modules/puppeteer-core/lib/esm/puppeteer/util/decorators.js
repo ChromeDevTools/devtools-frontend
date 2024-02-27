@@ -168,4 +168,57 @@ export function guarded(getKey = function () {
         };
     };
 }
+const bubbleHandlers = new WeakMap();
+/**
+ * Event emitter fields marked with `bubble` will have their events bubble up
+ * the field owner.
+ */
+// The type is too complicated to type.
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function bubble(events) {
+    return ({ set, get }, context) => {
+        context.addInitializer(function () {
+            const handlers = bubbleHandlers.get(this) ?? new Map();
+            if (handlers.has(events)) {
+                return;
+            }
+            const handler = events !== undefined
+                ? (type, event) => {
+                    if (events.includes(type)) {
+                        this.emit(type, event);
+                    }
+                }
+                : (type, event) => {
+                    this.emit(type, event);
+                };
+            handlers.set(events, handler);
+            bubbleHandlers.set(this, handlers);
+        });
+        return {
+            set(emitter) {
+                const handler = bubbleHandlers.get(this).get(events);
+                // In case we are re-setting.
+                const oldEmitter = get.call(this);
+                if (oldEmitter !== undefined) {
+                    oldEmitter.off('*', handler);
+                }
+                if (emitter === undefined) {
+                    return;
+                }
+                emitter.on('*', handler);
+                set.call(this, emitter);
+            },
+            // @ts-expect-error -- TypeScript incorrectly types init to require a
+            // return.
+            init(emitter) {
+                if (emitter === undefined) {
+                    return;
+                }
+                const handler = bubbleHandlers.get(this).get(events);
+                emitter.on('*', handler);
+                return emitter;
+            },
+        };
+    };
+}
 //# sourceMappingURL=decorators.js.map

@@ -1,80 +1,99 @@
+var _a;
 import { HTTPRequest } from '../api/HTTPRequest.js';
 import { UnsupportedOperation } from '../common/Errors.js';
+import { BidiHTTPResponse } from './HTTPResponse.js';
+export const requests = new WeakMap();
 /**
  * @internal
  */
 export class BidiHTTPRequest extends HTTPRequest {
-    _response = null;
-    _redirectChain;
-    _navigationId;
-    #url;
-    #resourceType;
-    #method;
-    #postData;
-    #headers = {};
-    #initiator;
+    static from(bidiRequest, frame) {
+        const request = new _a(bidiRequest, frame);
+        request.#initialize();
+        return request;
+    }
+    #redirect;
+    #response = null;
+    id;
     #frame;
-    constructor(event, frame, redirectChain = []) {
+    #request;
+    constructor(request, frame) {
         super();
-        this.#url = event.request.url;
-        this.#resourceType = event.initiator.type.toLowerCase();
-        this.#method = event.request.method;
-        this.#postData = undefined;
-        this.#initiator = event.initiator;
+        requests.set(request, this);
+        this.#request = request;
         this.#frame = frame;
-        this._requestId = event.request.request;
-        this._redirectChain = redirectChain;
-        this._navigationId = event.navigation;
-        for (const header of event.request.headers) {
-            // TODO: How to handle Binary Headers
-            // https://w3c.github.io/webdriver-bidi/#type-network-Header
-            if (header.value.type === 'string') {
-                this.#headers[header.name.toLowerCase()] = header.value.value;
-            }
-        }
+        this.id = request.id;
     }
     get client() {
         throw new UnsupportedOperation();
     }
+    #initialize() {
+        this.#request.on('redirect', request => {
+            this.#redirect = _a.from(request, this.#frame);
+        });
+        this.#request.once('success', data => {
+            this.#response = BidiHTTPResponse.from(data, this);
+        });
+        this.#frame?.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+    }
     url() {
-        return this.#url;
+        return this.#request.url;
     }
     resourceType() {
-        return this.#resourceType;
+        return this.initiator().type.toLowerCase();
     }
     method() {
-        return this.#method;
+        return this.#request.method;
     }
     postData() {
-        return this.#postData;
+        throw new UnsupportedOperation();
     }
     hasPostData() {
-        return this.#postData !== undefined;
+        throw new UnsupportedOperation();
     }
     async fetchPostData() {
-        return this.#postData;
+        throw new UnsupportedOperation();
     }
     headers() {
-        return this.#headers;
+        const headers = {};
+        for (const header of this.#request.headers) {
+            headers[header.name.toLowerCase()] = header.value.value;
+        }
+        return headers;
     }
     response() {
-        return this._response;
+        return this.#response;
+    }
+    failure() {
+        if (this.#request.error === undefined) {
+            return null;
+        }
+        return { errorText: this.#request.error };
     }
     isNavigationRequest() {
-        return Boolean(this._navigationId);
+        return this.#request.navigation !== undefined;
     }
     initiator() {
-        return this.#initiator;
+        return this.#request.initiator;
     }
     redirectChain() {
-        return this._redirectChain.slice();
+        if (this.#redirect === undefined) {
+            return [];
+        }
+        const redirects = [this.#redirect];
+        for (const redirect of redirects) {
+            if (redirect.#redirect !== undefined) {
+                redirects.push(redirect.#redirect);
+            }
+        }
+        return redirects;
     }
     enqueueInterceptAction(pendingHandler) {
         // Execute the handler when interception is not supported
         void pendingHandler();
     }
     frame() {
-        return this.#frame;
+        return this.#frame ?? null;
     }
     continueRequestOverrides() {
         throw new UnsupportedOperation();
@@ -103,8 +122,6 @@ export class BidiHTTPRequest extends HTTPRequest {
     respond(_response, _priority) {
         throw new UnsupportedOperation();
     }
-    failure() {
-        throw new UnsupportedOperation();
-    }
 }
+_a = BidiHTTPRequest;
 //# sourceMappingURL=HTTPRequest.js.map

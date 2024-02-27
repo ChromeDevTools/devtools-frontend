@@ -97,5 +97,6 @@ export declare abstract class WebWorker extends EventEmitter<Record<EventType, u
      * @returns A {@link JSHandle | handle} to the return value of `func`.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    close(): Promise<void>;
 }
 //# sourceMappingURL=WebWorker.d.ts.map

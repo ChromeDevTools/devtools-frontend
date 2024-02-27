@@ -11,7 +11,4 @@ declare class SocksClientError extends Error {
  * @param array The array to shuffle.
  */
 declare function shuffleArray(array: unknown[]): void;
-declare type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> & {
-    [K in Keys]?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
-}[Keys];
-export { RequireOnlyOne, SocksClientError, shuffleArray };
+export { SocksClientError, shuffleArray };

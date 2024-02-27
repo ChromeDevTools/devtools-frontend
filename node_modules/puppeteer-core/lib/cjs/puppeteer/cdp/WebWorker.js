@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpWebWorker = void 0;
+const Target_js_1 = require("../api/Target.js");
 const WebWorker_js_1 = require("../api/WebWorker.js");
 const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
@@ -13,9 +14,13 @@ const JSHandle_js_1 = require("./JSHandle.js");
 class CdpWebWorker extends WebWorker_js_1.WebWorker {
     #world;
     #client;
-    constructor(client, url, consoleAPICalled, exceptionThrown) {
+    #id;
+    #targetType;
+    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown) {
         super(url);
+        this.#id = targetId;
         this.#client = client;
+        this.#targetType = targetType;
         this.#world = new IsolatedWorld_js_1.IsolatedWorld(this, new TimeoutSettings_js_1.TimeoutSettings());
         this.#client.once('Runtime.executionContextCreated', async (event) => {
             this.#world.setContext(new ExecutionContext_js_1.ExecutionContext(client, event.context, this.#world));
@@ -39,6 +44,26 @@ class CdpWebWorker extends WebWorker_js_1.WebWorker {
     }
     get client() {
         return this.#client;
+    }
+    async close() {
+        switch (this.#targetType) {
+            case Target_js_1.TargetType.SERVICE_WORKER:
+            case Target_js_1.TargetType.SHARED_WORKER: {
+                // For service and shared workers we need to close the target and detach to allow
+                // the worker to stop.
+                await this.client.connection()?.send('Target.closeTarget', {
+                    targetId: this.#id,
+                });
+                await this.client.connection()?.send('Target.detachFromTarget', {
+                    sessionId: this.client.id(),
+                });
+                break;
+            }
+            default:
+                await this.evaluate(() => {
+                    self.close();
+                });
+        }
     }
 }
 exports.CdpWebWorker = CdpWebWorker;

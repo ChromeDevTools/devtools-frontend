@@ -3,8 +3,9 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
+import { debugError, fromEmitterEvent, filterAsync, timeout, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 /**
  * {@link BrowserContext} represents individual user contexts within a
@@ -43,6 +44,25 @@ export class BrowserContext extends EventEmitter {
      */
     constructor() {
         super();
+    }
+    /**
+     * Waits until a {@link Target | target} matching the given `predicate`
+     * appears and returns it.
+     *
+     * This will look all open {@link BrowserContext | browser contexts}.
+     *
+     * @example Finding a target for a page opened via `window.open`:
+     *
+     * ```ts
+     * await page.evaluate(() => window.open('https://www.example.com/'));
+     * const newWindowTarget = await browserContext.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
+     * ```
+     */
+    async waitForTarget(predicate, options = {}) {
+        const { timeout: ms = 30000 } = options;
+        return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserContextEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserContextEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(timeout(ms))));
     }
     /**
      * Whether this {@link BrowserContext | browser context} is closed.

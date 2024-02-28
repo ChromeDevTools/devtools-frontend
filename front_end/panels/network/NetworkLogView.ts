@@ -923,7 +923,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private computeRowHeight(): number {
-    return Math.round(this.rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
+    return this.rawRowHeight;
   }
 
   nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null {

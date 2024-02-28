@@ -112,8 +112,6 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   private constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel('settings').track({resize: true})}`);
-
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
@@ -162,7 +160,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     }
 
     settingsScreen.reportTabOnReveal = true;
-    const dialog = new UI.Dialog.Dialog();
+    const dialog = new UI.Dialog.Dialog('settings');
     dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();
     dialog.setOutsideClickCallback(() => {});

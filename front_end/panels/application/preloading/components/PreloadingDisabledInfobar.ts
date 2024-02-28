@@ -13,6 +13,7 @@ import * as Coordinator from '../../../../ui/components/render_coordinator/rende
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js';
 
@@ -159,6 +160,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
             closeOnESC: true,
             closeOnScroll: false,
           } as Dialogs.IconDialog.IconDialogData}
+          jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true})}
         >
           ${this.#dialogContents()}
         </${Dialogs.IconDialog.IconDialog.litTagName}>

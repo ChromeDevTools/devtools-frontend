@@ -165,7 +165,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
       dialogTitle = i18nString(UIStrings.quickOpen);
     }
 
-    this.dialog = new UI.Dialog.Dialog();
+    this.dialog = new UI.Dialog.Dialog('quick-open');
     UI.ARIAUtils.setLabel(this.dialog.contentElement, dialogTitle);
     this.dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);

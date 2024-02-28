@@ -240,7 +240,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     const error = await profileType.loadFromFile(file);
     if (error && 'message' in error) {
-      void UI.UIUtils.MessageDialog.show(i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}));
+      void UI.UIUtils.MessageDialog.show(
+          i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}), undefined, 'profile-loading-failed');
     }
   }
 

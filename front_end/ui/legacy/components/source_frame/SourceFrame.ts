@@ -1084,7 +1084,7 @@ class SearchMatch {
 
 export class SelfXssWarningDialog {
   static async show(): Promise<boolean> {
-    const dialog = new UI.Dialog.Dialog();
+    const dialog = new UI.Dialog.Dialog('self-xss-warning');
     dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     dialog.setDimmed(true);
@@ -1106,7 +1106,7 @@ export class SelfXssWarningDialog {
       content.createChild('div', 'message').textContent =
           i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)});
 
-      const input = UI.UIUtils.createInput('text-input', 'text');
+      const input = UI.UIUtils.createInput('text-input', 'text', 'allow-pasting');
       input.placeholder = i18nString(UIStrings.typeAllowPasting, {PH1: i18nString(UIStrings.allowPasting)});
       content.appendChild(input);
 

@@ -725,7 +725,7 @@ export class NetworkLogViewColumns {
     const manageCustomHeaders = new NetworkManageCustomHeadersView(
         customHeaders, headerTitle => Boolean(this.addCustomHeader(headerTitle)), this.changeCustomHeader.bind(this),
         this.removeCustomHeader.bind(this));
-    const dialog = new UI.Dialog.Dialog();
+    const dialog = new UI.Dialog.Dialog('manage-custom-headers');
     manageCustomHeaders.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     // @ts-ignore

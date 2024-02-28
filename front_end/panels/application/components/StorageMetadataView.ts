@@ -254,7 +254,8 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       throw new Error('Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.');
     }
     const ok = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.confirmBucketDeletion, {PH1: this.#storageBucket.bucket.name || ''}), this);
+        i18nString(UIStrings.confirmBucketDeletion, {PH1: this.#storageBucket.bucket.name || ''}), this,
+        {jslogContext: 'delete-bucket-confirmation'});
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
     }

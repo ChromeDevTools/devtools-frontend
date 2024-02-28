@@ -60,7 +60,7 @@ export class Infobar {
       jslogContext?: string) {
     this.element = document.createElement('div');
     if (jslogContext) {
-      this.element.setAttribute('jslog', `${VisualLogging.infoBar().context(jslogContext)}`);
+      this.element.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({resize: true})}`);
     }
     this.element.classList.add('flex-none');
     this.shadowRoot =
@@ -116,7 +116,7 @@ export class Infobar {
     this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
     this.toggleElement = createTextButton(
         i18nString(UIStrings.showMore), this.onToggleDetails.bind(this),
-        {className: 'link-style devtools-link hidden'});
+        {className: 'link-style devtools-link hidden', jslogContext: 'show-more'});
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('div', 'close-button', 'dt-close-button');

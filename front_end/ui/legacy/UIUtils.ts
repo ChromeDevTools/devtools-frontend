@@ -1553,8 +1553,8 @@ export function createFileSelectorElement(callback: (arg0: File) => void): HTMLI
 export const MaxLengthForDisplayedURLs = 150;
 
 export class MessageDialog {
-  static async show(message: string, where?: Element|Document): Promise<void> {
-    const dialog = new Dialog();
+  static async show(message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
+    const dialog = new Dialog(jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     const shadowRoot = Utils.createShadowRootWithCoreStyles(
@@ -1577,7 +1577,7 @@ export class MessageDialog {
 
 export class ConfirmDialog {
   static async show(message: string, where?: Element|Document, options?: ConfirmDialogOptions): Promise<boolean> {
-    const dialog = new Dialog();
+    const dialog = new Dialog(options?.jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
@@ -1753,6 +1753,7 @@ export interface RendererRegistration {
 export interface ConfirmDialogOptions {
   okButtonLabel?: string;
   cancelButtonLabel?: string;
+  jslogContext?: string;
 }
 
 VisualLogging.registerContextProvider(

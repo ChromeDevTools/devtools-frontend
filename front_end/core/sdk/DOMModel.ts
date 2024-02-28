@@ -1695,9 +1695,7 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let DOMModelUndoStackInstance: DOMModelUndoStack|null;
+let domModelUndoStackInstance: DOMModelUndoStack|null = null;
 
 export class DOMModelUndoStack {
   #stack: DOMModel[];
@@ -1713,11 +1711,11 @@ export class DOMModelUndoStack {
     forceNew: boolean|null,
   } = {forceNew: null}): DOMModelUndoStack {
     const {forceNew} = opts;
-    if (!DOMModelUndoStackInstance || forceNew) {
-      DOMModelUndoStackInstance = new DOMModelUndoStack();
+    if (!domModelUndoStackInstance || forceNew) {
+      domModelUndoStackInstance = new DOMModelUndoStack();
     }
 
-    return DOMModelUndoStackInstance;
+    return domModelUndoStackInstance;
   }
 
   async markUndoableState(model: DOMModel, minorChange: boolean): Promise<void> {

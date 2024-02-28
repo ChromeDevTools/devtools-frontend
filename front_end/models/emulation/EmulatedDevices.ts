@@ -494,9 +494,7 @@ export const _Show = {
   Never: 'Never',
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _instance: EmulatedDevicesList;
+let emulatedDevicesListInstance: EmulatedDevicesList;
 
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #standardSetting: Common.Settings.Setting<any[]>;
@@ -519,10 +517,10 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   static instance(): EmulatedDevicesList {
-    if (!_instance) {
-      _instance = new EmulatedDevicesList();
+    if (!emulatedDevicesListInstance) {
+      emulatedDevicesListInstance = new EmulatedDevicesList();
     }
-    return _instance;
+    return emulatedDevicesListInstance;
   }
 
   private updateStandardDevices(): void {

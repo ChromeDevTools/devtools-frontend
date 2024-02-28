@@ -73,7 +73,7 @@ export class RemoteObject {
   }
 
   static arrayNameFromDescription(description: string): string {
-    return description.replace(_descriptionLengthParenRegex, '').replace(_descriptionLengthSquareRegex, '');
+    return description.replace(descriptionLengthParenRegex, '').replace(descriptionLengthSquareRegex, '');
   }
 
   static arrayLength(object: RemoteObject|Protocol.Runtime.RemoteObject|Protocol.Runtime.ObjectPreview): number {
@@ -82,8 +82,8 @@ export class RemoteObject {
     }
     // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
     // Both formats are checked in case the front end is dealing with an old version of V8.
-    const parenMatches = object.description && object.description.match(_descriptionLengthParenRegex);
-    const squareMatches = object.description && object.description.match(_descriptionLengthSquareRegex);
+    const parenMatches = object.description && object.description.match(descriptionLengthParenRegex);
+    const squareMatches = object.description && object.description.match(descriptionLengthSquareRegex);
     return parenMatches ? parseInt(parenMatches[1], 10) : (squareMatches ? parseInt(squareMatches[1], 10) : 0);
   }
 
@@ -92,7 +92,7 @@ export class RemoteObject {
     if (object.subtype !== 'arraybuffer') {
       return 0;
     }
-    const matches = object.description && object.description.match(_descriptionLengthParenRegex);
+    const matches = object.description && object.description.match(descriptionLengthParenRegex);
     return matches ? parseInt(matches[1], 10) : 0;
   }
 
@@ -1139,12 +1139,8 @@ export class RemoteFunction {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _descriptionLengthParenRegex: RegExp = /\(([0-9]+)\)/;
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _descriptionLengthSquareRegex: RegExp = /\[([0-9]+)\]/;
+const descriptionLengthParenRegex = /\(([0-9]+)\)/;
+const descriptionLengthSquareRegex = /\[([0-9]+)\]/;
 
 const enum UnserializableNumber {
   Negative0 = ('-0'),

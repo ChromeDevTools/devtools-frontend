@@ -129,12 +129,12 @@ export class GlassPane {
     }
     // TODO(crbug.com/1006759): Extract the magic number
     // Deliberately starts with 3000 to hide other z-indexed elements below.
-    this.element.style.zIndex = `${3000 + 1000 * _panes.size}`;
+    this.element.style.zIndex = `${3000 + 1000 * panes.size}`;
     this.element.setAttribute('data-devtools-glass-pane', '');
     document.body.addEventListener('mousedown', this.onMouseDownBound, true);
     document.body.addEventListener('pointerdown', this.onMouseDownBound, true);
     this.widgetInternal.show(document.body);
-    _panes.add(this);
+    panes.add(this);
     this.positionContent();
   }
 
@@ -142,7 +142,7 @@ export class GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    _panes.delete(this);
+    panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
     this.element.ownerDocument.body.removeEventListener('pointerdown', this.onMouseDownBound, true);
     this.widgetInternal.detach();
@@ -169,7 +169,7 @@ export class GlassPane {
     const scrollbarSize = Utils.measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = (_containers.get((this.element.ownerDocument as Document))) as HTMLElement;
+    const container = (containers.get((this.element.ownerDocument as Document))) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -345,16 +345,16 @@ export class GlassPane {
   }
 
   static setContainer(element: Element): void {
-    _containers.set((element.ownerDocument as Document), element);
+    containers.set((element.ownerDocument as Document), element);
     GlassPane.containerMoved(element);
   }
 
   static container(document: Document): Element {
-    return _containers.get(document) as Element;
+    return containers.get(document) as Element;
   }
 
   static containerMoved(element: Element): void {
-    for (const pane of _panes) {
+    for (const pane of panes) {
       if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane.positionContent();
       }
@@ -387,12 +387,8 @@ export const enum MarginBehavior {
   NoMargin = 'NoMargin',
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _containers = new Map<Document, Element>();
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _panes = new Set<GlassPane>();
+const containers = new Map<Document, Element>();
+const panes = new Set<GlassPane>();
 
 // Exported for layout tests.
-export const GlassPanePanes = _panes;
+export const GlassPanePanes = panes;

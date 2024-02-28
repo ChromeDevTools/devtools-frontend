@@ -446,10 +446,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   private updatedForTest(): void {
   }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private static readonly previewSymbol = Symbol('preview');
 }
 
 const networkRequestToPreview = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestView>();

@@ -2,21 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable no-unused-private-class-members */
+/* eslint-disable no-unused-private-class-members, @typescript-eslint/naming-convention */
 
 export type MicroSeconds = number&{_tag: 'MicroSeconds'};
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MicroSeconds(value: number): MicroSeconds {
   return value as MicroSeconds;
 }
 
 export type MilliSeconds = number&{_tag: 'MilliSeconds'};
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MilliSeconds(value: number): MilliSeconds {
   return value as MilliSeconds;
 }
 export type Seconds = number&{_tag: 'Seconds'};
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Seconds(value: number): Seconds {
   return value as Seconds;
 }

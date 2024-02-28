@@ -90,19 +90,19 @@ export class ServiceWorkerUpdateCycleView {
       while (state) {
         // find the earliest timestamp of different stage on record.
         if (state.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated) {
-          endActivateTime = state.last_updated_timestamp;
+          endActivateTime = state.lastUpdatedTimestamp;
         } else if (state.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating) {
           if (endActivateTime === 0) {
-            endActivateTime = state.last_updated_timestamp;
+            endActivateTime = state.lastUpdatedTimestamp;
           }
-          beginActivateTime = state.last_updated_timestamp;
+          beginActivateTime = state.lastUpdatedTimestamp;
         } else if (state.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed) {
-          endInstallTime = state.last_updated_timestamp;
+          endInstallTime = state.lastUpdatedTimestamp;
         } else if (state.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing) {
           if (endInstallTime === 0) {
-            endInstallTime = state.last_updated_timestamp;
+            endInstallTime = state.lastUpdatedTimestamp;
           }
-          beginInstallTime = state.last_updated_timestamp;
+          beginInstallTime = state.lastUpdatedTimestamp;
         }
         state = state.previousState;
       }

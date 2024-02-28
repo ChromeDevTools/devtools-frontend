@@ -299,7 +299,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   private clearFrames(): void {
     // TODO(allada): actially remove frames from request.
-    _clearFrameOffsets.set(this.request, this.request.frames().length);
+    clearFrameOffsets.set(this.request, this.request.frames().length);
     this.refresh();
   }
 
@@ -349,7 +349,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     const url = this.request.url();
     let frames = this.request.frames();
-    const offset = _clearFrameOffsets.get(this.request) || 0;
+    const offset = clearFrameOffsets.get(this.request) || 0;
     frames = frames.slice(offset);
     frames = frames.filter(this.frameFilter.bind(this));
     frames.forEach(frame => this.dataGrid.insertChild(new ResourceWebSocketFrameNode(url, frame)));
@@ -477,6 +477,4 @@ export function ResourceWebSocketFrameNodeTimeComparator(
   return a.frame.time - b.frame.time;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _clearFrameOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();
+const clearFrameOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();

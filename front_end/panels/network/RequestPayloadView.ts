@@ -238,16 +238,14 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   private populateTreeElementWithSourceText(treeElement: UI.TreeOutline.TreeElement, sourceText: string|null): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const max_len = 3000;
+    const MAX_LENGTH = 3000;
     const text = (sourceText || '').trim();
-    const trim = text.length > max_len;
+    const trim = text.length > MAX_LENGTH;
 
     const sourceTextElement = document.createElement('span');
     sourceTextElement.classList.add('payload-value');
     sourceTextElement.classList.add('source-code');
-    sourceTextElement.textContent = trim ? text.substr(0, max_len) : text;
+    sourceTextElement.textContent = trim ? text.substr(0, MAX_LENGTH) : text;
 
     const sourceTreeElement = new UI.TreeOutline.TreeElement(sourceTextElement);
     treeElement.removeChildren();

@@ -217,8 +217,6 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.dispatchEventToListeners(Events.FilterChanged);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   private static readonly durationFilterPresetsMs = [0, 1, 15];
 }
 

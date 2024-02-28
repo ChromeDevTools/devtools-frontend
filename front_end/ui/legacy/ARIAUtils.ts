@@ -4,12 +4,10 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _id = 0;
+let id = 0;
 
 export function nextId(prefix: string): string {
-  return (prefix || '') + ++_id;
+  return (prefix || '') + ++id;
 }
 
 export function bindLabelToControl(label: Element, control: Element): void {

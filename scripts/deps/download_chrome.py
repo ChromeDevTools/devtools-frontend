@@ -18,6 +18,7 @@ import sys
 import urllib.request
 import zipfile
 
+from set_lpac_acls import set_lpac_acls
 
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Download Chrome')
@@ -97,6 +98,11 @@ def download_and_extract(options):
                 os.chmod(os.path.join(root, f), 0o555)
     with open(VERSION_NUMBER_FILE, 'w') as file:
         file.write(options.version_number)
+
+    # On Windows we have to setup LPAC ACLs for the binary.
+    # See https://bit.ly/31yqMJR.
+    if os.name == 'nt':
+        set_lpac_acls(os.path.dirname(EXPECTED_BINARY))
 
 
 if __name__ == '__main__':

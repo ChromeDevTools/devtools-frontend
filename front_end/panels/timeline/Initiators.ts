@@ -18,11 +18,18 @@ export interface InitiatorPair {
 export function eventInitiatorPairsToDraw(
     traceEngineData: TraceEngine.Handlers.Types.TraceParseData,
     selectedEvent: TraceEngine.Types.TraceEvents.TraceEventData,
+    hiddenEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
+    modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
     ): readonly InitiatorPair[] {
-  return [
+  const pairs = [
     ...findEventInitiatorPairsPredecessors(traceEngineData, selectedEvent),
     ...findEventInitiatorPairsDirectSuccessors(traceEngineData, selectedEvent),
   ];
+
+  // For each pair, call a function that makes sure that neither entry is hidden.
+  // If they are, it will reassign the event or initiator to the closest ancestor.
+  pairs.forEach(pair => getClosestVisibleAncestorsPair(pair, modifiedEntries, hiddenEntries, traceEngineData));
+  return pairs;
 }
 
 function findEventInitiatorPairsPredecessors(
@@ -84,4 +91,33 @@ function findEventInitiatorPairsDirectSuccessors(
   }
 
   return pairs;
+}
+
+/**
+ * Given a pair of an initiator and event, this function returns
+ * the closest visible ancestors. We need to apply this to each pair because
+ * the actual initiator or initiated event might be hidden form the flame chart.
+ * If neither entry is hidden, this function returns the initial pair.
+ */
+function getClosestVisibleAncestorsPair(
+    pair: InitiatorPair, modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
+    hiddenEntries: TraceEngine.Types.TraceEvents.TraceEventData[],
+    traceEngineData: TraceEngine.Handlers.Types.TraceParseData): InitiatorPair {
+  if (hiddenEntries.includes(pair.event)) {
+    let nextParent = traceEngineData.Renderer.entryToNode.get(pair.event)?.parent;
+    while (nextParent?.entry && !modifiedEntries.includes(nextParent?.entry)) {
+      nextParent = nextParent.parent ?? undefined;
+    }
+    pair.event = nextParent?.entry ?? pair.event;
+  }
+
+  if (hiddenEntries.includes(pair.initiator)) {
+    let nextParent = traceEngineData.Renderer.entryToNode.get(pair.initiator)?.parent;
+    while (nextParent?.entry && !modifiedEntries.includes(nextParent?.entry)) {
+      nextParent = nextParent.parent ?? undefined;
+    }
+    pair.initiator = nextParent?.entry ?? pair.initiator;
+  }
+
+  return pair;
 }

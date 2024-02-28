@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["simple-throw-source.js"],
+  "sourcesContent": ["function outerWat() {\n    function wat() {  \n        throw new Error(\"something went wrong\");\n    }\n    \n    wat();\n}\n"],
+  "names": ["outerWat","wat","Error"],
+  "mappings": "AAAA,SAASA,WACL,SAASC,MACL,MAAM,IAAIC,MAAM,sBAAsB,CAC1C,CAEAD,IAAI,CACR"
+}

@@ -175,7 +175,6 @@ export class CSSLength extends HTMLElement {
 customElements.define('devtools-css-length', CSSLength);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-length': CSSLength;
   }

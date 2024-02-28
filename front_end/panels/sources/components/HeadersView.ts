@@ -465,7 +465,6 @@ export class HeadersViewComponent extends HTMLElement {
 customElements.define('devtools-sources-headers-view', HeadersViewComponent);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-sources-headers-view': HeadersViewComponent;
   }

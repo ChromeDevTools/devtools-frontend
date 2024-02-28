@@ -67,7 +67,6 @@ export class CSSQuery extends HTMLElement {
 customElements.define('devtools-css-query', CSSQuery);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-query': CSSQuery;
   }

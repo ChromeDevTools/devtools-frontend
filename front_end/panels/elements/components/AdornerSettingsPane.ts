@@ -127,7 +127,6 @@ export class AdornerSettingsPane extends HTMLElement {
 customElements.define('devtools-adorner-settings-pane', AdornerSettingsPane);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-adorner-settings-pane': AdornerSettingsPane;
   }

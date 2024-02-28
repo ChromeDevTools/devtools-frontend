@@ -176,7 +176,6 @@ customElements.define('devtools-link-swatch', LinkSwatch);
 customElements.define('devtools-css-var-swatch', CSSVarSwatch);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-base-link-swatch': BaseLinkSwatch;
     'devtools-link-swatch': LinkSwatch;

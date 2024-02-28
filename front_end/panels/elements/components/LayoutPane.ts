@@ -513,7 +513,6 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
 customElements.define('devtools-layout-pane', LayoutPane);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-layout-pane': LayoutPane;
   }

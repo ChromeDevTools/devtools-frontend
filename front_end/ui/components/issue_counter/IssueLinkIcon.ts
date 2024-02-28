@@ -160,7 +160,6 @@ export class IssueLinkIcon extends HTMLElement {
 customElements.define('devtools-issue-link-icon', IssueLinkIcon);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-issue-link-icon': IssueLinkIcon;
   }

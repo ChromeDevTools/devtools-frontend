@@ -692,7 +692,6 @@ customElements.define('devtools-console-insight', ConsoleInsight);
 customElements.define('devtools-console-insight-sources-list', ConsoleInsightSourcesList);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-console-insight': ConsoleInsight;
     'devtools-console-insight-sources-list': ConsoleInsightSourcesList;

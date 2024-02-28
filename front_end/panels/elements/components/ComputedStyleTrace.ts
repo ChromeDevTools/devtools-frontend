@@ -55,7 +55,6 @@ export class ComputedStyleTrace extends HTMLElement {
 customElements.define('devtools-computed-style-trace', ComputedStyleTrace);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-computed-style-trace': ComputedStyleTrace;
   }

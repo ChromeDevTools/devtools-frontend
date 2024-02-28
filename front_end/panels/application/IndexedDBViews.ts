@@ -240,7 +240,6 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
 customElements.define('devtools-idb-database-view', IDBDatabaseView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-idb-database-view': IDBDatabaseView;
   }

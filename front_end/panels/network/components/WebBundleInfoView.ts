@@ -110,7 +110,6 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
 customElements.define('devtools-web-bundle-info', WebBundleInfoView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-web-bundle-info': WebBundleInfoView;
   }

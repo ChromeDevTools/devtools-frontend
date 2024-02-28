@@ -91,7 +91,6 @@ export class CSSPropertyDocsView extends HTMLElement {
 customElements.define('devtools-css-property-docs-view', CSSPropertyDocsView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-property-docs-view': CSSPropertyDocsView;
   }

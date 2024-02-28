@@ -128,7 +128,6 @@ export class SharedStorageMetadataView extends StorageMetadataView {
 customElements.define('devtools-shared-storage-metadata-view', SharedStorageMetadataView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-shared-storage-metadata-view': SharedStorageMetadataView;
   }

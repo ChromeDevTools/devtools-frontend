@@ -112,7 +112,6 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
 customElements.define('devtools-resources-rulesets-details-view', RuleSetDetailsView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-rulesets-details-view': RuleSetDetailsView;
   }

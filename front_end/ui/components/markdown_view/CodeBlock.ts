@@ -158,7 +158,6 @@ export class CodeBlock extends HTMLElement {
 customElements.define('devtools-code-block', CodeBlock);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-code-block': CodeBlock;
   }

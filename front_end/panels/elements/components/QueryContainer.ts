@@ -137,7 +137,6 @@ export class QueryContainer extends HTMLElement {
 customElements.define('devtools-query-container', QueryContainer);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-query-container': QueryContainer;
   }

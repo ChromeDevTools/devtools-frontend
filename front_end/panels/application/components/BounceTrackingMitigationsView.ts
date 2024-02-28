@@ -256,7 +256,6 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 customElements.define('devtools-bounce-tracking-mitigations-view', BounceTrackingMitigationsView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-bounce-tracking-mitigations-view': BounceTrackingMitigationsView;
   }

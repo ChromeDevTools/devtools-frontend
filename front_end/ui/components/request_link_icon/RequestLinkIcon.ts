@@ -196,7 +196,6 @@ export class RequestLinkIcon extends HTMLElement {
 customElements.define('devtools-request-link-icon', RequestLinkIcon);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-request-link-icon': RequestLinkIcon;
   }

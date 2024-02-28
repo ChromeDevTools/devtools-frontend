@@ -117,7 +117,6 @@ export class SrgbOverlay extends HTMLElement {
 customElements.define('devtools-spectrum-srgb-overlay', SrgbOverlay);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-spectrum-srgb-overlay': SrgbOverlay;
   }

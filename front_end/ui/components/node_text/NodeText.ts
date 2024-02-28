@@ -72,7 +72,6 @@ export class NodeText extends HTMLElement {
 customElements.define('devtools-node-text', NodeText);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-node-text': NodeText;
   }

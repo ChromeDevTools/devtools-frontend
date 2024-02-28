@@ -74,7 +74,7 @@ export class HideIssuesMenu extends HTMLElement {
 customElements.define('devtools-hide-issues-menu', HideIssuesMenu);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   interface HTMLElementTagNameMap {
     'devtools-hide-issues-menu': HideIssuesMenu;
   }

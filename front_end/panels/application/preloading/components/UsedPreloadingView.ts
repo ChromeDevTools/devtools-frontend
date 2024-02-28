@@ -461,7 +461,6 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 customElements.define('devtools-resources-used-preloading-view', UsedPreloadingView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-used-preloading-view': UsedPreloadingView;
   }

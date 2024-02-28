@@ -65,8 +65,7 @@ export class CSSHintDetailsView extends HTMLElement {
 customElements.define('devtools-css-hint-details-view', CSSHintDetailsView);
 
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface HTMLElementTagNameMap {
-      'devtools-css-hint-details-view': CSSHintDetailsView;
-    }
+  interface HTMLElementTagNameMap {
+    'devtools-css-hint-details-view': CSSHintDetailsView;
+  }
 }

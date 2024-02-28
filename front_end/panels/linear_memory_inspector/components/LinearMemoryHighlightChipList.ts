@@ -135,7 +135,7 @@ customElements.define(
     'devtools-linear-memory-highlight-chip-list', LinearMemoryHighlightChipList);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   interface HTMLElementTagNameMap {
     'devtools-linear-memory-highlight-chip-list': LinearMemoryHighlightChipList;
   }

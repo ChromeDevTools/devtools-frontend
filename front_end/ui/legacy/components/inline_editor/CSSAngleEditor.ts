@@ -173,7 +173,6 @@ export class CSSAngleEditor extends HTMLElement {
 customElements.define('devtools-css-angle-editor', CSSAngleEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-angle-editor': CSSAngleEditor;
   }

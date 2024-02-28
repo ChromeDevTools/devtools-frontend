@@ -115,7 +115,7 @@ export class ValueInterpreterSettings extends HTMLElement {
 customElements.define('devtools-linear-memory-inspector-interpreter-settings', ValueInterpreterSettings);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 interface HTMLElementTagNameMap {
     'devtools-linear-memory-inspector-interpreter-settings': ValueInterpreterSettings;
   }

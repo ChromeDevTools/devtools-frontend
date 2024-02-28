@@ -70,7 +70,6 @@ export class ExpandableList extends HTMLElement {
 customElements.define('devtools-expandable-list', ExpandableList);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-expandable-list': ExpandableList;
   }

@@ -253,7 +253,6 @@ export class PermissionsPolicySection extends HTMLElement {
 customElements.define('devtools-resources-permissions-policy-section', PermissionsPolicySection);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-permissions-policy-section': PermissionsPolicySection;
   }

@@ -226,7 +226,6 @@ customElements.define('devtools-stack-trace-link-button', StackTraceLinkButton);
 customElements.define('devtools-resources-stack-trace', StackTrace);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-stack-trace-row': StackTraceRow;
     'devtools-stack-trace-link-button': StackTraceLinkButton;

@@ -296,7 +296,6 @@ function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateRes
 customElements.define('devtools-trust-token-report', RequestTrustTokensView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-trust-token-report': RequestTrustTokensView;
   }

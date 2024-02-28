@@ -176,7 +176,6 @@ export class SharedStorageAccessGrid extends HTMLElement {
 customElements.define('devtools-shared-storage-access-grid', SharedStorageAccessGrid);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-shared-storage-access-grid': SharedStorageAccessGrid;
   }

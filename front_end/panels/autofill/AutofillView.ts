@@ -379,7 +379,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 customElements.define('devtools-autofill-view', AutofillView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-autofill-view': AutofillView;
   }

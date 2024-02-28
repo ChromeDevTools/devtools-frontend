@@ -172,7 +172,6 @@ customElements.define('devtools-report-value', ReportValue);
 customElements.define('devtools-report-divider', ReportSectionDivider);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-report': Report;
     'devtools-report-section': ReportSection;

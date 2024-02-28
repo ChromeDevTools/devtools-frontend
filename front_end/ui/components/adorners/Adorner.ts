@@ -119,7 +119,7 @@ export class Adorner extends HTMLElement {
 customElements.define('devtools-adorner', Adorner);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   interface HTMLElementTagNameMap {
     'devtools-adorner': Adorner;
   }

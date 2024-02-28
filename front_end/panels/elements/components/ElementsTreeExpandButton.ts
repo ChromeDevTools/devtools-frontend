@@ -43,7 +43,6 @@ export class ElementsTreeExpandButton extends HTMLElement {
 customElements.define('devtools-elements-tree-expand-button', ElementsTreeExpandButton);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-elements-tree-expand-button': ElementsTreeExpandButton;
   }

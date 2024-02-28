@@ -126,7 +126,6 @@ export class SizeInputElement extends HTMLElement {
 customElements.define('device-mode-emulation-size-input', SizeInputElement);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'device-mode-emulation-size-input': SizeInputElement;
   }

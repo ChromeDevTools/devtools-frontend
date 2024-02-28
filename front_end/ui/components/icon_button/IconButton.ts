@@ -96,7 +96,6 @@ export class IconButton extends HTMLElement {
 customElements.define('icon-button', IconButton);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'icon-button': IconButton;
   }

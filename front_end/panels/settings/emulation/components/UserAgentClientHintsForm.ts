@@ -854,7 +854,6 @@ export class UserAgentClientHintsForm extends HTMLElement {
 customElements.define('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-user-agent-client-hints-form': UserAgentClientHintsForm;
   }

@@ -124,7 +124,6 @@ customElements.define('devtools-css-variable-value-view', CSSVariableValueView);
 customElements.define('devtools-css-variable-parser-error', CSSVariableParserError);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-variable-value-view': CSSVariableValueView;
     'devtools-css-variable-parser-error': CSSVariableParserError;

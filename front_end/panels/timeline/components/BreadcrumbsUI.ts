@@ -110,7 +110,6 @@ export class BreadcrumbsUI extends HTMLElement {
 customElements.define('devtools-breadcrumbs-ui', BreadcrumbsUI);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-breadcrumbs-ui': BreadcrumbsUI;
   }

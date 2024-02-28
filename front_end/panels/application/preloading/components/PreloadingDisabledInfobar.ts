@@ -263,7 +263,6 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 customElements.define('devtools-resources-preloading-disabled-infobar', PreloadingDisabledInfobar);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-preloading-disabled-infobar': PreloadingDisabledInfobar;
   }

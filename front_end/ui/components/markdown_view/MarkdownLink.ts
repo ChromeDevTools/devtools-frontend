@@ -52,7 +52,6 @@ export class MarkdownLink extends HTMLElement {
 customElements.define('devtools-markdown-link', MarkdownLink);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-markdown-link': MarkdownLink;
   }

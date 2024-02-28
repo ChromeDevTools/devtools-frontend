@@ -663,7 +663,6 @@ interface FrameTreeNodeData {
 customElements.define('devtools-resources-back-forward-cache-view', BackForwardCacheView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-back-forward-cache-view': BackForwardCacheView;
   }

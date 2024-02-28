@@ -22,8 +22,7 @@ const stubTopLayerDOMNode = (nodeName: string, backendNodeId: number, ownerDocum
 
 const stubElementsTreeElement = () => {
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    adorn: ({name: string}, content?: HTMLElement) => new Adorners.Adorner.Adorner(),
+    adorn: (_unused: {name: string}) => new Adorners.Adorner.Adorner(),
   } as Elements.ElementsTreeElement.ElementsTreeElement;
 };
 

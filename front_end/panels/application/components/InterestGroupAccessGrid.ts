@@ -160,7 +160,6 @@ export class InterestGroupAccessGrid extends HTMLElement {
 customElements.define('devtools-interest-group-access-grid', InterestGroupAccessGrid);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-interest-group-access-grid': InterestGroupAccessGrid;
   }

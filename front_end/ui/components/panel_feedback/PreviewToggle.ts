@@ -111,7 +111,6 @@ export class PreviewToggle extends HTMLElement {
 customElements.define('devtools-preview-toggle', PreviewToggle);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-preview-toggle': PreviewToggle;
   }

@@ -176,7 +176,6 @@ function removeTrailingSlash(s: string): string {
 customElements.define('devtools-trust-tokens-storage-view', TrustTokensView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-trust-tokens-storage-view': TrustTokensView;
   }

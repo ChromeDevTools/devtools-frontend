@@ -37,7 +37,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/ShortcutDialog.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-shortcut-dialog': ShortcutDialog;
   }

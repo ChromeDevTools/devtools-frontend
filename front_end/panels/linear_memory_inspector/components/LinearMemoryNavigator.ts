@@ -194,7 +194,6 @@ export class LinearMemoryNavigator extends HTMLElement {
 customElements.define('devtools-linear-memory-inspector-navigator', LinearMemoryNavigator);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linear-memory-inspector-navigator': LinearMemoryNavigator;
   }

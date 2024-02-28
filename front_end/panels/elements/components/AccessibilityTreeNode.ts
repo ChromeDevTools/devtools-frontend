@@ -99,7 +99,6 @@ export class AccessibilityTreeNode extends HTMLElement {
 customElements.define('devtools-accessibility-tree-node', AccessibilityTreeNode);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-accessibility-tree-node': AccessibilityTreeNode;
   }

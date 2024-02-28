@@ -71,7 +71,6 @@ export class MarkdownImage extends HTMLElement {
 customElements.define('devtools-markdown-image', MarkdownImage);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-markdown-image': MarkdownImage;
   }

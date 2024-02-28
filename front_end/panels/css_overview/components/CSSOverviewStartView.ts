@@ -120,7 +120,6 @@ export class CSSOverviewStartView extends HTMLElement {
 customElements.define('devtools-css-overview-start-view', CSSOverviewStartView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-overview-start-view': CSSOverviewStartView;
   }

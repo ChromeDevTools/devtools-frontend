@@ -191,7 +191,6 @@ export class ProtocolHandlersView extends HTMLElement {
 customElements.define('devtools-protocol-handlers-view', ProtocolHandlersView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-protocol-handlers-view': ProtocolHandlersView;
   }

@@ -136,7 +136,6 @@ export class SurveyLink extends HTMLElement {
 customElements.define('devtools-survey-link', SurveyLink);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-survey-link': SurveyLink;
   }

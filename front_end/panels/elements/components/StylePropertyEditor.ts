@@ -172,7 +172,6 @@ export class FlexboxEditor extends StylePropertyEditor {
 customElements.define('devtools-flexbox-editor', FlexboxEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-flexbox-editor': FlexboxEditor;
   }
@@ -190,7 +189,6 @@ export class GridEditor extends StylePropertyEditor {
 customElements.define('devtools-grid-editor', GridEditor);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-grid-editor': GridEditor;
   }

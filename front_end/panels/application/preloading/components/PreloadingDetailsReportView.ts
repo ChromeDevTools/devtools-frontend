@@ -369,7 +369,6 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 customElements.define('devtools-resources-preloading-details-report-view', PreloadingDetailsReportView);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-resources-preloading-details-report-view': PreloadingDetailsReportView;
   }

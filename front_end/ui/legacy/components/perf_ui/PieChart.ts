@@ -235,7 +235,6 @@ export class PieChart extends HTMLElement {
 customElements.define('devtools-perf-piechart', PieChart);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-perf-piechart': PieChart;
   }

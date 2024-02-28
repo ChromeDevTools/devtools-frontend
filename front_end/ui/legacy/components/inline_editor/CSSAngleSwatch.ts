@@ -56,7 +56,6 @@ export class CSSAngleSwatch extends HTMLElement {
 customElements.define('devtools-css-angle-swatch', CSSAngleSwatch);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-angle-swatch': CSSAngleSwatch;
   }

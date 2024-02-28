@@ -76,7 +76,6 @@ export class Linkifier extends HTMLElement {
 customElements.define('devtools-linkifier', Linkifier);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linkifier': Linkifier;
   }

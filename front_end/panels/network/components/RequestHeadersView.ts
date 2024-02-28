@@ -577,7 +577,6 @@ customElements.define('devtools-request-headers', RequestHeadersView);
 customElements.define('devtools-request-headers-category', Category);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-request-headers': RequestHeadersView;
     'devtools-request-headers-category': Category;

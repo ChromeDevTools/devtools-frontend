@@ -33,7 +33,6 @@
  */
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Common from '../../core/common/common.js';
@@ -397,7 +396,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     return cell;
   }
 
-  renderCell(cell: Element, columnId: string): void {
+  renderCell(_cell: Element, _columnId: string): void {
   }
 
   isFailed(): boolean {

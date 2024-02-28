@@ -1468,7 +1468,12 @@
                         "InvalidRegisterOsTriggerHeader",
                         "WebAndOsHeaders",
                         "NoWebOrOsSupport",
-                        "NavigationRegistrationWithoutTransientUserActivation"
+                        "NavigationRegistrationWithoutTransientUserActivation",
+                        "InvalidInfoHeader",
+                        "NoRegisterSourceHeader",
+                        "NoRegisterTriggerHeader",
+                        "NoRegisterOsSourceHeader",
+                        "NoRegisterOsTriggerHeader"
                     ]
                 },
                 {

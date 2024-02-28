@@ -1000,6 +1000,11 @@ export namespace Audits {
     WebAndOsHeaders = 'WebAndOsHeaders',
     NoWebOrOsSupport = 'NoWebOrOsSupport',
     NavigationRegistrationWithoutTransientUserActivation = 'NavigationRegistrationWithoutTransientUserActivation',
+    InvalidInfoHeader = 'InvalidInfoHeader',
+    NoRegisterSourceHeader = 'NoRegisterSourceHeader',
+    NoRegisterTriggerHeader = 'NoRegisterTriggerHeader',
+    NoRegisterOsSourceHeader = 'NoRegisterOsSourceHeader',
+    NoRegisterOsTriggerHeader = 'NoRegisterOsTriggerHeader',
   }
 
   /**

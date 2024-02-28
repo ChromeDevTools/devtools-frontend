@@ -11,6 +11,7 @@ group("docs") {
     ":bundle",
     ":component_doc_styles",
     "../../../Images",
+    "../../../panels/timeline/fixtures/traces",
     "./breadcrumbs_perf",
     "./button",
     "./color_swatch",

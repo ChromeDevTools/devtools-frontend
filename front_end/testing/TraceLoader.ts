@@ -41,7 +41,7 @@ export type AllModelsLoaded = Readonly<{
 const allModelsCache = new Map<string, AllModelsLoaded>();
 
 /**
- * Loads trace files defined as fixtures in test/unittests/fixtures/traces.
+ * Loads trace files defined as fixtures in front_end/panels/timeline/fixtures/traces.
  *
  * Will automatically cache the results to save time processing the same trace
  * multiple times in a run of the test suite.
@@ -74,8 +74,9 @@ export class TraceLoader {
       return cached;
     }
     // Required URLs differ across the component server and the unit tests, so try both.
-    const urlForTest = new URL(`/fixtures/traces/${name}`, window.location.origin);
-    const urlForComponentExample = new URL(`/test/unittests/fixtures/traces/${name}`, window.location.origin);
+    const urlForTest = new URL(`../front_end/panels/timeline/fixtures/traces/${name}`, window.location.origin);
+    const urlForComponentExample =
+        new URL(`../front_end/panels/timeline/fixtures/traces/${name}`, window.location.origin);
 
     if (window.location.pathname.includes('ui/components/docs') ||
         window.location.pathname.includes('ui\\components\\docs')) {
@@ -122,7 +123,7 @@ export class TraceLoader {
    * component example.
    *
    * @param file The name of the trace file to be loaded.
-   * The trace file should be in /test/unittests/fixtures/traces folder.
+   * The trace file should be in ../panels/timeline/fixtures/traces folder.
    *
    * @param config The config the new trace engine should run with. Optional,
    * will fall back to the Default config if not provided.
@@ -157,7 +158,7 @@ export class TraceLoader {
    * increase this test's timeout. It might be null when we only render a
    * component example.
    * @param file The name of the trace file to be loaded. The trace file should
-   * be in /test/unittests/fixtures/traces folder.
+   * be in ../panels/timeline/fixtures/traces folder.
    * @returns tracingModel, timelineModel, performanceModel, traceParsedData
    * from this trace file
    */

@@ -18,7 +18,7 @@ import {addBenchmarkResult, type Benchmark} from '../../report/report.js';
 async function getPanelWithFixture(fixture: string): Promise<ElementHandle> {
   await navigateToPerformanceTab();
   const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
-  await uploadProfileHandle.uploadFile(`test/unittests/fixtures/traces/${fixture}.json.gz`);
+  await uploadProfileHandle.uploadFile(`../../../../front_end/panels/timeline/fixtures/traces/${fixture}.json.gz`);
   return await waitFor('.widget.panel.timeline');
 }
 describe('Performance panel trace load performance', () => {

@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
-const TRACE_FILES_DIR = path.join(__dirname, '..', 'test', 'unittests', 'fixtures', 'traces');
+const TRACE_FILES_DIR = path.join(__dirname, '..', 'front_end', 'panels', 'timeline', 'fixtures', 'traces');
 
 // Get a list of all trace files (gzipped or otherwise)
 const filesInDir = fs.readdirSync(TRACE_FILES_DIR, 'utf8').filter(file => file.includes('.json'));

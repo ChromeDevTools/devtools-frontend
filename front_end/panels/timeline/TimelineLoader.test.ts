@@ -11,7 +11,7 @@ import {makeFakeEventPayload} from '../../testing/TraceHelpers.js';
 import * as Timeline from './timeline.js';
 
 async function loadWebDevTraceAsFile(): Promise<File> {
-  const file = new URL('../../../test/unittests/fixtures/traces/web-dev.json.gz', import.meta.url);
+  const file = new URL('./fixtures/traces/web-dev.json.gz', import.meta.url);
   const response = await fetch(file);
   const asBlob = await response.blob();
   const asFile = new File([asBlob], 'web-dev.json.gz', {
@@ -21,7 +21,7 @@ async function loadWebDevTraceAsFile(): Promise<File> {
 }
 
 async function loadBasicCpuProfileAsFile(): Promise<File> {
-  const file = new URL('../../../test/unittests/fixtures/traces/node-fibonacci-website.cpuprofile.gz', import.meta.url);
+  const file = new URL('./fixtures/traces/node-fibonacci-website.cpuprofile.gz', import.meta.url);
   const response = await fetch(file);
   const asBlob = await response.blob();
   const asFile = new File([asBlob], 'node-fibonacci-website.cpuprofile.gz', {

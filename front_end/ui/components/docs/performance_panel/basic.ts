@@ -122,7 +122,7 @@ if (fileName) {
 }
 
 async function loadFromFile(fileNameWithExtension: string) {
-  const file = new URL(`../../../../../test/unittests/fixtures/traces/${fileNameWithExtension}`, import.meta.url);
+  const file = new URL(`../../../../panels/timeline/fixtures/traces/${fileNameWithExtension}`, import.meta.url);
   const response = await fetch(file);
   const asBlob = await response.blob();
   const asFile = new File([asBlob], `${fileNameWithExtension}`, {

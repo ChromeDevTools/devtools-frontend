@@ -113,8 +113,11 @@ export class ListWidget<T> extends VBox {
     if (this.isTable) {
       element.role = 'rowgroup';
     }
-    element.setAttribute('jslog', `${VisualLogging.item()}`);
-    element.appendChild(this.delegate.renderItem(item, editable));
+    const content = this.delegate.renderItem(item, editable);
+    if (!content.hasAttribute('jslog')) {
+      content.setAttribute('jslog', `${VisualLogging.item()}`);
+    }
+    element.appendChild(content);
     if (editable) {
       element.classList.add('editable');
       element.tabIndex = 0;

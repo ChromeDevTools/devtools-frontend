@@ -12,6 +12,10 @@ import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvid
 import {SourcesView} from './SourcesView.js';
 
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
+  constructor() {
+    super('source-file');
+  }
+
   override attach(): void {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();

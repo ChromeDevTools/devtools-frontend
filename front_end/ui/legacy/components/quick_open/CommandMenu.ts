@@ -62,6 +62,7 @@ export class CommandMenu {
       keys,
       title,
       shortcut,
+      jslogContext,
       executeHandler,
       availableHandler,
       userActionCode,
@@ -77,7 +78,8 @@ export class CommandMenu {
         executeHandler();
       };
     }
-    return new Command(category, title, keys, shortcut, handler, availableHandler, deprecationWarning, isPanelOrDrawer);
+    return new Command(
+        category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer);
   }
 
   static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V):
@@ -94,6 +96,7 @@ export class CommandMenu {
       keys: tags,
       title,
       shortcut: '',
+      jslogContext: setting.name,
       executeHandler: () => {
         if (setting.deprecation?.disabled &&
             (!setting.deprecation?.experiment || setting.deprecation.experiment.isEnabled())) {
@@ -140,6 +143,7 @@ export class CommandMenu {
       keys: action.tags() || '',
       title: action.title(),
       shortcut,
+      jslogContext: action.id(),
       executeHandler: action.execute.bind(action),
       userActionCode,
       availableHandler: undefined,
@@ -171,6 +175,7 @@ export class CommandMenu {
       keys: tags,
       title,
       shortcut: '',
+      jslogContext: id,
       executeHandler,
       userActionCode,
       availableHandler: undefined,
@@ -238,6 +243,7 @@ export interface CreateCommandOptions {
   keys: string;
   title: Common.UIString.LocalizedString;
   shortcut: string;
+  jslogContext: string;
   executeHandler: () => void;
   availableHandler?: () => boolean;
   userActionCode?: number;
@@ -254,7 +260,7 @@ export class CommandMenuProvider extends Provider {
   private commands: Command[];
 
   constructor(commandsForTest: Command[] = []) {
-    super();
+    super('command');
     this.commands = commandsForTest;
   }
 
@@ -344,6 +350,10 @@ export class CommandMenuProvider extends Provider {
     tagElement.textContent = command.category;
   }
 
+  override jslogContextAt(itemIndex: number): string {
+    return this.commands[itemIndex].jslogContext;
+  }
+
   override selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex === null) {
       return;
@@ -382,6 +392,7 @@ export class Command {
   readonly title: Common.UIString.LocalizedString;
   readonly key: string;
   readonly shortcut: string;
+  readonly jslogContext: string;
   readonly deprecationWarning?: Platform.UIString.LocalizedString;
   readonly isPanelOrDrawer?: PanelOrDrawer;
 
@@ -390,12 +401,13 @@ export class Command {
 
   constructor(
       category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string,
-      executeHandler: () => unknown, availableHandler?: () => boolean,
+      jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean,
       deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer) {
     this.category = category;
     this.title = title;
     this.key = category + '\0' + title + '\0' + key;
     this.shortcut = shortcut;
+    this.jslogContext = jslogContext;
     this.#executeHandler = executeHandler;
     this.#availableHandler = availableHandler;
     this.deprecationWarning = deprecationWarning;

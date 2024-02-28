@@ -38,6 +38,7 @@ group("front_end") {
     "../../../front_end/models/trace/extras:unittests",
     "../../../front_end/models/trace/handlers:unittests",
     "../../../front_end/models/trace/helpers:unittests",
+    "../../../front_end/models/trace/insights:unittests",
     "../../../front_end/models/trace/root-causes:unittests",
     "../../../front_end/models/trace/types:unittests",
     "../../../front_end/models/workspace:unittests",

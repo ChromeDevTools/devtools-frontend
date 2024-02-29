@@ -28,13 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import emptyWidgetStyles from './emptyWidget.css.legacy.js';
-import {Infobar, Type} from './Infobar.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
@@ -67,26 +65,6 @@ export class EmptyWidget extends VBox {
   appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
     const learnMoreLink = XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
     return this.contentElement.appendChild(learnMoreLink) as HTMLElement;
-  }
-
-  appendWarning(message: string, learnMoreLink: Platform.DevToolsPath.UrlString, jsLogContext?: string): Infobar {
-    function openLink(): void {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(learnMoreLink);
-    }
-
-    const actions = learnMoreLink ? [{
-      text: 'Learn More',
-      highlight: true,
-      delegate: openLink,
-      dismiss: false,
-      jsLogContext: 'learn-more',
-    }] :
-                                    undefined;
-
-    const warningBar = new Infobar(Type.Warning, message, actions, undefined, undefined, jsLogContext);
-    warningBar.element.classList.add('warning');
-    this.element.prepend(warningBar.element);
-    return warningBar;
   }
 
   set text(text: string) {

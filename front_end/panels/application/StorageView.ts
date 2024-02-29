@@ -12,7 +12,6 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {DatabaseModel} from './DatabaseModel.js';
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
 import storageViewStyles from './storageView.css.js';
@@ -480,14 +479,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       const cookieModel = target.model(SDK.CookieModel.CookieModel);
       if (cookieModel) {
         void cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : originForCookies);
-      }
-    }
-
-    if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      const databaseModel = target.model(DatabaseModel);
-      if (databaseModel) {
-        databaseModel.disable();
-        databaseModel.enable();
       }
     }
 

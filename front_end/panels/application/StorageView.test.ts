@@ -4,14 +4,13 @@
 
 const {assert} = chai;
 
-import {assertElement, dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {assertElement, dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as Resources from './application.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -100,52 +99,6 @@ describeWithMockConnection('StorageView', () => {
 
       assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: testOrigin, storageTypes: 'cookies'}));
       assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, testOrigin));
-    });
-
-    it('also clears WebSQL on clear', async () => {
-      const databaseModel = target.model(Resources.DatabaseModel.DatabaseModel);
-      assertNotNullOrUndefined(databaseModel);
-      const databaseRemoved = new Promise(resolve => {
-        databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, resolve);
-      });
-      const testDatabase = new Resources.DatabaseModel.Database(
-          databaseModel, 'test-id' as Protocol.Database.DatabaseId, 'test-domain', 'test-name', '1');
-      databaseModel.enable();
-      databaseModel.addDatabase(testDatabase);
-      assert.deepEqual(databaseModel.databases()[0], testDatabase);
-
-      Resources.StorageView.StorageView.clear(target, testKey, '', [Protocol.Storage.StorageType.All], false);
-
-      await databaseRemoved;
-      assert.isEmpty(databaseModel.databases());
-    });
-
-    it('clears e.g. WebSQL on clear site data', async () => {
-      const FRAME = {
-        id: 'main',
-        loaderId: 'test',
-        url: 'http://example.com',
-        securityOrigin: 'http://example.com',
-        mimeType: 'text/html',
-      };
-      const databaseModel = target.model(Resources.DatabaseModel.DatabaseModel);
-      assertNotNullOrUndefined(databaseModel);
-      const databaseRemoved = databaseModel.once(Resources.DatabaseModel.Events.DatabasesRemoved);
-      const testDatabase = new Resources.DatabaseModel.Database(
-          databaseModel, 'test-id' as Protocol.Database.DatabaseId, 'test-domain', 'test-name', '1');
-      databaseModel.enable();
-      databaseModel.addDatabase(testDatabase);
-      assert.deepEqual(databaseModel.databases()[0], testDatabase);
-      sinon.stub(target.storageAgent(), 'invoke_getStorageKeyForFrame')
-          .resolves({storageKey: testKey, getError: () => undefined});
-      dispatchEvent(target, 'Page.frameNavigated', {frame: FRAME});
-      const actionDelegate = new Resources.StorageView.ActionDelegate();
-
-      actionDelegate.handleAction(
-          UI.ActionRegistration.ActionCategory.RESOURCES as unknown as UI.Context.Context, 'resources.clear');
-
-      await databaseRemoved;
-      assert.isEmpty(databaseModel.databases());
     });
 
     it('clears cache on clear', async () => {

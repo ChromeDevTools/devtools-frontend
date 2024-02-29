@@ -68,7 +68,7 @@ describe('The Lighthouse start view', () => {
   });
 
   it('displays warning if important data may affect performance', async () => {
-    // e2e tests in application/ create websql and indexeddb items and don't clean up after themselves
+    // e2e tests in application/ create indexeddb items and don't clean up after themselves
     await clearSiteData();
 
     await navigateToLighthouseTab('empty.html');

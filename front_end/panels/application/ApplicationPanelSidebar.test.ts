@@ -221,14 +221,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       assert.strictEqual(expectedCall.called, inScope);
     };
 
-    it('adds database element on in scope event',
-       testUiUpdate(
-           Application.DatabaseModel.Events.DatabaseAdded, Application.DatabaseModel.DatabaseModel,
-           'databasesListTreeElement.appendChild', true));
-    it('does not add database element on out of scope event',
-       testUiUpdate(
-           Application.DatabaseModel.Events.DatabaseAdded, Application.DatabaseModel.DatabaseModel,
-           'databasesListTreeElement.appendChild', false));
     it('adds interest group event on in scope event',
        testUiUpdate(
            Application.InterestGroupStorageModel.Events.InterestGroupAccess,

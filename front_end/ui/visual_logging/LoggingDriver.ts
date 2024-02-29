@@ -184,7 +184,7 @@ async function process(): Promise<void> {
         element.addEventListener('change', logChange, {capture: true});
       }
       const trackKeyDown = loggingState.config.track?.has('keydown');
-      const codes = loggingState.config.track?.get('keydown')?.split(',') || [];
+      const codes = loggingState.config.track?.get('keydown')?.split('|') || [];
       if (trackKeyDown) {
         element.addEventListener('keydown', logKeyDown(codes, keyboardLogThrottler), {capture: true});
       }

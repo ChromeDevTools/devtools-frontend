@@ -313,6 +313,39 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordKeyDown.calledOnce);
   });
 
+  it('logs keydown for specific codes', async () => {
+    const keyboardLogThrottler = new Common.Throttler.Throttler(1000000000);
+    addLoggableElements();
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.setAttribute('jslog', 'TreeItem; context:42; track: keydown: KeyA|KeyB');
+    await VisualLoggingTesting.LoggingDriver.startLogging({keyboardLogThrottler});
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+
+    element.dispatchEvent(new KeyboardEvent('keydown', {'code': 'KeyC'}));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.notExists(keyboardLogThrottler.process);
+
+    element.dispatchEvent(new KeyboardEvent('keydown', {'code': 'KeyA'}));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.exists(keyboardLogThrottler.process);
+    assert.isFalse(recordKeyDown.called);
+    await keyboardLogThrottler.process?.();
+    assert.isTrue(recordKeyDown.calledOnce);
+
+    recordKeyDown.resetHistory();
+
+    element.dispatchEvent(new KeyboardEvent('keydown', {'code': 'KeyB'}));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.exists(keyboardLogThrottler.process);
+    assert.isFalse(recordKeyDown.called);
+    await keyboardLogThrottler.process?.();
+    assert.isTrue(recordKeyDown.calledOnce);
+  });
+
   it('logs hover', async () => {
     const hoverLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();

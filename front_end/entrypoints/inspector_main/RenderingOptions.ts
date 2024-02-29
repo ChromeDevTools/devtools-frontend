@@ -238,7 +238,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('show-ad-highlights'));
     this.#appendCheckbox(
         i18nString(UIStrings.coreWebVitals), i18nString(UIStrings.showsAnOverlayWithCoreWebVitals),
-        Common.Settings.Settings.instance().moduleSetting('show-web-vitals'));
+        Common.Settings.Settings.instance().moduleSetting('show-web-vitals'),
+        {toggle: Host.UserMetrics.Action.ToggleShowWebVitals});
     this.#appendCheckbox(
         i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
         Common.Settings.Settings.instance().moduleSetting('local-fonts-disabled'));

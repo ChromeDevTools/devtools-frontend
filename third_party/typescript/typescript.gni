@@ -93,11 +93,12 @@ template("ts_library") {
     ]
 
     assert(
-        defined(sources) || defined(deps),
-        "You must either specify an array of 'sources' or 'deps' for $target_name")
+        defined(sources) || defined(deps) || defined(invoker.sourceslist),
+        "You must either specify an array of 'sources' or 'deps' or a 'sourceslist' for $target_name")
 
     _test_only = defined(invoker.testonly) && invoker.testonly
     _no_emit = defined(invoker.no_emit) && invoker.no_emit
+    _tsconfig_only = defined(invoker.tsconfigonly) && invoker.tsconfigonly
     _verify_lib_check =
         defined(invoker.verify_lib_check) && invoker.verify_lib_check
     _rootdir = "."
@@ -139,6 +140,17 @@ template("ts_library") {
         devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
         devtools_location_prepend +
             "node_modules/@types/karma-chai-sinon/index.d.ts",
+      ]
+    }
+
+    if (_tsconfig_only) {
+      args += [ "--tsconfig-only" ]
+    }
+
+    if (defined(invoker.sourceslist)) {
+      args += [
+        "--sources-list",
+        rebase_path(invoker.sourceslist, root_build_dir),
       ]
     }
 
@@ -233,10 +245,17 @@ template("ts_library") {
 
     data = _javascript_implementation_files + _javascript_map_files
 
+    ts_files = []
+    if (defined(sources)) {
+      ts_files = rebase_path(sources, root_build_dir)
+    }
+
+    metadata = {
+      typescript_files = ts_files
+    }
+
     if (is_debug) {
-      metadata = {
-        grd_files = _javascript_implementation_files
-      }
+      metadata.grd_files = _javascript_implementation_files
     }
   }
 }

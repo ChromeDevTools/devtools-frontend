@@ -6,6 +6,7 @@ import argparse
 import json
 import logging
 import os
+import shlex
 import subprocess
 import sys
 
@@ -221,6 +222,9 @@ def runEsbuild(opts):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--sources', nargs='*', help='List of TypeScript source files')
+    parser.add_argument('--sources-list',
+                        type=argparse.FileType('r'),
+                        help='List of TypeScript source files')
     parser.add_argument('-deps', '--deps', nargs='*', help='List of Ninja build dependencies')
     parser.add_argument('-dir', '--front_end_directory', required=True, help='Folder that contains source files')
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
@@ -235,6 +239,7 @@ def main():
     parser.add_argument('--rewrapper-cfg', required=False)
     parser.add_argument('--rewrapper-exec-root', required=False)
     parser.add_argument('--use-esbuild', action='store_true')
+    parser.add_argument('--tsconfig-only', action='store_true')
     parser.set_defaults(test_only=False,
                         no_emit=False,
                         verify_lib_check=False,
@@ -258,6 +263,8 @@ def main():
         return path.relpath(path.join(os.getcwd(), file_to_resolve), tsconfig_output_directory)
 
     sources = opts.sources or []
+    if len(sources) == 0 and opts.sources_list:
+        sources = shlex.split(opts.sources_list.read())
 
     all_ts_files = sources + GLOBAL_TYPESCRIPT_DEFINITION_FILES
     tsconfig['files'] = [get_relative_path_from_output_directory(x) for x in all_ts_files]
@@ -299,6 +306,9 @@ def main():
     # That's because tsc can successfully compile dependents solely on the
     # the tsconfig.json
     if len(sources) == 0 and not opts.verify_lib_check:
+        return 0
+
+    if opts.tsconfig_only:
         return 0
 
     if opts.use_esbuild:

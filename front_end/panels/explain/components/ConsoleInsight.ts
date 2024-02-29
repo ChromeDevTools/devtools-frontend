@@ -430,8 +430,8 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   async * #getInsight(): AsyncGenerator<{sources: Source[]}&Host.AidaClient.AidaResponse, void, void> {
+    const {prompt, sources} = await this.#promptBuilder.buildPrompt();
     try {
-      const {prompt, sources} = await this.#promptBuilder.buildPrompt();
       for await (const response of this.#aidaClient.fetch(prompt)) {
         yield {sources, ...response};
       }
@@ -670,20 +670,33 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
+  #renderDogfoodFeedbackLink(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>`;
+    // clang-format on
+  }
+
   #renderFooter(): LitHtml.LitTemplate {
+    const showFeedbackLink = (): boolean =>
+        this.#state.type === State.INSIGHT || this.#state.type === State.ERROR || this.#state.type === State.OFFLINE;
     // clang-format off
     const disclaimer =
         LitHtml
             .html`<span>
                 Console insights may display inaccurate or offensive information that doesn't represent Google's views.
                 <x-link href=${DOGFOODINFO_URL} class="link">${i18nString(UIStrings.learnMore)}</x-link>
-                ${this.#state.type === State.INSIGHT ? LitHtml.html` - <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>`: LitHtml.nothing}
+                ${showFeedbackLink() ? LitHtml.html` - ${this.#renderDogfoodFeedbackLink()}`: LitHtml.nothing}
             </span>`;
     switch (this.#state.type) {
       case State.LOADING:
+        return LitHtml.nothing;
       case State.ERROR:
       case State.OFFLINE:
-        return LitHtml.nothing;
+        return html`<footer>
+          <div class="disclaimer">
+            ${disclaimer}
+          </div>
+        </footer>`;
       case State.NOT_LOGGED_IN:
       case State.SYNC_IS_OFF:
         return html`<footer>

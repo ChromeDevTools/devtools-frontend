@@ -294,15 +294,19 @@ function renderExample5() {
         entryLevels: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2],
         entryStartTimes: [5, 5, 5, 15, 15, 15, 40, 40, 40, 55.4, 55.4, 55.4, 80, 80, 80],
         entryTotalTimes: [5, 5, 5, 5, 5, 5, 15, 15, 15, 2, 2, 2, 10, 10, 10],
+        initiatorPairs: [
+          {initiatorIndex: 2, eventIndex: 3},
+          {initiatorIndex: 1, eventIndex: 13},
+          {initiatorIndex: 3, eventIndex: 6},
+          {initiatorIndex: 3, eventIndex: 8},
+          {initiatorIndex: 6, eventIndex: 11},
+          {initiatorIndex: 11, eventIndex: 12},
+        ],
         groups: [{
           name: 'Testing initiators' as Platform.UIString.LocalizedString,
           startLevel: 0,
           style: defaultGroupStyle,
         }],
-        flowStartTimes: [10, 20, 20, 55, 57.4, 10],
-        flowStartLevels: [2, 0, 0, 0, 2, 1],
-        flowEndTimes: [15, 40, 40, 55.4, 80, 80],
-        flowEndLevels: [0, 2, 0, 2, 0, 1],
       });
     }
   }

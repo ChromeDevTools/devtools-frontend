@@ -1397,8 +1397,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   /**
-   * Build the |flowStartTimes|, |flowStartLevels|, |flowEndTimes| and
-   * |flowEndLevels| data for the initiator arrows of given entry.
+   * Build the pairs of initiators and initiated entries.
    * @param entryIndex
    * @returns if we should re-render the flame chart (canvas)
    */
@@ -1418,7 +1417,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     // Remove all previously assigned decorations indicating that the flow event entries are hidden
     this.#removeAllCollapsedFlowEventsDecorations();
-    const previousInitiatorPairsLength = this.timelineDataInternal.flowStartTimes.length;
+    const previousInitiatorPairsLength = this.timelineDataInternal.initiatorPairs.length;
     // |entryIndex| equals -1 means there is no entry selected, just clear the
     // initiator cache if there is any previous arrow and return true to
     // re-render.
@@ -1446,7 +1445,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     // Reset to clear any previous arrows from the last event.
     this.timelineDataInternal.resetFlowData();
-
     this.lastInitiatorEntry = entryIndex;
 
     let hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
@@ -1474,14 +1472,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (eventIndex === null || initiatorIndex === null) {
         continue;
       }
-      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(pair.event);
-
-      const {endTime: initiatorEndTime, startTime: initiatorStartTime} =
-          TraceEngine.Legacy.timesForEventInMilliseconds(pair.initiator);
-
-      const td = this.timelineDataInternal;
-      td.flowStartTimes.push(initiatorEndTime || initiatorStartTime);
-      td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
+      this.timelineDataInternal.initiatorPairs.push({initiatorIndex, eventIndex});
 
       // Add a decoration of a circle around the 'collapse arrow' to show that the entry is hidden
       if (pair.isEntryHidden) {
@@ -1497,9 +1488,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             {type: PerfUI.FlameChart.FlameChartDecorationType.INITIATOR_HIDDEN_CIRCLE});
         this.#eventsWithCircleDecorationIndexes.push(this.entryData.indexOf(pair.initiator));
       }
-
-      td.flowEndTimes.push(startTime);
-      td.flowEndLevels.push(td.entryLevels[eventIndex]);
     }
     return true;
   }

@@ -1553,7 +1553,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
 
     this.drawGroupHeaders(canvasWidth, canvasHeight);
-    this.drawFlowEvents(context);
+    this.drawFlowEvents(context, timelineData);
     this.drawMarkerLines();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
     const navStartTimes = this.dataProvider.mainFrameNavigationStartEvents?.() || [];
@@ -2313,12 +2313,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  private drawFlowEvents(context: CanvasRenderingContext2D): void {
+  private drawFlowEvents(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData): void {
     const td = this.timelineData();
     if (!td) {
       return;
     }
 
+    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     const arrowLineWidth = 6;
@@ -2331,14 +2332,20 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
 
-    for (let i = 0; i < td.flowEndTimes.length; ++i) {
-      if (td.flowEndTimes[i] < this.chartViewport.windowLeftTime()) {
+    for (let i = 0; i < td.initiatorPairs.length; ++i) {
+      const pair = td.initiatorPairs[i];
+
+      const initiatorArrowStartTime = entryStartTimes[pair.initiatorIndex] + entryTotalTimes[pair.initiatorIndex];
+      const initiatorArrowEndTime = entryStartTimes[pair.eventIndex];
+
+      // Do not draw the initiator if it is out of the viewport
+      if (initiatorArrowEndTime < this.chartViewport.windowLeftTime()) {
         continue;
       }
-      const startX = this.chartViewport.timeToPosition(td.flowStartTimes[i]);
-      const endX = this.chartViewport.timeToPosition(td.flowEndTimes[i]);
-      const startLevel = td.flowStartLevels[i];
-      const endLevel = td.flowEndLevels[i];
+      const startX = this.chartViewport.timeToPosition(initiatorArrowStartTime);
+      const endX = this.chartViewport.timeToPosition(initiatorArrowEndTime);
+      const startLevel = entryLevels[pair.initiatorIndex];
+      const endLevel = entryLevels[pair.eventIndex];
       const startY = this.levelToOffset(startLevel) + this.levelHeight(startLevel) / 2;
       const endY = this.levelToOffset(endLevel) + this.levelHeight(endLevel) / 2;
       const lineLength = endX - startX;
@@ -3022,6 +3029,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 export const RulerHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
 
+export interface FlameChartInitiatorPair {
+  initiatorIndex: number;
+  eventIndex: number;
+}
+
 export const enum FlameChartDecorationType {
   CANDY = 'CANDY',
   WARNING_TRIANGLE = 'WARNING_TRIANGLE',
@@ -3084,26 +3096,20 @@ export class FlameChartTimelineData {
 
   // These four arrays are used to draw the initiator arrows, and if there are
   // multiple arrows, they should be a chain.
-  flowStartTimes: number[];
-  flowStartLevels: number[];
-  flowEndTimes: number[];
-  flowEndLevels: number[];
+  initiatorPairs: FlameChartInitiatorPair[];
 
   selectedGroup: Group|null;
   private constructor(
       entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array, entryStartTimes: number[]|Float64Array,
-      groups: Group[]|null, entryDecorations: FlameChartDecoration[][] = [], flowStartTimes: number[] = [],
-      flowStartLevels: number[] = [], flowEndTimes: number[] = [], flowEndLevels: number[] = []) {
+      groups: Group[]|null, entryDecorations: FlameChartDecoration[][] = [],
+      initiatorPairs: FlameChartInitiatorPair[] = []) {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
     this.entryDecorations = entryDecorations;
     this.groups = groups || [];
     this.markers = [];
-    this.flowStartTimes = flowStartTimes || [];
-    this.flowStartLevels = flowStartLevels || [];
-    this.flowEndTimes = flowEndTimes || [];
-    this.flowEndLevels = flowEndLevels || [];
+    this.initiatorPairs = initiatorPairs || [];
     this.selectedGroup = null;
   }
 
@@ -3115,14 +3121,11 @@ export class FlameChartTimelineData {
     entryStartTimes: FlameChartTimelineData['entryStartTimes'],
     groups: FlameChartTimelineData['groups']|null,
     entryDecorations?: FlameChartDecoration[][],
-    flowStartTimes?: FlameChartTimelineData['flowStartTimes'],
-    flowStartLevels?: FlameChartTimelineData['flowStartLevels'],
-    flowEndTimes?: FlameChartTimelineData['flowEndTimes'],
-    flowEndLevels?: FlameChartTimelineData['flowEndLevels'],
+    initiatorPairs?: FlameChartTimelineData['initiatorPairs'],
   }): FlameChartTimelineData {
     return new FlameChartTimelineData(
         data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups, data.entryDecorations || [],
-        data.flowStartTimes || [], data.flowStartLevels || [], data.flowEndTimes || [], data.flowEndLevels || []);
+        data.initiatorPairs || []);
   }
 
   // TODO(crbug.com/1501055) Thinking about refactor this class, so we can avoid create a new object when modifying the
@@ -3137,10 +3140,7 @@ export class FlameChartTimelineData {
   }
 
   resetFlowData(): void {
-    this.flowEndLevels = [];
-    this.flowEndTimes = [];
-    this.flowStartLevels = [];
-    this.flowStartTimes = [];
+    this.initiatorPairs = [];
   }
 }
 

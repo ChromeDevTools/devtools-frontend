@@ -529,15 +529,6 @@ describe('LoggingDriver', () => {
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 0, height: 0});
   });
 
-  it('marks loggable elements for debugging', async () => {
-    // @ts-ignore
-    globalThis.setVeDebuggingEnabled(true);
-    addLoggableElements();
-    await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.strictEqual(document.getElementById('parent')?.style.outline, 'red solid 1px');
-    assert.strictEqual(document.getElementById('element')?.style.outline, 'red solid 1px');
-  });
-
   it('logs non-DOM impressions', async () => {
     addLoggableElements();
     const loggable = {};

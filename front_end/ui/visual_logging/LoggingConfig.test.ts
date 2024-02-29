@@ -117,21 +117,4 @@ describe('LoggingConfig', () => {
     assert.strictEqual(
         `${treeItem().context(42).track({keydown: 'Enter'})}`, 'TreeItem; context: 42; track: keydown: Enter');
   });
-
-  it('builds a debug string', () => {
-    assert.strictEqual(VisualLogging.LoggingConfig.debugString({ve: 1}), 'TreeItem');
-    assert.strictEqual(VisualLogging.LoggingConfig.debugString({ve: 1, context: '42'}), 'TreeItem; context: 42');
-    assert.strictEqual(
-        VisualLogging.LoggingConfig.debugString({ve: 1, track: new Map([['click', undefined]])}),
-        'TreeItem; track: click');
-    assert.strictEqual(
-        VisualLogging.LoggingConfig.debugString({ve: 1, track: new Map([['click', undefined], ['change', undefined]])}),
-        'TreeItem; track: click, change');
-    assert.strictEqual(
-        VisualLogging.LoggingConfig.debugString({ve: 1, track: new Map([['keydown', 'Enter']])}),
-        'TreeItem; track: keydown: Enter');
-    assert.strictEqual(
-        VisualLogging.LoggingConfig.debugString({ve: 1, context: '42', track: new Map([['keydown', 'Enter']])}),
-        'TreeItem; context: 42; track: keydown: Enter');
-  });
 });

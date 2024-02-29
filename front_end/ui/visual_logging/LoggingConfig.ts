@@ -19,7 +19,7 @@ export function getLoggingConfig(element: Element): LoggingConfig {
   return parseJsLog(element.getAttribute(LOGGING_ATTRIBUTE) || '');
 }
 
-enum VisualElements {
+export enum VisualElements {
   TreeItem = 1,
   Close = 2,
   Counter = 3,
@@ -128,21 +128,6 @@ export function parseJsLog(jslog: string): LoggingConfig {
   }
 
   return config;
-}
-
-export function debugString(config: LoggingConfig): string {
-  const components = [VisualElements[config.ve]];
-  if (config.context) {
-    components.push(`context: ${config.context}`);
-  }
-  if (config.parent) {
-    components.push(`parent: ${config.parent}`);
-  }
-  if (config.track?.size) {
-    components.push(`track: ${
-            [...config.track?.entries()].map(([key, value]) => `${key}${value ? `: ${value}` : ''}`).join(', ')}`);
-  }
-  return components.join('; ');
 }
 
 export interface ConfigStringBuilder {

@@ -4,12 +4,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
+import {processForDebugging} from './Debugging.js';
 import {getDomState, visibleOverlap} from './DomState.js';
 import {type Loggable} from './Loggable.js';
-import {debugString, getLoggingConfig} from './LoggingConfig.js';
+import {getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown, logResize} from './LoggingEvents.js';
 import {getLoggingState, getOrCreateLoggingState} from './LoggingState.js';
 import {getNonDomState, unregisterAllLoggables, unregisterLoggable} from './NonDomState.js';
@@ -101,28 +101,6 @@ export function scheduleProcessing(): void {
   void processingThrottler.schedule(
       () => Coordinator.RenderCoordinator.RenderCoordinator.instance().read('processForLogging', process));
 }
-
-let veDebuggingEnabled = false;
-let debugPopover: HTMLElement|null = null;
-const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
-
-function setVeDebuggingEnabled(enabled: boolean): void {
-  veDebuggingEnabled = enabled;
-  if (enabled && !debugPopover) {
-    debugPopover = document.createElement('div');
-    debugPopover.classList.add('ve-debug');
-    debugPopover.style.position = 'absolute';
-    debugPopover.style.bottom = '100px';
-    debugPopover.style.left = '100px';
-    debugPopover.style.background = 'black';
-    debugPopover.style.color = 'white';
-    debugPopover.style.zIndex = '100000';
-    document.body.appendChild(debugPopover);
-  }
-}
-
-// @ts-ignore
-globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
 
 async function process(): Promise<void> {
   if (document.hidden) {
@@ -235,32 +213,7 @@ async function process(): Promise<void> {
       }
       loggingState.processed = true;
     }
-    if (veDebuggingEnabled && !loggingState.processedForDebugging) {
-      if (element.tagName === 'OPTION') {
-        if (loggingState.parent?.selectOpen && debugPopover) {
-          debugPopover.innerHTML += '<br>' + debugString(loggingState.config);
-          loggingState.processedForDebugging = true;
-        }
-      } else {
-        (element as HTMLElement).style.outline = 'solid 1px red';
-        element.addEventListener('mouseenter', () => {
-          assertNotNullOrUndefined(debugPopover);
-          debugPopover.style.display = 'block';
-          const pathToRoot = [loggingState];
-          let ancestor = loggingState.parent;
-          while (ancestor) {
-            pathToRoot.push(ancestor);
-            ancestor = ancestor.parent;
-          }
-          debugPopover.innerHTML = pathToRoot.map(s => debugString(s.config)).join('<br>');
-        }, {capture: true});
-        element.addEventListener('mouseleave', () => {
-          assertNotNullOrUndefined(debugPopover);
-          debugPopover.style.display = 'none';
-        }, {capture: true});
-        loggingState.processedForDebugging = true;
-      }
-    }
+    processForDebugging(element);
   }
   for (const {loggable, config, parent} of getNonDomState().loggables) {
     const loggingState = getOrCreateLoggingState(loggable, config, parent);
@@ -268,34 +221,7 @@ async function process(): Promise<void> {
     if (!visible) {
       continue;
     }
-    if (veDebuggingEnabled) {
-      let debugElement = nonDomDebugElements.get(loggable);
-      if (!debugElement) {
-        debugElement = document.createElement('div');
-        debugElement.classList.add('ve-debug');
-        debugElement.style.background = 'black';
-        debugElement.style.color = 'white';
-        debugElement.style.zIndex = '100000';
-        debugElement.textContent = debugString(config);
-        nonDomDebugElements.set(loggable, debugElement);
-        setTimeout(() => {
-          if (!loggingState.size?.width || !loggingState.size?.height) {
-            debugElement?.parentElement?.removeChild(debugElement);
-            nonDomDebugElements.delete(loggable);
-          }
-        }, 10000);
-      }
-      const parentDebugElement =
-          parent instanceof HTMLElement ? parent : nonDomDebugElements.get(parent as Loggable) || debugPopover;
-      assertNotNullOrUndefined(parentDebugElement);
-      if (!parentDebugElement.classList.contains('ve-debug')) {
-        debugElement.style.position = 'absolute';
-        parentDebugElement.insertBefore(debugElement, parentDebugElement.firstChild);
-      } else {
-        debugElement.style.marginLeft = '10px';
-        parentDebugElement.appendChild(debugElement);
-      }
-    }
+    processForDebugging(loggable);
     visibleLoggables.push(loggable);
     loggingState.impressionLogged = true;
     // No need to track loggable as soon as we've logged the impression

@@ -2163,6 +2163,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/utils/register-custom-element.js",
   "front_end/ui/legacy/viewContainers.css.legacy.js",
   "front_end/ui/lit-html/static.js",
+  "front_end/ui/visual_logging/Debugging.js",
   "front_end/ui/visual_logging/DomState.js",
   "front_end/ui/visual_logging/Loggable.js",
   "front_end/ui/visual_logging/LoggingConfig.js",

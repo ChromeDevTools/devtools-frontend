@@ -47,18 +47,20 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(datagrid, 'performance/callTree.png', 3);
   });
 
-  itScreenshot('renders the timeline correctly when scrolling', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('.timeline-flamechart');
-    const panel = await waitFor('body');
+  // Flaky on linux
+  itScreenshot.skipOnPlatforms(
+      ['linux'], '[crbug.com/327586819 renders the timeline correctly when scrolling', async () => {
+        await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
+        await waitFor('.timeline-flamechart');
+        const panel = await waitFor('body');
 
-    const virtualScrollBar = await waitFor('div.chart-viewport-v-scroll.always-show-scrollbar');
+        const virtualScrollBar = await waitFor('div.chart-viewport-v-scroll.always-show-scrollbar');
 
-    await virtualScrollBar.evaluate(el => {
-      el.scrollTop = 200;
-    });
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline_canvas_scrolldown.png', 3);
-  });
+        await virtualScrollBar.evaluate(el => {
+          el.scrollTop = 200;
+        });
+        await assertElementScreenshotUnchanged(panel, 'performance/timeline_canvas_scrolldown.png', 3);
+      });
 
   itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');

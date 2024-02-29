@@ -383,9 +383,9 @@ export const opCodeDescriptions: (() => string)[] = (function(): (() => Common.U
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _filterTypes: UI.FilterBar.Item[] = [
-  {name: 'all', label: i18nLazyString(UIStrings.all), title: undefined},
-  {name: 'send', label: i18nLazyString(UIStrings.send), title: undefined},
-  {name: 'receive', label: i18nLazyString(UIStrings.receive), title: undefined},
+  {name: 'all', label: i18nLazyString(UIStrings.all), jslogContext: 'all'},
+  {name: 'send', label: i18nLazyString(UIStrings.send), jslogContext: 'send'},
+  {name: 'receive', label: i18nLazyString(UIStrings.receive), jslogContext: 'receive'},
 ];
 
 export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unknown> {

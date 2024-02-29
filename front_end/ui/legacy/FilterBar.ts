@@ -301,6 +301,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     super();
     this.filtersElement = document.createElement('div');
     this.filtersElement.classList.add('filter-bitset-filter');
+    this.filtersElement.setAttribute('jslog', `${VisualLogging.section('filter-bitset')}`);
     ARIAUtils.markAsListBox(this.filtersElement);
     ARIAUtils.markAsMultiSelectable(this.filtersElement);
     Tooltip.install(this.filtersElement, i18nString(UIStrings.sclickToSelectMultipleTypes, {
@@ -380,6 +381,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     }
     typeFilterElement.addEventListener('click', this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener('keydown', this.onTypeFilterKeydown.bind(this), false);
+    typeFilterElement.setAttribute('jslog', `${VisualLogging.item(name).track({click: true})}`);
     this.typeFilterElements.push(typeFilterElement);
   }
 
@@ -525,4 +527,5 @@ export interface Item {
   name: string;
   label: () => string;
   title?: string;
+  jslogContext: string;
 }

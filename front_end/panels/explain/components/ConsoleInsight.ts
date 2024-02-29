@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
@@ -9,6 +10,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Input from '../../../ui/components/input/input.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -79,11 +81,6 @@ const UIStrings = {
    * title to indicate that the link will be opened in a new tab.
    */
   opensInNewTab: '(opens in a new tab)',
-  /**
-   * @description The title of the button that records the consent of the user
-   * to send the data to the backend.
-   */
-  consentButton: 'Continue',
   /**
    * @description The title of a link that allows the user to learn more about
    * the feature.
@@ -186,15 +183,22 @@ const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
   ERROR = 'error',
-  CONSENT = 'consent',
+  CONSENT_ONBOARDING = 'consent-onboarding',
+  CONSENT_REMINDER = 'consent-reminder',
   NOT_LOGGED_IN = 'not-logged-in',
   SYNC_IS_OFF = 'sync-is-off',
   OFFLINE = 'offline',
 }
 
+const enum ConsentOnboardingPage {
+  PAGE1 = 'private',
+  PAGE2 = 'legal',
+}
+
 type StateData = {
   type: State.LOADING,
-  consentGiven: boolean,
+  consentOnboardingFinished: boolean,
+  consentReminderConfirmed: boolean,
 }|{
   type: State.INSIGHT,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
@@ -204,8 +208,11 @@ type StateData = {
   type: State.ERROR,
   error: string,
 }|{
-  type: State.CONSENT,
+  type: State.CONSENT_REMINDER,
   sources: Source[],
+}|{
+  type: State.CONSENT_ONBOARDING,
+  page: ConsentOnboardingPage,
 }|{
   type: State.NOT_LOGGED_IN,
 }|{
@@ -254,7 +261,8 @@ export class ConsoleInsight extends HTMLElement {
     if (syncInfo?.accountEmail && syncInfo.isSyncActive) {
       this.#state = {
         type: State.LOADING,
-        consentGiven: false,
+        consentReminderConfirmed: false,
+        consentOnboardingFinished: this.#getOnboardingCompletedSetting().get(),
       };
     } else if (!syncInfo?.accountEmail) {
       this.#state = {
@@ -294,8 +302,12 @@ export class ConsoleInsight extends HTMLElement {
     });
   }
 
+  #getOnboardingCompletedSetting(): Common.Settings.Setting<boolean> {
+    return Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false);
+  }
+
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
+    this.#shadow.adoptedStyleSheets = [styles, Input.checkboxStyles];
     this.classList.add('opening');
     void this.#generateInsightIfNeeded();
   }
@@ -313,14 +325,21 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type !== State.LOADING) {
       return;
     }
-    if (this.#state.consentGiven) {
+    if (!this.#state.consentOnboardingFinished) {
+      this.#transitionTo({
+        type: State.CONSENT_ONBOARDING,
+        page: ConsentOnboardingPage.PAGE1,
+      });
       return;
     }
-    const {sources} = await this.#promptBuilder.buildPrompt();
-    this.#transitionTo({
-      type: State.CONSENT,
-      sources,
-    });
+    if (!this.#state.consentReminderConfirmed) {
+      const {sources} = await this.#promptBuilder.buildPrompt();
+      this.#transitionTo({
+        type: State.CONSENT_REMINDER,
+        sources,
+      });
+      return;
+    }
   }
 
   #onClose(): void {
@@ -365,10 +384,11 @@ export class ConsoleInsight extends HTMLElement {
     this.#openFeedbackFrom();
   }
 
-  async #onConsent(): Promise<void> {
+  async #onConsentReminderConfirmed(): Promise<void> {
     this.#transitionTo({
       type: State.LOADING,
-      consentGiven: true,
+      consentReminderConfirmed: true,
+      consentOnboardingFinished: this.#getOnboardingCompletedSetting().get(),
     });
     try {
       for await (const {sources, explanation, metadata} of this.#getInsight()) {
@@ -434,6 +454,128 @@ export class ConsoleInsight extends HTMLElement {
     });
   }
 
+  #onDisableFeature(): void {
+    try {
+      Common.Settings.moduleSetting('console-insights-enabled').set(false);
+    } finally {
+      this.#onClose();
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning('Reload for the change to apply.');
+    }
+  }
+
+  #goToNextPage(): void {
+    this.#transitionTo({
+      type: State.CONSENT_ONBOARDING,
+      page: ConsentOnboardingPage.PAGE2,
+    });
+  }
+
+  #onConsentOnboardingConfirmed(): void {
+    const checkbox = this.#shadow.querySelector('.terms') as HTMLInputElement | undefined;
+    if (!checkbox?.checked) {
+      return;
+    }
+    this.#getOnboardingCompletedSetting().set(true);
+    this.#transitionTo({
+      type: State.LOADING,
+      consentReminderConfirmed: false,
+      consentOnboardingFinished: this.#getOnboardingCompletedSetting().get(),
+    });
+    void this.#generateInsightIfNeeded();
+  }
+
+  #goToPrevPage(): void {
+    this.#transitionTo({
+      type: State.CONSENT_ONBOARDING,
+      page: ConsentOnboardingPage.PAGE1,
+    });
+  }
+
+  #renderCancelButton(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${Buttons.Button.Button.litTagName}
+      class="cancel-button"
+      @click=${this.#onClose}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.SECONDARY,
+        } as Buttons.Button.ButtonData
+      }
+    >
+      ${UIStrings.cancel}
+    </${Buttons.Button.Button.litTagName}>`;
+    // clang-format on
+  }
+
+  #renderDisableFeatureButton(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${Buttons.Button.Button.litTagName}
+      @click=${this.#onDisableFeature}
+      class="disable-button"
+      .data=${
+        {
+          variant: Buttons.Button.Variant.SECONDARY,
+        } as Buttons.Button.ButtonData
+      }
+    >
+      Disable this feature
+    </${Buttons.Button.Button.litTagName}>`;
+    // clang-format on
+  }
+
+  #renderNextButton(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${Buttons.Button.Button.litTagName}
+      class="next-button"
+      @click=${this.#goToNextPage}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.PRIMARY,
+        } as Buttons.Button.ButtonData
+      }
+    >
+      Next
+    </${Buttons.Button.Button.litTagName}>`;
+    // clang-format on
+  }
+
+  #renderBackButton(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${Buttons.Button.Button.litTagName}
+      @click=${this.#goToPrevPage}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.SECONDARY,
+        } as Buttons.Button.ButtonData
+      }
+    >
+      Back
+    </${Buttons.Button.Button.litTagName}>`;
+    // clang-format on
+  }
+
+  #renderContinueButton(handler: (event: Event) => void): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${Buttons.Button.Button.litTagName}
+      @click=${handler}
+      class="continue-button"
+      .data=${
+        {
+          variant: Buttons.Button.Variant.PRIMARY,
+        } as Buttons.Button.ButtonData
+      }
+    >
+      Continue
+    </${Buttons.Button.Button.litTagName}>`;
+    // clang-format on
+  }
+
+  #renderLearnMoreAboutInsights(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<x-link href=${DOGFOODINFO_URL} class="link">Learn more about Console Insights.</x-link>`;
+    // clang-format on
+  }
+
   #renderMain(): LitHtml.TemplateResult {
     // clang-format off
     switch (this.#state.type) {
@@ -468,7 +610,7 @@ export class ConsoleInsight extends HTMLElement {
         <main>
           <div class="error">${i18nString(UIStrings.errorBody)}</div>
         </main>`;
-      case State.CONSENT:
+      case State.CONSENT_REMINDER:
         return html`
           <main>
             <p>The following data will be sent to Google to understand the context for the console message.
@@ -479,6 +621,36 @@ export class ConsoleInsight extends HTMLElement {
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
         `;
+      case State.CONSENT_ONBOARDING:
+        switch (this.#state.page) {
+          case ConsentOnboardingPage.PAGE1:
+            return html`<main>
+              <p>This notice and our <x-link href="https://policies.google.com/privacy" class="link">Privacy Notice</x-link> describe how Console insights in Chrome DevTools handles your data. Please read them carefully.</p>
+
+              <p>Console insights uses the console message, associated stack trace, related source code, and the associated network headers as input data. When you use Console insights, Google collects this input data, generated output, related feature usage information, and your feedback. Google uses this data to provide, improve, and develop Google products and services and machine learning technologies, including Google's enterprise products such as Google Cloud.</p>
+
+              <p>To help with quality and improve our products, human reviewers may read, annotate, and process the above-mentioned input data, generated output, related feature usage information, and your feedback. <strong>Please do not include sensitive (e.g., confidential) or personal information that can be used to identify you or others in your prompts or feedback.</strong> Your data will be stored in a way where Google cannot tell who provided it and can no longer fulfill any deletion requests and will be retained for up to 18 months.</p>
+            </main>`;
+          case ConsentOnboardingPage.PAGE2:
+            return html`<main>
+            <p>As you try Console insights, here are key things to know:
+
+            <ul>
+              <li>Console insights uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
+              <li>Console insights is an experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console Insights better.</li>
+              <li>Console insights is an experimental feature and subject to future changes.</li>
+              <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487">Use generated code snippets with caution.</x-link></strong></li>
+            </ul>
+            </p>
+
+            <p>
+            <label>
+              <input class="terms" type="checkbox">
+              <span>I accept my use of Console insights is subject to the <x-link href="https://policies.google.com/terms" class="link">Google Terms of Service</x-link> and the <x-link href=${'https://policies.google.com/terms/gener' + 'ative-ai'} class="link">${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</span>
+            </label>
+            </p>
+            </main>`;
+        }
       case State.NOT_LOGGED_IN:
         return html`
           <main>
@@ -529,38 +701,44 @@ export class ConsoleInsight extends HTMLElement {
           </${Buttons.Button.Button.litTagName}>
         </div>
       </footer>`;
-      case State.CONSENT:
+      case State.CONSENT_REMINDER:
         return html`<footer>
           <div class="disclaimer">
             ${disclaimer}
           </div>
           <div class="filler"></div>
           <div class="buttons">
-            <${Buttons.Button.Button.litTagName}
-              class="cancel-button"
-              @click=${this.#onClose}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.SECONDARY,
-                } as Buttons.Button.ButtonData
-              }
-            >
-              ${UIStrings.cancel}
-            </${Buttons.Button.Button.litTagName}>
-            <${Buttons.Button.Button.litTagName}
-              class="consent-button"
-              @click=${this.#onConsent}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.PRIMARY,
-                  iconName: 'lightbulb-spark',
-                } as Buttons.Button.ButtonData
-              }
-            >
-              ${UIStrings.consentButton}
-            </${Buttons.Button.Button.litTagName}>
+            ${this.#renderCancelButton()}
+            ${this.#renderContinueButton(this.#onConsentReminderConfirmed)}
           </div>
         </footer>`;
+      case State.CONSENT_ONBOARDING:
+        switch (this.#state.page) {
+          case ConsentOnboardingPage.PAGE1:
+            return html`<footer>
+                <div class="disclaimer">
+                  ${this.#renderLearnMoreAboutInsights()}
+                </div>
+                <div class="filler"></div>
+                <div class="buttons">
+                    ${this.#renderCancelButton()}
+                    ${this.#renderDisableFeatureButton()}
+                    ${this.#renderNextButton()}
+                  </div>
+              </footer>`;
+          case ConsentOnboardingPage.PAGE2:
+            return html`<footer>
+            <div class="disclaimer">
+              ${this.#renderLearnMoreAboutInsights()}
+            </div>
+            <div class="filler"></div>
+            <div class="buttons">
+                ${this.#renderBackButton()}
+                ${this.#renderDisableFeatureButton()}
+                ${this.#renderContinueButton(this.#onConsentOnboardingConfirmed)}
+              </div>
+          </footer>`;
+        }
       case State.INSIGHT:
         return html`<footer>
         <div class="disclaimer">
@@ -615,8 +793,15 @@ export class ConsoleInsight extends HTMLElement {
         return i18nString(UIStrings.insight);
       case State.ERROR:
         return i18nString(UIStrings.error);
-      case State.CONSENT:
+      case State.CONSENT_REMINDER:
         return this.#actionTitle;
+      case State.CONSENT_ONBOARDING:
+        switch (this.#state.page) {
+          case ConsentOnboardingPage.PAGE1:
+            return 'Console insights Privacy Notice';
+          case ConsentOnboardingPage.PAGE2:
+            return 'Console insights Legal Notice';
+        }
     }
   }
 
@@ -662,7 +847,7 @@ class ConsoleInsightSourcesList extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadow.adoptedStyleSheets = [listStyles];
+    this.#shadow.adoptedStyleSheets = [listStyles, Input.checkboxStyles];
   }
 
   #render(): void {

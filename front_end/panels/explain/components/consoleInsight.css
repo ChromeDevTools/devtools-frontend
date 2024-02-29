@@ -107,6 +107,24 @@ main {
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+
+  p {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+  }
+
+  ul {
+    padding-left: 1em;
+  }
+
+  label {
+    display: inline-block;
+
+    input,
+    span {
+      vertical-align: middle;
+    }
+  }
 }
 
 devtools-markdown-view {

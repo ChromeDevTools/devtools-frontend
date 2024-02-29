@@ -11,17 +11,25 @@ describe('ConsoleInsight', function() {
   preloadForCodeCoverage('console_insight/static.html');
 
   // eslint-disable-next-line rulesdir/ban_screenshot_test_outside_perf_panel
-  itScreenshot('renders initial state', async () => {
+  itScreenshot('renders the initial disclaimer', async () => {
     await loadComponentDocExample('console_insight/static.html');
-    await waitFor('.consent-button');
-    await assertElementScreenshotUnchanged(await waitFor('devtools-console-insight'), 'explain/console_insight.png', 3);
+    await assertElementScreenshotUnchanged(
+        await waitFor('devtools-console-insight'), 'explain/console_insight_disclaimer1.png', 3);
   });
 
   // eslint-disable-next-line rulesdir/ban_screenshot_test_outside_perf_panel
-  itScreenshot('renders the state after consent', async () => {
+  itScreenshot('renders the second disclaimer', async () => {
     await loadComponentDocExample('console_insight/static.html');
-    await click('.consent-button');
+    await click('.next-button');
     await assertElementScreenshotUnchanged(
-        await waitFor('devtools-console-insight'), 'explain/console_insight_after_consent.png', 3);
+        await waitFor('devtools-console-insight'), 'explain/console_insight_disclaimer2.png', 3);
+  });
+
+  // eslint-disable-next-line rulesdir/ban_screenshot_test_outside_perf_panel
+  itScreenshot('renders the insight', async () => {
+    await loadComponentDocExample('console_insight/static.html');
+    await click('.next-button');
+    await click('.continue-button');
+    await assertElementScreenshotUnchanged(await waitFor('devtools-console-insight'), 'explain/console_insight.png', 3);
   });
 });

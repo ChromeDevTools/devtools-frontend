@@ -124,7 +124,10 @@ describe('Initiators', () => {
        for (const pair of initiatorPairs) {
          assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
          assert.strictEqual(pair.initiator, timerInstallParent.entry);
+         // Ensure the modified entry is marked as hidden
+         assert.strictEqual(pair.isInitiatorHidden, true);
        }
+
      });
 
   it('will return the closest modified ancestor as an initiated event in a pair if the event itself is hidden',
@@ -170,7 +173,8 @@ describe('Initiators', () => {
          // Ensure each pair is a TimerInstall>TimerFire parent pair.
          assert.strictEqual(pair.event, timerFireParents[i]);
          assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+         // Ensure the modified entry is marked as hidden
+         assert.strictEqual(pair.isEntryHidden, true);
        }
      });
-
 });

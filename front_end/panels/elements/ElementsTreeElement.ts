@@ -2039,6 +2039,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adorner.data = {
       name,
       content: adornerContent,
+      jslogContext: name,
     };
     if (isOpeningTag(this.tagTypeContext)) {
       this.tagTypeContext.adorners.push(adorner);
@@ -2061,6 +2062,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adorner.data = {
       name,
       content: adornerContent,
+      jslogContext: 'slot',
     };
     context.adorners.push(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
@@ -2082,6 +2084,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     adorner.data = {
       name,
       content: adornerContent,
+      jslogContext: 'media',
     };
     if (isOpeningTag(this.tagTypeContext)) {
       this.tagTypeContext.adorners.push(adorner);

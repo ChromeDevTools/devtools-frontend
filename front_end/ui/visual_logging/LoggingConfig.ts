@@ -40,7 +40,7 @@ enum VisualElements {
   Popover = 18,
   BreakpointMarker = 19,
   DropDown = 20,
-  /* 21 used to be StylesMetricsPane, but free to grab now */
+  Adorner = 21,
   /* 22 used to be JumpToSource, but free to grab now */
   MetricsBox = 23,
   MetricsBoxPart = 24,

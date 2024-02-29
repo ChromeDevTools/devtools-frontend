@@ -63,7 +63,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private readonly scriptViewToolbar: UI.Toolbar.Toolbar;
   private readonly bottomToolbarInternal: UI.Toolbar.Toolbar;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
-  private readonly shortcuts: Map<number, () => boolean>;
   private readonly focusedPlaceholderElement?: HTMLElement;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
@@ -141,9 +140,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!window.opener) {
       window.addEventListener('beforeunload', handleBeforeUnload, true);
     }
-
-    this.shortcuts = new Map();
-    this.element.addEventListener('keydown', this.handleKeyDown.bind(this), false);
   }
 
   private placeholderElement(): Element {
@@ -220,21 +216,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   bottomToolbar(): UI.Toolbar.Toolbar {
     return this.bottomToolbarInternal;
-  }
-
-  private registerShortcuts(keys: UI.KeyboardShortcut.Descriptor[], handler: (arg0?: Event|undefined) => boolean):
-      void {
-    for (let i = 0; i < keys.length; ++i) {
-      this.shortcuts.set(keys[i].key, handler);
-    }
-  }
-
-  private handleKeyDown(event: Event): void {
-    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent((event as KeyboardEvent));
-    const handler = this.shortcuts.get(shortcutKey);
-    if (handler && handler()) {
-      event.consume(true);
-    }
   }
 
   override wasShown(): void {

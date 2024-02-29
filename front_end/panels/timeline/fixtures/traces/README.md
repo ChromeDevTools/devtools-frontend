@@ -156,3 +156,11 @@ This is a trace where we loaded web.dev/inp, but the initial URL reported by the
 ### render-blocking-in-iframe
 
 Contains a navigation to a page with a render blocking request `style.css?main` and an iframe. The iframe also contains a render blocking request `style.css?iframe`.
+
+### multiple-navigations-render-blocking
+
+Contains a navigation to a page with a render blocking request `script.js` followed by a page refresh.
+
+### parser-blocking-after-paint
+
+Contains a navigation to a page with a `in_body_parser_blocking` request `script.js` that is downloaded after first paint.

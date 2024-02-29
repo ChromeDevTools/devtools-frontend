@@ -225,7 +225,13 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
 
       const navInsightData = {} as Insights.Types.NavigationInsightData<EnabledModelHandlers>;
       for (const [name, generateInsight] of Object.entries(enabledInsightRunners)) {
-        Object.assign(navInsightData, {[name]: generateInsight(this.traceParsedData, context)});
+        let insightResult;
+        try {
+          insightResult = generateInsight(this.traceParsedData, context);
+        } catch (err) {
+          insightResult = err;
+        }
+        Object.assign(navInsightData, {[name]: insightResult});
       }
 
       this.#insights.set(context.navigationId, navInsightData);

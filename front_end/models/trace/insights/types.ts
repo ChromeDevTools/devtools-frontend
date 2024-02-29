@@ -16,11 +16,19 @@ export interface NavigationInsightContext {
 
 type InsightRunnersType = typeof InsightsRunners;
 
+export enum InsightWarning {
+  NO_FP = 'NO_FP',
+}
+
+export type InsightResult<R extends Record<string, unknown>> = R&{
+  warnings?: InsightWarning[],
+};
+
 /**
  * Contains insights for a specific navigation.
  */
 export type NavigationInsightData<H extends {[key: string]: Handlers.Types.TraceEventHandler}> = {
-  [I in keyof EnabledInsightRunners<H>]: ReturnType<EnabledInsightRunners<H>[I]>;
+  [I in keyof EnabledInsightRunners<H>]: ReturnType<EnabledInsightRunners<H>[I]>|Error;
 };
 
 /**

@@ -262,6 +262,27 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.strictEqual(processor.insights.size, 0);
     });
 
+    it('captures errors thrown by insights', async function() {
+      const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
+      const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
+
+      await processor.parse(file);
+
+      // Create invalid trace data that forces insights to throw an error
+      processor.traceParsedData?.NetworkRequests.byTime.forEach(r => {
+        // @ts-expect-error
+        r.args.data = null;
+      });
+
+      if (!processor.insights) {
+        throw new Error('No insights');
+      }
+
+      const insights = Array.from(processor.insights.values());
+      assert.strictEqual(insights.length, 1);
+      assert(insights[0].RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
+    });
+
     it('skips insights that are missing one or more dependencies', async function() {
       const processor = new TraceModel.Processor.TraceProcessor({
         Animation: TraceModel.Handlers.ModelHandlers.Animations,
@@ -289,7 +310,12 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 1);
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 2);
+
+      if (insights[0].RenderBlocking instanceof Error) {
+        throw new Error('RenderBlocking threw an error');
+      }
+
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 3);
     });
 
     it('returns insights for multiple navigations', async function() {
@@ -303,9 +329,20 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 3);
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 5);
-      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 5);
-      assert.strictEqual(insights[2].RenderBlocking.renderBlockingRequests.length, 10);
+
+      if (insights[0].RenderBlocking instanceof Error) {
+        throw new Error('RenderBlocking threw an error');
+      }
+      if (insights[1].RenderBlocking instanceof Error) {
+        throw new Error('RenderBlocking threw an error');
+      }
+      if (insights[2].RenderBlocking instanceof Error) {
+        throw new Error('RenderBlocking threw an error');
+      }
+
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[2].RenderBlocking.renderBlockingRequests.length, 1);
     });
   });
 });

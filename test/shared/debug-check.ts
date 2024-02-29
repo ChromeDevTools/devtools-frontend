@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs').promises;
-const path = require('path');
+import {readFileSync} from 'fs';
+import {join} from 'path';
+
 const isDebug = /^\s*is_debug\s*=\s*(.*)/;
 
 /**
@@ -11,12 +12,11 @@ const isDebug = /^\s*is_debug\s*=\s*(.*)/;
  * We don't cover every case here, for example where is_debug is redefined
  * in the gn.args several times. Instead we use the first declaration of
  * is_debug's value.
- * @param {string} dirName
  */
-async function debugCheck(dirName) {
-  const argsFile = path.join(dirName, '..', '..', '..', 'args.gn');
+export function debugCheck(dirName: string): boolean {
+  const argsFile = join(dirName, '..', '..', 'args.gn');
   try {
-    const fileDetails = await fs.readFile(argsFile, {encoding: 'utf8'});
+    const fileDetails = readFileSync(argsFile, {encoding: 'utf8'});
     for (const line of fileDetails.split('\n')) {
       if (!isDebug.test(line)) {
         continue;
@@ -40,9 +40,7 @@ async function debugCheck(dirName) {
     // By default, a DevTools build is always a debug build,
     // unless `is_debug` is explicitly set to false
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
-
-module.exports = debugCheck;

@@ -7,14 +7,26 @@ import("../scripts/build/ninja/copy.gni")
 group("test") {
   deps = [
     ":config",
+    ":unittests",
     "e2e",
     "interactions",
     "perf",
     "shared",
-    "unittests",
+  ]
+}
+
+group("unittests") {
+  deps = [
+    ":config",
+    "../front_end:unittests",
+    "../inspector_overlay:unittests",
+    "shared",
   ]
 }
 
 copy_to_gen("config") {
-  sources = [ "base-mocharc.js" ]
+  sources = [
+    "base-mocharc.js",
+    "karma.conf.js",
+  ]
 }

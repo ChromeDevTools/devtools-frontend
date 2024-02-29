@@ -79,7 +79,7 @@ def main():
                         help='Save coverage files to swarming output.')
     args = parser.parse_args(sys.argv[1:])
 
-    efficiently_recompile.recompile(args.target, 'test/unittests')
+    efficiently_recompile.recompile(args.target, 'test:unittests')
     run_unittests.run_unit_tests_on_ninja_build_target(
         args.target, args.no_text_coverage, args.no_html_coverage,
         args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd,

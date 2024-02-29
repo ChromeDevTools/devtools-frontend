@@ -9,8 +9,8 @@ const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
 const rimraf = require('rimraf');
-const debugCheck = require('./debug-check.js');
-const ResultsDb = require('../shared/resultsdb.js');
+const {debugCheck} = require('./shared/debug-check.js');
+const ResultsDb = require('./shared/resultsdb.js');
 
 const USER_DEFINED_COVERAGE_FOLDERS = process.env['COVERAGE_FOLDERS'];
 
@@ -28,7 +28,7 @@ const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 // Initially set this to true if the user has enabled it, but we then check
 // because coverage only gives accurate results in debug builds, so if this
 // build is not a debug build, we disable coverage and log a warning.
-let coverageEnabled = COVERAGE_ENABLED_BY_USER;
+const coverageEnabled = COVERAGE_ENABLED_BY_USER;
 if (coverageEnabled) {
   /* Clear out the old coverage directory so you can't accidentally open old,
    * out of date coverage output.
@@ -38,19 +38,21 @@ if (coverageEnabled) {
     rimraf.sync(fullPathToDirectory);
   }
 
-  debugCheck(__dirname).then(isDebug => {
-    if (!isDebug) {
-      const warning = `The unit tests appear to be running against a non-debug build and
+  if (!debugCheck(__dirname)) {
+    const warning = `The unit tests appear to be running against a non-debug build and
 your coverage report will be inaccurate and incomplete due to the bundle being rolled-up.
 
 Therefore, coverage has been disabled.
 
 In order to get a complete coverage report please run against a
 target with is_debug = true in the args.gn file.`;
-      console.warn(colors.magenta(warning));
-      coverageEnabled = false;
-    }
-  });
+    console.warn(colors.magenta(warning));
+    // TODO(bmeurer): Apparently the debug-check.js was broken before and didn't work,
+    // at least on the Release bots. Which means that we never disabled coverage for
+    // those Release builds. We might want to look into updating the infra to also not
+    // expect the coverage to be there.
+    // coverageEnabled = false;
+  }
 }
 // true by default
 const TEXT_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_TEXT_COVERAGE'];
@@ -59,7 +61,7 @@ const HTML_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_HTML_COVERAGE'
 // false by default
 const SHUFFLE = process.env['SHUFFLE'];
 
-const GEN_DIRECTORY = path.join(__dirname, '..', '..');
+const GEN_DIRECTORY = path.join(__dirname, '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
 const singleRun = !(DEBUG_ENABLED || REPEAT_ENABLED);
 

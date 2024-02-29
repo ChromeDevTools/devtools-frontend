@@ -32,7 +32,7 @@ def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
               coverage, expanded_reporting, cwd, log_level, mocha_fgrep,
               shuffle, karma_args):
     karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test',
-                                    'unittests', 'karma.conf.js')
+                                    'karma.conf.js')
 
     if not os.path.exists(karmaconfig_path):
         log_message('Unable to find Karma config at ' + karmaconfig_path,

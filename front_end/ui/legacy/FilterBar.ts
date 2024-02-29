@@ -219,7 +219,6 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
     this.filterElement.className = 'filter-text-filter';
 
     const container = this.filterElement.createChild('div', 'filter-input-container');
-    container.setAttribute('jslog', `${VisualLogging.toggle('text-filter').track({click: true, keydown: true})}`);
     this.filterInputElement = container.createChild('span', 'filter-input-field');
 
     this.prompt = new TextPrompt();
@@ -240,6 +239,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
       this.clear();
       this.focus();
     });
+    clearButton.setAttribute('jslog', `${VisualLogging.action('clear-filter').track({click: true})}`);
     this.updateEmptyStyles();
   }
 

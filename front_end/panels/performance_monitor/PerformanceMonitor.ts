@@ -655,6 +655,8 @@ export class MetricIndicator {
     UI.ARIAUtils.markAsCheckbox(this.element);
     UI.ARIAUtils.setChecked(this.element, this.active);
     this.element.tabIndex = 0;
+    const chartName = info.metrics[0].name;
+    this.element.setAttribute('jslog', `${VisualLogging.toggle(chartName).track({click: true})}`);
   }
 
   static formatNumber(value: number, info: ChartInfo): string {

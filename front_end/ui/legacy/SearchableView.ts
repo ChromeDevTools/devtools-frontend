@@ -36,6 +36,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
@@ -137,9 +138,10 @@ export class SearchableView extends VBox {
     this.footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
     this.footerElementContainer.style.order = '100';
     this.footerElement = this.footerElementContainer.createChild('div', 'toolbar-search');
+    this.footerElement.setAttribute('jslog', `${VisualLogging.toolbar('search').track({resize: true})}`);
 
     const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this.footerElement);
-    this.replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'replace');
+    this.replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'replace', undefined, 'repalce');
     this.replaceToggleButton.addEventListener(ToolbarButton.Events.Click, this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
 
@@ -151,6 +153,7 @@ export class SearchableView extends VBox {
     this.searchInputElement.classList.add('search-replace', 'custom-search-input');
     this.searchInputElement.id = 'search-input-field';
     this.searchInputElement.placeholder = i18nString(UIStrings.findString);
+    this.searchInputElement.setAttribute('jslog', `${VisualLogging.textField('search').track({change: true})}`);
     searchControlElement.appendChild(this.searchInputElement);
 
     this.matchesElement = searchControlElement.createChild('label', 'search-results-matches');
@@ -163,12 +166,16 @@ export class SearchableView extends VBox {
     this.searchNavigationPrevElement.addEventListener('click', this.onPrevButtonSearch.bind(this), false);
     Tooltip.install(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
     ARIAUtils.setLabel(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
+    this.searchNavigationPrevElement.setAttribute(
+        'jslog', `${VisualLogging.action('select-previous').track({click: true})}`);
 
     this.searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this.searchNavigationNextElement.addEventListener('click', this.onNextButtonSearch.bind(this), false);
     Tooltip.install(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
     ARIAUtils.setLabel(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
+    this.searchNavigationPrevElement.setAttribute(
+        'jslog', `${VisualLogging.action('select-next').track({click: true})}`);
 
     this.searchInputElement.addEventListener('keydown', this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener('input', this.onInput.bind(this), false);
@@ -176,6 +183,7 @@ export class SearchableView extends VBox {
         (searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden') as HTMLInputElement);
     this.replaceInputElement.addEventListener('keydown', this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString(UIStrings.replace);
+    this.replaceInputElement.setAttribute('jslog', `${VisualLogging.textField('replace').track({change: true})}`);
 
     this.buttonsContainer = this.footerElement.createChild('div', 'toolbar-search-buttons');
     const firstRowButtons = this.buttonsContainer.createChild('div', 'first-row-buttons');
@@ -183,14 +191,15 @@ export class SearchableView extends VBox {
     const toolbar = new Toolbar('toolbar-search-options', firstRowButtons);
 
     if (this.searchProvider.supportsCaseSensitiveSearch()) {
-      this.caseSensitiveButton = new ToolbarToggle(i18nString(UIStrings.matchCase));
+      this.caseSensitiveButton = new ToolbarToggle(i18nString(UIStrings.matchCase), undefined, undefined, 'match-case');
       this.caseSensitiveButton.setText('Aa');
       this.caseSensitiveButton.addEventListener(ToolbarButton.Events.Click, this.toggleCaseSensitiveSearch, this);
       toolbar.appendToolbarItem(this.caseSensitiveButton);
     }
 
     if (this.searchProvider.supportsRegexSearch()) {
-      this.regexButton = new ToolbarToggle(i18nString(UIStrings.useRegularExpression));
+      this.regexButton =
+          new ToolbarToggle(i18nString(UIStrings.useRegularExpression), undefined, undefined, 'regex-search');
       this.regexButton.setText('.*');
       this.regexButton.addEventListener(ToolbarButton.Events.Click, this.toggleRegexSearch, this);
       toolbar.appendToolbarItem(this.regexButton);

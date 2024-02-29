@@ -510,7 +510,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   TestRunner.addResult(
       '[expanded] ' + ((section.propertiesTreeOutline.element.classList.contains('no-affect') ? '[no-affect] ' : '')));
-  const queries = section.titleElement.querySelectorAll('devtools-css-query');
+  const queries = section.element.querySelectorAll('devtools-css-query');
 
   for (const query of queries) {
     const queryElement = query.shadowRoot.querySelector('.query');

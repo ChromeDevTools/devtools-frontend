@@ -389,7 +389,7 @@ describe('The Styles pane', () => {
     const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
     const supportsQuery = await waitFor('.query.editable', rule1PropertiesSection);
     const supportsQueryText = await supportsQuery.evaluate(node => (node as HTMLElement).innerText as string);
-    assert.deepEqual(supportsQueryText, '@supports (width: 10px)', 'incorrectly displayed @supports rule');
+    assert.deepEqual(supportsQueryText, '@supports (width: 10px) {', 'incorrectly displayed @supports rule');
   });
 
   it('can display @layer separators', async () => {

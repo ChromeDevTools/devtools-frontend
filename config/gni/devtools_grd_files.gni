@@ -1232,7 +1232,7 @@ grd_files_debug_sources = [
   "front_end/panels/elements/nodeStackTraceWidget.css.js",
   "front_end/panels/elements/platformFontsWidget.css.js",
   "front_end/panels/elements/propertiesWidget.css.js",
-  "front_end/panels/elements/stylesSectionTree.css.js",
+  "front_end/panels/elements/stylePropertiesTreeOutline.css.js",
   "front_end/panels/elements/stylesSidebarPane.css.js",
   "front_end/panels/emulation/AdvancedApp.js",
   "front_end/panels/emulation/DeviceModeToolbar.js",

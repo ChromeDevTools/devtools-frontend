@@ -114,8 +114,8 @@ ol.expanded {
   height: 13px;
 }
 
-.tree-outline li.editing .enabled-button {
-  display: none !important; /* stylelint-disable-line declaration-no-important */
+.tree-outline li.child-editing .enabled-button {
+  display: none;
 }
 
 .overloaded:not(.has-ignorable-error, .invalid-property-value),

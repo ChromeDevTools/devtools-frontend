@@ -22,7 +22,7 @@ generate_css("css_files") {
     "nodeStackTraceWidget.css",
     "platformFontsWidget.css",
     "propertiesWidget.css",
-    "stylesSectionTree.css",
+    "stylePropertiesTreeOutline.css",
     "stylesSidebarPane.css",
   ]
 }

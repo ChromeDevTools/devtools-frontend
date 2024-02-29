@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 
@@ -158,8 +159,37 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.strictEqual(linkifier.linkifyCSSLocation.args[0][0].url, '');
   });
 
+  it('properly renders ancestor rules', async () => {
+    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
+    const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
+    Platform.assertNotNullOrUndefined(cssModel);
+    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
+    const matchedPayload: Protocol.CSS.RuleMatch[] = [{
+      rule: {
+        nestingSelectors: ['body', '& ul', 'div'],
+        ruleTypes: [
+          Protocol.CSS.CSSRuleType.StyleRule,
+          Protocol.CSS.CSSRuleType.StyleRule,
+          Protocol.CSS.CSSRuleType.StyleRule,
+        ],
+        selectorList: {selectors: [{text: 'div'}], text: 'div'},
+        origin,
+        style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: []},
+      },
+      matchingSelectors: [0],
+    }];
+    const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, {...range}, {matchedPayload});
+    const declaration = matchedStyles.nodeStyles()[0];
+    Platform.assertNotNullOrUndefined(declaration);
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, declaration, 0, null, null);
+    assert.strictEqual(section.element.textContent, 'div {  & ul {    body {      div {      }    }  }}');
+  });
+
   it('updates property rule property names', async () => {
-    stubNoopSettings();
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     Platform.assertNotNullOrUndefined(cssModel);
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});

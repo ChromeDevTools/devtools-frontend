@@ -97,6 +97,7 @@ Common.Settings.settingForTest('flamechart-mouse-wheel-action').set('zoom');
 const params = new URLSearchParams(window.location.search);
 const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');
+const traceUrl = params.get('loadTimelineFromURL');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
 Root.Runtime.experiments.setEnabled('timeline-invalidation-tracking', params.has('invalidations'));
@@ -115,6 +116,8 @@ if (traceFileName) {
   fileName = `${traceFileName}.json.gz`;
 } else if (cpuprofileName) {
   fileName = `${cpuprofileName}.cpuprofile.gz`;
+} else if (traceUrl) {
+  fileName = traceUrl;
 }
 
 if (fileName) {
@@ -122,11 +125,12 @@ if (fileName) {
 }
 
 async function loadFromFile(fileNameWithExtension: string) {
-  const file = new URL(`../../../../panels/timeline/fixtures/traces/${fileNameWithExtension}`, import.meta.url);
+  // Load from fixture/traces if its a bare filename, but if it's a complete URL, use that.
+  const file = new URL(fileNameWithExtension, new URL('../../../../panels/timeline/fixtures/traces/', import.meta.url));
   const response = await fetch(file);
   const asBlob = await response.blob();
-  const asFile = new File([asBlob], `${fileNameWithExtension}`, {
-    type: 'application/gzip',
+  const asFile = new File([asBlob], fileNameWithExtension, {
+    type: asBlob.type,
   });
   await timeline.loadFromFile(asFile);
 }

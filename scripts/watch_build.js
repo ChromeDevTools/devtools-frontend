@@ -113,7 +113,7 @@ const runGenerateCssFiles = ({fileName, isLegacy}) => {
   ];
 
   childProcess.spawnSync(
-      'vpython', [NODE_PATH, '--output', GENERATE_CSS_JS_FILES_PATH, ...scriptArgs], {cwd, env, stdio: 'inherit'});
+      'vpython3', [NODE_PATH, '--output', GENERATE_CSS_JS_FILES_PATH, ...scriptArgs], {cwd, env, stdio: 'inherit'});
 };
 
 const isLegacyCss = absoluteFilePath => {
@@ -130,16 +130,42 @@ const notifyWebSocketConections = message => {
   Object.values(connections).forEach(connection => connection.ws.send(message));
 };
 
+const changedFiles = new Set();
+let buildScheduled = false;
+
 const onFileChange = async fileName => {
-  if (!fileName) {
+  changedFiles.add(fileName);
+  // Debounce to handle them in batch
+  if (!buildScheduled) {
+    buildScheduled = true;
+    setTimeout(() => {
+      buildScheduled = false;
+      buildFiles();
+    }, 100);
+  }
+};
+
+const buildFiles = async () => {
+  // If we need a ninja rebuild, do that and quit
+  const nonJSOrCSSFileName = Array.from(changedFiles).find(f => !f.endsWith('.css') && !f.endsWith('.ts'));
+  if (nonJSOrCSSFileName) {
+    console.log(`${currentTimeString()} - ${relativeFileName(nonJSOrCSSFileName)} changed, running ninja`);
+    childProcess.spawnSync('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: 'inherit'});
+    changedFiles.clear();
     return;
   }
+  // …Otherwise we can do fast rebuilds
+  changedFiles.forEach(fastRebuildFile);
+  console.assert(changedFiles.size === 0, `⚠️⚠️⚠️ Some changed files NOT built: ${Array.from(changedFiles.values())}`);
+};
 
+const fastRebuildFile = async fileName => {
   if (fileName.endsWith('.css')) {
     console.log(`${currentTimeString()} - ${relativeFileName(fileName)} changed, notifying frontend`);
     const isLegacy = isLegacyCss(fileName);
     const content = fs.readFileSync(fileName, {encoding: 'utf8', flag: 'r'});
     runGenerateCssFiles({fileName: relativeFileName(fileName), isLegacy});
+    changedFiles.delete(fileName);
 
     if (isLegacy) {
       notifyWebSocketConections(JSON.stringify({
@@ -160,6 +186,7 @@ const onFileChange = async fileName => {
     const outFile = path.resolve('out', target, 'gen', relativeFileName(jsFileName));
     const res = childProcess.spawnSync(
         ESBUILD_PATH, [fileName, `--outfile=${outFile}`, '--sourcemap'], {cwd, env, stdio: 'inherit'});
+    changedFiles.delete(fileName);
 
     if (res && res.status === 1) {
       notifyWebSocketConections(JSON.stringify({
@@ -169,9 +196,6 @@ const onFileChange = async fileName => {
     }
     return;
   }
-
-  console.log(`${currentTimeString()} - ${relativeFileName(fileName)} changed, running ninja`);
-  childProcess.spawnSync('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: 'inherit'});
 };
 
 console.log('Running initial build before watching changes');

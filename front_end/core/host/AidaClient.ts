@@ -89,7 +89,12 @@ export class AidaClient {
       if (!chunk.length) {
         continue;
       }
-      const result = JSON.parse(chunk);
+      let result;
+      try {
+        result = JSON.parse(chunk);
+      } catch (error) {
+        throw new Error('Cannot parse chunk: ' + chunk, {cause: error});
+      }
       const CODE_CHUNK_SEPARATOR = '\n`````\n';
       if ('textChunk' in result) {
         if (inCodeChunk) {

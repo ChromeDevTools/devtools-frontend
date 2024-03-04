@@ -57,29 +57,47 @@ describeWithEnvironment('SourceMap', () => {
   const sourceUrlExample = 'example.js' as Platform.DevToolsPath.UrlString;
   const sourceUrlOther = 'other.js' as Platform.DevToolsPath.UrlString;
 
-  describe('StringCharIterator', () => {
+  describe('TokenIterator', () => {
     it('detects when it has reached the end', () => {
-      const emptyIterator = new SDK.SourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.TokenIterator('');
       assert.isFalse(emptyIterator.hasNext());
 
-      const iterator = new SDK.SourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.TokenIterator('foo');
       assert.isTrue(iterator.hasNext());
     });
 
     it('peeks the next character', () => {
-      const emptyIterator = new SDK.SourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.TokenIterator('');
       assert.strictEqual(emptyIterator.peek(), '');
 
-      const iterator = new SDK.SourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.TokenIterator('foo');
       assert.strictEqual(iterator.peek(), 'f');
     });
 
     it('advances when {next} is called', () => {
-      const iterator = new SDK.SourceMap.StringCharIterator('bar');
+      const iterator = new SDK.SourceMap.TokenIterator('bar');
       assert.strictEqual(iterator.next(), 'b');
       assert.strictEqual(iterator.next(), 'a');
       assert.strictEqual(iterator.next(), 'r');
       assert.isFalse(iterator.hasNext());
+    });
+
+    it('peeks the next VLQ number without moving the iterator', () => {
+      const cases: [string, number|null][] = [
+        ['', null],
+        ['0C', 42],
+        ['0C0C', 42],
+        [',0C', null],
+        [';0C', null],
+        ['$foo', null],
+      ];
+
+      for (const [input, expectedOutput] of cases) {
+        const iter = new SDK.SourceMap.TokenIterator(input);
+        // Call twice to make sure the iterator doesn't move in all cases.
+        assert.strictEqual(iter.peekVLQ(), expectedOutput, `'${input}' must result in '${expectedOutput}'`);
+        assert.strictEqual(iter.peekVLQ(), expectedOutput, `'${input}' must result in '${expectedOutput}'`);
+      }
     });
   });
 

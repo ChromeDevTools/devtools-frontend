@@ -483,46 +483,46 @@ export class SourceMap {
     // we have the list available.
     const sources = sourceMapToSourceList.get(map);
     const names = map.names ?? [];
-    const stringCharIterator = new StringCharIterator(map.mappings);
+    const tokenIter = new TokenIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = sources && sources[sourceIndex];
 
     while (true) {
-      if (stringCharIterator.peek() === ',') {
-        stringCharIterator.next();
+      if (tokenIter.peek() === ',') {
+        tokenIter.next();
       } else {
-        while (stringCharIterator.peek() === ';') {
+        while (tokenIter.peek() === ';') {
           lineNumber += 1;
           columnNumber = 0;
-          stringCharIterator.next();
+          tokenIter.next();
         }
-        if (!stringCharIterator.hasNext()) {
+        if (!tokenIter.hasNext()) {
           break;
         }
       }
 
-      columnNumber += stringCharIterator.decodeVLQ();
-      if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
+      columnNumber += tokenIter.nextVLQ();
+      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
         this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
-      const sourceIndexDelta = stringCharIterator.decodeVLQ();
+      const sourceIndexDelta = tokenIter.nextVLQ();
       if (sourceIndexDelta) {
         sourceIndex += sourceIndexDelta;
         if (sources) {
           sourceURL = sources[sourceIndex];
         }
       }
-      sourceLineNumber += stringCharIterator.decodeVLQ();
-      sourceColumnNumber += stringCharIterator.decodeVLQ();
+      sourceLineNumber += tokenIter.nextVLQ();
+      sourceColumnNumber += tokenIter.nextVLQ();
 
-      if (!stringCharIterator.hasNext() || this.isSeparator(stringCharIterator.peek())) {
+      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
         this.mappings().push(
             new SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
-      nameIndex += stringCharIterator.decodeVLQ();
+      nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
@@ -559,23 +559,23 @@ export class SourceMap {
       let endLineNumber = 0;
       let endColumnNumber = 0;
 
-      const stringCharIterator = new StringCharIterator(scopes);
+      const tokenIter = new TokenIterator(scopes);
       const entries: ScopeTreeEntry[] = [];
       let atStart = true;
-      while (stringCharIterator.hasNext()) {
+      while (tokenIter.hasNext()) {
         if (atStart) {
           atStart = false;
-        } else if (stringCharIterator.peek() === ',') {
-          stringCharIterator.next();
+        } else if (tokenIter.peek() === ',') {
+          tokenIter.next();
         } else {
           // Unexpected character.
           return;
         }
-        nameIndex += stringCharIterator.decodeVLQ();
-        startLineNumber += stringCharIterator.decodeVLQ();
-        startColumnNumber += stringCharIterator.decodeVLQ();
-        endLineNumber += stringCharIterator.decodeVLQ();
-        endColumnNumber += stringCharIterator.decodeVLQ();
+        nameIndex += tokenIter.nextVLQ();
+        startLineNumber += tokenIter.nextVLQ();
+        startColumnNumber += tokenIter.nextVLQ();
+        endLineNumber += tokenIter.nextVLQ();
+        endColumnNumber += tokenIter.nextVLQ();
         entries.push(new ScopeTreeEntry(
             startLineNumber, startColumnNumber, endLineNumber, endColumnNumber, names[nameIndex] ?? '<invalid>'));
       }
@@ -790,7 +790,7 @@ const VLQ_BASE_SHIFT = 5;
 const VLQ_BASE_MASK = (1 << 5) - 1;
 const VLQ_CONTINUATION_MASK = 1 << 5;
 
-export class StringCharIterator {
+export class TokenIterator {
   readonly #string: string;
   #position: number;
 
@@ -816,7 +816,7 @@ export class StringCharIterator {
     return this.#position < this.#string.length;
   }
 
-  decodeVLQ(): number {
+  nextVLQ(): number {
     // Read unsigned value.
     let result = 0;
     let shift = 0;
@@ -838,5 +838,20 @@ export class StringCharIterator {
     const negative = result & 1;
     result >>= 1;
     return negative ? -result : result;
+  }
+
+  /**
+   * @returns the next VLQ number without iterating further. Or returns null if
+   * the iterator is at the end or it's not a valid number.
+   */
+  peekVLQ(): null|number {
+    const pos = this.#position;
+    try {
+      return this.nextVLQ();
+    } catch {
+      return null;
+    } finally {
+      this.#position = pos;  // Reset the iterator.
+    }
   }
 }

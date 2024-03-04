@@ -5742,7 +5742,7 @@
     "message": "停用捲動貼齊重疊顯示"
   },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
-    "message": "複製元素"
+    "message": "建立元素副本"
   },
   "panels/elements/ElementsTreeElement.ts | editAsHtml": {
     "message": "以 HTML 編輯"
@@ -6120,7 +6120,7 @@
     "message": "停用 DOM 自動換行功能"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
-    "message": "複製元素"
+    "message": "建立元素副本"
   },
   "panels/elements/elements-meta.ts | editAsHtml": {
     "message": "以 HTML 編輯"

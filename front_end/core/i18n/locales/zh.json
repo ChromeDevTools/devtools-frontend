@@ -5742,7 +5742,7 @@
     "message": "停用滚动贴靠叠加层"
   },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
-    "message": "复制粘贴元素"
+    "message": "创建元素副本"
   },
   "panels/elements/ElementsTreeElement.ts | editAsHtml": {
     "message": "以 HTML 格式修改"
@@ -6120,7 +6120,7 @@
     "message": "停用 DOM 自动换行"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
-    "message": "复制粘贴元素"
+    "message": "创建元素副本"
   },
   "panels/elements/elements-meta.ts | editAsHtml": {
     "message": "以 HTML 格式修改"

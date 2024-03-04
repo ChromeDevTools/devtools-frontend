@@ -10,7 +10,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Timeline from './timeline.js';
 
 describe('Initiators', () => {
-  it('returns the pair of initiators', async function() {
+  it('returns the initiator data', async function() {
     const traceData = await TraceLoader.traceEngine(this, 'set-timeout-long-task.json.gz');
 
     const timerFireEvent = Array.from(traceData.Initiators.eventToInitiator.keys())
@@ -18,9 +18,9 @@ describe('Initiators', () => {
     assertNotNullOrUndefined(timerFireEvent);
     const timerInstallEvent = traceData.Initiators.eventToInitiator.get(timerFireEvent);
     assertNotNullOrUndefined(timerInstallEvent);
-    const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, timerFireEvent, [], []);
+    const initiatorData = Timeline.Initiators.initiatorsDataToDraw(traceData, timerFireEvent, [], []);
 
-    assert.deepEqual(initiatorPairs, [{
+    assert.deepEqual(initiatorData, [{
                        event: timerFireEvent,
                        initiator: timerInstallEvent,
                      }]);
@@ -42,11 +42,11 @@ describe('Initiators', () => {
     const timerInstallEvent = traceData.Initiators.eventToInitiator.get(timerFireEvent);
     assertNotNullOrUndefined(timerInstallEvent);
 
-    // Find the initator pairs but starting at the fibonacci()
+    // Find the initator data but starting at the fibonacci()
     // call.
-    const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, fibonacciCall, [], []);
+    const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(traceData, fibonacciCall, [], []);
 
-    assert.deepEqual(initiatorPairs, [{
+    assert.deepEqual(initiatorsData, [{
                        event: timerFireEvent,
                        initiator: timerInstallEvent,
                      }]);
@@ -62,17 +62,17 @@ describe('Initiators', () => {
     });
     assertNotNullOrUndefined(fibonacciCall);
 
-    // Find the initator pairs but starting at the fibonacci()
-    // call. We expect to find two pairs here:
+    // Find the initators data but starting at the fibonacci()
+    // call. We expect to find two initiatorData objects here:
     // 1. fibonacci() ===> TimerFire caused by TimerInstall
     // 2. The TimerInstall from (1), caused by a prior TimerInstall.
-    const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, fibonacciCall, [], []);
+    const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(traceData, fibonacciCall, [], []);
 
-    assert.lengthOf(initiatorPairs, 2);
-    for (const pair of initiatorPairs) {
-      // Ensure each pair is a TimerInstall>TimerFire pair.
-      assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-      assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+    assert.lengthOf(initiatorsData, 2);
+    for (const initiatorData of initiatorsData) {
+      // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
+      assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+      assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
     }
   });
 
@@ -85,17 +85,17 @@ describe('Initiators', () => {
     });
     assertNotNullOrUndefined(timerInstall);
 
-    // Find the initator pairs starting at the TimerInstall
-    // call. We expect to find one pair here:
+    // Find the initatorData objects starting at the TimerInstall
+    // call. We expect to find one initatorData here:
     // TimerFire that was initiated by the entry we found - TimerInstall
 
-    const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, timerInstall, [], []);
+    const initatorsData = Timeline.Initiators.initiatorsDataToDraw(traceData, timerInstall, [], []);
 
-    assert.lengthOf(initiatorPairs, 1);
-    for (const pair of initiatorPairs) {
-      // Ensure the pair is a TimerInstall>TimerFire pair.
-      assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-      assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+    assert.lengthOf(initatorsData, 1);
+    for (const initatorData of initatorsData) {
+      // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
+      assert.strictEqual(initatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+      assert.strictEqual(initatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
     }
   });
 
@@ -113,19 +113,19 @@ describe('Initiators', () => {
        const timerInstallParent = traceData.Renderer.entryToNode.get(timerInstall)?.parent;
        assertNotNullOrUndefined(timerInstallParent);
 
-       // Find the initator pairs starting at the TimerInstall
-       // call. We expect to find one pair here:
+       // Find the initatorData objects starting at the TimerInstall
+       // call. We expect to find one initatorData here:
        // TimerFire that was initiated by the entry we found - Parent of TimerInstall because TimerInstall is hidden
-       const initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(
+       const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(
            traceData, timerInstall, [timerInstall], [timerInstallParent?.entry]);
 
-       assert.lengthOf(initiatorPairs, 1);
-       // Ensure the pair is a TimerInstall>TimerFire parent pair.
-       for (const pair of initiatorPairs) {
-         assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-         assert.strictEqual(pair.initiator, timerInstallParent.entry);
+       assert.lengthOf(initiatorsData, 1);
+       // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
+       for (const initiatorData of initiatorsData) {
+         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+         assert.strictEqual(initiatorData.initiator, timerInstallParent.entry);
          // Ensure the modified entry is marked as hidden
-         assert.strictEqual(pair.isInitiatorHidden, true);
+         assert.strictEqual(initiatorData.isInitiatorHidden, true);
        }
 
      });
@@ -141,40 +141,40 @@ describe('Initiators', () => {
        });
        assertNotNullOrUndefined(fibonacciCall);
 
-       // Find the initator pairs but starting at the fibonacci()
-       // call. We expect to find two pairs here:
+       // Find the initatorData objects but starting at the fibonacci()
+       // call. We expect to find two initiatorData objects here:
        // 1. fibonacci() ===> TimerFire caused by TimerInstall
        // 2. The TimerInstall from (1), caused by a prior TimerInstall.
-       let initiatorPairs = Timeline.Initiators.eventInitiatorPairsToDraw(traceData, fibonacciCall, [], []);
+       let initiatorsData = Timeline.Initiators.initiatorsDataToDraw(traceData, fibonacciCall, [], []);
 
-       assert.lengthOf(initiatorPairs, 2);
+       assert.lengthOf(initiatorsData, 2);
        // Save the parents of initiated events and the events themselves to get initiators again with those as modified and hidden
        const timerFireParents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
        const initiatedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
 
-       for (const pair of initiatorPairs) {
-         // Ensure each pair is a TimerInstall>TimerFire pair.
-         assert.strictEqual(pair.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
-         assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
-         const parentEvent = traceData.Renderer.entryToNode.get(pair.event)?.parent?.entry;
+       for (const initiatorData of initiatorsData) {
+         // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
+         assert.strictEqual(initiatorData.event.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerFire);
+         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+         const parentEvent = traceData.Renderer.entryToNode.get(initiatorData.event)?.parent?.entry;
          if (parentEvent) {
            timerFireParents.push(parentEvent);
-           initiatedEvents.push(pair.event);
+           initiatedEvents.push(initiatorData.event);
          }
        }
 
-       // Get initiator pair again, now with the previously initiated events hidden and parents marked as modified
-       initiatorPairs =
-           Timeline.Initiators.eventInitiatorPairsToDraw(traceData, fibonacciCall, initiatedEvents, timerFireParents);
+       // Get initiatorData object again, now with the previously initiated events hidden and parents marked as modified
+       initiatorsData =
+           Timeline.Initiators.initiatorsDataToDraw(traceData, fibonacciCall, initiatedEvents, timerFireParents);
        // The length should not change, just the inititated events.
-       assert.lengthOf(initiatorPairs, 2);
-       for (let i = 0; i < initiatorPairs.length; i++) {
-         const pair = initiatorPairs[i];
-         // Ensure each pair is a TimerInstall>TimerFire parent pair.
-         assert.strictEqual(pair.event, timerFireParents[i]);
-         assert.strictEqual(pair.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
+       assert.lengthOf(initiatorsData, 2);
+       for (let i = 0; i < initiatorsData.length; i++) {
+         const initiatorData = initiatorsData[i];
+         // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
+         assert.strictEqual(initiatorData.event, timerFireParents[i]);
+         assert.strictEqual(initiatorData.initiator.name, TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall);
          // Ensure the modified entry is marked as hidden
-         assert.strictEqual(pair.isEntryHidden, true);
+         assert.strictEqual(initiatorData.isEntryHidden, true);
        }
      });
 });

@@ -286,6 +286,7 @@ function renderExample4() {
 
 /**
  * Render a flame chart with event initiators of different sizes.
+ * Some initiator and initiated events are hidden.
  **/
 function renderExample5() {
   class FakeProviderWithVariousTasksForInitiators extends TraceHelpers.FakeFlameChartProvider {
@@ -293,14 +294,37 @@ function renderExample5() {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
         entryLevels: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2],
         entryStartTimes: [5, 5, 5, 15, 15, 15, 40, 40, 40, 55.4, 55.4, 55.4, 80, 80, 80],
-        entryTotalTimes: [5, 5, 5, 5, 5, 5, 15, 15, 15, 2, 2, 2, 10, 10, 10],
-        initiatorPairs: [
-          {initiatorIndex: 2, eventIndex: 3},
+        entryTotalTimes: [6, 6, 6, 5, 5, 5, 15, 15, 15, 2, 2, 2, 10, 10, 10],
+        entryDecorations: [
+          [],
+          [],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+          [],
+          [],
+          [],
+          [],
+          [],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+          [],
+          [],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+          [
+            {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+          ],
+        ],
+        initiatorsData: [
+          {initiatorIndex: 2, eventIndex: 3, isInitiatorHidden: true},
           {initiatorIndex: 1, eventIndex: 13},
           {initiatorIndex: 3, eventIndex: 6},
-          {initiatorIndex: 3, eventIndex: 8},
+          {initiatorIndex: 3, eventIndex: 8, isEntryHidden: true},
           {initiatorIndex: 6, eventIndex: 11},
-          {initiatorIndex: 11, eventIndex: 12},
+          {initiatorIndex: 11, eventIndex: 12, isInitiatorHidden: true, isEntryHidden: true},
         ],
         groups: [{
           name: 'Testing initiators' as Platform.UIString.LocalizedString,

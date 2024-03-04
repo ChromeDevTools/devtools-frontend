@@ -43,7 +43,7 @@ import {ActiveFilters} from './ActiveFilters.js';
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
 import {type TimelineCategory} from './EventUICategory.js';
-import {eventInitiatorPairsToDraw} from './Initiators.js';
+import {initiatorsDataToDraw} from './Initiators.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
@@ -168,7 +168,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #eventToDisallowRoot = new WeakMap<TraceEngine.Legacy.Event, boolean>();
   #font: string;
   #eventIndexByEvent: WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number|null> = new WeakMap();
-  #eventsWithCircleDecorationIndexes: number[] = [];
 
   constructor() {
     super();
@@ -522,25 +521,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const decorationsForEvent = this.timelineDataInternal.entryDecorations[eventIndex] || [];
     decorationsForEvent.push(decoration);
     this.timelineDataInternal.entryDecorations[eventIndex] = decorationsForEvent;
-  }
-
-  /**
-   * Removes all circle decorations that indicate
-   * that the initiator or initiated entry are hidden.
-   * Remove them every time a new entry is chosen.
-   */
-  #removeAllCollapsedFlowEventsDecorations(): void {
-    this.#eventsWithCircleDecorationIndexes.forEach(index => {
-      if (!this.timelineDataInternal) {
-        return;
-      }
-      let decorationsForEvent = this.timelineDataInternal.entryDecorations[index] || [];
-      decorationsForEvent = decorationsForEvent.filter(decorationIter => {
-        return decorationIter.type !== PerfUI.FlameChart.FlameChartDecorationType.INITIATOR_HIDDEN_CIRCLE;
-      });
-      this.timelineDataInternal.entryDecorations[index] = decorationsForEvent;
-    });
-    this.#eventsWithCircleDecorationIndexes = [];
   }
 
   /**
@@ -1397,7 +1377,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   /**
-   * Build the pairs of initiators and initiated entries.
+   * Build the data for initiators and initiated entries.
    * @param entryIndex
    * @returns if we should re-render the flame chart (canvas)
    */
@@ -1416,14 +1396,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     // Remove all previously assigned decorations indicating that the flow event entries are hidden
-    this.#removeAllCollapsedFlowEventsDecorations();
-    const previousInitiatorPairsLength = this.timelineDataInternal.initiatorPairs.length;
+    const previousInitiatorsDataLength = this.timelineDataInternal.initiatorsData.length;
     // |entryIndex| equals -1 means there is no entry selected, just clear the
     // initiator cache if there is any previous arrow and return true to
     // re-render.
     if (entryIndex === -1) {
       this.lastInitiatorEntry = entryIndex;
-      if (previousInitiatorPairsLength === 0) {
+      if (previousInitiatorsDataLength === 0) {
         // This means there is no arrow before, so we don't need to re-render.
         return false;
       }
@@ -1456,38 +1435,28 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           this.compatibilityTracksAppender?.getModifiedEntries(this.timelineDataInternal.selectedGroup) ?? [];
     }
 
-    const initiatorPairs = eventInitiatorPairsToDraw(
+    const initiatorsData = initiatorsDataToDraw(
         this.traceEngineData,
         event,
         hiddenEvents,
         modifiedEntries,
     );
     // This means there is no change for arrows.
-    if (previousInitiatorPairsLength === 0 && initiatorPairs.length === 0) {
+    if (previousInitiatorsDataLength === 0 && initiatorsData.length === 0) {
       return false;
     }
-    for (const pair of initiatorPairs) {
-      const eventIndex = this.getIndexForEvent(pair.event);
-      const initiatorIndex = this.getIndexForEvent(pair.initiator);
+    for (const intiatorData of initiatorsData) {
+      const eventIndex = this.getIndexForEvent(intiatorData.event);
+      const initiatorIndex = this.getIndexForEvent(intiatorData.initiator);
       if (eventIndex === null || initiatorIndex === null) {
         continue;
       }
-      this.timelineDataInternal.initiatorPairs.push({initiatorIndex, eventIndex});
-
-      // Add a decoration of a circle around the 'collapse arrow' to show that the entry is hidden
-      if (pair.isEntryHidden) {
-        this.#addDecorationToEvent(
-            this.entryData.indexOf(pair.event),
-            {type: PerfUI.FlameChart.FlameChartDecorationType.INITIATOR_HIDDEN_CIRCLE});
-        this.#eventsWithCircleDecorationIndexes.push(this.entryData.indexOf(pair.event));
-      }
-
-      if (pair.isInitiatorHidden) {
-        this.#addDecorationToEvent(
-            this.entryData.indexOf(pair.initiator),
-            {type: PerfUI.FlameChart.FlameChartDecorationType.INITIATOR_HIDDEN_CIRCLE});
-        this.#eventsWithCircleDecorationIndexes.push(this.entryData.indexOf(pair.initiator));
-      }
+      this.timelineDataInternal.initiatorsData.push({
+        initiatorIndex,
+        eventIndex,
+        isInitiatorHidden: intiatorData.isInitiatorHidden,
+        isEntryHidden: intiatorData.isEntryHidden,
+      });
     }
     return true;
   }

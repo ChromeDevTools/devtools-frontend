@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 from os import path
+
 _CURRENT_DIR = path.join(path.dirname(__file__))
 
 ROOT_DIRECTORY_OF_REPOSITORY = path.join(_CURRENT_DIR, '..', '..')
@@ -44,10 +45,7 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'request_idle_callback.d.ts'),
     # Types for W3C FileSystem API
     path.join(NODE_MODULES_DIRECTORY, '@types', 'filesystem', 'index.d.ts'),
-    # Types for WebGPU API
-    path.join(NODE_MODULES_DIRECTORY, '@webgpu/types', 'dist', 'index.d.ts'),
 ]
-
 
 logging.basicConfig(
     level=logging.DEBUG if os.environ.get('TSC_DEBUG') else logging.WARNING)
@@ -221,12 +219,21 @@ def runEsbuild(opts):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--sources', nargs='*', help='List of TypeScript source files')
+    parser.add_argument('-s',
+                        '--sources',
+                        nargs='*',
+                        help='List of TypeScript source files')
     parser.add_argument('--sources-list',
                         type=argparse.FileType('r'),
                         help='List of TypeScript source files')
-    parser.add_argument('-deps', '--deps', nargs='*', help='List of Ninja build dependencies')
-    parser.add_argument('-dir', '--front_end_directory', required=True, help='Folder that contains source files')
+    parser.add_argument('-deps',
+                        '--deps',
+                        nargs='*',
+                        help='List of Ninja build dependencies')
+    parser.add_argument('-dir',
+                        '--front_end_directory',
+                        required=True,
+                        help='Folder that contains source files')
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
     parser.add_argument('--test-only', action='store_true')
     parser.add_argument('--no-emit', action='store_true')
@@ -254,27 +261,33 @@ def main():
             print('Encountered error while loading root tsconfig:')
             print(e)
             return 1
-    tsconfig_output_location = path.join(os.getcwd(), opts.tsconfig_output_location)
+    tsconfig_output_location = path.join(os.getcwd(),
+                                         opts.tsconfig_output_location)
     tsconfig_output_directory = path.dirname(tsconfig_output_location)
     tsbuildinfo_name = path.basename(tsconfig_output_location) + '.tsbuildinfo'
     runs_in_node_environment = opts.module == "commonjs"
 
     def get_relative_path_from_output_directory(file_to_resolve):
-        return path.relpath(path.join(os.getcwd(), file_to_resolve), tsconfig_output_directory)
+        return path.relpath(path.join(os.getcwd(), file_to_resolve),
+                            tsconfig_output_directory)
 
     sources = opts.sources or []
     if len(sources) == 0 and opts.sources_list:
         sources = shlex.split(opts.sources_list.read())
 
     all_ts_files = sources + GLOBAL_TYPESCRIPT_DEFINITION_FILES
-    tsconfig['files'] = [get_relative_path_from_output_directory(x) for x in all_ts_files]
+    tsconfig['files'] = [
+        get_relative_path_from_output_directory(x) for x in all_ts_files
+    ]
 
     if (opts.deps is not None):
         tsconfig['references'] = [{'path': src} for src in opts.deps]
     tsconfig['compilerOptions']['module'] = opts.module
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
-    tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
+    tsconfig['compilerOptions'][
+        'rootDir'] = get_relative_path_from_output_directory(
+            opts.front_end_directory)
     tsconfig['compilerOptions']['typeRoots'] = (
         opts.test_only or runs_in_node_environment
     ) and [
@@ -340,14 +353,14 @@ def main():
 
     if found_errors:
         print('')
-        print('TypeScript compilation failed. Used tsconfig %s' % opts.tsconfig_output_location)
+        print('TypeScript compilation failed. Used tsconfig %s' %
+              opts.tsconfig_output_location)
         print('')
         print(stderr)
         print('')
         return 1
 
     return 0
-
 
 
 if __name__ == '__main__':

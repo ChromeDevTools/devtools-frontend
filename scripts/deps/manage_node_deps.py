@@ -60,7 +60,6 @@ DEPS = {
     "@typescript-eslint/parser": "5.59.8",
     "@typescript-eslint/eslint-plugin": "5.59.8",
     "@web/rollup-plugin-import-meta-assets": "1.0.7",
-    "@webgpu/types": "0.1.40",
     "chai": "4.3.4",
     "chokidar": "3.5.2",
     "convert-source-map": "1.8.0",

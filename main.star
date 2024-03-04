@@ -193,7 +193,7 @@ luci.notifier(
 The autoroller may be stuck. Please check out <a href=\"https://chromium-review.googlesource.com/q/owner:devtools-ci-autoroll-builder%2540chops-service-accounts.iam.gserviceaccount.com\">roll CLs</a>, find the latest autoroll CL and investigate.
 
 Builder {{.Build.Builder.Builder}} found stale CL at
-<a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>
+<a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>({{.Build.Id}})
 on `{{.Build.EndTime | time}}`
 """,
     ),

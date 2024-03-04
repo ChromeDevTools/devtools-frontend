@@ -76,16 +76,8 @@
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.perfmon-indicator-swatch {
-  margin-right: 4px;
-}
-
-.perfmon-indicator-title {
-  flex: 0 0 115px;
-}
-
-.perfmon-indicator:not(.active) .perfmon-indicator-title {
-  color: var(--sys-color-token-subtle);
+.perfmon-indicator span {
+  flex: 0 0 135px;
 }
 
 .perfmon-indicator-value {

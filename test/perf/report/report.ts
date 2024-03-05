@@ -5,16 +5,41 @@
 import * as fs from 'fs';
 import {join} from 'path';  // eslint-disable-line rulesdir/es_modules_import
 
-export interface Benchmark {
-  name: string;
-  values: number[];
-  mean: number;
-  percentile50: number;
-  percentile90: number;
-  percentile99: number;
+const results: Benchmark[] = [];
+
+// Based on skia-perf format:
+// https://skia.googlesource.com/buildbot/+/refs/heads/main/perf/FORMAT.md
+// https://pkg.go.dev/go.skia.org/infra/perf/go/ingest/format#Result
+interface BenchmarkBase {
+  key: {
+    // For example "trace load"
+    test: string,
+    [key: string]: string,
+  };
 }
 
-const results: Benchmark[] = [];
+// Only one of `measurement` or `measurements` should be populated.
+export type Benchmark = BenchmarkMultiMeasure|BenchmarkSingleMeasure;
+
+// The idea behind Measurements is that you may have more than one
+// metric you want to report at the end of running a test, for example
+// you may track the fastest time it took to run a test, and also the
+// median and max time.
+interface BenchmarkMultiMeasure extends BenchmarkBase {
+  measurements: {
+    [key: string]: SingleMeasurement[],
+  };
+}
+
+interface BenchmarkSingleMeasure extends BenchmarkBase {
+  measurement: number;
+}
+
+interface SingleMeasurement {
+  // Example: "min"
+  value: string;
+  measurement: number;
+}
 
 export function addBenchmarkResult(benchmark: Benchmark) {
   results.push(benchmark);

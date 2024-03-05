@@ -27,6 +27,7 @@ copy_to_gen("traces") {
     "invalid-animation-events.json.gz",
     "invalidate-style-class-name-change.json.gz",
     "large-layout-small-recalc.json.gz",
+    "large-profile.cpuprofile.gz",
     "large-recalc-style.json.gz",
     "lcp-images.json.gz",
     "lcp-web-font.json.gz",

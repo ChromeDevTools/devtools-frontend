@@ -33,11 +33,9 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 import popoverStyles from './popover.css.legacy.js';
 
-const CONTENT_ELEMENT_TO_POPOVER_HELPER = new WeakMap<Element, PopoverHelper>();
-
 export class PopoverHelper {
   static createPopover = (jslogContext?: string): GlassPane => {
-    const popover = new GlassPane(`${VisualLogging.popover(jslogContext).parent('popoverParent')}`);
+    const popover = new GlassPane(`${VisualLogging.popover(jslogContext).parent('mapped')}`);
     popover.registerRequiredCSS(popoverStyles);
     popover.setSizeBehavior(SizeBehavior.MeasureContent);
     popover.setMarginBehavior(MarginBehavior.Arrow);
@@ -229,7 +227,7 @@ export class PopoverHelper {
       }
       popoverHelperInstance = this;
 
-      CONTENT_ELEMENT_TO_POPOVER_HELPER.set(popover.contentElement, this);
+      VisualLogging.setMappedParent(popover.contentElement, this.container);
       popover.contentElement.classList.toggle('has-padding', this.hasPadding);
       popover.contentElement.addEventListener('mousemove', this.popoverMouseMove.bind(this), true);
       popover.contentElement.addEventListener('mouseout', this.popoverMouseOut.bind(this, popover), true);
@@ -271,5 +269,3 @@ export interface PopoverRequest {
   show: (arg0: GlassPane) => Promise<boolean>;
   hide?: (() => void);
 }
-
-VisualLogging.registerParentProvider('popoverParent', (e => CONTENT_ELEMENT_TO_POPOVER_HELPER.get(e)?.container));

@@ -88,6 +88,15 @@ describe('LoggingState', () => {
     assert.strictEqual(123, await state.parent?.context(element));
   });
 
+  it('uses a mapped parent', async () => {
+    const customParent = document.createElement('div');
+    customParent.setAttribute('jslog', '<not important>');
+    VisualLogging.LoggingState.getOrCreateLoggingState(customParent, {ve: 1, context: '123'});
+    VisualLogging.LoggingState.setMappedParent(element, customParent);
+    const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, parent: 'custom'});
+    assert.strictEqual(123, await state.parent?.context(element));
+  });
+
   it('walks the DOM upwards to find the parent loggable', async () => {
     const provider = sinon.stub();
     const container = document.createElement('div');

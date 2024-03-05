@@ -121,10 +121,9 @@ export class SoftContextMenu {
     this.glassPane.setAnchorBehavior(this.parentMenu ? AnchorBehavior.PreferRight : AnchorBehavior.PreferBottom);
 
     this.contextMenuElement = this.glassPane.contentElement.createChild('div', 'soft-context-menu');
-    this.contextMenuElement.setAttribute(
-        'jslog', `${VisualLogging.menu().track({resize: true}).parent('softMenuParent')}`);
+    this.contextMenuElement.setAttribute('jslog', `${VisualLogging.menu().track({resize: true}).parent('mapped')}`);
     if (this.loggableParent) {
-      loggableParents.set(this.contextMenuElement, this.loggableParent);
+      VisualLogging.setMappedParent(this.contextMenuElement, this.loggableParent);
     }
     this.contextMenuElement.tabIndex = -1;
     ARIAUtils.markAsMenu(this.contextMenuElement);
@@ -661,11 +660,3 @@ interface ElementMenuDetails {
   subItems?: SoftContextMenuDescriptor[];
   actionId?: number;
 }
-
-const loggableParents = new WeakMap<Element, Element>();
-
-function parentForLogging(element: Element): Element|undefined {
-  return loggableParents.get(element) || undefined;
-}
-
-VisualLogging.registerParentProvider('softMenuParent', parentForLogging);

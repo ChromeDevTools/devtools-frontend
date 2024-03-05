@@ -436,21 +436,7 @@ export class ConsoleInsight extends HTMLElement {
         yield {sources, ...response};
       }
     } catch (err) {
-      if (err.message === 'Server responded: permission denied') {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredPermissionDenied);
-      } else if (err.message.startsWith('Cannot send request:')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredCannotSend);
-      } else if (err.message.startsWith('Request failed:')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredRequestFailed);
-      } else if (err.message.startsWith('Cannot parse chunk:')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredCannotParseChunk);
-      } else if (err.message === 'Unknown chunk result') {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredUnknownChunk);
-      } else if (err.message.startsWith('Server responded:')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredApi);
-      } else {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredOther);
-      }
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErroredApi);
       throw err;
     }
   }

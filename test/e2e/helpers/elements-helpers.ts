@@ -697,7 +697,7 @@ export const navigateToElementsTab = async () => {
 
 export const clickOnFirstLinkInStylesPanel = async () => {
   const stylesPane = await waitFor('div.styles-pane');
-  await click('div.styles-section-subtitle span.devtools-link', {root: stylesPane});
+  await click('div.styles-section-subtitle button.devtools-link', {root: stylesPane});
 };
 
 export const toggleClassesPane = async () => {

@@ -700,8 +700,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const relatedNodeRow =
           details.querySelector('.timeline-details-view-row:nth-of-type(9) .timeline-details-view-row-value span')
               ?.shadowRoot;
-      relatedNodeRow?.querySelector<HTMLDivElement>('div')?.innerText;
-      assert.strictEqual(relatedNodeRow?.querySelector<HTMLDivElement>('div')?.innerText, 'A test node name');
+      relatedNodeRow?.querySelector<HTMLButtonElement>('button')?.innerText;
+      assert.strictEqual(relatedNodeRow?.querySelector<HTMLButtonElement>('button')?.innerText, 'A test node name');
     });
 
     it('renders the details for a profile call properly', async function() {

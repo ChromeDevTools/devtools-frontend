@@ -200,6 +200,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
 
       const anchor = Components.Linkifier.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');
+      anchor.tabIndex = 0;
       const labelSpan = document.createElement('span');
       labelSpan.classList.add('search-match-line-number');
       const resultLabel = searchResult.matchLabel(i);

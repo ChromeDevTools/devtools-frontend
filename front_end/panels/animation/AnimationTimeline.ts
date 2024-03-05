@@ -666,10 +666,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private handleAnimationGroupKeyDown(group: AnimationGroup, event: KeyboardEvent): void {
     switch (event.key) {
-      case ' ':
-      case 'Enter':
-        void this.selectAnimationGroup(group);
-        break;
       case 'Backspace':
       case 'Delete':
         this.removeAnimationGroup(group, event);

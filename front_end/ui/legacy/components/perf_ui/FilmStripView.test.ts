@@ -34,7 +34,7 @@ describeWithEnvironment('FilmStripView', function() {
   it('generates frames and timestamps', async function() {
     const {traceParsedData} = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const filmStrip = await renderView(TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData));
-    const renderedFrames = Array.from(filmStrip.contentElement.querySelectorAll<HTMLElement>('div.frame'));
+    const renderedFrames = Array.from(filmStrip.contentElement.querySelectorAll<HTMLElement>('button.frame'));
     assert.lengthOf(renderedFrames, 5);
     const expectedTimeLabelsForFrames = [
       '0ms',

@@ -1423,17 +1423,13 @@ export class SecurityMainView extends UI.Widget.VBox {
       return;
     }
 
-    const requestsAnchor = element.createChild('div', 'security-mixed-content devtools-link') as HTMLElement;
+    const requestsAnchor =
+        element.createChild('button', 'security-mixed-content devtools-link text-button link-style') as HTMLElement;
     UI.ARIAUtils.markAsLink(requestsAnchor);
     requestsAnchor.tabIndex = 0;
     requestsAnchor.textContent = i18nString(UIStrings.viewDRequestsInNetworkPanel, {n: filterRequestCount});
 
     requestsAnchor.addEventListener('click', this.showNetworkFilter.bind(this, filterKey));
-    requestsAnchor.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        this.showNetworkFilter(filterKey, event);
-      }
-    });
   }
 
   showNetworkFilter(filterKey: string, e: Event): void {

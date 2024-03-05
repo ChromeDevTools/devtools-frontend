@@ -11,7 +11,7 @@ import {AnimationUI} from './AnimationUI.js';
 
 export class AnimationGroupPreviewUI {
   #model: AnimationGroup;
-  element: HTMLDivElement;
+  element: HTMLButtonElement;
   readonly #removeButtonInternal: HTMLElement;
   readonly #replayOverlayElement: HTMLElement;
   readonly #svg: Element;
@@ -19,7 +19,7 @@ export class AnimationGroupPreviewUI {
 
   constructor(model: AnimationGroup) {
     this.#model = model;
-    this.element = document.createElement('div');
+    this.element = document.createElement('button');
     this.element.setAttribute('jslog', `${VisualLogging.item('animations.buffer-preview').track({click: true})}`);
     this.element.classList.add('animation-buffer-preview');
     this.element.addEventListener('animationend', () => {

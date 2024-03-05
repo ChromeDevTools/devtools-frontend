@@ -1795,7 +1795,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     container.textContent = text.slice(0, maxLength);
     UI.Tooltip.Tooltip.install(container as HTMLElement, `${text.slice(0, maxLength)}…`);
 
-    this.expandElement = container.createChild('span');
+    this.expandElement = container.createChild('button');
     this.maxDisplayableTextLength = 10000000;
 
     const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
@@ -1806,13 +1806,6 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
       this.expandElement.setAttribute('jslog', `${VisualLogging.action('expand').track({click: true})}`);
       this.expandElement.classList.add('expandable-inline-button');
       this.expandElement.addEventListener('click', this.expandText.bind(this));
-      this.expandElement.addEventListener('keydown', (event: Event) => {
-        const keyboardEvent = (event as KeyboardEvent);
-        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
-          this.expandText();
-        }
-      });
-      UI.ARIAUtils.markAsButton(this.expandElement);
     } else {
       this.expandElement.setAttribute('data-text', i18nString(UIStrings.longTextWasTruncatedS, {PH1: totalBytesText}));
       this.expandElement.classList.add('undisplayable-text');
@@ -1823,13 +1816,6 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     copyButton.setAttribute('data-text', this.copyButtonText);
     copyButton.setAttribute('jslog', `${VisualLogging.action('copy').track({click: true})}`);
     copyButton.addEventListener('click', this.copyText.bind(this));
-    copyButton.addEventListener('keydown', (event: Event) => {
-      const keyboardEvent = (event as KeyboardEvent);
-      if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
-        this.copyText();
-      }
-    });
-    UI.ARIAUtils.markAsButton(copyButton);
   }
 
   override appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void {

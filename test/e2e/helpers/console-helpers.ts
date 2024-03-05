@@ -285,7 +285,7 @@ export async function navigateToConsoleTab() {
 
 export async function waitForConsoleInfoMessageAndClickOnLink() {
   const consoleMessage = await waitFor('div.console-group-messages .console-info-level span.source-code');
-  await click('span.devtools-link', {root: consoleMessage});
+  await click('button.devtools-link', {root: consoleMessage});
 }
 
 export async function turnOffHistoryAutocomplete() {

@@ -470,9 +470,16 @@ export class ConsoleInsight extends HTMLElement {
     });
   }
 
-  #onConsentOnboardingConfirmed(): void {
+  #termsChecked(): boolean {
     const checkbox = this.#shadow.querySelector('.terms') as HTMLInputElement | undefined;
     if (!checkbox?.checked) {
+      return false;
+    }
+    return true;
+  }
+
+  #onConsentOnboardingConfirmed(): void {
+    if (!this.#termsChecked()) {
       return;
     }
     this.#getOnboardingCompletedSetting().set(true);
@@ -554,7 +561,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #renderContinueButton(handler: (event: Event) => void): LitHtml.TemplateResult {
+  #renderContinueButton(handler: (event: Event) => void, disabled = false): LitHtml.TemplateResult {
     // clang-format off
     return html`<${Buttons.Button.Button.litTagName}
       @click=${handler}
@@ -562,6 +569,7 @@ export class ConsoleInsight extends HTMLElement {
       .data=${
         {
           variant: Buttons.Button.Variant.PRIMARY,
+          disabled,
         } as Buttons.Button.ButtonData
       }
     >
@@ -574,6 +582,10 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format off
     return html`<x-link href=${DOGFOODINFO_URL} class="link">Learn more about Console Insights.</x-link>`;
     // clang-format on
+  }
+
+  #onTermsChange(): void {
+    this.#render();
   }
 
   #renderMain(): LitHtml.TemplateResult {
@@ -639,13 +651,13 @@ export class ConsoleInsight extends HTMLElement {
               <li>Console insights uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
               <li>Console insights is an experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console Insights better.</li>
               <li>Console insights is an experimental feature and subject to future changes.</li>
-              <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487">Use generated code snippets with caution.</x-link></strong></li>
+              <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487">Use generated code snippets with caution</x-link>.</strong></li>
             </ul>
             </p>
 
             <p>
             <label>
-              <input class="terms" type="checkbox">
+              <input class="terms" @change=${this.#onTermsChange} type="checkbox">
               <span>I accept my use of Console insights is subject to the <x-link href="https://policies.google.com/terms" class="link">Google Terms of Service</x-link> and the <x-link href=${'https://policies.google.com/terms/gener' + 'ative-ai'} class="link">${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</span>
             </label>
             </p>
@@ -748,7 +760,7 @@ export class ConsoleInsight extends HTMLElement {
             <div class="buttons">
                 ${this.#renderBackButton()}
                 ${this.#renderDisableFeatureButton()}
-                ${this.#renderContinueButton(this.#onConsentOnboardingConfirmed)}
+                ${this.#renderContinueButton(this.#onConsentOnboardingConfirmed, !this.#termsChecked())}
               </div>
           </footer>`;
         }

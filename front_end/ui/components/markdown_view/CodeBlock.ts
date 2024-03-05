@@ -22,6 +22,10 @@ const UIStrings = {
    * @description The title of the button after it was pressed and the text was copied to clipboard.
    */
   copied: 'Copied to clipboard',
+  /**
+   * @description Disclaimer shown in the code blocks.
+   */
+  disclaimer: 'Use code snippets with caution',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/CodeBlock.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -125,7 +129,9 @@ export class CodeBlock extends HTMLElement {
         <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
           this.#editorState
         }></${TextEditor.TextEditor.TextEditor.litTagName}>
-        ${this.#displayNotice ? LitHtml.html`<p class="notice"><x-link class="link" href="https://support.google.com/legal/answer/13505487">Use code snippets with caution.</x-link></p>` : LitHtml.nothing}
+        ${this.#displayNotice ? LitHtml.html`<p class="notice">
+          <x-link class="link" href="https://support.google.com/legal/answer/13505487">${i18nString(UIStrings.disclaimer)}</x-link>
+        </p>` : LitHtml.nothing}
       </div>
     </div>`, this.#shadow, {
       host: this,

@@ -135,6 +135,70 @@ describe('AidaClient', () => {
     ]);
   });
 
+  it('handles chunked response with multiple objects per chunk', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake(async (_, streamId, callback) => {
+          const response = JSON.stringify([
+            {textChunk: {text: 'Friends, Romans, countrymen, lend me your ears;\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'I come to bury Caesar, not to praise him.\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'The evil that men do lives after them;\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'The good is oft interred with their bones;\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'So let it be with Caesar. The noble Brutus\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'Hath told you Caesar was ambitious:\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'If it were so, it was a grievous fault,\n'}, metadata: {rpcGlobalId: 123}},
+            {textChunk: {text: 'And grievously hath Caesar answer’d it.\n'}, metadata: {rpcGlobalId: 123}},
+          ]);
+          const chunks = response.split(',{');
+          await new Promise(resolve => setTimeout(resolve, 0));
+          Host.ResourceLoader.streamWrite(streamId, chunks[0] + ',{' + chunks[1]);
+          await new Promise(resolve => setTimeout(resolve, 0));
+          Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[2] + ',{' + chunks[3] + ',{' + chunks[4]);
+          await new Promise(resolve => setTimeout(resolve, 0));
+          Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[5]);
+          await new Promise(resolve => setTimeout(resolve, 0));
+          Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[6] + ',{' + chunks[7]);
+          callback({statusCode: 200});
+        });
+
+    const provider = new Host.AidaClient.AidaClient();
+    const results = await getAllResults(provider);
+    assert.deepStrictEqual(results, [
+      {
+        explanation: 'Friends, Romans, countrymen, lend me your ears;\n' +
+            'I come to bury Caesar, not to praise him.\n',
+        metadata: {rpcGlobalId: 123},
+      },
+      {
+        explanation: 'Friends, Romans, countrymen, lend me your ears;\n' +
+            'I come to bury Caesar, not to praise him.\n' +
+            'The evil that men do lives after them;\n' +
+            'The good is oft interred with their bones;\n' +
+            'So let it be with Caesar. The noble Brutus\n',
+        metadata: {rpcGlobalId: 123},
+      },
+      {
+        explanation: 'Friends, Romans, countrymen, lend me your ears;\n' +
+            'I come to bury Caesar, not to praise him.\n' +
+            'The evil that men do lives after them;\n' +
+            'The good is oft interred with their bones;\n' +
+            'So let it be with Caesar. The noble Brutus\n' +
+            'Hath told you Caesar was ambitious:\n',
+        metadata: {rpcGlobalId: 123},
+      },
+      {
+        explanation: 'Friends, Romans, countrymen, lend me your ears;\n' +
+            'I come to bury Caesar, not to praise him.\n' +
+            'The evil that men do lives after them;\n' +
+            'The good is oft interred with their bones;\n' +
+            'So let it be with Caesar. The noble Brutus\n' +
+            'Hath told you Caesar was ambitious:\n' +
+            'If it were so, it was a grievous fault,\n' +
+            'And grievously hath Caesar answer’d it.\n',
+        metadata: {rpcGlobalId: 123},
+      },
+    ]);
+  });
+
   it('handles subsequent code chunks', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
         .callsFake(async (_, streamId, callback) => {

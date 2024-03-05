@@ -80,42 +80,52 @@ export class AidaClient {
     const text = [];
     let inCodeChunk = false;
     while ((chunk = await stream.read())) {
-      if (chunk.endsWith(']')) {
-        chunk = chunk.slice(0, -1);
-      }
-      if (chunk.startsWith(',') || chunk.startsWith('[')) {
-        chunk = chunk.slice(1);
-      }
+      // The AIDA response is a JSON array of objects, split at the object
+      // boundary. Therefore each chunk may start with `[` or `,` and possibly
+      // followed by `]`. Each chunk may include one or more objects, so we
+      // make sure that each chunk becomes a well-formed JSON array when we
+      // parse it by adding `[` and `]` and removing `,` where appropriate.
       if (!chunk.length) {
         continue;
       }
-      let result;
+      if (chunk.startsWith(',')) {
+        chunk = chunk.slice(1);
+      }
+      if (!chunk.startsWith('[')) {
+        chunk = '[' + chunk;
+      }
+      if (!chunk.endsWith(']')) {
+        chunk = chunk + ']';
+      }
+      let results;
       try {
-        result = JSON.parse(chunk);
+        results = JSON.parse(chunk);
       } catch (error) {
         throw new Error('Cannot parse chunk: ' + chunk, {cause: error});
       }
       const CODE_CHUNK_SEPARATOR = '\n`````\n';
-      if ('textChunk' in result) {
-        if (inCodeChunk) {
-          text.push(CODE_CHUNK_SEPARATOR);
-          inCodeChunk = false;
+      for (const result of results) {
+        if ('textChunk' in result) {
+          if (inCodeChunk) {
+            text.push(CODE_CHUNK_SEPARATOR);
+            inCodeChunk = false;
+          }
+          text.push(result.textChunk.text);
+        } else if ('codeChunk' in result) {
+          if (!inCodeChunk) {
+            text.push(CODE_CHUNK_SEPARATOR);
+            inCodeChunk = true;
+          }
+          text.push(result.codeChunk.code);
+        } else if ('error' in result) {
+          throw new Error(`Server responded: ${JSON.stringify(result)}`);
+        } else {
+          throw new Error('Unknown chunk result');
         }
-        text.push(result.textChunk.text);
-      } else if ('codeChunk' in result) {
-        if (!inCodeChunk) {
-          text.push(CODE_CHUNK_SEPARATOR);
-          inCodeChunk = true;
-        }
-        text.push(result.codeChunk.code);
-      } else if ('error' in result) {
-        throw new Error(`Server responded: ${JSON.stringify(result)}`);
-      } else {
-        throw new Error('Unknown chunk result');
       }
       yield {
         explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
-        metadata: {rpcGlobalId: result?.metadata?.rpcGlobalId},
+        metadata: {rpcGlobalId: results[0]?.metadata?.rpcGlobalId},
       };
     }
   }

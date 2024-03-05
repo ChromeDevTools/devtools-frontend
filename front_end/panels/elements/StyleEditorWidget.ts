@@ -20,6 +20,7 @@ interface Editor extends HTMLElement {
     computedProperties: Map<String, String>,
   };
   getEditableProperties(): Array<{propertyName: string}>;
+  jslogContext: string;
 }
 
 /**

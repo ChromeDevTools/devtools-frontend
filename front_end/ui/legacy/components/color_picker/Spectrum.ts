@@ -275,7 +275,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     super(true);
 
     this.contentElement.tabIndex = 0;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.colorPicker()}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('colorPicker').parent('mapped')}`);
     this.colorElement = this.contentElement.createChild('div', 'spectrum-color');
     this.colorElement.tabIndex = 0;
     this.colorElement.setAttribute('jslog', `${VisualLogging.canvas('color').track({click: true, drag: true})}`);

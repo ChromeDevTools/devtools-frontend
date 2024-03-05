@@ -63,7 +63,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor() {
     super(true);
     this.contentElement.tabIndex = 0;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.cssShadowEditor()}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('cssShadowEditor').parent('mapped')}`);
     this.setDefaultFocusedElement(this.contentElement);
 
     this.typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');

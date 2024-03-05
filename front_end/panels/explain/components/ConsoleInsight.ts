@@ -594,7 +594,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderLearnMoreAboutInsights(): LitHtml.TemplateResult {
     // clang-format off
-    return html`<x-link href=${DOGFOODINFO_URL} class="link">Learn more about Console Insights.</x-link>`;
+    return html`<x-link href=${DOGFOODINFO_URL} class="link">Learn more about Console insights</x-link>`;
     // clang-format on
   }
 
@@ -663,7 +663,7 @@ export class ConsoleInsight extends HTMLElement {
 
             <ul>
               <li>Console insights uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
-              <li>Console insights is an experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console Insights better.</li>
+              <li>Console insights is an experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console insights better.</li>
               <li>Console insights is an experimental feature and subject to future changes.</li>
               <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487">Use generated code snippets with caution</x-link>.</strong></li>
             </ul>

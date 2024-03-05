@@ -2880,6 +2880,17 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "normal",
+   "flex-visual",
+   "flex-flow",
+   "grid-rows",
+   "grid-columns",
+   "grid-order"
+  ],
+  "name": "reading-order-items"
+ },
+ {
+  "keywords": [
    "none",
    "both",
    "horizontal",
@@ -5292,6 +5303,16 @@ export const generatedPropertyValues = {
   "values": [
    "auto",
    "none"
+  ]
+ },
+ "reading-order-items": {
+  "values": [
+   "normal",
+   "flex-visual",
+   "flex-flow",
+   "grid-rows",
+   "grid-columns",
+   "grid-order"
   ]
  },
  "resize": {

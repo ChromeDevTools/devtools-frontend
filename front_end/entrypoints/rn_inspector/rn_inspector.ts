@@ -13,6 +13,7 @@ import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/network/network-meta.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
+import '../../panels/react_devtools/react_devtools-meta.js';
 
 import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
@@ -29,6 +30,12 @@ Root.Runtime.experiments.register(
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
   'Show React Native-specific UI',
   /* unstable */ false,
+);
+
+Root.Runtime.experiments.register(
+  Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
+  'Enable React DevTools panel',
+  /* unstable */ true,
 );
 
 Root.Runtime.experiments.enableExperimentsByDefault([

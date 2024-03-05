@@ -907,11 +907,13 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
           return false;
         }
         const remoteObject = await (node as HeapSnapshotGridNode).queryObjectContent(heapProfilerModel, 'popover');
-        if (!remoteObject) {
-          return false;
+        if (remoteObject instanceof SDK.RemoteObject.RemoteObject) {
+          objectPopoverHelper =
+              await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
+        } else {
+          objectPopoverHelper = ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildDescriptionPopover(
+              remoteObject.description, remoteObject.link, popover);
         }
-        objectPopoverHelper =
-            await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
         if (!objectPopoverHelper) {
           heapProfilerModel.runtimeModel().releaseObjectGroup('popover');
           return false;

@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
@@ -37,6 +38,15 @@ import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import objectPopoverStyles from './objectPopover.css.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 import objectValueStyles from './objectValue.css.js';
+
+const UIStrings = {
+  /**
+   *@description Text that is usually a hyperlink to more documentation
+   */
+  learnMore: 'Learn more',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPopoverHelper.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ObjectPopoverHelper {
   private readonly linkifier: Components.Linkifier.Linkifier|null;
@@ -108,6 +118,26 @@ export class ObjectPopoverHelper {
       valueElement.textContent = description;
     }
 
+    popover.contentElement.appendChild(popoverContentElement);
+    return new ObjectPopoverHelper(null, false);
+  }
+
+  static buildDescriptionPopover(description: string, link: string, popover: UI.GlassPane.GlassPane):
+      ObjectPopoverHelper {
+    const popoverContentElement = document.createElement('div');
+    popoverContentElement.classList.add('object-popover-description-box');
+    const descriptionDiv = document.createElement('div');
+    descriptionDiv.dataset.stableNameForTest = 'object-popover-content';
+    popover.registerCSSFiles([objectPopoverStyles]);
+    descriptionDiv.textContent = description;
+    const learnMoreLink =
+        UI.XLink.XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
+    const footerDiv = document.createElement('div');
+    footerDiv.classList.add('object-popover-footer');
+    footerDiv.appendChild(learnMoreLink);
+
+    popoverContentElement.appendChild(descriptionDiv);
+    popoverContentElement.appendChild(footerDiv);
     popover.contentElement.appendChild(popoverContentElement);
     return new ObjectPopoverHelper(null, false);
   }

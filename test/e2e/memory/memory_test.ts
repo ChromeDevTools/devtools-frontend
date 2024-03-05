@@ -278,6 +278,12 @@ describe('The Memory Panel', function() {
     propertyNameElement!.hover();
     const el = await waitFor('div.vbox.flex-auto.no-pointer-events');
     await waitFor('.source-code', el);
+
+    await setSearchFilter('system / descriptorarray');
+    await findSearchResult('system / DescriptorArray');
+    const searchResultElement = await waitFor('.selected.data-grid-data-grid-node span.object-value-null');
+    searchResultElement!.hover();
+    await waitFor('.widget .object-popover-footer');
   });
 
   it('shows the flamechart for an allocation sample', async () => {

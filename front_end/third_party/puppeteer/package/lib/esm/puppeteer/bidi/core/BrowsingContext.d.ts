@@ -111,6 +111,8 @@ export declare class BrowsingContext extends EventEmitter<{
     removePreloadScript(script: string): Promise<void>;
     getCookies(options?: GetCookiesOptions): Promise<Bidi.Network.Cookie[]>;
     setCookie(cookie: Bidi.Storage.PartialCookie): Promise<void>;
+    setFiles(element: Bidi.Script.SharedReference, files: string[]): Promise<void>;
     [disposeSymbol](): void;
+    deleteCookie(...cookieFilters: Bidi.Storage.CookieFilter[]): Promise<void>;
 }
 //# sourceMappingURL=BrowsingContext.d.ts.map

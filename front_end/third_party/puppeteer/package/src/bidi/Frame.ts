@@ -40,8 +40,11 @@ import {debugError, fromEmitterEvent, timeout} from '../common/util.js';
 
 import {BidiCdpSession} from './CDPSession.js';
 import type {BrowsingContext} from './core/BrowsingContext.js';
+import type {Navigation} from './core/Navigation.js';
+import type {Request} from './core/Request.js';
 import {BidiDeserializer} from './Deserializer.js';
 import {BidiDialog} from './Dialog.js';
+import type {BidiElementHandle} from './ElementHandle.js';
 import {ExposeableFunction} from './ExposedFunction.js';
 import {BidiHTTPRequest, requests} from './HTTPRequest.js';
 import type {BidiHTTPResponse} from './HTTPResponse.js';
@@ -359,8 +362,34 @@ export class BidiFrame extends Frame {
                   })
                 )
               ),
-              map(() => {
-                return navigation;
+              switchMap(() => {
+                if (navigation.request) {
+                  function requestFinished$(
+                    request: Request
+                  ): Observable<Navigation> {
+                    // Reduces flakiness if the response events arrive after
+                    // the load event.
+                    // Usually, the response or error is already there at this point.
+                    if (request.response || request.error) {
+                      return of(navigation);
+                    }
+                    if (request.redirect) {
+                      return requestFinished$(request.redirect);
+                    }
+                    return fromEmitterEvent(request, 'success')
+                      .pipe(
+                        raceWith(fromEmitterEvent(request, 'error')),
+                        raceWith(fromEmitterEvent(request, 'redirect'))
+                      )
+                      .pipe(
+                        switchMap(() => {
+                          return requestFinished$(request);
+                        })
+                      );
+                  }
+                  return requestFinished$(navigation.request);
+                }
+                return of(navigation);
               })
             );
           })
@@ -408,21 +437,27 @@ export class BidiFrame extends Frame {
         `Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`
       );
     }
-    const exposeable = new ExposeableFunction(this, name, apply);
+    const exposeable = await ExposeableFunction.from(this, name, apply);
     this.#exposedFunctions.set(name, exposeable);
-    try {
-      await exposeable.expose();
-    } catch (error) {
-      this.#exposedFunctions.delete(name);
-      throw error;
+  }
+
+  async removeExposedFunction(name: string): Promise<void> {
+    const exposedFunction = this.#exposedFunctions.get(name);
+    if (!exposedFunction) {
+      throw new Error(
+        `Failed to remove page binding with name ${name}: window['${name}'] does not exists!`
+      );
     }
+
+    this.#exposedFunctions.delete(name);
+    await exposedFunction[Symbol.asyncDispose]();
   }
 
   override waitForSelector<Selector extends string>(
     selector: Selector,
     options?: WaitForSelectorOptions
   ): Promise<ElementHandle<NodeFor<Selector>> | null> {
-    if (selector.startsWith('aria')) {
+    if (selector.startsWith('aria') && !this.page().browser().cdpSupported) {
       throw new UnsupportedOperation(
         'ARIA selector is not supported for BiDi!'
       );
@@ -512,6 +547,15 @@ export class BidiFrame extends Frame {
       timeout: options.timeout ?? this.timeoutSettings.timeout(),
       concurrency,
     });
+  }
+
+  @throwIfDetached
+  async setFiles(element: BidiElementHandle, files: string[]): Promise<void> {
+    await this.browsingContext.setFiles(
+      // SAFETY: ElementHandles are always remote references.
+      element.remoteValue() as Bidi.Script.SharedReference,
+      files
+    );
   }
 }
 

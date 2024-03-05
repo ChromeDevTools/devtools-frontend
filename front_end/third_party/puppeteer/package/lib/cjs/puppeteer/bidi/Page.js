@@ -484,8 +484,6 @@ let BidiPage = (() => {
                     // Chrome-specific properties.
                     ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
                 };
-                // TODO: delete cookie before setting them.
-                // await this.deleteCookie(bidiCookie);
                 if (cookie.partitionKey !== undefined) {
                     await this.browserContext().userContext.setCookie(bidiCookie, cookie.partitionKey);
                 }
@@ -494,12 +492,26 @@ let BidiPage = (() => {
                 }
             }
         }
-        deleteCookie() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async deleteCookie(...cookies) {
+            await Promise.all(cookies.map(async (deleteCookieRequest) => {
+                const cookieUrl = deleteCookieRequest.url ?? this.url();
+                const normalizedUrl = URL.canParse(cookieUrl)
+                    ? new URL(cookieUrl)
+                    : undefined;
+                const domain = deleteCookieRequest.domain ?? normalizedUrl?.hostname;
+                (0, assert_js_1.assert)(domain !== undefined, `At least one of the url and domain needs to be specified`);
+                const filter = {
+                    domain: domain,
+                    name: deleteCookieRequest.name,
+                    ...(deleteCookieRequest.path !== undefined
+                        ? { path: deleteCookieRequest.path }
+                        : {}),
+                };
+                await this.#frame.browsingContext.deleteCookie(filter);
+            }));
         }
-        removeExposedFunction() {
-            // TODO: Quick win?
-            throw new Errors_js_1.UnsupportedOperation();
+        async removeExposedFunction(name) {
+            await this.#frame.removeExposedFunction(name);
         }
         authenticate() {
             throw new Errors_js_1.UnsupportedOperation();

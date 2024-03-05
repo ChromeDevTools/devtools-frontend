@@ -106,6 +106,10 @@ export interface Commands {
     params: Bidi.Input.ReleaseActionsParameters;
     returnType: Bidi.EmptyResult;
   };
+  'input.setFiles': {
+    params: Bidi.Input.SetFilesParameters;
+    returnType: Bidi.EmptyResult;
+  };
 
   'permissions.setPermission': {
     params: Bidi.Permissions.SetPermissionParameters;
@@ -133,6 +137,10 @@ export interface Commands {
     returnType: Bidi.EmptyResult;
   };
 
+  'storage.deleteCookies': {
+    params: Bidi.Storage.DeleteCookiesParameters;
+    returnType: Bidi.Storage.DeleteCookiesResult;
+  };
   'storage.getCookies': {
     params: Bidi.Storage.GetCookiesParameters;
     returnType: Bidi.Storage.GetCookiesResult;

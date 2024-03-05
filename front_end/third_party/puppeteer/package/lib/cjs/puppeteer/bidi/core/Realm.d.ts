@@ -44,6 +44,7 @@ export declare abstract class Realm extends EventEmitter<{
     disown(handles: string[]): Promise<void>;
     callFunction(functionDeclaration: string, awaitPromise: boolean, options?: CallFunctionOptions): Promise<Bidi.Script.EvaluateResult>;
     evaluate(expression: string, awaitPromise: boolean, options?: EvaluateOptions): Promise<Bidi.Script.EvaluateResult>;
+    resolveExecutionContextId(): Promise<number>;
     [disposeSymbol](): void;
 }
 /**

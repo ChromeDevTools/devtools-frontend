@@ -68,9 +68,15 @@ let BrowsingContext = (() => {
     let _removePreloadScript_decorators;
     let _getCookies_decorators;
     let _setCookie_decorators;
+    let _setFiles_decorators;
+    let _deleteCookie_decorators;
     return class BrowsingContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            _deleteCookie_decorators = [throwIfDisposed(context => {
+                    // SAFETY: Disposal implies this exists.
+                    return context.#reason;
+                })];
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _activate_decorators, { kind: "method", name: "activate", static: false, private: false, access: { has: obj => "activate" in obj, get: obj => obj.activate }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _captureScreenshot_decorators, { kind: "method", name: "captureScreenshot", static: false, private: false, access: { has: obj => "captureScreenshot" in obj, get: obj => obj.captureScreenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -88,6 +94,8 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setFiles_decorators, { kind: "method", name: "setFiles", static: false, private: false, access: { has: obj => "setFiles" in obj, get: obj => obj.setFiles }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _deleteCookie_decorators, { kind: "method", name: "deleteCookie", static: false, private: false, access: { has: obj => "deleteCookie" in obj, get: obj => obj.deleteCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(userContext, parent, id, url) {
@@ -353,6 +361,13 @@ let BrowsingContext = (() => {
                 },
             });
         }
+        async setFiles(element, files) {
+            await this.#session.send('input.setFiles', {
+                context: this.id,
+                element,
+                files,
+            });
+        }
         [(_dispose_decorators = [inertIfDisposed], _activate_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
@@ -401,12 +416,26 @@ let BrowsingContext = (() => {
             })], _setCookie_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
+            })], _setFiles_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
             })], disposeSymbol)]() {
             this.#reason ??=
                 'Browsing context already closed, probably because the user context closed.';
             this.emit('closed', { reason: this.#reason });
             this.#disposables.dispose();
             super[disposeSymbol]();
+        }
+        async deleteCookie(...cookieFilters) {
+            await Promise.all(cookieFilters.map(async (filter) => {
+                await this.#session.send('storage.deleteCookies', {
+                    filter: filter,
+                    partition: {
+                        type: 'context',
+                        context: this.id,
+                    },
+                });
+            }));
         }
     };
 })();

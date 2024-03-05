@@ -14,6 +14,7 @@ import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { Cookie, CookieParam } from '../common/Cookie.js';
+import type { DeleteCookiesRequest } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Awaitable } from '../common/types.js';
@@ -95,8 +96,8 @@ export declare class BidiPage extends Page {
     setOfflineMode(): never;
     emulateNetworkConditions(): never;
     setCookie(...cookies: CookieParam[]): Promise<void>;
-    deleteCookie(): never;
-    removeExposedFunction(): never;
+    deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
+    removeExposedFunction(name: string): Promise<void>;
     authenticate(): never;
     setExtraHTTPHeaders(): never;
     metrics(): never;

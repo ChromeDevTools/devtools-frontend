@@ -66,6 +66,7 @@ let BidiFrame = (() => {
     let _private_waitForLoad$_descriptor;
     let _private_waitForNetworkIdle$_decorators;
     let _private_waitForNetworkIdle$_descriptor;
+    let _setFiles_decorators;
     return class BidiFrame extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -74,6 +75,7 @@ let BidiFrame = (() => {
             _waitForNavigation_decorators = [throwIfDetached];
             _private_waitForLoad$_decorators = [throwIfDetached];
             _private_waitForNetworkIdle$_decorators = [throwIfDetached];
+            _setFiles_decorators = [throwIfDetached];
             __esDecorate(this, null, _goto_decorators, { kind: "method", name: "goto", static: false, private: false, access: { has: obj => "goto" in obj, get: obj => obj.goto }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setContent_decorators, { kind: "method", name: "setContent", static: false, private: false, access: { has: obj => "setContent" in obj, get: obj => obj.setContent }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _waitForNavigation_decorators, { kind: "method", name: "waitForNavigation", static: false, private: false, access: { has: obj => "waitForNavigation" in obj, get: obj => obj.waitForNavigation }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -132,6 +134,7 @@ let BidiFrame = (() => {
                         concurrency,
                     });
                 }, "#waitForNetworkIdle$") }, _private_waitForNetworkIdle$_decorators, { kind: "method", name: "#waitForNetworkIdle$", static: false, private: true, access: { has: obj => #waitForNetworkIdle$ in obj, get: obj => obj.#waitForNetworkIdle$ }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setFiles_decorators, { kind: "method", name: "setFiles", static: false, private: false, access: { has: obj => "setFiles" in obj, get: obj => obj.setFiles }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(parent, browsingContext) {
@@ -340,8 +343,27 @@ let BidiFrame = (() => {
                         throw new Error(`Navigation failed: ${url}`);
                     })), fromEmitterEvent(navigation, 'aborted').pipe(map(({ url }) => {
                         throw new Error(`Navigation aborted: ${url}`);
-                    }))), map(() => {
-                        return navigation;
+                    }))), switchMap(() => {
+                        if (navigation.request) {
+                            function requestFinished$(request) {
+                                // Reduces flakiness if the response events arrive after
+                                // the load event.
+                                // Usually, the response or error is already there at this point.
+                                if (request.response || request.error) {
+                                    return of(navigation);
+                                }
+                                if (request.redirect) {
+                                    return requestFinished$(request.redirect);
+                                }
+                                return fromEmitterEvent(request, 'success')
+                                    .pipe(raceWith(fromEmitterEvent(request, 'error')), raceWith(fromEmitterEvent(request, 'redirect')))
+                                    .pipe(switchMap(() => {
+                                    return requestFinished$(request);
+                                }));
+                            }
+                            return requestFinished$(navigation.request);
+                        }
+                        return of(navigation);
                     }));
                 })),
                 this.#waitForNetworkIdle$(options),
@@ -368,18 +390,19 @@ let BidiFrame = (() => {
             if (this.#exposedFunctions.has(name)) {
                 throw new Error(`Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`);
             }
-            const exposeable = new ExposeableFunction(this, name, apply);
+            const exposeable = await ExposeableFunction.from(this, name, apply);
             this.#exposedFunctions.set(name, exposeable);
-            try {
-                await exposeable.expose();
+        }
+        async removeExposedFunction(name) {
+            const exposedFunction = this.#exposedFunctions.get(name);
+            if (!exposedFunction) {
+                throw new Error(`Failed to remove page binding with name ${name}: window['${name}'] does not exists!`);
             }
-            catch (error) {
-                this.#exposedFunctions.delete(name);
-                throw error;
-            }
+            this.#exposedFunctions.delete(name);
+            await exposedFunction[Symbol.asyncDispose]();
         }
         waitForSelector(selector, options) {
-            if (selector.startsWith('aria')) {
+            if (selector.startsWith('aria') && !this.page().browser().cdpSupported) {
                 throw new UnsupportedOperation('ARIA selector is not supported for BiDi!');
             }
             return super.waitForSelector(selector, options);
@@ -393,6 +416,11 @@ let BidiFrame = (() => {
         }
         get #waitForLoad$() { return _private_waitForLoad$_descriptor.value; }
         get #waitForNetworkIdle$() { return _private_waitForNetworkIdle$_descriptor.value; }
+        async setFiles(element, files) {
+            await this.browsingContext.setFiles(
+            // SAFETY: ElementHandles are always remote references.
+            element.remoteValue(), files);
+        }
     };
 })();
 export { BidiFrame };

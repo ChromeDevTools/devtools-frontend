@@ -54,6 +54,7 @@ let Realm = (() => {
     let _disown_decorators;
     let _callFunction_decorators;
     let _evaluate_decorators;
+    let _resolveExecutionContextId_decorators;
     return class Realm extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -61,6 +62,7 @@ let Realm = (() => {
             __esDecorate(this, null, _disown_decorators, { kind: "method", name: "disown", static: false, private: false, access: { has: obj => "disown" in obj, get: obj => obj.disown }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _callFunction_decorators, { kind: "method", name: "callFunction", static: false, private: false, access: { has: obj => "callFunction" in obj, get: obj => obj.callFunction }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _evaluate_decorators, { kind: "method", name: "evaluate", static: false, private: false, access: { has: obj => "evaluate" in obj, get: obj => obj.evaluate }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _resolveExecutionContextId_decorators, { kind: "method", name: "resolveExecutionContextId", static: false, private: false, access: { has: obj => "resolveExecutionContextId" in obj, get: obj => obj.resolveExecutionContextId }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         // keep-sorted start
@@ -112,6 +114,10 @@ let Realm = (() => {
             });
             return result;
         }
+        async resolveExecutionContextId() {
+            const { result } = await this.session.connection.send('cdp.resolveRealm', { realm: this.id });
+            return result.executionContextId;
+        }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _disown_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
@@ -119,6 +125,9 @@ let Realm = (() => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
             })], _evaluate_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
+                // SAFETY: Disposal implies this exists.
+                return realm.#reason;
+            })], _resolveExecutionContextId_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
             })], disposable_js_1.disposeSymbol)]() {

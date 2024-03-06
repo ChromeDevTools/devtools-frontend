@@ -20,7 +20,7 @@ export class ScreenshotError extends Error {
   readonly screenshots: ArtifactGroup;
 
   private constructor(screenshots: ArtifactGroup, message?: string, cause?: Error) {
-    message = message ?? cause?.message ?? '';
+    message = [message, cause?.message, (cause?.cause as Error)?.message].filter(x => x).join('\n\n');
     super(message);
     this.cause = cause;
     this.stack = cause?.stack ?? '';
@@ -82,7 +82,7 @@ export class ScreenshotError extends Error {
     } else {
       // TODO(liviurau): embed images once Milo supports it
       const message = (this.message + '\n\n' + this.stack).slice(0, ScreenshotError.SUMMARY_LENGTH_CUTOFF);
-      summary = '<pre>' + message + '</pre><p>Unexppected error. See target and frontend screenshots ' +
+      summary = '<pre>' + message + '</pre><p>Unexpected error. See target and frontend screenshots ' +
           'below.</p>';
     }
     return [this.screenshots, summary];

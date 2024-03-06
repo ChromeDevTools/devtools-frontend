@@ -43,11 +43,6 @@ def parse_options(cli_args):
                         dest='iterations',
                         default=1,
                         help='Number of test iterations.')
-    parser.add_argument(
-        '--no-failure-screenshots-file',
-        dest='no_failure_screenshots_file',
-        action='store_true',
-        help='Does not save screenshots to failure_screenshots.html.')
     parser.add_argument('--no-color',
                         dest='no_color',
                         action='store_true',
@@ -110,8 +105,6 @@ if __name__ == '__main__':
     results_log_files = []
     processes = []
     for i in range(len(commands)):
-        if not args.no_failure_screenshots_file:
-            env["HTML_OUTPUT_FILE"] = f'{devtools_paths.devtools_root_path()}/out/failure_screenshots_{i}.html'
         for k, v in commands[i]['env'].items():
             env[k] = v
         temp = tempfile.NamedTemporaryFile(delete=False)

@@ -11,6 +11,8 @@
   "lit",
   "marked",
   "puppeteer",
+  "puppeteer/third_party/mitt",
+  "puppeteer/third_party/rxjs",
   "puppeteer-replay",
   "wasmparser"
 ]

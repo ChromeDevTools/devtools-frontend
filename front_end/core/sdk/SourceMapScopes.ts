@@ -68,10 +68,8 @@ export interface OriginalPosition extends Position {
   sourceIndex: number;
 }
 
-export function decodeScopes(encodedOriginalScopes: string[], encodedGeneratedRange: string, names: string[]):
-    {originalScopes: OriginalScope[], generatedRange: GeneratedRange} {
-  const originalScopes = encodedOriginalScopes.map(scope => decodeOriginalScope(scope, names));
-  return {originalScopes, generatedRange: {} as GeneratedRange};
+export function decodeOriginalScopes(encodedOriginalScopes: string[], names: string[]): OriginalScope[] {
+  return encodedOriginalScopes.map(scope => decodeOriginalScope(scope, names));
 }
 
 function decodeOriginalScope(encodedOriginalScope: string, names: string[]): OriginalScope {

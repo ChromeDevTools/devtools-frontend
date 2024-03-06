@@ -185,6 +185,24 @@ export interface TraceEventFireIdleCallback extends TraceEventComplete {
   };
 }
 
+export interface TraceEventSchedulePostMessage extends TraceEventInstant {
+  name: KnownEventName.SchedulePostMessage;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      traceId: string,
+    },
+  };
+}
+
+export interface TraceEventHandlePostMessage extends TraceEventComplete {
+  name: KnownEventName.HandlePostMessage;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      traceId: string,
+    },
+  };
+}
+
 export interface TraceEventDispatch extends TraceEventComplete {
   name: 'EventDispatch';
   args: TraceEventArgs&{
@@ -1522,6 +1540,14 @@ export function isTraceEventFireIdleCallback(event: TraceEventData): event is Tr
   return event.name === 'FireIdleCallback';
 }
 
+export function isTraceEventSchedulePostMessage(event: TraceEventData): event is TraceEventSchedulePostMessage {
+  return event.name === KnownEventName.SchedulePostMessage;
+}
+
+export function isTraceEventHandlePostMessage(event: TraceEventData): event is TraceEventHandlePostMessage {
+  return event.name === KnownEventName.HandlePostMessage;
+}
+
 export function isTraceEventUpdateCounters(event: TraceEventData): event is TraceEventUpdateCounters {
   return event.name === 'UpdateCounters';
 }
@@ -2261,4 +2287,7 @@ export const enum KnownEventName {
   InputLatencyMouseMove = 'InputLatency::MouseMove',
   InputLatencyMouseWheel = 'InputLatency::MouseWheel',
   ImplSideFling = 'InputHandlerProxy::HandleGestureFling::started',
+
+  SchedulePostMessage = 'SchedulePostMessage',
+  HandlePostMessage = 'HandlePostMessage',
 }

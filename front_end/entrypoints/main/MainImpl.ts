@@ -382,6 +382,11 @@ export class MainImpl {
         'Enable Autofill view',
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
+        'Timeline: Show postMessage dispatch and handling flows',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       'set-all-breakpoints-eagerly',

@@ -393,6 +393,8 @@
   --app-color-rendering-children: var(--ref-palette-purple80);
   --app-color-painting: var(--ref-palette-green70);
   --app-color-painting-children: var(--ref-palette-green80);
+  --app-color-messaging: var(--ref-palette-cyan70);
+  --app-color-messaging-children: var(--ref-palette-cyan80);
   --app-color-task: var(--ref-palette-neutral80);
   --app-color-task-children: var(--ref-palette-neutral90);
   --app-color-system: var(--ref-palette-neutral80);

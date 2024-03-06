@@ -1114,9 +1114,10 @@ export enum DevtoolsExperiments {
   'sources-frame-indentation-markers-temporarily-disable' = 83,
   'heap-snapshot-treat-backing-store-as-containing-object' = 84,
   'css-type-component-length-deprecate' = 85,
+  'timeline-show-postmessage-events' = 86,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 86,
+  'MaxValue' = 87,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

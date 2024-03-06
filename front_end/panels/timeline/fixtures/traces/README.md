@@ -164,3 +164,7 @@ Contains a navigation to a page with a render blocking request `script.js` follo
 ### parser-blocking-after-paint
 
 Contains a navigation to a page with a `in_body_parser_blocking` request `script.js` that is downloaded after first paint.
+
+### postmessage-initiators
+
+Contains a `postMessage.Handler`, and associating `postMessage.Dispatch` call.

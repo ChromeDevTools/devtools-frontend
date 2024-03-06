@@ -410,7 +410,7 @@ text.animation-timeline-grid-label {
   animation: none;
 }
 
-.animation-buffer-preview .mouse-icon {
+.animation-buffer-preview .preview-icon {
   position: absolute;
   width: 14px;
   height: 14px;
@@ -435,7 +435,7 @@ text.animation-timeline-grid-label {
   outline: -webkit-focus-ring-color auto 5px;
 }
 
-.animation-buffer-preview.selected .mouse-icon {
+.animation-buffer-preview.selected .preview-icon {
   opacity: 100%;
 }
 
@@ -443,7 +443,7 @@ text.animation-timeline-grid-label {
 .animation-buffer-preview:not(.selected):hover {
   background-color: var(--sys-color-surface-variant);
 
-  & .mouse-icon {
+  & .preview-icon {
     opacity: 80%;
   }
 }

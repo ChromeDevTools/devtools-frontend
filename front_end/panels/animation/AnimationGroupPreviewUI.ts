@@ -29,7 +29,9 @@ export class AnimationGroupPreviewUI {
     this.element.createChild('div', 'animation-paused fill');
 
     if (model.isScrollDriven()) {
-      this.element.appendChild(IconButton.Icon.create('mouse', 'mouse-icon'));
+      this.element.appendChild(IconButton.Icon.create('mouse', 'preview-icon'));
+    } else {
+      this.element.appendChild(IconButton.Icon.create('watch', 'preview-icon'));
     }
 
     this.#removeButtonInternal = this.element.createChild('button', 'animation-remove-button');

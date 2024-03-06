@@ -17,12 +17,25 @@ This repository is a fork of [ChromeDevTools/devtools-frontend](https://github.c
     source setup.sh
     ```
 
-### Build and run
+### Build-and-run options
 
-```sh
-npm run build
-# or npm run build-release
-```
+1. Build continuously with a file watcher:
+
+    ```sh
+    npm run watch
+    ```
+
+1. Build with the default config once:
+
+    ```sh
+    npm run build
+    ```
+
+1. Build with the release config once:
+
+    ```sh
+    npm run build-release
+    ```
 
 This can then be served from a static web server to test locally:
 

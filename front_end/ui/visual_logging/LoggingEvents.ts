@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
+import {showDebugPopoverForEvent} from './Debugging.js';
 import {type Loggable} from './Loggable.js';
 import {getLoggingState} from './LoggingState.js';
 
@@ -45,9 +46,11 @@ export async function logResize(
   if (resizeLogThrottler) {
     await resizeLogThrottler.schedule(async () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
+      showDebugPopoverForEvent('Resize', loggingState?.config);
     });
   } else {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
+    showDebugPopoverForEvent('Resize', loggingState?.config);
   }
 }
 
@@ -64,6 +67,7 @@ export async function logClick(loggable: Loggable, event: Event, options?: {doub
     clickEvent.context = context;
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
+  showDebugPopoverForEvent('Click', loggingState?.config);
 }
 
 export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async (event: Event) => {
@@ -77,6 +81,7 @@ export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async
       hoverEvent.context = context;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
+    showDebugPopoverForEvent('Hover', loggingState?.config);
   });
 };
 
@@ -91,6 +96,7 @@ export const logDrag = (dragLogThrottler: Common.Throttler.Throttler) => async (
       dragEvent.context = context;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
+    showDebugPopoverForEvent('Drag', loggingState?.config);
   });
 };
 
@@ -103,6 +109,7 @@ export async function logChange(event: Event): Promise<void> {
     changeEvent.context = context;
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordChange(changeEvent);
+  showDebugPopoverForEvent('Change', loggingState?.config);
 }
 
 export const logKeyDown = (codes: string[], keyboardLogThrottler: Common.Throttler.Throttler) =>
@@ -122,5 +129,6 @@ export const logKeyDown = (codes: string[], keyboardLogThrottler: Common.Throttl
   }
   await keyboardLogThrottler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
+    showDebugPopoverForEvent('KeyDown', loggingState?.config);
   });
 };

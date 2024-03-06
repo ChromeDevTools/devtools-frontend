@@ -42,6 +42,14 @@ export function processForDebugging(loggable: Loggable): void {
   }
 }
 
+function showDebugPopover(content: string): void {
+  if (!debugPopover) {
+    return;
+  }
+  debugPopover.style.display = 'block';
+  debugPopover.innerHTML = content;
+}
+
 function processElementForDebugging(element: Element, loggingState: LoggingState): void {
   if (element.tagName === 'OPTION') {
     if (loggingState.parent?.selectOpen && debugPopover) {
@@ -52,14 +60,13 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
     (element as HTMLElement).style.outline = 'solid 1px red';
     element.addEventListener('mouseenter', () => {
       assertNotNullOrUndefined(debugPopover);
-      debugPopover.style.display = 'block';
       const pathToRoot = [loggingState];
       let ancestor = loggingState.parent;
       while (ancestor) {
         pathToRoot.push(ancestor);
         ancestor = ancestor.parent;
       }
-      debugPopover.innerHTML = pathToRoot.map(s => debugString(s.config)).join('<br>');
+      showDebugPopover(pathToRoot.map(s => debugString(s.config)).join('<br>'));
     }, {capture: true});
     element.addEventListener('mouseleave', () => {
       assertNotNullOrUndefined(debugPopover);
@@ -67,6 +74,13 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
     }, {capture: true});
     loggingState.processedForDebugging = true;
   }
+}
+
+export function showDebugPopoverForEvent(name: string, config?: LoggingConfig, context?: string): void {
+  if (!veDebuggingEnabled) {
+    return;
+  }
+  showDebugPopover(`${name}: ${config ? debugString(config) : ''}; ${context ? 'context: ' + context : ''}`);
 }
 
 function processNonDomLoggableForDebugging(loggable: Loggable, loggingState: LoggingState): void {

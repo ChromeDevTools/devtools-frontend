@@ -11,6 +11,7 @@ devtools_module("main") {
   sources = [
     "ExecutionContextSelector.ts",
     "MainImpl.ts",
+    "SettingTracker.ts",
     "SimpleApp.ts",
   ]
 
@@ -80,6 +81,7 @@ ts_library("unittests") {
   sources = [
     "ExecutionContextSelector.test.ts",
     "MainImpl.test.ts",
+    "SettingTracker.test.ts",
   ]
 
   deps = [

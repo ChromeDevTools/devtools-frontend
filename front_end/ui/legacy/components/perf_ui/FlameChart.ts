@@ -2852,6 +2852,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.selectedEntryIndex = entryIndex;
     this.revealEntry(entryIndex);
     this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
+    this.update();
   }
 
   private entryHasDecoration(entryIndex: number, decorationType: FlameChartDecorationType): boolean {

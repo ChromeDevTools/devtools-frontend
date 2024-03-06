@@ -221,6 +221,13 @@ export class CompatibilityTracksAppender {
     console.warn('Could not find possible context menu actions.');
   }
 
+  revealEntry(group: PerfUI.FlameChart.Group, index: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): void {
+    const appender = this.#trackForGroup.get(group);
+    if (appender && appender.entriesFilter) {
+      appender.entriesFilter().revealEntry(index);
+    }
+  }
+
   findHiddenDescendantsAmount(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.SyntheticTraceEntry):
       number|void {
     const appender = this.#trackForGroup.get(group);

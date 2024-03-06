@@ -1352,6 +1352,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (this.lastSelection && this.lastSelection.timelineSelection.object === selection.object) {
       return this.lastSelection.entryIndex;
     }
+
+    // If the index is -1 and the selection is a TraceEvent, it might be
+    // the case that this Entry is hidden by the Context Menu action.
+    // Try revealing the entry and getting the index again.
+    if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
+      if (this.timelineDataInternal?.selectedGroup) {
+        this.compatibilityTracksAppender?.revealEntry(
+            this.timelineDataInternal?.selectedGroup,
+            selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
+        this.timelineData(true);
+      }
+    }
+
     const index = this.entryData.indexOf(selection.object);
     if (index !== -1) {
       this.lastSelection = new Selection(selection, index);

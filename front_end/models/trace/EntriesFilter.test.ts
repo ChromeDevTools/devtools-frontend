@@ -452,6 +452,69 @@ describe('EntriesFilter', function() {
     assert.strictEqual(stack.invisibleEntries().length, 0);
   });
 
+  it('supports resetting children of the closest modified parent when a hidden entry is provided', async function() {
+    const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
+    const mainThread = getMainThread(data.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ======== basicStackOne ============
+     * =========== basicTwo ==============
+     * =========== basicThree ============
+     *              ======== fibonacci ===
+     *              ======== fibonacci ===
+     *              ======== fibonacci ===
+     *              ======== fibonacci ===
+     *              ======== fibonacci ===
+     *                  ==== fibonacci ===
+     *
+     * In this test we want to test the user selecting an entry that is hidden via a link.
+     * If this happens, we should reveal this entry to resetting children of the closest modified parent.
+     *
+     * First, collapse all children of the basicTwo:
+     * ======== basicStackOne ============
+     * =========== basicTwo ==============                  << children collapsed
+     * =========== basicThree ============
+     *              ======== fibonacci ===                  << repeating children removed
+     *
+     * Then, reveal the first fibonacci entry that is hidden:
+     * ======== basicStackOne ============
+     * =========== basicTwo ==============
+     * =========== basicThree ============
+     *              ======== fibonacci ===                  << reveal this hidden entry
+     *              ======== fibonacci ===
+     *
+     * This should result in all basicTwo children being removed from the invisible array and stack being in the initial state.
+     **/
+
+    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const basicTwoCallEntry = findFirstEntry(mainThread.entries, entry => {
+      // Processing this trace ends up with two distinct stacks for basicTwo()
+      // So we find the first one so we can focus this test on just one stack.
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
+          entry.dur === 827;
+    });
+
+    // Make sure no entries are hidden
+    assert.strictEqual(stack.invisibleEntries().length, 0);
+
+    // Collapse all children of basicTwo call:
+    stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
+
+    // Make sure all 37 of basicTwo descdendants are hidden
+    assert.strictEqual(stack.invisibleEntries().length, 37);
+
+    // Get the first fibonacci call that is one of the hidden children and make sure it is hidden
+    const firstFibCallEntry = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'fibonacci';
+    });
+
+    assert.isTrue(stack.invisibleEntries().includes(firstFibCallEntry));
+
+    // Reveal the first fibonacci call and make sure that the all of the entries are now visible because the closest
+    // modified parent to the fib call is basicTwo and, therefore, we need to reset its children.
+    stack.revealEntry(firstFibCallEntry);
+    assert.strictEqual(stack.invisibleEntries().length, 0);
+  });
+
   it('supports resetting all hidden children of a selected entry', async function() {
     const data = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
     const mainThread = getMainThread(data.Renderer);

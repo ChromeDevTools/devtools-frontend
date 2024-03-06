@@ -659,7 +659,7 @@ describeWithEnvironment('FlameChart', () => {
       });
     });
 
-    describe('coordinatesToGroupIndex', () => {
+    describe('coordinatesToGroupIndexAndButton', () => {
       it('returns the correct group index for given coordinates', () => {
         const provider = new IndexAndCoordinatesConversionTestProvider();
         const delegate = new MockFlameChartDelegate();
@@ -680,10 +680,14 @@ describeWithEnvironment('FlameChart', () => {
         // So the group 0 can be mapped from
         //   x: any inside the view
         //   y: 17(inclusive) to 55(exclusive)
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 16, /* headerOnly= */ false), -1);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 17, /* headerOnly= */ false), 0);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 50, /* headerOnly= */ false), 0);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 55, /* headerOnly= */ false), 1);
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 16, /* headerOnly= */ false), {groupIndex: -1});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 17, /* headerOnly= */ false), {groupIndex: 0});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 50, /* headerOnly= */ false), {groupIndex: 0});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 55, /* headerOnly= */ false), {groupIndex: 1});
       });
 
       it('returns the correct group index for given coordinates after re-order', () => {
@@ -709,10 +713,76 @@ describeWithEnvironment('FlameChart', () => {
         // So the entry 0 can be mapped from
         //   y: 55(inclusive) to 89(exclusive)
         // Now Group 1 will be before Group 0. so (y)54 will be mapped to Group 1
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 54, /* headerOnly= */ false), 1);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 55, /* headerOnly= */ false), 0);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 88, /* headerOnly= */ false), 0);
-        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 89, /* headerOnly= */ false), -1);
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 54, /* headerOnly= */ false), {groupIndex: 1});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 55, /* headerOnly= */ false), {groupIndex: 0});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 88, /* headerOnly= */ false), {groupIndex: 0});
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 89, /* headerOnly= */ false), {groupIndex: -1});
+      });
+
+      it('returns the correct group index and the icon type for given coordinates', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+        const context = (chartInstance.getCanvas().getContext('2d') as CanvasRenderingContext2D);
+        const labelWidth = chartInstance.labelWidthForGroup(context, provider.timelineData()?.groups[0]!);
+
+        // Start of the title label
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 17, /* headerOnly= */ false), {groupIndex: 0});
+        // End of the title label, and it's the start of the edit icon.
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(
+                labelWidth + /* this.headerLeftPadding */ 6, 17, /* headerOnly= */ false),
+            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.EDIT});
+        // End of the edit icon.
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(
+                labelWidth + /* this.headerLeftPadding */ 6 + /* EDIT_BUTTON_SIZE */ 16, 17, /* headerOnly= */ false),
+            {groupIndex: 0});
+
+        chartInstance.setEditModeForTest(true);
+        // First icon (Up)
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(0, 17, /* headerOnly= */ false),
+            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.UP});
+        // Second icon (Down)
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(/* EDIT_BUTTON_SIZE */ 16, 17, /* headerOnly= */ false),
+            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.DOWN});
+        // Third icon (Hide)
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(/* EDIT_BUTTON_SIZE * 2 */ 32, 17, /* headerOnly= */ false),
+            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.HIDE});
+        // This is after the third icon, which is the start of the title label. so should only return the index of group.
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(/* EDITION_MODE_INDENT */ 48, 17, /* headerOnly= */ false),
+            {groupIndex: 0});
+        // End of the title label, and it's the start of the save icon.
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(
+                /* EDITION_MODE_INDENT */ 48 + labelWidth + /* this.headerLeftPadding */ 6, 17,
+                /* headerOnly= */ false),
+            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.SAVE});
+        // End of the edit icon.
+        assert.deepEqual(
+            chartInstance.coordinatesToGroupIndexAndButton(
+                /* EDITION_MODE_INDENT */ 48 + labelWidth + /* this.headerLeftPadding */ 6 + /* EDIT_BUTTON_SIZE */ 16,
+                17,
+                /* headerOnly= */ false),
+            {groupIndex: 0});
       });
     });
   });

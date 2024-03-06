@@ -13,13 +13,22 @@ const {assert} = chai;
 describe('LoggingEvents', () => {
   let parent: Element;
   let element: Element;
+  let throttler: Common.Throttler.Throttler;
 
   beforeEach(() => {
     parent = document.createElement('div');
     element = document.createElement('div');
     VisualLogging.LoggingState.getOrCreateLoggingState(parent, {ve: 1});
-    VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: '42'}, parent);
+    VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1}, parent).context = 42;
+    throttler = new Common.Throttler.Throttler(1000000);
   });
+
+  async function assertThrottled(stub: sinon.SinonStub) {
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(stub.called);
+    await throttler.process?.();
+    assert.isTrue(stub.calledOnce);
+  }
 
   it('calls UI binding to log an impression', async () => {
     const recordImpression = sinon.stub(
@@ -39,10 +48,10 @@ describe('LoggingEvents', () => {
         'recordClick',
     );
     const event = new MouseEvent('click', {button: 1});
-    await VisualLogging.LoggingEvents.logClick(element, event);
-    assert.isTrue(recordClick.calledOnce);
+    VisualLogging.LoggingEvents.logClick(throttler)(element, event);
+    await assertThrottled(recordClick);
     assert.deepStrictEqual(
-        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 1, doubleClick: false});
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, mouseButton: 1, doubleClick: false});
   });
 
   it('calls UI binding to log a double click', async () => {
@@ -51,10 +60,10 @@ describe('LoggingEvents', () => {
         'recordClick',
     );
     const event = new MouseEvent('dblclick', {button: 1});
-    await VisualLogging.LoggingEvents.logClick(element, event, {doubleClick: true});
-    assert.isTrue(recordClick.calledOnce);
+    VisualLogging.LoggingEvents.logClick(throttler)(element, event, {doubleClick: true});
+    await assertThrottled(recordClick);
     assert.deepStrictEqual(
-        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 1, doubleClick: true});
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, mouseButton: 1, doubleClick: true});
   });
 
   it('calls UI binding to log a change', async () => {
@@ -66,7 +75,7 @@ describe('LoggingEvents', () => {
     sinon.stub(event, 'currentTarget').value(element);
     await VisualLogging.LoggingEvents.logChange(event);
     assert.isTrue(recordChange.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordChange.firstCall.firstArg), {veid: 0, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordChange.firstCall.firstArg), {veid: 0});
   });
 
   it('calls UI binding to log a keydown with any code', async () => {
@@ -76,13 +85,9 @@ describe('LoggingEvents', () => {
     );
     const event = new KeyboardEvent('keydown');
     sinon.stub(event, 'currentTarget').value(element);
-    const throttler = new Common.Throttler.Throttler(1000000);
-    void VisualLogging.LoggingEvents.logKeyDown([], throttler)(event);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordKeyDown.called);
-    await throttler.process?.();
-    assert.isTrue(recordKeyDown.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 42});
+    VisualLogging.LoggingEvents.logKeyDown(throttler)(event);
+    await assertThrottled(recordKeyDown);
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0});
   });
 
   it('calls UI binding to log a keydown with a matching code', async () => {
@@ -92,13 +97,21 @@ describe('LoggingEvents', () => {
     );
     const event = new KeyboardEvent('keydown', {code: 'Enter'});
     sinon.stub(event, 'currentTarget').value(element);
-    const throttler = new Common.Throttler.Throttler(1000000);
-    void VisualLogging.LoggingEvents.logKeyDown(['Enter', 'Escape'], throttler)(event);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordKeyDown.called);
-    await throttler.process?.();
-    assert.isTrue(recordKeyDown.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 42});
+    VisualLogging.LoggingEvents.logKeyDown(throttler, ['Enter', 'Escape'])(event);
+    await assertThrottled(recordKeyDown);
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0});
+  });
+
+  it('calls UI binding to log a keydown with an provided context', async () => {
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+    const event = new KeyboardEvent('keydown', {code: 'Enter'});
+    sinon.stub(event, 'currentTarget').value(element);
+    VisualLogging.LoggingEvents.logKeyDown(throttler)(event, 21);
+    await assertThrottled(recordKeyDown);
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 21});
   });
 
   it('does not call UI binding to log a keydown with a non-matching code', async () => {
@@ -108,10 +121,8 @@ describe('LoggingEvents', () => {
     );
     const event = new KeyboardEvent('keydown', {code: 'KeyQ'});
     sinon.stub(event, 'currentTarget').value(element);
-    const throttler = new Common.Throttler.Throttler(1000000);
-    await VisualLogging.LoggingEvents.logKeyDown(['Enter', 'Escape'], throttler)(event);
+    VisualLogging.LoggingEvents.logKeyDown(throttler, ['Enter', 'Escape'])(event);
     assert.isFalse(recordKeyDown.called);
-    assert.notExists(throttler.process);
   });
 
   it('calls UI binding to log a hover event', async () => {
@@ -121,13 +132,9 @@ describe('LoggingEvents', () => {
     );
     const event = new MouseEvent('click', {button: 1});
     sinon.stub(event, 'currentTarget').value(element);
-    const throttler = new Common.Throttler.Throttler(1000000);
     void VisualLogging.LoggingEvents.logHover(throttler)(event);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordHover.called);
-    await throttler.process?.();
-    assert.isTrue(recordHover.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0, context: 42});
+    await assertThrottled(recordHover);
+    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0});
   });
 
   it('calls UI binding to log a drag event', async () => {
@@ -137,13 +144,9 @@ describe('LoggingEvents', () => {
     );
     const event = new MouseEvent('click', {button: 1});
     sinon.stub(event, 'currentTarget').value(element);
-    const throttler = new Common.Throttler.Throttler(1000000);
     void VisualLogging.LoggingEvents.logDrag(throttler)(event);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordDrag.called);
-    await throttler.process?.();
-    assert.isTrue(recordDrag.calledOnce);
-    assert.deepStrictEqual(stabilizeEvent(recordDrag.firstCall.firstArg), {veid: 0, context: 42});
+    await assertThrottled(recordDrag);
+    assert.deepStrictEqual(stabilizeEvent(recordDrag.firstCall.firstArg), {veid: 0});
   });
 
   it('calls UI binding to log a resize event', async () => {
@@ -151,8 +154,8 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
     );
-    void VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50));
-    assert.isTrue(recordResize.calledOnce);
+    VisualLogging.LoggingEvents.logResize(throttler)(element, new DOMRect(0, 0, 100, 50));
+    await assertThrottled(recordResize);
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
   });
 
@@ -161,12 +164,8 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
     );
-    const throttler = new Common.Throttler.Throttler(1000000);
-    void VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50), throttler);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordResize.called);
-    await throttler.process?.();
-    assert.isTrue(recordResize.calledOnce);
+    VisualLogging.LoggingEvents.logResize(throttler)(element, new DOMRect(0, 0, 100, 50));
+    await assertThrottled(recordResize);
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
   });
 });

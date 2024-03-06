@@ -5,12 +5,18 @@
 import type * as LoggableModule from './Loggable.js';
 import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingDriver from './LoggingDriver.js';
+import * as LoggingEvents from './LoggingEvents.js';
 import * as NonDomState from './NonDomState.js';
 
 export type Loggable = LoggableModule.Loggable;
 export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
-export {logClick, logImpressions, logResize} from './LoggingEvents.js';
-export {registerContextProvider, registerParentProvider, setMappedParent} from './LoggingState.js';
+export {logImpressions, logChange} from './LoggingEvents.js';
+export const logClick = (l: Loggable, e: Event): void => LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(l, e);
+export const logResize = (l: Loggable, s: DOMRect): void =>
+    LoggingEvents.logResize(LoggingDriver.resizeLogThrottler)(l, s);
+export const logKeyDown = async(e: Event, context?: string): Promise<void> =>
+    LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(e, await LoggingDriver.contextAsNumber(context));
+export {registerParentProvider, setMappedParent} from './LoggingState.js';
 
 export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {
   if (!LoggingDriver.isLogging()) {

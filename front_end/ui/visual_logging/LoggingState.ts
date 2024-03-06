@@ -8,7 +8,7 @@ export interface LoggingState {
   impressionLogged: boolean;
   processed: boolean;
   config: LoggingConfig;
-  context: ContextProvider;
+  context?: number;
   veid: number;
   parent: LoggingState|null;
   processedForDebugging?: boolean;
@@ -43,7 +43,6 @@ export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfi
     impressionLogged: false,
     processed: false,
     config,
-    context: resolveContext(config.context),
     veid: nextVeId(),
     parent: parent ? getLoggingState(parent) : null,
   };
@@ -54,36 +53,6 @@ export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfi
 export function getLoggingState(loggable: Loggable): LoggingState|null {
   return state.get(loggable) || null;
 }
-
-export type ContextProvider = (e: Loggable|Event) => Promise<number|undefined>;
-const contextProviders = new Map<string, ContextProvider>();
-
-export function registerContextProvider(name: string, provider: ContextProvider): void {
-  if (contextProviders.has(name)) {
-    throw new Error(`Context provider with the name '${name} is already registered'`);
-  }
-  contextProviders.set(name, provider);
-}
-
-const resolveContext = (context?: string): ContextProvider => {
-  if (!context) {
-    return () => Promise.resolve(undefined);
-  }
-  const contextProvider = contextProviders.get(context);
-  if (contextProvider) {
-    return contextProvider;
-  }
-  const number = parseInt(context, 10);
-  if (!isNaN(number)) {
-    return () => Promise.resolve(number);
-  }
-  const encoder = new TextEncoder();
-  const data = encoder.encode(context);
-  const hash = crypto.subtle ? crypto.subtle.digest('SHA-1', data).then(x => (new DataView(x)).getUint32(0, true)) :
-                               // Layout tests run in an insecure context where crypto.subtle is not available.
-                               Promise.resolve(0xDEADBEEF);
-  return () => hash;
-};
 
 type ParentProvider = (e: Element) => Element|undefined;
 const parentProviders = new Map<string, ParentProvider>();

@@ -155,6 +155,18 @@ describe('LoggingDriver', () => {
     assert.isFalse(recordImpression.called);
   });
 
+  it('hashes a string context', async () => {
+    const element = document.createElement('div') as HTMLElement;
+    element.setAttribute('jslog', 'TreeItem; track: hover; context: foobar');
+    element.style.width = '300px';
+    element.style.height = '300px';
+    renderElementIntoDOM(element);
+
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    assert.isTrue(recordImpression.calledOnce);
+    assert.strictEqual(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions)[0]?.context, 4191634312);
+  });
+
   it('logs clicks', async () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging();
@@ -205,7 +217,7 @@ describe('LoggingDriver', () => {
     await clickLogThrottler.process?.();
     assert.isTrue(recordClick.calledOnce);
     assert.deepStrictEqual(
-        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 0, doubleClick: true});
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, mouseButton: 0, doubleClick: true});
   });
 
   it('does not log click on parent when clicked on child', async () => {
@@ -228,7 +240,7 @@ describe('LoggingDriver', () => {
     await clickLogThrottler.process?.();
     assert.isTrue(recordClick.calledOnce);
     assert.deepStrictEqual(
-        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 0, doubleClick: false});
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, mouseButton: 0, doubleClick: false});
   });
 
   const logsSelectOptions = (event: Event) => async () => {
@@ -244,7 +256,7 @@ describe('LoggingDriver', () => {
 
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
-      {id: 0, type: 1, 'width': 30, 'height': 20},
+      {id: 0, type: 1, 'width': 30, 'height': 20, context: 0},
     ]);
 
     recordImpression.resetHistory();
@@ -289,8 +301,7 @@ describe('LoggingDriver', () => {
 
     assert.isTrue(recordClick.calledOnce);
     assert.deepStrictEqual(
-        stabilizeEvent(recordClick.firstCall.firstArg),
-        {'veid': 0, 'mouseButton': 0, 'doubleClick': false, 'context': 2});
+        stabilizeEvent(recordClick.firstCall.firstArg), {'veid': 0, 'mouseButton': 0, 'doubleClick': false});
   });
 
   it('logs keydown', async () => {
@@ -403,7 +414,7 @@ describe('LoggingDriver', () => {
 
     await hoverLogThrottler.process?.();
     assert.isTrue(recordHover.called);
-    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0});
   });
 
   it('logs drag', async () => {

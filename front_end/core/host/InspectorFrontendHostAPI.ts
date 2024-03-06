@@ -188,7 +188,7 @@ export interface ChangeEvent {
 }
 
 export interface KeyDownEvent {
-  veid: number;
+  veid?: number;
   context?: number;
 }
 

@@ -558,6 +558,7 @@ export class LinkableNameRenderer extends LinkableNameMatch {
   #getLinkData():
       {jslogContext: string, metric: null|Host.UserMetrics.SwatchType, ruleBlock: string, isDefined: boolean} {
     switch (this.properyName) {
+      case LinkableNameProperties.Animation:
       case LinkableNameProperties.AnimationName:
         return {
           jslogContext: 'css-animation-name',
@@ -776,128 +777,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedDueToFilter = false;
     }
     return matches;
-  }
-
-  private processAnimation(animationPropertyValue: string): Node {
-    const animationNameProperty =
-        this.property.getLonghandProperties().find(longhand => longhand.name === 'animation-name');
-    if (!animationNameProperty) {
-      return document.createTextNode(animationPropertyValue);
-    }
-
-    const animationNames = animationNameProperty.value.split(',').map(name => name.trim());
-    const cssAnimationModel =
-        InlineEditor.CSSAnimationModel.CSSAnimationModel.parse(animationPropertyValue, animationNames);
-    const contentChild = document.createElement('span');
-    for (let i = 0; i < cssAnimationModel.parts.length; i++) {
-      const part = cssAnimationModel.parts[i];
-      switch (part.type) {
-        case InlineEditor.CSSAnimationModel.PartType.Text:
-          contentChild.appendChild(document.createTextNode(part.value));
-          break;
-        case InlineEditor.CSSAnimationModel.PartType.EasingFunction:
-          contentChild.appendChild(
-              this.editable() && InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(part.value) ?
-                  new BezierRenderer(this, part.value).renderSwatch() :
-                  document.createTextNode(part.value));
-          break;
-        case InlineEditor.CSSAnimationModel.PartType.AnimationName:
-          contentChild.appendChild(
-              new LinkableNameRenderer(this, part.value, LinkableNameProperties.AnimationName).render()[0]);
-          break;
-        case InlineEditor.CSSAnimationModel.PartType.Variable:
-          contentChild.appendChild(this.processVar(part.value));
-          break;
-      }
-
-      if (cssAnimationModel.parts[i + 1]?.value !== ',' && i !== cssAnimationModel.parts.length - 1) {
-        contentChild.appendChild(document.createTextNode(' '));
-      }
-    }
-
-    return contentChild;
-  }
-
-  // TODO(chromium:1504820) Delete once callers are migrated
-  private processVar(text: string, {shouldShowColorSwatch = true}: {shouldShowColorSwatch?: boolean} = {}): HTMLElement
-      |Text {
-    // The regex that matches to variables in `StylesSidebarPropertyRenderer`
-    // uses a lazy match. Because of this, when there are multiple right parantheses inside the
-    // var() function, it stops the match. So, for a match like `var(--a, var(--b))`, the text
-    // corresponds to `var(--a, var(--b)`; before processing it, we make sure that parantheses
-    // are matched.
-    const parenthesesBalancedText = text + ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(text));
-    const computedSingleValue =
-        this.matchedStylesInternal.computeSingleVariableValue(this.style, parenthesesBalancedText);
-    const {variableName, fallback} = SDK.CSSMatchedStyles.parseCSSVariableNameAndFallback(parenthesesBalancedText);
-    if (!computedSingleValue || !variableName) {
-      return document.createTextNode(parenthesesBalancedText);
-    }
-
-    const {declaration} = this.matchedStylesInternal.computeCSSVariable(this.style, variableName) ?? {};
-    const {computedValue, fromFallback} = computedSingleValue;
-    let fallbackHtml: Array<HTMLElement|Text>|null = null;
-    if (fromFallback && fallback?.startsWith('var(')) {
-      fallbackHtml = [this.processVar(fallback, {shouldShowColorSwatch: false})];
-    } else if (fallback) {
-      fallbackHtml = [document.createTextNode(fallback)];
-    }
-
-    const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    varSwatch.data = {
-      computedValue,
-      variableName,
-      fromFallback,
-      fallbackText: fallbackHtml ? fallbackHtml[0].textContent : null,
-      onLinkActivate: name => this.handleVarDefinitionActivate(declaration ?? name),
-    };
-
-    if (varSwatch.link?.linkElement) {
-      const {textContent} = varSwatch.link.linkElement;
-      if (textContent) {
-        const computedValueOfLink = textContent ?
-            this.matchedStylesInternal.computeSingleVariableValue(this.style, `var(${textContent})`) :
-            null;
-        this.parentPaneInternal.addPopover(varSwatch.link, {
-          contents: () => this.getVariablePopoverContents(textContent, computedValueOfLink?.computedValue ?? null),
-          jslogContext: 'elements.css-var',
-        });
-      }
-    }
-
-    if (fallbackHtml) {
-      // When slotting someting into the fallback slot, also emit text children so that .textContent produces the
-      // correct var value.
-      varSwatch.appendChild(document.createTextNode(`var(${this.name}`));
-      const span = varSwatch.appendChild(document.createElement('span'));
-      span.appendChild(document.createTextNode(', '));
-      span.slot = 'fallback';
-      span.appendChild(fallbackHtml[0]);
-      varSwatch.appendChild(document.createTextNode(')'));
-    } else {
-      UI.UIUtils.createTextChild(varSwatch, text);
-    }
-
-    if (!computedValue || !Common.Color.parse(computedValue) || !shouldShowColorSwatch) {
-      return varSwatch;
-    }
-
-    return new ColorRenderer(this, computedValue).renderColorSwatch(varSwatch);
-  }
-
-  private handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
-                                      SDK.CSSMatchedStyles.CSSRegisteredProperty): void {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
-    if (variable instanceof SDK.CSSProperty.CSSProperty) {
-      this.parentPaneInternal.revealProperty(variable);
-    } else if (variable instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
-      this.parentPaneInternal.jumpToProperty(
-          'initial-value', variable.propertyName(), REGISTERED_PROPERTY_SECTION_NAME);
-    } else {
-      this.parentPaneInternal.jumpToProperty(variable) ||
-          this.parentPaneInternal.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
-    }
   }
 
   renderedPropertyText(): string {
@@ -1217,7 +1096,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           StringRenderer.matcher(),
         ]);
     if (this.property.parsedOk) {
-      propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));

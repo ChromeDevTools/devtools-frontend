@@ -172,8 +172,8 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.computedText.hasUnresolvedVars(node.from - this.ast.tree.from, node.to - this.ast.tree.from);
   }
 
-  getComputedText(node: CodeMirror.SyntaxNode): string {
-    return this.computedText.get(node.from - this.ast.tree.from, node.to - this.ast.tree.from);
+  getComputedText(range: {from: number, to: number}): string {
+    return this.computedText.get(range.from - this.ast.tree.from, range.to - this.ast.tree.from);
   }
 }
 
@@ -657,9 +657,18 @@ export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
 }
 
 export const enum LinkableNameProperties {
+  Animation = 'animation',
   AnimationName = 'animation-name',
   FontPalette = 'font-palette',
   PositionFallback = 'position-fallback',
+}
+
+const enum AnimationLonghandPart {
+  Direction = 'direction',
+  FillMode = 'fill-mode',
+  PlayState = 'play-state',
+  IterationCount = 'iteration-count',
+  EasingFunction = 'easing-function',
 }
 
 export abstract class LinkableNameMatch implements Match {
@@ -673,11 +682,78 @@ export abstract class LinkableNameMatch implements Match {
 export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
   private static isLinkableNameProperty(propertyName: string): propertyName is LinkableNameProperties {
     const names: string[] = [
+      LinkableNameProperties.Animation,
       LinkableNameProperties.AnimationName,
       LinkableNameProperties.FontPalette,
       LinkableNameProperties.PositionFallback,
     ];
     return names.includes(propertyName);
+  }
+
+  static readonly identifierAnimationLonghandMap: Map<string, AnimationLonghandPart> = new Map(
+      Object.entries({
+        'normal': AnimationLonghandPart.Direction,
+        'alternate': AnimationLonghandPart.Direction,
+        'reverse': AnimationLonghandPart.Direction,
+        'alternate-reverse': AnimationLonghandPart.Direction,
+        'none': AnimationLonghandPart.FillMode,
+        'forwards': AnimationLonghandPart.FillMode,
+        'backwards': AnimationLonghandPart.FillMode,
+        'both': AnimationLonghandPart.FillMode,
+        'running': AnimationLonghandPart.PlayState,
+        'paused': AnimationLonghandPart.PlayState,
+        'infinite': AnimationLonghandPart.IterationCount,
+        'linear': AnimationLonghandPart.EasingFunction,
+        'ease': AnimationLonghandPart.EasingFunction,
+        'ease-in': AnimationLonghandPart.EasingFunction,
+        'ease-out': AnimationLonghandPart.EasingFunction,
+        'ease-in-out': AnimationLonghandPart.EasingFunction,
+      }),
+  );
+
+  private matchAnimationNameInShorthand(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    // Order is important within each animation definition for distinguishing <keyframes-name> values from other keywords.
+    // When parsing, keywords that are valid for properties other than animation-name
+    // whose values were not found earlier in the shorthand must be accepted for those properties rather than for animation-name.
+    // See the details in: https://w3c.github.io/csswg-drafts/css-animations/#animation.
+    const text = matching.ast.text(node);
+    // This is not a known identifier, so return it as `animation-name`.
+    if (!LinkableNameMatcher.identifierAnimationLonghandMap.has(text)) {
+      return this.createMatch(text, LinkableNameProperties.Animation);
+    }
+    // There can be multiple `animation` declarations splitted by a comma.
+    // So, we find the declaration nodes that are related to the node argument.
+    const declarations = split(siblings(matching.ast.tree));
+    const currentDeclarationNodes = declarations.find(
+        declaration => declaration[0].from <= node.from && declaration[declaration.length - 1].to >= node.to);
+    if (!currentDeclarationNodes) {
+      return null;
+    }
+
+    // We reparse here until the node argument since a variable might be
+    // providing a meaningful value such as a timing keyword,
+    // that might change the meaning of the node.
+    const computedText = matching.getComputedText({from: currentDeclarationNodes[0].from, to: node.to});
+    const tokenized = tokenizePropertyValue(computedText);
+    if (!tokenized) {
+      return null;
+    }
+
+    const identifierCategory =
+        LinkableNameMatcher.identifierAnimationLonghandMap.get(text);  // The category of the node argument
+    for (let itNode: typeof tokenized.tree|null = tokenized.tree; itNode?.nextSibling; itNode = itNode.nextSibling) {
+      // Run through all the nodes that come before node argument
+      // and check whether a value in the same category is found.
+      // if so, it means our identifier is an `animation-name` keyword.
+      if (itNode.name === 'ValueName') {
+        const categoryValue = LinkableNameMatcher.identifierAnimationLonghandMap.get(tokenized.text(itNode));
+        if (categoryValue && categoryValue === identifierCategory) {
+          return this.createMatch(text, LinkableNameProperties.Animation);
+        }
+      }
+    }
+
+    return null;
   }
 
   override accepts(propertyName: string): boolean {
@@ -687,12 +763,28 @@ export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const {propertyName} = matching.ast;
     const text = matching.ast.text(node);
-    if (!propertyName || node.name !== 'ValueName' || !LinkableNameMatcher.isLinkableNameProperty(propertyName)) {
+    const parentNode = node.parent;
+    if (!parentNode) {
       return null;
     }
-    // Only animation-name is allowed to specify more than one name. We don't verify this for the other properties since
-    // they would be reported as !parsedOk from the backend.
-    return this.createMatch(text, propertyName);
+
+    const isParentADeclaration = parentNode.name === 'Declaration';
+    const isInsideVarCall = parentNode.name === 'ArgList' && parentNode.prevSibling?.name === 'Callee' &&
+        matching.ast.text(parentNode.prevSibling) === 'var';
+    const isAParentDeclarationOrVarCall = isParentADeclaration || isInsideVarCall;
+    // We only mark top level nodes or nodes that are inside `var()` expressions as linkable names.
+    if (!propertyName || (node.name !== 'ValueName' && node.name !== 'VariableName') ||
+        !isAParentDeclarationOrVarCall) {
+      return null;
+    }
+
+    if (propertyName === 'animation') {
+      return this.matchAnimationNameInShorthand(node, matching);
+    }
+
+    // The assertion here is safe since this matcher only runs for
+    // properties with names inside `LinkableNameProperties` (See the `accepts` function.)
+    return this.createMatch(text, propertyName as LinkableNameProperties);
   }
 }
 

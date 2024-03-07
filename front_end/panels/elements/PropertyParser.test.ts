@@ -51,8 +51,9 @@ class TreeSearch extends Elements.PropertyParser.TreeWalker {
     if (this.#found) {
       return false;
     }
+
     if (this.#predicate(node)) {
-      this.#found = node;
+      this.#found = this.#found ?? node;
       return false;
     }
     return true;
@@ -61,6 +62,19 @@ class TreeSearch extends Elements.PropertyParser.TreeWalker {
   static find(ast: Elements.PropertyParser.SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean):
       CodeMirror.SyntaxNode|null {
     return TreeSearch.walk(ast, predicate).#found;
+  }
+
+  static findAll(ast: Elements.PropertyParser.SyntaxTree, predicate: (node: CodeMirror.SyntaxNode) => boolean):
+      CodeMirror.SyntaxNode[] {
+    const foundNodes: CodeMirror.SyntaxNode[] = [];
+    TreeSearch.walk(ast, (node: CodeMirror.SyntaxNode) => {
+      if (predicate(node)) {
+        foundNodes.push(node);
+      }
+
+      return false;
+    });
+    return foundNodes;
   }
 }
 
@@ -112,7 +126,8 @@ function tokenizePropertyValue(value: string, name?: string): Elements.PropertyP
 function injectVariableSubstitutions(variables: Record<string, string>) {
   const {getComputedText} = Elements.PropertyParser.BottomUpTreeMatching.prototype;
   sinon.stub(Elements.PropertyParser.BottomUpTreeMatching.prototype, 'getComputedText')
-      .callsFake(function(this: Elements.PropertyParser.BottomUpTreeMatching, node: CodeMirror.SyntaxNode): string {
+      .callsFake(function(
+          this: Elements.PropertyParser.BottomUpTreeMatching, range: {from: number, to: number}): string {
         if (this.computedText.chunkCount === 0) {
           for (const [varName, value] of Object.entries(variables)) {
             const varText = `var(${varName})`;
@@ -122,7 +137,7 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
             }
           }
         }
-        return getComputedText.call(this, node);
+        return getComputedText.call(this, range);
       });
 }
 
@@ -701,22 +716,35 @@ describe('PropertyParser', () => {
     function match(name: string, value: string) {
       const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
       Platform.assertNotNullOrUndefined(ast);
-      const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(
-          ast,
-          [new Elements.PropertyParser.LinkableNameMatcher(nilRenderer(Elements.PropertyParser.LinkableNameMatch))]);
+      const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, [
+        new Elements.PropertyParser.LinkableNameMatcher(nilRenderer(Elements.PropertyParser.LinkableNameMatch)),
+      ]);
 
-      const matches = Elements.PropertyParser.siblings(ast.tree)
-                          .map(n => matchedResult.getMatch(n))
-                          .filter(
-                              (n): n is Elements.PropertyParser.LinkableNameMatch =>
-                                  n instanceof Elements.PropertyParser.LinkableNameMatch);
-      return matches.map(m => m.text);
+      const matches = TreeSearch.findAll(
+          ast, node => matchedResult.getMatch(node) instanceof Elements.PropertyParser.LinkableNameMatch);
+      return matches.map(m => matchedResult.getMatch(m)?.text);
     }
 
     assert.deepStrictEqual(match('animation-name', 'first, second, -moz-third'), ['first', 'second', '-moz-third']);
     assert.deepStrictEqual(match('animation-name', 'first'), ['first']);
     assert.deepStrictEqual(match('font-palette', 'first'), ['first']);
     assert.deepStrictEqual(match('position-fallback', 'first'), ['first']);
+    {
+      injectVariableSubstitutions({
+        '--duration-and-easing': '1s linear',
+      });
+      assert.deepStrictEqual(match('animation', '1s linear --animation-name'), ['--animation-name']);
+      assert.deepStrictEqual(match('animation', '1s linear linear'), ['linear']);
+      assert.deepStrictEqual(
+          match('animation', '1s linear --first-name, 1s ease-in --second-name'), ['--first-name', '--second-name']);
+      assert.deepStrictEqual(match('animation', '1s linear'), []);
+      // Matching to variable names inside `var()` functions are fine as it is handled by variable renderer in usage.
+      assert.deepStrictEqual(
+          match('animation', 'var(--duration-and-easing) linear'), ['--duration-and-easing', 'linear']);
+      assert.deepStrictEqual(
+          match('animation', '1s linear var(--non-existent, --animation-name)'),
+          ['--non-existent', '--animation-name']);
+    }
   });
 
   it('parses easing functions properly', () => {

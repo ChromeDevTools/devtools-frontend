@@ -63,7 +63,8 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   constructor() {
     super(true);
     this.contentElement.tabIndex = 0;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('cssShadowEditor').parent('mapped')}`);
+    this.contentElement.setAttribute(
+        'jslog', `${VisualLogging.dialog('cssShadowEditor').parent('mapped').track({keydown: 'Enter|Escape'})}`);
     this.setDefaultFocusedElement(this.contentElement);
 
     this.typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
@@ -80,7 +81,11 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     const yField = this.contentElement.createChild('div', 'shadow-editor-field');
     this.yInput = this.createTextInput(yField, i18nString(UIStrings.yOffset), 'y-offset');
     this.xySlider = (xField.createChild('canvas', 'shadow-editor-2D-slider') as HTMLCanvasElement);
-    this.xySlider.setAttribute('jslog', `${VisualLogging.slider('xy').track({click: true, drag: true})}`);
+    this.xySlider.setAttribute('jslog', `${VisualLogging.slider('xy').track({
+                                 click: true,
+                                 drag: true,
+                                 keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight',
+                               })}`);
     this.xySlider.width = canvasSize;
     this.xySlider.height = canvasSize;
     this.xySlider.tabIndex = -1;
@@ -111,7 +116,8 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     textInput.addEventListener('wheel', this.handleValueModification.bind(this), false);
     textInput.addEventListener('input', this.onTextInput.bind(this), false);
     textInput.addEventListener('blur', this.onTextBlur.bind(this), false);
-    textInput.setAttribute('jslog', `${VisualLogging.value().track({keydown: true}).context(jslogContext)}`);
+    textInput.setAttribute(
+        'jslog', `${VisualLogging.value().track({change: true, keydown: 'ArrowUp|ArrowDown'}).context(jslogContext)}`);
     return textInput;
   }
 

@@ -399,7 +399,7 @@ export class Menu extends HTMLElement {
           this.#dialog = domNode as Dialogs.Dialog.Dialog;
         })}
         >
-        <span id="container" role="menu" tabIndex="0" @keydown=${this.#handleDialogKeyDown} jslog=${VisualLogging.menu()}>
+        <span id="container" role="menu" tabIndex="0" @keydown=${this.#handleDialogKeyDown} jslog=${VisualLogging.menu().track({resize: true, keydown: 'Escape'})}>
           <slot @click=${this.#handleItemClick}>
           </slot>
         </span>

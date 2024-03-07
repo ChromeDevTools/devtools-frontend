@@ -130,7 +130,7 @@ export class CSSAngleEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="editor" jslog=${VisualLogging.dialog('cssAngleEditor').track({click: true, drag: true, resize: true})}>
+      <div class="editor" jslog=${VisualLogging.dialog('cssAngleEditor').track({click: true, drag: true, resize: true, keydown: 'Enter|Escape'})}>
         <span class="pointer"></span>
         <div
           class="clock"

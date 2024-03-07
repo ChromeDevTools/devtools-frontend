@@ -69,7 +69,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 
     this.contentElement.classList.add('filtered-list-widget');
     const listener = (this.onKeyDown.bind(this) as (arg0: Event) => void);
-    this.contentElement.addEventListener('keydown', listener, true);
+    this.contentElement.addEventListener('keydown', listener);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
 
     const hbox = this.contentElement.createChild('div', 'hbox');
@@ -78,7 +78,8 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.inputBoxElement.data = {ariaLabel: i18nString(UIStrings.quickOpenPrompt), prefix: '', suggestion: ''};
     this.inputBoxElement.addEventListener(
         TextPrompt.TextPrompt.PromptInputEvent.eventName, this.onInput.bind(this), false);
-    this.inputBoxElement.setAttribute('jslog', `${VisualLogging.textField().track({keydown: 'Enter|Tab'})}`);
+    this.inputBoxElement.setAttribute(
+        'jslog', `${VisualLogging.textField().track({keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Enter|Tab'})}`);
     hbox.appendChild(this.inputBoxElement);
 
     this.hintElement = hbox.createChild('span', 'filtered-list-widget-hint');

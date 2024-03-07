@@ -130,7 +130,8 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.propertyMap = propertyMap;
     this.contentElement.tabIndex = 0;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('font-editor').parent('mapped')}`);
+    this.contentElement.setAttribute(
+        'jslog', `${VisualLogging.dialog('font-editor').parent('mapped').track({keydown: 'Enter|Escape'})}`);
     this.setDefaultFocusedElement(this.contentElement);
 
     // Font Selector Section

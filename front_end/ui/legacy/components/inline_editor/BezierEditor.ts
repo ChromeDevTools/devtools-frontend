@@ -32,7 +32,8 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     this.model = model;
     this.contentElement.tabIndex = 0;
-    this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('bezierEditor').parent('mapped')}`);
+    this.contentElement.setAttribute(
+        'jslog', `${VisualLogging.dialog('bezierEditor').parent('mapped').track({keydown: 'Enter|Escape'})}`);
     this.setDefaultFocusedElement(this.contentElement);
     this.element.style.overflowY = 'auto';
 

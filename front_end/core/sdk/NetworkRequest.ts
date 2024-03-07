@@ -237,8 +237,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   readonly #documentURLInternal: Platform.DevToolsPath.UrlString;
   readonly #frameIdInternal: Protocol.Page.FrameId|null;
   readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
-  readonly #initiatorInternal: Protocol.Network.Initiator|null|undefined;
   readonly #hasUserGesture: boolean|undefined;
+  readonly #initiatorInternal: Protocol.Network.Initiator|null|undefined;
   #redirectSourceInternal: NetworkRequest|null;
   #preflightRequestInternal: NetworkRequest|null;
   #preflightInitiatorRequestInternal: NetworkRequest|null;
@@ -323,6 +323,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #fromMemoryCache?: boolean;
   #fromDiskCache?: boolean;
   #fromPrefetchCacheInternal?: boolean;
+  #fromEarlyHints?: boolean;
   #fetchedViaServiceWorkerInternal?: boolean;
   #serviceWorkerRouterInfoInternal?: Protocol.Network.ServiceWorkerRouterInfo;
   #timingInternal?: Protocol.Network.ResourceTiming;
@@ -745,6 +746,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   setFromPrefetchCache(): void {
     this.#fromPrefetchCacheInternal = true;
+  }
+
+  fromEarlyHints(): boolean {
+    return Boolean(this.#fromEarlyHints);
+  }
+
+  setFromEarlyHints(): void {
+    this.#fromEarlyHints = true;
   }
 
   /**

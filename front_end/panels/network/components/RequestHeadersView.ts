@@ -44,6 +44,10 @@ const UIStrings = {
   /**
    *@description Text in Request Headers View of the Network panel
    */
+  fromEarlyHints: '(from early hints)',
+  /**
+   *@description Text in Request Headers View of the Network panel
+   */
   fromPrefetchCache: '(from prefetch cache)',
   /**
    *@description Text in Request Headers View of the Network panel
@@ -347,7 +351,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
     const isShortened = !showFull && trimmed.length > RAW_HEADER_CUTOFF;
 
-    const showMore = ():void => {
+    const showMore = (): void => {
       if (forResponseHeaders) {
         this.#showResponseHeadersTextFull = true;
       } else {
@@ -366,7 +370,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       }
     };
 
-    const addContextMenuListener = (el: Element):void => {
+    const addContextMenuListener = (el: Element): void => {
       if (isShortened) {
         el.addEventListener('contextmenu', onContextMenuOpen);
       }
@@ -407,6 +411,8 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     let comment = '';
     if (this.#request.cachedInMemory()) {
       comment = i18nString(UIStrings.fromMemoryCache);
+    } else if (this.#request.fromEarlyHints()) {
+      comment = i18nString(UIStrings.fromEarlyHints);
     } else if (this.#request.fetchedViaServiceWorker) {
       comment = i18nString(UIStrings.fromServiceWorker);
     } else if (this.#request.redirectSourceSignedExchangeInfoHasNoErrors()) {

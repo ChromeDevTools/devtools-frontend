@@ -155,6 +155,10 @@ const UIStrings = {
    */
   preload: 'Preload',
   /**
+   *@description Cell title in Network Data Grid Node of the Network panel
+   */
+  earlyHints: 'early-hints',
+  /**
    *@description Text in Network Data Grid Node of the Network panel
    */
   signedexchange: 'signed-exchange',
@@ -861,6 +865,10 @@ export class NetworkRequestNode extends NetworkNode {
     const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || '';
     const resourceType = this.requestInternal.resourceType();
     let simpleType = resourceType.name();
+
+    if (this.requestInternal.fromEarlyHints()) {
+      return i18nString(UIStrings.earlyHints);
+    }
 
     if (resourceType === Common.ResourceType.resourceTypes.Other ||
         resourceType === Common.ResourceType.resourceTypes.Image) {

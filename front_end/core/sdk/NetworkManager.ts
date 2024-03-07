@@ -537,6 +537,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest.setFromPrefetchCache();
     }
 
+    if (response.fromEarlyHints) {
+      networkRequest.setFromEarlyHints();
+    }
+
     if (response.cacheStorageCacheName) {
       networkRequest.setResponseCacheStorageCacheName(response.cacheStorageCacheName);
     }

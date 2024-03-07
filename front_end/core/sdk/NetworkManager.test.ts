@@ -194,6 +194,35 @@ describe('NetworkDispatcher', () => {
         {name: 'set-cookie', value: 'color=green'},
       ]);
     });
+
+    it('Correctly set early hints properties on receivedResponse event', () => {
+      const responseReceivedEvent = {
+        requestId: 'mockId',
+        loaderId: 'mockLoaderId',
+        frameId: 'mockFrameId',
+        timestamp: 581734.083213,
+        type: Protocol.Network.ResourceType.Document,
+        response: {
+          url: 'example.com',
+          status: 200,
+          statusText: '',
+          headers: {
+            'test-header': 'first',
+          } as Protocol.Network.Headers,
+          mimeType: 'text/html',
+          connectionReused: true,
+          connectionId: 12345,
+          encodedDataLength: 100,
+          securityState: 'secure',
+          fromEarlyHints: true,
+        } as Protocol.Network.Response,
+      } as Protocol.Network.ResponseReceivedEvent;
+
+      networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
+      networkDispatcher.responseReceived(responseReceivedEvent);
+
+      assert.deepEqual(networkDispatcher.requestForId('mockId')?.fromEarlyHints(), true);
+    });
   });
 
   describeWithEnvironment('WebBundle requests', () => {

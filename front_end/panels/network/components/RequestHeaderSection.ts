@@ -83,7 +83,7 @@ export class RequestHeaderSection extends HTMLElement {
       ${this.#headers.map(header => html`
         <${HeaderSectionRow.litTagName}
           .data=${{header: header} as HeaderSectionRowData}
-          jslog=${VisualLogging.value('request-header')}
+          jslog=${VisualLogging.item('request-header')}
         ></${HeaderSectionRow.litTagName}>
       `)}
     `, this.#shadow, {host: this});

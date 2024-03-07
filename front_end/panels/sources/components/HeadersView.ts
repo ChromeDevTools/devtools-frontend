@@ -170,9 +170,11 @@ export class HeadersViewComponent extends HTMLElement {
       // onFocusOut will remove the header -> blur instead of focusing on next editable
       event.preventDefault();
       target.blur();
+      target.dispatchEvent(new Event('change'));
     } else if (keyboardEvent.key === 'Enter') {
       event.preventDefault();
       target.blur();
+      target.dispatchEvent(new Event('change'));
       this.#focusNext(target);
     } else if (keyboardEvent.key === 'Escape') {
       event.consume();
@@ -371,7 +373,7 @@ export class HeadersViewComponent extends HTMLElement {
       )}
       <${Buttons.Button.Button.litTagName}
           .variant=${Buttons.Button.Variant.SECONDARY}
-          .jslog=${VisualLogging.action('headers-view.add-override-rule').track({click: true})}
+          .jslogContext=${'headers-view.add-override-rule'}
           class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
       </${Buttons.Button.Button.litTagName}>
@@ -402,7 +404,8 @@ export class HeadersViewComponent extends HTMLElement {
   #renderApplyToRow(pattern: string, blockIndex: number): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <div class="row" data-block-index=${blockIndex}>
+      <div class="row" data-block-index=${blockIndex}
+           jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined)}>
         <div>${i18n.i18n.lockedString('Apply to')}</div>
         <div class="separator">:</div>
         ${this.#renderEditable(pattern, 'apply-to')}
@@ -413,7 +416,7 @@ export class HeadersViewComponent extends HTMLElement {
         .iconWidth=${'14px'}
         .iconHeight=${'14px'}
         .variant=${Buttons.Button.Variant.ROUND}
-        .jslog=${VisualLogging.action('headers-view.remove-apply-to-section').track({click: true})}
+        .jslogContext=${'headers-view.remove-apply-to-section'}
         class="remove-block inline-button"
       ></${Buttons.Button.Button.litTagName}>
       </div>
@@ -425,8 +428,9 @@ export class HeadersViewComponent extends HTMLElement {
       LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}>
-        ${this.#renderEditable(header.name, 'header-name red')}
+      <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
+           jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent')}>
+        ${this.#renderEditable(header.name, 'header-name red', true)}
         <div class="separator">:</div>
         ${this.#renderEditable(header.value, 'header-value')}
         <${Buttons.Button.Button.litTagName}
@@ -434,7 +438,7 @@ export class HeadersViewComponent extends HTMLElement {
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
-          .jslog=${VisualLogging.action('headers-view.add-header').track({click: true})}
+          .jslogContext=${'headers-view.add-header'}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
@@ -443,7 +447,7 @@ export class HeadersViewComponent extends HTMLElement {
           .iconUrl=${trashIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
-          .jslog=${VisualLogging.action('headers-view.remove-header').track({click: true})}
+          .jslogContext=${'headers-view.remove-header'}
           class="remove-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
       </div>
@@ -451,16 +455,28 @@ export class HeadersViewComponent extends HTMLElement {
     // clang-format on
   }
 
-  #renderEditable(value: string, className?: string): LitHtml.TemplateResult {
+  #renderEditable(value: string, className?: string, isKey?: boolean): LitHtml.TemplateResult {
     // This uses LitHtml's `live`-directive, so that when checking whether to
     // update during re-render, `value` is compared against the actual live DOM
     // value of the contenteditable element and not the potentially outdated
     // value from the previous render.
     // clang-format off
-    return LitHtml.html`<span contenteditable="true" class="editable ${className}" tabindex="0" .innerText=${LitHtml.Directives.live(value)}></span>`;
+    const jslog = isKey ? VisualLogging.key() : VisualLogging.value();
+    return LitHtml.html`<span jslog=${jslog.track({change: true, keydown: 'Enter|Escape|Tab'})}
+                              contenteditable="true"
+                              class="editable ${className}"
+                              tabindex="0"
+                              .innerText=${LitHtml.Directives.live(value)}></span>`;
     // clang-format on
   }
 }
+
+VisualLogging.registerParentProvider('headers-editor-row-parent', (e: Element) => {
+  while (e.previousElementSibling?.classList?.contains('padded')) {
+    e = e.previousElementSibling;
+  }
+  return e.previousElementSibling || undefined;
+});
 
 customElements.define('devtools-sources-headers-view', HeadersViewComponent);
 

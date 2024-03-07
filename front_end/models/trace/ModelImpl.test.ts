@@ -9,21 +9,19 @@ import * as TraceModel from '../trace/trace.js';
 const {assert} = chai;
 
 describeWithEnvironment('TraceModel', function() {
-  it('dispatches an end event when the trace is done', function(done) {
+  it('dispatches an end event when the trace is done', async function() {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
     const events: string[] = [];
 
     model.addEventListener(TraceModel.TraceModel.ModelUpdateEvent.eventName, (evt: Event) => {
       const updateEvent = evt as TraceModel.TraceModel.ModelUpdateEvent;
-      if (TraceModel.TraceModel.isModelUpdateDataComplete(updateEvent.data)) {
-        events.push('done');
-      }
-
-      assert.deepEqual(events, ['done']);
-      done();
+      events.push(updateEvent.data.type);
     });
 
-    void TraceLoader.rawEvents(this, 'basic.json.gz').then(events => model.parse(events));
+    await TraceLoader.rawEvents(this, 'basic.json.gz').then(events => model.parse(events));
+    // This trace is small, so there are no PROGRESS_UPDATE events, just a COMPLETE
+    // A larger trace would have 1+ PROGRESS_UPDATE events as well.
+    assert.deepStrictEqual(events, ['COMPLETE']);
   });
 
   it('supports parsing a generic trace that has no browser specific details', async function() {

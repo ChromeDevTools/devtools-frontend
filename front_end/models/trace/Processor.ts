@@ -143,7 +143,6 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
     // provide status update events, and other various bits of config like the
     // pause duration and frequency.
     const {pauseDuration, eventsPerChunk} = this.#modelConfiguration.processing;
-    const traceEventIterator = new TraceEventIterator(traceEvents, pauseDuration, eventsPerChunk);
 
     // Convert to array so that we are able to iterate all handlers multiple times.
     const sortedHandlers = [...sortHandlers(this.#traceHandlers).values()];
@@ -158,13 +157,18 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
     }
 
     // Handle each event.
-    for await (const item of traceEventIterator) {
-      if (item.kind === IteratorItemType.STATUS_UPDATE) {
-        this.dispatchEvent(new TraceParseProgressEvent(item.data));
-        continue;
+    for (let i = 0; i < traceEvents.length; ++i) {
+      // Every so often we take a break just to render.
+      if (i % eventsPerChunk === 0 && i) {
+        // Take the opportunity to provide status update events.
+        this.dispatchEvent(new TraceParseProgressEvent({index: i, total: traceEvents.length}));
+        // Wait for rendering before resuming.
+        // TODO(paulirish): consider using `scheduler.await()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
+        await new Promise(resolve => setTimeout(resolve, pauseDuration));
       }
-      for (const handler of sortedHandlers) {
-        handler.handleEvent(item.data);
+      const event = traceEvents[i];
+      for (let j = 0; j < sortedHandlers.length; ++j) {
+        sortedHandlers[j].handleEvent(event);
       }
     }
 
@@ -282,45 +286,4 @@ export function sortHandlers(
     visitHandler(handlerName as Handlers.Types.TraceEventHandlerName);
   }
   return sortedMap;
-}
-
-const enum IteratorItemType {
-  TRACE_EVENT = 1,
-  STATUS_UPDATE = 2,
-}
-
-type IteratorItem = IteratorTraceEventItem|IteratorStatusUpdateItem;
-
-type IteratorTraceEventItem = {
-  kind: IteratorItemType.TRACE_EVENT,
-  data: Types.TraceEvents.TraceEventData,
-};
-
-type IteratorStatusUpdateItem = {
-  kind: IteratorItemType.STATUS_UPDATE,
-  data: TraceParseEventProgressData,
-};
-
-class TraceEventIterator {
-  #eventCount: number;
-
-  constructor(
-      private traceEvents: readonly Types.TraceEvents.TraceEventData[], private pauseDuration: number,
-      private eventsPerChunk: number) {
-    this.#eventCount = 0;
-  }
-
-  async * [Symbol.asyncIterator](): AsyncGenerator<IteratorItem, void, void> {
-    for (let i = 0, length = this.traceEvents.length; i < length; i++) {
-      // Every so often we take a break just to render.
-      if (++this.#eventCount % this.eventsPerChunk === 0) {
-        // Take the opportunity to provide status update events.
-        yield {kind: IteratorItemType.STATUS_UPDATE, data: {index: i, total: length}};
-        // Wait for rendering before resuming.
-        await new Promise(resolve => setTimeout(resolve, this.pauseDuration));
-      }
-
-      yield {kind: IteratorItemType.TRACE_EVENT, data: this.traceEvents[i]};
-    }
-  }
 }

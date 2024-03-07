@@ -243,7 +243,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');
-    tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('navigator')}`);
+    tabbedPane.headerElement().setAttribute(
+        'jslog',
+        `${VisualLogging.toolbar('navigator').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
     const navigatorMenuButton =
         new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true, 'more-options');
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
@@ -818,7 +820,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private createDebugToolbar(): UI.Toolbar.Toolbar {
     const debugToolbar = new UI.Toolbar.Toolbar('scripts-debug-toolbar');
-    debugToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('debug')}`);
+    debugToolbar.element.setAttribute(
+        'jslog',
+        `${VisualLogging.toolbar('debug').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
 
     const longResumeButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'play');

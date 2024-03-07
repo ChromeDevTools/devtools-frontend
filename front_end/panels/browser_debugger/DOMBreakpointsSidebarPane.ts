@@ -181,7 +181,9 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
   createElementForItem(item: SDK.DOMDebuggerModel.DOMBreakpoint): Element {
     const element = document.createElement('div');
     element.classList.add('breakpoint-entry');
-    element.setAttribute('jslog', `${VisualLogging.domBreakpoint().context(item.type)}`);
+    element.setAttribute(
+        'jslog',
+        `${VisualLogging.domBreakpoint().context(item.type).track({keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
     element.addEventListener('contextmenu', this.contextMenu.bind(this, item), true);
     UI.ARIAUtils.markAsListitem(element);
     element.tabIndex = -1;

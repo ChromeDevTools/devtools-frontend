@@ -65,6 +65,11 @@ const UIStrings = {
    */
   thumbsDown: 'Thumbs down',
   /**
+   * @description The title of the button that opens a page to report a legal
+   * issue with the console insight.
+   */
+  report: 'Report legal issue',
+  /**
    * @description The title of the link that allows submitting more feedback.
    */
   submitFeedback: 'Submit feedback',
@@ -149,8 +154,10 @@ function localizeType(sourceType: SourceType): string {
   }
 }
 
-const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedback';
-const DOGFOODINFO_URL = 'http://go/console-insights-experiment';
+const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedback' as Platform.DevToolsPath.UrlString;
+const DOGFOODINFO_URL = 'http://go/console-insights-experiment' as Platform.DevToolsPath.UrlString;
+const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
+    Platform.DevToolsPath.UrlString;
 
 function buildRatingFormLink(
     rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,
@@ -382,6 +389,10 @@ export class ConsoleInsight extends HTMLElement {
       },
     }));
     this.#openFeedbackFrom();
+  }
+
+  #onReport(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
   }
 
   async #onConsentReminderConfirmed(): Promise<void> {
@@ -796,6 +807,17 @@ export class ConsoleInsight extends HTMLElement {
               } as Buttons.Button.ButtonData
             }
             @click=${this.#onRating}
+          ></${Buttons.Button.Button.litTagName}>
+          <${Buttons.Button.Button.litTagName}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ROUND,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'report',
+                title: i18nString(UIStrings.report),
+              } as Buttons.Button.ButtonData
+            }
+            @click=${this.#onReport}
           ></${Buttons.Button.Button.litTagName}>
         </div>
 

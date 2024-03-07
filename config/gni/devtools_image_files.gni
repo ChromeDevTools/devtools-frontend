@@ -193,6 +193,7 @@ devtools_svg_sources = [
   "refresh.svg",
   "replace.svg",
   "replay.svg",
+  "report.svg",
   "resizeDiagonal.svg",
   "resizeHorizontal.svg",
   "resizeVertical.svg",

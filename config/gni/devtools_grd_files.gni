@@ -194,6 +194,7 @@ grd_files_release_sources = [
   "front_end/Images/refresh.svg",
   "front_end/Images/replace.svg",
   "front_end/Images/replay.svg",
+  "front_end/Images/report.svg",
   "front_end/Images/resizeDiagonal.svg",
   "front_end/Images/resizeHorizontal.svg",
   "front_end/Images/resizeVertical.svg",

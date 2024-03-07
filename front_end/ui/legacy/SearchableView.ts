@@ -153,7 +153,9 @@ export class SearchableView extends VBox {
     this.searchInputElement.classList.add('search-replace', 'custom-search-input');
     this.searchInputElement.id = 'search-input-field';
     this.searchInputElement.placeholder = i18nString(UIStrings.findString);
-    this.searchInputElement.setAttribute('jslog', `${VisualLogging.textField('search').track({change: true})}`);
+    this.searchInputElement.setAttribute(
+        'jslog',
+        `${VisualLogging.textField('search').track({change: true, keydown: 'ArrowUp|ArrowDown|Enter|Escape'})}`);
     searchControlElement.appendChild(this.searchInputElement);
 
     this.matchesElement = searchControlElement.createChild('label', 'search-results-matches');
@@ -183,7 +185,8 @@ export class SearchableView extends VBox {
         (searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden') as HTMLInputElement);
     this.replaceInputElement.addEventListener('keydown', this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString(UIStrings.replace);
-    this.replaceInputElement.setAttribute('jslog', `${VisualLogging.textField('replace').track({change: true})}`);
+    this.replaceInputElement.setAttribute(
+        'jslog', `${VisualLogging.textField('replace').track({change: true, keydown: 'Enter'})}`);
 
     this.buttonsContainer = this.footerElement.createChild('div', 'toolbar-search-buttons');
     const firstRowButtons = this.buttonsContainer.createChild('div', 'first-row-buttons');

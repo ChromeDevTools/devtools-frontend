@@ -77,7 +77,9 @@ export class SoftDropDown<T> implements ListDelegate<T> {
         .appendChild(this.list.element);
     ARIAUtils.markAsMenu(this.list.element);
     VisualLogging.setMappedParent(this.list.element, this.element);
-    this.list.element.setAttribute('jslog', `${VisualLogging.menu().parent('mapped').track({resize: true})}`);
+    this.list.element.setAttribute(
+        'jslog',
+        `${VisualLogging.menu().parent('mapped').track({resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
 
     this.listWasShowing200msAgo = false;
     this.element.addEventListener('mousedown', event => {

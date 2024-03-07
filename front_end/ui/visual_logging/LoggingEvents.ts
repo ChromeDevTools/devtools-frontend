@@ -100,6 +100,9 @@ export const logKeyDown =
       }
       const loggingState = event?.currentTarget ? getLoggingState(event.currentTarget) : null;
       const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState?.veid};
+      if (!context && codes?.length) {
+        context = contextFromKeyCodes(event);
+      }
       if (context) {
         keyDownEvent.context = await contextAsNumber(context);
       }
@@ -108,6 +111,27 @@ export const logKeyDown =
         showDebugPopoverForEvent('KeyDown', loggingState?.config, context);
       });
     };
+
+function contextFromKeyCodes(event: Event): string|undefined {
+  if (!(event instanceof KeyboardEvent)) {
+    return undefined;
+  }
+  const components = [];
+  if (event.shiftKey) {
+    components.push('shift');
+  }
+  if (event.ctrlKey) {
+    components.push('ctrl');
+  }
+  if (event.altKey) {
+    components.push('alt');
+  }
+  if (event.metaKey) {
+    components.push('meta');
+  }
+  components.push(event.key.toLowerCase());
+  return components.join('-');
+}
 
 async function contextAsNumber(context: string|undefined): Promise<number|undefined> {
   if (typeof context === 'undefined') {

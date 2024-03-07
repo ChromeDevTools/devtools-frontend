@@ -95,11 +95,11 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordKeyDown',
     );
-    const event = new KeyboardEvent('keydown', {code: 'Enter'});
+    const event = new KeyboardEvent('keydown', {code: 'Enter', key: 'Enter'});
     sinon.stub(event, 'currentTarget').value(element);
     void VisualLogging.LoggingEvents.logKeyDown(throttler, ['Enter', 'Escape'])(event);
     await assertThrottled(recordKeyDown);
-    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0});
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 513111094});
   });
 
   it('calls UI binding to log a keydown with an provided context', async () => {

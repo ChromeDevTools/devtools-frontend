@@ -55,7 +55,8 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     if (jslogContext) {
-      this.contentElement.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({resize: true})}`);
+      this.contentElement.setAttribute(
+          'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Escape'})}`);
     }
     this.widget().setDefaultFocusedElement(this.contentElement);
     this.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);

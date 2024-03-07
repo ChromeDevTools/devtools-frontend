@@ -1108,7 +1108,8 @@ export function createInput(className?: string, type?: string, jslogContext?: st
     element.type = type;
   }
   if (jslogContext) {
-    element.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context(jslogContext)}`);
+    element.setAttribute(
+        'jslog', `${VisualLogging.textField().track({keydown: 'Enter', change: true}).context(jslogContext)}`);
   }
   return element;
 }

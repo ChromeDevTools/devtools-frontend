@@ -121,7 +121,9 @@ export class SoftContextMenu {
     this.glassPane.setAnchorBehavior(this.parentMenu ? AnchorBehavior.PreferRight : AnchorBehavior.PreferBottom);
 
     this.contextMenuElement = this.glassPane.contentElement.createChild('div', 'soft-context-menu');
-    this.contextMenuElement.setAttribute('jslog', `${VisualLogging.menu().track({resize: true}).parent('mapped')}`);
+    this.contextMenuElement.setAttribute('jslog', `${VisualLogging.menu().track({resize: true}).parent('mapped').track({
+                                           keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Escape',
+                                         })}`);
     if (this.loggableParent) {
       VisualLogging.setMappedParent(this.contextMenuElement, this.loggableParent);
     }

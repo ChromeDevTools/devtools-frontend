@@ -34,7 +34,7 @@ export class XLink extends XElement {
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
     const element = html `
   <x-link href='${url}' tabindex="0" class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
-  jslog=${VisualLogging.link().track({click: true}).context(jsLogContext)}>${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
+  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context(jsLogContext)}>${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
     return element as HTMLElement;
   }

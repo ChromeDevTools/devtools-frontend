@@ -33,6 +33,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
@@ -67,6 +68,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
       }
       this.setMode(Protocol.Overlay.InspectMode.None);
       event.consume(true);
+      void VisualLogging.logKeyDown(event, 'cancel-inspect-mode');
     }, true);
   }
 

@@ -1075,7 +1075,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.sidebarPaneView = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => UI.ViewManager.ViewManager.instance().showView('elements'), 'styles-pane-sidebar', true, true);
     const tabbedPane = this.sidebarPaneView.tabbedPane();
-    tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('sidebar')}`);
+    tabbedPane.headerElement().setAttribute(
+        'jslog',
+        `${VisualLogging.toolbar('sidebar').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
     if (this.splitMode !== _splitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }

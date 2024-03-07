@@ -258,7 +258,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     super();
     this.nodeInternal = node;
     this.treeOutline = null;
-    this.listItemElement.setAttribute('jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline')}`);
+    this.listItemElement.setAttribute(
+        'jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
+          keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+        })}`);
     this.contentElement = this.listItemElement.createChild('div');
     this.gutterContainer = this.contentElement.createChild('div', 'gutter-container');
     this.gutterContainer.addEventListener('click', this.showContextMenu.bind(this));

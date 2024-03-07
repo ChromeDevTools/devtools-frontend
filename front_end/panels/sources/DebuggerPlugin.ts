@@ -1990,17 +1990,16 @@ export function computeExecutionDecorations(
   const line = doc.line(lineNumber + 1);
   const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [executionLineDeco.range(line.from)];
   const position = Math.min(line.to, line.from + columnNumber);
-  let syntaxTree = null;
-  while (syntaxTree === null) {
-    syntaxTree = CodeMirror.ensureSyntaxTree(state, line.to, /* timeout= */ 500);
-  }
-  let syntaxNode = syntaxTree.resolveInner(position, 1);
-  if (syntaxNode.to === syntaxNode.from - 1 && /[(.]/.test(doc.sliceString(syntaxNode.from, syntaxNode.to))) {
-    syntaxNode = syntaxNode.resolve(syntaxNode.to, 1);
-  }
-  const tokenEnd = Math.min(line.to, syntaxNode.to);
-  if (tokenEnd > position) {
-    decorations.push(executionTokenDeco.range(position, tokenEnd));
+  const syntaxTree = CodeMirror.ensureSyntaxTree(state, line.to, /* timeout= */ 500);
+  if (syntaxTree !== null) {
+    let syntaxNode = syntaxTree.resolveInner(position, 1);
+    if (syntaxNode.to === syntaxNode.from - 1 && /[(.]/.test(doc.sliceString(syntaxNode.from, syntaxNode.to))) {
+      syntaxNode = syntaxNode.resolve(syntaxNode.to, 1);
+    }
+    const tokenEnd = Math.min(line.to, syntaxNode.to);
+    if (tokenEnd > position) {
+      decorations.push(executionTokenDeco.range(position, tokenEnd));
+    }
   }
   return CodeMirror.Decoration.set(decorations);
 }

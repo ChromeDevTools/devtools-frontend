@@ -650,7 +650,9 @@ export enum Action {
   InsightErroredCannotParseChunk = 137,
   InsightErroredUnknownChunk = 138,
   InsightErroredOther = 139,
-  MaxValue = 140,
+  AutofillReceived = 140,
+  AutofillReceivedAndTabAutoOpened = 141,
+  MaxValue = 142,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

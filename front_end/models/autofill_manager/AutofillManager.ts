@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -40,6 +41,9 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.AUTOFILL_VIEW) &&
         this.#autoOpenViewSetting.get()) {
       await UI.ViewManager.ViewManager.instance().showView('autofill-view');
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AutofillReceivedAndTabAutoOpened);
+    } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AutofillReceived);
     }
     this.#autofillModel = data.autofillModel;
     this.#processAddressFormFilledData(data.event);

@@ -58,6 +58,10 @@ export class RPCInterface implements WorkerInterface, HostInterface {
   getWasmOp(op: number, stopId: unknown): WasmValue {
     return this.rpc.sendMessageSync(new SynchronousWasmValueMessage(kMaxWasmValueSize), 'getWasmOp', op, stopId);
   }
+  reportResourceLoad(resourceUrl: string, status: {success: boolean, errorMessage?: string, size?: number}):
+      Promise<void> {
+    return this.rpc.sendMessage('reportResourceLoad', resourceUrl, status);
+  }
 
   evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: unknown):
       Promise<Chrome.DevTools.RemoteObject|null> {

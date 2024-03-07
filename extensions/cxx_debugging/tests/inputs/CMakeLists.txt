@@ -42,6 +42,30 @@ macro(add_test_inputs)
   endforeach()
 endmacro()
 
+macro(add_dwo_test_inputs)
+  set(obj_inputs)
+  cmake_parse_arguments(option "" "DESTINATION" "" ${ARGN})
+
+  foreach(input IN ITEMS ${option_UNPARSED_ARGUMENTS})
+    get_filename_component(filename ${input} NAME_WE)
+    configure_file(${input} ${filename}.preprocessed)
+
+    set(input_file ${CMAKE_CURRENT_BINARY_DIR}/${filename}.preprocessed)
+    set(mc_args ${input_file} -triple wasm32-unknown-unknown -g -filetype=obj -o ${filename}.o)
+    add_custom_command(OUTPUT ${filename}.o ${filename}.dwo
+        DEPENDS ${input_file}
+        COMMAND ${LLVM_MC} ${mc_args} --split-dwarf-file=${filename}.dwo
+    )
+    list(APPEND obj_inputs ${CMAKE_CURRENT_BINARY_DIR}/${filename}.o)
+    list(APPEND compiled_inputs ${CMAKE_CURRENT_BINARY_DIR}/${filename}.dwo ${CMAKE_CURRENT_BINARY_DIR}/${filename}.o)
+  endforeach()
+  add_custom_command(OUTPUT ${option_DESTINATION}
+    DEPENDS  ${obj_inputs}
+    COMMAND ${WASM_LD} --export-all --no-entry -o ${option_DESTINATION}  ${obj_inputs})
+  list(APPEND compiled_inputs ${CMAKE_CURRENT_BINARY_DIR}/${option_DESTINATION})
+endmacro()
+
+
 set(compiled_wasm_inputs)
 macro(add_test_program program)
   add_executable(${program} ${ARGN})
@@ -86,6 +110,11 @@ add_test_inputs(
   inline.s
 )
 
+add_dwo_test_inputs(DESTINATION hello-split.wasm helper.s hello-split.s)
+add_dwo_test_inputs(DESTINATION hello-split-missing-dwo.wasm hello-split-missing-dwo.s)
+# Explicitly remove dwo files for tests with missing dwos
+set(missing_dwos "hello-split-missing-dwo.dwo")
+
 add_test_program(addresses_main addresses.cc)
 add_test_program(lldb_eval_inputs
   ${THIRD_PARTY_DIR}/lldb-eval/src/testdata/test_binary.cc
@@ -104,6 +133,7 @@ foreach(input IN LISTS TEST_BINARY_INPUTS)
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${input} ${CMAKE_CURRENT_BINARY_DIR}/)
 endforeach()
 add_custom_target(SymbolsBackendTestInputs DEPENDS ${compiled_inputs} ${TEST_BINARY_INPUTS})
+add_custom_command(TARGET SymbolsBackendTestInputs POST_BUILD COMMAND rm ${missing_dwos})
 
 list(APPEND EXTENSION_TEST_BUILD_ARTIFACTS ${compiled_inputs} ${binary_inputs} ${compiled_wasm_inputs})
 set(EXTENSION_TEST_BUILD_ARTIFACTS ${EXTENSION_TEST_BUILD_ARTIFACTS} PARENT_SCOPE)

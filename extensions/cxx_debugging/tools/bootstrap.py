@@ -112,6 +112,9 @@ def stage2(source_dir, stage1_dir, OPTIONS):
         os.path.join(stage1_dir, 'third_party', 'llvm', 'src', 'llvm', 'bin'))
     emcc = os.path.join(devtools_dir(source_dir), 'third_party',
                         'emscripten-releases', 'install', 'emscripten', 'emcc')
+    wasm_ld_dir = os.path.join(devtools_dir(source_dir), 'third_party',
+                               'emscripten-releases', 'install', 'bin')
+
 
     binary_dir = os.path.abspath(
         os.path.join(OPTIONS.build_dir, 'DevTools_CXX_Debugging.stage2'))
@@ -122,6 +125,8 @@ def stage2(source_dir, stage1_dir, OPTIONS):
         'toolchain_file':
         os.path.join(os.path.dirname(emcc), 'cmake', 'Modules', 'Platform',
                      'Emscripten.cmake'),
+        'wasm_ld':
+        os.path.join(wasm_ld_dir, 'wasm-ld' + exec_extension()),
         'llvm_dwp':
         os.path.join(llvm_tools_dir, 'llvm-dwp' + exec_extension()),
         'llvm_tblgen':
@@ -147,7 +152,8 @@ def stage2(source_dir, stage1_dir, OPTIONS):
         '-DLLVM_DWP={llvm_dwp}'.format(**cmake_settings),
         '-DLLVM_TABLEGEN={llvm_tblgen}'.format(**cmake_settings),
         '-DCLANG_TABLEGEN={clang_tblgen}'.format(**cmake_settings),
-        '-DLLDB_TABLEGEN={lldb_tblgen}'.format(**cmake_settings)
+        '-DLLDB_TABLEGEN={lldb_tblgen}'.format(**cmake_settings),
+        '-DWASM_LD={wasm_ld}'.format(**cmake_settings)
     ]
     if is_windows():
         cmake_args.append('-DLLVM_HOST_TRIPLE=x86_64')

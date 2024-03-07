@@ -11,6 +11,9 @@ export interface TestWorkerInterface {
   getWasmLocalForTest(local: number, stopId: unknown): Promise<WasmValue>;
   getWasmGlobalForTest(global: number, stopId: unknown): Promise<WasmValue>;
   getWasmOpForTest(op: number, stopId: unknown): Promise<WasmValue>;
+  reportResourceLoadForTest(
+      resourceUrl: string,
+      status: {success: boolean; errorMessage?: string | undefined; size?: number | undefined;}): Promise<void>;
 }
 
 class TestWorker extends RPCInterface implements TestWorkerInterface {
@@ -25,6 +28,11 @@ class TestWorker extends RPCInterface implements TestWorkerInterface {
   }
   async getWasmMemoryForTest(offset: number, length: number, stopId: unknown): Promise<ArrayBuffer> {
     return this.getWasmLinearMemory(offset, length, stopId);
+  }
+  reportResourceLoadForTest(
+      resourceUrl: string,
+      status: {success: boolean; errorMessage?: string | undefined; size?: number | undefined;}): Promise<void> {
+    return this.reportResourceLoad(resourceUrl, status)
   }
 }
 

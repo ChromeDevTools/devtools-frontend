@@ -17,6 +17,8 @@ export interface AsyncHostInterface {
   getWasmLocal(local: number, stopId: unknown): Promise<WasmValue>;
   getWasmGlobal(global: number, stopId: unknown): Promise<WasmValue>;
   getWasmOp(op: number, stopId: unknown): Promise<WasmValue>;
+  reportResourceLoad(resourceUrl: string, status: {success: boolean, errorMessage?: string, size?: number}):
+      Promise<void>;
 }
 
 export interface HostInterface {
@@ -24,6 +26,8 @@ export interface HostInterface {
   getWasmLocal(local: number, stopId: unknown): WasmValue;
   getWasmGlobal(global: number, stopId: unknown): WasmValue;
   getWasmOp(op: number, stopId: unknown): WasmValue;
+  reportResourceLoad(resourceUrl: string, status: {success: boolean, errorMessage?: string, size?: number}):
+      Promise<void>;
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

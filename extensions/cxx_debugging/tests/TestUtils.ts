@@ -22,6 +22,11 @@ export class TestHostInterface implements HostInterface {
   getWasmOp(_op: number, _stopId: unknown): WasmValue {
     throw new Error('Method not implemented.');
   }
+  reportResourceLoad(
+      _resourceUrl: string,
+      _status: {success: boolean; errorMessage?: string | undefined; size?: number | undefined;}): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 export function makeURL(path: string): string {

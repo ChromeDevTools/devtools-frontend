@@ -103,6 +103,7 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
       return CodeMirror.html.html({selfClosingTags: true});
 
     case 'application/xml':
+    case 'application/xhtml+xml':
     case 'image/svg+xml':
       return (await CodeMirror.xml()).xml();
 

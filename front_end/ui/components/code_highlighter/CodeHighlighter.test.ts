@@ -166,6 +166,11 @@ it('can highlight HTML with <script type="text/jsx"> blocks', testHighlight(`
   <[tag circle] />
 </[tag svg]>`, 'image/svg+xml'));
 
+  it('can highlight XHTML', testHighlight(`[meta <?xml version="1.0" encoding="UTF-8"?>]
+  [meta <!DOCTYPE html>]
+  <[tag html] [attribute xmlns]=[attribute-value "http://www.w3.org/1999/xhtml"]>
+  </[tag html]>`, 'application/xhtml+xml'));
+
   it('can highlight Angular Templates', testHighlight(`
 <[tag div] [attribute class]=[attribute-value "title"]>{{[variable obj].[property title]}}</[tag div]>
 <[tag app-button] ([attribute clicked])=[variable onClick]()></[tag app-button]>

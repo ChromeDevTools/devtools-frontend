@@ -441,14 +441,16 @@ describeWithMockConnection('AnimationTimeline', () => {
       assert.isTrue(currentTimeElement.textContent?.includes('px'));
     });
 
-    it('should show timeline grid values in percentages', async () => {
+    it('should show timeline grid values in pixels', async () => {
       const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
       assertNotNullOrUndefined(preview);
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 
       const labelElements = [...view.element.shadowRoot?.querySelectorAll('.animation-timeline-grid-label')!];
-      assert.isTrue(labelElements.every(el => el.textContent?.includes('%')), 'Label doesnt include a percentage');
+      assert.isTrue(
+          labelElements.every(el => el.textContent?.includes('px')),
+          'Label is expected to be a pixel value but it is not');
     });
   });
 });

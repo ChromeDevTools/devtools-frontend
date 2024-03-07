@@ -291,7 +291,6 @@ export const enum ExperimentName {
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
   STORAGE_BUCKETS_TREE = 'storage-buckets-tree',
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
-  TRACK_CONTEXT_MENU = 'track-context-menu',
   AUTOFILL_VIEW = 'autofill-view',
   INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',
 }

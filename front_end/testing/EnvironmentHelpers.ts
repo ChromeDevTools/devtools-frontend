@@ -126,7 +126,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,
   'font-editor',
   Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
-  Root.Runtime.ExperimentName.TRACK_CONTEXT_MENU,
   Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE,
   Root.Runtime.ExperimentName.AUTOFILL_VIEW,
 ];

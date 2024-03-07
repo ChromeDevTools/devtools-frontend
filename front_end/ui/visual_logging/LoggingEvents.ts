@@ -10,14 +10,14 @@ import {showDebugPopoverForEvent} from './Debugging.js';
 import {type Loggable} from './Loggable.js';
 import {getLoggingState} from './LoggingState.js';
 
-export function logImpressions(loggables: Loggable[]): void {
-  const impressions = loggables.map(loggable => {
+export async function logImpressions(loggables: Loggable[]): Promise<void> {
+  const impressions = await Promise.all(loggables.map(async loggable => {
     const loggingState = getLoggingState(loggable);
     assertNotNullOrUndefined(loggingState);
     const impression:
         Host.InspectorFrontendHostAPI.VisualElementImpression = {id: loggingState.veid, type: loggingState.config.ve};
-    if (typeof loggingState.context !== 'undefined') {
-      impression.context = loggingState.context;
+    if (typeof loggingState.config.context !== 'undefined') {
+      impression.context = await contextAsNumber(loggingState.config.context);
     }
     if (loggingState.parent) {
       impression.parent = loggingState.parent.veid;
@@ -27,7 +27,7 @@ export function logImpressions(loggables: Loggable[]): void {
       impression.height = loggingState.size.height;
     }
     return impression;
-  });
+  }));
   if (impressions.length) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordImpression({impressions});
   }
@@ -90,21 +90,39 @@ export async function logChange(event: Event): Promise<void> {
   showDebugPopoverForEvent('Change', loggingState?.config);
 }
 
-export const logKeyDown = (throttler: Common.Throttler.Throttler, codes?: string[]) =>
-    (event: Event|null, context?: number) => {
+export const logKeyDown =
+    (throttler: Common.Throttler.Throttler, codes?: string[]) => async (event: Event|null, context?: string) => {
       if (!(event instanceof KeyboardEvent)) {
         return;
       }
       if (codes?.length && !codes.includes(event.code)) {
         return;
       }
-      const loggingState = getLoggingState(event.currentTarget as Element);
+      const loggingState = event?.currentTarget ? getLoggingState(event.currentTarget) : null;
       const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState?.veid};
       if (context) {
-        keyDownEvent.context = context;
+        keyDownEvent.context = await contextAsNumber(context);
       }
       void throttler.schedule(async () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
-        showDebugPopoverForEvent('KeyDown', loggingState?.config);
+        showDebugPopoverForEvent('KeyDown', loggingState?.config, context);
       });
     };
+
+async function contextAsNumber(context: string|undefined): Promise<number|undefined> {
+  if (typeof context === 'undefined') {
+    return undefined;
+  }
+  const number = parseInt(context, 10);
+  if (!isNaN(number)) {
+    return number;
+  }
+  if (!crypto.subtle) {
+    // Layout tests run in an insecure context where crypto.subtle is not available.
+    return 0xDEADBEEF;
+  }
+  const encoder = new TextEncoder();
+  const data = encoder.encode(context);
+  const digest = await crypto.subtle.digest('SHA-1', data);
+  return new DataView(digest).getUint32(0, true);
+}

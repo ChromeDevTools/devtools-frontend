@@ -8,7 +8,6 @@ export interface LoggingState {
   impressionLogged: boolean;
   processed: boolean;
   config: LoggingConfig;
-  context?: number;
   veid: number;
   parent: LoggingState|null;
   processedForDebugging?: boolean;

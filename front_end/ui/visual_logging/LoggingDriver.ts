@@ -138,7 +138,6 @@ async function process(): Promise<void> {
       }
     }
     if (!loggingState.processed) {
-      loggingState.context = await contextAsNumber(loggingState.config.context);
       if (loggingState.config.track?.has('click')) {
         element.addEventListener('click', e => {
           const loggable = e.currentTarget as Element;
@@ -226,7 +225,6 @@ async function process(): Promise<void> {
     if (!visible) {
       continue;
     }
-    loggingState.context = await contextAsNumber(loggingState.config.context);
     processForDebugging(loggable);
     visibleLoggables.push(loggable);
     loggingState.impressionLogged = true;
@@ -236,22 +234,4 @@ async function process(): Promise<void> {
   }
   await logImpressions(visibleLoggables);
   Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
-}
-
-export async function contextAsNumber(context: string|undefined): Promise<number|undefined> {
-  if (typeof context === 'undefined') {
-    return undefined;
-  }
-  const number = parseInt(context, 10);
-  if (!isNaN(number)) {
-    return number;
-  }
-  if (!crypto.subtle) {
-    // Layout tests run in an insecure context where crypto.subtle is not available.
-    return 0xDEADBEEF;
-  }
-  const encoder = new TextEncoder();
-  const data = encoder.encode(context);
-  const digest = await crypto.subtle.digest('SHA-1', data);
-  return new DataView(digest).getUint32(0, true);
 }

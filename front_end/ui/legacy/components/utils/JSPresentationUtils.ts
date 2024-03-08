@@ -214,6 +214,7 @@ function updateHiddenRows(
 
 export function buildStackTracePreviewContents(
     target: SDK.Target.Target|null, linkifier: Linkifier, options: Options = {
+      widthConstrained: false,
       stackTrace: undefined,
       tabStops: undefined,
     }): {element: HTMLElement, links: HTMLElement[]} {
@@ -221,10 +222,12 @@ export function buildStackTracePreviewContents(
   const element = document.createElement('span');
   element.classList.add('monospace');
   element.classList.add('stack-preview-container');
+  element.classList.toggle('width-constrained', options.widthConstrained);
   element.style.display = 'inline-block';
   const shadowRoot =
       UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
+  contentElement.classList.toggle('width-constrained', options.widthConstrained);
   if (!stackTrace) {
     return {element, links: []};
   }
@@ -296,6 +299,10 @@ function renderStackTraceTable(
 export interface Options {
   stackTrace: Protocol.Runtime.StackTrace|undefined;
   tabStops: boolean|undefined;
+  // Whether the width of stack trace preview
+  // is constrained to its container or whether
+  // it can grow the container.
+  widthConstrained?: boolean;
 }
 
 export interface StackTraceRegularRow {

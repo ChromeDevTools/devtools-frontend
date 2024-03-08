@@ -1137,6 +1137,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
         if (SDK.NetworkManager.NetworkManager.canReplayRequest(request)) {
           SDK.NetworkManager.NetworkManager.replayRequest(request);
+          void VisualLogging.logKeyDown(event, 'replay-xhr');
         }
       }
     });

@@ -432,6 +432,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         if (panelName) {
           if (!Dialog.hasInstance() && !this.currentPanelLocked) {
             void this.showPanel(panelName);
+            void VisualLogging.logKeyDown(event, `panel-by-index-${panelName}`);
           }
           event.consume(true);
         }

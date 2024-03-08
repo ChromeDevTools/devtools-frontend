@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';
 import {type ActionRegistry} from './ActionRegistry.js';
@@ -192,7 +193,7 @@ export class ShortcutRegistry {
 
     if (this.activePrefixTimeout) {
       clearTimeout(this.activePrefixTimeout);
-      const handled = await maybeExecuteActionForKey.call(this);
+      const handled = await maybeExecuteActionForKey.call(this, event);
       this.activePrefixKey = null;
       this.activePrefixTimeout = null;
       if (handled) {
@@ -207,11 +208,11 @@ export class ShortcutRegistry {
       this.consumePrefix = async () => {
         this.activePrefixKey = null;
         this.activePrefixTimeout = null;
-        await maybeExecuteActionForKey.call(this);
+        await maybeExecuteActionForKey.call(this, event);
       };
       this.activePrefixTimeout = window.setTimeout(this.consumePrefix, KeyTimeout);
     } else {
-      await maybeExecuteActionForKey.call(this);
+      await maybeExecuteActionForKey.call(this, event);
     }
 
     function isPossiblyInputKey(): boolean {
@@ -257,7 +258,7 @@ export class ShortcutRegistry {
 
     /** ;
      */
-    async function maybeExecuteActionForKey(this: ShortcutRegistry): Promise<boolean> {
+    async function maybeExecuteActionForKey(this: ShortcutRegistry, event?: KeyboardEvent): Promise<boolean> {
       const actions = this.applicableActions(key, handlers);
       if (!actions.length) {
         return false;
@@ -272,6 +273,9 @@ export class ShortcutRegistry {
         }
         if (handled) {
           Host.userMetrics.keyboardShortcutFired(action.id());
+          if (event) {
+            void VisualLogging.logKeyDown(event, action.id());
+          }
           return true;
         }
       }

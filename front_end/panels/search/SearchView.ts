@@ -134,7 +134,7 @@ export class SearchView extends UI.Widget.VBox {
     this.visiblePane = null;
     this.#throttler = throttler;
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel('search').track({resize: true})}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.panel('search').track({resize: true})}`);
 
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {
@@ -464,8 +464,10 @@ export class SearchView extends UI.Widget.VBox {
 
     if (shouldShowAllForMac || shouldShowAllForOtherPlatforms) {
       this.searchResultsPane?.showAllMatches();
+      void VisualLogging.logKeyDown(event, 'show-all-matches');
     } else if (shouldCollapseAllForMac || shouldCollapseAllForOtherPlatforms) {
       this.searchResultsPane?.collapseAllResults();
+      void VisualLogging.logKeyDown(event, 'collapse-all-results');
     }
   }
 

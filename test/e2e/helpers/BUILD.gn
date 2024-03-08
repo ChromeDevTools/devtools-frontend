@@ -26,7 +26,6 @@ node_ts_library("helpers") {
     "memory-helpers.ts",
     "network-helpers.ts",
     "performance-helpers.ts",
-    "profiler-helpers.ts",
     "quick_open-helpers.ts",
     "search-helpers.ts",
     "security-helpers.ts",

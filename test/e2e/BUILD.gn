@@ -35,9 +35,9 @@ node_ts_library("tests") {
     "memory",
     "network",
     "performance",
-    "profiler",
     "puppeteer",
     "quick_open",
+    "recorder",
     "rendering",
     "search",
     "security",
@@ -45,7 +45,6 @@ node_ts_library("tests") {
     "settings",
     "snippets",
     "sources",
-    "recorder",
     "webaudio",
   ]
 }

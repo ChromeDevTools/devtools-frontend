@@ -27,12 +27,11 @@ group("resources") {
     "network",
     "pages",
     "performance",
-    "profiler",
+    "recorder",
     "search",
     "sensors",
     "sources",
     "webaudio",
-    "recorder",
   ]
 }
 

@@ -290,11 +290,6 @@ export class MainImpl {
         'timeline-as-console-profile-result-panel',
         'View console.profile() results in the Performance panel for Node.js', true);
 
-    // JS Profiler
-    Root.Runtime.experiments.register(
-        'js-profiler-temporarily-enable', 'Enable JavaScript Profiler temporarily', /* unstable= */ false,
-        'https://goo.gle/js-profiler-deprecation', 'https://crbug.com/1354548');
-
     // Sources
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE, 'Disable Indentation Markers temporarily',

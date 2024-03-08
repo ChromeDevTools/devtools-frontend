@@ -1105,7 +1105,6 @@ export enum DevtoolsExperiments {
   'timeline-as-console-profile-result-panel' = 67,
   'preloading-status-panel' = 68,
   'outermost-target-selector' = 71,
-  'js-profiler-temporarily-enable' = 72,
   'highlight-errors-elements-panel' = 73,
   'set-all-breakpoints-eagerly' = 74,
   'use-source-map-scopes' = 76,

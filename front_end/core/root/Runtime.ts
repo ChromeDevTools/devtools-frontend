@@ -284,7 +284,6 @@ export const enum ExperimentName {
   PRELOADING_STATUS_PANEL = 'preloading-status-panel',
   TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timeline-as-console-profile-result-panel',
   OUTERMOST_TARGET_SELECTOR = 'outermost-target-selector',
-  JS_PROFILER_TEMP_ENABLE = 'js-profiler-temporarily-enable',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
   SET_ALL_BREAKPOINTS_EAGERLY = 'set-all-breakpoints-eagerly',
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',

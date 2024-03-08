@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -179,7 +178,6 @@ describeWithMockConnection('ConsoleView', () => {
     let target: SDK.Target.Target;
 
     beforeEach(() => {
-      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SELF_XSS_WARNING);
       target = createTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       consoleView.markAsRoot();

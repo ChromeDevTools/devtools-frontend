@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as Root from '../../../../core/root/root.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
   assertElement,
@@ -67,7 +66,6 @@ describeWithEnvironment('SourceFrame', () => {
   });
 
   it('shows self-XSS warning which the user can disable', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SELF_XSS_WARNING);
     const setting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.Synced);
     assert.isFalse(setting.get());

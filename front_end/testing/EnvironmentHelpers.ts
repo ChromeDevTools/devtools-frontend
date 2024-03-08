@@ -121,7 +121,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.HEADER_OVERRIDES,
   Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
   Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY,
-  Root.Runtime.ExperimentName.SELF_XSS_WARNING,
   'evaluate-expressions-with-source-maps',
   Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,
   'font-editor',

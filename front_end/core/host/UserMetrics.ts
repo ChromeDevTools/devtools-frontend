@@ -1108,7 +1108,6 @@ export enum DevtoolsExperiments {
   'js-profiler-temporarily-enable' = 72,
   'highlight-errors-elements-panel' = 73,
   'set-all-breakpoints-eagerly' = 74,
-  'self-xss-warning' = 75,
   'use-source-map-scopes' = 76,
   'storage-buckets-tree' = 77,
   'network-panel-filter-bar-redesign' = 79,

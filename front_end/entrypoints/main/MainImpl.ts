@@ -372,9 +372,6 @@ export class MainImpl {
         'Enable background page selector (e.g. for prerendering debugging)', false);
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.SELF_XSS_WARNING, 'Show warning about Self-XSS when pasting code');
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.STORAGE_BUCKETS_TREE, 'Enable Storage Buckets Tree in Application panel', true);
 
     Root.Runtime.experiments.register(
@@ -395,7 +392,6 @@ export class MainImpl {
       'set-all-breakpoints-eagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
-      Root.Runtime.ExperimentName.SELF_XSS_WARNING,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       'evaluate-expressions-with-source-maps',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

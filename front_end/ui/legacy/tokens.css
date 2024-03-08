@@ -22,8 +22,11 @@
   --ref-palette-primary100: var(--color-ref-primary100, rgb(255 255 255 / 100%));
   --ref-palette-secondary0: var(--color-ref-secondary0, rgb(0 0 0 / 100%));
   --ref-palette-secondary10: var(--color-ref-secondary10, rgb(0 29 53 / 100%));
+  --ref-palette-secondary15: var(--color-ref-secondary15, rgb(0 40 69 / 100%));
   --ref-palette-secondary20: var(--color-ref-secondary20, rgb(0 51 85 / 100%));
+  --ref-palette-secondary25: var(--color-ref-secondary25, rgb(0 63 102 / 100%));
   --ref-palette-secondary30: var(--color-ref-secondary30, rgb(0 74 119 / 100%));
+  --ref-palette-secondary35: var(--color-ref-secondary35, rgb(0 87 137 / 100%));
   --ref-palette-secondary40: var(--color-ref-secondary40, rgb(0 99 155 / 100%));
   --ref-palette-secondary50: var(--color-ref-secondary50, rgb(4 125 183 / 100%));
   --ref-palette-secondary60: var(--color-ref-secondary60, rgb(57 152 211 / 100%));
@@ -71,7 +74,9 @@
   --ref-palette-neutral70: var(--color-ref-neutral70, rgb(171 171 171 / 100%));
   --ref-palette-neutral80: var(--color-ref-neutral80, rgb(199 199 199 / 100%));
   --ref-palette-neutral90: var(--color-ref-neutral90, rgb(227 227 227 / 100%));
+  --ref-palette-neutral94: var(--color-ref-neutral94, rgb(239 237 237 / 100%));
   --ref-palette-neutral95: var(--color-ref-neutral95, rgb(242 242 242 / 100%));
+  --ref-palette-neutral98: var(--color-ref-neutral98, rgb(250 249 248 / 100%));
   --ref-palette-neutral99: var(--color-ref-neutral99, rgb(253 252 251 / 100%));
   --ref-palette-neutral100: var(--color-ref-neutral100, rgb(255 255 255 / 100%));
   --ref-palette-neutral-variant0: var(--color-ref-neutral-variant0, rgb(0 0 0 / 100%));

@@ -275,7 +275,8 @@ export class AnimationUI {
         'translateX(' + (this.delayOrStartTime() * this.#timeline.pixelTimeRatio()).toFixed(2) + 'px)';
 
     this.#nameElement.style.transform = 'translateX(' +
-        (this.delayOrStartTime() * this.#timeline.pixelTimeRatio() + Options.AnimationMargin).toFixed(2) + 'px)';
+        (Math.max(this.delayOrStartTime(), 0) * this.#timeline.pixelTimeRatio() + Options.AnimationMargin).toFixed(2) +
+        'px)';
     this.#nameElement.style.width = (this.duration() * this.#timeline.pixelTimeRatio()).toFixed(2) + 'px';
     this.drawDelayLine((this.#svg as HTMLElement));
 
@@ -290,8 +291,11 @@ export class AnimationUI {
     }
     const iterationWidth = this.duration() * this.#timeline.pixelTimeRatio();
     let iteration;
+    // Some iterations are getting rendered in an invisible area if the delay is negative.
+    const invisibleAreaWidth =
+        this.delayOrStartTime() < 0 ? -this.delayOrStartTime() * this.#timeline.pixelTimeRatio() : 0;
     for (iteration = 1; iteration < this.#animationInternal.source().iterations() &&
-         iterationWidth * (iteration - 1) < this.#timeline.width() &&
+         iterationWidth * (iteration - 1) < invisibleAreaWidth + this.#timeline.width() &&
          (iterationWidth > 0 || this.#animationInternal.source().iterations() !== Infinity);
          iteration++) {
       this.renderIteration(this.#tailGroup, iteration);
@@ -356,8 +360,7 @@ export class AnimationUI {
     if (this.#mouseEventType === Events.AnimationDrag || this.#mouseEventType === Events.StartEndpointMove) {
       delay += this.#movementInMs;
     }
-    // FIXME: add support for negative start delay
-    return Math.max(0, delay);
+    return delay;
   }
 
   private duration(): number {
@@ -365,8 +368,7 @@ export class AnimationUI {
     if (this.#mouseEventType === Events.FinishEndpointMove) {
       duration += this.#movementInMs;
     } else if (this.#mouseEventType === Events.StartEndpointMove) {
-      duration -= Math.max(this.#movementInMs, -this.#animationInternal.delayOrStartTime());
-      // Cannot have negative delay
+      duration -= this.#movementInMs;
     }
     return Math.max(0, duration);
   }

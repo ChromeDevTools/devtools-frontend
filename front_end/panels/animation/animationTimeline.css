@@ -27,6 +27,7 @@
   align-items: flex-start;
   white-space: nowrap;
   flex: 0 0 var(--timeline-controls-width);
+  z-index: 1;
 }
 
 .animation-node-description > * {

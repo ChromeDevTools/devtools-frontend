@@ -246,7 +246,7 @@
 
   /* Chrome base surface */
 
-  --sys-color-base: var(--ref-palette-neutral100);
+  --sys-color-base: var(--ref-palette-neutral98);
   --sys-color-base-container: var(--sys-color-surface4);
   --sys-color-base-container-elevated: var(--ref-palette-neutral100);
 
@@ -419,6 +419,28 @@
    */
   --app-color-coverage-used: var(--ref-palette-neutral80);
   --app-color-coverage-unused: var(--sys-color-error-bright);
+  --app-color-toolbar-background: var(--sys-color-surface4);
+}
+
+:root.baseline-default {
+  --sys-color-surface4: color-mix(in sRGB, #6991d6 12%, var(--ref-palette-neutral100));
+}
+
+:root.baseline-grayscale {
+  --sys-color-divider: var(--ref-palette-neutral90);
+  --app-color-toolbar-background: var(--ref-palette-neutral94);
+}
+
+:root.baseline-default,
+:root.baseline-grayscale {
+  --sys-color-base: var(--ref-palette-neutral100);
+
+  &.-theme-with-dark-background {
+    --sys-color-surface4: color-mix(in sRGB, #d1e1ff 12%, var(--ref-palette-neutral10));
+    --sys-color-divider: var(--ref-palette-neutral40);
+    --app-color-toolbar-background: var(--sys-color-base);
+    --sys-color-base: var(--ref-palette-neutral25);
+  }
 }
 
 .-theme-with-dark-background {
@@ -619,7 +641,7 @@
 
   /* Chrome base surface */
 
-  --sys-color-base: var(--ref-palette-neutral25);
+  --sys-color-base: var(--ref-palette-secondary25);
   --sys-color-base-container: var(--ref-palette-neutral15);
   --sys-color-base-container-elevated: var(--ref-palette-neutral25);
 
@@ -641,7 +663,7 @@
   --sys-color-neutral-outline: var(--ref-palette-neutral50);
   --sys-color-yellow-outline: var(--ref-palette-yellow40);
   --sys-color-error-outline: var(--ref-palette-error80);
-  --sys-color-divider: var(--ref-palette-neutral30);
+  --sys-color-divider: var(--ref-palette-secondary35);
   --sys-color-divider-on-tonal-container: var(--ref-palette-neutral40);
   --sys-color-divider-prominent: var(--ref-palette-neutral50);
 
@@ -794,4 +816,5 @@
    */
   --app-color-coverage-used: var(--ref-palette-neutral40);
   --app-color-coverage-unused: var(--sys-color-error-bright);
+  --app-color-toolbar-background: var(--sys-color-base);
 }

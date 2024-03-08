@@ -2312,7 +2312,7 @@ export class StylesSidebarPropertyRenderer {
           new LegacyRegexMatcher(asLineMatch(InlineEditor.CSSLengthUtils.CSSLengthRegex), this.lengthHandler));
     }
 
-    renderPropertyValue(this.propertyValue, matchers, this.propertyName)
+    renderPropertyValue(this.propertyName, this.propertyValue, matchers)
         .forEach(node => valueElement.appendChild(node));
     valueElement.normalize();
     return valueElement;

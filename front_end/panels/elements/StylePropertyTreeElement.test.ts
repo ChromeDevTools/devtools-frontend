@@ -10,6 +10,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type * as LegacyUI from '../../ui/legacy/legacy.js';
 
@@ -23,25 +24,25 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
   let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
   let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;
   let mockMatchedStyles: sinon.SinonStubbedInstance<SDK.CSSMatchedStyles.CSSMatchedStyles>;
+  let mockVariableMap: Record<string, string>;
 
   beforeEach(async () => {
     stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    mockVariableMap = {
+      'var(--a)': 'red',
+      'var(--b)': 'blue',
+      'var(--blue)': 'blue',
+      'var(--space)': 'shorter hue',
+      'var(--garbage-space)': 'this-is-garbage-text',
+      'var(--prop)': 'customproperty',
+      'var(--zero)': '0',
+    };
 
     mockStylePropertiesSection = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
     mockCssStyleDeclaration = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     mockMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
     mockMatchedStyles.keyframes.returns([]);
     mockMatchedStyles.computeSingleVariableValue.callsFake((_, param) => {
-      const mockVariableMap: Record<string, string> = {
-        'var(--a)': 'red',
-        'var(--b)': 'blue',
-        'var(--blue)': 'blue',
-        'var(--space)': 'shorter hue',
-        'var(--garbage-space)': 'this-is-garbage-text',
-        'var(--prop)': 'customproperty',
-        'var(--zero)': '0',
-      };
-
       if (!mockVariableMap[param]) {
         return {
           computedValue: null,
@@ -630,27 +631,29 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           newProperty: true,
         });
 
-        const ast = Elements.PropertyParser.tokenizePropertyValue(
-            stylePropertyTreeElement.value, stylePropertyTreeElement.name);
+        const ast =
+            Elements.PropertyParser.tokenizeDeclaration(stylePropertyTreeElement.name, stylePropertyTreeElement.value);
         assertNotNullOrUndefined(ast);
-        const {computedText} = Elements.PropertyParser.BottomUpTreeMatching.walk(
+        const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(
             ast, [Elements.StylePropertyTreeElement.VariableRenderer.matcher(
                      stylePropertyTreeElement, stylePropertyTreeElement.property.ownerStyle)]);
         const res = {
-          hasUnresolvedVars: computedText.hasUnresolvedVars(0, value.length),
-          computedText: computedText.get(0, value.length),
+          hasUnresolvedVars: matching.hasUnresolvedVars(ast.tree),
+          computedText: matching.getComputedText(ast.tree),
         };
         return res;
       }
 
-      assert.deepStrictEqual(await matchProperty('var( --blue    )'), {hasUnresolvedVars: false, computedText: 'blue'});
       assert.deepStrictEqual(
-          await matchProperty('var(--no, var(--blue))'), {hasUnresolvedVars: false, computedText: 'blue'});
+          await matchProperty('var( --blue    )'), {hasUnresolvedVars: false, computedText: 'color: blue'});
       assert.deepStrictEqual(
-          await matchProperty('pre var(--no) post'), {hasUnresolvedVars: true, computedText: 'pre var(--no) post'});
+          await matchProperty('var(--no, var(--blue))'), {hasUnresolvedVars: false, computedText: 'color: blue'});
+      assert.deepStrictEqual(
+          await matchProperty('pre var(--no) post'),
+          {hasUnresolvedVars: true, computedText: 'color: pre var(--no) post'});
       assert.deepStrictEqual(
           await matchProperty('var(--no, var(--no2))'),
-          {hasUnresolvedVars: true, computedText: 'var(--no, var(--no2))'});
+          {hasUnresolvedVars: true, computedText: 'color: var(--no, var(--no2))'});
     });
   });
 
@@ -709,6 +712,365 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(
           (stylePropertyTreeElement.valueElement?.firstElementChild as HTMLElement | null | undefined)?.title,
           '"\u2716"');
+    });
+  });
+
+  describe('ShadowRenderer', () => {
+    it('parses shadows correctly', () => {
+      const parseShadow = (property: string, value: string, success: boolean) => {
+        const stylePropertyTreeElement = getTreeElement(property, value);
+        stylePropertyTreeElement.updateTitle();
+
+        assert.strictEqual(
+            stylePropertyTreeElement.valueElement?.firstElementChild instanceof InlineEditor.Swatches.CSSShadowSwatch,
+            success);
+        assert.strictEqual(stylePropertyTreeElement.valueElement?.textContent, value);
+      };
+
+      const parseTextShadowSuccess = (value: string) => parseShadow('text-shadow', value, true);
+      const parseTextShadowFailure = (value: string) => parseShadow('text-shadow', value, false);
+      const parseBoxShadowSuccess = (value: string) => parseShadow('box-shadow', value, true);
+      const parseBoxShadowFailure = (value: string) => parseShadow('box-shadow', value, false);
+
+      parseTextShadowSuccess('0 0');
+      parseTextShadowSuccess('1px 2px');
+      parseTextShadowSuccess('1px 2px black');
+      parseTextShadowSuccess('1px 2px 2px');
+      parseTextShadowSuccess('rgb(0, 0, 0) 1px 2px 2px');
+      parseTextShadowSuccess('1px 2px 2px rgb(0, 0, 0)');
+      parseTextShadowSuccess('1px 2px black, 0 0 #ffffff');
+      parseTextShadowSuccess('1px -2px black, 0 0 rgb(0, 0, 0), 3px 3.5px 3px');
+      parseTextShadowSuccess('1px -2px black, 0 0 rgb(0, 0, 0), 3px 3.5px 3px !important');
+      parseTextShadowSuccess('1px 2px black, , 0 0 #ffffff');
+
+      parseTextShadowFailure('');
+      parseTextShadowFailure('0');
+      parseTextShadowFailure('1 2 black !important');
+      parseTextShadowFailure('1px black 2px');
+      parseTextShadowFailure('1px 2px 2px 3px');
+      parseTextShadowFailure('inset 1px 2px 2px');
+      parseTextShadowFailure('red 1px 2px 2px red');
+      parseTextShadowFailure('1px 2px rgb(0, 0, 0) 2px');
+      parseTextShadowFailure('hello 1px 2px');
+      parseTextShadowFailure('1px 2px black 0 0 #ffffff');
+      // TODO(crbug.com/40945390) Add coverage after rolling codemirror: parseTextShadowFailure('1px2px');
+      parseTextShadowFailure('1px 2pxrgb(0, 0, 0)');
+
+      parseBoxShadowSuccess('0 0');
+      parseBoxShadowSuccess('1px 2px');
+      parseBoxShadowSuccess('1px 2px black');
+      parseBoxShadowSuccess('1px 2px 2px');
+      parseBoxShadowSuccess('1px 2px 2px 3px');
+      parseBoxShadowSuccess('inset 1px 2px');
+      parseBoxShadowSuccess('1px 2px inset');
+      parseBoxShadowSuccess('INSET 1px 2px 2px 3px');
+      parseBoxShadowSuccess('rgb(0, 0, 0) 1px 2px 2px');
+      parseBoxShadowSuccess('inset rgb(0, 0, 0) 1px 2px 2px');
+      parseBoxShadowSuccess('inset 1px 2px 2px 3px rgb(0, 0, 0)');
+      parseBoxShadowSuccess('1px 2px 2px 3px rgb(0, 0, 0) inset');
+      parseBoxShadowSuccess('1px 2px black, inset 0 0 #ffffff');
+      parseBoxShadowSuccess('1px -2px black, inset 0 0 rgb(0, 0, 0), 3px 3.5px 3px 4px');
+      parseBoxShadowSuccess('1px 2px black, , 0 0 #ffffff');
+
+      parseBoxShadowFailure('');
+      parseBoxShadowFailure('0');
+      parseBoxShadowFailure('1 2 black');
+      parseBoxShadowFailure('1px black 2px');
+      parseBoxShadowFailure('1px 2px 2px 3px 4px');
+      parseBoxShadowFailure('1px 2px 2px inset 3px');
+      parseBoxShadowFailure('inset 1px 2px 2px inset');
+      parseBoxShadowFailure('1px 2px rgb(0, 0, 0) 2px');
+      parseBoxShadowFailure('hello 1px 2px');
+      parseBoxShadowFailure('1px 2px black 0 0 #ffffff');
+      // TODO(crbug.com/40945390) Add coverage after rolling codemirror: parseBoxShadowFailure('1px2px');
+      parseBoxShadowFailure('1px 2pxrgb(0, 0, 0)');
+    });
+
+    it('renders the shadow swatch and color swatch', () => {
+      const stylePropertyTreeElement = getTreeElement('box-shadow', 'inset 10px 10px blue');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.instanceOf(
+          stylePropertyTreeElement.valueElement?.firstElementChild, InlineEditor.Swatches.CSSShadowSwatch);
+      const colorSwatch =
+          stylePropertyTreeElement.valueElement?.firstElementChild?.querySelector('devtools-color-swatch');
+      assertNotNullOrUndefined(colorSwatch);
+      assert.strictEqual(colorSwatch.getColor()?.asString(), 'blue');
+    });
+
+    it('renders multiple icons for multiple shadows', () => {
+      const stylePropertyTreeElement = getTreeElement('box-shadow', 'inset 10px 11px blue, notashadow, 6px 5px red');
+      stylePropertyTreeElement.updateTitle();
+
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 2);
+      assert.strictEqual(swatches[0].textContent, 'inset 10px 11px blue');
+      assert.strictEqual(swatches[1].textContent, '6px 5px red');
+    });
+
+    it('correctly parses text-shadow', () => {
+      const stylePropertyTreeElement =
+          getTreeElement('text-shadow', 'inset 10px 11px blue, 6px 5px red, 5px 5px 0 0 yellow');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 1);
+      assert.strictEqual(swatches[0].textContent, '6px 5px red');
+    });
+
+    it('renders a color-mix child', () => {
+      const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px color-mix(in srgb, red, blue)');
+      stylePropertyTreeElement.updateTitle();
+      assert.instanceOf(
+          stylePropertyTreeElement.valueElement?.firstElementChild, InlineEditor.Swatches.CSSShadowSwatch);
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-mix-swatch');
+      assertNotNullOrUndefined(swatches);
+    });
+
+    it('renders shadow icon in the presence of a var()', () => {
+      mockVariableMap['var(--offset)'] = '10px 10px';
+      mockVariableMap['var(--shadow)'] = '10px 10px blue';
+
+      const stylePropertyTreeElement = getTreeElement('box-shadow', 'var(--offset) red, var(--shadow)');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 2);
+      assert.strictEqual(swatches[0].textContent, 'var(--offset) red');
+      assert.strictEqual(swatches[1].textContent, 'var(--shadow)');
+    });
+
+    it('opens a shadow editor with the correct values', () => {
+      mockVariableMap['var(--offset)'] = '10px 10px';
+
+      const stylePropertyTreeElement =
+          getTreeElement('box-shadow', 'var(--offset) red, inset 8px 9px 10px 11px yellow');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 2);
+
+      const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
+
+      const editorProperties = (editor: InlineEditor.CSSShadowEditor.CSSShadowEditor): string[] =>
+          Array.from(editor.contentElement.querySelectorAll('.shadow-editor-field'))
+              .map(
+                  field => field.querySelector('input')?.value ??
+                      Array.from(field.querySelectorAll('button'))
+                          .map(button => button.classList.contains('enabled') ? button.textContent : undefined)
+                          .filter((b): b is string => Boolean(b)))
+              .flat();
+
+      {
+        swatches[0].iconElement().click();
+        assert.isTrue(showPopoverStub.calledOnce);
+        assert.instanceOf(showPopoverStub.args[0][0], InlineEditor.CSSShadowEditor.CSSShadowEditor);
+        const editor = showPopoverStub.args[0][0] as InlineEditor.CSSShadowEditor.CSSShadowEditor;
+        const text = editorProperties(editor);
+        assert.deepStrictEqual(text, ['Outset', '10px', '10px', '0', '0']);
+      }
+
+      {
+        swatches[1].iconElement().click();
+        assert.isTrue(showPopoverStub.calledTwice);
+        assert.instanceOf(showPopoverStub.args[1][0], InlineEditor.CSSShadowEditor.CSSShadowEditor);
+        const editor = showPopoverStub.args[1][0] as InlineEditor.CSSShadowEditor.CSSShadowEditor;
+        const text = editorProperties(editor);
+        assert.deepStrictEqual(text, ['Inset', '8px', '9px', '10px', '11px']);
+      }
+    });
+
+    it('updates the style for shadow editor changes', () => {
+      const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px red');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 1);
+      const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
+      swatches[0].iconElement().click();
+      assert.isTrue(showPopoverStub.calledOnce);
+
+      const applyStyleTextStub = sinon.stub(stylePropertyTreeElement, 'applyStyleText');
+      const button =
+          showPopoverStub.args[0][0].contentElement.querySelector('.shadow-editor-button-right') as HTMLElement | null;
+      button?.click();
+
+      assert.isTrue(applyStyleTextStub.calledOnceWithExactly('box-shadow: inset 10px 11px red', false));
+    });
+
+    it('updates the style for shadow editor changes and respects ordering', () => {
+      mockVariableMap['var(--y-color)'] = '11px red';
+      const stylePropertyTreeElement = getTreeElement('box-shadow', '10px var(--y-color)');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.strictEqual(swatches.length, 1);
+      const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
+      swatches[0].iconElement().click();
+      assert.isTrue(showPopoverStub.calledOnce);
+
+      const applyStyleTextStub = sinon.stub(stylePropertyTreeElement, 'applyStyleText');
+      const inputs = Array.from(showPopoverStub.args[0][0].contentElement.querySelectorAll('.shadow-editor-field'))
+                         .map(field => field.querySelector('input'));
+      assertNotNullOrUndefined(inputs[3]);
+      inputs[3].value = '13px';
+      inputs[3].dispatchEvent(new InputEvent('input', {data: '13px'}));
+
+      assert.isTrue(applyStyleTextStub.calledOnceWithExactly('box-shadow: 10px 11px 13px red', false));
+    });
+
+    it('correctly builds and updates the shadow model', () => {
+      mockVariableMap['var(--props)'] = '12px 13px red';
+      const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px red, var(--props)');
+      stylePropertyTreeElement.updateTitle();
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.lengthOf(swatches, 2);
+
+      assert.isTrue(swatches[0].model().isBoxShadow());
+      assert.isFalse(swatches[0].model().inset());
+      assert.strictEqual(swatches[0].model().offsetX().asCSSText(), '10px');
+      assert.strictEqual(swatches[0].model().offsetY().asCSSText(), '11px');
+      assert.strictEqual(swatches[0].model().blurRadius().asCSSText(), '0');
+      assert.strictEqual(swatches[0].model().spreadRadius().asCSSText(), '0');
+
+      swatches[0].model().setSpreadRadius(new InlineEditor.CSSShadowEditor.CSSLength(8, 'px'));
+      swatches[0].model().setBlurRadius(new InlineEditor.CSSShadowEditor.CSSLength(5, 'px'));
+      assert.strictEqual(swatches[0].model().blurRadius().asCSSText(), '5px');
+      assert.strictEqual(swatches[0].model().spreadRadius().asCSSText(), '8px');
+
+      assert.isTrue(swatches[1].model().isBoxShadow());
+      assert.isFalse(swatches[1].model().inset());
+      assert.strictEqual(swatches[1].model().offsetX().asCSSText(), '12px');
+      assert.strictEqual(swatches[1].model().offsetY().asCSSText(), '13px');
+      assert.strictEqual(swatches[1].model().blurRadius().asCSSText(), '0');
+      assert.strictEqual(swatches[1].model().spreadRadius().asCSSText(), '0');
+
+      swatches[1].model().setBlurRadius(new InlineEditor.CSSShadowEditor.CSSLength(5, 'px'));
+      swatches[1].model().setSpreadRadius(new InlineEditor.CSSShadowEditor.CSSLength(8, 'px'));
+      assert.strictEqual(swatches[1].model().blurRadius().asCSSText(), '5px');
+      assert.strictEqual(swatches[1].model().spreadRadius().asCSSText(), '8px');
+    });
+
+    class StubSyntaxnode implements CodeMirror.SyntaxNode {
+      parent: CodeMirror.SyntaxNode|null = null;
+      firstChild: CodeMirror.SyntaxNode|null = null;
+      lastChild: CodeMirror.SyntaxNode|null = null;
+      childAfter(): CodeMirror.SyntaxNode|null {
+        return null;
+      }
+      childBefore(): CodeMirror.SyntaxNode|null {
+        return null;
+      }
+      enter(): CodeMirror.SyntaxNode|null {
+        return null;
+      }
+      nextSibling: CodeMirror.SyntaxNode|null = null;
+      prevSibling: CodeMirror.SyntaxNode|null = null;
+      cursor(): CodeMirror.TreeCursor {
+        throw new Error('Method not implemented.');
+      }
+      resolve(): CodeMirror.SyntaxNode {
+        return this;
+      }
+      resolveInner(): CodeMirror.SyntaxNode {
+        return this;
+      }
+      enterUnfinishedNodesBefore(): CodeMirror.SyntaxNode {
+        return this;
+      }
+      toTree(): CodeMirror.Tree {
+        throw new Error('Method not implemented.');
+      }
+      getChild(): CodeMirror.SyntaxNode|null {
+        throw new Error('Method not implemented.');
+      }
+      getChildren(): CodeMirror.SyntaxNode[] {
+        throw new Error('Method not implemented.');
+      }
+      from: number = 0;
+      to: number = 0;
+      type = new CodeMirror.NodeType();
+      name: string = '';
+      tree: CodeMirror.Tree|null = null;
+      node: CodeMirror.SyntaxNode = this;
+      matchContext(): boolean {
+        return false;
+      }
+    }
+
+    it('shadow model renders text properties, authored properties, and computed text properties correctly', () => {
+      const renderingContext = sinon.createStubInstance(Elements.PropertyParser.RenderingContext);
+      const expansionContext = sinon.createStubInstance(Elements.PropertyParser.RenderingContext);
+      const y = new StubSyntaxnode();
+      const spread = new StubSyntaxnode();
+      const blur = new StubSyntaxnode();
+      const variable = new StubSyntaxnode();
+      const properties = [
+        {
+          value: '10px',
+          source: null,
+          expansionContext: null,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.X,
+        },
+        {
+          value: y,
+          source: null,
+          expansionContext: null,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.Y,
+        },
+        {
+          value: blur,
+          source: variable,
+          expansionContext,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.Blur,
+        },
+        {
+          value: spread,
+          source: variable,
+          expansionContext,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.Spread,
+        },
+      ];
+
+      sinon.stub(Elements.PropertyParser.Renderer, 'render').callsFake((nodeOrNodes, context) => {
+        if (!Array.isArray(nodeOrNodes)) {
+          nodeOrNodes = [nodeOrNodes];
+        }
+        const nodes = nodeOrNodes
+                          .map(node => {
+                            switch (node) {
+                              case y:
+                                return context === renderingContext && document.createTextNode('y');
+                              case blur:
+                                return context === expansionContext && document.createTextNode('blur');
+                              case spread:
+                                return context === expansionContext && document.createTextNode('spread');
+                              case variable:
+                                return context === renderingContext && document.createTextNode('var()');
+                              default:
+                                return undefined;
+                            }
+                          })
+                          .filter((b): b is Text => Boolean(b));
+        return {
+          nodes,
+          nodeGroups: [nodes],
+          cssControls: new Map(),
+        };
+      });
+      const model = new Elements.StylePropertyTreeElement.ShadowModel(
+          Elements.PropertyParser.ShadowType.BoxShadow, properties, renderingContext);
+
+      const container = document.createElement('div');
+      model.renderContents(container);
+      assert.strictEqual(container.textContent, '10px y var()');
+
+      model.setBlurRadius(new InlineEditor.CSSShadowEditor.CSSLength(12, 'px'));
+      model.renderContents(container);
+      assert.strictEqual(container.textContent, '10px y 12px spread');
+      assert.deepStrictEqual(properties.map(p => p.source), [null, null, null, null]);
     });
   });
 });

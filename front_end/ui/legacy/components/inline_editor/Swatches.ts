@@ -2,15 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../core/common/common.js';
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import bezierSwatchStyles from './bezierSwatch.css.js';
-import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
-import {type CSSShadowModel} from './CSSShadowModel.js';
+import {type CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
 export class BezierSwatch extends HTMLSpanElement {
@@ -59,77 +57,40 @@ export class BezierSwatch extends HTMLSpanElement {
   private static constructorInternal: (() => Element)|null = null;
 }
 
-export class CSSShadowSwatch extends HTMLSpanElement {
-  private readonly iconElementInternal: IconButton.Icon.Icon;
-  private contentElement: HTMLElement;
-  private colorSwatchInternal!: ColorSwatch|null;
-  private modelInternal?: CSSShadowModel;
+export class CSSShadowSwatch extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`css-shadow-swatch`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #icon: IconButton.Icon.Icon;
+  readonly #model: CSSShadowModel;
 
-  constructor() {
+  constructor(model: CSSShadowModel) {
     super();
-    const root = UI.Utils.createShadowRootWithCoreStyles(this, {
-      cssFile: [cssShadowSwatchStyles],
-      delegatesFocus: undefined,
-    });
-    this.iconElementInternal = IconButton.Icon.create('shadow', 'shadow-swatch-icon');
-    root.appendChild(this.iconElementInternal);
-    root.createChild('slot');
-    this.contentElement = this.createChild('span');
-  }
+    this.#model = model;
+    this.#shadow.adoptedStyleSheets = [
+      cssShadowSwatchStyles,
+    ];
 
-  static create(): CSSShadowSwatch {
-    let constructor: (() => Element)|((() => Element) | null) = CSSShadowSwatch.constructorInternal;
-    if (!constructor) {
-      constructor = UI.Utils.registerCustomElement('span', 'css-shadow-swatch', CSSShadowSwatch);
-      CSSShadowSwatch.constructorInternal = constructor;
-    }
+    LitHtml.render(
+        LitHtml.html`<${IconButton.Icon.Icon.litTagName} name="shadow" class="shadow-swatch-icon"></${
+            IconButton.Icon.Icon.litTagName}><slot></slot>`,
+        this.#shadow, {host: this});
 
-    return constructor() as CSSShadowSwatch;
+    this.#icon = this.#shadow.querySelector(IconButton.Icon.Icon.litTagName.value as string) as IconButton.Icon.Icon;
   }
 
   model(): CSSShadowModel {
-    return this.modelInternal as CSSShadowModel;
-  }
-
-  setCSSShadow(model: CSSShadowModel): void {
-    this.modelInternal = model;
-    this.contentElement.removeChildren();
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(
-        model.asCSSText(), [/!important/g, /inset/g, Common.Color.Regex]);
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-      if (result.regexIndex === 2) {
-        if (!this.colorSwatchInternal) {
-          this.colorSwatchInternal = new ColorSwatch();
-          const value = this.colorSwatchInternal.createChild('span');
-          this.colorSwatchInternal.addEventListener(ColorChangedEvent.eventName, (event: ColorChangedEvent) => {
-            value.textContent = event.data.text;
-          });
-        }
-
-        this.colorSwatchInternal.renderColor(model.color());
-        const value = this.colorSwatchInternal.querySelector('span');
-        if (value) {
-          value.textContent = model.color().getAuthoredText() ?? model.color().asString();
-        }
-        this.contentElement.appendChild(this.colorSwatchInternal);
-      } else {
-        this.contentElement.appendChild(document.createTextNode(result.value));
-      }
-    }
-  }
-
-  hideText(hide: boolean): void {
-    this.contentElement.hidden = hide;
+    return this.#model;
   }
 
   iconElement(): HTMLSpanElement {
-    return this.iconElementInternal;
+    return this.#icon;
   }
+}
 
-  colorSwatch(): ColorSwatch|null {
-    return this.colorSwatchInternal;
+customElements.define('css-shadow-swatch', CSSShadowSwatch);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'css-shadow-swatch': CSSShadowSwatch;
   }
-
-  private static constructorInternal: (() => Element)|null = null;
 }

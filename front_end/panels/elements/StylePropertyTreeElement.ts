@@ -22,6 +22,7 @@ import {
   BezierPopoverIcon,
   ColorSwatchPopoverIcon,
   ColorSwatchPopoverIconEvents,
+  ShadowEvents,
   ShadowSwatchPopoverHelper,
 } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
@@ -31,10 +32,10 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {
   AngleMatch,
   AngleMatcher,
+  ASTUtils,
   BezierMatch,
   BezierMatcher,
-  type BottomUpTreeMatching,
-  children,
+  BottomUpTreeMatching,
   ColorMatch,
   ColorMatcher,
   ColorMixMatch,
@@ -43,10 +44,15 @@ import {
   LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
+  type Match,
   Renderer,
-  type RenderingContext,
+  RenderingContext,
+  ShadowMatch,
+  ShadowMatcher,
+  ShadowType,
   StringMatch,
   StringMatcher,
+  tokenizeDeclaration,
   URLMatch,
   URLMatcher,
   VariableMatch,
@@ -262,7 +268,7 @@ export class ColorRenderer extends ColorMatch {
       valueChild.appendChild(document.createTextNode(this.text));
       return {valueChild};
     }
-    const {cssControls} = Renderer.renderInto(children(node), context, valueChild);
+    const {cssControls} = Renderer.renderInto(ASTUtils.children(node), context, valueChild);
     return {valueChild, cssControls};
   }
 
@@ -649,6 +655,305 @@ export class StringRenderer extends StringMatch {
   }
 }
 
+export const enum ShadowPropertyType {
+  X = 'x',
+  Y = 'y',
+  Spread = 'spread',
+  Blur = 'blur',
+  Inset = 'inset',
+  Color = 'color',
+}
+
+type ShadowProperty = {
+  value: string|CodeMirror.SyntaxNode,
+  source: CodeMirror.SyntaxNode|null,
+  expansionContext: RenderingContext|null,
+  propertyType: ShadowPropertyType,
+};
+
+type ShadowLengthProperty = ShadowProperty&{
+  length: InlineEditor.CSSShadowEditor.CSSLength,
+  propertyType: Exclude<ShadowPropertyType, ShadowPropertyType.Inset|ShadowPropertyType.Color>,
+};
+
+// The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
+// in on the other, so that modifications through the shadow editor can retain the property order in the authored text.
+// The model also looks through var()s by keeping a mapping between individual properties and any var()s they are coming
+// from, replacing the var() functions as needed with concrete values when edited.
+export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel {
+  readonly #properties: ShadowProperty[];
+  readonly #shadowType: ShadowType;
+  readonly #context: RenderingContext;
+
+  constructor(shadowType: ShadowType, properties: ShadowProperty[], context: RenderingContext) {
+    this.#shadowType = shadowType;
+    this.#properties = properties;
+    this.#context = context;
+  }
+  isBoxShadow(): boolean {
+    return this.#shadowType === ShadowType.BoxShadow;
+  }
+  inset(): boolean {
+    return Boolean(this.#properties.find(property => property.propertyType === ShadowPropertyType.Inset));
+  }
+  #length(lengthType: ShadowLengthProperty['propertyType']): InlineEditor.CSSShadowEditor.CSSLength {
+    return this.#properties.find((property): property is ShadowLengthProperty => property.propertyType === lengthType)
+               ?.length ??
+        InlineEditor.CSSShadowEditor.CSSLength.zero();
+  }
+  offsetX(): InlineEditor.CSSShadowEditor.CSSLength {
+    return this.#length(ShadowPropertyType.X);
+  }
+  offsetY(): InlineEditor.CSSShadowEditor.CSSLength {
+    return this.#length(ShadowPropertyType.Y);
+  }
+  blurRadius(): InlineEditor.CSSShadowEditor.CSSLength {
+    return this.#length(ShadowPropertyType.Blur);
+  }
+  spreadRadius(): InlineEditor.CSSShadowEditor.CSSLength {
+    return this.#length(ShadowPropertyType.Spread);
+  }
+
+  #needsExpansion(property: ShadowProperty): boolean {
+    return Boolean(property.expansionContext && property.source);
+  }
+
+  #expandPropertyIfNeeded(property: ShadowProperty): void {
+    if (this.#needsExpansion(property)) {
+      // Rendering prefers `source` if present. It's sufficient to clear it in order to switch rendering to render the
+      // individual properties directly.
+      const source = property.source;
+      this.#properties.filter(property => property.source === source).forEach(property => {
+        property.source = null;
+      });
+    }
+  }
+
+  #expandOrGetProperty(propertyType: Exclude<ShadowPropertyType, ShadowLengthProperty['propertyType']>):
+      {property: ShadowProperty|undefined, index: number};
+  #expandOrGetProperty(propertyType: ShadowLengthProperty['propertyType']):
+      {property: ShadowLengthProperty|undefined, index: number};
+  #expandOrGetProperty(propertyType: ShadowPropertyType): {property: ShadowProperty|undefined, index: number} {
+    const index = this.#properties.findIndex(property => property.propertyType === propertyType);
+    const property = index >= 0 ? this.#properties[index] : undefined;
+    property && this.#expandPropertyIfNeeded(property);
+    return {property, index};
+  }
+
+  setInset(inset: boolean): void {
+    if (!this.isBoxShadow()) {
+      return;
+    }
+
+    const {property, index} = this.#expandOrGetProperty(ShadowPropertyType.Inset);
+    if (property) {
+      // For `inset`, remove the entry if value is false, otherwise don't touch it.
+      if (!inset) {
+        this.#properties.splice(index, 1);
+      }
+    } else {
+      this.#properties.unshift(
+          {value: 'inset', source: null, expansionContext: null, propertyType: ShadowPropertyType.Inset});
+    }
+  }
+  #setLength(value: InlineEditor.CSSShadowEditor.CSSLength, propertyType: ShadowLengthProperty['propertyType']): void {
+    const {property} = this.#expandOrGetProperty(propertyType);
+    if (property) {
+      property.value = value.asCSSText();
+      property.length = value;
+      property.source = null;
+    } else {
+      // Lengths are ordered X, Y, Blur, Spread, with the latter two being optional. When inserting an optional property
+      // we need to insert it after Y or after Blur, depending on what's being inserted and which properties are
+      // present.
+      const insertionIdx = 1 +
+          this.#properties.findLastIndex(
+              property => property.propertyType === ShadowPropertyType.Y ||
+                  (propertyType === ShadowPropertyType.Spread && property.propertyType === ShadowPropertyType.Blur));
+      if (insertionIdx > 0 && insertionIdx < this.#properties.length &&
+          this.#needsExpansion(this.#properties[insertionIdx]) &&
+          this.#properties[insertionIdx - 1].source === this.#properties[insertionIdx].source) {
+        // This prevents the edge case where insertion after the last length would break up a group of values that
+        // require expansion.
+        this.#expandPropertyIfNeeded(this.#properties[insertionIdx]);
+      }
+      this.#properties.splice(
+          insertionIdx, 0,
+          {value: value.asCSSText(), length: value, source: null, expansionContext: null, propertyType} as
+              ShadowLengthProperty);
+    }
+  }
+  setOffsetX(value: InlineEditor.CSSShadowEditor.CSSLength): void {
+    this.#setLength(value, ShadowPropertyType.X);
+  }
+  setOffsetY(value: InlineEditor.CSSShadowEditor.CSSLength): void {
+    this.#setLength(value, ShadowPropertyType.Y);
+  }
+  setBlurRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void {
+    this.#setLength(value, ShadowPropertyType.Blur);
+  }
+  setSpreadRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void {
+    if (this.isBoxShadow()) {
+      this.#setLength(value, ShadowPropertyType.Spread);
+    }
+  }
+
+  renderContents(parent: HTMLElement): void {
+    parent.removeChildren();
+    const span = parent.createChild('span');
+    let previousSource = null;
+    for (const property of this.#properties) {
+      if (!property.source || property.source !== previousSource) {
+        if (property !== this.#properties[0]) {
+          span.append(' ');
+        }
+        // If `source` is present on the property that means it came from a var() and we'll use that to render.
+        if (property.source) {
+          span.append(...Renderer.render(property.source, this.#context).nodes);
+        } else if (typeof property.value === 'string') {
+          span.append(property.value);
+        } else {
+          span.append(...Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
+        }
+      }
+      previousSource = property.source;
+    }
+  }
+}
+
+export class ShadowRenderer extends ShadowMatch {
+  readonly #treeElement: StylePropertyTreeElement;
+  constructor(text: string, type: ShadowType, treeElement: StylePropertyTreeElement) {
+    super(text, type);
+    this.#treeElement = treeElement;
+  }
+
+  shadowModel(shadow: CodeMirror.SyntaxNode[], context: RenderingContext): null|ShadowModel {
+    const properties: Array<ShadowProperty|ShadowLengthProperty> = [];
+    const missingLengths: ShadowLengthProperty['propertyType'][] =
+        [ShadowPropertyType.Spread, ShadowPropertyType.Blur, ShadowPropertyType.Y, ShadowPropertyType.X];
+    let stillAcceptsLengths = true;
+
+    // We're parsing the individual shadow properties into an array here retaining the ordering. This also looks through
+    // var() functions by re-parsing the variable values on the fly. For properties coming from a var() we're keeping
+    // track of their origin to allow for adhoc expansion when one of those properties is edited.
+
+    const queue: {
+      value: CodeMirror.SyntaxNode,
+      source: CodeMirror.SyntaxNode,
+      match: Match|undefined,
+      expansionContext: RenderingContext|null,
+    }[] =
+        shadow.map(
+            value => ({value, source: value, match: context.matchedResult.getMatch(value), expansionContext: null}));
+    for (let item = queue.shift(); item; item = queue.shift()) {
+      const {value, source, match, expansionContext} = item;
+      const text = (expansionContext ?? context).ast.text(value);
+      if (value.name === 'NumberLiteral') {
+        if (!stillAcceptsLengths) {
+          return null;
+        }
+        const propertyType = missingLengths.pop();
+        if (propertyType === undefined ||
+            (propertyType === ShadowPropertyType.Spread && this.shadowType === ShadowType.TextShadow)) {
+          return null;
+        }
+        const length = InlineEditor.CSSShadowEditor.CSSLength.parse(text);
+        if (!length) {
+          return null;
+        }
+        properties.push({value, source, length, propertyType, expansionContext});
+      } else if (match?.type === 'var') {
+        // This doesn't come from any computed text, so we can rely on context here
+        const computedValue = context.matchedResult.getComputedText(value);
+        const computedValueAst = tokenizeDeclaration('--property', computedValue);
+        if (!computedValueAst) {
+          return null;
+        }
+        const matches =
+            BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [ColorRenderer.matcher(this.#treeElement)]);
+        if (matches.hasUnresolvedVars(matches.ast.tree)) {
+          return null;
+        }
+        queue.unshift(...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree))
+                          .map(matchedNode => ({
+                                 value: matchedNode,
+                                 source: value,
+                                 match: matches.getMatch(matchedNode),
+                                 expansionContext: new RenderingContext(computedValueAst, matches),
+                               })));
+      } else {
+        // The length properties must come in one block, so if there were any lengths before, followed by a non-length
+        // property, we will not allow any future lengths.
+        stillAcceptsLengths = missingLengths.length === 4;
+        if (value.name === 'ValueName' && text.toLowerCase() === 'inset') {
+          if (this.shadowType === ShadowType.TextShadow ||
+              properties.find(({propertyType}) => propertyType === ShadowPropertyType.Inset)) {
+            return null;
+          }
+          properties.push({value, source, propertyType: ShadowPropertyType.Inset, expansionContext});
+        } else if (match?.type === 'color' || match?.type === 'color-mix') {
+          if (properties.find(({propertyType}) => propertyType === ShadowPropertyType.Color)) {
+            return null;
+          }
+          properties.push({value, source, propertyType: ShadowPropertyType.Color, expansionContext});
+        } else if (value.name !== 'Comment' && value.name !== 'Important') {
+          return null;
+        }
+      }
+    }
+    if (missingLengths.length > 2) {
+      // X and Y are mandatory
+      return null;
+    }
+    return new ShadowModel(this.shadowType, properties, context);
+  }
+
+  override render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
+    const shadows = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(node)));
+    const result: Node[] = [];
+
+    for (const shadow of shadows) {
+      const model = this.shadowModel(shadow, context);
+      const isImportant = shadow.find(node => node.name === 'Important');
+
+      if (shadow !== shadows[0]) {
+        result.push(document.createTextNode(', '));
+      }
+
+      if (!model) {
+        const {nodes} = Renderer.render(shadow, context);
+        result.push(...nodes);
+        continue;
+      }
+
+      const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
+      swatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({click: true})}`);
+      swatch.iconElement().addEventListener('click', () => {
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
+      });
+      model.renderContents(swatch);
+      const popoverHelper = new ShadowSwatchPopoverHelper(
+          this.#treeElement, this.#treeElement.parentPane().swatchPopoverHelper(), swatch);
+      popoverHelper.addEventListener(ShadowEvents.ShadowChanged, () => {
+        model.renderContents(swatch);
+        void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), false);
+      });
+      result.push(swatch);
+
+      if (isImportant) {
+        result.push(...[document.createTextNode(' '), ...Renderer.render(isImportant, context).nodes]);
+      }
+    }
+
+    return result;
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): ShadowMatcher {
+    return new ShadowMatcher((text, type) => new ShadowRenderer(text, type, treeElement));
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -789,52 +1094,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private processFont(text: string): Node {
     this.#parentSection.registerFontProperty(this);
     return document.createTextNode(text);
-  }
-
-  private processShadow(propertyValue: string, propertyName: string): Node {
-    if (!this.editable()) {
-      return document.createTextNode(propertyValue);
-    }
-    let shadows;
-    if (propertyName === 'text-shadow') {
-      shadows = InlineEditor.CSSShadowModel.CSSShadowModel.parseTextShadow(propertyValue);
-    } else {
-      shadows = InlineEditor.CSSShadowModel.CSSShadowModel.parseBoxShadow(propertyValue);
-    }
-    if (!shadows.length) {
-      return document.createTextNode(propertyValue);
-    }
-    const container = document.createDocumentFragment();
-    const swatchPopoverHelper = this.parentPaneInternal.swatchPopoverHelper();
-    for (let i = 0; i < shadows.length; i++) {
-      if (i !== 0) {
-        container.appendChild(document.createTextNode(', '));
-      }  // Add back commas and spaces between each shadow.
-      // TODO(flandy): editing the property value should use the original value with all spaces.
-      const cssShadowSwatch = InlineEditor.Swatches.CSSShadowSwatch.create();
-      cssShadowSwatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({click: true})}`);
-      cssShadowSwatch.setCSSShadow(shadows[i]);
-      cssShadowSwatch.iconElement().addEventListener('click', () => {
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
-      });
-      new ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
-      const colorSwatch = cssShadowSwatch.colorSwatch();
-      if (colorSwatch) {
-        colorSwatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
-          Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
-        });
-        const swatchIcon = new ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
-        swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
-          // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
-          colorSwatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorChangedEvent(ev.data));
-        });
-        colorSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, () => {
-          void this.applyStyleText(this.renderedPropertyText(), false);
-        });
-      }
-      container.appendChild(cssShadowSwatch);
-    }
-    return container;
   }
 
   private processGrid(propertyValue: string, _propertyName: string): Node {
@@ -1094,10 +1353,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           LinkableNameRenderer.matcher(this),
           BezierRenderer.matcher(this),
           StringRenderer.matcher(),
+          ShadowRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
       propertyRenderer.setFontHandler(this.processFont.bind(this));
-      propertyRenderer.setShadowHandler(this.processShadow.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
     }

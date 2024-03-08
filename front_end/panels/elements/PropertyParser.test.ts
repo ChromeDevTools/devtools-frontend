@@ -83,16 +83,17 @@ function textFragments(nodes: Node[]): Array<string|null> {
 }
 
 function matchSingleValue<T extends Elements.PropertyParser.Match, ArgTs extends unknown[]>(
-    name: string|undefined, value: string, matchType: abstract new (...args: ArgTs) => T,
+    name: string, value: string, matchType: abstract new (...args: ArgTs) => T,
     matcher: Elements.PropertyParser.Matcher):
     {ast: Elements.PropertyParser.SyntaxTree|null, match: T|null, text: string} {
-  const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+  const ast = Elements.PropertyParser.tokenizeDeclaration(name, value);
   if (!ast) {
     return {ast, match: null, text: value};
   }
 
   const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
-  const match = matchedResult.getMatch(ast.tree);
+  const matchedNode = TreeSearch.find(ast, n => matchedResult.getMatch(n) instanceof matchType);
+  const match = matchedNode && matchedResult.getMatch(matchedNode);
 
   return {
     ast,
@@ -117,41 +118,54 @@ function nilRenderer<Base extends Constructor>(base: Base): Elements.PropertyPar
   };
 }
 
-function tokenizePropertyValue(value: string, name?: string): Elements.PropertyParser.SyntaxTree {
-  const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+function tokenizeDeclaration(name: string, value: string): Elements.PropertyParser.SyntaxTree {
+  const ast = Elements.PropertyParser.tokenizeDeclaration(name, value);
   Platform.assertNotNullOrUndefined(ast, Printer.rule(`*{${name}: ${value};}`));
   return ast;
 }
 
 function injectVariableSubstitutions(variables: Record<string, string>) {
-  const {getComputedText} = Elements.PropertyParser.BottomUpTreeMatching.prototype;
-  sinon.stub(Elements.PropertyParser.BottomUpTreeMatching.prototype, 'getComputedText')
-      .callsFake(function(
-          this: Elements.PropertyParser.BottomUpTreeMatching, range: {from: number, to: number}): string {
-        if (this.computedText.chunkCount === 0) {
-          for (const [varName, value] of Object.entries(variables)) {
-            const varText = `var(${varName})`;
-            for (let offset = this.ast.propertyValue.indexOf(varText); offset >= 0;
-                 offset = this.ast.propertyValue.indexOf(varText, offset + 1)) {
-              this.computedText.push({text: varText, type: 'var', render: () => [], computedText: () => value}, offset);
-            }
-          }
+  const {getComputedText, getComputedTextRange} = Elements.PropertyParser.BottomUpTreeMatching.prototype;
+  function injectChunk(matching: Elements.PropertyParser.BottomUpTreeMatching): void {
+    if (matching.computedText.chunkCount === 0) {
+      const propertyOffset = matching.ast.rule.indexOf(matching.ast.propertyName ?? '--');
+      assert.isAbove(propertyOffset, 0);
+      for (const [varName, value] of Object.entries(variables)) {
+        const varText = `var(${varName})`;
+        for (let offset = matching.ast.rule.indexOf(varText); offset >= 0;
+             offset = matching.ast.rule.indexOf(varText, offset + 1)) {
+          matching.computedText.push(
+              {text: varText, type: 'var', render: () => [], computedText: () => value}, offset - propertyOffset);
         }
-        return getComputedText.call(this, range);
+      }
+    }
+  }
+
+  sinon.stub(Elements.PropertyParser.BottomUpTreeMatching.prototype, 'getComputedText')
+      .callsFake(function(this: Elements.PropertyParser.BottomUpTreeMatching, node: CodeMirror.SyntaxNode): string {
+        injectChunk(this);
+        return getComputedText.call(this, node);
+      });
+  sinon.stub(Elements.PropertyParser.BottomUpTreeMatching.prototype, 'getComputedTextRange')
+      .callsFake(function(
+          this: Elements.PropertyParser.BottomUpTreeMatching, from: CodeMirror.SyntaxNode,
+          to: CodeMirror.SyntaxNode): string {
+        injectChunk(this);
+        return getComputedTextRange.call(this, from, to);
       });
 }
 
 describe('PropertyParser', () => {
   it('parses text', () => {
     assert.deepStrictEqual(
-        textFragments(Elements.PropertyParser.renderPropertyValue('var(--v)', [])), ['var', '(', '--v', ')']);
+        textFragments(Elements.PropertyParser.renderPropertyValue('--p', 'var(--v)', [])), ['var', '(', '--v', ')']);
 
     assert.deepStrictEqual(
-        textFragments(Elements.PropertyParser.renderPropertyValue('/* comments are text */ 1px solid 4', [])),
+        textFragments(Elements.PropertyParser.renderPropertyValue('--p', '/* comments are text */ 1px solid 4', [])),
         ['/* comments are text */', ' ', '1px', ' ', 'solid', ' ', '4']);
     assert.deepStrictEqual(
         textFragments(Elements.PropertyParser.renderPropertyValue(
-            '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)', [])),
+            '--p', '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)', [])),
         [
           '2px', ' ', 'var',     '(', '--double', ',', ' ',   'var', '(',   '--fallback', ',',  ' ', 'black', ')',
           ')',   ' ', '#32a1ce', ' ', 'rgb',      '(', '124', ' ',   '125', ' ',          '21', ' ', '0',     ')',
@@ -230,14 +244,14 @@ describe('PropertyParser', () => {
     const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, []);
     const context = new Elements.PropertyParser.RenderingContext(ast, matchedResult);
     assert.deepStrictEqual(
-        textFragments(Elements.PropertyParser.Renderer.render(tree, context).nodes).join(''), `--property: ${property}`,
+        textFragments(Elements.PropertyParser.Renderer.render(tree, context).nodes).join(''), property,
         Printer.walk(ast).get());
   });
 
   it('parses comments', () => {
     const property = '/* color: red */blue/* color: red */';
-    const ast = tokenizePropertyValue(property);
-    const topNode = ast.tree.parent?.parent?.parent?.parent;
+    const ast = tokenizeDeclaration('--property', property);
+    const topNode = ast.tree.parent?.parent?.parent;
     Platform.assertNotNullOrUndefined(topNode);
     assert.strictEqual(
         Printer.walk(ast.subtree(topNode)).get(), ` StyleSheet: *{--property: /* color: red */blue/* color: red */;}
@@ -257,26 +271,28 @@ describe('PropertyParser', () => {
 
   it('renders trailing comments', () => {
     const property = '/* color: red */ blue /* color: red */';
-    assert.strictEqual(textFragments(Elements.PropertyParser.renderPropertyValue(property, [])).join(''), property);
+    assert.strictEqual(
+        textFragments(Elements.PropertyParser.renderPropertyValue('--p', property, [])).join(''), property);
   });
 
   it('renders malformed comments', () => {
     const property = 'red /* foo: bar';
-    assert.strictEqual(textFragments(Elements.PropertyParser.renderPropertyValue(property, [])).join(''), property);
+    assert.strictEqual(
+        textFragments(Elements.PropertyParser.renderPropertyValue('--p', property, [])).join(''), property);
   });
 
   it('correctly tokenizes invalid text', () => {
-    assert.isNull(Elements.PropertyParser.tokenizePropertyValue(''));
-    assert.isNull(Elements.PropertyParser.tokenizePropertyValue('/*'));
-    assert.isNull(Elements.PropertyParser.tokenizePropertyValue('}'));
+    assert.isNull(Elements.PropertyParser.tokenizeDeclaration('--p', ''));
+    assert.isNull(Elements.PropertyParser.tokenizeDeclaration('--p', '/*'));
+    assert.isNull(Elements.PropertyParser.tokenizeDeclaration('--p', '}'));
   });
 
   it('correctly parses property names', () => {
-    assert.strictEqual(tokenizePropertyValue('red', 'color /*comment*/')?.propertyName, 'color');
-    assert.strictEqual(tokenizePropertyValue('red', '/*comment*/color/*comment*/')?.propertyName, 'color');
-    assert.strictEqual(tokenizePropertyValue('red', ' /*comment*/color')?.propertyName, 'color');
-    assert.strictEqual(tokenizePropertyValue('red', 'co/*comment*/lor')?.propertyName, 'lor');
-    assert.strictEqual(tokenizePropertyValue('red', 'co:lor')?.propertyName, undefined);
+    assert.strictEqual(tokenizeDeclaration('color /*comment*/', 'red')?.propertyName, 'color');
+    assert.strictEqual(tokenizeDeclaration('/*comment*/color/*comment*/', 'red')?.propertyName, 'color');
+    assert.strictEqual(tokenizeDeclaration(' /*comment*/color', 'red')?.propertyName, 'color');
+    assert.strictEqual(tokenizeDeclaration('co/*comment*/lor', 'red')?.propertyName, 'lor');
+    assert.isNull(Elements.PropertyParser.tokenizeDeclaration('co:lor', 'red'));
   });
 
   it('parses colors', () => {
@@ -308,7 +324,7 @@ describe('PropertyParser', () => {
 
   it('parses colors in masks', () => {
     for (const succeed of ['mask', 'mask-image', 'mask-border', 'mask-border-source']) {
-      const ast = Elements.PropertyParser.tokenizePropertyValue('linear-gradient(to top, red, var(--other))', succeed);
+      const ast = Elements.PropertyParser.tokenizeDeclaration(succeed, 'linear-gradient(to top, red, var(--other))');
       Platform.assertNotNullOrUndefined(ast, succeed);
       const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(
           ast, [new Elements.PropertyParser.ColorMatcher(nilRenderer(Elements.PropertyParser.ColorMatch))]);
@@ -557,21 +573,21 @@ describe('PropertyParser', () => {
   });
 
   it('correctly produces the computed text during matching', () => {
-    const ast = tokenizePropertyValue('1px /* red */ solid');
-    const width = ast.tree.parent?.getChild('NumberLiteral');
+    const ast = tokenizeDeclaration('--property', '1px /* red */ solid');
+    const width = ast.tree.getChild('NumberLiteral');
     Platform.assertNotNullOrUndefined(width);
-    const style = ast.tree.parent?.getChild('ValueName');
+    const style = ast.tree.getChild('ValueName');
     Platform.assertNotNullOrUndefined(style);
     const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, []);
-    assert.strictEqual(matching.computedText.get(0, ast.propertyValue.length), '1px  solid');
+    assert.strictEqual(matching.getComputedText(ast.tree), '--property: 1px  solid');
     assert.strictEqual(matching.getComputedText(width), '1px');
     assert.strictEqual(matching.getComputedText(style), 'solid');
   });
 
   it('retains tokenization in the computed text', () => {
-    const ast = tokenizePropertyValue('dark/**/gray');
+    const ast = tokenizeDeclaration('--property', 'dark/**/gray');
     const matching = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, []);
-    assert.strictEqual(matching.computedText.get(0, ast.propertyValue.length), 'dark gray');
+    assert.strictEqual(matching.getComputedText(ast.tree), '--property: dark gray');
   });
 
   it('parses color-mix with vars', () => {
@@ -714,7 +730,7 @@ describe('PropertyParser', () => {
 
   it('parses linkable names correctly', () => {
     function match(name: string, value: string) {
-      const ast = Elements.PropertyParser.tokenizePropertyValue(value, name);
+      const ast = Elements.PropertyParser.tokenizeDeclaration(name, value);
       Platform.assertNotNullOrUndefined(ast);
       const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, [
         new Elements.PropertyParser.LinkableNameMatcher(nilRenderer(Elements.PropertyParser.LinkableNameMatch)),
@@ -767,8 +783,8 @@ describe('PropertyParser', () => {
   });
 
   it('parses strings correctly', () => {
-    function match(property: string, value: string) {
-      const ast = Elements.PropertyParser.tokenizePropertyValue(value, property);
+    function match(name: string, value: string) {
+      const ast = Elements.PropertyParser.tokenizeDeclaration(name, value);
       Platform.assertNotNullOrUndefined(ast);
       const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(
           ast, [new Elements.PropertyParser.StringMatcher(nilRenderer(Elements.PropertyParser.StringMatch))]);
@@ -781,5 +797,13 @@ describe('PropertyParser', () => {
     match('quotes', '"\'" "\'"');
     match('content', '"foobar"');
     match('--image-file-accelerometer-back', 'url("devtools\:\/\/devtools\/bundled\/Images\/accelerometer-back\.svg")');
+  });
+
+  it('parses shadows correctly', () => {
+    const {match, text} = matchSingleValue(
+        'box-shadow', '/*0*/3px 3px red, -1em 0 .4em /*a*/ olive /*b*/', Elements.PropertyParser.ShadowMatch,
+        new Elements.PropertyParser.ShadowMatcher(nilRenderer(Elements.PropertyParser.ShadowMatch)));
+    Platform.assertNotNullOrUndefined(match, text);
+    assert.strictEqual(match.text, 'box-shadow: /*0*/3px 3px red, -1em 0 .4em /*a*/ olive');
   });
 });

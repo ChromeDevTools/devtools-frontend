@@ -14,7 +14,6 @@ import * as CSSLength from './CSSLength.js';
 import * as CSSLengthUtils from './CSSLengthUtils.js';
 import * as CSSLinearEasingModel from './CSSLinearEasingModel.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
-import * as CSSShadowModel from './CSSShadowModel.js';
 import * as FontEditor from './FontEditor.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
@@ -36,7 +35,6 @@ export {
   CSSLengthUtils,
   CSSLinearEasingModel,
   CSSShadowEditor,
-  CSSShadowModel,
   FontEditor,
   FontEditorUnitConverter,
   FontEditorUtils,

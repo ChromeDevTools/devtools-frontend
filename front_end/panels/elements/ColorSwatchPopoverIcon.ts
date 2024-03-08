@@ -271,13 +271,21 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
   }
 }
 
-export class ShadowSwatchPopoverHelper {
+export const enum ShadowEvents {
+  ShadowChanged = 'shadowChanged',
+}
+
+export interface ShadowEventTypes {
+  [ShadowEvents.ShadowChanged]: InlineEditor.CSSShadowEditor.CSSShadowModel;
+}
+
+export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<ShadowEventTypes> {
   private treeElement: StylePropertyTreeElement;
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private readonly shadowSwatch: InlineEditor.Swatches.CSSShadowSwatch;
   private iconElement: HTMLSpanElement;
   private readonly boundShadowChanged:
-      (event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowModel.CSSShadowModel>) => void;
+      (event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowEditor.CSSShadowModel>) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private cssShadowEditor?: InlineEditor.CSSShadowEditor.CSSShadowEditor;
   private scrollerElement?: Element;
@@ -285,6 +293,7 @@ export class ShadowSwatchPopoverHelper {
   constructor(
       treeElement: StylePropertyTreeElement, swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper,
       shadowSwatch: InlineEditor.Swatches.CSSShadowSwatch) {
+    super();
     this.treeElement = treeElement;
     this.swatchPopoverHelper = swatchPopoverHelper;
     this.shadowSwatch = shadowSwatch;
@@ -327,9 +336,8 @@ export class ShadowSwatchPopoverHelper {
     }
   }
 
-  private shadowChanged(event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowModel.CSSShadowModel>): void {
-    this.shadowSwatch.setCSSShadow(event.data);
-    void this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
+  private shadowChanged(event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowEditor.CSSShadowModel>): void {
+    this.dispatchEventToListeners(ShadowEvents.ShadowChanged, event.data);
   }
 
   private onScroll(_event: Event): void {

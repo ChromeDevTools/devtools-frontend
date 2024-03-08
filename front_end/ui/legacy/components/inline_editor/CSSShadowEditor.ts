@@ -9,7 +9,6 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import cssShadowEditorStyles from './cssShadowEditor.css.js';
-import {CSSLength, type CSSShadowModel} from './CSSShadowModel.js';
 
 const UIStrings = {
   /**
@@ -41,6 +40,57 @@ const maxRange: number = 20;
 const defaultUnit: string = 'px';
 const sliderThumbRadius: number = 6;
 const canvasSize: number = 88;
+
+export interface CSSShadowModel {
+  setInset(inset: boolean): void;
+  setOffsetX(offsetX: CSSLength): void;
+  setOffsetY(offsetY: CSSLength): void;
+  setBlurRadius(blurRadius: CSSLength): void;
+  setSpreadRadius(spreadRadius: CSSLength): void;
+  isBoxShadow(): boolean;
+  inset(): boolean;
+  offsetX(): CSSLength;
+  offsetY(): CSSLength;
+  blurRadius(): CSSLength;
+  spreadRadius(): CSSLength;
+}
+
+export class CSSLength {
+  amount: number;
+  unit: string;
+  constructor(amount: number, unit: string) {
+    this.amount = amount;
+    this.unit = unit;
+  }
+
+  static parse(text: string): CSSLength|null {
+    const lengthRegex = new RegExp('^(?:' + CSSLength.Regex.source + ')$', 'i');
+    const match = text.match(lengthRegex);
+    if (!match) {
+      return null;
+    }
+    if (match.length > 2 && match[2]) {
+      return new CSSLength(parseFloat(match[1]), match[2]);
+    }
+    return CSSLength.zero();
+  }
+
+  static zero(): CSSLength {
+    return new CSSLength(0, '');
+  }
+
+  asCSSText(): string {
+    return this.amount + this.unit;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static Regex = (function(): RegExp {
+    const number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
+    const unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
+    const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
+    return new RegExp(number + unit + '|' + zero, 'gi');
+  })();
+}
 
 export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {

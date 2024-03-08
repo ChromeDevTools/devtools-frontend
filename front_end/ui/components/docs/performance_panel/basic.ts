@@ -110,6 +110,7 @@ if (!container) {
 container.innerHTML = '';
 timeline.markAsRoot();
 timeline.show(container);
+window.addEventListener('resize', () => timeline.doResize());
 
 let fileName;
 if (traceFileName) {

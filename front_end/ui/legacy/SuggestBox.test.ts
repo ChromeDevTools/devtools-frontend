@@ -29,7 +29,7 @@ class MockSuggestBoxDelegate implements UI.SuggestBox.SuggestBoxDelegate {
     this.accceptedSuggestions.push(this.lastAppliedSuggestion.text);
   }
 
-  ariaControlledBy() {
+  ownerElement() {
     return this.element;
   }
 }

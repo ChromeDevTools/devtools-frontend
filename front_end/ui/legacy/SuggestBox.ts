@@ -31,16 +31,16 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Utils from './utils/utils.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
-
-import {ListControl, ListMode, type ListDelegate} from './ListControl.js';
+import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {ListModel} from './ListModel.js';
-import {measurePreferredSize} from './UIUtils.js';
 import suggestBoxStyles from './suggestBox.css.legacy.js';
+import {measurePreferredSize} from './UIUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -67,9 +67,9 @@ export interface SuggestBoxDelegate {
   acceptSuggestion(): void;
 
   /**
-   * Called to obtain the element whose aria-controls property should reference this SuggestBox.
+   * Called to obtain the owner element.
    */
-  ariaControlledBy(): Element;
+  ownerElement(): Element;
 }
 
 export class SuggestBox implements ListDelegate<Suggestion> {
@@ -99,6 +99,9 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this.element.classList.add('suggest-box');
     this.element.addEventListener('mousedown', event => event.preventDefault(), true);
     this.element.addEventListener('click', this.onClick.bind(this), false);
+    this.element.setAttribute(
+        'jslog',
+        `${VisualLogging.menu().parent('mapped').track({resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown'})}`);
 
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
@@ -151,12 +154,13 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     if (this.visible()) {
       return;
     }
+    VisualLogging.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
     // TODO(dgozman): take document as a parameter.
     this.glassPane.show(document);
     const suggestion = ({text: '1', subtitle: '12'} as Suggestion);
     this.rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this.element).height;
-    ARIAUtils.setControls(this.suggestBoxDelegate.ariaControlledBy(), this.element);
-    ARIAUtils.setExpanded(this.suggestBoxDelegate.ariaControlledBy(), true);
+    ARIAUtils.setControls(this.suggestBoxDelegate.ownerElement(), this.element);
+    ARIAUtils.setExpanded(this.suggestBoxDelegate.ownerElement(), true);
   }
 
   hide(): void {
@@ -164,8 +168,8 @@ export class SuggestBox implements ListDelegate<Suggestion> {
       return;
     }
     this.glassPane.hide();
-    ARIAUtils.setControls(this.suggestBoxDelegate.ariaControlledBy(), null);
-    ARIAUtils.setExpanded(this.suggestBoxDelegate.ariaControlledBy(), false);
+    ARIAUtils.setControls(this.suggestBoxDelegate.ownerElement(), null);
+    ARIAUtils.setExpanded(this.suggestBoxDelegate.ownerElement(), false);
   }
 
   private applySuggestion(isIntermediateSuggestion?: boolean): boolean {

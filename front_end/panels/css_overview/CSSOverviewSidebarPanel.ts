@@ -65,7 +65,12 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
 
   addItem(name: string, id: string): void {
     const item = this.containerElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
-    item.setAttribute('jslog', `${VisualLogging.item().track({click: true}).context(`css-overview.${id}`)}`);
+    item.setAttribute(
+        'jslog',
+        `${
+            VisualLogging.item()
+                .track({click: true, keydown: 'Enter|ArrowUp|ArrowDown'})
+                .context(`css-overview.${id}`)}`);
     UI.ARIAUtils.markAsTreeitem(item);
     item.textContent = name;
     item.dataset.id = id;

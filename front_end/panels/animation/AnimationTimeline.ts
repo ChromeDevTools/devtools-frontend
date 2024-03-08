@@ -304,8 +304,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
                                           i18nString(UIStrings.pause);
       button.setAttribute(
-          'jslog',
-          `${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({click: true})}`);
+          'jslog', `${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({
+            click: true,
+            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight',
+          })}`);
       playbackRates.set(button, playbackRate);
       button.addEventListener('click', this.setPlaybackRate.bind(this, playbackRate));
       UI.ARIAUtils.markAsOption(button);

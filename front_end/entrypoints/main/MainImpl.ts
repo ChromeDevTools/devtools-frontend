@@ -818,7 +818,8 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: toggleDockSideShorcuts[0].title()}));
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
-      dockItemElement.setAttribute('jslog', `${VisualLogging.item('dock-side')}`);
+      dockItemElement.setAttribute(
+          'jslog', `${VisualLogging.item('dock-side').track({keydown: 'ArrowDown|ArrowLeft|ArrowRight'})}`);
       dockItemToolbar.makeBlueOnHover();
       const undock = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.undockIntoSeparateWindow), 'dock-window', undefined, 'undock');

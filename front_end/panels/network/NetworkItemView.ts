@@ -157,7 +157,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     super();
     this.requestInternal = request;
     this.element.classList.add('network-item-view');
-    this.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('request-details')}`);
+    this.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('request-details').track({
+                                        keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
+                                      })}`);
 
     const headersTab = NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
     this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting(

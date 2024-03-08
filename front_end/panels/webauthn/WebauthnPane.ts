@@ -662,7 +662,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const nameField = (titleElement.createChild('input', 'authenticator-name-field') as HTMLInputElement);
     nameField.placeholder = i18nString(UIStrings.enterNewName);
     nameField.disabled = true;
-    nameField.setAttribute('jslog', `${VisualLogging.textField('name').track({keydown: true})}`);
+    nameField.setAttribute('jslog', `${VisualLogging.textField('name').track({keydown: 'Enter', change: true})}`);
     const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
     nameField.value = i18nString(UIStrings.authenticatorS, {PH1: userFriendlyName});
     this.#updateActiveLabelTitle(activeLabel, nameField.value);

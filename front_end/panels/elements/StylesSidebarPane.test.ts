@@ -182,39 +182,6 @@ describe('StylesSidebarPane', () => {
 
       assert.deepEqual(node.textContent, 'calc(MATCH + MATCH)', trace.toString());
     });
-
-    it('parses font-family correctly', () => {
-      const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-          null, null, 'font-family', '"Gill Sans", sans-serif');
-      renderer.setFontHandler(() => document.createTextNode('MATCH'));
-      const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, 'MATCH, MATCH', trace.toString());
-    });
-
-    it('parses font-* correctly', () => {
-      for (const fontSize of ['-.23', 'smaller', '17px']) {
-        const renderer =
-            new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'font-size', fontSize);
-        renderer.setFontHandler(() => document.createTextNode('MATCH'));
-        const node = renderer.renderValue();
-        assert.deepEqual(node.textContent, 'MATCH', trace.toString());
-      }
-      const renderer =
-          new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'font-size', 'calc(17px + 17px)');
-      renderer.setFontHandler(() => document.createTextNode('MATCH'));
-      const node = renderer.renderValue();
-
-      // The bogus match on `calc` is expected.
-      assert.deepEqual(node.textContent, 'MATCH(MATCH + MATCH)', trace.toString());
-    });
-
-    it('parses font-family correctly', () => {
-      const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
-          null, null, 'font-family', '"Gill Sans", sans-serif');
-      renderer.setFontHandler(() => document.createTextNode('MATCH'));
-      const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, 'MATCH, MATCH', trace.toString());
-    });
   });
 
   describe('IdleCallbackManager', () => {

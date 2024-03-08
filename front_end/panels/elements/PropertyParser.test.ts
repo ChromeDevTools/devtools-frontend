@@ -806,4 +806,28 @@ describe('PropertyParser', () => {
     Platform.assertNotNullOrUndefined(match, text);
     assert.strictEqual(match.text, 'box-shadow: /*0*/3px 3px red, -1em 0 .4em /*a*/ olive');
   });
+
+  it('parses fonts correctly', () => {
+    for (const fontSize of ['-.23', 'smaller', '17px', 'calc(17px + 17px)']) {
+      const {ast, match, text} = matchSingleValue(
+          'font-size', fontSize, Elements.PropertyParser.FontMatch,
+          new Elements.PropertyParser.FontMatcher(nilRenderer(Elements.PropertyParser.FontMatch)));
+
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.text, fontSize);
+    }
+
+    {
+      const ast = Elements.PropertyParser.tokenizeDeclaration('font-family', '"Gill Sans", sans-serif');
+      Platform.assertNotNullOrUndefined(ast);
+      const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(
+          ast, [new Elements.PropertyParser.FontMatcher(nilRenderer(Elements.PropertyParser.FontMatch))]);
+      Platform.assertNotNullOrUndefined(matchedResult);
+
+      const matches =
+          TreeSearch.findAll(ast, node => matchedResult.getMatch(node) instanceof Elements.PropertyParser.FontMatch);
+      assert.deepStrictEqual(matches.map(m => matchedResult.getMatch(m)?.text), ['"Gill Sans"', 'sans-serif']);
+    }
+  });
 });

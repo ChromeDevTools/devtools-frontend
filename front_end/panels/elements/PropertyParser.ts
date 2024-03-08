@@ -902,6 +902,27 @@ export class ShadowMatcher extends MatcherBase<typeof ShadowMatch> {
         text, matching.ast.propertyName === 'text-shadow' ? ShadowType.TextShadow : ShadowType.BoxShadow);
   }
 }
+export abstract class FontMatch implements Match {
+  type: string = 'font';
+  constructor(readonly text: string) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class FontMatcher extends MatcherBase<typeof FontMatch> {
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isFontAwareProperty(propertyName);
+  }
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name === 'Declaration') {
+      return null;
+    }
+    const regex = matching.ast.propertyName === 'font-family' ? InlineEditor.FontEditorUtils.FontFamilyRegex :
+                                                                InlineEditor.FontEditorUtils.FontPropertiesRegex;
+    const text = matching.ast.text(node);
+    return regex.test(text) ? this.createMatch(text) : null;
+  }
+}
 
 type LegacyRegexHandler = (text: string, readonly: boolean) => Node|null;
 

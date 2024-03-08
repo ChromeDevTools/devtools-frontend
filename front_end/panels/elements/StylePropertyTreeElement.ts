@@ -41,6 +41,8 @@ import {
   ColorMixMatch,
   ColorMixMatcher,
   type CSSControlMap,
+  FontMatch,
+  FontMatcher,
   LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
@@ -954,6 +956,20 @@ export class ShadowRenderer extends ShadowMatch {
   }
 }
 
+export class FontRenderer extends FontMatch {
+  constructor(readonly treeElement: StylePropertyTreeElement, text: string) {
+    super(text);
+  }
+
+  override render(): Node[] {
+    this.treeElement.section().registerFontProperty(this.treeElement);
+    return [document.createTextNode(this.text)];
+  }
+
+  static matcher(treeElement: StylePropertyTreeElement): FontMatcher {
+    return new FontMatcher(text => new FontRenderer(treeElement, text));
+  }
+}
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -1089,11 +1105,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return '';
     }
     return this.nameElement.textContent + ': ' + this.valueElement.textContent;
-  }
-
-  private processFont(text: string): Node {
-    this.#parentSection.registerFontProperty(this);
-    return document.createTextNode(text);
   }
 
   private processGrid(propertyValue: string, _propertyName: string): Node {
@@ -1354,9 +1365,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           BezierRenderer.matcher(this),
           StringRenderer.matcher(),
           ShadowRenderer.matcher(this),
+          FontRenderer.matcher(this),
         ]);
     if (this.property.parsedOk) {
-      propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setGridHandler(this.processGrid.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
     }

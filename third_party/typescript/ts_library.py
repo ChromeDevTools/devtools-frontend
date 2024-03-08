@@ -200,8 +200,11 @@ def remove_generated_tsbuildinfo_file(tsbuildinfo_output_location):
 
 
 def runEsbuild(opts):
+    ts_config_location = path.join(ROOT_DIRECTORY_OF_REPOSITORY,
+                                   'tsconfig.json')
     cmd = [
         ESBUILD_LOCATION,
+        '--tsconfig=' + ts_config_location,
         '--outdir=' + path.dirname(opts.tsconfig_output_location),
         '--log-level=warning',
         '--sourcemap',

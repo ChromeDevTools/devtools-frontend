@@ -5,6 +5,9 @@
 const UNINITIALIZED = Symbol('uninitialized');
 const ERROR_STATE = Symbol('error');
 
+/**
+ * Very basic memoizer. Will only invoke its callback the first time, returning the cached value all subsequent calls.
+ */
 export function lazy<T>(producer: () => T): () => symbol | T {
   let value: T|typeof ERROR_STATE|typeof UNINITIALIZED = UNINITIALIZED;
   let error: null = null;

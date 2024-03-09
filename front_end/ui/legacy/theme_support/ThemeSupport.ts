@@ -39,12 +39,12 @@ import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.lega
 
 let themeSupportInstance: ThemeSupport;
 
-const themeValuesCache = new Map<CSSStyleDeclaration, Map<string, string>>();
+const themeValueByTargetByName = new Map<Element|null, Map<string, string>>();
 
 export class ThemeSupport extends EventTarget {
   private themeNameInternal = 'default';
   private customSheets: Set<string> = new Set();
-  private computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
+  private computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
   private constructor(private setting: Common.Settings.Setting<string>) {
     super();
@@ -70,38 +70,37 @@ export class ThemeSupport extends EventTarget {
     return themeSupportInstance;
   }
 
-  getComputedValue(variableName: string, target: Element|null = null): string {
-    const computedRoot = target ? window.getComputedStyle(target) : this.computedRoot();
-    if (typeof computedRoot === 'symbol') {
-      throw new Error(`Computed value for property (${variableName}) could not be found on :root.`);
-    }
-
-    // Since we might query the same variable name from various targets we need to support
+  getComputedValue(propertyName: string, target: Element|null = null): string {
+    // Since we might query the same property name from various targets we need to support
     // per-target caching of computed values. Here we attempt to locate the particular computed
-    // value cache for the target. If no target was specified we use the default computed root,
-    // which belongs to the document element.
-    let computedRootCache = themeValuesCache.get(computedRoot);
-    if (!computedRootCache) {
-      computedRootCache = new Map<string, string>();
-      themeValuesCache.set(computedRoot, computedRootCache);
+    // value cache for the target element. If no target was specified we use the default computed root,
+    // which belongs to the documentElement.
+    let themeValueByName = themeValueByTargetByName.get(target);
+    if (!themeValueByName) {
+      themeValueByName = new Map<string, string>();
+      themeValueByTargetByName.set(target, themeValueByName);
     }
 
     // Since theme changes trigger a reload, we can avoid repeatedly looking up color values
     // dynamically. Instead we can look up the first time and cache them for future use,
     // knowing that the cache will be invalidated by virtue of a reload when the theme changes.
-    let cachedValue = computedRootCache.get(variableName);
-    if (!cachedValue) {
-      cachedValue = computedRoot.getPropertyValue(variableName).trim();
+    let themeValue = themeValueByName.get(propertyName);
+    if (!themeValue) {
+      const styleDeclaration = target ? window.getComputedStyle(target) : this.computedStyleOfHTML();
+      if (typeof styleDeclaration === 'symbol') {
+        throw new Error(`Computed value for property (${propertyName}) could not be found on documentElement.`);
+      }
+      themeValue = styleDeclaration.getPropertyValue(propertyName).trim();
 
       // If we receive back an empty value (nothing has been set) we don't store it for the future.
       // This means that subsequent requests will continue to query the styles in case the value
       // has been set.
-      if (cachedValue) {
-        computedRootCache.set(variableName, cachedValue);
+      if (themeValue) {
+        themeValueByName.set(propertyName, themeValue);
       }
     }
 
-    return cachedValue;
+    return themeValue;
   }
 
   hasTheme(): boolean {
@@ -148,7 +147,7 @@ export class ThemeSupport extends EventTarget {
 
     // In the event the theme changes we need to clear caches and notify subscribers.
     if (wasDarkThemed !== isDarkThemed) {
-      themeValuesCache.clear();
+      themeValueByTargetByName.clear();
       this.customSheets.clear();
       this.dispatchEvent(new ThemeChangeEvent());
     }

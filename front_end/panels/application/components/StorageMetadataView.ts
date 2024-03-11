@@ -140,7 +140,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.getTitle() || i18nString(UIStrings.loading)} as ReportView.ReportView.ReportData}>
+        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)} as ReportView.ReportView.ReportData}>
           ${await this.renderReportContent()}
         </${ReportView.ReportView.Report.litTagName}>`, this.#shadow, {host: this});
       // clang-format on

@@ -163,6 +163,13 @@ describeWithLocale('SharedStorageMetadataView', () => {
     ]);
   });
 
+  it('renders with an emtpy string title', async () => {
+    const component = await makeView('');
+
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    assert.isNull(report.shadowRoot!.querySelector('.report-title'));
+  });
+
   it('renders bucket controls', async () => {
     const storageBucketsModel = {
       deleteBucket: sinon.spy(),

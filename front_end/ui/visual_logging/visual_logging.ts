@@ -92,6 +92,7 @@ export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider')
 export const section = LoggingConfig.makeConfigStringBuilder.bind(null, 'Section');
 export const sectionHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'SectionHeader');
 export const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
+export const tableRow = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableRow');
 export const tableCell = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableCell');
 export const tableHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableHeader');
 

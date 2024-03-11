@@ -862,6 +862,7 @@ export class DataGrid extends HTMLElement {
                   aria-rowindex=${rowIndex + 1}
                   class=${rowClasses}
                   style=${LitHtml.Directives.ifDefined(row.styles ? LitHtml.Directives.styleMap(row.styles) : undefined)}
+                  jslog=${VisualLogging.tableRow().track({keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space'})}
                   @contextmenu=${this.#onBodyRowContextMenu}
                   @mouseenter=${() => {
                     this.dispatchEvent(new RowMouseEnterEvent(row));

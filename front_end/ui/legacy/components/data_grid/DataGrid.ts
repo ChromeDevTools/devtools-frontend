@@ -1629,7 +1629,7 @@ export type DataGridData = {
 };
 
 export class DataGridNode<T> {
-  elementInternal: Element|null;
+  elementInternal: HTMLElement|null;
   expandedInternal: boolean;
   private selectedInternal: boolean;
   private dirty: boolean;
@@ -1693,6 +1693,8 @@ export class DataGridNode<T> {
 
   protected createElement(): Element {
     this.elementInternal = document.createElement('tr');
+    this.elementInternal.setAttribute(
+        'jslog', `${VisualLogging.tableRow().track({keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space'})}`);
     this.elementInternal.classList.add('data-grid-data-grid-node');
     if (this.dataGrid) {
       this.dataGrid.elementToDataGridNode.set(this.elementInternal, this);
@@ -1935,15 +1937,23 @@ export class DataGridNode<T> {
 
   createTD(columnId: string): HTMLElement {
     const cell = this.createTDWithClass(columnId + '-column');
-    cell.setAttribute(
-        'jslog',
-        `${
-            VisualLogging.tableCell()
-                .track({click: true, keydown: Boolean(this.dataGrid?.columns[columnId].editable), resize: true})
-                .context(Platform.StringUtilities.toKebabCase(columnId))}`);
     nodeToColumnIdMap.set(cell, columnId);
 
     if (this.dataGrid) {
+      const editableCell = this.dataGrid.columns[columnId].editable;
+
+      cell.setAttribute(
+          'jslog',
+          `${
+              VisualLogging.tableCell()
+                  .track({
+                    click: true,
+                    keydown: editableCell ? 'Enter|Space|Escape' : false,
+                    dblclick: editableCell,
+                    change: editableCell,
+                    resize: true,
+                  })
+                  .context(Platform.StringUtilities.toKebabCase(columnId))}`);
       const alignment = this.dataGrid.columns[columnId].align;
       if (alignment) {
         cell.classList.add(alignment);
@@ -1957,7 +1967,6 @@ export class DataGridNode<T> {
       }
 
       // Allow accessibility tool to identify the editable cell and display context menu
-      const editableCell = this.dataGrid.columns[columnId].editable;
       if (editableCell) {
         cell.tabIndex = 0;
         cell.ariaHasPopup = 'true';
@@ -2232,6 +2241,7 @@ export class DataGridNode<T> {
 
     if (this.elementInternal) {
       this.elementInternal.classList.add('selected');
+      this.elementInternal.focus();
       this.dataGrid.setHasSelection(true);
       this.dataGrid.announceSelectedGridNode();
     }

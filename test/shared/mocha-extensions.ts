@@ -80,7 +80,7 @@ export function wrapDescribe<ReturnT>(
         const directories = parsedPath.dir.split(Path.sep);
         const index = directories.lastIndexOf('e2e');
         if (index >= 0) {
-          return Path.join(...directories.slice(index + 1), `${parsedPath.name}.ts`);
+          return [...directories.slice(index + 1), `${parsedPath.name}.ts`].join('/');
         }
         if (!fallback) {
           fallback = parsedPath.name;

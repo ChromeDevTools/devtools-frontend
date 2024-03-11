@@ -956,7 +956,7 @@ export declare interface Configuration {
     /**
      * Tells Puppeteer to not chrome-headless-shell download during installation.
      *
-     * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESSS_HELL_DOWNLOAD`.
+     * Can be overridden by `PUPPETEER_SKIP_CHROME_HEADLESS_SHELL_DOWNLOAD`.
      */
     skipChromeHeadlessShellDownload?: boolean;
     /**

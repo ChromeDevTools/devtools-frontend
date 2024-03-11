@@ -58,6 +58,7 @@
     "package/lib/esm/puppeteer/cdp/Binding.js",
     "package/lib/esm/puppeteer/cdp/Browser.js",
     "package/lib/esm/puppeteer/cdp/BrowserConnector.js",
+    "package/lib/esm/puppeteer/cdp/BrowserContext.js",
     "package/lib/esm/puppeteer/cdp/CDPSession.js",
     "package/lib/esm/puppeteer/cdp/ChromeTargetManager.js",
     "package/lib/esm/puppeteer/cdp/Connection.js",

@@ -1742,6 +1742,7 @@ grd_files_debug_sources = [
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/Binding.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/Browser.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/BrowserConnector.js",
+  "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/BrowserContext.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/CDPSession.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/ChromeTargetManager.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/cdp/Connection.js",

@@ -5,11 +5,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CdpBrowserContext = exports.CdpBrowser = void 0;
+exports.CdpBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
-const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
-const assert_js_1 = require("../util/assert.js");
+const BrowserContext_js_1 = require("./BrowserContext.js");
 const ChromeTargetManager_js_1 = require("./ChromeTargetManager.js");
 const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
 const Target_js_1 = require("./Target.js");
@@ -53,9 +52,9 @@ class CdpBrowser extends Browser_js_1.Browser {
         else {
             this.#targetManager = new ChromeTargetManager_js_1.ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
         }
-        this.#defaultContext = new CdpBrowserContext(this.#connection, this);
+        this.#defaultContext = new BrowserContext_js_1.CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
-            this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId));
+            this.#contexts.set(contextId, new BrowserContext_js_1.CdpBrowserContext(this.#connection, this, contextId));
         }
     }
     #emitDisconnected = () => {
@@ -100,7 +99,7 @@ class CdpBrowser extends Browser_js_1.Browser {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),
         });
-        const context = new CdpBrowserContext(this.#connection, this, browserContextId);
+        const context = new BrowserContext_js_1.CdpBrowserContext(this.#connection, this, browserContextId);
         this.#contexts.set(browserContextId, context);
         return context;
     }
@@ -242,73 +241,4 @@ class CdpBrowser extends Browser_js_1.Browser {
     }
 }
 exports.CdpBrowser = CdpBrowser;
-/**
- * @internal
- */
-class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
-    #connection;
-    #browser;
-    #id;
-    constructor(connection, browser, contextId) {
-        super();
-        this.#connection = connection;
-        this.#browser = browser;
-        this.#id = contextId;
-    }
-    get id() {
-        return this.#id;
-    }
-    targets() {
-        return this.#browser.targets().filter(target => {
-            return target.browserContext() === this;
-        });
-    }
-    async pages() {
-        const pages = await Promise.all(this.targets()
-            .filter(target => {
-            return (target.type() === 'page' ||
-                (target.type() === 'other' &&
-                    this.#browser._getIsPageTargetCallback()?.(target)));
-        })
-            .map(target => {
-            return target.page();
-        }));
-        return pages.filter((page) => {
-            return !!page;
-        });
-    }
-    isIncognito() {
-        return !!this.#id;
-    }
-    async overridePermissions(origin, permissions) {
-        const protocolPermissions = permissions.map(permission => {
-            const protocolPermission = Browser_js_1.WEB_PERMISSION_TO_PROTOCOL_PERMISSION.get(permission);
-            if (!protocolPermission) {
-                throw new Error('Unknown permission: ' + permission);
-            }
-            return protocolPermission;
-        });
-        await this.#connection.send('Browser.grantPermissions', {
-            origin,
-            browserContextId: this.#id || undefined,
-            permissions: protocolPermissions,
-        });
-    }
-    async clearPermissionOverrides() {
-        await this.#connection.send('Browser.resetPermissions', {
-            browserContextId: this.#id || undefined,
-        });
-    }
-    newPage() {
-        return this.#browser._createPageInContext(this.#id);
-    }
-    browser() {
-        return this.#browser;
-    }
-    async close() {
-        (0, assert_js_1.assert)(this.#id, 'Non-incognito profiles cannot be closed!');
-        await this.#browser._disposeContext(this.#id);
-    }
-}
-exports.CdpBrowserContext = CdpBrowserContext;
 //# sourceMappingURL=Browser.js.map

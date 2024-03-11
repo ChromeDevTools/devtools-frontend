@@ -33,6 +33,9 @@ describeWithEnvironment('ConsoleInsight', () => {
           ],
         };
       },
+      getSearchQuery() {
+        return '';
+      },
     };
   }
 

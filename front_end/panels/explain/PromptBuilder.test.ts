@@ -385,4 +385,27 @@ export const y = "";
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
     });
   });
+
+  describeWithMockConnection('getSearchQuery', () => {
+    let target: SDK.Target.Target;
+
+    beforeEach(() => {
+      target = createTarget();
+    });
+
+    it('builds a simple search query', async () => {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const messageDetails = {
+        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+      };
+      const ERROR_MESSAGE = 'kaboom!';
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          ERROR_MESSAGE, messageDetails);
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const promptBuilder = new Explain.PromptBuilder(message);
+      const query = await promptBuilder.getSearchQuery();
+      assert.strictEqual(query, 'DevTools console error "kaboom!"');
+    });
+  });
 });

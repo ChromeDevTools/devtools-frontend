@@ -13,6 +13,9 @@ const ConsoleInsight = Explain.ConsoleInsight;
 
 const component = new ConsoleInsight(
     {
+      getSearchQuery() {
+        return '';
+      },
       async buildPrompt() {
         return {prompt: '', sources: []};
       },

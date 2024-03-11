@@ -147,6 +147,11 @@ ${relatedRequest}
     }
     return prompt;
   }
+
+  getSearchQuery(): string {
+    return `DevTools console ${this.#consoleMessage.consoleMessage().level} "${
+        this.#consoleMessage.toMessageTextString()}"`;
+  }
 }
 
 export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {

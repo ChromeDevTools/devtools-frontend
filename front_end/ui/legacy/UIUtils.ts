@@ -536,7 +536,7 @@ export function handleElementValueModifications(
   if (!isElementValueModification(event)) {
     return false;
   }
-  void VisualLogging.logKeyDown(event, 'element-value-modification');
+  void VisualLogging.logKeyDown(event.currentTarget, event, 'element-value-modification');
 
   const selection = element.getComponentSelection();
   if (!selection || !selection.rangeCount) {

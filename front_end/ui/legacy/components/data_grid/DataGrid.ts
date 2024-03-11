@@ -1109,6 +1109,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!(event instanceof KeyboardEvent)) {
       return;
     }
+    if (this.selectedNode) {
+      if ((this.selectedNode.element() as HTMLElement).tabIndex < 0) {
+        void VisualLogging.logKeyDown(this.selectedNode.element(), event);
+      }
+    }
+
     if (event.shiftKey || event.metaKey || event.ctrlKey || this.editing || UI.UIUtils.isEditing()) {
       return;
     }

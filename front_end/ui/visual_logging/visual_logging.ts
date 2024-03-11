@@ -14,8 +14,8 @@ export {logImpressions, logChange} from './LoggingEvents.js';
 export const logClick = (l: Loggable, e: Event): void => LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(l, e);
 export const logResize = (l: Loggable, s: DOMRect): void =>
     LoggingEvents.logResize(LoggingDriver.resizeLogThrottler)(l, s);
-export const logKeyDown = async(e: Event, context?: string): Promise<void> =>
-    LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(e, context);
+export const logKeyDown = async(l: Loggable|null, e: Event, context?: string): Promise<void> =>
+    LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(l, e, context);
 export {registerParentProvider, setMappedParent} from './LoggingState.js';
 
 export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {

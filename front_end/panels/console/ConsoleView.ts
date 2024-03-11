@@ -1364,7 +1364,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private clearPromptBackwards(e: KeyboardEvent): void {
     this.prompt.clear();
-    void VisualLogging.logKeyDown(e, 'clear-prompt');
+    void VisualLogging.logKeyDown(e.currentTarget, e, 'clear-prompt');
   }
 
   private promptKeyDown(event: Event): void {

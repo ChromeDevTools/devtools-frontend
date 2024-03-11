@@ -274,7 +274,7 @@ export class ShortcutRegistry {
         if (handled) {
           Host.userMetrics.keyboardShortcutFired(action.id());
           if (event) {
-            void VisualLogging.logKeyDown(event, action.id());
+            void VisualLogging.logKeyDown(null, event, action.id());
           }
           return true;
         }

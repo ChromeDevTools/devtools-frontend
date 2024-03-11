@@ -120,9 +120,11 @@ export function debugString(config: LoggingConfig): string {
   if (config.parent) {
     components.push(`parent: ${config.parent}`);
   }
-  if (config.track?.size) {
+  if (config.track) {
     components.push(`track: ${
-            [...config.track?.entries()].map(([key, value]) => `${key}${value ? `: ${value}` : ''}`).join(', ')}`);
+        Object.entries(config.track)
+            .map(([key, value]) => `${key}${typeof value === 'string' ? `: ${value}` : ''}`)
+            .join(', ')}`);
   }
   return components.join('; ');
 }

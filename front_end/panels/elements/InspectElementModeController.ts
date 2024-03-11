@@ -68,7 +68,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
       }
       this.setMode(Protocol.Overlay.InspectMode.None);
       event.consume(true);
-      void VisualLogging.logKeyDown(event, 'cancel-inspect-mode');
+      void VisualLogging.logKeyDown(null, event, 'cancel-inspect-mode');
     }, true);
   }
 

@@ -1124,7 +1124,7 @@ export const NativeFunctions = [
   {
     name: "createBuffer",
     signatures: [["descriptor"]],
-    receivers: ["GPUDevice"]
+    receivers: ["MLContext","GPUDevice"]
   },
   {
     name: "createChannelMerger",
@@ -7700,6 +7700,10 @@ export const NativeFunctions = [
     signatures: [["a","b","?options"]]
   },
   {
+    name: "gru",
+    signatures: [["input","weight","recurrentWeight","steps","hiddenSize","?options"]]
+  },
+  {
     name: "hardSigmoid",
     signatures: [["?options"],["x","?options"]]
   },
@@ -7821,6 +7825,10 @@ export const NativeFunctions = [
   },
   {
     name: "transpose",
+    signatures: [["input","?options"]]
+  },
+  {
+    name: "triangular",
     signatures: [["input","?options"]]
   },
   {

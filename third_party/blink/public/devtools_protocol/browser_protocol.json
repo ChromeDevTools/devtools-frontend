@@ -13818,6 +13818,27 @@
                             "description": "Connection type if known.",
                             "optional": true,
                             "$ref": "ConnectionType"
+                        },
+                        {
+                            "name": "packetLoss",
+                            "description": "WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "packetQueueLength",
+                            "description": "WebRTC packet queue length (packet). 0 removes any queue length limitations.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "packetReordering",
+                            "description": "WebRTC packetReordering feature.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -17418,6 +17439,7 @@
                         "CookieDisabled",
                         "HTTPAuthRequired",
                         "CookieFlushed",
+                        "BroadcastChannelOnMessage",
                         "WebSocket",
                         "WebTransport",
                         "WebRTC",

@@ -279,7 +279,7 @@
     //
     // If omitted, no anchor queries are allowed.
     //
-    // See also Length::AnchorScope::Mode.
+    // See also AnchorScope::Mode.
     anchor_mode: {
       valid_values: [
         // anchor()
@@ -4302,7 +4302,7 @@
       converter: "ConvertNormalOrCustomIdent",
       keywords: ["normal"],
       typedom_types: ["Keyword"],
-      runtime_flag: "CSSAnchorPositioning",
+      runtime_flag: "CSSPositionFallbackBounds",
     },
     {
       name: "position-try-options",
@@ -7950,7 +7950,7 @@
     {
       name: "-webkit-text-stroke",
       longhands: ["-webkit-text-stroke-width", "-webkit-text-stroke-color"],
-      property_methods: ["ParseShorthand"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
 
     // Visited properties.

@@ -94,13 +94,9 @@ const UIStrings = {
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Text for a button in the DView of the Layers panel
-   */
-  learnMore: 'Learn more',
-  /**
    *@description Text for a warning message in the DView of the Layers panel
    */
-  deprecationWarning: 'The Layers panel will be deprecated soon.',
+  deprecationWarning: 'Layers panel might be deprecated soon. Share your thoughts and concerns before we decide.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -205,13 +201,6 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
         UI.Infobar.Type.Warning,
         i18nString(UIStrings.deprecationWarning),
         [
-          {
-            text: i18nString(UIStrings.learnMore),
-            highlight: false,
-            delegate: openLink,
-            dismiss: false,
-            jslogContext: 'Learn more',
-          },
           {
             text: i18nString(UIStrings.sendFeedback),
             highlight: false,

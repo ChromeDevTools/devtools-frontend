@@ -22,28 +22,28 @@ hello2:
 .Lfunc_end0:
 
 	.section	.debug_abbrev,"",@
-	.int8	1                               # Abbreviation Code
-	.int8	74                              # DW_TAG_skeleton_unit
-	.int8	0                               # DW_CHILDREN_no
-	.int8	16                              # DW_AT_stmt_list
-	.int8	23                              # DW_FORM_sec_offset
-	.int8	114                             # DW_AT_str_offsets_base
-	.int8	23                              # DW_FORM_sec_offset
-	.int8	27                              # DW_AT_comp_dir
-	.int8	37                              # DW_FORM_strx1
-	.ascii	"\264B"                       # DW_AT_GNU_pubnames
-	.int8	25                              # DW_FORM_flag_present
-	.int8	118                             # DW_AT_dwo_name
-	.int8	37                              # DW_FORM_strx1
-	.int8	17                              # DW_AT_low_pc
-	.int8	27                              # DW_FORM_addrx
-	.int8	18                              # DW_AT_high_pc
-	.int8	6                               # DW_FORM_data4
-	.int8	115                             # DW_AT_addr_base
-	.int8	23                              # DW_FORM_sec_offset
-	.int8	0                               # EOM(1)
-	.int8	0                               # EOM(2)
-	.int8	0                               # EOM(3)
+	${ABBR} 1
+	${DW_TAG_skeleton_unit}
+	${DW_CHILDREN_no}
+	${DW_AT_stmt_list}
+	${DW_FORM_sec_offset}
+	${DW_AT_str_offsets_base}
+	${DW_FORM_sec_offset}
+	${DW_AT_comp_dir}
+	${DW_FORM_strx1}
+	.ascii	"\264B"
+	${DW_FORM_flag_present}
+	${DW_AT_dwo_name}
+	${DW_FORM_strx1}
+	${DW_AT_low_pc}
+	${DW_FORM_addrx}
+	${DW_AT_high_pc}
+	${DW_FORM_data4}
+	${DW_AT_addr_base}
+	${DW_FORM_sec_offset}
+	${EOM}
+	${EOM}
+	${EOM}
 	.section	.debug_info,"",@
 .Lcu_begin0:
 	.int32	.Ldebug_info_end0-.Ldebug_info_start0 # Length of Unit
@@ -53,7 +53,7 @@ hello2:
 	.int8	4                               # Address Size (in bytes)
 	.int32	.debug_abbrev0                # Offset Into Abbrev. Section
 	.int64	-4350062774228680187
-	.int8	1                               # Abbrev [1] 0x14:0x14 DW_TAG_skeleton_unit
+	${ABBR} 1
 	.int32	.Lline_table_start0           # DW_AT_stmt_list
 	.int32	.Lstr_offsets_base0           # DW_AT_str_offsets_base
 	.int8	0                               # DW_AT_comp_dir
@@ -99,28 +99,28 @@ hello2:
 	.int8	4                               # Address Size (in bytes)
 	.int32	0                             # Offset Into Abbrev. Section
 	.int64	-4350062774228680187
-	.int8	1                               # Abbrev [1] 0x14:0x18 DW_TAG_compile_unit
+	${ABBR} 1                             # Abbrev [1] 0x14:0x18 DW_TAG_compile_unit
 	.int8	0                               # DW_AT_producer
 	.int16	29                              # DW_AT_language
 	.int8	1                               # DW_AT_name
 	.int8	2                               # DW_AT_dwo_name
-	.int8	0                               # End Of Children Mark
+	${EOM}                                # End Of Children Mark
 .Ldebug_info_dwo_end0:
 	.section	.debug_abbrev.dwo,"",@
-	.int8	1                               # Abbreviation Code
-	.int8	17                              # DW_TAG_compile_unit
-	.int8	0                               # DW_CHILDREN_no
-	.int8	37                              # DW_AT_producer
-	.int8	37                              # DW_FORM_strx1
-	.int8	19                              # DW_AT_language
-	.int8	5                               # DW_FORM_data2
-	.int8	3                               # DW_AT_name
-	.int8	37                              # DW_FORM_strx1
-	.int8	118                             # DW_AT_dwo_name
-	.int8	37                              # DW_FORM_strx1
-	.int8	0                               # EOM(1)
-	.int8	0                               # EOM(2)
-	.int8	0                               # EOM(3)
+	${ABBR} 1
+	${DW_TAG_compile_unit}
+	${DW_CHILDREN_no}
+	${DW_AT_producer}
+	${DW_FORM_strx1}
+	${DW_AT_language}
+	${DW_FORM_data2}
+	${DW_AT_name}
+	${DW_FORM_strx1}
+	${DW_AT_dwo_name}
+	${DW_FORM_strx1}
+	${EOM}
+	${EOM}
+	${EOM}
 	.section	.debug_addr,"",@
 	.int32	.Ldebug_addr_end0-.Ldebug_addr_start0 # Length of contribution
 .Ldebug_addr_start0:

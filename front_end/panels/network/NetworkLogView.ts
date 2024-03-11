@@ -1117,7 +1117,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dataGrid.element.addEventListener('mouseleave', () => this.setHoveredNode(null), true);
     this.dataGrid.element.addEventListener('keydown', event => {
       if (event.key === 'ArrowRight' && this.dataGrid.selectedNode) {
-        const initiatorLink = this.dataGrid.selectedNode.element().querySelector('span.devtools-link');
+        const initiatorLink = this.dataGrid.selectedNode.element().querySelector('button.devtools-link');
         if (initiatorLink) {
           (initiatorLink as HTMLElement).focus();
         }

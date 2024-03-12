@@ -513,16 +513,24 @@ export class CoverageView extends UI.Widget.VBox {
   private updateStats(): void {
     const all = {total: 0, unused: 0};
     const filtered = {total: 0, unused: 0};
-    let filterApplied = false;
+    const filterApplied = this.textFilterRegExp !== null;
     if (this.model) {
       for (const info of this.model.entries()) {
         all.total += info.size();
         all.unused += info.unusedSize();
         if (this.isVisible(false, info)) {
-          filtered.total += info.size();
-          filtered.unused += info.unusedSize();
-        } else {
-          filterApplied = true;
+          if (this.textFilterRegExp?.test(info.url())) {
+            filtered.total += info.size();
+            filtered.unused += info.unusedSize();
+          } else {
+            // If it doesn't match the filter, calculate the stats from visible children if there are any
+            for (const childInfo of info.sourcesURLCoverageInfo.values()) {
+              if (this.isVisible(false, childInfo)) {
+                filtered.total += childInfo.size();
+                filtered.unused += childInfo.unusedSize();
+              }
+            }
+          }
         }
       }
     }

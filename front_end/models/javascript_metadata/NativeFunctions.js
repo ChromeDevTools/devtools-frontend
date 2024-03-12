@@ -7428,10 +7428,6 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "canPlay",
-    signatures: [["type"]]
-  },
-  {
     name: "addStroke",
     signatures: [["stroke"]]
   },

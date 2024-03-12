@@ -1321,6 +1321,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   shouldShowInsights(): boolean {
+    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI &&
+        this.message.stackTrace?.callFrames[0]?.url === '') {
+      // Do not show insights for direct calls to Console APIs from within DevTools Console.
+      return false;
+    }
     return this.message.level === Protocol.Log.LogEntryLevel.Error ||
         this.message.level === Protocol.Log.LogEntryLevel.Warning;
   }

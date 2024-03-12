@@ -14,8 +14,11 @@ import '../../panels/network/network-meta.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
 
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
+
+Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
 // Legacy JavaScript Profiler - we support this until Hermes can support the
 // modern Performance panel.

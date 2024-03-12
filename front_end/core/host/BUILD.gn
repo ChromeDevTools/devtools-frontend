@@ -10,6 +10,7 @@ devtools_module("host") {
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",
     "Platform.ts",
+    "RNPerfMetrics.ts",
     "ResourceLoader.ts",
     "UserMetrics.ts",
   ]

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /// <reference path="./request_idle_callback.d.ts" />
+/// <reference path="./react_native.d.ts" />
 
 interface CSSStyleSheet {
   replaceSync(content: string): void;

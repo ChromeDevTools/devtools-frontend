@@ -95,7 +95,7 @@ module.exports = {
           callExpressionNode) {
         const methodArg = callExpressionNode.arguments[1];
         // Confirm that the argument is this.X, otherwise skip it
-        if (methodArg.type !== 'MemberExpression') {
+        if (methodArg?.type !== 'MemberExpression') {
           return;
         }
 

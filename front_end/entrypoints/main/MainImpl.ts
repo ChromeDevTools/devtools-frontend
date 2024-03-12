@@ -379,7 +379,10 @@ export class MainImpl {
 
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.AUTOFILL_VIEW,
-        'Enable Autofill view',
+        'Autofill panel',
+        false,
+        'https://goo.gle/devtools-autofill-panel',
+        'https://crbug.com/329106326',
     );
 
     Root.Runtime.experiments.register(

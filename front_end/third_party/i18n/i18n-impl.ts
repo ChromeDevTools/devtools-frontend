@@ -38,7 +38,6 @@ export class I18n {
    * - the default locale if no match is found
    */
   lookupClosestSupportedLocale(locale: Intl.UnicodeBCP47LocaleIdentifier): Intl.UnicodeBCP47LocaleIdentifier {
-    // @ts-expect-error https://github.com/microsoft/TypeScript/issues/29129
     const canonicalLocale: string = Intl.getCanonicalLocales(locale)[0];
 
     const localeParts = canonicalLocale.split('-');

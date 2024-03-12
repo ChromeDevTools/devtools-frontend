@@ -229,8 +229,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       model: MediaQueryUIModel,
       locations: SDK.CSSModel.CSSLocation[],
     }|null = null;
-    for (let i = 0; i < this.cachedQueryModels.length; ++i) {
-      const model = this.cachedQueryModels[i];
+    for (const model of this.cachedQueryModels) {
       if (lastMarker && lastMarker.model.dimensionsEqual(model)) {
         lastMarker.active = lastMarker.active || model.active();
       } else {

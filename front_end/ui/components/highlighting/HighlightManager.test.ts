@@ -4,6 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
+
 import * as Highlighting from './highlighting.js';
 
 describe('HighlightManager', () => {
@@ -82,9 +83,8 @@ describe('HighlightManager', () => {
       new TextUtils.TextRange.SourceRange(3, 3),
       new TextUtils.TextRange.SourceRange(6, 3),
     ]);
-    // @ts-expect-error
     const highlight = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
-    assert.strictEqual(highlight.size, 3);
-    assert.deepStrictEqual(Array.from(highlight.keys()), ranges);
+    assert.strictEqual(highlight?.size, 3);
+    assert.deepStrictEqual(Array.from(highlight!.keys()), ranges);
   });
 });

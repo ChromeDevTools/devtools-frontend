@@ -40,7 +40,8 @@ export const extractIconGroups = (shadowRoot: ShadowRoot) => {
   const iconGroups = [];
   for (let i = 0; i < icons.length; ++i) {
     const labelElement = labels[i];
-    const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
+    const label: string|null =
+        window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
     iconGroups.push({iconData: icons[i].data, label});
   }
   return iconGroups;

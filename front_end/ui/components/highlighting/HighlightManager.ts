@@ -65,12 +65,10 @@ export const HIGHLIGHT_REGISTRY = 'search-highlight';
 
 let highlightManagerInstance: HighlightManager;
 export class HighlightManager {
-  // @ts-expect-error
   #highlights = new Highlight();
 
   constructor() {
     document.adoptedStyleSheets.push(highlightingStyles);
-    // @ts-expect-error
     CSS.highlights.set(HIGHLIGHT_REGISTRY, this.#highlights);
   }
 

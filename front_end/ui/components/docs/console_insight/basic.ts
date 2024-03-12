@@ -94,7 +94,7 @@ document.querySelector('test').style = 'black';
             };
           },
     },
-    'Understand this error', {
+    {
       isSyncActive: true,
       accountEmail: 'some-email',
     });

@@ -27,7 +27,7 @@ const component = new ConsoleInsight(
             throw new Error('Could not connect to the server');
           },
     },
-    'Understand this error', {
+    {
       isSyncActive: true,
       accountEmail: 'some-email',
     });

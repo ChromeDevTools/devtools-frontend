@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 import * as Console from '../console/console.js';
 
 import {ConsoleInsight} from './components/ConsoleInsight.js';
@@ -17,7 +17,6 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'explain.console-message.context.warning':
       case 'explain.console-message.context.other':
       case 'explain.console-message.hover': {
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
         const consoleViewMessage = context.flavor(Console.ConsoleViewMessage.ConsoleViewMessage);
         if (consoleViewMessage) {
           if (actionId.startsWith('explain.console-message.context')) {
@@ -27,7 +26,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           }
           const promptBuilder = new PromptBuilder(consoleViewMessage);
           const aidaClient = new Host.AidaClient.AidaClient();
-          void ConsoleInsight.create(promptBuilder, aidaClient, action?.title()).then(insight => {
+          void ConsoleInsight.create(promptBuilder, aidaClient).then(insight => {
             consoleViewMessage.setInsight(insight);
           });
           return true;

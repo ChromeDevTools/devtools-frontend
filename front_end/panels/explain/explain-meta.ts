@@ -25,7 +25,7 @@ const UIStrings = {
    * @description The setting title to enable the console insights feature via
    * the settings tab.
    */
-  enableConsoleInsights: 'Enable Console insights',
+  enableConsoleInsights: 'Understand console messages with AI',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.

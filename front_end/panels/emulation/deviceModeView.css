@@ -8,12 +8,12 @@
   overflow: hidden;
   align-items: stretch;
   flex: auto;
-  background-color: var(--sys-color-cdt-base);
+  background-color: var(--app-color-toolbar-background);
 }
 
 .device-mode-toolbar {
   flex: none;
-  background-color: var(--sys-color-cdt-base);
+  background-color: var(--app-color-toolbar-background);
   border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
   flex-direction: row;

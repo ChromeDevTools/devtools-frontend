@@ -88,8 +88,7 @@ export class RequestPreviewView extends RequestResponseView {
       return jsonView;
     }
 
-    const dataURL = contentData.asDataUrl();
-    return dataURL ? new RequestHTMLView(dataURL) : null;
+    return RequestHTMLView.create(contentData);
   }
 
   override async createPreview(): Promise<UI.Widget.Widget> {

@@ -147,6 +147,7 @@ ts_library("unittests") {
     "NetworkPanel.test.ts",
     "NetworkSearchScope.test.ts",
     "RequestCookiesView.test.ts",
+    "RequestHTMLView.test.ts",
     "RequestPayloadView.test.ts",
     "RequestPreviewView.test.ts",
     "RequestResponseView.test.ts",

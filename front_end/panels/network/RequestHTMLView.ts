@@ -28,17 +28,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import requestHTMLViewStyles from './requestHTMLView.css.js';
 
 export class RequestHTMLView extends UI.Widget.VBox {
   private readonly dataURL: string;
-  constructor(dataURL: string) {
+  private constructor(dataURL: string) {
     super(true);
 
-    this.dataURL = encodeURI(dataURL).replace(/#/g, '%23');
+    this.dataURL = dataURL;
     this.contentElement.classList.add('html', 'request-view');
+  }
+
+  static create(contentData: TextUtils.ContentData.ContentData): RequestHTMLView|null {
+    const dataURL = contentData.asDataUrl();
+    return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 
   override wasShown(): void {

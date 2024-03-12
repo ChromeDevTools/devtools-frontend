@@ -70,6 +70,7 @@ const META_CODE_PATHS = [
   'entrypoints/rn_inspector',
   'panels/rn_welcome',
   'core/host/RNPerfMetrics.ts',
+  'global_typings/react_native.d.ts',
 ];
 
 const OTHER_LICENSE_HEADERS = [

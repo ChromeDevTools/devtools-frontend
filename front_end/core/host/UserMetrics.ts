@@ -652,7 +652,10 @@ export enum Action {
   InsightErroredOther = 139,
   AutofillReceived = 140,
   AutofillReceivedAndTabAutoOpened = 141,
-  MaxValue = 142,
+  AnimationGroupSelected = 142,
+  ScrollDrivenAnimationGroupSelected = 143,
+  ScrollDrivenAnimationGroupScrubbed = 144,
+  MaxValue = 145,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

@@ -20,7 +20,10 @@ export class AnimationGroupPreviewUI {
   constructor(model: AnimationGroup) {
     this.#model = model;
     this.element = document.createElement('button');
-    this.element.setAttribute('jslog', `${VisualLogging.item('animations.buffer-preview').track({click: true})}`);
+    this.element.setAttribute(
+        'jslog', `${VisualLogging.item(`animations.buffer-preview${model.isScrollDriven() ? '-sda' : ''}`).track({
+          click: true,
+        })}`);
     this.element.classList.add('animation-buffer-preview');
     this.element.addEventListener('animationend', () => {
       this.element.classList.add('no-animation');

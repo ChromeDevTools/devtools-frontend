@@ -809,6 +809,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       this.#gridHeader.classList.add('scrubber-enabled');
     }
 
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupSelected);
+    if (this.#selectedGroup.isScrollDriven()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScrollDrivenAnimationGroupSelected);
+    }
     this.animationGroupSelectedForTest();
   }
 
@@ -1061,6 +1065,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       this.#scrubberPlayer.currentTime = currentTime;
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupScrubbed);
+    if (this.#selectedGroup?.isScrollDriven()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScrollDrivenAnimationGroupScrubbed);
+    }
     this.#currentTime.window().requestAnimationFrame(this.updateScrubber.bind(this));
 
     if (!this.#animationGroupPausedBeforeScrub) {

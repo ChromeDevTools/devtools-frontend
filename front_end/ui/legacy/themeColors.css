@@ -273,13 +273,13 @@
 
   /* States */
 
-  --sys-color-state-hover-on-prominent: rgb(253 252 251 / 10%);
-  --sys-color-state-hover-on-subtle: rgb(31 31 31 / 6%);
+  --sys-color-state-hover-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral99) 10%, transparent);
+  --sys-color-state-hover-on-subtle: color-mix(in sRGB, var(--ref-palette-neutral10) 6%, transparent);
   --sys-color-state-hover-dim-blend-protection: rgb(6 46 111 / 18%);
   --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 6%);
-  --sys-color-state-ripple-neutral-on-prominent: rgb(253 252 251 / 16%);
-  --sys-color-state-ripple-neutral-on-subtle: rgb(31 31 31 / 8%);
-  --sys-color-state-ripple-primary: rgb(124 172 248 / 32%);
+  --sys-color-state-ripple-neutral-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral99) 16%, transparent);
+  --sys-color-state-ripple-neutral-on-subtle: color-mix(in sRGB, var(--ref-palette-neutral10) 8%, transparent);
+  --sys-color-state-ripple-primary: color-mix(in sRGB, var(--ref-palette-primary70) 32%, transparent);
   --sys-color-state-focus-ring: var(--ref-palette-primary40);
   --sys-color-state-focus-select: var(--ref-palette-primary80);
   --sys-color-state-focus-highlight: rgb(31 31 31 / 6%);
@@ -669,13 +669,13 @@
 
   /* States */
 
-  --sys-color-state-hover-on-prominent: rgb(31 31 31 / 6%);
-  --sys-color-state-hover-on-subtle: rgb(253 252 251 / 10%);
+  --sys-color-state-hover-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral10) 6%, transparent);
+  --sys-color-state-hover-on-subtle: color-mix(in sRGB, var(--ref-plette-neutral99) 10%, transparent);
   --sys-color-state-hover-dim-blend-protection: rgb(31 31 31 / 10%);
   --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 16%);
-  --sys-color-state-ripple-neutral-on-prominent: rgb(31 31 31 / 12%);
-  --sys-color-state-ripple-neutral-on-subtle: rgb(253 252 251 / 16%);
-  --sys-color-state-ripple-primary: rgb(76 141 246 / 32%);
+  --sys-color-state-ripple-neutral-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral10) 12%, transparent);
+  --sys-color-state-ripple-neutral-on-subtle: color-mix(in sRGB, var(--ref-palette-neutral99) 16%, transparent);
+  --sys-color-state-ripple-primary: color-mix(in sRGB, var(--ref-palette-primary60) 32%, transparent);
   --sys-color-state-focus-ring: var(--ref-palette-primary80);
   --sys-color-state-focus-select: var(--ref-palette-secondary50);
   --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);

@@ -20,6 +20,11 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
   }
 
   accept(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+      if (TraceEngine.Types.TraceEvents.isSyntheticTraceEntry(event)) {
+        return true;
+      }
+    }
     return this.visibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
   }
 

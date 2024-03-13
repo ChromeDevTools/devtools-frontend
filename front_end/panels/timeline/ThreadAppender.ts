@@ -553,19 +553,19 @@ export class ThreadAppender implements TrackAppender {
 
     if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
-        return getCategoryStyles().Idle.getComputedColorValue();
+        return getCategoryStyles().idle.getComputedColorValue();
       }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.
-        return getCategoryStyles().Scripting.getComputedColorValue();
+        return getCategoryStyles().scripting.getComputedColorValue();
       }
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
     const defaultColor =
         getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.getComputedColorValue();
-    return defaultColor || getCategoryStyles().Other.getComputedColorValue();
+    return defaultColor || getCategoryStyles().other.getComputedColorValue();
   }
 
   /**

@@ -14,6 +14,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
+import {getCategoryStyles, stringIsEventCategory} from './EventUICategory.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {type TimelineSelection} from './TimelineSelection.js';
@@ -836,7 +837,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     color: string,
     icon: (Element|undefined),
   } {
-    const categories = TimelineUIUtils.categories();
+    const categories = getCategoryStyles();
     const color = node.id && node.event ? TimelineUIUtils.eventColor(node.event) : categories['other'].color;
     const unattributed = i18nString(UIStrings.unattributed);
 
@@ -844,7 +845,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 
     switch (this.groupBySetting.get()) {
       case AggregatedTimelineTreeView.GroupBy.Category: {
-        const category = id ? categories[id] || categories['other'] : {title: unattributed, color: unattributed};
+        const idIsValid = id && stringIsEventCategory(id);
+        const category = idIsValid ? categories[id] || categories['other'] : {title: unattributed, color: unattributed};
         return {name: category.title, color: category.color, icon: undefined};
       }
 

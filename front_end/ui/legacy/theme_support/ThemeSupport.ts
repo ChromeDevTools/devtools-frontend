@@ -160,6 +160,9 @@ export class ThemeSupport extends EventTarget {
     document.documentElement.classList.toggle('baseline-default', selectedTheme === 'baseline-default');
     document.documentElement.classList.toggle('baseline-grayscale', selectedTheme === 'baseline-grayscale');
   }
+  static clearThemeCache(): void {
+    themeValueByTargetByName.clear();
+  }
 
   static async fetchColors(document: Document|undefined): Promise<void> {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {

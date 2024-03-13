@@ -126,7 +126,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(children.next().value.event.name, 'first console time');
       assert.strictEqual(children.next().value.event.name, 'third console time');
     });
-    it('groups events by category in the Call Tree view', async function() {
+    it('groups events by category in the Bottom up Tree view', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];

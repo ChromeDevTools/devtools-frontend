@@ -481,21 +481,33 @@ const UIStrings = {
    *@description Event category in the Performance panel for JavaScript nodes in CPUProfile
    */
   jsFrame: 'JS Frame',
+  /**
+   *@description Text in UIDevtools Utils of the Performance panel
+   */
+  rasterizing: 'Rasterizing',
+  /**
+   *@description Text in UIDevtools Utils of the Performance panel
+   */
+  drawing: 'Drawing',
 };
 
-export const EventCategories = [
-  'Loading',
-  'Experience',
-  'Scripting',
-  'Messaging',
-  'Rendering',
-  'Painting',
-  'GPU',
-  'Async',
-  'Other',
-  'Idle',
-] as const;
-export type EventCategory = typeof EventCategories[number];
+export enum EventCategory {
+  DRAWING = 'drawing',
+  RASTERIZING = 'rasterizing',
+  LAYOUT = 'layout',
+  LOADING = 'loading',
+  EXPERIENCE = 'experience',
+  SCRIPTING = 'scripting',
+  MESSAGING = 'messaging',
+  RENDERING = 'rendering',
+  PAINTING = 'painting',
+  GPU = 'gpu',
+  ASYNC = 'async',
+  OTHER = 'other',
+  IDLE = 'idle',
+}
+
+let mainEventCategories: EventCategory[];
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventUICategory.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -512,14 +524,14 @@ export class TimelineRecordStyle {
   }
 }
 export class TimelineCategory {
-  name: string;
+  name: EventCategory;
   title: string;
   visible: boolean;
   childColor: string;
   colorInternal: string;
   private hiddenInternal?: boolean;
 
-  constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
+  constructor(name: EventCategory, title: string, visible: boolean, childColor: string, color: string) {
     this.name = name;
     this.title = title;
     this.visible = visible;
@@ -552,13 +564,15 @@ export type CategoryPalette = {
   [c in EventCategory]: TimelineCategory
 };
 
-type EventStylesMap = Map<TraceEngine.Types.TraceEvents.KnownEventName, TimelineRecordStyle>;
+type EventStylesMap = {
+  [key in TraceEngine.Types.TraceEvents.KnownEventName]?: TimelineRecordStyle;
+};
 
 /**
  * This object defines the styles for the categories used in the
  * timeline (loading, rendering, scripting, etc.).
  */
-let categoryStyles: CategoryPalette;
+let categoryStyles: CategoryPalette|null;
 
 /**
  * This map defines the styles for events shown in the panel. This
@@ -572,10 +586,14 @@ let categoryStyles: CategoryPalette;
  *
  * The map is also used in other places, like the event's details view.
  */
-let eventStylesMap: EventStylesMap;
+let eventStylesMap: EventStylesMap|null;
 
 export function getEventStyle(eventName: TraceEngine.Types.TraceEvents.KnownEventName): TimelineRecordStyle|undefined {
-  return maybeInitSylesMap().get(eventName);
+  return maybeInitSylesMap()[eventName];
+}
+
+export function stringIsEventCategory(it: string): it is EventCategory {
+  return (Object.values(EventCategory) as string[]).includes(it);
 }
 
 export function getCategoryStyles(): CategoryPalette {
@@ -583,545 +601,466 @@ export function getCategoryStyles(): CategoryPalette {
     return categoryStyles;
   }
   categoryStyles = {
-    Loading: new TimelineCategory(
-        'loading', i18nString(UIStrings.loading), true, '--app-color-loading-children', '--app-color-loading'),
-    Experience: new TimelineCategory(
-        'experience', i18nString(UIStrings.experience), false, '--app-color-rendering-children',
+    loading: new TimelineCategory(
+        EventCategory.LOADING, i18nString(UIStrings.loading), true, '--app-color-loading-children',
+        '--app-color-loading'),
+    experience: new TimelineCategory(
+        EventCategory.EXPERIENCE, i18nString(UIStrings.experience), false, '--app-color-rendering-children',
         '--app-color-rendering'),
-    Messaging: new TimelineCategory(
-        'messaging', i18nString(UIStrings.messaging), true, '--app-color-messaging-children', '--app-color-messaging'),
-    Scripting: new TimelineCategory(
-        'scripting', i18nString(UIStrings.scripting), true, '--app-color-scripting-children', '--app-color-scripting'),
-    Rendering: new TimelineCategory(
-        'rendering', i18nString(UIStrings.rendering), true, '--app-color-rendering-children', '--app-color-rendering'),
-    Painting: new TimelineCategory(
-        'painting', i18nString(UIStrings.painting), true, '--app-color-painting-children', '--app-color-painting'),
-    GPU: new TimelineCategory(
-        'gpu', i18nString(UIStrings.gpu), false, '--app-color-painting-children', '--app-color-painting'),
-    Async: new TimelineCategory(
-        'async', i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
-    Other: new TimelineCategory(
-        'other', i18nString(UIStrings.system), false, '--app-color-system-children', '--app-color-system'),
-    Idle: new TimelineCategory(
-        'idle', i18nString(UIStrings.idle), false, '--app-color-idle-children', '--app-color-idle'),
+    messaging: new TimelineCategory(
+        EventCategory.MESSAGING, i18nString(UIStrings.messaging), true, '--app-color-messaging-children',
+        '--app-color-messaging'),
+    scripting: new TimelineCategory(
+        EventCategory.SCRIPTING, i18nString(UIStrings.scripting), true, '--app-color-scripting-children',
+        '--app-color-scripting'),
+    rendering: new TimelineCategory(
+        EventCategory.RENDERING, i18nString(UIStrings.rendering), true, '--app-color-rendering-children',
+        '--app-color-rendering'),
+    painting: new TimelineCategory(
+        EventCategory.PAINTING, i18nString(UIStrings.painting), true, '--app-color-painting-children',
+        '--app-color-painting'),
+    gpu: new TimelineCategory(
+        EventCategory.GPU, i18nString(UIStrings.gpu), false, '--app-color-painting-children', '--app-color-painting'),
+    async: new TimelineCategory(
+        EventCategory.ASYNC, i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
+    other: new TimelineCategory(
+        EventCategory.OTHER, i18nString(UIStrings.system), false, '--app-color-system-children', '--app-color-system'),
+    idle: new TimelineCategory(
+        EventCategory.IDLE, i18nString(UIStrings.idle), false, '--app-color-idle-children', '--app-color-idle'),
+    layout: new TimelineCategory(
+        EventCategory.LAYOUT, i18nString(UIStrings.layout), false, '--app-color-loading-children',
+        '--app-color-loading'),
+    rasterizing: new TimelineCategory(
+        EventCategory.RASTERIZING, i18nString(UIStrings.rasterizing), false, '--app-color-children',
+        '--app-color-scripting'),
+    drawing: new TimelineCategory(
+        EventCategory.DRAWING, i18nString(UIStrings.drawing), false, '--app-color-rendering-children',
+        '--app-color-rendering'),
   };
   return categoryStyles;
 }
 
-function maybeInitSylesMap(): EventStylesMap {
+export function maybeInitSylesMap(): EventStylesMap {
   if (eventStylesMap) {
     return eventStylesMap;
   }
   const defaultCategoryStyles = getCategoryStyles();
-  eventStylesMap = new Map([
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RunTask,
-      new TimelineRecordStyle(i18nString(UIStrings.task), defaultCategoryStyles.Other),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ProfileCall,
-      new TimelineRecordStyle(i18nString(UIStrings.jsFrame), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Program,
-      new TimelineRecordStyle(i18nString(UIStrings.other), defaultCategoryStyles.Other),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.StartProfiling,
-      new TimelineRecordStyle(i18nString(UIStrings.profilingOverhead), defaultCategoryStyles.Other),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Animation,
-      new TimelineRecordStyle(i18nString(UIStrings.animation), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.EventDispatch,
-      new TimelineRecordStyle(i18nString(UIStrings.event), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RequestMainThreadFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.requestMainThreadFrame),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.BeginFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.frameStart),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.BeginMainThreadFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.frameStartMainThread),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.DrawFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.drawFrame),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.HitTest,
-      new TimelineRecordStyle(i18nString(UIStrings.hitTest), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.scheduleStyleRecalculation),
-          defaultCategoryStyles.Rendering,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles,
-      new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree,
-      new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.InvalidateLayout,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.invalidateLayout),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Layerize,
-      new TimelineRecordStyle(i18nString(UIStrings.layerize), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Layout,
-      new TimelineRecordStyle(i18nString(UIStrings.layout), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.PaintSetup,
-      new TimelineRecordStyle(i18nString(UIStrings.paintSetup), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.PaintImage,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.paintImage),
-          defaultCategoryStyles.Painting,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayer,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.updateLayer),
-          defaultCategoryStyles.Painting,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayerTree,
-      new TimelineRecordStyle(i18nString(UIStrings.updateLayerTree), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Paint,
-      new TimelineRecordStyle(i18nString(UIStrings.paint), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.PrePaint,
-      new TimelineRecordStyle(i18nString(UIStrings.prePaint), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RasterTask,
-      new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ScrollLayer,
-      new TimelineRecordStyle(i18nString(UIStrings.scroll), defaultCategoryStyles.Rendering),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Commit,
-      new TimelineRecordStyle(i18nString(UIStrings.commit), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CompositeLayers,
-      new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ComputeIntersections,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.computeIntersections),
-          defaultCategoryStyles.Rendering,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ParseHTML,
-      new TimelineRecordStyle(i18nString(UIStrings.parseHtml), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ParseAuthorStyleSheet,
-      new TimelineRecordStyle(i18nString(UIStrings.parseStylesheet), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall,
-      new TimelineRecordStyle(i18nString(UIStrings.installTimer), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.TimerRemove,
-      new TimelineRecordStyle(i18nString(UIStrings.removeTimer), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.TimerFire,
-      new TimelineRecordStyle(i18nString(UIStrings.timerFired), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.XHRReadyStateChange,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.xhrReadyStateChange),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.XHRLoad,
-      new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.Compile,
-      new TimelineRecordStyle(i18nString(UIStrings.compileScript), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CacheScript,
-      new TimelineRecordStyle(i18nString(UIStrings.cacheScript), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CompileCode,
-      new TimelineRecordStyle(i18nString(UIStrings.compileCode), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.OptimizeCode,
-      new TimelineRecordStyle(i18nString(UIStrings.optimizeCode), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript,
-      new TimelineRecordStyle(i18nString(UIStrings.evaluateScript), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CompileModule,
-      new TimelineRecordStyle(i18nString(UIStrings.compileModule), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CacheModule,
-      new TimelineRecordStyle(i18nString(UIStrings.cacheModule), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.EvaluateModule,
-      new TimelineRecordStyle(i18nString(UIStrings.evaluateModule), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScript,
-      new TimelineRecordStyle(i18nString(UIStrings.streamingCompileTask), defaultCategoryStyles.Other),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptWaiting,
-      new TimelineRecordStyle(i18nString(UIStrings.waitingForNetwork), defaultCategoryStyles.Idle),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptParsing,
-      new TimelineRecordStyle(i18nString(UIStrings.parseAndCompile), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.BackgroundDeserialize,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.deserializeCodeCache),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.FinalizeDeserialization,
-      new TimelineRecordStyle(i18nString(UIStrings.profilingOverhead), defaultCategoryStyles.Other),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WasmStreamFromResponseCallback,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.streamingWasmResponse),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WasmCompiledModule,
-      new TimelineRecordStyle(i18nString(UIStrings.compiledWasmModule), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WasmCachedModule,
-      new TimelineRecordStyle(i18nString(UIStrings.cachedWasmModule), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheHit,
-      new TimelineRecordStyle(i18nString(UIStrings.wasmModuleCacheHit), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheInvalid,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.wasmModuleCacheInvalid),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.FrameStartedLoading,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.frameStartedLoading),
-          defaultCategoryStyles.Loading,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MarkLoad,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.onloadEvent),
-          defaultCategoryStyles.Scripting,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MarkDOMContent,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.domcontentloadedEvent),
-          defaultCategoryStyles.Scripting,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MarkFirstPaint,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.firstPaint),
-          defaultCategoryStyles.Painting,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.firstContentfulPaint),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.largestContentfulPaint),
-          defaultCategoryStyles.Rendering,
-          true,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.TimeStamp,
-      new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ConsoleTime,
-      new TimelineRecordStyle(i18nString(UIStrings.consoleTime), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.UserTiming,
-      new TimelineRecordStyle(i18nString(UIStrings.userTiming), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResourceWillSendRequest,
-      new TimelineRecordStyle(i18nString(UIStrings.willSendRequest), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResourceSendRequest,
-      new TimelineRecordStyle(i18nString(UIStrings.sendRequest), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceiveResponse,
-      new TimelineRecordStyle(i18nString(UIStrings.receiveResponse), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResourceFinish,
-      new TimelineRecordStyle(i18nString(UIStrings.finishLoading), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceivedData,
-      new TimelineRecordStyle(i18nString(UIStrings.receiveData), defaultCategoryStyles.Loading),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RunMicrotasks,
-      new TimelineRecordStyle(i18nString(UIStrings.runMicrotasks), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall,
-      new TimelineRecordStyle(i18nString(UIStrings.functionCall), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.GC,
-      new TimelineRecordStyle(i18nString(UIStrings.gcEvent), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MajorGC,
-      new TimelineRecordStyle(i18nString(UIStrings.majorGc), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.MinorGC,
-      new TimelineRecordStyle(i18nString(UIStrings.minorGc), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.IncrementalGCMarking,
-      new TimelineRecordStyle(i18nString(UIStrings.gcEvent), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CPPGCSweep,
-      new TimelineRecordStyle(i18nString(UIStrings.cppGc), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RequestAnimationFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.requestAnimationFrame),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CancelAnimationFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.cancelAnimationFrame),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.FireAnimationFrame,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.animationFrameFired),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.RequestIdleCallback,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.requestIdleCallback),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CancelIdleCallback,
-      new TimelineRecordStyle(i18nString(UIStrings.cancelIdleCallback), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.FireIdleCallback,
-      new TimelineRecordStyle(i18nString(UIStrings.fireIdleCallback), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate,
-      new TimelineRecordStyle(i18nString(UIStrings.createWebsocket), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.sendWebsocketHandshake),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse,
-      new TimelineRecordStyle(
-          i18nString(UIStrings.receiveWebsocketHandshake),
-          defaultCategoryStyles.Scripting,
-          ),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy,
-      new TimelineRecordStyle(i18nString(UIStrings.destroyWebsocket), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback,
-      new TimelineRecordStyle(i18nString(UIStrings.embedderCallback), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage,
-      new TimelineRecordStyle(i18nString(UIStrings.imageDecode), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.ResizeImage,
-      new TimelineRecordStyle(i18nString(UIStrings.imageResize), defaultCategoryStyles.Painting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.GPUTask,
-      new TimelineRecordStyle(i18nString(UIStrings.gpu), defaultCategoryStyles.GPU),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.GCCollectGarbage,
-      new TimelineRecordStyle(i18nString(UIStrings.domGc), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.DOMGC,
-      new TimelineRecordStyle(i18nString(UIStrings.domGc), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoEncrypt,
-      new TimelineRecordStyle(i18nString(UIStrings.encrypt), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoEncryptReply,
-      new TimelineRecordStyle(i18nString(UIStrings.encryptReply), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDecrypt,
-      new TimelineRecordStyle(i18nString(UIStrings.decrypt), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDecryptReply,
-      new TimelineRecordStyle(i18nString(UIStrings.decryptReply), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDigest,
-      new TimelineRecordStyle(i18nString(UIStrings.digest), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDigestReply,
-      new TimelineRecordStyle(i18nString(UIStrings.digestReply), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoSign,
-      new TimelineRecordStyle(i18nString(UIStrings.sign), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoSignReply,
-      new TimelineRecordStyle(i18nString(UIStrings.signReply), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoVerify,
-      new TimelineRecordStyle(i18nString(UIStrings.verify), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoVerifyReply,
-      new TimelineRecordStyle(i18nString(UIStrings.verifyReply), defaultCategoryStyles.Scripting),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.AsyncTask,
-      new TimelineRecordStyle(i18nString(UIStrings.asyncTask), defaultCategoryStyles.Async),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift,
-      new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.Experience),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.EventTiming,
-      new TimelineRecordStyle(i18nString(UIStrings.eventTiming), defaultCategoryStyles.Experience),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.HandlePostMessage,
-      new TimelineRecordStyle(i18nString(UIStrings.onMessage), defaultCategoryStyles.Messaging),
-    ],
-    [
-      TraceEngine.Types.TraceEvents.KnownEventName.SchedulePostMessage,
-      new TimelineRecordStyle(i18nString(UIStrings.schedulePostMessage), defaultCategoryStyles.Messaging),
-    ],
-  ]);
+
+  eventStylesMap = {
+    [TraceEngine.Types.TraceEvents.KnownEventName.RunTask]:
+        new TimelineRecordStyle(i18nString(UIStrings.task), defaultCategoryStyles.other),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ProfileCall]:
+        new TimelineRecordStyle(i18nString(UIStrings.jsFrame), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Program]:
+        new TimelineRecordStyle(i18nString(UIStrings.other), defaultCategoryStyles.other),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.StartProfiling]:
+        new TimelineRecordStyle(i18nString(UIStrings.profilingOverhead), defaultCategoryStyles.other),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Animation]:
+        new TimelineRecordStyle(i18nString(UIStrings.animation), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.EventDispatch]:
+        new TimelineRecordStyle(i18nString(UIStrings.event), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RequestMainThreadFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.requestMainThreadFrame),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.BeginFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.frameStart),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.BeginMainThreadFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.frameStartMainThread),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.DrawFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.drawFrame),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.HitTest]:
+        new TimelineRecordStyle(i18nString(UIStrings.hitTest), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ScheduleStyleRecalculation]: new TimelineRecordStyle(
+        i18nString(UIStrings.scheduleStyleRecalculation),
+        defaultCategoryStyles.rendering,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles]:
+        new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree]:
+        new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.InvalidateLayout]: new TimelineRecordStyle(
+        i18nString(UIStrings.invalidateLayout),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Layerize]:
+        new TimelineRecordStyle(i18nString(UIStrings.layerize), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Layout]:
+        new TimelineRecordStyle(i18nString(UIStrings.layout), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.PaintSetup]:
+        new TimelineRecordStyle(i18nString(UIStrings.paintSetup), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.PaintImage]: new TimelineRecordStyle(
+        i18nString(UIStrings.paintImage),
+        defaultCategoryStyles.painting,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayer]: new TimelineRecordStyle(
+        i18nString(UIStrings.updateLayer),
+        defaultCategoryStyles.painting,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayerTree]:
+        new TimelineRecordStyle(i18nString(UIStrings.updateLayerTree), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Paint]:
+        new TimelineRecordStyle(i18nString(UIStrings.paint), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.PrePaint]:
+        new TimelineRecordStyle(i18nString(UIStrings.prePaint), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RasterTask]:
+        new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ScrollLayer]:
+        new TimelineRecordStyle(i18nString(UIStrings.scroll), defaultCategoryStyles.rendering),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Commit]:
+        new TimelineRecordStyle(i18nString(UIStrings.commit), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CompositeLayers]:
+        new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ComputeIntersections]: new TimelineRecordStyle(
+        i18nString(UIStrings.computeIntersections),
+        defaultCategoryStyles.rendering,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ParseHTML]:
+        new TimelineRecordStyle(i18nString(UIStrings.parseHtml), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ParseAuthorStyleSheet]:
+        new TimelineRecordStyle(i18nString(UIStrings.parseStylesheet), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.TimerInstall]:
+        new TimelineRecordStyle(i18nString(UIStrings.installTimer), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.TimerRemove]:
+        new TimelineRecordStyle(i18nString(UIStrings.removeTimer), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.TimerFire]:
+        new TimelineRecordStyle(i18nString(UIStrings.timerFired), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.XHRReadyStateChange]: new TimelineRecordStyle(
+        i18nString(UIStrings.xhrReadyStateChange),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.XHRLoad]:
+        new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.Compile]:
+        new TimelineRecordStyle(i18nString(UIStrings.compileScript), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CacheScript]:
+        new TimelineRecordStyle(i18nString(UIStrings.cacheScript), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CompileCode]:
+        new TimelineRecordStyle(i18nString(UIStrings.compileCode), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.OptimizeCode]:
+        new TimelineRecordStyle(i18nString(UIStrings.optimizeCode), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript]:
+        new TimelineRecordStyle(i18nString(UIStrings.evaluateScript), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CompileModule]:
+        new TimelineRecordStyle(i18nString(UIStrings.compileModule), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CacheModule]:
+        new TimelineRecordStyle(i18nString(UIStrings.cacheModule), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.EvaluateModule]:
+        new TimelineRecordStyle(i18nString(UIStrings.evaluateModule), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScript]:
+        new TimelineRecordStyle(i18nString(UIStrings.streamingCompileTask), defaultCategoryStyles.other),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptWaiting]:
+        new TimelineRecordStyle(i18nString(UIStrings.waitingForNetwork), defaultCategoryStyles.idle),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.StreamingCompileScriptParsing]:
+        new TimelineRecordStyle(i18nString(UIStrings.parseAndCompile), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.BackgroundDeserialize]: new TimelineRecordStyle(
+        i18nString(UIStrings.deserializeCodeCache),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.FinalizeDeserialization]:
+        new TimelineRecordStyle(i18nString(UIStrings.profilingOverhead), defaultCategoryStyles.other),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WasmStreamFromResponseCallback]: new TimelineRecordStyle(
+        i18nString(UIStrings.streamingWasmResponse),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WasmCompiledModule]:
+        new TimelineRecordStyle(i18nString(UIStrings.compiledWasmModule), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WasmCachedModule]:
+        new TimelineRecordStyle(i18nString(UIStrings.cachedWasmModule), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheHit]:
+        new TimelineRecordStyle(i18nString(UIStrings.wasmModuleCacheHit), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WasmModuleCacheInvalid]: new TimelineRecordStyle(
+        i18nString(UIStrings.wasmModuleCacheInvalid),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.FrameStartedLoading]: new TimelineRecordStyle(
+        i18nString(UIStrings.frameStartedLoading),
+        defaultCategoryStyles.loading,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MarkLoad]: new TimelineRecordStyle(
+        i18nString(UIStrings.onloadEvent),
+        defaultCategoryStyles.scripting,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MarkDOMContent]: new TimelineRecordStyle(
+        i18nString(UIStrings.domcontentloadedEvent),
+        defaultCategoryStyles.scripting,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MarkFirstPaint]: new TimelineRecordStyle(
+        i18nString(UIStrings.firstPaint),
+        defaultCategoryStyles.painting,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP]: new TimelineRecordStyle(
+        i18nString(UIStrings.firstContentfulPaint),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate]: new TimelineRecordStyle(
+        i18nString(UIStrings.largestContentfulPaint),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.TimeStamp]:
+        new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ConsoleTime]:
+        new TimelineRecordStyle(i18nString(UIStrings.consoleTime), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.UserTiming]:
+        new TimelineRecordStyle(i18nString(UIStrings.userTiming), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResourceWillSendRequest]:
+        new TimelineRecordStyle(i18nString(UIStrings.willSendRequest), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResourceSendRequest]:
+        new TimelineRecordStyle(i18nString(UIStrings.sendRequest), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceiveResponse]:
+        new TimelineRecordStyle(i18nString(UIStrings.receiveResponse), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResourceFinish]:
+        new TimelineRecordStyle(i18nString(UIStrings.finishLoading), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResourceReceivedData]:
+        new TimelineRecordStyle(i18nString(UIStrings.receiveData), defaultCategoryStyles.loading),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RunMicrotasks]:
+        new TimelineRecordStyle(i18nString(UIStrings.runMicrotasks), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall]:
+        new TimelineRecordStyle(i18nString(UIStrings.functionCall), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.GC]:
+        new TimelineRecordStyle(i18nString(UIStrings.gcEvent), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MajorGC]:
+        new TimelineRecordStyle(i18nString(UIStrings.majorGc), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.MinorGC]:
+        new TimelineRecordStyle(i18nString(UIStrings.minorGc), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.IncrementalGCMarking]:
+        new TimelineRecordStyle(i18nString(UIStrings.gcEvent), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CPPGCSweep]:
+        new TimelineRecordStyle(i18nString(UIStrings.cppGc), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RequestAnimationFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.requestAnimationFrame),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CancelAnimationFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.cancelAnimationFrame),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.FireAnimationFrame]: new TimelineRecordStyle(
+        i18nString(UIStrings.animationFrameFired),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.RequestIdleCallback]: new TimelineRecordStyle(
+        i18nString(UIStrings.requestIdleCallback),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CancelIdleCallback]:
+        new TimelineRecordStyle(i18nString(UIStrings.cancelIdleCallback), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.FireIdleCallback]:
+        new TimelineRecordStyle(i18nString(UIStrings.fireIdleCallback), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketCreate]:
+        new TimelineRecordStyle(i18nString(UIStrings.createWebsocket), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketSendHandshakeRequest]: new TimelineRecordStyle(
+        i18nString(UIStrings.sendWebsocketHandshake),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketReceiveHandshakeResponse]: new TimelineRecordStyle(
+        i18nString(UIStrings.receiveWebsocketHandshake),
+        defaultCategoryStyles.scripting,
+        ),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.WebSocketDestroy]:
+        new TimelineRecordStyle(i18nString(UIStrings.destroyWebsocket), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.EmbedderCallback]:
+        new TimelineRecordStyle(i18nString(UIStrings.embedderCallback), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage]:
+        new TimelineRecordStyle(i18nString(UIStrings.imageDecode), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.ResizeImage]:
+        new TimelineRecordStyle(i18nString(UIStrings.imageResize), defaultCategoryStyles.painting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.GPUTask]:
+        new TimelineRecordStyle(i18nString(UIStrings.gpu), defaultCategoryStyles.gpu),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.GCCollectGarbage]:
+        new TimelineRecordStyle(i18nString(UIStrings.domGc), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoEncrypt]:
+        new TimelineRecordStyle(i18nString(UIStrings.encrypt), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoEncryptReply]:
+        new TimelineRecordStyle(i18nString(UIStrings.encryptReply), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDecrypt]:
+        new TimelineRecordStyle(i18nString(UIStrings.decrypt), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDecryptReply]:
+        new TimelineRecordStyle(i18nString(UIStrings.decryptReply), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDigest]:
+        new TimelineRecordStyle(i18nString(UIStrings.digest), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoDigestReply]:
+        new TimelineRecordStyle(i18nString(UIStrings.digestReply), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoSign]:
+        new TimelineRecordStyle(i18nString(UIStrings.sign), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoSignReply]:
+        new TimelineRecordStyle(i18nString(UIStrings.signReply), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoVerify]:
+        new TimelineRecordStyle(i18nString(UIStrings.verify), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.CryptoDoVerifyReply]:
+        new TimelineRecordStyle(i18nString(UIStrings.verifyReply), defaultCategoryStyles.scripting),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.AsyncTask]:
+        new TimelineRecordStyle(i18nString(UIStrings.asyncTask), defaultCategoryStyles.async),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.LayoutShift]:
+        new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.EventTiming]:
+        new TimelineRecordStyle(i18nString(UIStrings.eventTiming), defaultCategoryStyles.experience),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.HandlePostMessage]:
+        new TimelineRecordStyle(i18nString(UIStrings.onMessage), defaultCategoryStyles.messaging),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.SchedulePostMessage]:
+        new TimelineRecordStyle(i18nString(UIStrings.schedulePostMessage), defaultCategoryStyles.messaging),
+  };
   return eventStylesMap;
+}
+
+export function setEventStylesMap(eventStyles: EventStylesMap): void {
+  eventStylesMap = eventStyles;
+}
+
+export function setCategories(cats: CategoryPalette): void {
+  categoryStyles = cats;
+}
+
+export function visibleTypes(): string[] {
+  const eventStyles = maybeInitSylesMap();
+  const result = [];
+  for (const name in eventStyles) {
+    // Typescript cannot infer that `name` is a key of eventStyles
+    const nameAsKey = name as keyof typeof eventStyles;
+    if (!eventStyles[nameAsKey]?.hidden) {
+      result.push(name);
+    }
+  }
+  return result;
+}
+
+export function getTimelineMainEventCategories(): EventCategory[] {
+  if (mainEventCategories) {
+    return mainEventCategories;
+  }
+  mainEventCategories = [
+    EventCategory.IDLE,
+    EventCategory.LOADING,
+    EventCategory.PAINTING,
+    EventCategory.RENDERING,
+    EventCategory.SCRIPTING,
+    EventCategory.OTHER,
+  ];
+  return mainEventCategories;
+}
+
+export function setTimelineMainEventCategories(categories: EventCategory[]): void {
+  mainEventCategories = categories;
 }

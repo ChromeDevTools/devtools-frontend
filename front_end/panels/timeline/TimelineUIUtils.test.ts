@@ -31,6 +31,7 @@ import {
 } from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Timeline from './timeline.js';
 
@@ -364,6 +365,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 }
 `;
       document.documentElement.appendChild(styleElement);
+      ThemeSupport.ThemeSupport.clearThemeCache();
     });
 
     after(() => {
@@ -371,15 +373,16 @@ describeWithMockConnection('TimelineUIUtils', function() {
       if (styleElementToRemove) {
         document.documentElement.removeChild(styleElementToRemove);
       }
+      ThemeSupport.ThemeSupport.clearThemeCache();
     });
 
     it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getComputedColorValue();
+      const parsedColor = Timeline.EventUICategory.getCategoryStyles().scripting.getComputedColorValue();
       assert.strictEqual('rgb(2 2 2)', parsedColor);
     });
 
     it('should return the color as a CSS variable', function() {
-      const cssVariable = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getCSSValue();
+      const cssVariable = Timeline.EventUICategory.getCategoryStyles().scripting.getCSSValue();
       assert.strictEqual('var(--app-color-scripting)', cssVariable);
     });
 

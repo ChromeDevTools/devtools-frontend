@@ -51,7 +51,15 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
-import {getCategoryStyles, getEventStyle, TimelineCategory, TimelineRecordStyle} from './EventUICategory.js';
+import {
+  type CategoryPalette,
+  getCategoryStyles,
+  getEventStyle,
+  maybeInitSylesMap,
+  type TimelineCategory,
+  TimelineRecordStyle,
+  visibleTypes,
+} from './EventUICategory.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {TimelinePanel} from './TimelinePanel.js';
@@ -64,336 +72,13 @@ const UIStrings = {
    */
   emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n_no_locked_or_placeholder_only_phrase
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  task: 'Task',
-  /**
-   *@description Text for other types of items
-   */
-  other: 'Other',
-  /**
-   *@description Text that refers to the animation of the web page
-   */
-  animation: 'Animation',
-  /**
-   *@description Text that refers to some events
-   */
-  event: 'Event',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  requestMainThreadFrame: 'Request Main Thread Frame',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  frameStart: 'Frame Start',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  frameStartMainThread: 'Frame Start (main thread)',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  drawFrame: 'Draw Frame',
-  /**
-   *@description Noun for an event in the Performance panel. This marks time
-   spent in an operation that only happens when the profiler is active.
-   */
-  profilingOverhead: 'Profiling Overhead',
-  /**
-   *@description The process the browser uses to determine a target element for a
-   *pointer event. Typically, this is determined by considering the pointer's
-   *location and also the visual layout of elements on the screen.
-   */
-  hitTest: 'Hit Test',
-  /**
-   *@description Noun for an event in the Performance panel. The browser has decided
-   *that the styles for some elements need to be recalculated and scheduled that
-   *recalculation process at some time in the future.
-   */
-  scheduleStyleRecalculation: 'Schedule Style Recalculation',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  recalculateStyle: 'Recalculate Style',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  invalidateLayout: 'Invalidate Layout',
-  /**
-   *@description Noun for an event in the Performance panel. Layerize is a step
-   *where we calculate which layers to create.
-   */
-  layerize: 'Layerize',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  layout: 'Layout',
-  /**
-   *@description Noun for an event in the Performance panel. Paint setup is a
-   *step before the 'Paint' event. A paint event is when the browser draws pixels
-   *to the screen. This step is the setup beforehand.
-   */
-  paintSetup: 'Paint Setup',
-  /**
-   *@description Noun for a paint event in the Performance panel, where an image
-   *was being painted. A paint event is when the browser draws pixels to the
-   *screen, in this case specifically for an image in a website.
-   */
-  paintImage: 'Paint Image',
-  /**
-   *@description Noun for an event in the Performance panel. Pre-paint is a
-   *step before the 'Paint' event. A paint event is when the browser records the
-   *instructions for drawing the page. This step is the setup beforehand.
-   */
-  prePaint: 'Pre-Paint',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  updateLayer: 'Update Layer',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  updateLayerTree: 'Update Layer Tree',
-  /**
    *@description Text that refers to updated priority of network request
    */
   initialPriority: 'Initial Priority',
   /**
-   *@description Noun for a paint event in the Performance panel. A paint event is when the browser draws pixels to the screen.
-   */
-  paint: 'Paint',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  rasterizePaint: 'Rasterize Paint',
-  /**
-   *@description The action to scroll
-   */
-  scroll: 'Scroll',
-  /**
-   *@description Noun for an event in the Performance panel. Commit is a step
-   *where we send (also known as "commit") layers to the compositor thread. This
-   *step follows the "Layerize" step which is what calculates which layers to
-   *create.
-   */
-  commit: 'Commit',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  compositeLayers: 'Composite Layers',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  computeIntersections: 'Compute Intersections',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  parseHtml: 'Parse HTML',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  parseStylesheet: 'Parse Stylesheet',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  installTimer: 'Install Timer',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  removeTimer: 'Remove Timer',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  timerFired: 'Timer Fired',
-  /**
-   *@description Text for an event. Shown in the timeline in the Performance panel.
-   * XHR refers to XmlHttpRequest, a Web API. This particular Web API has a property
-   * named 'readyState' (https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState). When
-   * the 'readyState' property changes the text is shown.
-   */
-  xhrReadyStateChange: '`XHR` Ready State Change',
-  /**
-   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
-   * XHR refers to XmlHttpRequest, a Web API. (see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
-   * The text is shown when a XmlHttpRequest load event happens on the inspected page.
-   */
-  xhrLoad: '`XHR` Load',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  compileScript: 'Compile Script',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  cacheScript: 'Cache Script Code',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  compileCode: 'Compile Code',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  optimizeCode: 'Optimize Code',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  evaluateScript: 'Evaluate Script',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  compileModule: 'Compile Module',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  cacheModule: 'Cache Module Code',
-  /**
-   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
-   * "Module" refers to JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-   * JavaScript modules are a way to organize JavaScript code.
-   * "Evaluate" is the phase when the JavaScript code of a module is executed.
-   */
-  evaluateModule: 'Evaluate Module',
-  /**
-   *@description Noun indicating that a compile task (type: streaming) happened.
-   */
-  streamingCompileTask: 'Streaming Compile Task',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  waitingForNetwork: 'Waiting for Network',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  parseAndCompile: 'Parse and Compile',
-  /**
-   * @description Text in Timeline UIUtils of the Performance panel.
-   * "Code Cache" refers to JavaScript bytecode cache: https://v8.dev/blog/code-caching-for-devs
-   * "Deserialize" refers to the process of reading the code cache.
-   */
-  deserializeCodeCache: 'Deserialize Code Cache',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  streamingWasmResponse: 'Streaming Wasm Response',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  compiledWasmModule: 'Compiled Wasm Module',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  cachedWasmModule: 'Cached Wasm Module',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  wasmModuleCacheHit: 'Wasm Module Cache Hit',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  wasmModuleCacheInvalid: 'Wasm Module Cache Invalid',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  frameStartedLoading: 'Frame Started Loading',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  onloadEvent: 'Onload Event',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  domcontentloadedEvent: 'DOMContentLoaded Event',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  firstPaint: 'First Paint',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  firstContentfulPaint: 'First Contentful Paint',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  largestContentfulPaint: 'Largest Contentful Paint',
-  /**
    *@description Text for timestamps of items
    */
   timestamp: 'Timestamp',
-  /**
-   *@description Noun for a 'time' event that happens in the Console (a tool in
-   * DevTools). The user can trigger console time events from their code, and
-   * they will show up in the Performance panel. Time events are used to measure
-   * the duration of something, e.g. the user will emit two time events at the
-   * start and end of some interesting task.
-   */
-  consoleTime: 'Console Time',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  userTiming: 'User Timing',
-  /**
-   * @description Name for an event shown in the Performance panel. When a network
-   * request is about to be sent by the browser, the time is recorded and DevTools
-   * is notified that a network request will be sent momentarily.
-   */
-  willSendRequest: 'Will Send Request',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  sendRequest: 'Send Request',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  receiveResponse: 'Receive Response',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  finishLoading: 'Finish Loading',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  receiveData: 'Receive Data',
-  /**
-   *@description Event category in the Performance panel for time spent to execute microtasks in JavaScript
-   */
-  runMicrotasks: 'Run Microtasks',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  functionCall: 'Function Call',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  gcEvent: 'GC Event',
-  /**
-   *@description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
-   */
-  majorGc: 'Major GC',
-  /**
-   *@description Event category in the Performance panel for time spent to perform a quick Garbage Collection pass
-   */
-  minorGc: 'Minor GC',
-  /**
-   *@description Event category in the Performance panel for root node in CPUProfile
-   */
-  jsRoot: 'JS Root',
-  /**
-   *@description Event category in the Performance panel for JavaScript nodes in CPUProfile
-   */
-  jsFrame: 'JS Frame',
-  /**
-   *@description Event category in the Performance panel for idle nodes in CPUProfile
-   */
-  jsIdleFrame: 'JS Idle Frame',
-  /**
-   *@description Event category in the Performance panel for system nodes in CPUProfile
-   */
-  jsSystemFrame: 'JS System Frame',
-  /**
-   *@description Text for the request animation frame event
-   */
-  requestAnimationFrame: 'Request Animation Frame',
   /**
    *@description Text shown next to the interaction event's ID in the detail view.
    */
@@ -410,117 +95,6 @@ const UIStrings = {
    *@description Text shown next to the interaction event's presentation delay time in the detail view.
    */
   presentationDelay: 'Presentation delay',
-  /**
-   *@description Text to cancel the animation frame
-   */
-  cancelAnimationFrame: 'Cancel Animation Frame',
-  /**
-   *@description Text for the event that an animation frame is fired
-   */
-  animationFrameFired: 'Animation Frame Fired',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  requestIdleCallback: 'Request Idle Callback',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  cancelIdleCallback: 'Cancel Idle Callback',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  fireIdleCallback: 'Fire Idle Callback',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  createWebsocket: 'Create WebSocket',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  sendWebsocketHandshake: 'Send WebSocket Handshake',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  receiveWebsocketHandshake: 'Receive WebSocket Handshake',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  destroyWebsocket: 'Destroy WebSocket',
-  /**
-   *@description Event category in the Performance panel for time spent in the embedder of the WebView
-   */
-  embedderCallback: 'Embedder Callback',
-  /**
-   *@description Event category in the Performance panel for time spent decoding an image
-   */
-  imageDecode: 'Image Decode',
-  /**
-   *@description Event category in the Performance panel for time spent to resize an image
-   */
-  imageResize: 'Image Resize',
-  /**
-   *@description Event category in the Performance panel for time spent in the GPU
-   */
-  gpu: 'GPU',
-  /**
-   *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
-   */
-  domGc: 'DOM GC',
-  /**
-   *@description Event category in the Performance panel for time spent to perform encryption
-   */
-  encrypt: 'Encrypt',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  encryptReply: 'Encrypt Reply',
-  /**
-   *@description Event category in the Performance panel for time spent to perform decryption
-   */
-  decrypt: 'Decrypt',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  decryptReply: 'Decrypt Reply',
-  /**
-   * @description Noun phrase meaning 'the browser was preparing the digest'.
-   * Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
-   */
-  digest: 'Digest',
-  /**
-   *@description Noun phrase meaning 'the browser was preparing the digest
-   *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
-   */
-  digestReply: 'Digest Reply',
-  /**
-   *@description The 'sign' stage of a web crypto event. Shown when displaying what the website was doing at a particular point in time.
-   */
-  sign: 'Sign',
-  /**
-   * @description Noun phrase for an event of the Web Crypto API. The event is recorded when the signing process is concluded.
-   * Signature: https://developer.mozilla.org/en-US/docs/Glossary/Signature/Security
-   */
-  signReply: 'Sign Reply',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  verify: 'Verify',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  verifyReply: 'Verify Reply',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  asyncTask: 'Async Task',
-  /**
-   *@description Text in Timeline for Layout Shift records
-   */
-  layoutShift: 'Layout Shift',
-  /**
-   *@description Text in Timeline for an Event Timing record
-   */
-  eventTiming: 'Event Timing',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -925,38 +499,6 @@ const UIStrings = {
    */
   sAtS: '{PH1} at {PH2}',
   /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent to load resources
-   */
-  loading: 'Loading',
-  /**
-   *@description Text in Timeline for the Experience title
-   */
-  experience: 'Experience',
-  /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent in script execution
-   */
-  scripting: 'Scripting',
-  /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
-   */
-  rendering: 'Rendering',
-  /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent to visually represent the web page
-   */
-  painting: 'Painting',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  async: 'Async',
-  /**
-   *@description Category in the Summary view of the Performance panel to indicate time spent in the rest of the system
-   */
-  system: 'System',
-  /**
-   *@description Category in the Summary view of the Performance panel to indicate idle time
-   */
-  idle: 'Idle',
-  /**
    *@description Text in Timeline UIUtils of the Performance panel
    *@example {blink.console} PH1
    */
@@ -998,23 +540,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let eventStylesMap: EventStylesMap;
-
-let categories: {
-  [x: string]: TimelineCategory,
-};
-
-let eventCategories: string[];
-
 let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
 let colorGenerator: Common.Color.Generator;
 
 const requestPreviewElements = new WeakMap<TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, HTMLImageElement>();
 
-interface EventStylesMap {
-  [x: string]: TimelineRecordStyle;
-}
 type LinkifyLocationOptions = {
   scriptId: Protocol.Runtime.ScriptId|null,
   url: string,
@@ -1024,164 +555,6 @@ type LinkifyLocationOptions = {
 };
 
 export class TimelineUIUtils {
-  private static initEventStyles(): EventStylesMap {
-    if (eventStylesMap) {
-      return eventStylesMap;
-    }
-
-    const type = TimelineModel.TimelineModel.RecordType;
-    const categories = TimelineUIUtils.categories();
-    const rendering = categories['rendering'];
-    const scripting = categories['scripting'];
-    const loading = categories['loading'];
-    const experience = categories['experience'];
-    const painting = categories['painting'];
-    const other = categories['other'];
-    const idle = categories['idle'];
-
-    const eventStyles: EventStylesMap = {};
-    eventStyles[type.Task] = new TimelineRecordStyle(i18nString(UIStrings.task), other);
-    eventStyles[type.Program] = new TimelineRecordStyle(i18nString(UIStrings.other), other);
-    eventStyles[type.StartProfiling] = new TimelineRecordStyle(UIStrings.profilingOverhead, other);
-    eventStyles[type.Animation] = new TimelineRecordStyle(i18nString(UIStrings.animation), rendering);
-    eventStyles[type.EventDispatch] = new TimelineRecordStyle(i18nString(UIStrings.event), scripting);
-    eventStyles[type.RequestMainThreadFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.requestMainThreadFrame), rendering, true);
-    eventStyles[type.BeginFrame] = new TimelineRecordStyle(i18nString(UIStrings.frameStart), rendering, true);
-    eventStyles[type.BeginMainThreadFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.frameStartMainThread), rendering, true);
-    eventStyles[type.DrawFrame] = new TimelineRecordStyle(i18nString(UIStrings.drawFrame), rendering, true);
-    eventStyles[type.HitTest] = new TimelineRecordStyle(i18nString(UIStrings.hitTest), rendering);
-    eventStyles[type.ScheduleStyleRecalculation] =
-        new TimelineRecordStyle(i18nString(UIStrings.scheduleStyleRecalculation), rendering);
-    eventStyles[type.RecalculateStyles] = new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), rendering);
-    eventStyles[type.UpdateLayoutTree] = new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), rendering);
-    eventStyles[type.InvalidateLayout] =
-        new TimelineRecordStyle(i18nString(UIStrings.invalidateLayout), rendering, true);
-    eventStyles[type.Layerize] = new TimelineRecordStyle(i18nString(UIStrings.layerize), rendering);
-    eventStyles[type.Layout] = new TimelineRecordStyle(i18nString(UIStrings.layout), rendering);
-    eventStyles[type.PaintSetup] = new TimelineRecordStyle(i18nString(UIStrings.paintSetup), painting);
-    eventStyles[type.PaintImage] = new TimelineRecordStyle(i18nString(UIStrings.paintImage), painting, true);
-    eventStyles[type.UpdateLayer] = new TimelineRecordStyle(i18nString(UIStrings.updateLayer), painting, true);
-    eventStyles[type.UpdateLayerTree] = new TimelineRecordStyle(i18nString(UIStrings.updateLayerTree), rendering);
-    eventStyles[type.Paint] = new TimelineRecordStyle(i18nString(UIStrings.paint), painting);
-    eventStyles[type.PrePaint] = new TimelineRecordStyle(i18nString(UIStrings.prePaint), rendering);
-    eventStyles[type.RasterTask] = new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), painting);
-    eventStyles[type.ScrollLayer] = new TimelineRecordStyle(i18nString(UIStrings.scroll), rendering);
-    eventStyles[type.Commit] = new TimelineRecordStyle(i18nString(UIStrings.commit), painting);
-    eventStyles[type.CompositeLayers] = new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), painting);
-    eventStyles[type.ComputeIntersections] =
-        new TimelineRecordStyle(i18nString(UIStrings.computeIntersections), rendering);
-    eventStyles[type.ParseHTML] = new TimelineRecordStyle(i18nString(UIStrings.parseHtml), loading);
-    eventStyles[type.ParseAuthorStyleSheet] = new TimelineRecordStyle(i18nString(UIStrings.parseStylesheet), loading);
-    eventStyles[type.TimerInstall] = new TimelineRecordStyle(i18nString(UIStrings.installTimer), scripting);
-    eventStyles[type.TimerRemove] = new TimelineRecordStyle(i18nString(UIStrings.removeTimer), scripting);
-    eventStyles[type.TimerFire] = new TimelineRecordStyle(i18nString(UIStrings.timerFired), scripting);
-    eventStyles[type.XHRReadyStateChange] =
-        new TimelineRecordStyle(i18nString(UIStrings.xhrReadyStateChange), scripting);
-    eventStyles[type.XHRLoad] = new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), scripting);
-    eventStyles[type.CompileScript] = new TimelineRecordStyle(i18nString(UIStrings.compileScript), scripting);
-    eventStyles[type.CacheScript] = new TimelineRecordStyle(i18nString(UIStrings.cacheScript), scripting);
-    eventStyles[type.CompileCode] = new TimelineRecordStyle(i18nString(UIStrings.compileCode), scripting);
-    eventStyles[type.OptimizeCode] = new TimelineRecordStyle(i18nString(UIStrings.optimizeCode), scripting);
-    eventStyles[type.EvaluateScript] = new TimelineRecordStyle(i18nString(UIStrings.evaluateScript), scripting);
-    eventStyles[type.CompileModule] = new TimelineRecordStyle(i18nString(UIStrings.compileModule), scripting);
-    eventStyles[type.CacheModule] = new TimelineRecordStyle(i18nString(UIStrings.cacheModule), scripting);
-    eventStyles[type.EvaluateModule] = new TimelineRecordStyle(i18nString(UIStrings.evaluateModule), scripting);
-    eventStyles[type.StreamingCompileScript] =
-        new TimelineRecordStyle(i18nString(UIStrings.streamingCompileTask), other);
-    eventStyles[type.StreamingCompileScriptWaiting] =
-        new TimelineRecordStyle(i18nString(UIStrings.waitingForNetwork), idle);
-    eventStyles[type.StreamingCompileScriptParsing] =
-        new TimelineRecordStyle(i18nString(UIStrings.parseAndCompile), scripting);
-    eventStyles[type.BackgroundDeserialize] =
-        new TimelineRecordStyle(i18nString(UIStrings.deserializeCodeCache), scripting);
-    eventStyles[type.FinalizeDeserialization] = new TimelineRecordStyle(UIStrings.profilingOverhead, other);
-    eventStyles[type.WasmStreamFromResponseCallback] =
-        new TimelineRecordStyle(i18nString(UIStrings.streamingWasmResponse), scripting);
-    eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle(i18nString(UIStrings.compiledWasmModule), scripting);
-    eventStyles[type.WasmCachedModule] = new TimelineRecordStyle(i18nString(UIStrings.cachedWasmModule), scripting);
-    eventStyles[type.WasmModuleCacheHit] = new TimelineRecordStyle(i18nString(UIStrings.wasmModuleCacheHit), scripting);
-    eventStyles[type.WasmModuleCacheInvalid] =
-        new TimelineRecordStyle(i18nString(UIStrings.wasmModuleCacheInvalid), scripting);
-    eventStyles[type.FrameStartedLoading] =
-        new TimelineRecordStyle(i18nString(UIStrings.frameStartedLoading), loading, true);
-    eventStyles[type.MarkLoad] = new TimelineRecordStyle(i18nString(UIStrings.onloadEvent), scripting, true);
-    eventStyles[type.MarkDOMContent] =
-        new TimelineRecordStyle(i18nString(UIStrings.domcontentloadedEvent), scripting, true);
-    eventStyles[type.MarkFirstPaint] = new TimelineRecordStyle(i18nString(UIStrings.firstPaint), painting, true);
-    eventStyles[type.MarkFCP] = new TimelineRecordStyle(i18nString(UIStrings.firstContentfulPaint), rendering, true);
-    eventStyles[type.MarkLCPCandidate] =
-        new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), rendering, true);
-    eventStyles[type.TimeStamp] = new TimelineRecordStyle(i18nString(UIStrings.timestamp), scripting);
-    eventStyles[type.ConsoleTime] = new TimelineRecordStyle(i18nString(UIStrings.consoleTime), scripting);
-    eventStyles[type.UserTiming] = new TimelineRecordStyle(i18nString(UIStrings.userTiming), scripting);
-    eventStyles[type.ResourceWillSendRequest] = new TimelineRecordStyle(i18nString(UIStrings.willSendRequest), loading);
-    eventStyles[type.ResourceSendRequest] = new TimelineRecordStyle(i18nString(UIStrings.sendRequest), loading);
-    eventStyles[type.ResourceReceiveResponse] = new TimelineRecordStyle(i18nString(UIStrings.receiveResponse), loading);
-    eventStyles[type.ResourceFinish] = new TimelineRecordStyle(i18nString(UIStrings.finishLoading), loading);
-    eventStyles[type.ResourceReceivedData] = new TimelineRecordStyle(i18nString(UIStrings.receiveData), loading);
-    eventStyles[type.RunMicrotasks] = new TimelineRecordStyle(i18nString(UIStrings.runMicrotasks), scripting);
-    eventStyles[type.FunctionCall] = new TimelineRecordStyle(i18nString(UIStrings.functionCall), scripting);
-    eventStyles[type.GCEvent] = new TimelineRecordStyle(i18nString(UIStrings.gcEvent), scripting);
-    eventStyles[type.MajorGC] = new TimelineRecordStyle(i18nString(UIStrings.majorGc), scripting);
-    eventStyles[type.MinorGC] = new TimelineRecordStyle(i18nString(UIStrings.minorGc), scripting);
-
-    // Event types used to display CPU Profile.
-    eventStyles[type.JSRoot] = new TimelineRecordStyle(i18nString(UIStrings.jsRoot), idle, /* hidden*/ true);
-    eventStyles[type.JSFrame] = new TimelineRecordStyle(i18nString(UIStrings.jsFrame), scripting);
-    eventStyles[type.JSIdleFrame] = new TimelineRecordStyle(i18nString(UIStrings.jsIdleFrame), idle, /* hidden*/ true);
-    // System nodes shoulde be other type. See categories() function in this file (TimelineUIUtils.ts).
-    eventStyles[type.JSSystemFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.jsSystemFrame), other, /* hidden*/ true);
-
-    eventStyles[type.RequestAnimationFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.requestAnimationFrame), scripting);
-    eventStyles[type.CancelAnimationFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.cancelAnimationFrame), scripting);
-    eventStyles[type.FireAnimationFrame] =
-        new TimelineRecordStyle(i18nString(UIStrings.animationFrameFired), scripting);
-    eventStyles[type.RequestIdleCallback] =
-        new TimelineRecordStyle(i18nString(UIStrings.requestIdleCallback), scripting);
-    eventStyles[type.CancelIdleCallback] = new TimelineRecordStyle(i18nString(UIStrings.cancelIdleCallback), scripting);
-    eventStyles[type.FireIdleCallback] = new TimelineRecordStyle(i18nString(UIStrings.fireIdleCallback), scripting);
-    eventStyles[type.WebSocketCreate] = new TimelineRecordStyle(i18nString(UIStrings.createWebsocket), scripting);
-    eventStyles[type.WebSocketSendHandshakeRequest] =
-        new TimelineRecordStyle(i18nString(UIStrings.sendWebsocketHandshake), scripting);
-    eventStyles[type.WebSocketReceiveHandshakeResponse] =
-        new TimelineRecordStyle(i18nString(UIStrings.receiveWebsocketHandshake), scripting);
-    eventStyles[type.WebSocketDestroy] = new TimelineRecordStyle(i18nString(UIStrings.destroyWebsocket), scripting);
-    eventStyles[type.EmbedderCallback] = new TimelineRecordStyle(i18nString(UIStrings.embedderCallback), scripting);
-    eventStyles[type.DecodeImage] = new TimelineRecordStyle(i18nString(UIStrings.imageDecode), painting);
-    eventStyles[type.ResizeImage] = new TimelineRecordStyle(i18nString(UIStrings.imageResize), painting);
-    eventStyles[type.GPUTask] = new TimelineRecordStyle(i18nString(UIStrings.gpu), categories['gpu']);
-
-    eventStyles[type.GCCollectGarbage] = new TimelineRecordStyle(i18nString(UIStrings.domGc), scripting);
-
-    eventStyles[type.CryptoDoEncrypt] = new TimelineRecordStyle(i18nString(UIStrings.encrypt), scripting);
-    eventStyles[type.CryptoDoEncryptReply] = new TimelineRecordStyle(i18nString(UIStrings.encryptReply), scripting);
-    eventStyles[type.CryptoDoDecrypt] = new TimelineRecordStyle(i18nString(UIStrings.decrypt), scripting);
-    eventStyles[type.CryptoDoDecryptReply] = new TimelineRecordStyle(i18nString(UIStrings.decryptReply), scripting);
-    eventStyles[type.CryptoDoDigest] = new TimelineRecordStyle(i18nString(UIStrings.digest), scripting);
-    eventStyles[type.CryptoDoDigestReply] = new TimelineRecordStyle(i18nString(UIStrings.digestReply), scripting);
-    eventStyles[type.CryptoDoSign] = new TimelineRecordStyle(i18nString(UIStrings.sign), scripting);
-    eventStyles[type.CryptoDoSignReply] = new TimelineRecordStyle(i18nString(UIStrings.signReply), scripting);
-    eventStyles[type.CryptoDoVerify] = new TimelineRecordStyle(i18nString(UIStrings.verify), scripting);
-    eventStyles[type.CryptoDoVerifyReply] = new TimelineRecordStyle(i18nString(UIStrings.verifyReply), scripting);
-
-    eventStyles[type.AsyncTask] = new TimelineRecordStyle(i18nString(UIStrings.asyncTask), categories['async']);
-
-    eventStyles[type.LayoutShift] = new TimelineRecordStyle(i18nString(UIStrings.layoutShift), experience);
-
-    eventStyles[type.EventTiming] = new TimelineRecordStyle(UIStrings.eventTiming, experience);
-
-    eventStylesMap = eventStyles;
-    return eventStyles;
-  }
-
-  static setEventStylesMap(eventStyles: EventStylesMap): void {
-    eventStylesMap = eventStyles;
-  }
 
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     if (!TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
@@ -1248,27 +621,27 @@ export class TimelineUIUtils {
   }
 
   static eventStyle(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineRecordStyle {
-    const eventStyles = TimelineUIUtils.initEventStyles();
+    const eventStyles = maybeInitSylesMap();
     if (TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
         TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
-      return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
+      return new TimelineRecordStyle(event.name, getCategoryStyles()['scripting']);
     }
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
       if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
         if (event.callFrame.functionName === '(idle)') {
-          return new TimelineRecordStyle(event.name, getCategoryStyles().Idle);
+          return new TimelineRecordStyle(event.name, getCategoryStyles().idle);
         }
       }
-      const defaultStyles = new TimelineRecordStyle(event.name, getCategoryStyles().Other);
+      const defaultStyles = new TimelineRecordStyle(event.name, getCategoryStyles().other);
       return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) || defaultStyles;
     }
 
-    let result: TimelineRecordStyle = eventStyles[event.name];
+    let result = eventStyles[event.name as TraceEngine.Types.TraceEvents.KnownEventName];
     // If there's no defined RecordStyle for this event, define as other & hidden.
     if (!result) {
-      result = new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['other'], true);
-      eventStyles[event.name] = result;
+      result = new TimelineRecordStyle(event.name, getCategoryStyles()['other'], true);
+      eventStyles[event.name as TraceEngine.Types.TraceEvents.KnownEventName] = result;
     }
     return result;
   }
@@ -1284,9 +657,9 @@ export class TimelineUIUtils {
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting) {
-      parsedColor = TimelineUIUtils.categories().scripting.getComputedColorValue();
+      parsedColor = getCategoryStyles().scripting.getComputedColorValue();
       if (!parsedColor) {
-        throw new Error('Unable to parse color from TimelineUIUtils.categories().scripting.color');
+        throw new Error('Unable to parse color from getCategoryStyles().scripting.color');
       }
     }
     return parsedColor;
@@ -2376,7 +1749,7 @@ export class TimelineUIUtils {
       function onStartEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
         const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
         const category = getEventStyle(e.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name ||
-            getCategoryStyles().Other.name;
+            getCategoryStyles().other.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory || null, category, startTime);
@@ -2828,69 +2201,14 @@ export class TimelineUIUtils {
     return eventDivider;
   }
 
-  static visibleTypes(): string[] {
-    const eventStyles = TimelineUIUtils.initEventStyles();
-    const result = [];
-    for (const name in eventStyles) {
-      if (!eventStyles[name].hidden) {
-        result.push(name);
-      }
-    }
-    return result;
-  }
-
   static visibleEventsFilter(): TimelineModel.TimelineModelFilter.TimelineModelFilter {
-    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(TimelineUIUtils.visibleTypes());
+    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(visibleTypes());
   }
 
-  static categories(): {
-    [x: string]: TimelineCategory,
-  } {
-    if (categories) {
-      return categories;
-    }
-    categories = {
-      loading: new TimelineCategory(
-          'loading', i18nString(UIStrings.loading), true, '--app-color-loading-children', '--app-color-loading'),
-      experience: new TimelineCategory(
-          'experience', i18nString(UIStrings.experience), false, '--app-color-rendering-children',
-          '--app-color-rendering'),
-      scripting: new TimelineCategory(
-          'scripting', i18nString(UIStrings.scripting), true, '--app-color-scripting-children',
-          '--app-color-scripting'),
-      rendering: new TimelineCategory(
-          'rendering', i18nString(UIStrings.rendering), true, '--app-color-rendering-children',
-          '--app-color-rendering'),
-      painting: new TimelineCategory(
-          'painting', i18nString(UIStrings.painting), true, '--app-color-painting-children', '--app-color-painting'),
-      gpu: new TimelineCategory(
-          'gpu', i18nString(UIStrings.gpu), false, '--app-color-painting-children', '--app-color-painting'),
-      async: new TimelineCategory(
-          'async', i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
-      other: new TimelineCategory(
-          'other', i18nString(UIStrings.system), false, '--app-color-system-children', '--app-color-system'),
-      idle: new TimelineCategory(
-          'idle', i18nString(UIStrings.idle), false, '--app-color-idle-children', '--app-color-idle'),
-    };
-    return categories;
-  }
-
-  static setCategories(cats: {
-    [x: string]: TimelineCategory,
-  }): void {
-    categories = cats;
-  }
-
-  static getTimelineMainEventCategories(): string[] {
-    if (eventCategories) {
-      return eventCategories;
-    }
-    eventCategories = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
-    return eventCategories;
-  }
-
-  static setTimelineMainEventCategories(categories: string[]): void {
-    eventCategories = categories;
+  // Included only for layout tests.
+  // TODO(crbug.com/1386091): Fix/port layout tests and remove.
+  static categories(): CategoryPalette {
+    return getCategoryStyles();
   }
 
   static generatePieChart(
@@ -2939,8 +2257,8 @@ export class TimelineUIUtils {
     }
 
     // Add other categories.
-    for (const categoryName in TimelineUIUtils.categories()) {
-      const category = TimelineUIUtils.categories()[categoryName];
+    for (const categoryName in getCategoryStyles()) {
+      const category = getCategoryStyles()[categoryName as keyof CategoryPalette];
       if (categoryName === selfCategory?.name) {
         // Do not add an entry for this event's self category because 2
         // entries for it where added just before this for loop (for

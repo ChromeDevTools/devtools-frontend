@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
@@ -19,9 +20,10 @@ import autofillViewStyles from './autofillView.css.js';
 
 const UIStrings = {
   /**
-   * @description Title placeholder text when no Autofill data is available.
+   * @description Explanation for how to populate the autofill panel with data. Shown when there is
+   * no data available.
    */
-  noDataAvailable: 'No Autofill event detected',
+  toStartDebugging: 'To start debugging autofill, use Chrome\'s autofill menu to fill an address form.',
   /**
    * @description Column header for column containing form field values
    */
@@ -60,7 +62,12 @@ const UIStrings = {
    * @description Label for checkbox in the Autofill panel. If checked, this panel will open
    * automatically whenever a form is being autofilled.
    */
-  autoShow: 'Open panel on autofill',
+  autoShow: 'Automatically open this panel',
+  /**
+   * @description Tooltip text for a checkbox label in the Autofill panel. If checked, this panel
+   * will open automatically whenever a form is being autofilled.
+   */
+  autoShowTooltip: 'Open the autofill panel automatically when an autofill activity is detected.',
   /**
    * @description Aria text for the section of the autofill view containing a preview of the autofilled address.
    */
@@ -69,7 +76,18 @@ const UIStrings = {
    * @description Aria text for the section of the autofill view containing the info about the autofilled form fields.
    */
   formInspector: 'Form inspector',
+  /**
+   *@description Link text for a hyperlink to more documentation
+   */
+  learnMore: 'Learn more',
+  /**
+   *@description Link text for a hyperlink to webpage for leaving user feedback
+   */
+  sendFeedback: 'Send feedback',
 };
+
+const AUTOFILL_INFO_URL = 'https://goo.gle/devtools-autofill-panel' as Platform.DevToolsPath.UrlString;
+const AUTOFILL_FEEDBACK_URL = 'https://crbug.com/329106326' as Platform.DevToolsPath.UrlString;
 
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -141,7 +159,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       LitHtml.render(LitHtml.html`
         <main>
           <div class="top-right-corner">
-            <label class="checkbox-label">
+            <label class="checkbox-label" title=${i18nString(UIStrings.autoShowTooltip)}>
               <input
                 type="checkbox"
                 ?checked=${this.#autoOpenViewSetting.get()}
@@ -150,9 +168,13 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
               >
               <span>${i18nString(UIStrings.autoShow)}</span>
             </label>
+            <x-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
           </div>
           <div class="placeholder-container" jslog=${VisualLogging.pane('autofill-empty')}>
-            <div class="placeholder">${i18nString(UIStrings.noDataAvailable)}</h1>
+            <div class="placeholder">
+              <div>${i18nString(UIStrings.toStartDebugging)}</div>
+              <x-link href=${AUTOFILL_INFO_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+            </div>
           </div>
         </main>
       `, this.#shadow, {host: this});
@@ -167,7 +189,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
             <div class="label-container">
-              <label class="checkbox-label">
+              <label class="checkbox-label" title=${i18nString(UIStrings.autoShowTooltip)}>
                 <input
                   type="checkbox"
                   ?checked=${this.#autoOpenViewSetting.get()}
@@ -176,6 +198,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
                 >
                 <span>${i18nString(UIStrings.autoShow)}</span>
               </label>
+              <x-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
             </div>
             ${this.#renderAddress()}
           </div>

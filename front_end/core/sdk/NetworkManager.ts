@@ -882,10 +882,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void {
   }
 
-  responseReceivedEarlyHints({}: Protocol.Network.ResponseReceivedEarlyHintsEvent): void {
-    // Not implemented.
-  }
-
   requestWillBeSentExtraInfo(
       {requestId, associatedCookies, headers, clientSecurityState, connectTiming, siteHasCookieInOtherPartition}:
           Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
@@ -907,6 +903,13 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       siteHasCookieInOtherPartition,
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
+  }
+
+  responseReceivedEarlyHints({
+    requestId,
+    headers,
+  }: Protocol.Network.ResponseReceivedEarlyHintsEvent): void {
+    this.getExtraInfoBuilder(requestId).setEarlyHintsHeaders(this.headersMapToHeadersArray(headers));
   }
 
   responseReceivedExtraInfo({
@@ -1817,6 +1820,7 @@ class ExtraInfoBuilder {
   readonly #requests: NetworkRequest[];
   #requestExtraInfos: (ExtraRequestInfo|null)[];
   #responseExtraInfos: (ExtraResponseInfo|null)[];
+  #responseEarlyHintsHeaders: NameValue[];
   #finishedInternal: boolean;
   #webBundleInfo: WebBundleInfo|null;
   #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null;
@@ -1824,6 +1828,7 @@ class ExtraInfoBuilder {
   constructor() {
     this.#requests = [];
     this.#requestExtraInfos = [];
+    this.#responseEarlyHintsHeaders = [];
     this.#responseExtraInfos = [];
     this.#finishedInternal = false;
     this.#webBundleInfo = null;
@@ -1843,6 +1848,11 @@ class ExtraInfoBuilder {
   addResponseExtraInfo(info: ExtraResponseInfo): void {
     this.#responseExtraInfos.push(info);
     this.sync(this.#responseExtraInfos.length - 1);
+  }
+
+  setEarlyHintsHeaders(earlyHintsHeaders: NameValue[]): void {
+    this.#responseEarlyHintsHeaders = earlyHintsHeaders;
+    this.updateFinalRequest();
   }
 
   setWebBundleInfo(info: WebBundleInfo): void {
@@ -1897,6 +1907,7 @@ class ExtraInfoBuilder {
     const finalRequest = this.finalRequest();
     finalRequest?.setWebBundleInfo(this.#webBundleInfo);
     finalRequest?.setWebBundleInnerRequestInfo(this.#webBundleInnerRequestInfo);
+    finalRequest?.setEarlyHintsHeaders(this.#responseEarlyHintsHeaders);
   }
 }
 

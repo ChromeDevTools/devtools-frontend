@@ -9,6 +9,7 @@ export const enum UIHeaderSection {
   General = 'General',
   Request = 'Request',
   Response = 'Response',
+  EarlyHints = 'EarlyHints',
 }
 
 interface UIHeaderLocation {

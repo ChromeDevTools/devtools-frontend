@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import {type NameValue} from '../../../core/sdk/NetworkRequest.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
@@ -87,19 +88,75 @@ export interface ResponseHeaderSectionData {
   toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
 }
 
-export class ResponseHeaderSection extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-response-header-section`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
+class ResponseHeaderSectionBase extends HTMLElement {
+  protected readonly shadow = this.attachShadow({mode: 'open'});
+  protected headerDetails: HeaderDetailsDescriptor[] = [];
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [responseHeaderSectionStyles];
+  }
+
+  protected setHeaders(headers: NameValue[]): void {
+    headers.sort(function(a, b) {
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
+    });
+
+    this.headerDetails = headers.map(header => ({
+                                       name: Platform.StringUtilities.toLowerCaseString(header.name),
+                                       value: header.value.replace(/\s/g, ' '),
+                                     }));
+  }
+
+  protected highlightHeaders(data: ResponseHeaderSectionData): void {
+    if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
+      this.headerDetails.filter(header => compareHeaders(header.name, data.toReveal?.header?.toLowerCase()))
+          .forEach(header => {
+            header.highlight = true;
+          });
+    }
+  }
+}
+
+export class EarlyHintsHeaderSection extends ResponseHeaderSectionBase {
+  static readonly litTagName = LitHtml.literal`devtools-early-hints-header-section`;
   #request?: SDK.NetworkRequest.NetworkRequest;
-  #headerDetails: HeaderDetailsDescriptor[] = [];
+
+  set data(data: ResponseHeaderSectionData) {
+    this.#request = data.request;
+
+    this.setHeaders(this.#request.earlyHintsHeaders);
+    this.highlightHeaders(data);
+
+    this.#render();
+  }
+
+  #render(): void {
+    if (!this.#request) {
+      return;
+    }
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html`
+      ${this.headerDetails.map(header => html`
+        <${HeaderSectionRow.litTagName} .data=${{
+        header: header,
+      } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
+      `)}
+    `, this.shadow, { host: this });
+    // clang-format on
+  }
+}
+
+customElements.define('devtools-early-hints-header-section', EarlyHintsHeaderSection);
+
+export class ResponseHeaderSection extends ResponseHeaderSectionBase {
+  static readonly litTagName = LitHtml.literal`devtools-response-header-section`;
+  #request?: SDK.NetworkRequest.NetworkRequest;
   #headerEditors: HeaderEditorDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
   #headersAreOverrideable = false;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [responseHeaderSectionStyles];
-  }
 
   set data(data: ResponseHeaderSectionData) {
     this.#request = data.request;
@@ -107,14 +164,7 @@ export class ResponseHeaderSection extends HTMLElement {
     // contains no 'set-cookie' headers, because they have been filtered out by
     // the Chromium backend. DevTools therefore uses previously stored values.
     const headers = this.#request.sortedResponseHeaders.concat(this.#request.setCookieHeaders);
-    headers.sort(function(a, b) {
-      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
-    });
-
-    this.#headerDetails = headers.map(header => ({
-                                        name: Platform.StringUtilities.toLowerCaseString(header.name),
-                                        value: header.value.replace(/\s/g, ' '),
-                                      }));
+    this.setHeaders(headers);
 
     const headersWithIssues = [];
     if (this.#request.wasBlocked()) {
@@ -160,12 +210,12 @@ export class ResponseHeaderSection extends HTMLElement {
       return result;
     }
 
-    this.#headerDetails = mergeHeadersWithIssues(this.#headerDetails, headersWithIssues);
+    this.headerDetails = mergeHeadersWithIssues(this.headerDetails, headersWithIssues);
 
     const blockedResponseCookies = this.#request.blockedResponseCookies();
     const blockedCookieLineToReasons = new Map<string, Protocol.Network.SetCookieBlockedReason[]>(
         blockedResponseCookies?.map(c => [c.cookieLine.replace(/\s/g, ' '), c.blockedReasons]));
-    for (const header of this.#headerDetails) {
+    for (const header of this.headerDetails) {
       if (header.name === 'set-cookie' && header.value) {
         const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value);
         if (matchingBlockedReasons) {
@@ -174,19 +224,14 @@ export class ResponseHeaderSection extends HTMLElement {
       }
     }
 
-    if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
-      this.#headerDetails.filter(header => compareHeaders(header.name, data.toReveal?.header?.toLowerCase()))
-          .forEach(header => {
-            header.highlight = true;
-          });
-    }
+    this.highlightHeaders(data);
 
     const dataAssociatedWithRequest = this.#request.getAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY);
     if (dataAssociatedWithRequest) {
       this.#headerEditors = dataAssociatedWithRequest as HeaderEditorDescriptor[];
     } else {
       this.#headerEditors =
-          this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
+          this.headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
       this.#markOverrides();
     }
 
@@ -201,7 +246,7 @@ export class ResponseHeaderSection extends HTMLElement {
     }
     this.#headersAreOverrideable = false;
     this.#headerEditors =
-        this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
+        this.headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
     this.#markOverrides();
     this.#request.setAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY, this.#headerEditors);
   }
@@ -258,14 +303,13 @@ export class ResponseHeaderSection extends HTMLElement {
     // comparing them.
     let indexActual = 0;
     let indexOriginal = 0;
-    while (indexActual < this.#headerDetails.length) {
-      const currentName = this.#headerDetails[indexActual].name;
-      let actualValue = this.#headerDetails[indexActual].value || '';
-      const headerNotSet = this.#headerDetails[indexActual].headerNotSet;
-      while (indexActual < this.#headerDetails.length - 1 &&
-             this.#headerDetails[indexActual + 1].name === currentName) {
+    while (indexActual < this.headerDetails.length) {
+      const currentName = this.headerDetails[indexActual].name;
+      let actualValue = this.headerDetails[indexActual].value || '';
+      const headerNotSet = this.headerDetails[indexActual].headerNotSet;
+      while (indexActual < this.headerDetails.length - 1 && this.headerDetails[indexActual + 1].name === currentName) {
         indexActual++;
-        actualValue += `, ${this.#headerDetails[indexActual].value}`;
+        actualValue += `, ${this.headerDetails[indexActual].value}`;
       }
 
       while (indexOriginal < originalHeaders.length && originalHeaders[indexOriginal].name < currentName) {
@@ -457,7 +501,7 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#updateOverrides(this.#headerEditors[index].name, this.#headerEditors[index].value || '', index);
     this.#render();
 
-    const rows = this.#shadow.querySelectorAll<HeaderSectionRow>('devtools-header-section-row');
+    const rows = this.shadow.querySelectorAll<HeaderSectionRow>('devtools-header-section-row');
     const [lastRow] = Array.from(rows).slice(-1);
     lastRow?.focus();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeaderAdded);
@@ -469,7 +513,7 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     const headerDescriptors: HeaderDescriptor[] = this.#headerEditors.map(
-        (headerEditor, index) => ({...this.#headerDetails[index], ...headerEditor, isResponseHeader: true}));
+        (headerEditor, index) => ({...this.headerDetails[index], ...headerEditor, isResponseHeader: true}));
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -494,7 +538,7 @@ export class ResponseHeaderSection extends HTMLElement {
           ${i18nString(UIStrings.addHeader)}
         </${Buttons.Button.Button.litTagName}>
       ` : LitHtml.nothing}
-    `, this.#shadow, {host: this});
+    `, this.shadow, {host: this});
     // clang-format on
   }
 
@@ -522,6 +566,7 @@ customElements.define('devtools-response-header-section', ResponseHeaderSection)
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-response-header-section': ResponseHeaderSection;
+    'devtools-early-hints-header-section': EarlyHintsHeaderSection;
   }
 }
 

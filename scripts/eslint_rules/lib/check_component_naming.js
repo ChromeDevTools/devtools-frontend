@@ -26,8 +26,20 @@ module.exports = {
     }
   },
   create: function(context) {
+    const baseClassExtendingHTMLElement = [
+      'ResponseHeaderSectionBase'
+    ];
+
+    function nodeExtendsHTMLElement(node) {
+      return node.superClass && (node.superClass.name === 'HTMLElement' || baseClassExtendingHTMLElement.includes(node.superClass.name));
+    }
+
+    function nodeIsFilteredHTMLElementBaseClass(node) {
+      return node.id && baseClassExtendingHTMLElement.includes(node.id.name);
+    }
+
     function nodeIsHTMLElementClassDeclaration(node) {
-      return node.type === 'ClassDeclaration' && node.superClass && node.superClass.name === 'HTMLElement';
+      return node.type === 'ClassDeclaration' && nodeExtendsHTMLElement(node) && !nodeIsFilteredHTMLElementBaseClass(node);
     }
 
     function findAllComponentClassDefinitions(programNode) {

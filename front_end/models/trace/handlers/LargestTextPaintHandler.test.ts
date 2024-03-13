@@ -22,8 +22,8 @@ describe('LargestTextPaintHandler', function() {
 
     const data = TraceModel.Handlers.ModelHandlers.LargestTextPaint.data();
     assert.strictEqual(data.size, 1);
-    const textCandidate = data.get(28 as Protocol.DOM.BackendNodeId);
+    const textCandidate = data.get(8 as Protocol.DOM.BackendNodeId);
     assert.isDefined(textCandidate);
-    assert.strictEqual(textCandidate?.args.data?.DOMNodeId, 28 as Protocol.DOM.BackendNodeId);
+    assert.strictEqual(textCandidate?.args.data?.DOMNodeId, 8 as Protocol.DOM.BackendNodeId);
   });
 });

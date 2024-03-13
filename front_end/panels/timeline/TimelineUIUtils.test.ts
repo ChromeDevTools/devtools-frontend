@@ -418,7 +418,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
       const networkRequests = data.traceParsedData.NetworkRequests.byTime;
       const cssRequest = networkRequests.find(request => {
-        return request.args.data.url === 'http://localhost:3000/app.css';
+        return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
       });
       if (!cssRequest) {
         throw new Error('Could not find expected network request.');
@@ -917,7 +917,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
       const networkRequests = data.traceParsedData.NetworkRequests.byTime;
       const cssRequest = networkRequests.find(request => {
-        return request.args.data.url === 'http://localhost:3000/app.css';
+        return request.args.data.url === 'https://chromedevtools.github.io/performance-stories/lcp-web-font/app.css';
       });
       if (!cssRequest) {
         throw new Error('Could not find expected network request.');
@@ -934,13 +934,13 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(
           rowData,
           [
-            {title: 'URL', value: 'localhost:3000/app.css'},
-            {title: 'Duration', value: '4.075ms (3.08ms network transfer + 995μs resource loading)'},
+            {title: 'URL', value: 'chromedevtools.github.io/performance-stories/lcp-web-font/app.css'},
+            {title: 'Duration', value: '12.582ms (8.291ms load from cache + 4.291ms resource loading)'},
             {title: 'Request Method', value: 'GET'},
             {title: 'Initial Priority', value: 'Highest'},
             {title: 'Priority', value: 'Highest'},
             {title: 'Mime Type', value: 'text/css'},
-            {title: 'Encoded Data', value: '402 B'},
+            {title: 'Encoded Data', value: ' (from cache)'},
             {title: 'Decoded Body', value: '96 B'},
           ],
       );

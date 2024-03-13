@@ -128,7 +128,7 @@ function storePageLoadMetricAgainstNavigationId(
       maximumFractionDigits: 2,
     });
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
-    const metricScore = {event, score, metricName: MetricName.FCP, classification, navigation};
+    const metricScore = {event, score, metricName: MetricName.FCP, classification, navigation, timing: fcpTime};
     storeMetricScore(frameId, navigationId, metricScore);
     return;
   }
@@ -140,7 +140,7 @@ function storePageLoadMetricAgainstNavigationId(
       maximumFractionDigits: 2,
     });
     const classification = ScoreClassification.UNCLASSIFIED;
-    const metricScore = {event, score, metricName: MetricName.FP, classification, navigation};
+    const metricScore = {event, score, metricName: MetricName.FP, classification, navigation, timing: paintTime};
     storeMetricScore(frameId, navigationId, metricScore);
     return;
   }
@@ -157,6 +157,7 @@ function storePageLoadMetricAgainstNavigationId(
       metricName: MetricName.DCL,
       classification: scoreClassificationForDOMContentLoaded(dclTime),
       navigation,
+      timing: dclTime,
     };
     storeMetricScore(frameId, navigationId, metricScore);
     return;
@@ -174,6 +175,7 @@ function storePageLoadMetricAgainstNavigationId(
       metricName: MetricName.TTI,
       classification: scoreClassificationForTimeToInteractive(ttiValue),
       navigation,
+      timing: ttiValue,
     };
     storeMetricScore(frameId, navigationId, tti);
 
@@ -189,6 +191,7 @@ function storePageLoadMetricAgainstNavigationId(
       metricName: MetricName.TBT,
       classification: scoreClassificationForTotalBlockingTime(tbtValue),
       navigation,
+      timing: tbtValue,
     };
     storeMetricScore(frameId, navigationId, tbt);
     return;
@@ -206,6 +209,7 @@ function storePageLoadMetricAgainstNavigationId(
       metricName: MetricName.L,
       classification: ScoreClassification.UNCLASSIFIED,
       navigation,
+      timing: loadTime,
     };
     storeMetricScore(frameId, navigationId, metricScore);
     return;
@@ -227,6 +231,7 @@ function storePageLoadMetricAgainstNavigationId(
       metricName: MetricName.LCP,
       classification: scoreClassificationForLargestContentfulPaint(lcpTime),
       navigation,
+      timing: lcpTime,
     };
     const metricsByNavigation = Platform.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => new Map());
     const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigationId, () => new Map());
@@ -510,4 +515,5 @@ export interface MetricScore {
   // The last navigation that occured before this metric score.
   navigation?: Types.TraceEvents.TraceEventNavigationStart;
   estimated?: boolean;
+  timing: Types.Timing.MicroSeconds;
 }

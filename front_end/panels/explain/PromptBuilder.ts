@@ -149,8 +149,13 @@ ${relatedRequest}
   }
 
   getSearchQuery(): string {
-    return `DevTools console ${this.#consoleMessage.consoleMessage().level} "${
-        this.#consoleMessage.toMessageTextString()}"`;
+    let message = this.#consoleMessage.toMessageTextString();
+    if (message) {
+      // If there are multiple lines, it is likely the rest of the message
+      // is a stack trace, which we don't want.
+      message = message.split('\n')[0];
+    }
+    return `DevTools console ${this.#consoleMessage.consoleMessage().level} "${message}"`;
   }
 }
 

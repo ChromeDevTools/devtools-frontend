@@ -21,7 +21,7 @@ describeWithMockConnection('InterestGroupTreeElement', () => {
     trustedBiddingSignalsKeys: [],
     ads: [],
     adComponents: [],
-  } as Protocol.Storage.InterestGroupDetails;
+  };
 
   it('reads details without tab target', async () => {
     const target = createTarget();

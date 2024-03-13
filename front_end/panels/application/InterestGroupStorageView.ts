@@ -28,7 +28,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupStorag
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface InterestGroupDetailsGetter {
-  getInterestGroupDetails: (owner: string, name: string) => Promise<Protocol.Storage.InterestGroupDetails|null>;
+  getInterestGroupDetails: (owner: string, name: string) => Promise<object|null>;
 }
 
 function eventEquals(

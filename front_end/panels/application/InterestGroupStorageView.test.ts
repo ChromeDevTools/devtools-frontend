@@ -28,7 +28,7 @@ const events = [
 ];
 
 class InterestGroupDetailsGetter {
-  async getInterestGroupDetails(owner: string, name: string): Promise<Protocol.Storage.InterestGroupDetails|null> {
+  async getInterestGroupDetails(owner: string, name: string): Promise<object|null> {
     return {
       ownerOrigin: owner,
       name: name,
@@ -42,7 +42,7 @@ class InterestGroupDetailsGetter {
 }
 
 class InterestGroupDetailsGetterFails {
-  async getInterestGroupDetails(_owner: string, _name: string): Promise<Protocol.Storage.InterestGroupDetails|null> {
+  async getInterestGroupDetails(_owner: string, _name: string): Promise<object|null> {
     return null;
   }
 }

@@ -69,9 +69,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.selectedTreeElement = null;
     this.treeElements = [];
     const selectedFilterSetting =
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
-        Common.Settings.Settings.instance().createSetting<string>('console.sidebar-selected-filter', null);
+        Common.Settings.Settings.instance().createSetting<string|null>('console.sidebar-selected-filter', null);
 
     const consoleAPIParsedFilters = [{
       key: FilterType.Source,
@@ -104,7 +102,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private appendGroup(
       name: string, parsedFilters: TextUtils.TextUtils.ParsedFilter[], levelsMask: LevelsMask,
-      icon: IconButton.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string>): void {
+      icon: IconButton.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string|null>): void {
     const filter = new ConsoleFilter(name, parsedFilters, null, levelsMask);
     const treeElement = new FilterTreeElement(filter, icon, selectedFilterSetting);
     this.tree.appendChild(treeElement);
@@ -204,13 +202,13 @@ const stringForFilterSidebarItemMap = new Map<GroupName, string>([
 ]);
 
 export class FilterTreeElement extends ConsoleSidebarTreeElement {
-  private readonly selectedFilterSetting: Common.Settings.Setting<string>;
+  private readonly selectedFilterSetting: Common.Settings.Setting<string|null>;
   private readonly urlTreeElements: Map<string|null, URLGroupTreeElement>;
   private messageCount: number;
   private uiStringForFilterCount: string;
 
   constructor(
-      filter: ConsoleFilter, icon: IconButton.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string>) {
+      filter: ConsoleFilter, icon: IconButton.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string|null>) {
     super(filter.name, filter);
     this.uiStringForFilterCount = stringForFilterSidebarItemMap.get(filter.name as GroupName) || '';
     this.selectedFilterSetting = selectedFilterSetting;

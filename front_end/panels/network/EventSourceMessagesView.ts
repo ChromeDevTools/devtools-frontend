@@ -210,9 +210,7 @@ export class EventSourceMessageNode extends DataGrid.SortableDataGrid.SortableDa
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function EventSourceMessageNodeComparator(
+function eventSourceMessageNodeComparator(
     fieldGetter: (arg0: SDK.NetworkRequest.EventSourceMessage) => (number | string), a: EventSourceMessageNode,
     b: EventSourceMessageNode): number {
   const aValue = fieldGetter(a.message);
@@ -223,9 +221,9 @@ export function EventSourceMessageNodeComparator(
 export const Comparators: {
   [x: string]: (arg0: EventSourceMessageNode, arg1: EventSourceMessageNode) => number,
 } = {
-  'id': EventSourceMessageNodeComparator.bind(null, message => message.eventId),
-  'type': EventSourceMessageNodeComparator.bind(null, message => message.eventName),
-  'time': EventSourceMessageNodeComparator.bind(null, message => message.time),
+  'id': eventSourceMessageNodeComparator.bind(null, message => message.eventId),
+  'type': eventSourceMessageNodeComparator.bind(null, message => message.eventName),
+  'time': eventSourceMessageNodeComparator.bind(null, message => message.time),
 };
 
 const clearMessageOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();

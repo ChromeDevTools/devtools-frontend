@@ -32,6 +32,7 @@
  */
 
 import * as Host from '../../core/host/host.js';
+
 import {DefaultShortcutSetting} from './ShortcutRegistry.js';
 
 export class KeyboardShortcut {
@@ -277,6 +278,10 @@ const quoteKey = {
   code: 222,
   name: '\'',
 };
+const metaKey = {
+  code: 91,
+  name: 'Meta',
+};
 
 export const Keys: {
   [x: string]: Key,
@@ -309,7 +314,7 @@ export const Keys: {
   H: {code: 72, name: 'H'},
   N: {code: 78, name: 'N'},
   P: {code: 80, name: 'P'},
-  Meta: {code: 91, name: 'Meta'},
+  Meta: metaKey,
   F1: {code: 112, name: 'F1'},
   F2: {code: 113, name: 'F2'},
   F3: {code: 114, name: 'F3'},
@@ -342,12 +347,8 @@ export const Keys: {
   Backslash: {code: 220, name: '\\'},
   SingleQuote: quoteKey,
   Quote: quoteKey,
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get CtrlOrMeta() {
-    // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return Host.Platform.isMac() ? this.Meta : this.Ctrl;
-  },
+  // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
+  CtrlOrMeta: Host.Platform.isMac() ? metaKey : ctrlKey,
 };
 
 export const enum Type {

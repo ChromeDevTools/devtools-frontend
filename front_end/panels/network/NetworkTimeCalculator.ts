@@ -274,7 +274,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   extendBoundariesToIncludeTimestamp(timestamp: number): boolean {
     const previousMinimumBoundary = this.minimumBoundaryInternal;
     const previousMaximumBoundary = this.maximumBoundaryInternal;
-    const minOffset = _minimumSpread;
+    const minOffset = MINIMUM_SPREAD;
     if (this.minimumBoundaryInternal === -1 || this.maximumBoundaryInternal === -1) {
       this.minimumBoundaryInternal = timestamp;
       this.maximumBoundaryInternal = timestamp + minOffset;
@@ -296,9 +296,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _minimumSpread = 0.1;
+const MINIMUM_SPREAD = 0.1;
 
 export const enum Events {
   BoundariesChanged = 'BoundariesChanged',

@@ -34,30 +34,14 @@ import {ContentData, type ContentDataOrError} from './ContentData.js';
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
-export const Utils = {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get _keyValueFilterRegex(): RegExp {
-    return /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-  },
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get _regexFilterRegex(): RegExp {
-    return /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
-  },
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get _textFilterRegex(): RegExp {
-    return /(?:^|\s)(\-)?([^\s]+)/;
-  },
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get _SpaceCharRegex(): RegExp {
-    return /\s/;
-  },
+const KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
+const REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
+const TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
+const SPACE_CHAR_REGEXP = /\s/;
 
+export const Utils = {
   isSpaceChar: function(char: string): boolean {
-    return Utils._SpaceCharRegex.test(char);
+    return SPACE_CHAR_REGEXP.test(char);
   },
 
   lineIndent: function(line: string): string {
@@ -135,8 +119,8 @@ export class FilterParser {
   }
 
   parse(query: string): ParsedFilter[] {
-    const splitFilters = Utils.splitStringByRegexes(
-        query, [Utils._keyValueFilterRegex, Utils._regexFilterRegex, Utils._textFilterRegex]);
+    const splitFilters =
+        Utils.splitStringByRegexes(query, [KEY_VALUE_FILTER_REGEXP, REGEXP_FILTER_REGEXP, TEXT_FILTER_REGEXP]);
     const parsedFilters: ParsedFilter[] = [];
     for (const {regexIndex, captureGroups} of splitFilters) {
       if (regexIndex === -1) {

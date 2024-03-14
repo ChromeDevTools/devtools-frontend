@@ -252,8 +252,8 @@ export class NetworkLogViewColumns {
   }
 
   private setupDataGrid(): void {
-    const defaultColumns = _defaultColumns;
-    const defaultColumnConfig = _defaultColumnConfig;
+    const defaultColumns = DEFAULT_COLUMNS;
+    const defaultColumnConfig = DEFAULT_COLUMN_CONFIG;
     this.columns = ([] as Descriptor[]);
     for (const currentConfigColumn of defaultColumns) {
       const descriptor = Object.assign({}, defaultColumnConfig, currentConfigColumn);
@@ -291,7 +291,7 @@ export class NetworkLogViewColumns {
     this.dataGridInternal.setHeaderContextMenuCallback(this.innerHeaderContextMenu.bind(this));
 
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
-    this.dataGridInternal.markColumnAsSortedBy(_initialSortColumn, DataGrid.DataGrid.Order.Ascending);
+    this.dataGridInternal.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid.DataGrid.Order.Ascending);
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'network-panel-split-view-waterfall', 200);
     const widget = this.dataGridInternal.asWidget();
@@ -761,7 +761,7 @@ export class NetworkLogViewColumns {
       return null;
     }
 
-    const columnConfigBase = Object.assign({}, _defaultColumnConfig, {
+    const columnConfigBase = Object.assign({}, DEFAULT_COLUMN_CONFIG, {
       id: headerId,
       title: headerTitle,
       isResponseHeader: true,
@@ -865,28 +865,24 @@ export class NetworkLogViewColumns {
   }
 
   selectFilmStripFrame(time: number): void {
-    this.eventDividers.set(_filmStripDividerColor, [time]);
+    this.eventDividers.set(FILM_STRIP_DIVIDER_COLOR, [time]);
     this.redrawWaterfallColumn();
   }
 
   clearFilmStripFrame(): void {
-    this.eventDividers.delete(_filmStripDividerColor);
+    this.eventDividers.delete(FILM_STRIP_DIVIDER_COLOR);
     this.redrawWaterfallColumn();
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _initialSortColumn = 'waterfall';
+const INITIAL_SORT_COLUMN = 'waterfall';
 
 const enum CalculatorTypes {
   Duration = 'Duration',
   Time = 'Time',
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _defaultColumnConfig: Object = {
+const DEFAULT_COLUMN_CONFIG = {
   subtitle: null,
   visible: false,
   weight: 6,
@@ -899,9 +895,7 @@ export const _defaultColumnConfig: Object = {
   allowInSortByEvenWhenHidden: false,
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _temporaryDefaultColumns = [
+const DEFAULT_COLUMNS = [
   {
     id: 'name',
     title: i18nLazyString(UIStrings.name),
@@ -1091,13 +1085,7 @@ const _temporaryDefaultColumns = [
   },
 ];
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-const _defaultColumns = (_temporaryDefaultColumns as any);
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _filmStripDividerColor = '#fccc49';
+const FILM_STRIP_DIVIDER_COLOR = '#fccc49';
 
 enum WaterfallSortIds {
   StartTime = 'startTime',

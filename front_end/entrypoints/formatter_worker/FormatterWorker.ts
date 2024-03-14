@@ -58,9 +58,7 @@ export type ChunkCallback = (arg0: Chunk) => void;
 
 export function createTokenizer(mimeType: string): (
     arg0: string, arg1: (arg0: string, arg1: string|null, arg2: number, arg3: number) => (Object | undefined | void)) =>
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any {
+    void {
   const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
   const state = CodeMirror.startState(mode);
 

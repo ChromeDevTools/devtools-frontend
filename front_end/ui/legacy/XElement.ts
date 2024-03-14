@@ -41,9 +41,7 @@ export class XElement extends HTMLElement {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-class _XBox extends XElement {
+class XBox extends XElement {
   constructor(direction: string) {
     super();
     this.style.setProperty('display', 'flex');
@@ -68,13 +66,13 @@ class _XBox extends XElement {
   }
 }
 
-class XVBox extends _XBox {
+class XVBox extends XBox {
   constructor() {
     super('column');
   }
 }
 
-class XHBox extends _XBox {
+class XHBox extends XBox {
   constructor() {
     super('row');
   }

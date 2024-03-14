@@ -79,7 +79,7 @@ let decorator: LinkDecorator|null = null;
 
 const anchorsByUISourceCode = new WeakMap<Workspace.UISourceCode.UISourceCode, Set<Element>>();
 
-const infoByAnchor = new WeakMap<Node, _LinkInfo>();
+const infoByAnchor = new WeakMap<Node, LinkInfo>();
 
 const textByAnchor = new WeakMap<Node, string>();
 
@@ -256,7 +256,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       return fallbackAnchor;
     }
 
-    const createLinkOptions: _CreateLinkOptions = {
+    const createLinkOptions: CreateLinkOptions = {
       tabStop: options?.tabStop,
     };
     const {link, linkInfo} = Linkifier.createLink(
@@ -388,7 +388,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   }
 
   linkifyCSSLocation(rawLocation: SDK.CSSModel.CSSLocation, classes?: string): Element {
-    const createLinkOptions: _CreateLinkOptions = {
+    const createLinkOptions: CreateLinkOptions = {
       tabStop: true,
     };
     const {link, linkInfo} = Linkifier.createLink('', classes || '', createLinkOptions);
@@ -554,7 +554,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   static linkifyRevealable(
       revealable: Object, text: string|HTMLElement, fallbackHref?: Platform.DevToolsPath.UrlString, title?: string,
       className?: string): HTMLElement {
-    const createLinkOptions: _CreateLinkOptions = {
+    const createLinkOptions: CreateLinkOptions = {
       maxLength: UI.UIUtils.MaxLengthForDisplayedURLs,
       href: (fallbackHref),
       title,
@@ -564,8 +564,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return link;
   }
 
-  private static createLink(text: string|HTMLElement, className: string, options: _CreateLinkOptions = {}):
-      {link: HTMLElement, linkInfo: _LinkInfo} {
+  private static createLink(text: string|HTMLElement, className: string, options: CreateLinkOptions = {}):
+      {link: HTMLElement, linkInfo: LinkInfo} {
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming} = options;
     const link = document.createElement('button');
     if (className) {
@@ -668,8 +668,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return textByAnchor.get(node) || node.textContent || '';
   }
 
-  static linkInfo(link: Element|null): _LinkInfo|null {
-    return link ? infoByAnchor.get(link) || null : null as _LinkInfo | null;
+  static linkInfo(link: Element|null): LinkInfo|null {
+    return link ? infoByAnchor.get(link) || null : null as LinkInfo | null;
   }
 
   private static handleClick(event: Event): boolean {
@@ -684,11 +684,11 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return Linkifier.invokeFirstAction(linkInfo);
   }
 
-  static handleClickFromNewComponentLand(linkInfo: _LinkInfo): void {
+  static handleClickFromNewComponentLand(linkInfo: LinkInfo): void {
     Linkifier.invokeFirstAction(linkInfo);
   }
 
-  static invokeFirstAction(linkInfo: _LinkInfo): boolean {
+  static invokeFirstAction(linkInfo: LinkInfo): boolean {
     const actions = Linkifier.linkActions(linkInfo);
     if (actions.length) {
       void actions[0].handler.call(null);
@@ -723,7 +723,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return info ? info.uiLocation : null;
   }
 
-  static linkActions(info: _LinkInfo): {
+  static linkActions(info: LinkInfo): {
     section: string,
     title: string,
     jslogContext: string,
@@ -915,7 +915,7 @@ function listenForNewComponentLinkifierEvents(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unknownEvent = (event as any);
     const eventWithData = (unknownEvent as {
-      data: _LinkInfo,
+      data: LinkInfo,
     });
     Linkifier.handleClickFromNewComponentLand(eventWithData.data);
   });
@@ -977,9 +977,7 @@ export class ContentProviderContextMenuProvider implements
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _LinkInfo {
+interface LinkInfo {
   icon: IconButton.Icon.Icon|null;
   enableDecorator: boolean;
   uiLocation: Workspace.UISourceCode.UILocation|null;
@@ -1021,9 +1019,7 @@ export interface LinkifyOptions {
   revealBreakpoint?: boolean;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _CreateLinkOptions {
+interface CreateLinkOptions {
   maxLength?: number;
   title?: string;
   href?: Platform.DevToolsPath.UrlString;

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Platform from '../../../../core/platform/platform.js';
 import * as Protocol from '../../../../generated/protocol.js';
 
 const UIStrings = {
@@ -43,23 +42,17 @@ export function uiLabelToNetworkPriority(priorityLabel: string): string {
   return uiLabelToPriorityMapInstance.get(priorityLabel) || '';
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string>;
+const priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string> = new Map();
 
 export function priorityUILabelMap(): Map<Protocol.Network.ResourcePriority, string> {
-  if (_priorityUILabelMapInstance) {
-    return _priorityUILabelMapInstance;
+  if (priorityUILabelMapInstance.size === 0) {
+    priorityUILabelMapInstance.set(Protocol.Network.ResourcePriority.VeryLow, i18nString(UIStrings.lowest));
+    priorityUILabelMapInstance.set(Protocol.Network.ResourcePriority.Low, i18nString(UIStrings.low));
+    priorityUILabelMapInstance.set(Protocol.Network.ResourcePriority.Medium, i18nString(UIStrings.medium));
+    priorityUILabelMapInstance.set(Protocol.Network.ResourcePriority.High, i18nString(UIStrings.high));
+    priorityUILabelMapInstance.set(Protocol.Network.ResourcePriority.VeryHigh, i18nString(UIStrings.highest));
   }
-
-  const map = new Map<Protocol.Network.ResourcePriority, Platform.UIString.LocalizedString>();
-  map.set(Protocol.Network.ResourcePriority.VeryLow, i18nString(UIStrings.lowest));
-  map.set(Protocol.Network.ResourcePriority.Low, i18nString(UIStrings.low));
-  map.set(Protocol.Network.ResourcePriority.Medium, i18nString(UIStrings.medium));
-  map.set(Protocol.Network.ResourcePriority.High, i18nString(UIStrings.high));
-  map.set(Protocol.Network.ResourcePriority.VeryHigh, i18nString(UIStrings.highest));
-  _priorityUILabelMapInstance = map;
-  return map;
+  return priorityUILabelMapInstance;
 }
 
 const networkPriorityWeights = new Map<Protocol.Network.ResourcePriority, number>();

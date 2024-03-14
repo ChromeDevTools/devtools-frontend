@@ -2,17 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _measuredScrollbarWidth: number|undefined;
+let cachedMeasuredScrollbarWidth: number|undefined;
 
 export function resetMeasuredScrollbarWidthForTest(): void {
-  _measuredScrollbarWidth = undefined;
+  cachedMeasuredScrollbarWidth = undefined;
 }
 
 export function measuredScrollbarWidth(document?: Document|null): number {
-  if (typeof _measuredScrollbarWidth === 'number') {
-    return _measuredScrollbarWidth;
+  if (typeof cachedMeasuredScrollbarWidth === 'number') {
+    return cachedMeasuredScrollbarWidth;
   }
   if (!document) {
     return 16;
@@ -24,7 +22,7 @@ export function measuredScrollbarWidth(document?: Document|null): number {
   innerDiv.setAttribute('style', 'height: 200px');
   scrollDiv.appendChild(innerDiv);
   document.body.appendChild(scrollDiv);
-  _measuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+  cachedMeasuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
   document.body.removeChild(scrollDiv);
-  return _measuredScrollbarWidth;
+  return cachedMeasuredScrollbarWidth;
 }

@@ -4,9 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function WidgetfocusWidgetForNode(node: Node|null): void {
+function updateWidgetfocusWidgetForNode(node: Node|null): void {
   while (node) {
     if (node.__widget) {
       break;
@@ -30,9 +28,7 @@ function WidgetfocusWidgetForNode(node: Node|null): void {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function XWidgetfocusWidgetForNode(node: Node|null): void {
+function updateXWidgetfocusWidgetForNode(node: Node|null): void {
   node = node && node.parentNodeOrShadowHost();
   const XWidgetCtor = customElements.get('x-widget');
   let widget = null;
@@ -53,6 +49,6 @@ export function focusChanged(event: Event): void {
   const target = event.target as HTMLElement;
   const document = target ? target.ownerDocument : null;
   const element = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
-  WidgetfocusWidgetForNode(element);
-  XWidgetfocusWidgetForNode(element);
+  updateWidgetfocusWidgetForNode(element);
+  updateXWidgetfocusWidgetForNode(element);
 }

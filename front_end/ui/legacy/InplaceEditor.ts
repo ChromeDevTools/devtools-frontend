@@ -8,17 +8,15 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _defaultInstance: InplaceEditor<unknown>|null = null;
+let inplaceEditorInstance: InplaceEditor<unknown>|null = null;
 
 export class InplaceEditor<T> {
   private focusRestorer?: ElementFocusRestorer;
   static startEditing<T>(element: Element, config?: Config<T>): Controller|null {
-    if (!_defaultInstance) {
-      _defaultInstance = new InplaceEditor();
+    if (!inplaceEditorInstance) {
+      inplaceEditorInstance = new InplaceEditor();
     }
-    return _defaultInstance.startEditing(element, config as Config<unknown>);
+    return inplaceEditorInstance.startEditing(element, config as Config<unknown>);
   }
 
   editorContent(editingContext: EditingContext<T>): string {

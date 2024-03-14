@@ -114,9 +114,7 @@ class FormattingError extends Error {
 }
 
 class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(value: any) {
+  constructor(value: typeof SDK.RemoteObject.LocalJSONObject.prototype.value) {
     super(value);
   }
 

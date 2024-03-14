@@ -224,11 +224,7 @@ export class Toolbar {
       button.setText(options.label?.() || action.title());
     }
 
-    let handler = (_event: {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: any,
-    }): void => {
+    let handler = (): void => {
       void action.execute();
     };
     if (options.userActionCode) {
@@ -990,10 +986,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
   }
 
   select(option: Element): void {
-    this.selectElementInternal.selectedIndex =
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Array.prototype.indexOf.call((this.selectElementInternal as any), option);
+    this.selectElementInternal.selectedIndex = Array.prototype.indexOf.call(this.selectElementInternal, option);
   }
 
   setSelectedIndex(index: number): void {

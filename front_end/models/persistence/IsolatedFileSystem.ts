@@ -391,11 +391,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, isBase64: boolean):
       Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
-    let callback: (event?: ProgressEvent<EventTarget>) => void;
-    const innerSetFileContent = (): Promise<ProgressEvent<EventTarget>> => {
-      const promise = new Promise<ProgressEvent<EventTarget>>(x => {
-        // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
-        callback = x;
+    let resolve: (result: ProgressEvent<EventTarget>|undefined) => void;
+    const innerSetFileContent = (): Promise<ProgressEvent<EventTarget>|undefined> => {
+      const promise = new Promise<ProgressEvent<EventTarget>|undefined>(x => {
+        resolve = x;
       });
       this.domFileSystem.root.getFile(
           Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), {create: true}, fileEntryLoaded.bind(this),
@@ -421,7 +420,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       fileWriter.write(blob);
 
       function fileWritten(): void {
-        fileWriter.onwriteend = callback;
+        fileWriter.onwriteend = resolve;
         fileWriter.truncate(blob.size);
       }
     }
@@ -430,7 +429,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
-      callback(undefined);
+      resolve(undefined);
     }
   }
 

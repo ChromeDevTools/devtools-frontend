@@ -1000,9 +1000,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
           {jslogContext: 'show-function-definition'});
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function toStringForClipboard(this: Object, data: any): string|undefined {
+    function toStringForClipboard(this: Object, data: {subtype: string, indent: string}): string|undefined {
       const subtype = data.subtype;
       const indent = data.indent;
 

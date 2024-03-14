@@ -1287,9 +1287,9 @@ export class ConsoleView extends UI.Widget.VBox implements
 
       if (!viewMessagesInGroup.find(x => this.shouldMessageBeVisible(x))) {
         // Optimize for speed.
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-expect-error
-        Platform.SetUtilities.addAll(alreadyAdded, viewMessagesInGroup);
+        for (const viewMessageInGroup of viewMessagesInGroup) {
+          alreadyAdded.add(viewMessageInGroup.consoleMessage());
+        }
         processedGroupKeys.add(key);
         continue;
       }

@@ -19,9 +19,7 @@ export class ESTreeWalker {
     this.#walkNulls = false;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static get SkipSubtree(): Object {
+  static get['SkipSubtree'](): Object {
     return SkipSubTreeObject;
   }
 
@@ -52,7 +50,7 @@ export class ESTreeWalker {
       return;
     }
 
-    const walkOrder = _walkOrder[node.type];
+    const walkOrder = WALK_ORDER[node.type];
     if (!walkOrder) {
       console.error('Walk order not defined for ' + node.type);
       return;
@@ -92,9 +90,7 @@ export class ESTreeWalker {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _walkOrder = {
+const WALK_ORDER = {
   'AwaitExpression': ['argument'],
   'ArrayExpression': ['elements'],
   'ArrayPattern': ['elements'],

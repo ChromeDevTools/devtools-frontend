@@ -70,10 +70,6 @@ const UIStrings = {
    */
   report: 'Report legal issue',
   /**
-   * @description The title of the link that allows submitting more feedback.
-   */
-  submitFeedback: 'Submit feedback',
-  /**
    * @description The text of the header inside the console insight pane when there was an error generating an insight.
    */
   error: 'DevTools has encountered an error',
@@ -154,8 +150,7 @@ function localizeType(sourceType: SourceType): string {
   }
 }
 
-const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedback' as Platform.DevToolsPath.UrlString;
-const DOGFOODINFO_URL = 'http://go/console-insights-experiment' as Platform.DevToolsPath.UrlString;
+const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
 
@@ -627,7 +622,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderLearnMoreAboutInsights(): LitHtml.TemplateResult {
     // clang-format off
-    return html`<x-link href=${DOGFOODINFO_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>Learn more</x-link>`;
+    return html`<x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>Learn more</x-link>`;
     // clang-format on
   }
 
@@ -732,22 +727,11 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #renderDogfoodFeedbackLink(): LitHtml.TemplateResult {
-    // clang-format off
-    return html`<x-link href=${DOGFOODFEEDBACK_URL} class="link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.submitFeedback)}</x-link>`;
-    // clang-format on
-  }
-
   #renderFooter(): LitHtml.LitTemplate {
-    const showFeedbackLink = (): boolean =>
-        this.#state.type === State.INSIGHT || this.#state.type === State.ERROR || this.#state.type === State.OFFLINE;
-    // clang-format off
-    const disclaimer =
-        LitHtml
-            .html`<span>
-                This feature may display inaccurate or offensive information that doesn't represent Google's views.
-                <x-link href=${DOGFOODINFO_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
-                ${showFeedbackLink() ? LitHtml.html` - ${this.#renderDogfoodFeedbackLink()}`: LitHtml.nothing}
+    const disclaimer = LitHtml.html`<span>
+              This feature may display inaccurate or offensive information that doesn't represent Google's views.
+              <x-link href=${LEARNMORE_URL} class="link" jslog=${
+        VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
             </span>`;
     switch (this.#state.type) {
       case State.LOADING:

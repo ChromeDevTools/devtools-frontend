@@ -673,9 +673,9 @@ export class ConsoleInsight extends HTMLElement {
         switch (this.#state.page) {
           case ConsentOnboardingPage.PAGE1:
             return html`<main>
-              <p>This notice and our <x-link href="https://policies.google.com/privacy" class="link" jslog=${VisualLogging.link('privacy-notice').track({click: true})}>privacy notice</x-link> describe how Console insights in Chrome DevTools handles your data. Please read them carefully.</p>
+              <p>This notice and our <x-link href="https://policies.google.com/privacy" class="link" jslog=${VisualLogging.link('privacy-notice').track({click: true})}>privacy notice</x-link> describe how Chrome DevTools handles your data. Please read them carefully.</p>
 
-              <p>"Understand this message" uses the console message, associated stack trace, related source code, and the associated network headers as input data. When you use this feature, Google collects this input data, generated output, related feature usage information, and your feedback. Google uses this data to provide, improve, and develop Google products and services and machine learning technologies, including Google's enterprise products such as Google Cloud.</p>
+              <p>Chrome DevTools uses the console message, associated stack trace, related source code, and the associated network headers as input data. When you use "Understand this message", Google collects this input data, generated output, related feature usage information, and your feedback. Google uses this data to provide, improve, and develop Google products and services and machine learning technologies, including Google's enterprise products such as Google Cloud.</p>
 
               <p>To help with quality and improve our products, human reviewers may read, annotate, and process the above-mentioned input data, generated output, related feature usage information, and your feedback. <strong>Please do not include sensitive (e.g., confidential) or personal information that can be used to identify you or others in your prompts or feedback.</strong> Your data will be stored in a way where Google cannot tell who provided it and can no longer fulfill any deletion requests and will be retained for up to 18 months.</p>
             </main>`;
@@ -685,7 +685,7 @@ export class ConsoleInsight extends HTMLElement {
 
             <ul>
               <li>Chrome DevTools uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
-              <li>Chrome DevTools usese experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console insights better.</li>
+              <li>Chrome DevTools uses experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console insights better.</li>
               <li>This feature is an experimental feature and subject to future changes.</li>
               <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging.link('use-code-with-caution').track({click: true})}>Use generated code snippets with caution</x-link>.</strong></li>
             </ul>

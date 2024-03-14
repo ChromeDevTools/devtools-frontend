@@ -1202,7 +1202,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
     if (traceParsedData && traceParsedData.Samples.profilesInProcess.size) {
-      const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+      const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       // Gather up all CPU Profiles we found when parsing this trace.
       const cpuProfiles =
           Array.from(traceParsedData.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
@@ -1210,7 +1210,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
             return profiles;
           });
       for (const profile of cpuProfiles) {
-        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile, rootTarget);
+        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile, primaryPageTarget);
       }
     }
 

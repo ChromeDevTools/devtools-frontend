@@ -31,6 +31,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
 import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
@@ -612,32 +613,37 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    // If any button is clicked, we should handle the action only and ignore others.
-    const {groupIndex, editButtonType} = this.coordinatesToGroupIndexAndButton(mouseEvent.offsetX, mouseEvent.offsetY);
-    if (groupIndex >= 0) {
-      switch (editButtonType) {
-        case EditButtonType.UP:
-          this.moveGroupUp(groupIndex);
-          return;
-        case EditButtonType.DOWN:
-          this.moveGroupDown(groupIndex);
-          return;
-        case EditButtonType.HIDE:
-          this.hideGroup(groupIndex);
-          return;
-        case EditButtonType.SAVE:
-        case EditButtonType.EDIT:
-          this.#editMode = !this.#editMode;
-          this.resetCanvas();
-          this.draw();
-          return;
+    const trackConfigurationEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_TRACK_CONFIGURATION);
+    if (trackConfigurationEnabled) {
+      // If any button is clicked, we should handle the action only and ignore others.
+      const {groupIndex, editButtonType} =
+          this.coordinatesToGroupIndexAndButton(mouseEvent.offsetX, mouseEvent.offsetY);
+      if (groupIndex >= 0) {
+        switch (editButtonType) {
+          case EditButtonType.UP:
+            this.moveGroupUp(groupIndex);
+            return;
+          case EditButtonType.DOWN:
+            this.moveGroupDown(groupIndex);
+            return;
+          case EditButtonType.HIDE:
+            this.hideGroup(groupIndex);
+            return;
+          case EditButtonType.SAVE:
+          case EditButtonType.EDIT:
+            this.#editMode = !this.#editMode;
+            this.resetCanvas();
+            this.draw();
+            return;
+        }
       }
-    }
 
-    // Ignore any other actions when user is customizing the tracks.
-    // For example, we won't toggle the expand status in the editing mode.
-    if (this.#editMode) {
-      return;
+      // Ignore any other actions when user is customizing the tracks.
+      // For example, we won't toggle the expand status in the editing mode.
+      if (this.#editMode) {
+        return;
+      }
     }
 
     const {groupIndex: groupIndexForSelection} =
@@ -2080,10 +2086,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
 
     context.save();
+    const trackConfigurationEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_TRACK_CONFIGURATION);
     this.forEachGroupInViewport((offset, index, group) => {
       context.font = this.#font;
       if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
-        const width = this.labelWidthForGroup(context, group) + (hoveredGroupIndex === index ? EDIT_BUTTON_SIZE : 0);
+        const width = this.labelWidthForGroup(context, group) +
+            ((trackConfigurationEnabled && hoveredGroupIndex === index) ? EDIT_BUTTON_SIZE : 0);
         if (this.isGroupFocused(index)) {
           context.fillStyle =
               ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
@@ -2102,17 +2111,19 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const titleStart = Math.floor(this.expansionArrowIndent * (group.style.nestingLevel + 1) + this.arrowSide);
       context.fillText(group.name, titleStart, offset + group.style.height - this.textBaseline);
 
-      if (this.#editMode) {
-        // We only allow to reorder the top level groups.
-        if (group.style.nestingLevel === 0) {
-          drawIcon(-EDITION_MODE_INDENT, offset, moveUpIconPath);
-          drawIcon(-EDITION_MODE_INDENT + EDIT_BUTTON_SIZE, offset, moveDownIconPath);
-        }
-        drawIcon(-EDITION_MODE_INDENT + EDIT_BUTTON_SIZE * 2, offset, hideIconPath);
+      if (trackConfigurationEnabled) {
+        if (this.#editMode) {
+          // We only allow to reorder the top level groups.
+          if (group.style.nestingLevel === 0) {
+            drawIcon(-EDITION_MODE_INDENT, offset, moveUpIconPath);
+            drawIcon(-EDITION_MODE_INDENT + EDIT_BUTTON_SIZE, offset, moveDownIconPath);
+          }
+          drawIcon(-EDITION_MODE_INDENT + EDIT_BUTTON_SIZE * 2, offset, hideIconPath);
 
-        drawIcon(this.labelWidthForGroup(context, group), offset, saveIconPath);
-      } else if (hoveredGroupIndex === index) {
-        drawIcon(this.labelWidthForGroup(context, group), offset, editIconPath);
+          drawIcon(this.labelWidthForGroup(context, group), offset, saveIconPath);
+        } else if (hoveredGroupIndex === index) {
+          drawIcon(this.labelWidthForGroup(context, group), offset, editIconPath);
+        }
       }
     });
     context.restore();

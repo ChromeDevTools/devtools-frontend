@@ -289,6 +289,9 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'timeline-as-console-profile-result-panel',
         'View console.profile() results in the Performance panel for Node.js', true);
+    Root.Runtime.experiments.register(
+        'timeline-track-configuration',
+        'Timeline: Enable track configuration feature that can reorder or hide a track in the flame chart', true);
 
     // Sources
     Root.Runtime.experiments.register(

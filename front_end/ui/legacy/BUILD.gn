@@ -21,6 +21,7 @@ generate_css("legacy_css_files") {
     "checkboxTextLabel.css",
     "closeButton.css",
     "confirmDialog.css",
+    "designTokens.css",
     "dialog.css",
     "dropTarget.css",
     "emptyWidget.css",
@@ -63,6 +64,7 @@ generate_css("legacy_css_files") {
 copy_to_gen("copy_stylesheets_for_server") {
   sources = [
     "applicationColorTokens.css",
+    "designTokens.css",
     "inspectorCommon.css",
     "inspectorSyntaxHighlight.css",
     "textButton.css",

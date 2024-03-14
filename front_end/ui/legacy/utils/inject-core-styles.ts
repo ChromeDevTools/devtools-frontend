@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import applicationColorTokensStyles from '../applicationColorTokens.css.legacy.js';
+import designTokensStyles from '../designTokens.css.legacy.js';
 import inspectorCommonStyles from '../inspectorCommon.css.legacy.js';
 import textButtonStyles from '../textButton.css.legacy.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
@@ -11,6 +12,7 @@ import tokens from '../tokens.css.legacy.js';
 
 export function injectCoreStyles(root: Element|ShadowRoot): void {
   ThemeSupport.ThemeSupport.instance().appendStyle(root, applicationColorTokensStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(root, designTokensStyles);
   ThemeSupport.ThemeSupport.instance().appendStyle(root, inspectorCommonStyles);
   ThemeSupport.ThemeSupport.instance().appendStyle(root, textButtonStyles);
   ThemeSupport.ThemeSupport.instance().appendStyle(root, themeColorsStyles);

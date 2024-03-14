@@ -2122,6 +2122,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/utils/imagePreview.css.js",
   "front_end/ui/legacy/components/utils/jsUtils.css.js",
   "front_end/ui/legacy/confirmDialog.css.legacy.js",
+  "front_end/ui/legacy/designTokens.css.legacy.js",
   "front_end/ui/legacy/dialog.css.legacy.js",
   "front_end/ui/legacy/dropTarget.css.legacy.js",
   "front_end/ui/legacy/emptyWidget.css.js",

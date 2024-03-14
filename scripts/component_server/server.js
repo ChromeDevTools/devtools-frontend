@@ -102,6 +102,7 @@ const styleSheetPaths = [
   'front_end/ui/legacy/themeColors.css',
   'front_end/ui/legacy/tokens.css',
   'front_end/ui/legacy/applicationColorTokens.css',
+  'front_end/ui/legacy/designTokens.css',
   'front_end/ui/legacy/inspectorCommon.css',
   'front_end/ui/legacy/inspectorSyntaxHighlight.css',
   'front_end/ui/legacy/textButton.css',

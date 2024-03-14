@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type ElementHandle} from 'puppeteer-core';
-
 import type * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {
   navigateToPerformanceTab,
@@ -15,12 +13,22 @@ import {
 import {mean, percentile} from '../../helpers/perf-helper.js';
 import {addBenchmarkResult, type Benchmark} from '../../report/report.js';
 
-async function getPanelWithFixture(fixture: string): Promise<ElementHandle> {
+async function timeFixture(fixture: string): Promise<number> {
   await navigateToPerformanceTab();
+  const panelElement = await waitFor('.widget.panel.timeline');
+  const eventPromise = panelElement.evaluate(el => {
+    return new Promise<number>(resolve => {
+      el.addEventListener('traceload', e => {
+        const ev = e as Timeline.BenchmarkEvents.TraceLoadEvent;
+        resolve(ev.duration);
+      }, {once: true});
+    });
+  });
   const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
   await uploadProfileHandle.uploadFile(`front_end/panels/timeline/fixtures/traces/${fixture}.gz`);
-  return await waitFor('.widget.panel.timeline');
+  return eventPromise;
 }
+
 describe('Performance panel trace load performance', () => {
   const allTestValues: {name: string, values: number[]}[] = [];
 
@@ -38,16 +46,7 @@ describe('Performance panel trace load performance', () => {
     for (let run = 1; run <= RUNS; run++) {
       it(`run ${run}/${RUNS}`, async function() {
         this.timeout(10_000);
-        const panelElement = await getPanelWithFixture('large-profile.cpuprofile');
-        const eventPromise = panelElement.evaluate(el => {
-          return new Promise<number>(resolve => {
-            el.addEventListener('traceload', e => {
-              const ev = e as Timeline.BenchmarkEvents.TraceLoadEvent;
-              resolve(ev.duration);
-            }, {once: true});
-          });
-        });
-        const duration = await eventPromise;
+        const duration = await timeFixture('large-profile.cpuprofile');
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));
         testValues.values.push(timeTaken);

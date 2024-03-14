@@ -1187,6 +1187,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(
           traceParsedData.Meta.traceBounds,
       );
+
+      // Since we have a single instance to EntriesFilter, combine both SyntheticEvent to Node maps
+      const samplesAndRendererEventsEntryToNodeMap =
+          new Map([...traceParsedData.Samples.entryToNode, ...traceParsedData.Renderer.entryToNode]);
+      TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: samplesAndRendererEventsEntryToNodeMap});
+
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
     }
     if (model) {

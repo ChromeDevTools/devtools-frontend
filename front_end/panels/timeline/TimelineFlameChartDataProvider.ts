@@ -208,15 +208,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
   }
 
-  modifyTree(group: PerfUI.FlameChart.Group, node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
+  modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    this.compatibilityTracksAppender?.modifyTree(group, entry, action);
+    TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.applyFilterAction({type: action, entry});
   }
 
-  findPossibleContextMenuActions(group: PerfUI.FlameChart.Group, node: number):
-      TraceEngine.EntriesFilter.PossibleFilterActions|void {
+  findPossibleContextMenuActions(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    return this.compatibilityTracksAppender?.findPossibleContextMenuActions(group, entry);
+    return TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.findPossibleActions(entry);
   }
 
   private buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
@@ -937,7 +936,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return element;
   }
 
-  prepareHighlightedHiddenEntriesArrowInfo(group: PerfUI.FlameChart.Group, entryIndex: number): Element|null {
+  prepareHighlightedHiddenEntriesArrowInfo(entryIndex: number): Element|null {
     const element = document.createElement('div');
     const root = UI.Utils.createShadowRootWithCoreStyles(element, {
       cssFile: [timelineFlamechartPopoverStyles],
@@ -945,7 +944,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
-    const hiddenEntriesAmount = this.compatibilityTracksAppender?.findHiddenDescendantsAmount(group, entry);
+    const hiddenEntriesAmount =
+        TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.findHiddenDescendantsAmount(entry);
 
     if (!hiddenEntriesAmount) {
       return null;
@@ -1358,8 +1358,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // Try revealing the entry and getting the index again.
     if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
       if (this.timelineDataInternal?.selectedGroup) {
-        this.compatibilityTracksAppender?.revealEntry(
-            this.timelineDataInternal?.selectedGroup,
+        TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.revealEntry(
             selection.object as TraceEngine.Types.TraceEvents.SyntheticTraceEntry);
         this.timelineData(true);
       }
@@ -1439,14 +1438,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineDataInternal.resetFlowData();
     this.lastInitiatorEntry = entryIndex;
 
-    let hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-    let modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-
-    if (this.timelineDataInternal.selectedGroup) {
-      hiddenEvents = this.compatibilityTracksAppender?.getHiddenEvents(this.timelineDataInternal.selectedGroup) ?? [];
-      modifiedEntries =
-          this.compatibilityTracksAppender?.getModifiedEntries(this.timelineDataInternal.selectedGroup) ?? [];
-    }
+    const hiddenEvents: TraceEngine.Types.TraceEvents.TraceEventData[] =
+        TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.invisibleEntries() ?? [];
+    const modifiedEntries: TraceEngine.Types.TraceEvents.TraceEventData[] =
+        TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.modifiedEntries() ?? [];
 
     const initiatorsData = initiatorsDataToDraw(
         this.traceEngineData,

@@ -559,7 +559,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // If the mouse is hovering over the hidden descendants arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
     const popoverElement = (this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex) && group) ?
         this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
-            this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(group, entryIndex) :
+            this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(entryIndex) :
         this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
     if (popoverElement) {
       this.entryInfo.appendChild(popoverElement);
@@ -906,11 +906,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!data) {
       return;
     }
-    const group = data.groups.at(this.selectedGroupIndex);
-    if (!group || !group.expanded || !group.showStackContextMenu) {
-      return;
-    }
-    this.dataProvider.modifyTree?.(group, index, treeAction);
+    this.dataProvider.modifyTree?.(index, treeAction);
     this.dataProvider.timelineData(true);
     this.update();
   }
@@ -932,7 +928,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // Check which actions are possible on an entry.
     // If an action would not change the entries (for example it has no children to collapse), we do not need to show it.
-    return this.dataProvider.findPossibleContextMenuActions?.(group, this.selectedEntryIndex);
+    return this.dataProvider.findPossibleContextMenuActions?.(this.selectedEntryIndex);
   }
 
   onContextMenu(_event: Event): void {
@@ -3406,7 +3402,7 @@ export interface FlameChartDataProvider {
 
   prepareHighlightedEntryInfo(entryIndex: number): Element|null;
 
-  prepareHighlightedHiddenEntriesArrowInfo?(group: Group, entryIndex: number): Element|null;
+  prepareHighlightedHiddenEntriesArrowInfo?(entryIndex: number): Element|null;
 
   canJumpToEntry(entryIndex: number): boolean;
 
@@ -3426,9 +3422,9 @@ export interface FlameChartDataProvider {
 
   mainFrameNavigationStartEvents?(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 
-  modifyTree?(group: Group, node: number, action: TraceEngine.EntriesFilter.FilterAction): void;
+  modifyTree?(node: number, action: TraceEngine.EntriesFilter.FilterAction): void;
 
-  findPossibleContextMenuActions?(group: Group, node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void;
+  findPossibleContextMenuActions?(node: number): TraceEngine.EntriesFilter.PossibleFilterActions|void;
 }
 
 export interface FlameChartMarker {

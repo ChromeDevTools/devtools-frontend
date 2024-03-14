@@ -536,6 +536,10 @@ const UIStrings = {
    *@description Text indicating that something is outside of the Performace Panel Timeline Minimap range
    */
   outsideBreadcrumbRange: '(outside of the breadcrumb range)',
+  /**
+   *@description Text indicating that something is hidden from the Performace Panel Timeline
+   */
+  entryIsHidden: '(entry is hidden)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1981,6 +1985,9 @@ export class TimelineUIUtils {
     const isEntryOutsideBreadcrumb = traceBoundsState.micro.minimapTraceBounds.min > entry.ts + (entry.dur || 0) ||
         traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
 
+    // Check if it is in the hidden array
+    const isEntryHidden = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.inEntryInvisible(entry);
+
     if (!isEntryOutsideBreadcrumb) {
       link.classList.add('devtools-link');
       UI.ARIAUtils.markAsLink(link);
@@ -1997,8 +2004,13 @@ export class TimelineUIUtils {
       });
     }
 
-    link.textContent =
-        this.eventTitle(entry) + (isEntryOutsideBreadcrumb ? ' ' + i18nString(UIStrings.outsideBreadcrumbRange) : '');
+    if (isEntryHidden) {
+      link.textContent = this.eventTitle(entry) + ' ' + i18nString(UIStrings.entryIsHidden);
+    } else if (isEntryOutsideBreadcrumb) {
+      link.textContent = this.eventTitle(entry) + ' ' + i18nString(UIStrings.outsideBreadcrumbRange);
+    } else {
+      link.textContent = this.eventTitle(entry);
+    }
 
     return link;
   }

@@ -40,8 +40,8 @@ function findFirstEntry(
 describe('EntriesFilter', function() {
   it('parses a stack and returns an empty list of invisible entries', async function() {
     const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-    assert.deepEqual([], stack.invisibleEntries());
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    assert.deepEqual([], stack?.invisibleEntries());
   });
 
   it('supports the user merging an entry into its parent', async function() {
@@ -75,7 +75,10 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
@@ -111,7 +114,10 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
 
@@ -150,7 +156,10 @@ describe('EntriesFilter', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: entryTwo});
     // basicTwo is marked as modified.
     assert.isTrue(stack.isEntryModified(entryTwo));
@@ -201,8 +210,10 @@ describe('EntriesFilter', function() {
          const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
          return endTime <= firstFooCallEndTime;
        });
-       const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-
+       const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+       if (!stack) {
+         throw new Error('EntriesFilter does not exist');
+       }
        // Collapse all foo calls after the first one.
        stack.applyFilterAction({
          type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS,
@@ -278,7 +289,10 @@ describe('EntriesFilter', function() {
       const basicTwoCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(basicTwoCallEntry).endTime;
       return endTime <= basicTwoCallEndTime;
     });
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction({type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.
@@ -338,7 +352,10 @@ describe('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction(
         {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
@@ -394,7 +411,10 @@ describe('EntriesFilter', function() {
      * Applying 'undo all actions' should bring the stack to the original state.
      **/
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     const basicTwoCallEntry = findFirstEntry(mainThread.entries, entry => {
       // Processing this trace ends up with two distinct stacks for basicTwo()
       // So we find the first one so we can focus this test on just one stack.
@@ -485,7 +505,10 @@ describe('EntriesFilter', function() {
      * This should result in all basicTwo children being removed from the invisible array and stack being in the initial state.
      **/
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     const basicTwoCallEntry = findFirstEntry(mainThread.entries, entry => {
       // Processing this trace ends up with two distinct stacks for basicTwo()
       // So we find the first one so we can focus this test on just one stack.
@@ -575,7 +598,10 @@ describe('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     stack.applyFilterAction(
         {type: TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
 
@@ -647,8 +673,10 @@ describe('EntriesFilter', function() {
           entry.dur === 233;
     });
 
-    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
-
+    const stack = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: data.Renderer.entryToNode});
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
     // Before applying any action on a node, there should be no entries hidden under it
     assert.strictEqual(stack.findHiddenDescendantsAmount(firstFooCallEntry), 0);
 

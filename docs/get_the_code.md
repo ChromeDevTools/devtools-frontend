@@ -97,7 +97,7 @@ This works with Chromium 79 or later.
 To run on **Mac**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/Mac OS/Google\ Chrome\ for\ Testing --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
+<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing --disable-infobars --disable-features=MediaRouter --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
 ```
 
 To run on **Linux**:

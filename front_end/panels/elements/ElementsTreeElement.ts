@@ -872,6 +872,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const attr = this.buildAttributeDOM(container, ' ', '', null);
     attr.style.marginLeft = '2px';   // overrides the .editing margin rule
     attr.style.marginRight = '2px';  // overrides the .editing margin rule
+    attr.setAttribute('jslog', `${VisualLogging.value('new-attribute').track({change: true, resize: true})}`);
 
     const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
     this.insertInLastAttributePosition(tag, attr);
@@ -1566,6 +1567,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const hasText = (forceValue || value.length > 0);
     const attrSpanElement = (parentElement.createChild('span', 'webkit-html-attribute') as HTMLElement);
+    attrSpanElement.setAttribute(
+        'jslog', `${VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
+          change: true,
+          dblclick: true,
+        })}`);
+
     const attrNameElement = attrSpanElement.createChild('span', 'webkit-html-attribute-name');
     attrNameElement.textContent = name;
 
@@ -1689,6 +1696,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(tagElement, '<');
     const tagNameElement =
         tagElement.createChild('span', isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name');
+    if (!isClosingTag) {
+      tagNameElement.setAttribute('jslog', `${VisualLogging.value('tag-name').track({change: true, dblclick: true})}`);
+    }
     tagNameElement.textContent = (isClosingTag ? '/' : '') + tagName;
     if (!isClosingTag) {
       if (node.hasAttributes()) {
@@ -1794,6 +1804,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
         if (ElementsTreeElement.canShowInlineText(node)) {
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
+          textNodeElement.setAttribute(
+              'jslog', `${VisualLogging.value('text-node').track({change: true, dblclick: true})}`);
           const firstChild = node.firstChild;
           if (!firstChild) {
             throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
@@ -1821,17 +1833,23 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       case Node.TEXT_NODE:
         if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'script') {
           const newNode = titleDOM.createChild('span', 'webkit-html-text-node webkit-html-js-node');
+          newNode.setAttribute(
+              'jslog', `${VisualLogging.value('script-text-node').track({change: true, dblclick: true})}`);
           const text = node.nodeValue();
           newNode.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
           void CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/javascript').then(updateSearchHighlight);
         } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'style') {
           const newNode = titleDOM.createChild('span', 'webkit-html-text-node webkit-html-css-node');
+          newNode.setAttribute(
+              'jslog', `${VisualLogging.value('css-text-node').track({change: true, dblclick: true})}`);
           const text = node.nodeValue();
           newNode.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
           void CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/css').then(updateSearchHighlight);
         } else {
           UI.UIUtils.createTextChild(titleDOM, '"');
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
+          textNodeElement.setAttribute(
+              'jslog', `${VisualLogging.value('text-node').track({change: true, dblclick: true})}`);
           const result = this.convertWhitespaceToEntities(node.nodeValue());
           textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');

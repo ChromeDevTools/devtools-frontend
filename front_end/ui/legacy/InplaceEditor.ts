@@ -127,6 +127,7 @@ export class InplaceEditor<T> {
       cleanUpAfterEditing();
 
       committedCallback(this, self.editorContent(editingContext), editingContext.oldText || '', context, moveDirection);
+      element.dispatchEvent(new Event('change'));
     }
 
     function defaultFinishHandler(event: KeyboardEvent): string {

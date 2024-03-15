@@ -125,7 +125,8 @@ function tokenizeDeclaration(name: string, value: string): Elements.PropertyPars
 }
 
 function injectVariableSubstitutions(variables: Record<string, string>) {
-  const {getComputedText, getComputedTextRange} = Elements.PropertyParser.BottomUpTreeMatching.prototype;
+  const {getComputedText, getComputedTextRange, getMatch} = Elements.PropertyParser.BottomUpTreeMatching.prototype;
+  const variableNames = new Set();
   function injectChunk(matching: Elements.PropertyParser.BottomUpTreeMatching): void {
     if (matching.computedText.chunkCount === 0) {
       const propertyOffset = matching.ast.rule.indexOf(matching.ast.propertyName ?? '--');
@@ -137,6 +138,7 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
           matching.computedText.push(
               {text: varText, type: 'var', render: () => [], computedText: () => value}, offset - propertyOffset);
         }
+        variableNames.add(varText);
       }
     }
   }
@@ -153,6 +155,13 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
         injectChunk(this);
         return getComputedTextRange.call(this, from, to);
       });
+  sinon.stub(Elements.PropertyParser.BottomUpTreeMatching.prototype, 'getMatch')
+      .callsFake(function(this: Elements.PropertyParser.BottomUpTreeMatching, node: CodeMirror.SyntaxNode):
+                     Elements.PropertyParser.Match|undefined {
+                       injectChunk(this);
+                       return variableNames.has(this.ast.text(node)) ? {type: 'var'} as Elements.PropertyParser.Match :
+                                                                       getMatch.call(this, node);
+                     });
 }
 
 describe('PropertyParser', () => {
@@ -804,7 +813,7 @@ describe('PropertyParser', () => {
         'box-shadow', '/*0*/3px 3px red, -1em 0 .4em /*a*/ olive /*b*/', Elements.PropertyParser.ShadowMatch,
         new Elements.PropertyParser.ShadowMatcher(nilRenderer(Elements.PropertyParser.ShadowMatch)));
     Platform.assertNotNullOrUndefined(match, text);
-    assert.strictEqual(match.text, 'box-shadow: /*0*/3px 3px red, -1em 0 .4em /*a*/ olive');
+    assert.strictEqual(match.text, '/*0*/3px 3px red, -1em 0 .4em /*a*/ olive');
   });
 
   it('parses fonts correctly', () => {
@@ -828,6 +837,84 @@ describe('PropertyParser', () => {
       const matches =
           TreeSearch.findAll(ast, node => matchedResult.getMatch(node) instanceof Elements.PropertyParser.FontMatch);
       assert.deepStrictEqual(matches.map(m => matchedResult.getMatch(m)?.text), ['"Gill Sans"', 'sans-serif']);
+    }
+  });
+
+  it('parses grid templates correctly', () => {
+    injectVariableSubstitutions({
+      '--row': '"a a b"',
+      '--row-with-names': '[name1] "a a" [name2]',
+      '--line-name': '[name1]',
+      '--double-row': '"a b" "b c"',
+    });
+
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid', '"a a"', Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.strictEqual(match.lines.map(line => line.map(n => ast.text(n)).join(' ')).join('\n'), '"a a"');
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid-template-areas', '"a a a" "b b b" "c c c"', Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')), ['"a a a"', '"b b b"', '"c c c"']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid-template', '"a a a" var(--row) / auto 1fr auto', Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')), ['"a a a"', 'var(--row) / auto 1fr auto']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid', '[header-top] "a a" var(--row-with-names) [main-top] "b b b" 1fr [main-bottom] / auto 1fr auto;',
+          Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')),
+          ['[header-top] "a a" var(--row-with-names)', '[main-top] "b b b" 1fr [main-bottom] / auto 1fr auto']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid', '[header-top] "a a" "b b b" var(--line-name) "c c" / auto 1fr auto;',
+          Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')),
+          ['[header-top] "a a"', '"b b b" var(--line-name)', '"c c" / auto 1fr auto']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid', '[line1] "a a" [line2] var(--double-row) "b b" / auto 1fr auto;',
+          Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')),
+          ['[line1] "a a" [line2]', 'var(--double-row)', '"b b" / auto 1fr auto']);
+    }
+    {
+      const {ast, match, text} = matchSingleValue(
+          'grid', '"a a" var(--unresolved) / auto 1fr auto;', Elements.PropertyParser.GridTemplateMatch,
+          new Elements.PropertyParser.GridTemplateMatcher(nilRenderer(Elements.PropertyParser.GridTemplateMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+      assert.deepStrictEqual(
+          match.lines.map(line => line.map(n => ast.text(n)).join(' ')), ['"a a" var(--unresolved) / auto 1fr auto']);
     }
   });
 });

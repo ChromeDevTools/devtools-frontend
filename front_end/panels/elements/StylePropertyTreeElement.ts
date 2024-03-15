@@ -43,6 +43,8 @@ import {
   type CSSControlMap,
   FontMatch,
   FontMatcher,
+  GridTemplateMatch,
+  GridTemplateMatcher,
   LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
@@ -970,6 +972,32 @@ export class FontRenderer extends FontMatch {
     return new FontMatcher(text => new FontRenderer(treeElement, text));
   }
 }
+
+export class GridTemplateRenderer extends GridTemplateMatch {
+  constructor(text: string, lines: CodeMirror.SyntaxNode[][]) {
+    super(text, lines);
+  }
+
+  override render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[] {
+    if (this.lines.length <= 1) {
+      return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(node)), context).nodes;
+    }
+
+    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+    const container = document.createDocumentFragment();
+    for (const line of this.lines) {
+      const value = Renderer.render(line, context);
+      const lineBreak = UI.Fragment.html`<br /><span class='styles-clipboard-only'>${indent.repeat(2)}</span>`;
+      container.append(lineBreak, ...value.nodes);
+    }
+    return [container];
+  }
+
+  static matcher(): GridTemplateMatcher {
+    return new GridTemplateMatcher((text, lines) => new GridTemplateRenderer(text, lines));
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -1105,23 +1133,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return '';
     }
     return this.nameElement.textContent + ': ' + this.valueElement.textContent;
-  }
-
-  private processGrid(propertyValue: string, _propertyName: string): Node {
-    const splitResult =
-        TextUtils.TextUtils.Utils.splitStringByRegexes(propertyValue, [SDK.CSSMetadata.GridAreaRowRegex]);
-    if (splitResult.length <= 1) {
-      return document.createTextNode(propertyValue);
-    }
-
-    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
-    const container = document.createDocumentFragment();
-    for (const result of splitResult) {
-      const value = result.value.trim();
-      const content = UI.Fragment.html`<br /><span class='styles-clipboard-only'>${indent.repeat(2)}</span>${value}`;
-      container.appendChild(content);
-    }
-    return container;
   }
 
   private processLength(lengthText: string): Text|InlineEditor.CSSLength.CSSLength {
@@ -1366,9 +1377,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           StringRenderer.matcher(),
           ShadowRenderer.matcher(this),
           FontRenderer.matcher(this),
+          GridTemplateRenderer.matcher(),
         ]);
     if (this.property.parsedOk) {
-      propertyRenderer.setGridHandler(this.processGrid.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
     }
 

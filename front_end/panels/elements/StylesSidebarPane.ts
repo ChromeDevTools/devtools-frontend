@@ -2207,7 +2207,6 @@ export class StylesSidebarPropertyRenderer {
   readonly propertyValue: string;
   private fontHandler: ((arg0: string) => Node)|null;
   private shadowHandler: ((arg0: string, arg1: string) => Node)|null;
-  private gridHandler: ((arg0: string, arg1: string) => Node)|null;
   private lengthHandler: ((arg0: string) => Node)|null;
   private animationHandler: ((data: string) => Node)|null;
   matchers: Matcher[];
@@ -2221,7 +2220,6 @@ export class StylesSidebarPropertyRenderer {
     this.propertyValue = value;
     this.fontHandler = null;
     this.shadowHandler = null;
-    this.gridHandler = null;
     this.lengthHandler = null;
     this.animationHandler = null;
     this.matchers = matchers;
@@ -2233,10 +2231,6 @@ export class StylesSidebarPropertyRenderer {
 
   setShadowHandler(handler: (arg0: string, arg1: string) => Node): void {
     this.shadowHandler = handler;
-  }
-
-  setGridHandler(handler: (arg0: string, arg1: string) => Node): void {
-    this.gridHandler = handler;
   }
 
   setAnimationHandler(handler: (arg0: string) => Node): void {
@@ -2271,12 +2265,6 @@ export class StylesSidebarPropertyRenderer {
     if (this.shadowHandler && metadata.isShadowProperty(this.propertyName) &&
         !SDK.CSSMetadata.VariableRegex.test(this.propertyValue)) {
       valueElement.appendChild(this.shadowHandler(this.propertyValue, this.propertyName));
-      valueElement.normalize();
-      return valueElement;
-    }
-
-    if (this.gridHandler && metadata.isGridAreaDefiningProperty(this.propertyName)) {
-      valueElement.appendChild(this.gridHandler(this.propertyValue, this.propertyName));
       valueElement.normalize();
       return valueElement;
     }

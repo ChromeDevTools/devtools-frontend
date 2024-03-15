@@ -2788,6 +2788,29 @@ export namespace CSS {
   }
 
   /**
+   * CSS @position-try rule representation.
+   */
+  export interface CSSPositionTryRule {
+    /**
+     * The prelude dashed-ident name
+     */
+    name: Value;
+    /**
+     * The css style sheet identifier (absent for user agent stylesheet and user-specified
+     * stylesheet rules) this rule came from.
+     */
+    styleSheetId?: StyleSheetId;
+    /**
+     * Parent stylesheet's origin.
+     */
+    origin: StyleSheetOrigin;
+    /**
+     * Associated style declaration.
+     */
+    style: CSSStyle;
+  }
+
+  /**
    * CSS keyframes rule representation.
    */
   export interface CSSKeyframesRule {
@@ -3053,6 +3076,10 @@ export namespace CSS {
      */
     cssPositionFallbackRules?: CSSPositionFallbackRule[];
     /**
+     * A list of CSS @position-try rules matching this node, based on the position-try-options property.
+     */
+    cssPositionTryRules?: CSSPositionTryRule[];
+    /**
      * A list of CSS at-property rules matching this node.
      */
     cssPropertyRules?: CSSPropertyRule[];
@@ -3102,6 +3129,15 @@ export namespace CSS {
 
   export interface GetLayersForNodeResponse extends ProtocolResponseWithError {
     rootLayer: CSSLayerData;
+  }
+
+  export interface GetLocationForSelectorRequest {
+    styleSheetId: StyleSheetId;
+    selectorText: string;
+  }
+
+  export interface GetLocationForSelectorResponse extends ProtocolResponseWithError {
+    ranges: SourceRange[];
   }
 
   export interface TrackComputedStyleUpdatesRequest {
@@ -13769,6 +13805,7 @@ export namespace Storage {
     DocumentAppend = 'documentAppend',
     DocumentDelete = 'documentDelete',
     DocumentClear = 'documentClear',
+    DocumentGet = 'documentGet',
     WorkletSet = 'workletSet',
     WorkletAppend = 'workletAppend',
     WorkletDelete = 'workletDelete',
@@ -14108,6 +14145,24 @@ export namespace Storage {
     ExcessiveReports = 'excessiveReports',
   }
 
+  /**
+   * A single Related Website Set object.
+   */
+  export interface RelatedWebsiteSet {
+    /**
+     * The primary site of this set, along with the ccTLDs if there is any.
+     */
+    primarySites: string[];
+    /**
+     * The associated sites of this set, along with the ccTLDs if there is any.
+     */
+    associatedSites: string[];
+    /**
+     * The service sites of this set, along with the ccTLDs if there is any.
+     */
+    serviceSites: string[];
+  }
+
   export interface GetStorageKeyForFrameRequest {
     frameId: Page.FrameId;
   }
@@ -14373,6 +14428,10 @@ export namespace Storage {
 
   export interface SetAttributionReportingTrackingRequest {
     enable: boolean;
+  }
+
+  export interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
+    sets: RelatedWebsiteSet[];
   }
 
   /**

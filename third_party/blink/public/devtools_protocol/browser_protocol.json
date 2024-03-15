@@ -4062,6 +4062,7 @@
                 {
                     "id": "CSSPositionFallbackRule",
                     "description": "CSS position-fallback rule representation.",
+                    "deprecated": true,
                     "type": "object",
                     "properties": [
                         {
@@ -4075,6 +4076,34 @@
                             "items": {
                                 "$ref": "CSSTryRule"
                             }
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSPositionTryRule",
+                    "description": "CSS @position-try rule representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "The prelude dashed-ident name",
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Parent stylesheet's origin.",
+                            "$ref": "StyleSheetOrigin"
+                        },
+                        {
+                            "name": "style",
+                            "description": "Associated style declaration.",
+                            "$ref": "CSSStyle"
                         }
                     ]
                 },
@@ -4477,10 +4506,20 @@
                         {
                             "name": "cssPositionFallbackRules",
                             "description": "A list of CSS position fallbacks matching this node.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "array",
                             "items": {
                                 "$ref": "CSSPositionFallbackRule"
+                            }
+                        },
+                        {
+                            "name": "cssPositionTryRules",
+                            "description": "A list of CSS @position-try rules matching this node, based on the position-try-options property.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSPositionTryRule"
                             }
                         },
                         {
@@ -4580,6 +4619,30 @@
                         {
                             "name": "rootLayer",
                             "$ref": "CSSLayerData"
+                        }
+                    ]
+                },
+                {
+                    "name": "getLocationForSelector",
+                    "description": "Given a CSS selector text and a style sheet ID, getLocationForSelector\nreturns an array of locations of the CSS selector in the style sheet.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "styleSheetId",
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "selectorText",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "ranges",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SourceRange"
+                            }
                         }
                     ]
                 },
@@ -20420,6 +20483,7 @@
                         "documentAppend",
                         "documentDelete",
                         "documentClear",
+                        "documentGet",
                         "workletSet",
                         "workletAppend",
                         "workletDelete",
@@ -21075,6 +21139,38 @@
                         "reportWindowPassed",
                         "excessiveReports"
                     ]
+                },
+                {
+                    "id": "RelatedWebsiteSet",
+                    "description": "A single Related Website Set object.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "primarySites",
+                            "description": "The primary site of this set, along with the ccTLDs if there is any.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "associatedSites",
+                            "description": "The associated sites of this set, along with the ccTLDs if there is any.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "serviceSites",
+                            "description": "The service sites of this set, along with the ccTLDs if there is any.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -21568,6 +21664,20 @@
                         {
                             "name": "enable",
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "getRelatedWebsiteSets",
+                    "description": "Returns the effective Related Website Sets in use by this profile for the browser\nsession. The effective Related Website Sets will not change during a browser session.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "sets",
+                            "type": "array",
+                            "items": {
+                                "$ref": "RelatedWebsiteSet"
+                            }
                         }
                     ]
                 }

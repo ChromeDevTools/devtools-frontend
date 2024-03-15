@@ -7852,6 +7852,10 @@ export const NativeFunctions = [
     signatures: [["input"]]
   },
   {
+    name: "createGenericSession",
+    signatures: [["?options"]]
+  },
+  {
     name: "getFileSystemAccessTransferToken",
     signatures: [["fileHandle"]]
   },

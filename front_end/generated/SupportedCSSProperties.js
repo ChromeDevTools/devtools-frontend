@@ -2825,12 +2825,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "none"
-  ],
-  "name": "position-fallback"
- },
- {
-  "keywords": [
    "normal"
   ],
   "name": "position-fallback-bounds"
@@ -5270,11 +5264,6 @@ export const generatedPropertyValues = {
    "absolute",
    "fixed",
    "sticky"
-  ]
- },
- "position-fallback": {
-  "values": [
-   "none"
   ]
  },
  "position-fallback-bounds": {

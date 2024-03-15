@@ -2243,7 +2243,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderName(): Element {
     const nameElement = document.createElement('span');
-    nameElement.setAttribute('jslog', `${VisualLogging.key().track({keydown: true, click: true})}`);
+    nameElement.setAttribute('jslog', `${VisualLogging.key().track({change: true, click: true})}`);
     UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this.propertyName;
@@ -2253,7 +2253,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderValue(): Element {
     const valueElement = document.createElement('span');
-    valueElement.setAttribute('jslog', `${VisualLogging.value().track({keydown: true, click: true})}`);
+    valueElement.setAttribute('jslog', `${VisualLogging.value().track({change: true, click: true})}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
     valueElement.className = 'value';
     if (!this.propertyValue) {

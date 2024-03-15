@@ -1027,7 +1027,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           StylePropertyTreeElementParams,
   ) {
     // Pass an empty title, the title gets made later in onattach.
-    super('', isShorthand);
+    super('', isShorthand, property.name);
     this.style = property.ownerStyle;
     this.matchedStylesInternal = matchedStyles;
     this.property = property;

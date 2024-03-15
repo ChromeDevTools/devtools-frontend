@@ -626,7 +626,6 @@ export class NodeFormatter implements Formatter {
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   readonly profile: CPUProfile.ProfileTreeModel.ProfileTreeModel;
   readonly heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData;
 
   constructor(
       profile: CPUProfile.ProfileTreeModel.ProfileTreeModel,

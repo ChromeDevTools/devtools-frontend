@@ -41,8 +41,7 @@ let colorGeneratorInstance: Common.Color.Generator|null = null;
 export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   readonly colorGeneratorInternal: Common.Color.Generator;
   maxStackDepthInternal: number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  timelineData_: PerfUI.FlameChart.FlameChartTimelineData|null;
+  timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null;
   entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[];
   #font: string;
   boldFont?: string;
@@ -50,7 +49,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   constructor() {
     this.colorGeneratorInternal = ProfileFlameChartDataProvider.colorGenerator();
     this.maxStackDepthInternal = 0;
-    this.timelineData_ = null;
+    this.timelineDataInternal = null;
     this.entryNodes = [];
     this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
   }
@@ -84,7 +83,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-    return this.timelineData_ || this.calculateTimelineData();
+    return this.timelineDataInternal || this.calculateTimelineData();
   }
 
   calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {

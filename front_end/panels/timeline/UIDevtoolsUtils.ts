@@ -97,15 +97,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _eventStylesMap: {
+
+let eventStylesMap: {
   [x: string]: TimelineRecordStyle,
 }|null = null;
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _categories: CategoryPalette|null = null;
+let categories: CategoryPalette|null = null;
 
 export class UIDevtoolsUtils {
   static isUiDevTools(): boolean {
@@ -115,8 +111,8 @@ export class UIDevtoolsUtils {
   static categorizeEvents(): {
     [x: string]: TimelineRecordStyle,
   } {
-    if (_eventStylesMap) {
-      return _eventStylesMap;
+    if (eventStylesMap) {
+      return eventStylesMap;
     }
 
     const type = RecordType;
@@ -158,15 +154,15 @@ export class UIDevtoolsUtils {
     // Other Categories
     eventStyles[type.ThreadControllerImplRunTask] = new TimelineRecordStyle('ThreadControllerImpl::RunTask', other);
 
-    _eventStylesMap = eventStyles;
+    eventStylesMap = eventStyles;
     return eventStyles;
   }
 
   static categories(): CategoryPalette {
-    if (_categories) {
-      return _categories;
+    if (categories) {
+      return categories;
     }
-    _categories = {
+    categories = {
       layout: new TimelineCategory(
           EventCategory.LAYOUT, i18nString(UIStrings.layout), true, '--app-color-loading-children',
           '--app-color-loading'),
@@ -204,7 +200,7 @@ export class UIDevtoolsUtils {
       async: new TimelineCategory(
           EventCategory.ASYNC, i18nString(UIStrings.async), false, '--app-color-async-children', '--app-color-async'),
     };
-    return _categories;
+    return categories;
   }
 
   static getMainCategoriesList(): string[] {

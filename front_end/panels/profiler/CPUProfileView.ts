@@ -384,16 +384,16 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
     this.maxStackDepthInternal = maxDepth + 1;
     this.entryNodes = entryNodes;
-    this.timelineData_ =
+    this.timelineDataInternal =
         PerfUI.FlameChart.FlameChartTimelineData.create({entryLevels, entryTotalTimes, entryStartTimes, groups: null});
 
     this.entrySelfTimes = entrySelfTimes;
 
-    return this.timelineData_;
+    return this.timelineDataInternal;
   }
 
   override prepareHighlightedEntryInfo(entryIndex: number): Element|null {
-    const timelineData = this.timelineData_;
+    const timelineData = this.timelineDataInternal;
     const node = this.entryNodes[entryIndex];
     if (!node) {
       return null;

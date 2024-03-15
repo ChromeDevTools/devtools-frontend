@@ -45,22 +45,17 @@ import * as Root from '../root/root.js';
  * @see {@link https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k Source Map Revision 3 Proposal}
  */
 export type SourceMapV3Object = {
-  // clang-format off
+  /* eslint-disable @typescript-eslint/naming-convention */
   'version': number,
   'file'?: string,
-  'sourceRoot'?: string,
-  'sources': string[],
+  'sourceRoot'?: string, 'sources': string[],
   'sourcesContent'?: (string|null)[],
-  'names'?: string[],
-  'mappings': string,
+  'names'?: string[], 'mappings': string,
   'ignoreList'?: number[],
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_linecount'?: number,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_ignoreList'?: number[],
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_com_bloomberg_sourcesFunctionMappings'?: string[],
-  // clang-format on
+  /* eslint-enable @typescript-eslint/naming-convention */
 };
 
 /**

@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @typescript-eslint/naming-convention */
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Models from '../models/models.js';

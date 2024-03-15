@@ -319,8 +319,7 @@ export class HeapSnapshotSortableDataGrid extends
     this.lastSortAscending = sortAscending;
     const sortFields = this.sortFields(sortColumnId || '', sortAscending);
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    function SortByTwoFields(
+    function sortByTwoFields(
         nodeA: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>,
         nodeB: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): number {
       // @ts-ignore
@@ -344,7 +343,7 @@ export class HeapSnapshotSortableDataGrid extends
       }
       return result;
     }
-    this.performSorting(SortByTwoFields);
+    this.performSorting(sortByTwoFields);
   }
 
   performSorting(

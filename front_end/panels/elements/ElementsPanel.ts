@@ -186,7 +186,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
   private mainContainer: HTMLDivElement;
   private domTreeContainer: HTMLDivElement;
-  private splitMode: _splitMode|null;
+  private splitMode: SplitMode|null;
   private readonly accessibilityTreeView: AccessibilityTreeView|undefined;
   private breadcrumbs: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs;
   stylesWidget: StylesSidebarPane;
@@ -999,8 +999,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  private initializeSidebarPanes(splitMode: _splitMode): void {
-    this.splitWidget.setVertical(splitMode === _splitMode.Vertical);
+  private initializeSidebarPanes(splitMode: SplitMode): void {
+    this.splitWidget.setVertical(splitMode === SplitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
     const matchedStylePanesWrapper = new UI.Widget.VBox();
@@ -1078,7 +1078,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     tabbedPane.headerElement().setAttribute(
         'jslog',
         `${VisualLogging.toolbar('sidebar').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
-    if (this.splitMode !== _splitMode.Vertical) {
+    if (this.splitMode !== SplitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }
 
@@ -1119,10 +1119,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }  // We can't reparent extension iframes.
 
     const position = Common.Settings.Settings.instance().moduleSetting('sidebar-position').get();
-    let splitMode = _splitMode.Horizontal;
+    let splitMode = SplitMode.Horizontal;
     if (position === 'right' ||
         (position === 'auto' && UI.InspectorView.InspectorView.instance().element.offsetWidth > 680)) {
-      splitMode = _splitMode.Vertical;
+      splitMode = SplitMode.Vertical;
     }
     if (!this.sidebarPaneView) {
       this.initializeSidebarPanes(splitMode);
@@ -1136,10 +1136,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     const tabbedPane = this.sidebarPaneView.tabbedPane();
     this.splitWidget.uninstallResizer(tabbedPane.headerElement());
 
-    this.splitWidget.setVertical(this.splitMode === _splitMode.Vertical);
+    this.splitWidget.setVertical(this.splitMode === SplitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
-    if (this.splitMode !== _splitMode.Vertical) {
+    if (this.splitMode !== SplitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }
   }
@@ -1253,9 +1253,7 @@ globalThis.Elements = globalThis.Elements || {};
 // @ts-ignore exported for Tests.js
 globalThis.Elements.ElementsPanel = ElementsPanel;
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const enum _splitMode {
+const enum SplitMode {
   Vertical = 'Vertical',
   Horizontal = 'Horizontal',
 }

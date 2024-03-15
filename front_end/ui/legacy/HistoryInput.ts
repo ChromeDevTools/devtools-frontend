@@ -5,9 +5,7 @@
 import {Keys} from './KeyboardShortcut.js';
 import * as Utils from './utils/utils.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _constructor: (() => Element)|null = null;
+let cachedConstructor: (() => Element)|null = null;
 
 export class HistoryInput extends HTMLInputElement {
   private history: string[];
@@ -22,11 +20,11 @@ export class HistoryInput extends HTMLInputElement {
   }
 
   static create(): HistoryInput {
-    if (!_constructor) {
-      _constructor = Utils.registerCustomElement('input', 'history-input', HistoryInput);
+    if (!cachedConstructor) {
+      cachedConstructor = Utils.registerCustomElement('input', 'history-input', HistoryInput);
     }
 
-    return _constructor() as HistoryInput;
+    return cachedConstructor() as HistoryInput;
   }
 
   private onInput(_event: Event): void {

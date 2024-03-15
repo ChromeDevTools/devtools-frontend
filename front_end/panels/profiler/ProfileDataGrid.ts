@@ -372,7 +372,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
        arg1: {
          [x: string]: unknown,
        }) => number {
-    let comparator = ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
+    let comparator = propertyComparators[(isAscending ? 1 : 0)][property];
 
     if (!comparator) {
       if (isAscending) {
@@ -421,7 +421,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
         };
       }
 
-      ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
+      propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
     }
 
     return comparator as (
@@ -681,10 +681,9 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     profileNode.revealAndSelect();
     this.searchableView.updateCurrentMatchIndex(index);
   }
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly propertyComparators: {[key: string]: unknown}[] = [{}, {}];
 }
+
+const propertyComparators: {[key: string]: unknown}[] = [{}, {}];
 
 export interface Formatter {
   formatValue(value: number, node: ProfileDataGridNode): string;

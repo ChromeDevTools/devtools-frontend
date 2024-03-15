@@ -42,13 +42,13 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private nodes: NetworkNode[];
   private hoveredNode: NetworkNode|null;
   private eventDividers: Map<string, number[]>;
-  private readonly styleForTimeRangeName: Map<RequestTimeRangeNames, _LayerStyle>;
-  private readonly styleForWaitingResourceType: Map<Common.ResourceType.ResourceType, _LayerStyle>;
-  private readonly styleForDownloadingResourceType: Map<Common.ResourceType.ResourceType, _LayerStyle>;
-  private readonly wiskerStyle: _LayerStyle;
-  private readonly hoverDetailsStyle: _LayerStyle;
-  private readonly pathForStyle: Map<_LayerStyle, Path2D>;
-  private textLayers: _TextLayer[];
+  private readonly styleForTimeRangeName: Map<RequestTimeRangeNames, LayerStyle>;
+  private readonly styleForWaitingResourceType: Map<Common.ResourceType.ResourceType, LayerStyle>;
+  private readonly styleForDownloadingResourceType: Map<Common.ResourceType.ResourceType, LayerStyle>;
+  private readonly wiskerStyle: LayerStyle;
+  private readonly hoverDetailsStyle: LayerStyle;
+  private readonly pathForStyle: Map<LayerStyle, Path2D>;
+  private textLayers: TextLayer[];
 
   constructor(calculator: NetworkTimeCalculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
@@ -107,8 +107,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.textLayers = [];
   }
 
-  private static buildRequestTimeRangeStyle(): Map<RequestTimeRangeNames, _LayerStyle> {
-    const styleMap = new Map<RequestTimeRangeNames, _LayerStyle>();
+  private static buildRequestTimeRangeStyle(): Map<RequestTimeRangeNames, LayerStyle> {
+    const styleMap = new Map<RequestTimeRangeNames, LayerStyle>();
     styleMap.set(
         RequestTimeRangeNames.Connecting, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.Connecting]});
     styleMap.set(RequestTimeRangeNames.SSL, {fillStyle: RequestTimeRangeNameToColor[RequestTimeRangeNames.SSL]});
@@ -145,7 +145,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     return styleMap;
   }
 
-  private static buildResourceTypeStyle(): Map<Common.ResourceType.ResourceType, _LayerStyle>[] {
+  private static buildResourceTypeStyle(): Map<Common.ResourceType.ResourceType, LayerStyle>[] {
     const baseResourceTypeColors = new Map([
       ['document', 'hsl(215, 100%, 80%)'],
       ['font', 'hsl(8, 100%, 80%)'],
@@ -159,8 +159,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       ['fetch', 'hsl(53, 100%, 80%)'],
       ['other', 'hsl(0, 0%, 95%)'],
     ]);
-    const waitingStyleMap = new Map<Common.ResourceType.ResourceType, _LayerStyle>();
-    const downloadingStyleMap = new Map<Common.ResourceType.ResourceType, _LayerStyle>();
+    const waitingStyleMap = new Map<Common.ResourceType.ResourceType, LayerStyle>();
+    const downloadingStyleMap = new Map<Common.ResourceType.ResourceType, LayerStyle>();
 
     for (const resourceType of Object.values(Common.ResourceType.resourceTypes)) {
       let color = baseResourceTypeColors.get(resourceType.name());
@@ -457,7 +457,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
   private drawLayers(context: CanvasRenderingContext2D, useTimingBars: boolean): void {
     for (const entry of this.pathForStyle) {
-      const style = (entry[0] as _LayerStyle);
+      const style = (entry[0] as LayerStyle);
       const path = (entry[1] as Path2D);
       context.save();
       context.beginPath();
@@ -534,12 +534,12 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const height = this.getBarHeight();
     y += Math.floor(this.rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
-    const waitingStyle = (this.styleForWaitingResourceType.get(request.resourceType()) as _LayerStyle);
+    const waitingStyle = (this.styleForWaitingResourceType.get(request.resourceType()) as LayerStyle);
     const waitingPath = (this.pathForStyle.get(waitingStyle) as Path2D);
     waitingPath.rect(ranges.start, y, ranges.mid - ranges.start, height - borderWidth);
 
     const barWidth = Math.max(2, ranges.end - ranges.mid);
-    const downloadingStyle = (this.styleForDownloadingResourceType.get(request.resourceType()) as _LayerStyle);
+    const downloadingStyle = (this.styleForDownloadingResourceType.get(request.resourceType()) as LayerStyle);
     const downloadingPath = (this.pathForStyle.get(downloadingStyle) as Path2D);
     downloadingPath.rect(ranges.mid, y, barWidth, height - borderWidth);
 
@@ -611,7 +611,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         continue;
       }
 
-      const style = (this.styleForTimeRangeName.get(range.name) as _LayerStyle);
+      const style = (this.styleForTimeRangeName.get(range.name) as LayerStyle);
       const path = (this.pathForStyle.get(style) as Path2D);
       const lineWidth = style.lineWidth || 0;
       const height = this.getBarHeight(range.name);
@@ -633,17 +633,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     context.restore();
   }
 }
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _TextLayer {
+
+interface TextLayer {
   x: number;
   y: number;
   text: string;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _LayerStyle {
+interface LayerStyle {
   fillStyle?: string;
   lineWidth?: number;
   borderColor?: string;

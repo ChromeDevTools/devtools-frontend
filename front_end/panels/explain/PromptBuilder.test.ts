@@ -405,7 +405,7 @@ export const y = "";
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
       const query = await promptBuilder.getSearchQuery();
-      assert.strictEqual(query, 'DevTools console error "kaboom!"');
+      assert.strictEqual(query, 'kaboom!');
     });
 
     it('builds a search query from an error without the callstack', async () => {
@@ -420,7 +420,7 @@ export const y = "";
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const promptBuilder = new Explain.PromptBuilder(message);
       const query = await promptBuilder.getSearchQuery();
-      assert.strictEqual(query, 'DevTools console error "Got an error: Error: fail"');
+      assert.strictEqual(query, 'Got an error: Error: fail');
     });
   });
 });

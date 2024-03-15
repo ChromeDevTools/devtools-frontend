@@ -155,7 +155,7 @@ ${relatedRequest}
       // is a stack trace, which we don't want.
       message = message.split('\n')[0];
     }
-    return `DevTools console ${this.#consoleMessage.consoleMessage().level} "${message}"`;
+    return message;
   }
 }
 

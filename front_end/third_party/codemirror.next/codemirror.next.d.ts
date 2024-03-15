@@ -2191,7 +2191,7 @@ interface TransactionSpec {
     selection?: EditorSelection | {
         anchor: number;
         head?: number;
-    };
+    } | undefined;
     /**
     Attach [state effects](https://codemirror.net/6/docs/ref/#state.StateEffect) to this transaction.
     Again, when they contain positions and this same spec makes

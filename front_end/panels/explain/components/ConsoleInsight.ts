@@ -612,6 +612,7 @@ export class ConsoleInsight extends HTMLElement {
       .data=${
         {
           variant: Buttons.Button.Variant.SECONDARY,
+          jslogContext: 'search',
         } as Buttons.Button.ButtonData
       }
     >

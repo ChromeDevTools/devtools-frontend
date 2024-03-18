@@ -6,9 +6,9 @@ import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
-import {showDebugPopoverForEvent} from './Debugging.js';
+import {processEventForDebugging, processImpressionsForDebugging} from './Debugging.js';
 import {type Loggable} from './Loggable.js';
-import {getLoggingState} from './LoggingState.js';
+import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 export async function logImpressions(loggables: Loggable[]): Promise<void> {
   const impressions = await Promise.all(loggables.map(async loggable => {
@@ -30,6 +30,7 @@ export async function logImpressions(loggables: Loggable[]): Promise<void> {
   }));
   if (impressions.length) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordImpression({impressions});
+    processImpressionsForDebugging(loggables.map(l => getLoggingState(l) as LoggingState));
   }
 }
 
@@ -43,7 +44,7 @@ export const logResize = (throttler: Common.Throttler.Throttler) => (loggable: L
       .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
-    showDebugPopoverForEvent('Resize', loggingState?.config);
+    processEventForDebugging('Resize', loggingState?.config, JSON.stringify(size));
   });
 };
 
@@ -58,7 +59,7 @@ export const logClick = (throttler: Common.Throttler.Throttler) => (
       .ClickEvent = {veid: loggingState.veid, mouseButton: button, doubleClick: Boolean(options?.doubleClick)};
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
-    showDebugPopoverForEvent('Click', loggingState?.config);
+    processEventForDebugging('Click', loggingState?.config);
   });
 };
 
@@ -69,7 +70,7 @@ export const logHover = (throttler: Common.Throttler.Throttler) => async (event:
   void throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
-    showDebugPopoverForEvent('Hover', loggingState?.config);
+    processEventForDebugging('Hover', loggingState?.config);
   });
 };
 
@@ -80,7 +81,7 @@ export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: 
   await throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
-    showDebugPopoverForEvent('Drag', loggingState?.config);
+    processEventForDebugging('Drag', loggingState?.config);
   });
 };
 
@@ -89,7 +90,7 @@ export async function logChange(event: Event): Promise<void> {
   assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordChange(changeEvent);
-  showDebugPopoverForEvent('Change', loggingState?.config);
+  processEventForDebugging('Change', loggingState?.config);
 }
 
 let pendingKeyDownContext: string|null = null;
@@ -119,7 +120,7 @@ export const logKeyDown =
       pendingKeyDownContext = context || null;
       void throttler.schedule(async () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
-        showDebugPopoverForEvent('KeyDown', loggingState?.config, context);
+        processEventForDebugging('KeyDown', loggingState?.config, context ? 'context: ' + context : '');
         pendingKeyDownContext = null;
       });
     };

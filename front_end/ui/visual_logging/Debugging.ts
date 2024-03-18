@@ -76,11 +76,49 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
   }
 }
 
-export function showDebugPopoverForEvent(name: string, config?: LoggingConfig, context?: string): void {
-  if (!veDebuggingEnabled) {
+export function processEventForDebugging(name: string, config?: LoggingConfig, extraInfo?: string): void {
+  if (!veDebuggingEnabled && !veDebugLoggingEnabled) {
     return;
   }
-  showDebugPopover(`${name}: ${config ? debugString(config) : ''}; ${context ? 'context: ' + context : ''}`);
+  const event = `${name}: ${config ? debugString(config) : ''}; ${extraInfo}`;
+  if (veDebuggingEnabled) {
+    showDebugPopover(event);
+  }
+  if (veDebugLoggingEnabled) {
+    const time = Date();
+    veDebugEventsLog.push({event, time});
+  }
+}
+
+type Impression = {
+  config: string,
+  veid: number,
+  children?: Impression[],
+  parent?: number,
+  size?: DOMRect,
+};
+
+export function processImpressionsForDebugging(states: LoggingState[]): void {
+  if (!veDebugLoggingEnabled) {
+    return;
+  }
+  const impressions = new Map<number, Impression>();
+  for (const state of states) {
+    if (!state.parent || !impressions.has(state.parent?.veid)) {
+      impressions.set(
+          state.veid,
+          {config: debugString(state.config), veid: state.veid, size: state.size, parent: state.parent?.veid});
+    } else {
+      const parent = impressions.get(state.parent?.veid) as Impression;
+      parent.children = parent.children || [];
+      const impression = {config: debugString(state.config), veid: state.veid, size: state.size};
+      impressions.set(state.veid, impression);
+      parent.children.push(impression);
+    }
+  }
+
+  const time = Date();
+  veDebugEventsLog.push({impressions: [...impressions.values()].filter(i => 'parent' in i), time});
 }
 
 function processNonDomLoggableForDebugging(loggable: Loggable, loggingState: LoggingState): void {
@@ -128,3 +166,15 @@ export function debugString(config: LoggingConfig): string {
   }
   return components.join('; ');
 }
+
+let veDebugLoggingEnabled = false;
+const veDebugEventsLog: {time: string, event?: string, impressions?: Impression[]}[] = [];
+
+function setVeDebugLoggingEnabled(enabled: boolean): void {
+  veDebugLoggingEnabled = enabled;
+}
+
+// @ts-ignore
+globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
+// @ts-ignore
+globalThis.veDebugEventsLog = veDebugEventsLog;

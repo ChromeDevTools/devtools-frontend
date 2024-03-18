@@ -17,7 +17,7 @@ import {getNonDomState, unregisterAllLoggables, unregisterLoggable} from './NonD
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
-const DRAG_LOG_INTERVAL = 500;
+const DRAG_LOG_INTERVAL = 1000;
 const CLICK_LOG_INTERVAL = 500;
 const RESIZE_LOG_INTERVAL = 1000;
 const RESIZE_REPORT_THRESHOLD = 50;
@@ -153,14 +153,13 @@ async function process(): Promise<void> {
       const trackHover = loggingState.config.track?.hover;
       if (trackHover) {
         element.addEventListener('mouseover', logHover(hoverLogThrottler), {capture: true});
-        const cancelLogging = (): Promise<void> => Promise.resolve();
         element.addEventListener('mouseout', () => hoverLogThrottler.schedule(cancelLogging), {capture: true});
       }
       const trackDrag = loggingState.config.track?.drag;
       if (trackDrag) {
         element.addEventListener('pointerdown', logDrag(dragLogThrottler), {capture: true});
-        const cancelLogging = (): Promise<void> => Promise.resolve();
-        element.addEventListener('pointerup', () => dragLogThrottler.schedule(cancelLogging), {capture: true});
+        document.addEventListener('pointerup', cancelDrag, {capture: true});
+        document.addEventListener('dragend', cancelDrag, {capture: true});
       }
       if (loggingState.config.track?.change) {
         element.addEventListener('change', logChange, {capture: true});
@@ -233,4 +232,11 @@ async function process(): Promise<void> {
   }
   await logImpressions(visibleLoggables);
   Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
+}
+
+async function cancelLogging(): Promise<void> {
+}
+
+function cancelDrag(): void {
+  void dragLogThrottler.schedule(cancelLogging);
 }

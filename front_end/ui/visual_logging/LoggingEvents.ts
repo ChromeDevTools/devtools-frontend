@@ -66,6 +66,7 @@ export const logHover = (throttler: Common.Throttler.Throttler) => async (event:
   const loggingState = getLoggingState(event.currentTarget as Element);
   assertNotNullOrUndefined(loggingState);
   const hoverEvent: Host.InspectorFrontendHostAPI.HoverEvent = {veid: loggingState.veid};
+  void throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
     showDebugPopoverForEvent('Hover', loggingState?.config);
@@ -76,6 +77,7 @@ export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: 
   const loggingState = getLoggingState(event.currentTarget as Element);
   assertNotNullOrUndefined(loggingState);
   const dragEvent: Host.InspectorFrontendHostAPI.DragEvent = {veid: loggingState.veid};
+  await throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
     showDebugPopoverForEvent('Drag', loggingState?.config);

@@ -431,7 +431,9 @@ describe('LoggingDriver', () => {
     assert.exists(dragLogThrottler.process);
     assert.isFalse(recordDrag.called);
 
+    await dragLogThrottler.schedule(async () => {}, true);
     await dragLogThrottler.process?.();
+    assert.isTrue(recordDrag.called);
     assert.isTrue(recordDrag.calledOnce);
   });
 

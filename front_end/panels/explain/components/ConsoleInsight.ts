@@ -694,7 +694,7 @@ export class ConsoleInsight extends HTMLElement {
 
             <ul>
               <li>Chrome DevTools uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
-              <li>Chrome DevTools uses experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make Console insights better.</li>
+              <li>Chrome DevTools uses experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make this feature better.</li>
               <li>This feature is an experimental feature and subject to future changes.</li>
               <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging.link('use-code-with-caution').track({click: true})}>Use generated code snippets with caution</x-link>.</strong></li>
             </ul>

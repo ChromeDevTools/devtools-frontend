@@ -352,3 +352,15 @@ export class CSSPositionFallbackRule {
     return this.#tryRules;
   }
 }
+
+export class CSSPositionTryRule extends CSSRule {
+  readonly #name: CSSValue;
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPositionTryRule) {
+    super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
+    this.#name = new CSSValue(payload.name);
+  }
+
+  name(): CSSValue {
+    return this.#name;
+  }
+}

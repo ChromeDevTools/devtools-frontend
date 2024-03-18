@@ -132,6 +132,7 @@ describe('CSSMatchedStyles', () => {
         animationsPayload: [],
         parentLayoutNodeId: undefined,
         positionFallbackRules: [],
+        positionTryRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
         fontPaletteValuesRule: undefined,
@@ -183,6 +184,7 @@ describe('CSSMatchedStyles', () => {
         animationsPayload: [],
         parentLayoutNodeId: undefined,
         positionFallbackRules: [],
+        positionTryRules: [],
         propertyRules: [{
           origin: Protocol.CSS.StyleSheetOrigin.Regular,
           style: {
@@ -249,6 +251,7 @@ describe('CSSMatchedStyles', () => {
         animationsPayload: [],
         parentLayoutNodeId: undefined,
         positionFallbackRules: [],
+        positionTryRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
         fontPaletteValuesRule: undefined,
@@ -320,6 +323,7 @@ describeWithMockConnection('NodeCascade', () => {
       animationsPayload: [],
       parentLayoutNodeId: undefined,
       positionFallbackRules: [],
+      positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations,
       fontPaletteValuesRule: undefined,

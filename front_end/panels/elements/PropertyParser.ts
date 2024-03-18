@@ -707,6 +707,8 @@ export const enum LinkableNameProperties {
   AnimationName = 'animation-name',
   FontPalette = 'font-palette',
   PositionFallback = 'position-fallback',
+  PositionTryOptions = 'position-try-options',
+  PositionTry = 'position-try',
 }
 
 const enum AnimationLonghandPart {
@@ -732,6 +734,8 @@ export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
       LinkableNameProperties.AnimationName,
       LinkableNameProperties.FontPalette,
       LinkableNameProperties.PositionFallback,
+      LinkableNameProperties.PositionTryOptions,
+      LinkableNameProperties.PositionTry,
     ];
     return names.includes(propertyName);
   }
@@ -819,9 +823,12 @@ export class LinkableNameMatcher extends MatcherBase<typeof LinkableNameMatch> {
     const isInsideVarCall = parentNode.name === 'ArgList' && parentNode.prevSibling?.name === 'Callee' &&
         matching.ast.text(parentNode.prevSibling) === 'var';
     const isAParentDeclarationOrVarCall = isParentADeclaration || isInsideVarCall;
+    // `position-try-options` and `position-try` only accepts names with dashed ident.
+    const shouldMatchOnlyVariableName = propertyName === LinkableNameProperties.PositionTry ||
+        propertyName === LinkableNameProperties.PositionTryOptions;
     // We only mark top level nodes or nodes that are inside `var()` expressions as linkable names.
     if (!propertyName || (node.name !== 'ValueName' && node.name !== 'VariableName') ||
-        !isAParentDeclarationOrVarCall) {
+        !isAParentDeclarationOrVarCall || (node.name === 'ValueName' && shouldMatchOnlyVariableName)) {
       return null;
     }
 

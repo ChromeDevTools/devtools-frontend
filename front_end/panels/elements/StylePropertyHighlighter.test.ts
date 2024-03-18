@@ -34,6 +34,7 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
       animationsPayload: [],
       parentLayoutNodeId: undefined,
       positionFallbackRules: [],
+      positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],
       fontPaletteValuesRule: undefined,

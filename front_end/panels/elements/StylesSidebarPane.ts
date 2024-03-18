@@ -65,6 +65,7 @@ import {
   FontPaletteValuesRuleSection,
   HighlightPseudoStylePropertiesSection,
   KeyframePropertiesSection,
+  PositionTryRuleSection,
   RegisteredPropertiesSection,
   StylePropertiesSection,
   TryRuleSection,
@@ -1207,6 +1208,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       blocks.push(block);
     }
 
+    for (const positionTryRule of matchedStyles.positionTryRules()) {
+      const block = SectionBlock.createPositionTryBlock(positionTryRule.name().text);
+      this.idleCallbackManager.schedule(() => {
+        block.sections.push(new PositionTryRuleSection(this, matchedStyles, positionTryRule.style, sectionIdx));
+        sectionIdx++;
+      });
+      blocks.push(block);
+    }
+
     if (matchedStyles.registeredProperties().length > 0) {
       const expandedByDefault = matchedStyles.registeredProperties().length <= MIN_FOLDED_SECTIONS_COUNT;
       const block = SectionBlock.createRegisteredPropertiesBlock(expandedByDefault);
@@ -1730,6 +1740,14 @@ export class SectionBlock {
     separatorElement.className = 'sidebar-separator';
     separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('position-fallback')}`);
     separatorElement.textContent = `@position-fallback ${positionFallbackName}`;
+    return new SectionBlock(separatorElement);
+  }
+
+  static createPositionTryBlock(positionTryName: string): SectionBlock {
+    const separatorElement = document.createElement('div');
+    separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('position-try')}`);
+    separatorElement.textContent = `@position-try ${positionTryName}`;
     return new SectionBlock(separatorElement);
   }
 

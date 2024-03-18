@@ -604,6 +604,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       animationsPayload: [],
       parentLayoutNodeId: undefined,
       positionFallbackRules: [],
+      positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],
       fontPaletteValuesRule: undefined,

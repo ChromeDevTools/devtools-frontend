@@ -13,6 +13,7 @@ import {
   CSSFontPaletteValuesRule,
   CSSKeyframesRule,
   CSSPositionFallbackRule,
+  CSSPositionTryRule,
   CSSPropertyRule,
   CSSStyleRule,
 } from './CSSRule.js';
@@ -177,6 +178,7 @@ export interface CSSMatchedStylesPayload {
   animationsPayload: Protocol.CSS.CSSKeyframesRule[];
   parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
   positionFallbackRules: Protocol.CSS.CSSPositionFallbackRule[];
+  positionTryRules: Protocol.CSS.CSSPositionTryRule[];
   propertyRules: Protocol.CSS.CSSPropertyRule[];
   cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[];
   fontPaletteValuesRule: Protocol.CSS.CSSFontPaletteValuesRule|undefined;
@@ -253,6 +255,7 @@ export class CSSMatchedStyles {
   #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
   #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
   #positionFallbackRules: CSSPositionFallbackRule[];
+  #positionTryRules: CSSPositionTryRule[];
   #mainDOMCascade?: DOMInheritanceCascade;
   #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
@@ -270,6 +273,7 @@ export class CSSMatchedStyles {
     animationsPayload,
     parentLayoutNodeId,
     positionFallbackRules,
+    positionTryRules,
     propertyRules,
     cssPropertyRegistrations,
     fontPaletteValuesRule,
@@ -287,6 +291,7 @@ export class CSSMatchedStyles {
       this.#keyframesInternal = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
     }
     this.#positionFallbackRules = positionFallbackRules.map(rule => new CSSPositionFallbackRule(cssModel, rule));
+    this.#positionTryRules = positionTryRules.map(rule => new CSSPositionTryRule(cssModel, rule));
     this.#parentLayoutNodeId = parentLayoutNodeId;
     this.#fontPaletteValuesRule =
         fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
@@ -675,6 +680,10 @@ export class CSSMatchedStyles {
 
   positionFallbackRules(): CSSPositionFallbackRule[] {
     return this.#positionFallbackRules;
+  }
+
+  positionTryRules(): CSSPositionTryRule[] {
+    return this.#positionTryRules;
   }
 
   pseudoStyles(pseudoType: Protocol.DOM.PseudoType): CSSStyleDeclaration[] {

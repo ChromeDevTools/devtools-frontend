@@ -755,6 +755,16 @@ describe('PropertyParser', () => {
     assert.deepStrictEqual(match('font-palette', 'first'), ['first']);
     assert.deepStrictEqual(match('position-fallback', 'first'), ['first']);
     {
+      assert.deepStrictEqual(match('position-try-options', 'flip-block'), []);
+      assert.deepStrictEqual(match('position-try-options', '--one'), ['--one']);
+      assert.deepStrictEqual(match('position-try-options', '--one, --two'), ['--one', '--two']);
+    }
+    {
+      assert.deepStrictEqual(match('position-try', 'flip-block'), []);
+      assert.deepStrictEqual(match('position-try', '--one'), ['--one']);
+      assert.deepStrictEqual(match('position-try', '--one, --two'), ['--one', '--two']);
+    }
+    {
       injectVariableSubstitutions({
         '--duration-and-easing': '1s linear',
       });

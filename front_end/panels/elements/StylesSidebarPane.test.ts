@@ -51,7 +51,7 @@ describe('StylesSidebarPane', () => {
     });
 
     describe('rebuildSectionsForMatchedStyleRulesForTest', () => {
-      it('should add @position-fallback section to the end', async () => {
+      it('should add @position-fallback section', async () => {
         const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
         const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
@@ -74,6 +74,7 @@ describe('StylesSidebarPane', () => {
               },
             }],
           }],
+          positionTryRules: [],
           propertyRules: [],
           cssPropertyRegistrations: [],
           fontPaletteValuesRule: undefined,
@@ -86,6 +87,42 @@ describe('StylesSidebarPane', () => {
         assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@position-fallback --compass');
         assert.strictEqual(sectionBlocks[1].sections.length, 1);
         assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.TryRuleSection);
+      });
+
+      it('should add @position-try section', async () => {
+        const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+        const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+          inlinePayload: null,
+          attributesPayload: null,
+          matchedPayload: [],
+          pseudoPayload: [],
+          inheritedPayload: [],
+          inheritedPseudoPayload: [],
+          animationsPayload: [],
+          parentLayoutNodeId: undefined,
+          positionFallbackRules: [],
+          positionTryRules: [{
+            name: {text: '--try-one'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [{name: 'bottom', value: 'anchor(--anchor-name bottom)'}],
+              shorthandEntries: [],
+            },
+          }],
+          propertyRules: [],
+          cssPropertyRegistrations: [],
+          fontPaletteValuesRule: undefined,
+        });
+
+        const sectionBlocks =
+            await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map());
+
+        assert.strictEqual(sectionBlocks.length, 2);
+        assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@position-try --try-one');
+        assert.strictEqual(sectionBlocks[1].sections.length, 1);
+        assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.PositionTryRuleSection);
       });
     });
 
@@ -103,6 +140,7 @@ describe('StylesSidebarPane', () => {
         animationsPayload: [],
         parentLayoutNodeId: undefined,
         positionFallbackRules: [],
+        positionTryRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
         fontPaletteValuesRule: {

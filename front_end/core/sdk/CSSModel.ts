@@ -342,6 +342,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       animationsPayload: response.cssKeyframesRules || [],
       parentLayoutNodeId: response.parentLayoutNodeId,
       positionFallbackRules: response.cssPositionFallbackRules || [],
+      positionTryRules: response.cssPositionTryRules || [],
       propertyRules: response.cssPropertyRules ?? [],
       cssPropertyRegistrations: response.cssPropertyRegistrations ?? [],
       fontPaletteValuesRule: response.cssFontPaletteValuesRule,

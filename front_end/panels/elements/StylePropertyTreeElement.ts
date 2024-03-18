@@ -591,6 +591,15 @@ export class LinkableNameRenderer extends LinkableNameMatch {
           isDefined: Boolean(
               this.#treeElement.matchedStyles().positionFallbackRules().find(pf => pf.name().text === this.text)),
         };
+      case LinkableNameProperties.PositionTry:
+      case LinkableNameProperties.PositionTryOptions:
+        return {
+          jslogContext: 'css-position-try',
+          metric: Host.UserMetrics.SwatchType.PositionTryLink,
+          ruleBlock: '@position-try',
+          isDefined:
+              Boolean(this.#treeElement.matchedStyles().positionTryRules().find(pt => pt.name().text === this.text)),
+        };
     }
   }
 

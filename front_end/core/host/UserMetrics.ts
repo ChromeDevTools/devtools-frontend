@@ -1598,7 +1598,8 @@ export const enum SwatchType {
   Angle = 7,
   Length = 8,
   PositionFallbackLink = 9,
-  MaxValue = 10,
+  PositionTryLink = 10,
+  MaxValue = 11,
 }
 
 export const enum BadgeType {

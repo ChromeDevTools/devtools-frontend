@@ -99,10 +99,11 @@ ol.children.expanded {
   padding-bottom: 4px;
 }
 
-.search-match-link {
+li.search-match .link-style.search-match-link {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 9px;
+  text-align: left;
 }
 
 .search-result-qualifier {

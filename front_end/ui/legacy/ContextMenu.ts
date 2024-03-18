@@ -416,7 +416,9 @@ export class ContextMenu extends SubMenu {
       while (target instanceof Element && !target.hasAttribute('jslog')) {
         target = target.parentElementOrShadowHost() ?? null;
       }
-      this.loggableParent = target;
+      if (target instanceof Element) {
+        this.loggableParent = target;
+      }
     }
   }
 

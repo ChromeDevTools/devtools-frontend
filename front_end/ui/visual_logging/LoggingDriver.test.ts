@@ -557,4 +557,36 @@ describe('LoggingDriver', () => {
     ]);
     assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
   });
+
+  it('logs root non-DOM impressions', async () => {
+    addLoggableElements();
+    const loggable = {};
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, undefined);
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    assert.isTrue(recordImpression.calledOnce);
+
+    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
+      {id: 2, type: 1, context: 123},
+      {id: 1, type: 1, context: 42, parent: 0, 'width': 300, 'height': 300},
+      {id: 0, type: 1, 'width': 300, 'height': 300},
+    ]);
+    assert.isEmpty(VisualLoggingTesting.NonDomState.getNonDomState().loggables);
+  });
+
+  it('postpones loging non-DOM impressions with detached parent', async () => {
+    addLoggableElements();
+    const loggable = {};
+    const parent = document.createElement('div');
+    VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    assert.isTrue(recordImpression.calledOnce);
+
+    assert.sameDeepMembers(stabilizeImpressions(recordImpression.firstCall.firstArg.impressions), [
+      {id: 1, type: 1, context: 42, parent: 0, 'width': 300, 'height': 300},
+      {id: 0, type: 1, 'width': 300, 'height': 300},
+    ]);
+    assert.deepInclude(
+        VisualLoggingTesting.NonDomState.getNonDomState().loggables,
+        {loggable, config: {ve: 1, context: '123'}, parent});
+  });
 });

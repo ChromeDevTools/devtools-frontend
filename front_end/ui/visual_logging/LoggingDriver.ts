@@ -219,7 +219,7 @@ async function process(): Promise<void> {
   }
   for (const {loggable, config, parent} of getNonDomState().loggables) {
     const loggingState = getOrCreateLoggingState(loggable, config, parent);
-    const visible = !loggingState.parent || loggingState.parent.impressionLogged;
+    const visible = !parent || loggingState.parent?.impressionLogged;
     if (!visible) {
       continue;
     }

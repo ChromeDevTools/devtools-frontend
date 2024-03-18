@@ -761,9 +761,11 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
   override populateContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, dataDisplayDelegate: DataDisplayDelegate,
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null): void {
-    contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSummaryView), () => {
-      dataDisplayDelegate.showObject(String(this.snapshotNodeId), i18nString(UIStrings.summary));
-    }, {jslogContext: 'reveal-in-summary'});
+    if (this.shallowSize !== 0) {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSummaryView), () => {
+        dataDisplayDelegate.showObject(String(this.snapshotNodeId), i18nString(UIStrings.summary));
+      }, {jslogContext: 'reveal-in-summary'});
+    }
 
     if (this.referenceName) {
       for (const match of this.referenceName.matchAll(/\((?<objectName>[^@)]*) @(?<snapshotNodeId>\d+)\)/g)) {

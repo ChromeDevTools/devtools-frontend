@@ -1251,8 +1251,9 @@ export class VersionController {
       for (const key of storage.keys()) {
         const normalizedKey = Settings.normalizeSettingName(key);
         if (normalizedKey !== key) {
-          storage.set(normalizedKey, storage.get(key));
+          const value = storage.get(key);
           removeSetting({name: key, storage});
+          storage.set(normalizedKey, value);
         }
       }
     };

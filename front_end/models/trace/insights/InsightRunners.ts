@@ -2,5 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export * as InteractionToNextPaint from './InteractionToNextPaint.js';
 export * as LargestContentfulPaint from './LargestContentfulPaint.js';
 export * as RenderBlocking from './RenderBlocking.js';

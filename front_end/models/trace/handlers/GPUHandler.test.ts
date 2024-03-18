@@ -8,6 +8,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 describe('GPUHandler', function() {
   beforeEach(() => {
+    TraceModel.Handlers.ModelHandlers.Meta.reset();
     TraceModel.Handlers.ModelHandlers.Meta.initialize();
     TraceModel.Handlers.ModelHandlers.GPU.initialize();
   });

@@ -5,7 +5,8 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {HandlerState} from './types.js';
+import {data as metaHandlerData} from './MetaHandler.js';
+import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 // This handler serves two purposes. It generates a list of events that are
 // used to show user clicks in the timeline. It is also used to gather
@@ -246,6 +247,8 @@ function writeSyntheticTimespans(event: Types.TraceEvents.SyntheticInteractionPa
 }
 
 export async function finalize(): Promise<void> {
+  const {navigationsByFrameId} = metaHandlerData();
+
   // For each interaction start event, find the async end event by the ID, and then create the Synthetic Interaction event.
   for (const interactionStartEvent of eventTimingStartEventsForInteractions) {
     const endEvent = eventTimingEndEventsById.get(interactionStartEvent.id);
@@ -283,6 +286,10 @@ export async function finalize(): Promise<void> {
          Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp)) +
         interactionStartEvent.ts);
 
+    const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame;
+    const navigation = Helpers.Trace.getNavigationForTraceEvent(interactionStartEvent, frameId, navigationsByFrameId);
+    const navigationId = navigation?.args.data?.navigationId;
+
     const interactionEvent: Types.TraceEvents.SyntheticInteractionPair = {
       // Use the start event to define the common fields.
       cat: interactionStartEvent.cat,
@@ -300,6 +307,8 @@ export async function finalize(): Promise<void> {
         data: {
           beginEvent: interactionStartEvent,
           endEvent: endEvent,
+          frame: frameId,
+          navigationId,
         },
       },
       ts: interactionStartEvent.ts,
@@ -334,4 +343,8 @@ export function data(): UserInteractionsData {
       return event.dur > LONG_INTERACTION_THRESHOLD;
     })),
   };
+}
+
+export function deps(): TraceEventHandlerName[] {
+  return ['Meta'];
 }

@@ -971,6 +971,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/helpers/Trace.js",
   "front_end/models/trace/helpers/TreeHelpers.js",
   "front_end/models/trace/insights/InsightRunners.js",
+  "front_end/models/trace/insights/InteractionToNextPaint.js",
   "front_end/models/trace/insights/LargestContentfulPaint.js",
   "front_end/models/trace/insights/RenderBlocking.js",
   "front_end/models/trace/insights/types.js",

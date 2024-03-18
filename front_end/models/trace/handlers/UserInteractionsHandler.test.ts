@@ -9,17 +9,30 @@ const {assert} = chai;
 
 async function processTrace(context: Mocha.Suite|Mocha.Context|null, path: string): Promise<void> {
   const traceEvents = await TraceLoader.rawEvents(context, path);
+  TraceModel.Handlers.ModelHandlers.Meta.reset();
+  TraceModel.Handlers.ModelHandlers.Meta.initialize();
   for (const event of traceEvents) {
+    TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
     TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
   }
+  await TraceModel.Handlers.ModelHandlers.Meta.finalize();
   await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
 }
+
+beforeEach(() => {
+  TraceModel.Handlers.ModelHandlers.Meta.reset();
+  TraceModel.Handlers.ModelHandlers.Meta.initialize();
+});
 
 describe('UserInteractionsHandler', function() {
   describe('error handling', () => {
     it('throws if not initialized', async () => {
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.initialize();
+
       // Finalize the handler by calling data and then finalize on it.
       TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
       await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
 
       assert.throws(() => {
@@ -251,6 +264,7 @@ describe('UserInteractionsHandler', function() {
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
     }
+    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
     await TraceModel.Handlers.ModelHandlers.UserInteractions.finalize();
     const timings = TraceModel.Handlers.ModelHandlers.UserInteractions.data().allEvents;
     assert.lengthOf(timings, 3);

@@ -9,6 +9,7 @@ import("../../visibility.gni")
 devtools_module("insights") {
   sources = [
     "InsightRunners.ts",
+    "InteractionToNextPaint.ts",
     "LargestContentfulPaint.ts",
     "RenderBlocking.ts",
     "types.ts",
@@ -32,6 +33,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "InteractionToNextPaint.test.ts",
     "LargestContentfulPaint.test.ts",
     "RenderBlocking.test.ts",
   ]

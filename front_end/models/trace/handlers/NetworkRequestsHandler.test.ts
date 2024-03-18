@@ -14,6 +14,7 @@ type DataArgsProcessedDataMap = Map<keyof DataArgsProcessedData, DataArgsProcess
 
 async function parseAndFinalizeFile(context: Mocha.Suite|Mocha.Context|null, traceFile: string) {
   const traceEvents = await TraceLoader.rawEvents(context, traceFile);
+  TraceModel.Handlers.ModelHandlers.Meta.reset();
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
   TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
   for (const event of traceEvents) {
@@ -55,6 +56,7 @@ describe('NetworkRequestsHandler', function() {
 
   describe('network requests calculations', () => {
     beforeEach(() => {
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
@@ -208,6 +210,7 @@ describe('NetworkRequestsHandler', function() {
 
   describe('parses the change priority request', () => {
     beforeEach(() => {
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
@@ -239,6 +242,7 @@ describe('NetworkRequestsHandler', function() {
 
   describe('redirects', () => {
     beforeEach(() => {
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });

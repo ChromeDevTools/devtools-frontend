@@ -504,6 +504,7 @@ export const enum MetricName {
   TBT = 'TBT',
   // Cumulative Layout Shift
   CLS = 'CLS',
+  // Note: INP is handled in UserInteractionsHandler
 }
 
 export interface MetricScore {

@@ -25,6 +25,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
+  clickOnContextMenuForRetainer,
   expandFocusedRow,
   findSearchResult,
   focusTableRow,
@@ -33,6 +34,7 @@ import {
   getSizesFromCategoryRow,
   getSizesFromSelectedRow,
   navigateToMemoryTab,
+  restoreIgnoredRetainers,
   setClassFilter,
   setSearchFilter,
   takeAllocationProfile,
@@ -474,5 +476,26 @@ describe('The Memory Panel', function() {
     assert.isTrue((await getSizesFromCategoryRow('CustomClass3Key')).retainedSize < 2 ** 15);
     assert.isTrue((await getSizesFromCategoryRow('CustomClass4Key')).retainedSize < 2 ** 15);
     assert.isTrue((await getSizesFromCategoryRow('CustomClass4Retainer')).retainedSize >= 2 ** 15);
+  });
+
+  it('Allows ignoring retainers', async () => {
+    await goToResource('memory/ignoring-retainers.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setSearchFilter('searchable_string');
+    await waitForSearchResultNumber(2);
+    await findSearchResult('"searchable_string"');
+    await waitForRetainerChain(['Object', 'KeyType', 'Window']);
+    await clickOnContextMenuForRetainer('KeyType', 'Ignore this retainer');
+    await waitForRetainerChain(['Object', 'Object', 'Window']);
+    await clickOnContextMenuForRetainer('x', 'Ignore this retainer');
+    await waitForRetainerChain(['Object', '(internal array)[]', 'WeakMap', 'Window']);
+    await clickOnContextMenuForRetainer('(internal array)[]', 'Ignore this retainer');
+    await waitForRetainerChain(['Object', 'Object', 'Object', 'Object', 'Object', 'Window']);
+    await clickOnContextMenuForRetainer('b', 'Ignore this retainer');
+    await waitForRetainerChain(['(Internalized strings)', '(GC roots)']);
+    await restoreIgnoredRetainers();
+    await waitForRetainerChain(['Object', 'KeyType', 'Window']);
   });
 });

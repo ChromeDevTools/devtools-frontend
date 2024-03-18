@@ -62,6 +62,10 @@ export class Multimap<K, V> {
     return [...this.map.keys()];
   }
 
+  keys(): IterableIterator<K> {
+    return this.map.keys();
+  }
+
   valuesArray(): V[] {
     const result = [];
     for (const set of this.map.values()) {

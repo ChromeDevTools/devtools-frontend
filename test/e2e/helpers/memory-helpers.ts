@@ -7,14 +7,15 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $,
-  platform,
-  waitForElementWithTextContent,
   $$,
   click,
   clickElement,
   getBrowserAndPages,
   pasteText,
+  platform,
   waitFor,
+  waitForAria,
+  waitForElementWithTextContent,
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
@@ -326,4 +327,17 @@ export async function getDistanceFromCategoryRow(text: string) {
   const row = await getCategoryRow(text);
   const numericColumns = await $$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
+}
+
+export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {
+  const retainersPane = await waitFor('.retaining-paths-view');
+  const element = await waitFor(`//span[text()="${retainerName}"]`, retainersPane, undefined, 'xpath');
+  await clickElement(element, {clickOptions: {button: 'right'}});
+  const button = await waitForAria(menuItem);
+  await clickElement(button);
+}
+
+export async function restoreIgnoredRetainers() {
+  const element = await waitFor('button[aria-label="Restore ignored retainers"]');
+  await clickElement(element);
 }

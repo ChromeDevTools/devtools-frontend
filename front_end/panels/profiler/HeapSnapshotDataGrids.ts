@@ -404,6 +404,10 @@ export class HeapSnapshotSortableDataGrid extends
   removeAllChildren(parent: HeapSnapshotGridNode): void {
     parent.removeChildren();
   }
+
+  async dataSourceChanged(): Promise<void> {
+    throw new Error('Not implemented');
+  }
 }
 
 export enum HeapSnapshotSortableDataGridEvents {
@@ -694,6 +698,7 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
 }
 
 export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataGrid {
+  resetRetainersButton: UI.Toolbar.ToolbarButton|undefined;
   constructor(
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
     const columns = ([
@@ -741,9 +746,23 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     this.resetSortingCache();
   }
 
+  updateResetButtonVisibility(): void {
+    void this.snapshot?.areNodesIgnoredInRetainersView().then(value => {
+      this.resetRetainersButton?.setVisible(value);
+    });
+  }
+
   override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
     await super.setDataSource(snapshot, nodeIndex, nodeId);
     this.rootNode().expand();
+    this.updateResetButtonVisibility();
+  }
+
+  override async dataSourceChanged(): Promise<void> {
+    this.reset();
+    await (this.rootNode() as HeapSnapshotGridNode).sort();
+    this.rootNode().expand();
+    this.updateResetButtonVisibility();
   }
 }
 

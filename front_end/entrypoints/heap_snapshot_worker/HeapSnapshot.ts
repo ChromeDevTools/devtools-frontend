@@ -113,6 +113,10 @@ export class HeapSnapshotEdge implements HeapSnapshotItem {
   isWeak(): boolean {
     throw new Error('Not implemented');
   }
+
+  getValueForSorting(_fieldName: string): number {
+    throw new Error('Not implemented');
+  }
 }
 
 export interface HeapSnapshotItemIterator {
@@ -270,12 +274,35 @@ export class HeapSnapshotRetainerEdge implements HeapSnapshotItem {
   }
 
   serialize(): HeapSnapshotModel.HeapSnapshotModel.Edge {
+    const node = this.node();
+    const serializedNode = node.serialize();
+    serializedNode.distance = this.#distance();
+    serializedNode.ignored = this.snapshot.isNodeIgnoredInRetainersView(node.nodeIndex);
+
     return new HeapSnapshotModel.HeapSnapshotModel.Edge(
-        this.name(), this.node().serialize(), this.type(), this.#globalEdgeIndex);
+        this.name(), serializedNode, this.type(), this.#globalEdgeIndex);
   }
 
   type(): string {
     return this.edge().type();
+  }
+
+  isInternal(): boolean {
+    return this.edge().isInternal();
+  }
+
+  getValueForSorting(fieldName: string): number {
+    if (fieldName === '!edgeDistance') {
+      return this.#distance();
+    }
+    throw new Error('Invalid field name');
+  }
+
+  #distance(): number {
+    if (this.snapshot.isEdgeIgnoredInRetainersView(this.#globalEdgeIndex)) {
+      return HeapSnapshotModel.HeapSnapshotModel.baseUnreachableDistance;
+    }
+    return this.node().distanceForRetainersView();
   }
 }
 
@@ -316,6 +343,10 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
 
   distance(): number {
     return this.snapshot.nodeDistances[this.nodeIndex / this.snapshot.nodeFieldCount];
+  }
+
+  distanceForRetainersView(): number {
+    return this.snapshot.getDistanceForRetainersView(this.nodeIndex);
   }
 
   className(): string {
@@ -661,6 +692,9 @@ export abstract class HeapSnapshot {
   lazyStringCache!: {
     [x: string]: string,
   };
+  #ignoredNodesInRetainersView: Set<number>;
+  #ignoredEdgesInRetainersView: Set<number>;
+  #nodeDistancesForRetainersView: Int32Array|undefined;
 
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
     this.nodes = profile.nodes;
@@ -684,6 +718,8 @@ export abstract class HeapSnapshot {
 
     this.#aggregatesSortedFlags = {};
     this.#profile = profile;
+    this.#ignoredNodesInRetainersView = new Set();
+    this.#ignoredEdgesInRetainersView = new Set();
   }
 
   initialize(): void {
@@ -751,7 +787,7 @@ export abstract class HeapSnapshot {
     this.#progress.updateStatus('Calculating node flags…');
     this.calculateFlags();
     this.#progress.updateStatus('Calculating distances…');
-    this.calculateDistances();
+    this.calculateDistances(/* isForRetainersView=*/ false);
     this.#progress.updateStatus('Building postorder index…');
     const result = this.buildPostOrderIndex();
     // Actually it is array that maps node ordinal number to dominator node ordinal number.
@@ -1071,9 +1107,22 @@ export abstract class HeapSnapshot {
   calculateShallowSizes(): void {
   }
 
-  calculateDistances(filter?: ((arg0: HeapSnapshotNode, arg1: HeapSnapshotEdge) => boolean)): void {
+  calculateDistances(
+      isForRetainersView: boolean, filter?: ((arg0: HeapSnapshotNode, arg1: HeapSnapshotEdge) => boolean)): void {
     const nodeCount = this.nodeCount;
-    const distances = this.nodeDistances;
+
+    if (isForRetainersView) {
+      const originalFilter = filter;
+      filter = (node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
+        return !this.#ignoredNodesInRetainersView.has(edge.nodeIndex()) &&
+            (!originalFilter || originalFilter(node, edge));
+      };
+      if (this.#nodeDistancesForRetainersView === undefined) {
+        this.#nodeDistancesForRetainersView = new Int32Array(nodeCount);
+      }
+    }
+
+    const distances = isForRetainersView ? (this.#nodeDistancesForRetainersView as Int32Array) : this.nodeDistances;
     const noDistance = this.#noDistance;
     for (let i = 0; i < nodeCount; ++i) {
       distances[i] = noDistance;
@@ -1276,6 +1325,13 @@ export abstract class HeapSnapshot {
     }
   }
 
+  static tryParseWeakMapEdgeName(edgeName: string): {duplicatedPart: string, tableId: string}|undefined {
+    const ephemeronNameRegex =
+        /^\d+(?<duplicatedPart> \/ part of key \(.*? @\d+\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\))$/;
+    const match = edgeName.match(ephemeronNameRegex);
+    return match ? match.groups as {duplicatedPart: string, tableId: string} : undefined;
+  }
+
   /**
    * The function checks is the edge should be considered during building
    * postorder iterator and dominator tree.
@@ -1289,11 +1345,11 @@ export abstract class HeapSnapshot {
     // dominators. We've found that the edge from the key generally produces
     // more useful results, so here we skip the edge from the table.
     if (edgeType === this.edgeInternalType) {
-      const match = this.strings[this.containmentEdges[edgeIndex + this.edgeNameOffset]].match(
-          /^\d+ \/ part of key \(.*? @\d+\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\)$/);
+      const edgeName = this.strings[this.containmentEdges[edgeIndex + this.edgeNameOffset]];
+      const match = HeapSnapshot.tryParseWeakMapEdgeName(edgeName);
       if (match) {
         const nodeId = this.nodes[nodeIndex + this.nodeIdOffset];
-        return nodeId !== parseInt((match.groups as {tableId: string}).tableId, 10);
+        return nodeId !== parseInt(match.tableId, 10);
       }
     }
 
@@ -2034,6 +2090,110 @@ export abstract class HeapSnapshot {
     return new HeapSnapshotModel.HeapSnapshotModel.StaticData(
         this.nodeCount, this.rootNodeIndexInternal, this.totalSize, this.maxJsNodeId());
   }
+
+  ignoreNodeInRetainersView(nodeIndex: number): void {
+    this.#ignoredNodesInRetainersView.add(nodeIndex);
+    this.calculateDistances(/* isForRetainersView=*/ true);
+    this.#updateIgnoredEdgesInRetainersView();
+  }
+
+  unignoreNodeInRetainersView(nodeIndex: number): void {
+    this.#ignoredNodesInRetainersView.delete(nodeIndex);
+    if (this.#ignoredNodesInRetainersView.size === 0) {
+      this.#nodeDistancesForRetainersView = undefined;
+    } else {
+      this.calculateDistances(/* isForRetainersView=*/ true);
+    }
+    this.#updateIgnoredEdgesInRetainersView();
+  }
+
+  unignoreAllNodesInRetainersView(): void {
+    this.#ignoredNodesInRetainersView.clear();
+    this.#nodeDistancesForRetainersView = undefined;
+    this.#updateIgnoredEdgesInRetainersView();
+  }
+
+  #updateIgnoredEdgesInRetainersView(): void {
+    const distances = this.#nodeDistancesForRetainersView;
+    this.#ignoredEdgesInRetainersView.clear();
+    if (distances === undefined) {
+      return;
+    }
+
+    // To retain a value in a WeakMap, both the WeakMap and the corresponding
+    // key must stay alive. If one of those two retainers is unreachable due to
+    // the user ignoring some nodes, then the other retainer edge should also be
+    // shown as unreachable, since it would be insufficient on its own to retain
+    // the value.
+    const unreachableWeakMapEdges = new Platform.MapUtilities.Multimap<number, string>();
+    const noDistance = this.#noDistance;
+    const {nodeCount, nodeFieldCount} = this;
+    const node = this.createNode(0);
+
+    // Populate unreachableWeakMapEdges.
+    for (let nodeOrdinal = 0; nodeOrdinal < nodeCount; ++nodeOrdinal) {
+      if (distances[nodeOrdinal] !== noDistance) {
+        continue;
+      }
+      node.nodeIndex = nodeOrdinal * nodeFieldCount;
+      for (let iter = node.edges(); iter.hasNext(); iter.next()) {
+        const edge = iter.edge;
+        if (!edge.isInternal()) {
+          continue;
+        }
+        const edgeName = edge.name();
+        const match = HeapSnapshot.tryParseWeakMapEdgeName(edgeName);
+        if (match) {
+          unreachableWeakMapEdges.set(edge.nodeIndex(), match.duplicatedPart);
+        }
+      }
+    }
+
+    // Iterate the retaining edges for the target nodes found in the previous
+    // step and mark any relevant WeakMap edges as ignored.
+    for (const targetNodeIndex of unreachableWeakMapEdges.keys()) {
+      node.nodeIndex = targetNodeIndex;
+      for (let it = node.retainers(); it.hasNext(); it.next()) {
+        const reverseEdge = it.item();
+        if (!reverseEdge.isInternal()) {
+          continue;
+        }
+        const match = HeapSnapshot.tryParseWeakMapEdgeName(reverseEdge.name());
+        if (match && unreachableWeakMapEdges.hasValue(targetNodeIndex, match.duplicatedPart)) {
+          const forwardEdgeIndex = this.retainingEdges[reverseEdge.itemIndex()];
+          this.#ignoredEdgesInRetainersView.add(forwardEdgeIndex);
+        }
+      }
+    }
+  }
+
+  areNodesIgnoredInRetainersView(): boolean {
+    return this.#ignoredNodesInRetainersView.size > 0;
+  }
+
+  getDistanceForRetainersView(nodeIndex: number): number {
+    const nodeOrdinal = nodeIndex / this.nodeFieldCount;
+    if (this.#nodeDistancesForRetainersView) {
+      const distance = this.#nodeDistancesForRetainersView[nodeOrdinal];
+      if (distance === this.#noDistance) {
+        // An unreachable node should be sorted to the end, not the beginning.
+        // To give such nodes a reasonable sorting order, we add a very large
+        // number to the original distance computed without ignoring any nodes.
+        return Math.max(0, this.nodeDistances[nodeOrdinal]) +
+            HeapSnapshotModel.HeapSnapshotModel.baseUnreachableDistance;
+      }
+      return distance;
+    }
+    return this.nodeDistances[nodeOrdinal];
+  }
+
+  isNodeIgnoredInRetainersView(nodeIndex: number): boolean {
+    return this.#ignoredNodesInRetainersView.has(nodeIndex);
+  }
+
+  isEdgeIgnoredInRetainersView(edgeIndex: number): boolean {
+    return this.#ignoredEdgesInRetainersView.has(edgeIndex);
+  }
 }
 
 class HeapSnapshotMetainfo {
@@ -2166,23 +2326,28 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
     const ascending1 = comparator.ascending1;
     const ascending2 = comparator.ascending2;
 
-    const edgeA = (this.iterator.item() as HeapSnapshotEdge).clone();
+    const edgeA = (this.iterator.item() as HeapSnapshotEdge | HeapSnapshotRetainerEdge).clone();
     const edgeB = edgeA.clone();
     const nodeA = this.snapshot.createNode();
     const nodeB = this.snapshot.createNode();
 
-    function compareEdgeFieldName(ascending: boolean, indexA: number, indexB: number): number {
+    function compareEdgeField(fieldName: string, ascending: boolean, indexA: number, indexB: number): number {
       edgeA.edgeIndex = indexA;
       edgeB.edgeIndex = indexB;
-      if (edgeB.name() === '__proto__') {
-        return -1;
+      let result: number = 0;
+      if (fieldName === '!edgeName') {
+        if (edgeB.name() === '__proto__') {
+          return -1;
+        }
+        if (edgeA.name() === '__proto__') {
+          return 1;
+        }
+        result = edgeA.hasStringName() === edgeB.hasStringName() ?
+            (edgeA.name() < edgeB.name() ? -1 : (edgeA.name() > edgeB.name() ? 1 : 0)) :
+            (edgeA.hasStringName() ? -1 : 1);
+      } else {
+        result = edgeA.getValueForSorting(fieldName) - edgeB.getValueForSorting(fieldName);
       }
-      if (edgeA.name() === '__proto__') {
-        return 1;
-      }
-      const result = edgeA.hasStringName() === edgeB.hasStringName() ?
-          (edgeA.name() < edgeB.name() ? -1 : (edgeA.name() > edgeB.name() ? 1 : 0)) :
-          (edgeA.hasStringName() ? -1 : 1);
       return ascending ? result : -result;
     }
 
@@ -2203,8 +2368,19 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
       return ascending ? result : -result;
     }
 
+    function compareEdgeAndEdge(indexA: number, indexB: number): number {
+      let result = compareEdgeField(fieldName1, ascending1, indexA, indexB);
+      if (result === 0) {
+        result = compareEdgeField(fieldName2, ascending2, indexA, indexB);
+      }
+      if (result === 0) {
+        return indexA - indexB;
+      }
+      return result;
+    }
+
     function compareEdgeAndNode(indexA: number, indexB: number): number {
-      let result = compareEdgeFieldName(ascending1, indexA, indexB);
+      let result = compareEdgeField(fieldName1, ascending1, indexA, indexB);
       if (result === 0) {
         result = compareNodeField(fieldName2, ascending2, indexA, indexB);
       }
@@ -2217,7 +2393,7 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
     function compareNodeAndEdge(indexA: number, indexB: number): number {
       let result = compareNodeField(fieldName1, ascending1, indexA, indexB);
       if (result === 0) {
-        result = compareEdgeFieldName(ascending2, indexA, indexB);
+        result = compareEdgeField(fieldName2, ascending2, indexA, indexB);
       }
       if (result === 0) {
         return indexA - indexB;
@@ -2240,10 +2416,19 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
       throw new Error('Iteration order not defined');
     }
 
-    if (fieldName1 === '!edgeName') {
-      Platform.ArrayUtilities.sortRange(
-          this.iterationOrder, compareEdgeAndNode, leftBound, rightBound, windowLeft, windowRight);
-    } else if (fieldName2 === '!edgeName') {
+    function isEdgeFieldName(fieldName: string): boolean {
+      return fieldName.startsWith('!edge');
+    }
+
+    if (isEdgeFieldName(fieldName1)) {
+      if (isEdgeFieldName(fieldName2)) {
+        Platform.ArrayUtilities.sortRange(
+            this.iterationOrder, compareEdgeAndEdge, leftBound, rightBound, windowLeft, windowRight);
+      } else {
+        Platform.ArrayUtilities.sortRange(
+            this.iterationOrder, compareEdgeAndNode, leftBound, rightBound, windowLeft, windowRight);
+      }
+    } else if (isEdgeFieldName(fieldName2)) {
       Platform.ArrayUtilities.sortRange(
           this.iterationOrder, compareNodeAndEdge, leftBound, rightBound, windowLeft, windowRight);
     } else {
@@ -2491,10 +2676,8 @@ export class JSHeapSnapshot extends HeapSnapshot {
     }
   }
 
-  override calculateDistances(): void {
+  override calculateDistances(isForRetainersView: boolean): void {
     const pendingEphemeronEdges = new Set<string>();
-    const ephemeronNameRegex =
-        /^\d+ \/ part of key \(.*? @(?<keyId>\d+)\) -> value \(.*? @\d+\) pair in WeakMap \(table @(?<tableId>\d+)\)$/;
     function filter(node: HeapSnapshotNode, edge: HeapSnapshotEdge): boolean {
       if (node.isHidden() && edge.name() === 'sloppy_function_map' && node.rawName() === 'system / NativeContext') {
         return false;
@@ -2524,28 +2707,17 @@ export class JSHeapSnapshot extends HeapSnapshot {
         // part of the filter skips the first edge in the matched pair of edges,
         // so that the distance gets set based on the second, which should be
         // greater or equal due to traversal order.
-        const match = edge.name().match(ephemeronNameRegex);
+        const match = HeapSnapshot.tryParseWeakMapEdgeName(edge.name());
         if (match) {
-          const nodeId = node.id().toString(10);
-          const targetNodeId = edge.node().id().toString(10);
-          if (!pendingEphemeronEdges.has(nodeId + ' ' + targetNodeId)) {
-            const {keyId, tableId} = match.groups as {keyId: string, tableId: string};
-            let otherNodeId: string = '';
-            if (keyId === nodeId) {
-              otherNodeId = tableId;
-            } else if (tableId === nodeId) {
-              otherNodeId = keyId;
-            } else {
-              throw new Error('Invalid IDs in WeakMap edge');
-            }
-            pendingEphemeronEdges.add(otherNodeId + ' ' + targetNodeId);
+          if (!pendingEphemeronEdges.delete(match.duplicatedPart)) {
+            pendingEphemeronEdges.add(match.duplicatedPart);
             return false;
           }
         }
       }
       return true;
     }
-    super.calculateDistances(filter);
+    super.calculateDistances(isForRetainersView, filter);
   }
 
   override isUserRoot(node: HeapSnapshotNode): boolean {
@@ -3021,10 +3193,6 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
 
   isHidden(): boolean {
     return this.edge().isHidden();
-  }
-
-  isInternal(): boolean {
-    return this.edge().isInternal();
   }
 
   isInvisible(): boolean {

@@ -390,6 +390,22 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('getSamples');
   }
 
+  ignoreNodeInRetainersView(nodeIndex: number): Promise<void> {
+    return this.callMethodPromise('ignoreNodeInRetainersView', nodeIndex);
+  }
+
+  unignoreNodeInRetainersView(nodeIndex: number): Promise<void> {
+    return this.callMethodPromise('unignoreNodeInRetainersView', nodeIndex);
+  }
+
+  unignoreAllNodesInRetainersView(): Promise<void> {
+    return this.callMethodPromise('unignoreAllNodesInRetainersView');
+  }
+
+  areNodesIgnoredInRetainersView(): Promise<boolean> {
+    return this.callMethodPromise('areNodesIgnoredInRetainersView');
+  }
+
   get totalSize(): number {
     if (!this.staticData) {
       return 0;

@@ -1,0 +1,16 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Memory Panel (Heap profiler) Test</h1>
+<script>
+  var firstRetainer = {x: {y: 'searchable_string'}};
+  var weakMap = new WeakMap();
+  class KeyType {}
+  var firstKey = new KeyType();
+  var secondKey = {p: {q: {}}};
+  weakMap.set(firstKey, firstRetainer.x);
+  weakMap.set(secondKey.p.q, firstRetainer.x);
+  var lastRetainer = {a: {b: {c: {d: firstRetainer.x}}}};
+</script>

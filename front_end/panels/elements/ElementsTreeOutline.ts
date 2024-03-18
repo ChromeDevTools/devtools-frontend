@@ -159,7 +159,7 @@ export class ElementsTreeOutline extends
 
     outlineDisclosureElement.appendChild(this.elementInternal);
     this.element = shadowContainer;
-    this.element.setAttribute('jslog', `${VisualLogging.tree('elements')}`);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.tree('elements')}`);
 
     this.includeRootDOMNode = !omitRootDOMNode;
     this.selectEnabled = selectEnabled;

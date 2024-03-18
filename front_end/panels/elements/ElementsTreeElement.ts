@@ -2451,7 +2451,7 @@ export interface EditorHandles {
 // child of a tree outline.
 function loggingParentProvider(e: Element): Element|undefined {
   const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(e);
-  return treeElement?.treeOutline?.element;
+  return treeElement?.treeOutline?.contentElement;
 }
 
 VisualLogging.registerParentProvider('elementsTreeOutline', loggingParentProvider);

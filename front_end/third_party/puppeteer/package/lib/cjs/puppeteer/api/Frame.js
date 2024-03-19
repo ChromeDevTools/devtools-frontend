@@ -283,7 +283,7 @@ let Frame = (() => {
             this.#_document = undefined;
         }
         /**
-         * @internal
+         * @returns The frame element associated with this frame (if any).
          */
         async frameElement() {
             const env_1 = { stack: [], error: void 0, hasError: false };
@@ -333,7 +333,7 @@ let Frame = (() => {
             return await this.mainRealm().evaluateHandle(pageFunction, ...args);
         }
         /**
-         * Behaves identically to {@link Page.evaluate} except it's run within the
+         * Behaves identically to {@link Page.evaluate} except it's run within
          * the context of this frame.
          *
          * @see {@link Page.evaluate} for details.
@@ -542,6 +542,13 @@ let Frame = (() => {
          * @remarks
          * This value is calculated once when the frame is created, and will not
          * update if the attribute is changed later.
+         *
+         * @deprecated Use
+         *
+         * ```ts
+         * const element = await frame.frameElement();
+         * const nameOrId = await element.evaluate(frame => frame.name ?? frame.id);
+         * ```
          */
         name() {
             return this._name || '';

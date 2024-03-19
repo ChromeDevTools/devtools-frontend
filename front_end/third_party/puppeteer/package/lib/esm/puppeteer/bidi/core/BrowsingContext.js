@@ -69,6 +69,7 @@ let BrowsingContext = (() => {
     let _getCookies_decorators;
     let _setCookie_decorators;
     let _setFiles_decorators;
+    let _subscribe_decorators;
     let _deleteCookie_decorators;
     return class BrowsingContext extends _classSuper {
         static {
@@ -95,6 +96,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setFiles_decorators, { kind: "method", name: "setFiles", static: false, private: false, access: { has: obj => "setFiles" in obj, get: obj => obj.setFiles }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _subscribe_decorators, { kind: "method", name: "subscribe", static: false, private: false, access: { has: obj => "subscribe" in obj, get: obj => obj.subscribe }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _deleteCookie_decorators, { kind: "method", name: "deleteCookie", static: false, private: false, access: { has: obj => "deleteCookie" in obj, get: obj => obj.deleteCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
@@ -368,6 +370,9 @@ let BrowsingContext = (() => {
                 files,
             });
         }
+        async subscribe(events) {
+            await this.#session.subscribe(events, [this.id]);
+        }
         [(_dispose_decorators = [inertIfDisposed], _activate_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
@@ -417,6 +422,9 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _setFiles_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _subscribe_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], disposeSymbol)]() {

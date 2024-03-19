@@ -405,7 +405,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   }
 
   /**
-   * @internal
+   * @returns The frame element associated with this frame (if any).
    */
   @throwIfDetached
   async frameElement(): Promise<HandleFor<HTMLIFrameElement> | null> {
@@ -447,7 +447,7 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   }
 
   /**
-   * Behaves identically to {@link Page.evaluate} except it's run within the
+   * Behaves identically to {@link Page.evaluate} except it's run within
    * the context of this frame.
    *
    * @see {@link Page.evaluate} for details.
@@ -760,6 +760,13 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
    * @remarks
    * This value is calculated once when the frame is created, and will not
    * update if the attribute is changed later.
+   *
+   * @deprecated Use
+   *
+   * ```ts
+   * const element = await frame.frameElement();
+   * const nameOrId = await element.evaluate(frame => frame.name ?? frame.id);
+   * ```
    */
   name(): string {
     return this._name || '';

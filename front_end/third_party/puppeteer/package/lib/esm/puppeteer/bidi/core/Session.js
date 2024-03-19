@@ -103,6 +103,7 @@ let Session = (() => {
                         platformName: '',
                         setWindowRect: false,
                         webSocketUrl: '',
+                        userAgent: '',
                     },
                 };
             }
@@ -174,9 +175,10 @@ let Session = (() => {
         async send(method, params) {
             return await this.connection.send(method, params);
         }
-        async subscribe(events) {
+        async subscribe(events, contexts) {
             await this.send('session.subscribe', {
                 events,
+                contexts,
             });
         }
         async end() {

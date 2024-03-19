@@ -40,7 +40,7 @@ export declare class Session extends EventEmitter<BidiEvents & {
     send<T extends keyof Commands>(method: T, params: Commands[T]['params']): Promise<{
         result: Commands[T]['returnType'];
     }>;
-    subscribe(events: string[]): Promise<void>;
+    subscribe(events: [string, ...string[]], contexts?: [string, ...string[]]): Promise<void>;
     end(): Promise<void>;
     [disposeSymbol](): void;
 }

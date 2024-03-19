@@ -97,7 +97,6 @@ const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
-const ElementHandle_js_1 = require("./ElementHandle.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
 const util_js_2 = require("./util.js");
@@ -196,21 +195,26 @@ let BidiPage = (() => {
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {
-                const frame = __addDisposableResource(env_1, await this.mainFrame()
+                const handle = __addDisposableResource(env_1, (await this.mainFrame()
                     .isolatedRealm()
                     .evaluateHandle(() => {
-                    let frame;
                     let win = window;
-                    while (win?.document.activeElement instanceof HTMLIFrameElement) {
-                        frame = win.document.activeElement;
-                        win = frame.contentWindow;
+                    while (win.document.activeElement instanceof win.HTMLIFrameElement ||
+                        win.document.activeElement instanceof win.HTMLFrameElement) {
+                        if (win.document.activeElement.contentWindow === null) {
+                            break;
+                        }
+                        win = win.document.activeElement.contentWindow;
                     }
-                    return frame;
-                }), false);
-                if (!(frame instanceof ElementHandle_js_1.BidiElementHandle)) {
-                    return this.mainFrame();
-                }
-                return await frame.contentFrame();
+                    return win;
+                })), false);
+                const value = handle.remoteValue();
+                (0, assert_js_1.assert)(value.type === 'window');
+                const frame = this.frames().find(frame => {
+                    return frame._id === value.value.context;
+                });
+                (0, assert_js_1.assert)(frame);
+                return frame;
             }
             catch (e_1) {
                 env_1.error = e_1;

@@ -1462,7 +1462,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     const filterInput = new UI.Toolbar.ToolbarInput(
-        i18nString(UIStrings.filter), i18nString(UIStrings.filterStyles), 1, 1, undefined, undefined, false);
+        i18nString(UIStrings.filter), i18nString(UIStrings.filterStyles), 1, 1, undefined, undefined, false,
+        'styles-filter');
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
     toolbar.appendToolbarItem(filterInput);
     toolbar.makeToggledGray();

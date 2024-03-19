@@ -213,10 +213,6 @@ const UIStrings = {
    */
   servedFromDiskCacheResourceSizeS: 'Served from disk cache, resource size: {PH1}',
   /**
-   *@description Text of a DOM element in Network Data Grid Node of the Network panel
-   */
-  serviceWorkerRouter: '(`ServiceWorker router`)',
-  /**
    *@description Cell title in Network Data Grid Node of the Network panel
    *@example {1} PH1
    *@example {4 B} PH2
@@ -1527,7 +1523,7 @@ export class NetworkRequestNode extends NetworkNode {
     } else if (this.requestInternal.serviceWorkerRouterInfo) {
       const {serviceWorkerRouterInfo} = this.requestInternal;
       const ruleIdMatched = serviceWorkerRouterInfo.ruleIdMatched;
-      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorkerRouter));
+      UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(ServiceWorker router)'));
       let tooltipText;
       if (serviceWorkerRouterInfo.matchedSourceType === Protocol.Network.ServiceWorkerRouterSource.Network) {
         const transferSize = Platform.NumberUtilities.bytesToString(this.requestInternal.transferSize);

@@ -383,7 +383,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   setCanPrettyPrint(canPrettyPrint: boolean, autoPrettyPrint?: boolean): void {
-    this.shouldAutoPrettyPrint = canPrettyPrint && Boolean(autoPrettyPrint);
+    this.shouldAutoPrettyPrint = autoPrettyPrint === true &&
+        Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
     this.prettyToggle.setVisible(canPrettyPrint);
   }
 

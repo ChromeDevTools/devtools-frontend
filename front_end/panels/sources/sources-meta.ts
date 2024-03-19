@@ -275,6 +275,18 @@ const UIStrings = {
    */
   doNotDetectIndentation: 'Do not detect indentation',
   /**
+   *@description Title of a setting under Sources category that can be invoked through the Command Menu.
+   *This setting turns on the automatic formatting of source files in the Sources panel that are detected
+   *to be minified.
+   */
+  automaticallyPrettyPrintMinifiedSources: 'Automatically pretty print minified sources',
+  /**
+   *@description Title of a setting under Sources category that can be invoked through the Command Menu.
+   *This setting turns off the automatic formatting of source files in the Sources panel that are detected
+   *to be minified.
+   */
+  doNotAutomaticallyPrettyPrintMinifiedSources: 'Do not automatically pretty print minified sources',
+  /**
    *@description Text for autocompletion
    */
   autocompletion: 'Autocompletion',
@@ -1670,6 +1682,25 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.disableAutoFocusOnDebuggerPaused),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.SOURCES,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.automaticallyPrettyPrintMinifiedSources),
+  settingName: 'auto-pretty-print-minified',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.automaticallyPrettyPrintMinifiedSources),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotAutomaticallyPrettyPrintMinifiedSources),
     },
   ],
 });

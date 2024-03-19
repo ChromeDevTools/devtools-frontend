@@ -17,7 +17,7 @@ import {getNonDomState, unregisterAllLoggables, unregisterLoggable} from './NonD
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
-const DRAG_LOG_INTERVAL = 1000;
+const DRAG_LOG_INTERVAL = 1250;
 const CLICK_LOG_INTERVAL = 500;
 const RESIZE_LOG_INTERVAL = 1000;
 const RESIZE_REPORT_THRESHOLD = 50;

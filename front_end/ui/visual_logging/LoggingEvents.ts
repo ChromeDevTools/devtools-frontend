@@ -44,7 +44,7 @@ export const logResize = (throttler: Common.Throttler.Throttler) => (loggable: L
       .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
-    processEventForDebugging('Resize', loggingState?.config, JSON.stringify(size));
+    processEventForDebugging('Resize', loggingState, `width: ${size.width}; height: ${size.height}`);
   });
 };
 
@@ -59,7 +59,10 @@ export const logClick = (throttler: Common.Throttler.Throttler) => (
       .ClickEvent = {veid: loggingState.veid, mouseButton: button, doubleClick: Boolean(options?.doubleClick)};
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
-    processEventForDebugging('Click', loggingState?.config);
+    processEventForDebugging(
+        'Click', loggingState,
+        ('mouseButton' in clickEvent ? ` mouseButton: ${clickEvent.mouseButton};` : '') +
+            (clickEvent.doubleClick ? ' doubleClick: true;' : ''));
   });
 };
 
@@ -70,7 +73,7 @@ export const logHover = (throttler: Common.Throttler.Throttler) => async (event:
   void throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
-    processEventForDebugging('Hover', loggingState?.config);
+    processEventForDebugging('Hover', loggingState);
   });
 };
 
@@ -81,7 +84,7 @@ export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: 
   await throttler.schedule(async () => {});  // Ensure the logging won't get scheduled immediately
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
-    processEventForDebugging('Drag', loggingState?.config);
+    processEventForDebugging('Drag', loggingState);
   });
 };
 
@@ -90,7 +93,7 @@ export async function logChange(event: Event): Promise<void> {
   assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordChange(changeEvent);
-  processEventForDebugging('Change', loggingState?.config);
+  processEventForDebugging('Change', loggingState);
 }
 
 let pendingKeyDownContext: string|null = null;
@@ -120,7 +123,7 @@ export const logKeyDown =
       pendingKeyDownContext = context || null;
       void throttler.schedule(async () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
-        processEventForDebugging('KeyDown', loggingState?.config, context ? 'context: ' + context : '');
+        processEventForDebugging('KeyDown', loggingState, context ? 'context: ' + context : '');
         pendingKeyDownContext = null;
       });
     };

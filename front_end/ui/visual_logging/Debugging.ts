@@ -76,49 +76,58 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
   }
 }
 
-export function processEventForDebugging(name: string, config?: LoggingConfig, extraInfo?: string): void {
+export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: string): void {
   if (!veDebuggingEnabled && !veDebugLoggingEnabled) {
     return;
   }
-  const event = `${name}: ${config ? debugString(config) : ''}; ${extraInfo}`;
+  const config = `${state ? debugString(state.config) : ''}; ${extraInfo ?? ''}`;
   if (veDebuggingEnabled) {
-    showDebugPopover(event);
+    showDebugPopover(`${event}: ${config}`);
   }
   if (veDebugLoggingEnabled) {
     const time = Date();
-    veDebugEventsLog.push({event, time});
+    veDebugEventsLog.push({event, config, veid: state?.veid, time});
   }
 }
 
-type Impression = {
-  config: string,
-  veid: number,
-  children?: Impression[],
+type Entry = {
+  event: string,
+  config?: string,
+  veid?: number,
+  children?: Entry[],
   parent?: number,
-  size?: DOMRect,
+  time?: string,
 };
 
 export function processImpressionsForDebugging(states: LoggingState[]): void {
   if (!veDebugLoggingEnabled) {
     return;
   }
-  const impressions = new Map<number, Impression>();
+  const impressions = new Map<number, Entry>();
   for (const state of states) {
+    const entry: Entry = {
+      event: 'Impression',
+      config:
+          debugString(state.config) + (state.size ? `; width: ${state.size.width}; height: ${state.size.height}` : ''),
+      veid: state.veid,
+    };
+    impressions.set(state.veid, entry);
     if (!state.parent || !impressions.has(state.parent?.veid)) {
-      impressions.set(
-          state.veid,
-          {config: debugString(state.config), veid: state.veid, size: state.size, parent: state.parent?.veid});
+      entry.parent = state.parent?.veid;
     } else {
-      const parent = impressions.get(state.parent?.veid) as Impression;
+      const parent = impressions.get(state.parent?.veid) as Entry;
       parent.children = parent.children || [];
-      const impression = {config: debugString(state.config), veid: state.veid, size: state.size};
-      impressions.set(state.veid, impression);
-      parent.children.push(impression);
+      parent.children.push(entry);
     }
   }
 
-  const time = Date();
-  veDebugEventsLog.push({impressions: [...impressions.values()].filter(i => 'parent' in i), time});
+  const entries = [...impressions.values()].filter(i => 'parent' in i);
+  if (entries.length === 1) {
+    entries[0].time = Date();
+    veDebugEventsLog.push(entries[0]);
+  } else {
+    veDebugEventsLog.push({event: 'Impression', children: entries, time: Date()});
+  }
 }
 
 function processNonDomLoggableForDebugging(loggable: Loggable, loggingState: LoggingState): void {
@@ -167,8 +176,8 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-let veDebugLoggingEnabled = false;
-const veDebugEventsLog: {time: string, event?: string, impressions?: Impression[]}[] = [];
+let veDebugLoggingEnabled = true;
+const veDebugEventsLog: Entry[] = [];
 
 function setVeDebugLoggingEnabled(enabled: boolean): void {
   veDebugLoggingEnabled = enabled;

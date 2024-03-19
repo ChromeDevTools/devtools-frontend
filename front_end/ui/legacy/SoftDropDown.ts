@@ -102,6 +102,10 @@ export class SoftDropDown<T> implements ListDelegate<T> {
         return;
       }
       this.selectHighlightedItem();
+      if (event.target instanceof Element && event.target?.parentElement) {
+        // hide() will consume the mouseup event and click won't be triggered
+        void VisualLogging.logClick(event.target.parentElement, event);
+      }
       this.hide(event);
     }, false);
     model.addEventListener(ListModelEvents.ItemsReplaced, this.itemsReplaced, this);

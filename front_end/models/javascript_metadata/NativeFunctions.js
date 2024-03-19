@@ -881,6 +881,11 @@ export const NativeFunctions = [
     receivers: ["ArrayConstructor"]
   },
   {
+    name: "from",
+    signatures: [["value"]],
+    receivers: ["Observable"]
+  },
+  {
     name: "drawArraysInstancedANGLE",
     signatures: [["mode","first","count","primcount"]]
   },
@@ -7308,18 +7313,6 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "TCPServerSocket",
-    signatures: [["localAddress","?options"]]
-  },
-  {
-    name: "TCPSocket",
-    signatures: [["remoteAddress","remotePort","?options"]]
-  },
-  {
-    name: "UDPSocket",
-    signatures: [["options"]]
-  },
-  {
     name: "DocumentPictureInPictureEvent",
     signatures: [["type","eventInitDict"]]
   },
@@ -7960,6 +7953,10 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
+    name: "RTCEncodedAudioFrame",
+    signatures: [["originalFrame","?newMetadata"]]
+  },
+  {
     name: "setTimestamp",
     signatures: [["timestamp"]]
   },
@@ -8098,10 +8095,6 @@ export const NativeFunctions = [
   {
     name: "yield",
     signatures: [["?options"]]
-  },
-  {
-    name: "isAncestor",
-    signatures: [["parentId"]]
   },
   {
     name: "TaskController",

@@ -1722,7 +1722,6 @@
       default_value: "StyleContentAlignmentData(ContentPosition::kNormal, ContentDistributionType::kDefault, OverflowAlignment::kDefault)",
       type_name: "StyleContentAlignmentData",
       converter: "ConvertContentAlignmentData",
-      valid_for_position_try: true,
     },
     {
       name: "align-items",
@@ -1733,7 +1732,6 @@
       default_value: "StyleSelfAlignmentData(ItemPosition::kNormal, OverflowAlignment::kDefault)",
       type_name: "StyleSelfAlignmentData",
       converter: "ConvertSelfOrDefaultAlignmentData",
-      valid_for_position_try: true,
     },
     {
       name: "alignment-baseline",
@@ -1756,21 +1754,6 @@
       type_name: "StyleSelfAlignmentData",
       converter: "ConvertSelfOrDefaultAlignmentData",
       valid_for_position_try: true,
-      valid_for_permission_element: true,
-    },
-    {
-      name: "anchor-default",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
-      include_paths: ["third_party/blink/renderer/core/style/scoped_css_name.h"],
-      type_name: "ScopedCSSName",
-      wrapper_pointer_name: "Member",
-      default_value: "nullptr",
-      field_group: "*",
-      field_template: "external",
-      converter: "ConvertAnchorDefault",
-      keywords: ["none"],
-      typedom_types: ["Keyword"],
-      runtime_flag: "CSSAnchorPositioning",
       valid_for_permission_element: true,
     },
     {
@@ -3332,7 +3315,6 @@
       default_value: "StyleContentAlignmentData(ContentPosition::kNormal, ContentDistributionType::kDefault, OverflowAlignment::kDefault)",
       type_name: "StyleContentAlignmentData",
       converter: "ConvertContentAlignmentData",
-      valid_for_position_try: true,
     },
     {
       name: "justify-items",
@@ -3343,7 +3325,6 @@
       default_value: "StyleSelfAlignmentData(ItemPosition::kLegacy, OverflowAlignment::kDefault)",
       type_name: "StyleSelfAlignmentData",
       converter: "ConvertSelfOrDefaultAlignmentData",
-      valid_for_position_try: true,
     },
     {
       name: "justify-self",
@@ -4277,6 +4258,22 @@
       valid_for_permission_element: true,
     },
     {
+      name: "position-anchor",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
+      include_paths: ["third_party/blink/renderer/core/style/scoped_css_name.h"],
+      type_name: "ScopedCSSName",
+      wrapper_pointer_name: "Member",
+      default_value: "nullptr",
+      field_group: "*",
+      field_template: "external",
+      converter: "ConvertPositionAnchor",
+      keywords: ["implicit"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSAnchorPositioning",
+      valid_for_permission_element: true,
+      valid_for_position_try: true,
+    },
+    {
       name: "position-fallback-bounds",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
       include_paths: ["third_party/blink/renderer/core/style/scoped_css_name.h"],
@@ -4312,7 +4309,7 @@
       keywords: ["normal", "most-width", "most-height", "most-block-size", "most-inline-size"],
       typedom_types: ["Keyword"],
       default_value: "normal",
-      runtime_flag: "CSSAnchorPositioning",
+      runtime_flag: "CSSPositionTryOrder",
     },
     {
       name: "quotes",
@@ -7580,6 +7577,7 @@
       name: "place-self",
       longhands: ["align-self", "justify-self"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      valid_for_position_try: true,
     },
     {
       name: "grid-area",
@@ -7743,7 +7741,7 @@
       name: "position-try",
       longhands: ["position-try-order", "position-try-options"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSAnchorPositioning",
+      runtime_flag: "CSSPositionTryOrder",
     },
     {
       name: "scroll-margin",

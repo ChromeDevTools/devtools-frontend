@@ -12068,7 +12068,8 @@
                         },
                         {
                             "name": "postData",
-                            "description": "HTTP POST request data.",
+                            "description": "HTTP POST request data.\nUse postDataEntries instead.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "string"
                         },
@@ -12080,7 +12081,7 @@
                         },
                         {
                             "name": "postDataEntries",
-                            "description": "Request body elements. This will be converted from base64 to binary",
+                            "description": "Request body elements (post data broken into individual entries).",
                             "experimental": true,
                             "optional": true,
                             "type": "array",

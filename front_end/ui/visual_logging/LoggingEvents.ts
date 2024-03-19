@@ -54,9 +54,11 @@ export const logClick = (throttler: Common.Throttler.Throttler) => (
   if (!loggingState) {
     return;
   }
-  const button = event instanceof MouseEvent ? event.button : 0;
-  const clickEvent: Host.InspectorFrontendHostAPI
-      .ClickEvent = {veid: loggingState.veid, mouseButton: button, doubleClick: Boolean(options?.doubleClick)};
+  const clickEvent:
+      Host.InspectorFrontendHostAPI.ClickEvent = {veid: loggingState.veid, doubleClick: Boolean(options?.doubleClick)};
+  if (event instanceof MouseEvent && 'sourceCapabilities' in event && event.sourceCapabilities) {
+    clickEvent.mouseButton = event.button;
+  }
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
     processEventForDebugging(

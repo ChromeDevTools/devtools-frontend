@@ -166,7 +166,7 @@ export interface ResizeEvent {
 
 export interface ClickEvent {
   veid: number;
-  mouseButton: number;
+  mouseButton?: number;
   context?: number;
   doubleClick: boolean;
 }

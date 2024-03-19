@@ -106,6 +106,7 @@ devtools_module("timeline") {
     "../../panels/layer_viewer:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/profiler:bundle",
+    "../../services/annotations_manager:bundle",
     "../../services/trace_bounds:bundle",
     "../../ui/components/menus:bundle",
     "../../ui/components/panel_feedback:bundle",

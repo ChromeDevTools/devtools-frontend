@@ -12,6 +12,11 @@ export const enum DataOrigin {
   CPUProfile = 'CPUProfile',
   TraceEvents = 'TraceEvents',
 }
+export interface Annotations {
+  hiddenRendererEventsHashes: string[];
+  hiddenProfileCallsSampleIndexes: number[];
+  hiddenProfileCallsDepths: number[];
+}
 
 /**
  * Trace metadata that we persist to the file. This will allow us to
@@ -25,6 +30,7 @@ export interface MetaData {
   cpuThrottling?: number;
   hardwareConcurrency?: number;
   dataOrigin?: DataOrigin;
+  annotations?: Annotations;
 }
 
 export type Contents = TraceFile|TraceEventData[];

@@ -182,6 +182,21 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordClick.calledOnce);
   });
 
+  it('logs right clicks', async () => {
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new MouseEvent('contextmenu'));
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(recordClick.calledOnce);
+  });
+
   it('does not log clicks if not configured', async () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging();

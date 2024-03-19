@@ -138,17 +138,16 @@ async function process(): Promise<void> {
       }
     }
     if (!loggingState.processed) {
+      const clickLikeHandler = (doubleClick: boolean) => (e: Event) => {
+        const loggable = e.currentTarget as Element;
+        logClick(clickLogThrottler)(loggable, e, {doubleClick});
+      };
       if (loggingState.config.track?.click) {
-        element.addEventListener('click', e => {
-          const loggable = e.currentTarget as Element;
-          logClick(clickLogThrottler)(loggable, e);
-        }, {capture: true});
+        element.addEventListener('click', clickLikeHandler(false), {capture: true});
+        element.addEventListener('contextmenu', clickLikeHandler(false), {capture: true});
       }
       if (loggingState.config.track?.dblclick) {
-        element.addEventListener('dblclick', e => {
-          const loggable = e.currentTarget as Element;
-          logClick(clickLogThrottler)(loggable, e, {doubleClick: true});
-        }, {capture: true});
+        element.addEventListener('dblclick', clickLikeHandler(true), {capture: true});
       }
       const trackHover = loggingState.config.track?.hover;
       if (trackHover) {

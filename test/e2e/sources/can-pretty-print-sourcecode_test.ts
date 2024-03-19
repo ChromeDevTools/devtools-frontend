@@ -17,6 +17,7 @@ import {
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {elementContainsTextWithSelector} from '../helpers/network-helpers.js';
 import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
+import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   isPrettyPrinted,
@@ -195,6 +196,20 @@ describe('The Sources Tab', function() {
     await typeText('6');
     await frontend.keyboard.press('Enter');
     await waitForHighlightedLine(6);
+  });
+
+  it('automatically pretty-prints minified code (by default)', async () => {
+    await openSourceCodeEditorForFile('minified-sourcecode-1.min.js', 'minified-sourcecode-1.html');
+    const lines = await retrieveCodeMirrorEditorContent();
+    assert.strictEqual(lines.length, 23);
+  });
+
+  it('does not automatically pretty-print minified code (when disabled via settings)', async () => {
+    await togglePreferenceInSettingsTab('Automatically pretty print minified sources', false);
+
+    await openSourceCodeEditorForFile('minified-sourcecode-1.min.js', 'minified-sourcecode-1.html');
+    const lines = await retrieveCodeMirrorEditorContent();
+    assert.strictEqual(lines.length, 3);
   });
 
   it('does not automatically pretty-print authored code', async () => {

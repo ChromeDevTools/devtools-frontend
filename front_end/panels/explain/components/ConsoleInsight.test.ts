@@ -171,7 +171,6 @@ describeWithEnvironment('ConsoleInsight', () => {
     });
 
     const reportsRating = (positive: boolean) => async () => {
-      const openInNewTab = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
       const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
       const registerAidaClientEvent =
           sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
@@ -193,8 +192,6 @@ describeWithEnvironment('ConsoleInsight', () => {
         composed: true,
       });
 
-      assert(openInNewTab.calledOnce);
-      assert.include(openInNewTab.firstCall.firstArg, positive ? 'Positive' : 'Negative');
       assert(registerAidaClientEvent.calledOnce);
       assert.include(registerAidaClientEvent.firstCall.firstArg, positive ? 'POSITIVE' : 'NEGATIVE');
       assert(actionTaken.calledWith(

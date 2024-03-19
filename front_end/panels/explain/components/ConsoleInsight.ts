@@ -154,33 +154,6 @@ const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
 
-function buildRatingFormLink(
-    rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,
-    relatedCode: string, networkData: string): Platform.DevToolsPath.UrlString {
-  const params: {[key: string]: string} = rating === 'Negative' ? {
-    'entry.1465663861': rating,
-    'entry.1232404632': explanation,
-    'entry.37285503': stackTrace,
-    'entry.542010749': consoleMessage,
-    'entry.420621380': relatedCode,
-    'entry.822323774': networkData,
-  } :
-                                                                  {
-                                                                    'entry.1465663861': rating,
-                                                                    'entry.1805879004': explanation,
-                                                                    'entry.720239045': stackTrace,
-                                                                    'entry.623054399': consoleMessage,
-                                                                    'entry.1520357991': relatedCode,
-                                                                    'entry.1966708581': networkData,
-                                                                  };
-  return `http://go/console-insights-experiment-rating?usp=pp_url&${
-             Object.keys(params)
-                 .map(param => {
-                   return `${param}=${encodeURIComponent(params[param])}`;
-                 })
-                 .join('&')}` as Platform.DevToolsPath.UrlString;
-}
-
 const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
@@ -345,20 +318,6 @@ export class ConsoleInsight extends HTMLElement {
     this.classList.add('closing');
   }
 
-  #openFeedbackFrom(): void {
-    if (this.#state.type !== State.INSIGHT) {
-      throw new Error('Unexpected state');
-    }
-    const link = buildRatingFormLink(
-        this.#selectedRating ? 'Positive' : 'Negative', this.#shadow.querySelector('textarea')?.value || '',
-        this.#state.explanation,
-        this.#state.sources.filter(s => s.type === SourceType.MESSAGE).map(s => s.value).join('\n'),
-        this.#state.sources.filter(s => s.type === SourceType.STACKTRACE).map(s => s.value).join('\n'),
-        this.#state.sources.filter(s => s.type === SourceType.RELATED_CODE).map(s => s.value).join('\n'),
-        this.#state.sources.filter(s => s.type === SourceType.NETWORK_REQUEST).map(s => s.value).join('\n'));
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
-  }
-
   #onRating(event: Event): void {
     if (this.#state.type !== State.INSIGHT) {
       throw new Error('Unexpected state');
@@ -379,7 +338,6 @@ export class ConsoleInsight extends HTMLElement {
         },
       },
     }));
-    this.#openFeedbackFrom();
   }
 
   #onReport(): void {

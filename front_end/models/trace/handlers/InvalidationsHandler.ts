@@ -155,6 +155,6 @@ interface InvalidationsData {
 
 export function data(): InvalidationsData {
   return {
-    invalidationsForEvent: new Map(invalidationsForEvent),
+    invalidationsForEvent,
   };
 }

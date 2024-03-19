@@ -61,8 +61,8 @@ export function data(): WorkersData {
   }
 
   return {
-    workerSessionIdEvents: [...sessionIdEvents],
-    workerIdByThread: new Map(workerIdByThread),
-    workerURLById: new Map(workerURLById),
+    workerSessionIdEvents: sessionIdEvents,
+    workerIdByThread,
+    workerURLById,
   };
 }

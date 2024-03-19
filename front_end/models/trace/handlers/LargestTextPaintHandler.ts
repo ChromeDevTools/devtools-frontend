@@ -29,5 +29,5 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 }
 
 export function data(): Map<Protocol.DOM.BackendNodeId, Types.TraceEvents.TraceEventLargestTextPaintCandidate> {
-  return new Map(textPaintByDOMNodeId);
+  return textPaintByDOMNodeId;
 }

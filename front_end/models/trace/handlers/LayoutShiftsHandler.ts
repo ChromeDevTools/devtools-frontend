@@ -37,16 +37,18 @@ import {HandlerState, type TraceEventHandlerName} from './types.js';
 // navigation-to-unload CLS score.
 
 interface LayoutShifts {
-  clusters: LayoutShiftCluster[];
+  clusters: readonly LayoutShiftCluster[];
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
   // We use these to calculate root causes for a given LayoutShift
+  // TODO(crbug/41484172): should be readonly
   prePaintEvents: Types.TraceEvents.TraceEventPrePaint[];
-  layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
-  scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[];
-  styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[];
-  scoreRecords: ScoreRecord[];
+  layoutInvalidationEvents: readonly Types.TraceEvents.TraceEventLayoutInvalidationTracking[];
+  scheduleStyleInvalidationEvents: readonly Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[];
+  styleRecalcInvalidationEvents: readonly Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[];
+  scoreRecords: readonly ScoreRecord[];
+  // TODO(crbug/41484172): should be readonly
   backendNodeIds: Protocol.DOM.BackendNodeId[];
 }
 
@@ -413,14 +415,15 @@ export function data(): LayoutShifts {
   }
 
   return {
-    clusters: [...clusters],
+    clusters,
     sessionMaxScore: sessionMaxScore,
     clsWindowID,
-    prePaintEvents: [...prePaintEvents],
-    layoutInvalidationEvents: [...layoutInvalidationEvents],
-    scheduleStyleInvalidationEvents: [...scheduleStyleInvalidationEvents],
+    prePaintEvents,
+    layoutInvalidationEvents,
+    scheduleStyleInvalidationEvents,
     styleRecalcInvalidationEvents: [],
-    scoreRecords: [...scoreRecords],
+    scoreRecords,
+    // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],
   };
 }

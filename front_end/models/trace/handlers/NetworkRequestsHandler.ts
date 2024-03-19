@@ -445,8 +445,8 @@ export function data(): NetworkRequestData {
   }
 
   return {
-    byOrigin: new Map(requestsByOrigin),
-    byTime: [...requestsByTime],
+    byOrigin: requestsByOrigin,
+    byTime: requestsByTime,
   };
 }
 

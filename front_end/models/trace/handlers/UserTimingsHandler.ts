@@ -142,6 +142,7 @@ export function data(): UserTimingsData {
         Types.TraceEvents.SyntheticUserTimingPair[],
     consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as
         Types.TraceEvents.SyntheticConsoleTimingPair[],
+    // TODO(crbug/41484172): UserTimingsHandler.test.ts fails if this is not copied.
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
   };

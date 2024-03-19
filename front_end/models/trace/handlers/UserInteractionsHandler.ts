@@ -326,9 +326,9 @@ export async function finalize(): Promise<void> {
 
 export function data(): UserInteractionsData {
   return {
-    allEvents: [...allEvents],
-    interactionEvents: [...interactionEvents],
-    interactionEventsWithNoNesting: [...interactionEventsWithNoNesting],
+    allEvents,
+    interactionEvents,
+    interactionEventsWithNoNesting,
     longestInteractionEvent,
     interactionsOverThreshold: new Set(interactionEvents.filter(event => {
       return event.dur > LONG_INTERACTION_THRESHOLD;

@@ -224,7 +224,7 @@ export interface InitiatorsData {
 
 export function data(): InitiatorsData {
   return {
-    eventToInitiator: new Map(eventToInitiatorMap),
-    initiatorToEvents: new Map(initiatorToEventsMap),
+    eventToInitiator: eventToInitiatorMap,
+    initiatorToEvents: initiatorToEventsMap,
   };
 }

@@ -39,6 +39,6 @@ export function data(): AnimationData {
   }
 
   return {
-    animations: Array.from(animationsSyntheticEvents),
+    animations: animationsSyntheticEvents,
   };
 }

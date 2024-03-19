@@ -455,25 +455,24 @@ export async function finalize(): Promise<void> {
 }
 
 export type PageLoadMetricsData = {
+  /**
+   * This represents the metric scores for all navigations, for all frames in a trace.
+   * Given a frame id, the map points to another map from navigation id to metric scores.
+   * The metric scores include the event related to the metric as well as the data regarding
+   * the score itself.
+   */
   metricScoresByFrameId: Map<string, Map<string, Map<MetricName, MetricScore>>>,
+  /**
+   * Page load events with no associated duration that happened in the
+   * main frame.
+   */
   allMarkerEvents: Types.TraceEvents.PageLoadEvent[],
 };
 
 export function data(): PageLoadMetricsData {
   return {
-    /**
-     * This represents the metric scores for all navigations, for all frames in a trace.
-     * Given a frame id, the map points to another map from navigation id to metric scores.
-     * The metric scores include the event related to the metric as well as the data regarding
-     * the score itself.
-     */
-    metricScoresByFrameId: new Map(metricScoresByFrameId),
-
-    /**
-     * Page load events with no associated duration that happened in the
-     * main frame.
-     */
-    allMarkerEvents: [...allMarkerEvents],
+    metricScoresByFrameId,
+    allMarkerEvents,
   };
 }
 

@@ -146,7 +146,7 @@ export async function finalize(): Promise<void> {
 
 export function data(): WarningsData {
   return {
-    perEvent: new Map(warningsPerEvent),
-    perWarning: new Map(eventsPerWarning),
+    perEvent: warningsPerEvent,
+    perWarning: eventsPerWarning,
   };
 }

@@ -67,7 +67,7 @@ export function data(): GPUHandlerReturnData {
     throw new Error('GPU Handler is not finalized');
   }
   return {
-    mainGPUThreadTasks: [...mainGPUThreadTasks],
+    mainGPUThreadTasks,
   };
 }
 

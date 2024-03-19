@@ -24,5 +24,5 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 }
 
 export function data(): MemoryData {
-  return {updateCountersByProcess: new Map(updateCountersByProcess)};
+  return {updateCountersByProcess};
 }

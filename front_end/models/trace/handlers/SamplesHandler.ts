@@ -211,8 +211,8 @@ export function data(): SamplesHandlerData {
   }
 
   return {
-    profilesInProcess: new Map(profilesInProcess),
-    entryToNode: new Map(entryToNode),
+    profilesInProcess,
+    entryToNode,
   };
 }
 

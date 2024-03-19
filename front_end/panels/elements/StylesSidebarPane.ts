@@ -58,7 +58,6 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import * as LayersWidget from './LayersWidget.js';
-import {LegacyRegexMatcher, type Matcher, renderPropertyValue} from './PropertyParser.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {
   BlankStylePropertiesSection,
@@ -134,16 +133,6 @@ const UIStrings = {
    *@example {invalidValue} PH3
    */
   invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
-  /**
-   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
-   *@example {margin} PH1
-   */
-  cssPropertyName: '`CSS` property name: {PH1}',
-  /**
-   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
-   *@example {10px} PH1
-   */
-  cssPropertyValue: '`CSS` property value: {PH1}',
   /**
    *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
    */
@@ -2216,107 +2205,6 @@ export function escapeUrlAsCssComment(urlText: string): string {
     return `${url.origin}${url.pathname}${url.search.replaceAll('*/', '*%2F')}${url.hash}`;
   }
   return url.toString();
-}
-
-export class StylesSidebarPropertyRenderer {
-  private rule: SDK.CSSRule.CSSRule|null;
-  private node: SDK.DOMModel.DOMNode|null;
-  readonly propertyName: string;
-  readonly propertyValue: string;
-  private fontHandler: ((arg0: string) => Node)|null;
-  private shadowHandler: ((arg0: string, arg1: string) => Node)|null;
-  private lengthHandler: ((arg0: string) => Node)|null;
-  private animationHandler: ((data: string) => Node)|null;
-  matchers: Matcher[];
-
-  constructor(
-      rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null, name: string, value: string,
-      matchers: Matcher[] = []) {
-    this.rule = rule;
-    this.node = node;
-    this.propertyName = name;
-    this.propertyValue = value;
-    this.fontHandler = null;
-    this.shadowHandler = null;
-    this.lengthHandler = null;
-    this.animationHandler = null;
-    this.matchers = matchers;
-  }
-
-  setFontHandler(handler: (arg0: string) => Node): void {
-    this.fontHandler = handler;
-  }
-
-  setShadowHandler(handler: (arg0: string, arg1: string) => Node): void {
-    this.shadowHandler = handler;
-  }
-
-  setAnimationHandler(handler: (arg0: string) => Node): void {
-    this.animationHandler = handler;
-  }
-
-  setLengthHandler(handler: (arg0: string) => Node): void {
-    this.lengthHandler = handler;
-  }
-
-  renderName(): Element {
-    const nameElement = document.createElement('span');
-    nameElement.setAttribute('jslog', `${VisualLogging.key().track({change: true, click: true})}`);
-    UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
-    nameElement.className = 'webkit-css-property';
-    nameElement.textContent = this.propertyName;
-    nameElement.normalize();
-    return nameElement;
-  }
-
-  renderValue(): Element {
-    const valueElement = document.createElement('span');
-    valueElement.setAttribute('jslog', `${VisualLogging.value().track({change: true, click: true})}`);
-    UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
-    valueElement.className = 'value';
-    if (!this.propertyValue) {
-      return valueElement;
-    }
-
-    const metadata = SDK.CSSMetadata.cssMetadata();
-
-    if (this.shadowHandler && metadata.isShadowProperty(this.propertyName) &&
-        !SDK.CSSMetadata.VariableRegex.test(this.propertyValue)) {
-      valueElement.appendChild(this.shadowHandler(this.propertyValue, this.propertyName));
-      valueElement.normalize();
-      return valueElement;
-    }
-
-    if (this.animationHandler && (this.propertyName === 'animation' || this.propertyName === '-webkit-animation')) {
-      valueElement.appendChild(this.animationHandler(this.propertyValue));
-      valueElement.normalize();
-      return valueElement;
-    }
-
-    const matchers: Matcher[] = [...this.matchers];
-
-    // AST matching applies regexes bottom-up to subexpressions. This requires the regexes to be explicit enough to only
-    // capture a full subexpression and not partials or prefixes. This helper converts a regex to a full-line regex if
-    // it does not already take line endings into account in some way.
-    const asLineMatch = (r: RegExp): RegExp => {
-      const {source, flags, multiline} = r;
-      if (source.startsWith('^') || source.endsWith('$') || multiline) {
-        return r;
-      }
-      return new RegExp(`^${source}$`, flags);
-    };
-
-    if (!Root.Runtime.experiments.isEnabled('css-type-component-length-deprecate') && this.lengthHandler) {
-      // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
-      matchers.push(
-          new LegacyRegexMatcher(asLineMatch(InlineEditor.CSSLengthUtils.CSSLengthRegex), this.lengthHandler));
-    }
-
-    renderPropertyValue(this.propertyName, this.propertyValue, matchers)
-        .forEach(node => valueElement.appendChild(node));
-    valueElement.normalize();
-    return valueElement;
-  }
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

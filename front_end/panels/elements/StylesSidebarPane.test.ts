@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -161,64 +160,6 @@ describe('StylesSidebarPane', () => {
       assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@font-palette-values --palette');
       assert.strictEqual(sectionBlocks[1].sections.length, 1);
       assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.FontPaletteValuesRuleSection);
-    });
-  });
-
-  interface RendererTracePoint {
-    text: string;
-    matchType: string;
-  }
-
-  class RendererTrace {
-    #points: RendererTracePoint[] = [];
-
-    push(point: RendererTracePoint): void {
-      this.#points.push(point);
-    }
-
-    toString(): string|undefined {
-      if (!this.#points.length) {
-        return undefined;
-      }
-      const indent = this.#points.map(({text}) => text.length).reduce((a, b) => Math.max(a, b));
-      return this.#points.map(({text, matchType}) => `${text.padEnd(indent, ' ')}: ${matchType}`).join('\n');
-    }
-
-    reset(): void {
-      this.#points.splice(0);
-    }
-  }
-
-  describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
-    const trace = new RendererTrace();
-    beforeEach(() => {
-      sinon.stub(Elements.PropertyParser.Renderer.prototype, 'renderedMatchForTest').callsFake((nodes, match) => {
-        trace.push({text: match.text, matchType: match.type});
-      });
-    });
-
-    afterEach(() => trace.reset());
-
-    it('runs animation handler for animation property', () => {
-      const renderer =
-          new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'animation', 'example 5s');
-      renderer.setAnimationHandler(() => document.createTextNode(nodeContents));
-
-      const nodeContents = 'nodeContents';
-
-      const node = renderer.renderValue();
-      assert.deepEqual(node.textContent, nodeContents, trace.toString());
-    });
-
-    it('parses lengths correctly', () => {
-      Root.Runtime.experiments.disableForTest('css-type-component-length-deprecate');
-      const renderer =
-          new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'width', 'calc(6em + 7em)');
-      renderer.setLengthHandler(() => document.createTextNode('MATCH'));
-
-      const node = renderer.renderValue();
-
-      assert.deepEqual(node.textContent, 'calc(MATCH + MATCH)', trace.toString());
     });
   });
 

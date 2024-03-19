@@ -390,7 +390,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
               {value: 'computedvalue', declaration: cssCustomPropertyDef, fromFallback: false} :
               null);
       const renderValueSpy =
-          sinon.spy(Elements.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
+          sinon.spy(Elements.StylePropertyTreeElement.StylePropertyTreeElement, 'renderValueElement');
 
       const stylePropertyTreeElement = getTreeElement('prop', 'var(--prop)');
       stylePropertyTreeElement.updateTitle();
@@ -429,7 +429,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
     it('linkifies var functions to initial-value registrations', async () => {
       mockMatchedStyles.computeCSSVariable.returns({value: 'computedvalue', declaration: null});
       const renderValueSpy =
-          sinon.spy(Elements.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
+          sinon.spy(Elements.StylePropertyTreeElement.StylePropertyTreeElement, 'renderValueElement');
 
       const stylePropertyTreeElement = getTreeElement('prop', 'var(--prop)');
       stylePropertyTreeElement.updateTitle();

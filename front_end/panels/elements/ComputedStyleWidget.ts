@@ -49,8 +49,7 @@ import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
 import {ColorMatch, ColorMatcher, type RenderingContext} from './PropertyParser.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
-import {StringRenderer, URLRenderer} from './StylePropertyTreeElement.js';
-import {StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
+import {StringRenderer, StylePropertyTreeElement, URLRenderer} from './StylePropertyTreeElement.js';
 
 const UIStrings = {
   /**
@@ -115,12 +114,11 @@ function renderPropertyContents(
   if (valueFromCache) {
     return valueFromCache;
   }
-  const renderer = new StylesSidebarPropertyRenderer(
-      null, node, propertyName, propertyValue,
-      [ColorRenderer.matcher(), URLRenderer.matcher(null, node), StringRenderer.matcher()]);
-  const name = renderer.renderName();
+  const name = StylePropertyTreeElement.renderNameElement(propertyName);
   name.slot = 'name';
-  const value = renderer.renderValue();
+  const value = StylePropertyTreeElement.renderValueElement(
+      propertyName, propertyValue,
+      [ColorRenderer.matcher(), URLRenderer.matcher(null, node), StringRenderer.matcher()]);
   value.slot = 'value';
   propertyContentsCache.set(cacheKey, {name, value});
   return {name, value};
@@ -157,10 +155,9 @@ const createTraceElement =
      linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
-      const renderer = new StylesSidebarPropertyRenderer(
-          null, node, property.name, (property.value as string),
+      const valueElement = StylePropertyTreeElement.renderValueElement(
+          property.name, property.value,
           [ColorRenderer.matcher(), URLRenderer.matcher(null, node), StringRenderer.matcher()]);
-      const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
 

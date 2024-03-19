@@ -45,12 +45,15 @@ import {
   FontMatcher,
   GridTemplateMatch,
   GridTemplateMatcher,
+  LegacyRegexMatcher,
   LinkableNameMatch,
   LinkableNameMatcher,
   LinkableNameProperties,
   type Match,
+  type Matcher,
   Renderer,
   RenderingContext,
+  renderPropertyValue,
   ShadowMatch,
   ShadowMatcher,
   ShadowType,
@@ -69,7 +72,6 @@ import {
   CSSPropertyPrompt,
   REGISTERED_PROPERTY_SECTION_NAME,
   StylesSidebarPane,
-  StylesSidebarPropertyRenderer,
   unescapeCssString,
 } from './StylesSidebarPane.js';
 
@@ -140,6 +142,17 @@ const UIStrings = {
    *@description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
    */
   copyAllCssDeclarationsAsJs: 'Copy all declarations as JS',
+  /**
+   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+   *@example {margin} PH1
+   */
+  cssPropertyName: '`CSS` property name: {PH1}',
+  /**
+   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+   *@example {10px} PH1
+   */
+  cssPropertyValue: '`CSS` property value: {PH1}',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1064,6 +1077,27 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#propertyTextFromSource = property.propertyText || '';
   }
 
+  static renderNameElement(name: string): HTMLElement {
+    const nameElement = document.createElement('span');
+    nameElement.setAttribute('jslog', `${VisualLogging.key().track({keydown: true, click: true})}`);
+    UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: name}));
+    nameElement.className = 'webkit-css-property';
+    nameElement.textContent = name;
+    nameElement.normalize();
+    return nameElement;
+  }
+
+  static renderValueElement(propertyName: string, propertyValue: string, renderers: Matcher[]): HTMLElement {
+    const valueElement = document.createElement('span');
+    valueElement.setAttribute('jslog', `${VisualLogging.value().track({keydown: true, click: true})}`);
+    UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: propertyValue}));
+    valueElement.className = 'value';
+
+    renderPropertyValue(propertyName, propertyValue, renderers).forEach(node => valueElement.appendChild(node));
+    valueElement.normalize();
+    return valueElement;
+  }
+
   matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles {
     return this.matchedStylesInternal;
   }
@@ -1374,8 +1408,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 
-    const propertyRenderer =
-        new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value, [
+    const matchers: Matcher[] = this.property.parsedOk ?
+        [
           VariableRenderer.matcher(this, this.style),
           ColorRenderer.matcher(this),
           ColorMixRenderer.matcher(this.parentPaneInternal),
@@ -1387,13 +1421,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           ShadowRenderer.matcher(this),
           FontRenderer.matcher(this),
           GridTemplateRenderer.matcher(),
-        ]);
-    if (this.property.parsedOk) {
-      propertyRenderer.setLengthHandler(this.processLength.bind(this));
+        ] :
+        [];
+
+    if (!Root.Runtime.experiments.isEnabled('css-type-component-length-deprecate') && this.property.parsedOk) {
+      matchers.push(
+          new LegacyRegexMatcher(
+              new RegExp(`^${InlineEditor.CSSLengthUtils.CSSLengthRegex}$`), text => this.processLength(text)),
+      );
     }
 
     this.listItemElement.removeChildren();
-    this.nameElement = (propertyRenderer.renderName() as HTMLElement);
+    this.valueElement = StylePropertyTreeElement.renderValueElement(this.name, this.value, matchers);
+    this.nameElement = StylePropertyTreeElement.renderNameElement(this.name);
     if (this.property.name.startsWith('--') && this.nameElement) {
       this.parentPaneInternal.addPopover(this.nameElement, {
         contents: () => this.getVariablePopoverContents(
@@ -1402,7 +1442,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         jslogContext: 'elements.css-var',
       });
     }
-    this.valueElement = (propertyRenderer.renderValue() as HTMLElement);
     if (!this.treeOutline) {
       return;
     }

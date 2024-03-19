@@ -382,15 +382,15 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Sources category in Settings
    */
-  wasmAutoStepping: 'When debugging wasm with debug information, do not pause on wasm bytecode if possible',
+  wasmAutoStepping: 'When debugging Wasm with debug information, do not pause on wasm bytecode if possible',
   /**
    *@description Title of a setting under the Sources category in Settings
    */
-  enableWasmAutoStepping: 'Enable wasm auto-stepping',
+  enableWasmAutoStepping: 'Enable Wasm auto-stepping',
   /**
    *@description Title of a setting under the Sources category in Settings
    */
-  disableWasmAutoStepping: 'Disable wasm auto-stepping',
+  disableWasmAutoStepping: 'Disable Wasm auto-stepping',
 
   /**
    *@description Text for command prefix of go to a given line or symbol

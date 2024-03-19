@@ -119,13 +119,13 @@ describe('Dialog', () => {
       assert.strictEqual(dialog.bestHorizontalAlignment, Dialogs.Dialog.DialogHorizontalAlignment.RIGHT);
     });
 
-    it('sets the automatic vertical position correctly', async () => {
+    it('sets the automatic vertical position correctly when it fits on top', async () => {
       // Create the container for the dialog and its origin (host), aligning
       // items to the bottom of the container. This container will be set as the
       // dialog's "window".
       // By default the dialog is placed at the bottom of its origin, but doing
-      // so means it wouldn't fit in its window, so it should be automatically
-      // positioned on top instead.
+      // so means it wouldn't fit in its window. Because if shown on top would
+      // fit in its window it should be automatically positioned there.
       container.style.width = '150px';
       container.style.height = '300px';
       container.style.display = 'flex';
@@ -160,6 +160,49 @@ describe('Dialog', () => {
 
       // Test the capped dimensions
       assert.strictEqual(dialog.bestVerticalPosition, Dialogs.Dialog.DialogVerticalPosition.TOP);
+    });
+
+    it('sets the automatic vertical position correctly when it does not fit on top', async () => {
+      // Create the container for the dialog and its origin (host), aligning
+      // items to the bottom of the container. This container will be set as the
+      // dialog's "window".
+      // Because the dialog's full height cannot be fully fit at the
+      // bottom or at the top it is positioned at the bottom and the
+      // overflow made visible by scrolling.
+      container.style.width = '150px';
+      container.style.height = '80px';
+      container.style.display = 'flex';
+      container.style.alignItems = 'end';
+      container.style.justifyContent = 'center';
+
+      // The dialogs content dimensions exceed the viewport's
+      const content = document.createElement('div');
+      content.classList.add('dialog-content');
+      content.style.padding = '0 1em';
+      content.innerHTML = 'Hello, World<br/> I am <br/> a Dialog!';
+
+      dialog.position = Dialogs.Dialog.DialogVerticalPosition.AUTO;
+      dialog.showConnector = true;
+      dialog.origin = host;
+
+      // Set the dialog's "window" to be the container element we just created.
+      dialog.windowBoundsService = new DialogExampleWindowBoundsServiceFactory(container);
+
+      host.addEventListener('click', () => dialog.setDialogVisible(true));
+      dialog.addEventListener('clickoutsidedialog', () => dialog.setDialogVisible(false));
+
+      dialog.appendChild(content);
+      container.appendChild(host);
+      container.appendChild(dialog);
+      Helpers.renderElementIntoDOM(container);
+      await coordinator.done();
+
+      // Open the dialog and check its position.
+      Helpers.dispatchClickEvent(host);
+      await coordinator.done();
+
+      // Test the capped dimensions
+      assert.strictEqual(dialog.bestVerticalPosition, Dialogs.Dialog.DialogVerticalPosition.BOTTOM);
     });
     // Fails on bots https://crbug.com/1441801.
     it.skip(

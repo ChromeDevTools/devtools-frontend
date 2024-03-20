@@ -3399,7 +3399,7 @@
     "message": "ఉత్తీర్ణత సాధించిన ఆడిట్‌లు"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "[Chrome అప్‌డేట్ చేసిన ఇన్‌స్టాల్ చేయతగిన ప్రమాణాలతో](https://developer.chrome.com/blog/update-install-criteria) పాటు, రాబోయే రిలీజ్‌లో Lighthouse, PWA కేటగిరీని విస్మరిస్తుంది. రాబోయే PWA టెస్టింగ్ కోసం దయచేసి [అప్‌డేట్ చేయబడిన PWA డాక్యుమెంట్](https://developer.chrome.com/docs/devtools/progressive-web-apps/)‌ను చూడండి."
+    "message": "[Chrome అప్‌డేట్ చేసిన ఇన్‌స్టాల్ చేయతగిన ప్రమాణాలతో](https://developer.chrome.com/blog/update-install-criteria) ప్రకారం, రాబోయే రిలీజ్‌లో Lighthouse, PWA కేటగిరీని విస్మరిస్తుంది. రాబోయే PWA టెస్టింగ్ కోసం దయచేసి [అప్‌డేట్ చేయబడిన PWA డాక్యుమెంట్](https://developer.chrome.com/docs/devtools/progressive-web-apps/)‌ను చూడండి."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "మొదటి పేజీ లోడ్"

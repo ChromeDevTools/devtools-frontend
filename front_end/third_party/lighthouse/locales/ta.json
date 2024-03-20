@@ -3399,7 +3399,7 @@
     "message": "தேர்ச்சி பெற்ற தணிக்கைகள்"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "[நிறுவலுக்கான Chromeமின் புதுப்பிக்கப்பட்ட நிபந்தனைகளை](https://developer.chrome.com/blog/update-install-criteria) அடுத்து, எதிர்கால வெளியீட்டில் PWA வகையை Lighthouse நிறுத்தும். எதிர்கால PWA சோதனைக்கு, [புதுப்பிக்கப்பட்ட PWA ஆவணத்தைப்](https://developer.chrome.com/docs/devtools/progressive-web-apps/) பார்க்கவும்."
+    "message": "[நிறுவலுக்கான Chromeமின் புதுப்பிக்கப்பட்ட நிபந்தனைகளின்படி](https://developer.chrome.com/blog/update-install-criteria), எதிர்கால வெளியீட்டில் இருந்து PWA வகையை Lighthouse நிறுத்தும். எதிர்கால PWA சோதனைக்கு, [புதுப்பிக்கப்பட்ட PWA ஆவணத்தைப்](https://developer.chrome.com/docs/devtools/progressive-web-apps/) பார்க்கவும்."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "பக்கத்தின் முதற்கட்ட ஏற்றம்"

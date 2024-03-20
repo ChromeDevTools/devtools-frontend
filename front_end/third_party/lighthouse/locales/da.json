@@ -2847,7 +2847,7 @@
     "message": "Rapport over brugerflow i Lighthouse"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
-    "message": "Ved animeret indhold bør du bruge [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) til at minimere brugen af CPU, når indholdet er uden for skærmbilledet."
+    "message": "Ved animeret indhold bør du bruge [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) til at minimere brugen af CPU, når indholdet er uden for skærmen."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
     "message": "Du kan også vælge at vise alle [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenter i WebP-formater, mens du angiver et passende alternativ for andre browsere. [Få flere oplysninger](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
@@ -3399,7 +3399,7 @@
     "message": "Beståede revisioner"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "I forbindelse med [Chromes opdaterede kriterier for installerbarhed](https://developer.chrome.com/blog/update-install-criteria) udfaser Lighthouse PWA-kategorien i en kommende udgivelse. Se den [opdaterede PWA-dokumentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) vedrørende fremtidige PWA-tests."
+    "message": "I overensstemmelse med [Chromes opdaterede kriterier for installerbarhed](https://developer.chrome.com/blog/update-install-criteria) vil Lighthouse udfase PWA-kategorien i en fremtidig udgivelse. Se den [opdaterede PWA-dokumentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) vedrørende fremtidige PWA-tests."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Oprindelig sideindlæsning"

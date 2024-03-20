@@ -3399,7 +3399,7 @@
     "message": "Mga pumasang pag-audit"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Kasama ng [na-update na Pamantayan sa Installability ng Chrome](https://developer.chrome.com/blog/update-install-criteria), ihihinto na ng Lighthouse ang paggamit sa PWA na kategorya sa isang release sa hinaharap. Sumangguni sa [na-update na dokumentasyon ng PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para sa pagsusuri ng PWA sa hinaharap."
+    "message": "Alinsunod sa [Na-update na Mga Pamantayan sa Installability ng Chrome](https://developer.chrome.com/blog/update-install-criteria), hindi na gagamitin ng Lighthouse ang kategorya ng PWA sa release sa hinaharap. Sumangguni sa [na-update na dokumentasyon ng PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para sa pag-test ng PWA sa hinaharap."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Paunang pag-load ng page"

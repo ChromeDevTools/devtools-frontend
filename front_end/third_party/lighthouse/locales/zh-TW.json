@@ -3399,7 +3399,7 @@
     "message": "通過稽核項目"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "除了[更新 Chrome 的安裝條件](https://developer.chrome.com/blog/update-install-criteria)，Lighthouse 也將在之後的版本淘汰 PWA 類別。如果之後要進行 PWA 測試，請參閱[新版 PWA 說明文件](https://developer.chrome.com/docs/devtools/progressive-web-apps/)。"
+    "message": "根據 [Chrome 的新版安裝條件](https://developer.chrome.com/blog/update-install-criteria)，Lighthouse 將於之後的版本淘汰 PWA 類別。如果之後要進行 PWA 測試，請參閱[新版 PWA 說明文件](https://developer.chrome.com/docs/devtools/progressive-web-apps/)。"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初次載入網頁"

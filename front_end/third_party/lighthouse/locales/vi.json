@@ -3399,7 +3399,7 @@
     "message": "Số lần kiểm tra đạt yêu cầu"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Ngoài [điểm mới trong Tiêu chí về khả năng cài đặt của Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse sẽ ngừng sử dụng danh mục PWA trong bản phát hành sau này. Vui lòng tham khảo [tài liệu mới nhất về PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) để biết quy trình kiểm thử PWA trong tương lai."
+    "message": "Theo [điểm mới trong Tiêu chí về khả năng cài đặt của Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse sẽ ngừng sử dụng danh mục PWA trong bản phát hành sau này. Vui lòng tham khảo [tài liệu mới nhất về PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) để biết quy trình kiểm thử PWA trong tương lai."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Lượt tải trang đầu tiên"

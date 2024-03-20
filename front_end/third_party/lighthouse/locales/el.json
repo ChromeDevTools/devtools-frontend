@@ -3399,7 +3399,7 @@
     "message": "Έλεγχοι που ολοκληρώθηκαν επιτυχώς"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Μαζί με τα [ενημερωμένα κριτήρια για τη δυνατότητα εγκατάστασης του Chrome](https://developer.chrome.com/blog/update-install-criteria), το Lighthouse θα καταργήσει την κατηγορία PWA σε μια μελλοντική έκδοση. Ανατρέξτε στην [ενημερωμένη τεκμηρίωση PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) για μελλοντικές δοκιμές PWA."
+    "message": "Σύμφωνα με τα [ενημερωμένα κριτήρια για τη δυνατότητα εγκατάστασης του Chrome](https://developer.chrome.com/blog/update-install-criteria), το Lighthouse θα καταργήσει την κατηγορία PWA σε μια μελλοντική έκδοση. Ανατρέξτε στην [ενημερωμένη τεκμηρίωση PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) για μελλοντικές δοκιμές PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Αρχική φόρτωση σελίδας"

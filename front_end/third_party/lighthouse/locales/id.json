@@ -3399,7 +3399,7 @@
     "message": "Lulus audit"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Bersamaan dengan [Kriteria Kemampuan Penginstalan yang diperbarui di Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse akan menghentikan penggunaan kategori PWA pada rilis mendatang. Lihat [dokumentasi PWA yang telah diperbarui](https://developer.chrome.com/docs/devtools/progressive-web-apps/) untuk pengujian PWA mendatang."
+    "message": "Sesuai dengan [Kriteria Kemampuan Penginstalan yang diperbarui di Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse akan menghentikan penggunaan kategori PWA pada rilis mendatang. Lihat [dokumentasi PWA yang telah diperbarui](https://developer.chrome.com/docs/devtools/progressive-web-apps/) untuk pengujian PWA mendatang."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Pemuatan halaman awal"

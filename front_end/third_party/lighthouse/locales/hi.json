@@ -3399,7 +3399,7 @@
     "message": "पास हुए ऑडिट"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "[Chrome पर, इंस्टॉल करने की अपडेट की गई ज़रूरी शर्तों](https://developer.chrome.com/blog/update-install-criteria) के साथ-साथ, आने वाले समय में लाइटहाउस, पीडब्ल्यूए कैटगरी को बंद कर दिया जाएगा. आने वाले समय में पीडब्ल्यूए की टेस्टिंग के लिए, कृपया [पीडब्ल्यूए का अपडेट किया गया दस्तावेज़](https://developer.chrome.com/docs/devtools/progressive-web-apps/) देखें."
+    "message": "[इंस्टॉल करने से जुड़ी Chrome की नई ज़रूरी शर्तों](https://developer.chrome.com/blog/update-install-criteria) के मुताबिक, अगली रिलीज़ में लाइटहाउस में पीडब्ल्यूए कैटगरी बंद कर दी जाएगी. आने वाले समय में पीडब्ल्यूए की टेस्टिंग के लिए, कृपया [पीडब्ल्यूए का अपडेट किया गया दस्तावेज़](https://developer.chrome.com/docs/devtools/progressive-web-apps/) देखें."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "शुरुआती पेज लोड"

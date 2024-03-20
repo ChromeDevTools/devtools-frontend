@@ -3399,7 +3399,7 @@
     "message": "Auditorías aprobadas"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Además de los [criterios actualizados de instalación de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse dará de baja la categoría AWP en una versión futura. Consulta la [documentación actualizada de la AWP](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para futuras pruebas de la AWP."
+    "message": "Según los [criterios actualizados de instalación de Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse dará de baja la categoría AWP en una versión futura. Consulta la [documentación actualizada de las AWP](https://developer.chrome.com/docs/devtools/progressive-web-apps/) para futuras pruebas de AWP."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Carga inicial de la página"

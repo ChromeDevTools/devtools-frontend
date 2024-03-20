@@ -3399,7 +3399,7 @@
     "message": "Zaliczone audyty"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Oprócz [aktualizacji kryteriów instalacyjnych Chrome](https://developer.chrome.com/blog/update-install-criteria) w przyszłej wersji w Lighthouse wycofamy kategorię PWA. Aby dowiedzieć się, jak w przyszłości będzie wyglądać testowanie PWA, zapoznaj się ze [zaktualizowaną dokumentacją dotyczącą aplikacji PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "Zgodnie ze [zaktualizowanymi kryteriami instalacyjnymi Chrome](https://developer.chrome.com/blog/update-install-criteria) w przyszłej wersji w Lighthouse wycofamy kategorię PWA. Aby dowiedzieć się, jak w przyszłości będzie wyglądać testowanie PWA, zapoznaj się ze [zaktualizowaną dokumentacją dotyczącą aplikacji PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Wstępne wczytanie strony"

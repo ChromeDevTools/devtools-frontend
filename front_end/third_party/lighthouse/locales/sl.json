@@ -3399,7 +3399,7 @@
     "message": "Uspešni pregledi"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Poleg [posodobitev meril za izvedljivost namestitve v Chromu](https://developer.chrome.com/blog/update-install-criteria) bo Lighthouse v prihodnji izdaji opustil kategorijo MSA. Za prihodnje preizkušanje MSA-ja glejte [posodobljeno dokumentacijo za MSA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "Skladno s [posodobljenimi merili za izvedljivost namestitve v Chromu](https://developer.chrome.com/blog/update-install-criteria) bo Lighthouse v prihodnji izdaji opustil kategorijo MSA. Za prihodnje preizkušanje MSA-ja glejte [posodobljeno dokumentacijo za MSA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Začetno nalaganje st rani"

@@ -1953,7 +1953,7 @@
     "message": "หน้าที่ใช้ตัวส่งสำหรับอุปกรณ์สื่อไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache"
   },
   "core/lib/bf-cache-strings.js | contentMediaPlay": {
-    "message": "โปรแกรมเล่นสื่อกำลังเล่นอยู่ขณะที่มีการออกจากหน้าไป"
+    "message": "มีเดียเพลเยอร์กำลังเล่นอยู่ขณะที่มีการออกจากหน้าไป"
   },
   "core/lib/bf-cache-strings.js | contentMediaSession": {
     "message": "หน้าที่ใช้ MediaSession API และมีการตั้งสถานะการเล่นไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache"
@@ -3045,7 +3045,7 @@
     "message": "ระบุ `@font-display` เมื่อ [ กำหนดฟอนต์ที่กำหนดเอง ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
-    "message": "ลองค้นหาใน[ตลาดกลางของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อใช้ประโยชน์จากรูปแบบรูปภาพที่ใหม่กว่า"
+    "message": "ลองค้นหาใน[มาร์เก็ตเพลสของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อใช้ประโยชน์จากรูปแบบรูปภาพที่ใหม่กว่า"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "ลองแก้ไขเทมเพลตผลิตภัณฑ์และแคตตาล็อกเพื่อใช้ประโยชน์จากฟีเจอร์[การโหลดแบบ Lazy Loading](https://web.dev/native-lazy-loading) ของแพลตฟอร์มเว็บ"
@@ -3063,7 +3063,7 @@
     "message": "ปิดใช้[การรวมกลุ่ม JavaScript](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) ในตัวของ Magento"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-optimized-images": {
-    "message": "ลองค้นหาใน[ตลาดกลางของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อเพิ่มประสิทธิภาพให้รูปภาพ"
+    "message": "ลองค้นหาใน[มาร์เก็ตเพลสของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อเพิ่มประสิทธิภาพให้รูปภาพ"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preconnect": {
     "message": "เพิ่มการเชื่อมต่อล่วงหน้าหรือคำแนะนำด้านทรัพยากรที่ DNS ดึงมาล่วงหน้าได้โดย[แก้ไขเลย์เอาต์ของธีม](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)"
@@ -3399,7 +3399,7 @@
     "message": "การตรวจสอบที่ผ่านแล้ว"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Lighthouse จะเลิกใช้งานหมวดหมู่ PWA ในรุ่นถัดไปพร้อมกับ[เกณฑ์ความสามารถในการติดตั้งที่อัปเดตของ Chrome](https://developer.chrome.com/blog/update-install-criteria) โปรดดู[เอกสารประกอบของ PWA ฉบับปรับปรุง](https://developer.chrome.com/docs/devtools/progressive-web-apps/)สำหรับการทดสอบ PWA ในอนาคต"
+    "message": "Lighthouse จะเลิกใช้งานหมวดหมู่ PWA ในรุ่นถัดไปตาม[เกณฑ์ความสามารถในการติดตั้งฉบับปรับปรุงของ Chrome](https://developer.chrome.com/blog/update-install-criteria) โปรดดู[เอกสารประกอบของ PWA ฉบับปรับปรุง](https://developer.chrome.com/docs/devtools/progressive-web-apps/)สำหรับการทดสอบ PWA ในอนาคต"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "การโหลดหน้าเว็บเริ่มต้น"

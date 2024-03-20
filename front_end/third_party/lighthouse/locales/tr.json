@@ -3399,7 +3399,7 @@
     "message": "Başarılı denetimler"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Lighthouse, [Chrome'un güncellenen Yüklenebilirlik Ölçütleri](https://developer.chrome.com/blog/update-install-criteria) ile birlikte, gelecekteki sürümlerden birinde PWA (progresif web uygulaması) kategorisi desteğini sonlandıracaktır. Gelecekteki PWA testleri için lütfen [güncellenmiş PWA dokümanlarına](https://developer.chrome.com/docs/devtools/progressive-web-apps/) göz atın."
+    "message": "Lighthouse, [Chrome'un güncellenen yüklenebilirlik ölçütleri](https://developer.chrome.com/blog/update-install-criteria) uyarınca gelecekteki sürümlerden birinde PWA (progresif web uygulaması) kategorisi desteğini sonlandıracaktır. Gelecekteki PWA testleri için lütfen [güncellenmiş PWA dokümanlarına](https://developer.chrome.com/docs/devtools/progressive-web-apps/) göz atın."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "İlk sayfa yükleme"

@@ -3399,7 +3399,7 @@
     "message": "Úspěšné audity"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Spolu s [aktualizovanými kritérii prohlížeče Chrome pro instalaci](https://developer.chrome.com/blog/update-install-criteria) bude v budoucí verzi nástroje Lighthouse ukončena podpora kategorie aplikací PWA. Pokyny k budoucímu testování aplikací PWA najdete v [aktualizované dokumentaci aplikací PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "V souladu s [aktualizovanými kritérii prohlížeče Chrome pro instalaci](https://developer.chrome.com/blog/update-install-criteria) bude v budoucí verzi nástroje Lighthouse ukončena podpora kategorie aplikací PWA. Pokyny k budoucímu testování aplikací PWA najdete v [aktualizované dokumentaci aplikací PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "První načtení stránky"

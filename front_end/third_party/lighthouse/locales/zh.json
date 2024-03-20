@@ -3399,7 +3399,7 @@
     "message": "已通过的审核"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "除了 [Chrome 更新后的可安装性标准](https://developer.chrome.com/blog/update-install-criteria)之外，Lighthouse 还将在未来的版本中弃用 PWA 类别。请参阅[更新后的 PWA 文档](https://developer.chrome.com/docs/devtools/progressive-web-apps/)，了解今后的 PWA 测试。"
+    "message": "根据 [Chrome 更新后的可安装性标准](https://developer.chrome.com/blog/update-install-criteria)，Lighthouse 将在未来的版本中弃用 PWA 类别。请参阅[更新后的 PWA 文档](https://developer.chrome.com/docs/devtools/progressive-web-apps/)，了解今后的 PWA 测试。"
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "初始网页加载"

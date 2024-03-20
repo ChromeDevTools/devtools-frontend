@@ -3399,7 +3399,7 @@
     "message": "Успешно преминати проверки"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Заедно с [актуализираните критерии на Chrome за инсталиране](https://developer.chrome.com/blog/update-install-criteria) Lighthouse ще оттегли категорията PWA в бъдеща версия. Моля, разгледайте [актуализираната документация за PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) за бъдещо тестване на PWA."
+    "message": "В съответствие с [актуализираните критерии на Chrome за инсталиране](https://developer.chrome.com/blog/update-install-criteria) Lighthouse ще оттегли категорията PWA в бъдеща версия. Моля, разгледайте [актуализираната документация за PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) за бъдещо тестване на PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Първоначално зареждане на страницата"

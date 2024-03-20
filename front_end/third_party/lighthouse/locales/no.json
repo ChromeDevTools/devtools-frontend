@@ -3399,7 +3399,7 @@
     "message": "Beståtte revisjoner"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "I tillegg til de [oppdaterte kriteriene for installasjon i Chrome](https://developer.chrome.com/blog/update-install-criteria) kommer Lighthouse til å avvikle kategorien for PWA (progressive web app – progressive nettprogrammer) i en fremtidig utgave. Se den [oppdaterte PWA-dokumentasjonen](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for fremtidig PWA-testing."
+    "message": "I henhold til de [oppdaterte kriteriene for installasjon i Chrome](https://developer.chrome.com/blog/update-install-criteria) kommer Lighthouse til å avvikle kategorien for PWA-er (progressive web apps – progressive nettprogrammer) i en fremtidig utgave. Se den [oppdaterte PWA-dokumentasjonen](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for fremtidig PWA-testing."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Første sideinnlasting"

@@ -3399,7 +3399,7 @@
     "message": "Godkända granskningar"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Utöver att [Chromes installationskriterier uppdateras](https://developer.chrome.com/blog/update-install-criteria) fasar Lighthouse ut PWA-kategorin i en framtida version. Läs den [uppdaterade dokumentationen om PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) för framtida PWA-testning."
+    "message": "I enlighet med [Chromes uppdaterade installationskriterier](https://developer.chrome.com/blog/update-install-criteria) fasar Lighthouse ut PWA-kategorin i en framtida version. Läs den [uppdaterade dokumentationen om PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) för framtida PWA-testning."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Första sidhämtningen"

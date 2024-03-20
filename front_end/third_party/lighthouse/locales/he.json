@@ -3399,7 +3399,7 @@
     "message": "בדיקות עם ציון 'עובר'"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "לצד [הקריטריונים המעודכנים של Chrome לגבי אפשרות ההתקנה](https://developer.chrome.com/blog/update-install-criteria), הקטגוריה PWA תצא משימוש בגרסה עתידית במסגרת Lighthouse. אפשר לעיין ב[מסמכי התיעוד המעודכנים בנושא PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) לצורך בדיקות עתידיות של PWA."
+    "message": "בהתאם [לקריטריונים המעודכנים של Chrome לגבי אפשרות ההתקנה](https://developer.chrome.com/blog/update-install-criteria), הקטגוריה PWA תצא משימוש בגרסה עתידית במסגרת Lighthouse. אפשר לעיין ב[מסמכי התיעוד המעודכנים בנושא PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) לצורך בדיקות עתידיות של PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "טעינת הדף הראשונית"

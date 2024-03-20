@@ -3399,7 +3399,7 @@
     "message": "اجتياز عمليات التدقيق بنجاح"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "إلى جانب [معايير قابلية التثبيت المُعدَّلة في Chrome](https://developer.chrome.com/blog/update-install-criteria)، ستوقف أداة Lighthouse فئة تطبيقات الويب التقدّمية (PWA) نهائيًا في إصدار مستقبلي. يُرجى الرجوع إلى [مستندات تطبيقات الويب التقدّمية (PWA) المعدَّلة](https://developer.chrome.com/docs/devtools/progressive-web-apps/) لاختبار هذه التطبيقات في المستقبل."
+    "message": "وفق [معايير قابلية التثبيت المُعدَّلة في Chrome](https://developer.chrome.com/blog/update-install-criteria)، ستوقف أداة Lighthouse فئة تطبيقات الويب التقدّمية (PWA) نهائيًا في أي إصدار مستقبلي. يُرجى الرجوع إلى [مستندات تطبيقات الويب التقدّمية (PWA) المعدَّلة](https://developer.chrome.com/docs/devtools/progressive-web-apps/) لاختبار هذه التطبيقات في المستقبل."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "التحميل الأولي للصفحة"

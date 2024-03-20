@@ -3399,7 +3399,7 @@
     "message": "통과한 감사"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Lighthouse는 [Chrome의 업데이트된 설치 가능 기준](https://developer.chrome.com/blog/update-install-criteria)과 함께 향후 버전에서 PWA 카테고리를 지원 중단할 예정입니다. 향후 PWA 테스트에 관해서는 [업데이트된 PWA 문서](https://developer.chrome.com/docs/devtools/progressive-web-apps/)를 참고하세요."
+    "message": "Lighthouse는 [Chrome의 업데이트된 설치 가능 기준](https://developer.chrome.com/blog/update-install-criteria)에 따라 향후 버전에서 PWA 카테고리를 지원 중단할 예정입니다. 향후 PWA 테스트에 관해서는 [업데이트된 PWA 문서](https://developer.chrome.com/docs/devtools/progressive-web-apps/)를 참고하세요."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "초기 페이지 로드"

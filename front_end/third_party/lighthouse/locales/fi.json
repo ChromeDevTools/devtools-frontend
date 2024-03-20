@@ -3399,7 +3399,7 @@
     "message": "Hyväksytyt tarkastukset"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "[Chromen päivitettyjen asennettavuusehtojen](https://developer.chrome.com/blog/update-install-criteria) lisäksi Lighthouse poistaa PWA-kategorian käytöstä tulevassa julkaisussa. Lue lisää tulevasta PWA-testauksesta [päivitetystä PWA-dokumentaatiosta](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "[Chromen päivitettyjen asennettavuusehtojen](https://developer.chrome.com/blog/update-install-criteria) mukaisesti Lighthouse poistaa PWA-kategorian käytöstä tulevassa julkaisussa. Lue lisää tulevasta PWA-testauksesta [päivitetystä PWA-dokumentaatiosta](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Ensimmäinen sivun lataus"

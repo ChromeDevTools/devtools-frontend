@@ -3399,7 +3399,7 @@
     "message": "Виконані перевірки"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "У майбутньому випуску Lighthouse більше не підтримуватиме категорію прогресивних веб-додатків. Крім того, буде [оновлено умови встановлення таких додатків у Chrome](https://developer.chrome.com/blog/update-install-criteria). Щоб підготуватися до тестування прогресивних веб-додатків, перегляньте [оновлену документацію](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "У майбутньому випуску Lighthouse більше не підтримуватиме категорію прогресивних вебдодатків відповідно до [оновлених умов встановлення додатків у Chrome](https://developer.chrome.com/blog/update-install-criteria). Щоб підготуватися до тестування прогресивних вебдодатків, перегляньте [оновлену документацію](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Перше завантаження сторінки"

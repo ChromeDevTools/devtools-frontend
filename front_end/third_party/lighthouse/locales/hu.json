@@ -3399,7 +3399,7 @@
     "message": "Sikeresen teljesített ellenőrzések"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "A [Chrome telepíthetőségi feltételeinek módosítása](https://developer.chrome.com/blog/update-install-criteria) mellett a Lighthouse egy későbbi kiadásban megszünteti a PWA kategóriát. A PWA jövőbeli tesztelésével kapcsolatban tekintse át a [frissített PWA-dokumentációt](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
+    "message": "A [Chrome frissített telepíthetőségi feltételeinek](https://developer.chrome.com/blog/update-install-criteria) megfelelően a Lighthouse egy későbbi kiadásban megszünteti a PWA kategóriát. A PWA jövőbeli tesztelésével kapcsolatban tekintse át a [frissített PWA-dokumentációt](https://developer.chrome.com/docs/devtools/progressive-web-apps/)."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Első oldalbetöltés"

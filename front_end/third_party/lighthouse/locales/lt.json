@@ -3399,7 +3399,7 @@
     "message": "Sėkmingos patikros"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Kartu su [atnaujintais „Chrome“ diegiamumo kriterijais](https://developer.chrome.com/blog/update-install-criteria), „Lighthouse“ būsimame leidime nebebus naudojama LŽP kategorija. Peržiūrėkite [atnaujintus LŽP dokumentus](https://developer.chrome.com/docs/devtools/progressive-web-apps/), skirtus būsimiems LŽP bandymams."
+    "message": "Kad būtų laikomasi [atnaujintų „Chrome“ diegiamumo kriterijų](https://developer.chrome.com/blog/update-install-criteria), „Lighthouse“ būsimame leidime nebebus naudojama LŽP kategorija. Peržiūrėkite [atnaujintus LŽP dokumentus](https://developer.chrome.com/docs/devtools/progressive-web-apps/), skirtus būsimiems LŽP bandymams."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Pirminis puslapio įkėlimas"

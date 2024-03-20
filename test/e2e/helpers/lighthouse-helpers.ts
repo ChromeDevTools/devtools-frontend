@@ -79,7 +79,7 @@ type CheckboxLabel = Element&{checkboxElement: HTMLInputElement};
 
 /**
  * Set the category checkboxes
- * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'|'lighthouse-plugin-publisher-ads'
+ * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
  */
 export async function selectCategories(selectedCategoryIds: string[]) {
   const startViewHandle = await waitFor('.lighthouse-start-view');

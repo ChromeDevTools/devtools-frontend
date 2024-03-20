@@ -3399,7 +3399,7 @@
     "message": "Geslaagde controles"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Naast de [geüpdatete Installeerbaarheidscriteria van Chrome](https://developer.chrome.com/blog/update-install-criteria) beëindigt Lighthouse de categorie PWA in een toekomstige release. Raadpleeg de [geüpdatete PWA-documentatie](https://developer.chrome.com/docs/devtools/progressive-web-apps/) voor toekomstige PWA-tests."
+    "message": "Volgens de [geüpdatete Installeerbaarheidscriteria van Chrome](https://developer.chrome.com/blog/update-install-criteria) beëindigt Lighthouse de categorie PWA in een toekomstige release. Raadpleeg de [geüpdatete PWA-documentatie](https://developer.chrome.com/docs/devtools/progressive-web-apps/) voor toekomstige PWA-tests."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Eerste keer laden van de pagina"

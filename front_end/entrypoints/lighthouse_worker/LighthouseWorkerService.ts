@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Root from '../../core/root/root.js';
-import * as PuppeteerService from '../../services/puppeteer/puppeteer.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as PuppeteerService from '../../services/puppeteer/puppeteer.js';
 
 function disableLoggingForTest(): void {
   console.log = (): void => undefined;  // eslint-disable-line no-console
@@ -88,12 +88,6 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     flags.logLevel = flags.logLevel || 'info';
     flags.channel = 'devtools';
     flags.locale = locale;
-
-    // TODO: Remove this filter once pubads is mode restricted
-    // https://github.com/googleads/publisher-ads-lighthouse-plugin/pull/339
-    if (action === 'startTimespan' || action === 'snapshot') {
-      args.categoryIDs = args.categoryIDs.filter((c: string) => c !== 'lighthouse-plugin-publisher-ads');
-    }
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     const config = args.config || self.createConfig(args.categoryIDs, flags.formFactor);

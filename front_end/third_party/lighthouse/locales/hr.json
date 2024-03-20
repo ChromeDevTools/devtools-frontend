@@ -3399,7 +3399,7 @@
     "message": "Uspješni pregledi"
   },
   "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Uz [Chromeove ažurirane kriterije prikladnosti za instalaciju](https://developer.chrome.com/blog/update-install-criteria) Lighthouse će u budućem izdanju obustaviti kategoriju PWA. Pogledajte [ažuriranu dokumentaciju o PWA-u](https://developer.chrome.com/docs/devtools/progressive-web-apps/) za buduće testiranje PWA-a."
+    "message": "U skladu s [Chromeovim ažuriranim kriterijima prikladnosti za instalaciju](https://developer.chrome.com/blog/update-install-criteria), Lighthouse će u budućem izdanju obustaviti PWA kategoriju. Pogledajte [ažuriranu dokumentaciju o PWA-u](https://developer.chrome.com/docs/devtools/progressive-web-apps/) za buduće testiranje PWA-a."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Početno učitavanje stranice"

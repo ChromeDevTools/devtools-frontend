@@ -497,8 +497,9 @@ devtools-console-insight {
   padding: 4px 3px 4px 5px;
   position: absolute;
   right: 6px;
-  display: none;
+  display: block;
   width: var(--width);
+  visibility: hidden;
 }
 
 .hover-button span {
@@ -542,7 +543,7 @@ devtools-console-insight {
   &:focus,
   &.console-selected {
     .hover-button {
-      display: block;
+      visibility: visible;
 
       &:focus,
       &:hover {

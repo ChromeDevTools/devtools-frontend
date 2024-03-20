@@ -174,7 +174,7 @@ function localizeType(sourceType: SourceType): string {
 }
 
 const TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms';
-// Note: contact avoids presubmit rules.
+// Note: concatenation avoids presubmit rules.
 const GEN_AI_TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms/gener' +
     'ative-ai';
 const PRIVACY_POLICY_URL = 'https://policies.google.com/privacy';
@@ -294,7 +294,6 @@ export class ConsoleInsight extends HTMLElement {
     this.addEventListener('click', e => {
       e.stopPropagation();
     });
-    this.tabIndex = 0;
     this.focus();
     // Measure the height of the element after an animation. `--actual-height` can
     // be used as the `from` value for the subsequent animation.

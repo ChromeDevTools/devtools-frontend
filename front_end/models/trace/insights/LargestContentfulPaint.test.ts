@@ -21,7 +21,7 @@ async function setupTraceData(testContext: Mocha.Suite|Mocha.Context|null, trace
 }
 
 describe('LargestContentfulPaint', function() {
-  it('text largest contentful paint', async () => {
+  it('text lcp phases', async () => {
     const data = await setupTraceData(this, 'lcp-web-font.json.gz');
     const context = {
       frameId: data.Meta.mainFrameId,
@@ -36,7 +36,7 @@ describe('LargestContentfulPaint', function() {
     const wantRenderDelay = Types.Timing.MilliSeconds(100.367);
     assert.deepEqual(insight.phases, {ttfb: wantTtfb, renderDelay: wantRenderDelay});
   });
-  it('image largest contentful paint', async () => {
+  it('image lcp phases', async () => {
     const data = await setupTraceData(this, 'lcp-images.json.gz');
     const context = {
       frameId: data.Meta.mainFrameId,
@@ -58,6 +58,20 @@ describe('LargestContentfulPaint', function() {
       renderDelay: insight.phases.renderDelay?.toFixed(2),
     };
     assert.deepEqual(phases, {ttfb: '6.94', loadTime: '12.09', loadDelay: '33.74', renderDelay: '56.85'});
+  });
+  it('image lcp attributes', async () => {
+    const data = await setupTraceData(this, 'lcp-images.json.gz');
+    const context = {
+      frameId: data.Meta.mainFrameId,
+      navigationId: data.Meta.navigationsByNavigationId.keys().next().value,
+    };
+
+    const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} =
+        TraceModel.Insights.InsightRunners.LargestContentfulPaint.generateInsight(data, context);
+
+    assert.strictEqual(shouldRemoveLazyLoading, false);
+    assert.strictEqual(shouldPreloadImage, true);
+    assert.strictEqual(shouldIncreasePriorityHint, true);
   });
   describe('warnings', function() {
     it('no lcp', async () => {

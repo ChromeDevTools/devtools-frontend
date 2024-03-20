@@ -579,6 +579,7 @@ export interface TraceEventLargestContentfulPaintCandidate extends TraceEventMar
       isMainFrame: boolean,
       navigationId: string,
       nodeId: Protocol.DOM.BackendNodeId,
+      loadingAttr: string,
       type?: string,
     },
   };

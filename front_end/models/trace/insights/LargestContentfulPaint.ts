@@ -102,8 +102,14 @@ function findLCPRequest(
   return lcpResource;
 }
 
-export function generateInsight(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext):
-    InsightResult<{lcpMs?: Types.Timing.MilliSeconds, phases?: LCPPhases}> {
+export function generateInsight(
+    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): InsightResult<{
+  lcpMs?: Types.Timing.MilliSeconds,
+  phases?: LCPPhases,
+  shouldRemoveLazyLoading?: boolean,
+  shouldIncreasePriorityHint?: boolean,
+  shouldPreloadImage?: boolean,
+}> {
   const networkRequests = traceParsedData.NetworkRequests;
 
   const nav = traceParsedData.Meta.navigationsByNavigationId.get(context.navigationId);
@@ -127,18 +133,29 @@ export function generateInsight(traceParsedData: RequiredData<typeof deps>, cont
   }
 
   const lcpTiming = metricScore.timing;
-
   const lcpMs = Helpers.Timing.microSecondsToMilliseconds(lcpTiming);
-
   const lcpResource = findLCPRequest(traceParsedData, context, lcpEvent);
-
   const mainReq = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!mainReq) {
     return {lcpMs, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]};
   }
 
+  if (!lcpResource) {
+    return {
+      lcpMs,
+      phases: breakdownPhases(nav, mainReq, lcpMs, lcpResource),
+    };
+  }
+
+  const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
+  const imagePreloaded = lcpResource?.args.data.isLinkPreload || lcpResource?.args.data.initiator?.type === 'preload';
+  const imageFetchPriorityHint = lcpResource?.args.data.fetchPriorityHint;
+
   return {
     lcpMs,
     phases: breakdownPhases(nav, mainReq, lcpMs, lcpResource),
+    shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
+    shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
+    shouldPreloadImage: !imagePreloaded,
   };
 }

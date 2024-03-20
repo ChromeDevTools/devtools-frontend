@@ -16,7 +16,9 @@ import '../../panels/rn_welcome/rn_welcome-meta.js';
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Main from '../main/main.js';
+import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
@@ -44,6 +46,24 @@ Root.Runtime.experiments.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
+
+class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
+  constructor(target: SDK.Target.Target) {
+    super(target);
+    target.router()?.sendMessage(
+      target.sessionId,
+      'FuseboxClient',
+      'FuseboxClient.setClientMetadata' as InspectorBackend.QualifiedName,
+      {},
+      () => {},
+    );
+  }
+}
+
+SDK.SDKModel.SDKModel.register(
+  FuseboxClientMetadataModel,
+  {capabilities: SDK.Target.Capability.None, autostart: true},
+);
 
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});

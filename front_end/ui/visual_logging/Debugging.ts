@@ -95,7 +95,7 @@ export function processEventForDebugging(event: string, state: LoggingState|null
     showDebugPopover(`${Object.entries(entry).map(([k, v]) => `${k}: ${v}`).join('; ')}`);
   }
   if (veDebugLoggingEnabled) {
-    const time = Date();
+    const time = Date.now() - sessionStartTime;
     veDebugEventsLog.push({...entry, veid: state?.veid, time});
   }
 }
@@ -107,7 +107,7 @@ type Entry = {
   veid?: number,
   children?: Entry[],
   parent?: number,
-  time?: string,
+  time?: number,
   width?: number,
   height?: number,
   mouseButton?: number,
@@ -145,10 +145,10 @@ export function processImpressionsForDebugging(states: LoggingState[]): void {
 
   const entries = [...impressions.values()].filter(i => 'parent' in i);
   if (entries.length === 1) {
-    entries[0].time = Date();
+    entries[0].time = Date.now() - sessionStartTime;
     veDebugEventsLog.push(entries[0]);
   } else {
-    veDebugEventsLog.push({event: 'Impression', children: entries, time: Date()});
+    veDebugEventsLog.push({event: 'Impression', children: entries, time: Date.now() - sessionStartTime});
   }
 }
 
@@ -206,6 +206,16 @@ function setVeDebugLoggingEnabled(enabled: boolean): void {
   } else {
     localStorage.removeItem('veDebugLoggingEnabled');
   }
+}
+
+let sessionStartTime: number = Date.now();
+
+export function processStartLoggingForDebugging(): void {
+  if (!localStorage.getItem('veDebugLoggingEnabled')) {
+    return;
+  }
+  sessionStartTime = Date.now();
+  veDebugEventsLog.push({event: 'SessionStart'});
 }
 
 // @ts-ignore

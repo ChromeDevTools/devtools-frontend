@@ -20,6 +20,7 @@ import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 import styles from './consoleInsight.css.js';
 import listStyles from './consoleInsightSourcesList.css.js';
 
+// Note: privacy and legal notices are not localized so far.
 const UIStrings = {
   /**
    * @description The title of the insight source "Console message".
@@ -120,6 +121,28 @@ const UIStrings = {
    * @description The title of the button that cancels a console insight flow.
    */
   cancel: 'Cancel',
+  /**
+   * @description The title of the button that disables the Console insight (this) feature.
+   */
+  disableFeature: 'Disable this feature',
+  /**
+   * @description The title of the button that goes to the next page.
+   */
+  next: 'Next',
+  /**
+   * @description The title of the button that goes back to the previous page.
+   */
+  back: 'Back',
+  /**
+   * @description The title of the button that lets the user to continue
+   * with using the feature.
+   */
+  continue: 'Continue',
+  /**
+   * @description The title of the button that searches for the console
+   * insight using a search engine instead of using console insights.
+   */
+  search: 'Use search instead',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -150,9 +173,16 @@ function localizeType(sourceType: SourceType): string {
   }
 }
 
+const TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms';
+// Note: contact avoids presubmit rules.
+const GEN_AI_TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms/gener' +
+    'ative-ai';
+const PRIVACY_POLICY_URL = 'https://policies.google.com/privacy';
+const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
+const CHROME_SETTINGS_URL = 'chrome://settings' as Platform.DevToolsPath.UrlString;
 
 const enum State {
   INSIGHT = 'insight',
@@ -425,7 +455,7 @@ export class ConsoleInsight extends HTMLElement {
     if (rootTarget === null) {
       return;
     }
-    const url = 'chrome://settings' as Platform.DevToolsPath.UrlString;
+    const url = CHROME_SETTINGS_URL;
     void rootTarget.targetAgent().invoke_createTarget({url}).then(result => {
       if (result.getError()) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url);
@@ -489,7 +519,7 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      ${UIStrings.cancel}
+      ${i18nString(UIStrings.cancel)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
@@ -506,7 +536,7 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      Disable this feature
+      ${i18nString(UIStrings.disableFeature)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
@@ -523,7 +553,7 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      Next
+      ${i18nString(UIStrings.next)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
@@ -539,7 +569,7 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      Back
+      ${i18nString(UIStrings.back)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
@@ -557,7 +587,7 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      Continue
+      ${i18nString(UIStrings.continue)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
@@ -574,14 +604,16 @@ export class ConsoleInsight extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     >
-      Use search instead
+      ${i18nString(UIStrings.search)}
     </${Buttons.Button.Button.litTagName}>`;
     // clang-format on
   }
 
   #renderLearnMoreAboutInsights(): LitHtml.TemplateResult {
     // clang-format off
-    return html`<x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>Learn more</x-link>`;
+    return html`<x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
+      ${i18nString(UIStrings.learnMore)}
+    </x-link>`;
     // clang-format on
   }
 
@@ -631,8 +663,8 @@ export class ConsoleInsight extends HTMLElement {
           <main>
             <p>The following data will be sent to Google to understand the context for the console message.
             Human reviewers may process this information for quality purposes.
-            Don’t submit sensitive information. Read Google’s <x-link href="https://policies.google.com/terms" class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Terms of Service</x-link> and
-            the <x-link href=${'https://policies.google.com/terms/gener' + 'ative-ai'} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</p>
+            Don’t submit sensitive information. Read Google’s <x-link href=${TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Terms of Service</x-link> and
+            the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</p>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
@@ -641,7 +673,7 @@ export class ConsoleInsight extends HTMLElement {
         switch (this.#state.page) {
           case ConsentOnboardingPage.PAGE1:
             return html`<main>
-              <p>This notice and our <x-link href="https://policies.google.com/privacy" class="link" jslog=${VisualLogging.link('privacy-notice').track({click: true})}>privacy notice</x-link> describe how Chrome DevTools handles your data. Please read them carefully.</p>
+              <p>This notice and our <x-link href=${PRIVACY_POLICY_URL} class="link" jslog=${VisualLogging.link('privacy-notice').track({click: true})}>privacy notice</x-link> describe how Chrome DevTools handles your data. Please read them carefully.</p>
 
               <p>Chrome DevTools uses the console message, associated stack trace, related source code, and the associated network headers as input data. When you use "Understand this message", Google collects this input data, generated output, related feature usage information, and your feedback. Google uses this data to provide, improve, and develop Google products and services and machine learning technologies, including Google's enterprise products such as Google Cloud.</p>
 
@@ -655,14 +687,14 @@ export class ConsoleInsight extends HTMLElement {
               <li>Chrome DevTools uses console message, associated stack trace, related source code, and the associated network headers to provide answers.</li>
               <li>Chrome DevTools uses experimental technology, and may generate inaccurate or offensive information that doesn't represent Google's views. Voting on the responses will help make this feature better.</li>
               <li>This feature is an experimental feature and subject to future changes.</li>
-              <li><strong><x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${VisualLogging.link('use-code-with-caution').track({click: true})}>Use generated code snippets with caution</x-link>.</strong></li>
+              <li><strong><x-link class="link" href=${CODE_SNIPPET_WARNING_URL} jslog=${VisualLogging.link('use-code-with-caution').track({click: true})}>Use generated code snippets with caution</x-link>.</strong></li>
             </ul>
             </p>
 
             <p>
             <label>
               <input class="terms" @change=${this.#onTermsChange} type="checkbox" jslog=${VisualLogging.toggle('terms-of-service-accepted')}>
-              <span>I accept my use of "Understand this message" is subject to the <x-link href="https://policies.google.com/terms" class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link> and the <x-link href=${'https://policies.google.com/terms/gener' + 'ative-ai'} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</span>
+              <span>I accept my use of "Understand this message" is subject to the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('terms-of-service').track({click: true})}>Google Terms of Service</x-link> and the <x-link href=${GEN_AI_TERMS_OF_SERVICE_URL} class="link" jslog=${VisualLogging.link('gener' + 'ative-ai-terms-of-service').track({click: true})}>${'Gener' + 'ative'} AI Additional Terms of Service</x-link>.</span>
             </label>
             </p>
             </main>`;

@@ -319,6 +319,9 @@ export class ConsoleInsight extends HTMLElement {
       this.classList.add('loaded');
     }
     this.#render();
+    if (newState.type !== previousState.type) {
+      this.#focusHeader();
+    }
   }
 
   async #generateInsightIfNeeded(): Promise<void> {
@@ -476,6 +479,10 @@ export class ConsoleInsight extends HTMLElement {
       type: State.CONSENT_ONBOARDING,
       page: ConsentOnboardingPage.PAGE2,
     });
+  }
+
+  #focusHeader(): void {
+    (this.#shadow.querySelector('header h2') as HTMLElement | undefined)?.focus();
   }
 
   #termsChecked(): boolean {
@@ -875,7 +882,7 @@ export class ConsoleInsight extends HTMLElement {
       <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
         <header>
           <div class="filler">
-            <h2>
+            <h2 tabindex="-1">
               ${this.#getHeader()}
             </h2>
           </div>

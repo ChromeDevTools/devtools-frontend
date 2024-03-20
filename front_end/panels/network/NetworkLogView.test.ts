@@ -709,6 +709,29 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.detach();
     });
 
+    it('correctly shows and hides waterfall column', async () => {
+      const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+      columnSettings.set({
+        'waterfall': {visible: false, title: 'waterfall'},
+      });
+      networkLogView = createNetworkLogView();
+      let columns = networkLogView.columns();
+      let networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+      assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
+      assert.strictEqual(
+          (networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.OnlyMain);
+
+      columnSettings.set({
+        'waterfall': {visible: true, title: 'waterfall'},
+      });
+      networkLogView = createNetworkLogView();
+      columns = networkLogView.columns();
+      columns.switchViewMode(true);
+      networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+      assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
+      assert.strictEqual((networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.Both);
+    });
+
     function createOverrideRequests() {
       const urlNotOverridden = 'url-not-overridden' as Platform.DevToolsPath.UrlString;
       const urlHeaderOverridden = 'url-header-overridden' as Platform.DevToolsPath.UrlString;

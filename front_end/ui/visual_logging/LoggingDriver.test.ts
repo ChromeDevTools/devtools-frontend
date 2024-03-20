@@ -137,7 +137,7 @@ describe('LoggingDriver', () => {
     await assertImpressionRecordedDeferred();
   });
 
-  it('correctly determines visiblity in additional document', async () => {
+  it('correctly determines visibility in additional document', async () => {
     const iframe = document.createElement('iframe') as HTMLIFrameElement;
     renderElementIntoDOM(iframe);
     iframe.style.width = '100px';

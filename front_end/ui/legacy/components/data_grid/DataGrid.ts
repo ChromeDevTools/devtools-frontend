@@ -1028,7 +1028,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.positionResizers();
   }
 
-  setColumnsVisiblity(columnsVisibility: Set<string>): void {
+  setColumnsVisibility(columnsVisibility: Set<string>): void {
     this.visibleColumnsArray = [];
     for (const column of this.columnsArray) {
       if (columnsVisibility.has(column.id)) {

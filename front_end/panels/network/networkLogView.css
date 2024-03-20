@@ -286,7 +286,7 @@
   visibility: hidden;
 }
 
-#network-container:not(.brief-mode) .data-container {
+#network-container.grid-mode .data-container {
   overflow: hidden;
 }
 

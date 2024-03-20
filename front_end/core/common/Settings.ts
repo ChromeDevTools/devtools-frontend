@@ -165,6 +165,9 @@ export class Settings {
     return setting;
   }
 
+  /**
+   * Get setting via key, and create a new setting if the requested setting does not exist.
+   */
   createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
     const storage = this.storageFromType(storageType);
     let setting = (this.#registry.get(key) as Setting<T>);

@@ -1057,7 +1057,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
       this.#elementGrid.insertChild(node);
     }
 
-    this.#elementGrid.setColumnsVisiblity(visibility);
+    this.#elementGrid.setColumnsVisibility(visibility);
     this.#elementGrid.renderInline();
     this.#elementGrid.wasShown();
   }

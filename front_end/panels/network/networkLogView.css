@@ -376,6 +376,7 @@
 .network-frame-group-icon {
   display: inline-block;
   margin: -7px 1px;
+  vertical-align: baseline;
 }
 
 .network-frame-group-badge {

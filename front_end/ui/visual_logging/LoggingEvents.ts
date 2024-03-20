@@ -44,7 +44,7 @@ export const logResize = (throttler: Common.Throttler.Throttler) => (loggable: L
       .ResizeEvent = {veid: loggingState.veid, width: loggingState.size.width, height: loggingState.size.height};
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordResize(resizeEvent);
-    processEventForDebugging('Resize', loggingState, `width: ${size.width}; height: ${size.height}`);
+    processEventForDebugging('Resize', loggingState, {width: size.width, height: size.height});
   });
 };
 
@@ -62,9 +62,7 @@ export const logClick = (throttler: Common.Throttler.Throttler) => (
   void throttler.schedule(async () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
     processEventForDebugging(
-        'Click', loggingState,
-        ('mouseButton' in clickEvent ? ` mouseButton: ${clickEvent.mouseButton};` : '') +
-            (clickEvent.doubleClick ? ' doubleClick: true;' : ''));
+        'Click', loggingState, {mouseButton: clickEvent.mouseButton, doubleClick: clickEvent.doubleClick});
   });
 };
 
@@ -125,7 +123,7 @@ export const logKeyDown =
       pendingKeyDownContext = context || null;
       void throttler.schedule(async () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
-        processEventForDebugging('KeyDown', loggingState, context ? 'context: ' + context : '');
+        processEventForDebugging('KeyDown', loggingState, {context});
         pendingKeyDownContext = null;
       });
     };

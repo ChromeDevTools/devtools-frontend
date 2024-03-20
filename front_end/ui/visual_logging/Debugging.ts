@@ -76,27 +76,41 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
   }
 }
 
-export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: string): void {
+export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: Entry): void {
   if (!veDebuggingEnabled && !veDebugLoggingEnabled) {
     return;
   }
-  const config = `${state ? debugString(state.config) : ''}; ${extraInfo ?? ''}`;
+
+  const entry: Entry =
+      {event, ve: state ? VisualElements[state?.config.ve] : undefined, context: state?.config.context, ...extraInfo};
+  for (const stringKey in entry) {
+    const key = stringKey as keyof Entry;
+    if (typeof entry[key] === 'undefined') {
+      delete entry[key];
+    }
+  }
+
   if (veDebuggingEnabled) {
-    showDebugPopover(`${event}: ${config}`);
+    showDebugPopover(`${Object.entries(entry).map(([k, v]) => `${k}: ${v}`).join('; ')}`);
   }
   if (veDebugLoggingEnabled) {
     const time = Date();
-    veDebugEventsLog.push({event, config, veid: state?.veid, time});
+    veDebugEventsLog.push({...entry, veid: state?.veid, time});
   }
 }
 
 type Entry = {
-  event: string,
-  config?: string,
+  event?: string,
+  ve?: string,
+  context?: string,
   veid?: number,
   children?: Entry[],
   parent?: number,
   time?: string,
+  width?: number,
+  height?: number,
+  mouseButton?: number,
+  doubleClick?: boolean,
 };
 
 export function processImpressionsForDebugging(states: LoggingState[]): void {
@@ -107,10 +121,17 @@ export function processImpressionsForDebugging(states: LoggingState[]): void {
   for (const state of states) {
     const entry: Entry = {
       event: 'Impression',
-      config:
-          debugString(state.config) + (state.size ? `; width: ${state.size.width}; height: ${state.size.height}` : ''),
-      veid: state.veid,
+      ve: VisualElements[state.config.ve],
     };
+    if (state.config.context) {
+      entry.context = state.config.context;
+    }
+    if (state.size) {
+      entry.width = state.size.width;
+      entry.height = state.size.height;
+    }
+    entry.veid = state.veid,
+
     impressions.set(state.veid, entry);
     if (!state.parent || !impressions.has(state.parent?.veid)) {
       entry.parent = state.parent?.veid;

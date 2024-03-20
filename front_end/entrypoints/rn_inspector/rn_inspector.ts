@@ -62,7 +62,17 @@ class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
 
 SDK.SDKModel.SDKModel.register(
   FuseboxClientMetadataModel,
-  {capabilities: SDK.Target.Capability.None, autostart: true},
+  {
+    capabilities: SDK.Target.Capability.None,
+    autostart: true,
+    // Ensure FuseboxClient.setClientMetadata is sent before most other CDP domains
+    // are initialised. This allows the backend to confidently detect non-Fusebox
+    // clients by the fact that they send e.g. Runtime.enable without sending any
+    // Fusebox-specific messages first.
+    // TODO: Explicitly depend on this model in RuntimeModel and LogModel, and
+    // remove the `early` and `autostart` flags.
+    early: true,
+  },
 );
 
 // @ts-ignore Exposed for legacy layout tests

@@ -77,6 +77,7 @@ function processElementForDebugging(element: Element, loggingState: LoggingState
 }
 
 export function processEventForDebugging(event: string, state: LoggingState|null, extraInfo?: Entry): void {
+  const veDebugLoggingEnabled = localStorage.getItem('veDebugLoggingEnabled');
   if (!veDebuggingEnabled && !veDebugLoggingEnabled) {
     return;
   }
@@ -114,7 +115,7 @@ type Entry = {
 };
 
 export function processImpressionsForDebugging(states: LoggingState[]): void {
-  if (!veDebugLoggingEnabled) {
+  if (!localStorage.getItem('veDebugLoggingEnabled')) {
     return;
   }
   const impressions = new Map<number, Entry>();
@@ -197,11 +198,14 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-let veDebugLoggingEnabled = true;
 const veDebugEventsLog: Entry[] = [];
 
 function setVeDebugLoggingEnabled(enabled: boolean): void {
-  veDebugLoggingEnabled = enabled;
+  if (enabled) {
+    localStorage.setItem('veDebugLoggingEnabled', 'true');
+  } else {
+    localStorage.removeItem('veDebugLoggingEnabled');
+  }
 }
 
 // @ts-ignore

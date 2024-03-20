@@ -14431,6 +14431,13 @@ export namespace Storage {
     enable: boolean;
   }
 
+  export interface SendPendingAttributionReportsResponse extends ProtocolResponseWithError {
+    /**
+     * The number of reports that were sent.
+     */
+    numSent: integer;
+  }
+
   export interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
     sets: RelatedWebsiteSet[];
   }

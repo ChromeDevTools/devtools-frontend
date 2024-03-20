@@ -2530,7 +2530,7 @@ export const NativeFunctions = [
   },
   {
     name: "resolve",
-    signatures: [["token"]],
+    signatures: [["token","?options"]],
     receivers: ["IdentityProvider"]
   },
   {

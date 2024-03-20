@@ -3834,6 +3834,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Sends all pending Attribution Reports immediately, regardless of their
+     * scheduled report time.
+     */
+    'Storage.sendPendingAttributionReports': {
+      paramsType: [];
+      returnType: Protocol.Storage.SendPendingAttributionReportsResponse;
+    };
+    /**
      * Returns the effective Related Website Sets in use by this profile for the browser
      * session. The effective Related Website Sets will not change during a browser session.
      */

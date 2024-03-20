@@ -21669,6 +21669,18 @@
                     ]
                 },
                 {
+                    "name": "sendPendingAttributionReports",
+                    "description": "Sends all pending Attribution Reports immediately, regardless of their\nscheduled report time.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "numSent",
+                            "description": "The number of reports that were sent.",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "name": "getRelatedWebsiteSets",
                     "description": "Returns the effective Related Website Sets in use by this profile for the browser\nsession. The effective Related Website Sets will not change during a browser session.",
                     "experimental": true,

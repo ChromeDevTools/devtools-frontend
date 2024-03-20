@@ -3152,6 +3152,12 @@ declare namespace ProtocolProxyApi {
     invoke_setAttributionReportingTracking(params: Protocol.Storage.SetAttributionReportingTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Sends all pending Attribution Reports immediately, regardless of their
+     * scheduled report time.
+     */
+    invoke_sendPendingAttributionReports(): Promise<Protocol.Storage.SendPendingAttributionReportsResponse>;
+
+    /**
      * Returns the effective Related Website Sets in use by this profile for the browser
      * session. The effective Related Website Sets will not change during a browser session.
      */

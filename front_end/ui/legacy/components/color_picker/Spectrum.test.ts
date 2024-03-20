@@ -3,10 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import {
+  createTarget,
   deinitializeGlobalVars,
   initializeGlobalVars,
 } from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../../../testing/MockConnection.js';
 import * as UI from '../../legacy.js';
 
 import * as ColorPicker from './color_picker.js';
@@ -42,5 +46,28 @@ describe('ColorPicker aka Spectrum', () => {
 
       assert.isNull(spectrum.contentElement.querySelector('devtools-spectrum-srgb-overlay'));
     });
+  });
+});
+
+describeWithMockConnection('PaletteGenerator', () => {
+  it('does not interpret selectors as colors', async () => {
+    createTarget();
+    const [model] = SDK.TargetManager.TargetManager.instance().models(SDK.CSSModel.CSSModel);
+
+    Platform.assertNotNullOrUndefined(model);
+    const stylesheet = sinon.createStubInstance(SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+    sinon.stub(model, 'allStyleSheets').returns([stylesheet]);
+    const content = `
+    #f00: {
+      --#fff: unset;
+    }
+    body: {color: #0f0;}
+    #00f: {}
+    `;
+    stylesheet.requestContent.resolves({content, isEncoded: false});
+
+    const palette = await new Promise<ColorPicker.Spectrum.Palette>(r => new ColorPicker.Spectrum.PaletteGenerator(r));
+
+    assert.deepStrictEqual(palette.colors, ['#0f0']);
   });
 });

@@ -1535,10 +1535,16 @@ export class PaletteGenerator {
   private async processStylesheet(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
     let text: string = (await stylesheet.requestContent()).content || '';
     text = text.toLowerCase();
-    const regexResult = text.match(/((?:rgb|hsl|hwb)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g) || [];
-    for (const c of regexResult) {
-      let frequency = this.frequencyMap.get(c) || 0;
-      this.frequencyMap.set(c, ++frequency);
+    const regexResult = text.matchAll(/((?:rgb|hsl|hwb)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g);
+    for (const {0: c, index} of regexResult) {
+      // Check whether the match occured in a property value and not in a property name or a selector by verifying
+      // that there's no colon after the match and before the next semicolon.
+      if (text.indexOf(';', index) < 0 ||
+          text.indexOf(':', index) > -1 && text.indexOf(':', index) < text.indexOf(';', index)) {
+        continue;
+      }
+      const frequency = 1 + (this.frequencyMap.get(c) ?? 0);
+      this.frequencyMap.set(c, frequency);
     }
   }
 }

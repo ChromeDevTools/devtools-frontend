@@ -171,6 +171,14 @@ const UIStrings = {
    *@example {app.wasm} PH1
    */
   debugInfoNotFound: 'Failed to load any debug info for {PH1}.',
+  /**
+   *@description Text of a button to open up details on a request when no debug info could be loaded
+   */
+  showRequest: 'Show request',
+  /**
+   *@description Tooltip text that shows on hovering over a button to see more details on a request
+   */
+  openDeveloperResources: 'Opens the request in the Developer resource panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1488,9 +1496,19 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     for (const resource of warning.resources) {
-      const detailsRow =
-          this.missingDebugInfoBar?.createDetailsRowMessage(i18nString(UIStrings.debugFileNotFound, {PH1: resource}));
+      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(
+          i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(resource.resourceUrl)}));
       if (detailsRow) {
+        const pageResourceKey =
+            SDK.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
+        if (SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
+          const showRequest = UI.UIUtils.createTextButton(i18nString(UIStrings.showRequest), () => {
+            void Common.Revealer.reveal(new SDK.PageResourceLoader.ResourceKey(pageResourceKey));
+          }, {className: 'link-style devtools-link', jslogContext: 'show-request'});
+          showRequest.style.setProperty('margin-left', '10px');
+          showRequest.title = i18nString(UIStrings.openDeveloperResources);
+          detailsRow.appendChild(showRequest);
+        }
         detailsRow.classList.add('infobar-selectable');
       }
     }

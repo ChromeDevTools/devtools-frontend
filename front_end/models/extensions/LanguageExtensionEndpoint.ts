@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 
@@ -35,10 +36,11 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
     symbol_types: Array<string>,
   };
   private endpoint: LanguageExtensionEndpointImpl;
+  private extensionOrigin: string;
   name: string;
 
   constructor(
-      name: string, supportedScriptTypes: {
+      extensionOrigin: string, name: string, supportedScriptTypes: {
         language: string,
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -46,6 +48,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
       },
       port: MessagePort) {
     this.name = name;
+    this.extensionOrigin = extensionOrigin;
     this.supportedScriptTypes = supportedScriptTypes;
     this.endpoint = new LanguageExtensionEndpointImpl(this, port);
   }
@@ -54,6 +57,15 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
     const language = script.scriptLanguage();
     return language !== null && script.debugSymbols !== null && language === this.supportedScriptTypes.language &&
         this.supportedScriptTypes.symbol_types.includes(script.debugSymbols.type);
+  }
+
+  createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator {
+    return {
+      target: null,
+      frameId: null,
+      extensionId: this.extensionOrigin,
+      initiatorUrl: this.extensionOrigin as Platform.DevToolsPath.UrlString,
+    };
   }
 
   /** Notify the plugin about a new script

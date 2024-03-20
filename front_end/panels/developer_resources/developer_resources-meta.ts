@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as DeveloperResources from './developer_resources.js';
@@ -39,5 +41,16 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const DeveloperResources = await loadDeveloperResourcesModule();
     return new DeveloperResources.DeveloperResourcesView.DeveloperResourcesView();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.PageResourceLoader.ResourceKey];
+  },
+  destination: Common.Revealer.RevealerDestination.DEVELOPER_RESOURCES_PANEL,
+  async loadRevealer() {
+    const DeveloperResources = await loadDeveloperResourcesModule();
+    return new DeveloperResources.DeveloperResourcesView.DeveloperResourcesRevealer();
   },
 });

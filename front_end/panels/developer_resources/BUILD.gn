@@ -64,7 +64,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "developer_resources.test.ts" ]
+  sources = [
+    "DeveloperResourcesView.test.ts",
+    "developer_resources.test.ts",
+  ]
 
   deps = [
     ":bundle",

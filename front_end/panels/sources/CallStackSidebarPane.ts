@@ -366,8 +366,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         height: '14px',
       };
       icon.classList.add('call-frame-warning-icon');
-      const messages =
-          callframe.missingDebugInfoDetails.resources.map(r => i18nString(UIStrings.debugFileNotFound, {PH1: r}));
+      const messages = callframe.missingDebugInfoDetails.resources.map(
+          r => i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl)}));
       UI.Tooltip.Tooltip.install(icon, [callframe.missingDebugInfoDetails.details, ...messages].join('\n'));
       element.appendChild(icon);
     }

@@ -58,6 +58,15 @@ export interface PageResource {
   size: number|null;
 }
 
+// Used for revealing a resource.
+export class ResourceKey {
+  readonly key: string;
+
+  constructor(key: string) {
+    this.key = key;
+  }
+}
+
 let pageResourceLoader: PageResourceLoader|null = null;
 
 interface LoadQueueEntry {

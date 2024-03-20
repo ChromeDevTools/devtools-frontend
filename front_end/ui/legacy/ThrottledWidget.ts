@@ -8,6 +8,7 @@ import {VBox} from './Widget.js';
 export class ThrottledWidget extends VBox {
   private readonly updateThrottler: Common.Throttler.Throttler;
   private updateWhenVisible: boolean;
+  protected lastUpdatePromise: Promise<void> = Promise.resolve();
 
   constructor(isWebComponent?: boolean, timeout?: number) {
     super(isWebComponent);
@@ -24,7 +25,7 @@ export class ThrottledWidget extends VBox {
     if (this.updateWhenVisible) {
       return;
     }
-    void this.updateThrottler.schedule(() => {
+    this.lastUpdatePromise = this.updateThrottler.schedule(() => {
       if (this.isShowing()) {
         return this.doUpdate();
       }

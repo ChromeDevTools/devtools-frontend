@@ -247,6 +247,12 @@ export const getTextContent =
   return text ?? undefined;
 };
 
+export const getAllTextContents =
+    async(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'): Promise<Array<string|null>> => {
+  const allElements = await $$(selector, root, handler);
+  return Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
+};
+
 /**
  * Match multiple elements based on a selector and return their textContents, but only for those
  * elements that are visible.

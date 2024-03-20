@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../extension-api/ExtensionAPI.js';
+import type * as Platform from '../core/platform/platform.js';
 import type * as SDK from '../core/sdk/sdk.js';
 import type * as Bindings from '../models/bindings/bindings.js';
 
@@ -14,6 +15,16 @@ export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLang
   name: string;
   handleScript(_script: SDK.Script.Script): boolean {
     return false;
+  }
+
+  createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator {
+    const extensionId = 'chrome-extension-id';
+    return {
+      target: null,
+      frameId: null,
+      extensionId,
+      initiatorUrl: extensionId as Platform.DevToolsPath.UrlString,
+    };
   }
 
   async evaluate(

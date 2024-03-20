@@ -491,7 +491,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     return this.#script !== undefined && Boolean(this.#script.sourceMapURL);
   }
 
-  async missingSymbolFiles(): Promise<string[]|null> {
+  async missingSymbolFiles(): Promise<SDK.DebuggerModel.MissingDebugFiles[]|null> {
     if (!this.#script) {
       return null;
     }

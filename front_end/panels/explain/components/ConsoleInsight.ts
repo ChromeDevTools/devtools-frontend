@@ -354,7 +354,12 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type !== State.INSIGHT) {
       throw new Error('Unexpected state');
     }
+    // If it was rated, do not record again.
+    if (this.#selectedRating !== undefined) {
+      return;
+    }
     this.#selectedRating = (event.target as HTMLElement).dataset.rating === 'true';
+    this.#render();
     if (this.#selectedRating) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
     } else {
@@ -725,6 +730,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderFooter(): LitHtml.LitTemplate {
+    // clang-format off
     const disclaimer = LitHtml.html`<span>
               This feature may display inaccurate or offensive information that doesn't represent Google's views.
               <x-link href=${LEARNMORE_URL} class="link" jslog=${
@@ -810,7 +816,7 @@ export class ConsoleInsight extends HTMLElement {
                 variant: Buttons.Button.Variant.ROUND,
                 size: Buttons.Button.Size.SMALL,
                 iconName: 'thumb-up',
-                active: this.#selectedRating,
+                active: this.#selectedRating !== undefined && this.#selectedRating,
                 title: i18nString(UIStrings.thumbsUp),
                 jslogContext: 'thumbs-up',
               } as Buttons.Button.ButtonData

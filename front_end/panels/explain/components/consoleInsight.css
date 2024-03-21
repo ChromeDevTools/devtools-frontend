@@ -127,6 +127,8 @@ main {
     li {
       display: list-item;
       list-style-type: disc;
+      list-style-position: outside;
+      margin-inline-start: 1em;
     }
 
     li::marker {

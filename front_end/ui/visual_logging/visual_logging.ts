@@ -56,6 +56,7 @@ export const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDo
 export const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 export const expand = LoggingConfig.makeConfigStringBuilder.bind(null, 'Expand');
 export const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
+export const gutter = LoggingConfig.makeConfigStringBuilder.bind(null, 'Gutter');
 export const dialog = LoggingConfig.makeConfigStringBuilder.bind(null, 'Dialog');
 export const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
 export const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');

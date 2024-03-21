@@ -1916,7 +1916,7 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
   toDOM(): HTMLElement {
     const span = document.createElement('span');
     span.className = this.class;
-    span.setAttribute('jslog', `${VisualLogging.breakpointMarker('inline').track({click: true})}`);
+    span.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({click: true})}`);
     span.addEventListener('click', (event: MouseEvent) => {
       this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
       event.consume();
@@ -1947,7 +1947,7 @@ class BreakpointGutterMarker extends CodeMirror.GutterMarker {
 
   override toDOM(view: CodeMirror.EditorView): Node {
     const div = document.createElement('div');  // We want {display: block} so it uses all of the space.
-    div.setAttribute('jslog', `${VisualLogging.breakpointMarker('gutter').track({click: true})}`);
+    div.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({click: true})}`);
     const line = view.state.doc.lineAt(this.#position).number;
     const formatNumber = view.state.facet(SourceFrame.SourceFrame.LINE_NUMBER_FORMATTER);
     div.textContent = formatNumber(line, view.state);

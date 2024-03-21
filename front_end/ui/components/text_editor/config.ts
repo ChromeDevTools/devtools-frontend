@@ -8,6 +8,7 @@ import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as Icon from '../icon_button/icon_button.js';
 
@@ -195,6 +196,7 @@ export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
       const iconName = open ? 'triangle-down' : 'triangle-right';
       const icon = new Icon.Icon.Icon();
       icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
+      icon.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
       icon.data = {
         iconName,
         color: 'var(--icon-fold-marker)',

@@ -71,7 +71,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     super();
 
     this.element.id = 'sources-panel-sources-view';
-    this.element.setAttribute('jslog', `${VisualLogging.pane('editor')}`);
+    this.element.setAttribute('jslog', `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`);
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     this.selectedIndex = 0;

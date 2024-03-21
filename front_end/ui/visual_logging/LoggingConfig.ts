@@ -51,7 +51,7 @@ export enum VisualElements {
   BreakpointMarker = 19,
   DropDown = 20,
   Adorner = 21,
-  /* 22 used to be JumpToSource, but free to grab now */
+  Gutter = 22,
   MetricsBox = 23,
   MetricsBoxPart = 24,
   /* 25 used to be DOMBreakpointsPane, but free to grab now */

@@ -38,6 +38,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
@@ -200,6 +201,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
+
     this.element.appendChild(this.textEditorInternal);
     this.element.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.defaultPrevented) {
@@ -467,6 +469,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   private updateLineNumberFormatter(): void {
     this.textEditor.dispatch({effects: config.lineNumbers.reconfigure(this.getLineNumberFormatter())});
+    this.textEditor.shadowRoot?.querySelector('.cm-lineNumbers')
+        ?.setAttribute('jslog', `${VisualLogging.gutter('line-numbers').track({click: true})}`);
   }
 
   private updatePrettyPrintState(): void {
@@ -718,6 +722,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.innerRevealPositionIfNeeded();
     this.innerSetSelectionIfNeeded();
     this.innerScrollToLineIfNeeded();
+    this.textEditor.shadowRoot?.querySelector('.cm-lineNumbers')
+        ?.setAttribute('jslog', `${VisualLogging.gutter('line-numbers').track({click: true})}`);
+    this.textEditor.shadowRoot?.querySelector('.cm-foldGutter')
+        ?.setAttribute('jslog', `${VisualLogging.gutter('fold')}`);
+    this.textEditor.shadowRoot?.querySelector('.cm-content')?.setAttribute('jslog', `${VisualLogging.textField()}`);
   }
 
   onTextChanged(): void {

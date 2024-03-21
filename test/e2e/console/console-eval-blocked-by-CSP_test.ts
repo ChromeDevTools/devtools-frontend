@@ -54,7 +54,7 @@ describe('The Console Tab', function() {
 
     await step('get the result text from the console', async () => {
       const evaluateResult = await frontend.evaluate(() => {
-        return document.querySelectorAll('.console-user-command-result')[0].textContent;
+        return [...document.querySelectorAll('.console-user-command-result')].map(e => e.textContent).join(' ');
       });
       assert.include(
           evaluateResult || '', '\'unsafe-eval\' is not an allowed source of script',

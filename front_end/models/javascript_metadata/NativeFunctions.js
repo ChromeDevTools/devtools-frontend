@@ -8173,10 +8173,6 @@ export const NativeFunctions = [
     signatures: [["rules"]]
   },
   {
-    name: "registerRouter",
-    signatures: [["rules"]]
-  },
-  {
     name: "BarcodeDetector",
     signatures: [["?barcodeDetectorOptions"]]
   },

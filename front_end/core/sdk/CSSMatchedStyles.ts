@@ -40,6 +40,11 @@ function containsStyle(styles: CSSStyleDeclaration[]|Set<CSSStyleDeclaration>, q
   return false;
 }
 
+function containsCustomProperties(style: CSSStyleDeclaration): boolean {
+  const properties = style.allProperties();
+  return properties.some(property => cssMetadata().isCustomProperty(property.name));
+}
+
 function containsInherited(style: CSSStyleDeclaration): boolean {
   const properties = style.allProperties();
   for (let i = 0; i < properties.length; ++i) {
@@ -405,9 +410,11 @@ export class CSSMatchedStyles {
         if (!containsInherited(inheritedRule.style)) {
           continue;
         }
-        if (containsStyle(nodeStyles, inheritedRule.style) ||
-            containsStyle(this.#inheritedStyles, inheritedRule.style)) {
-          continue;
+        if (!containsCustomProperties(inheritedRule.style)) {
+          if (containsStyle(nodeStyles, inheritedRule.style) ||
+              containsStyle(this.#inheritedStyles, inheritedRule.style)) {
+            continue;
+          }
         }
         this.#nodeForStyleInternal.set(inheritedRule.style, parentNode);
         inheritedStyles.push(inheritedRule.style);

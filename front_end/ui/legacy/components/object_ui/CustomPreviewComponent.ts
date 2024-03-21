@@ -10,7 +10,11 @@ import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
-import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+import {
+  ObjectPropertiesSection,
+  ObjectPropertiesSectionsTreeOutline,
+  ObjectPropertyTreeElement,
+} from './ObjectPropertiesSection.js';
 
 const UIStrings = {
   /**
@@ -20,6 +24,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class CustomPreviewSection {
   private readonly sectionElement: HTMLSpanElement;
   private readonly object: SDK.RemoteObject.RemoteObject;
@@ -68,24 +73,19 @@ export class CustomPreviewSection {
     return this.sectionElement;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private renderJSONMLTag(jsonML: any): Node {
+  private renderJSONMLTag(jsonML: unknown): Node {
     if (!Array.isArray(jsonML)) {
       return document.createTextNode(String(jsonML));
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const array = (jsonML as any[]);
-    return array[0] === 'object' ? this.layoutObjectTag(array) : this.renderElement(array);
+    return jsonML[0] === 'object' ? this.layoutObjectTag(jsonML) : this.renderElement(jsonML);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private renderElement(object: any[]): Node {
     const tagName = object.shift();
-    if (!CustomPreviewSection.allowedTags.has(tagName)) {
+    if (!ALLOWED_TAGS.includes(tagName)) {
       Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
       return document.createElement('span');
     }
@@ -106,9 +106,7 @@ export class CustomPreviewSection {
     return element;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private layoutObjectTag(objectTag: any[]): Node {
+  private layoutObjectTag(objectTag: unknown[]): Node {
     objectTag.shift();
     const attributes = objectTag.shift();
     const remoteObject = this.object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
@@ -121,9 +119,7 @@ export class CustomPreviewSection {
     return sectionElement;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendJsonMLTags(parentElement: Node, jsonMLTags: any[]): void {
+  private appendJsonMLTags(parentElement: Node, jsonMLTags: unknown[]): void {
     for (let i = 0; i < jsonMLTags.length; ++i) {
       parentElement.appendChild(this.renderJSONMLTag(jsonMLTags[i]));
     }
@@ -154,6 +150,7 @@ export class CustomPreviewSection {
       }
     }
   }
+  private defaultBodyTreeOutline: ObjectPropertiesSectionsTreeOutline|undefined;
 
   async loadBody(): Promise<void> {
     const customPreview = this.object.customPreview();
@@ -163,22 +160,28 @@ export class CustomPreviewSection {
     }
 
     if (customPreview.bodyGetterId) {
-      const bodyJsonML = await this.object.callFunctionJSON(
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          bodyGetter => (bodyGetter as () => any)(), [{objectId: customPreview.bodyGetterId}]);
-      if (!bodyJsonML) {
-        return;
+      const bodyJsonML =
+          await this.object.callFunctionJSON(bodyGetter => bodyGetter(), [{objectId: customPreview.bodyGetterId}]);
+      if (bodyJsonML === null) {
+        // Per https://firefox-source-docs.mozilla.org/devtools-user/custom_formatters/index.html#custom-formatter-structure
+        // we are supposed to fall back to the default format when the `body()` callback returns `null`.
+        this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline({readOnly: true});
+        this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
+        this.defaultBodyTreeOutline.element.classList.add('custom-expandable-section-default-body');
+        void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), this.object, false, false);
+
+        this.cachedContent = this.defaultBodyTreeOutline.element;
+      } else {
+        this.cachedContent = this.renderJSONMLTag(bodyJsonML);
       }
 
-      this.cachedContent = this.renderJSONMLTag(bodyJsonML);
       this.sectionElement.appendChild(this.cachedContent);
       this.toggleExpand();
     }
   }
-
-  private static allowedTags = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
 }
+
+const ALLOWED_TAGS = ['span', 'div', 'ol', 'li', 'table', 'tr', 'td'];
 
 export class CustomPreviewComponent {
   private readonly object: SDK.RemoteObject.RemoteObject;

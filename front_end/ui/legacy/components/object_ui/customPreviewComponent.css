@@ -18,3 +18,7 @@
 .custom-expandable-section-standard-section {
   display: inline-flex;
 }
+
+.custom-expandable-section-default-body {
+  padding-left: 12px;
+}

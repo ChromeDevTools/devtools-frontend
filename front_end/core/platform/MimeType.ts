@@ -22,6 +22,7 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
   'application/ecmascript',
   'application/javascript',
   'application/json',
+  'application/json+protobuf',
   'application/vnd.dart',
   'application/xml',
   'application/x-aspx',

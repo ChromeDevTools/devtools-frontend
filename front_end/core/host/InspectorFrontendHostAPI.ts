@@ -427,7 +427,6 @@ export interface SyncInformation {
  */
 export const enum EnumeratedHistogram {
   ActionTaken = 'DevTools.ActionTaken',
-  BreakpointWithConditionAdded = 'DevTools.BreakpointWithConditionAdded',
   BreakpointEditDialogRevealedFrom = 'DevTools.BreakpointEditDialogRevealedFrom',
   PanelClosed = 'DevTools.PanelClosed',
   PanelShown = 'DevTools.PanelShown',
@@ -469,8 +468,6 @@ export const enum EnumeratedHistogram {
   ColorConvertedFrom = 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom = 'DevTools.ColorPickerOpenedFrom',
   CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
-  InlineScriptParsed = 'DevTools.InlineScriptParsed',
-  VMInlineScriptTypeShown = 'DevTools.VMInlineScriptShown',
   BreakpointsRestoredFromStorageCount = 'DevTools.BreakpointsRestoredFromStorageCount',
   SwatchActivated = 'DevTools.SwatchActivated',
   BadgeActivated = 'DevTools.BadgeActivated',

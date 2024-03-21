@@ -41,15 +41,6 @@ export class UserMetrics {
     this.#launchPanelName = '';
   }
 
-  breakpointWithConditionAdded(breakpointWithConditionAdded: BreakpointWithConditionAdded): void {
-    if (breakpointWithConditionAdded >= BreakpointWithConditionAdded.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.BreakpointWithConditionAdded, breakpointWithConditionAdded,
-        BreakpointWithConditionAdded.MaxValue);
-  }
-
   breakpointEditDialogRevealedFrom(breakpointEditDialogRevealedFrom: BreakpointEditDialogRevealedFrom): void {
     if (breakpointEditDialogRevealedFrom >= BreakpointEditDialogRevealedFrom.MaxValue) {
       return;
@@ -254,22 +245,6 @@ export class UserMetrics {
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.DeveloperResourceScheme, developerResourceScheme, DeveloperResourceScheme.MaxValue);
-  }
-
-  inlineScriptParsed(inlineScriptType: VMInlineScriptType): void {
-    if (inlineScriptType >= VMInlineScriptType.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.InlineScriptParsed, inlineScriptType, VMInlineScriptType.MaxValue);
-  }
-
-  vmInlineScriptContentShown(inlineScriptType: VMInlineScriptType): void {
-    if (inlineScriptType >= VMInlineScriptType.MaxValue) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.VMInlineScriptTypeShown, inlineScriptType, VMInlineScriptType.MaxValue);
   }
 
   language(language: Intl.UnicodeBCP47LocaleIdentifier): void {
@@ -1126,12 +1101,6 @@ export enum DevtoolsExperiments {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export const enum BreakpointWithConditionAdded {
-  Logpoint = 0,
-  ConditionalBreakpoint = 1,
-  MaxValue = 2,
-}
-
 export const enum BreakpointEditDialogRevealedFrom {
   BreakpointSidebarContextMenu = 0,
   BreakpointSidebarEditButton = 1,
@@ -1344,12 +1313,6 @@ export enum NetworkPanelMoreFilters {
   MaxValue = 5,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const enum VMInlineScriptType {
-  MODULE_SCRIPT = 0,
-  CLASSIC_SCRIPT = 1,
-  MaxValue = 2,
-}
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export enum Language {

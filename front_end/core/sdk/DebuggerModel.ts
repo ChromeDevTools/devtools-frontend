@@ -693,14 +693,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
-    if (script.isInlineScript() && !script.hasSourceURL) {
-      if (script.isModule) {
-        Host.userMetrics.inlineScriptParsed(Host.UserMetrics.VMInlineScriptType.MODULE_SCRIPT);
-      } else {
-        Host.userMetrics.inlineScriptParsed(Host.UserMetrics.VMInlineScriptType.CLASSIC_SCRIPT);
-      }
-    }
-
     if (script.sourceMapURL && !hasSyntaxError) {
       this.#sourceMapManagerInternal.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }

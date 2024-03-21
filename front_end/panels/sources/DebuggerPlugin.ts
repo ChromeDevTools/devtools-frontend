@@ -49,7 +49,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
-import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
+import {BreakpointEditDialog} from './BreakpointEditDialog.js';
 import * as SourceComponents from './components/components.js';
 import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
@@ -919,7 +919,6 @@ export class DebuggerPlugin extends Plugin {
       }
       SourceComponents.BreakpointsView.BreakpointsSidebarController.instance().breakpointEditFinished(
           breakpoint, oldCondition !== result.condition);
-      recordBreakpointWithConditionAdded(result);
       if (breakpoint) {
         breakpoint.setCondition(result.condition, result.isLogpoint);
       } else if (location) {
@@ -966,21 +965,6 @@ export class DebuggerPlugin extends Plugin {
     dialog.focusEditor();
     this.activeBreakpointDialog = dialog;
     this.#activeBreakpointEditRequest = breakpointEditRequest;
-
-    // This counts new conditional breakpoints or logpoints that are added.
-    function recordBreakpointWithConditionAdded(result: BreakpointEditDialogResult): void {
-      const {condition: newCondition, isLogpoint} = result;
-      const isConditionalBreakpoint = newCondition.length !== 0 && !isLogpoint;
-
-      const wasLogpoint = breakpoint?.isLogpoint();
-      const wasConditionalBreakpoint = oldCondition && oldCondition.length !== 0 && !wasLogpoint;
-      if (isLogpoint && !wasLogpoint) {
-        Host.userMetrics.breakpointWithConditionAdded(Host.UserMetrics.BreakpointWithConditionAdded.Logpoint);
-      } else if (isConditionalBreakpoint && !wasConditionalBreakpoint) {
-        Host.userMetrics.breakpointWithConditionAdded(
-            Host.UserMetrics.BreakpointWithConditionAdded.ConditionalBreakpoint);
-      }
-    }
 
     function isSameEditRequest(editA: BreakpointEditRequest, editB: BreakpointEditRequest): boolean {
       if (editA.line.number !== editB.line.number) {

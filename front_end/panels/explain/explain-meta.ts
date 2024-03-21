@@ -35,6 +35,16 @@ const UIStrings = {
    * @description Message shown to the user if the age check is not successful.
    */
   ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
+  /**
+   * @description Message shown to the user if the user's region is not
+   * supported.
+   */
+  geoRestricted: 'This feature is unavailable in your region.',
+  /**
+   * @description Message shown to the user if the enterprise policy does
+   * not allow this feature.
+   */
+  policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -78,7 +88,8 @@ function isSettingAvailable(): boolean {
 }
 
 function isActionAvailable(): boolean {
-  return isSettingAvailable() && !isAgeRestricted() && !isLocaleRestricted();
+  return isSettingAvailable() && !isAgeRestricted() && !isLocaleRestricted() && !isGeoRestricted() &&
+      !isPolicyRestricted();
 }
 
 function isLocaleRestricted(): boolean {
@@ -90,6 +101,18 @@ function isAgeRestricted(): boolean {
   return Root.Runtime.Runtime.queryParam('ci_blockedByAge') === 'true';
 }
 
+function isGeoRestricted(): boolean {
+  return Root.Runtime.Runtime.queryParam('ci_blockedByGeo') === 'true';
+}
+
+function isPolicyRestricted(): boolean {
+  return Root.Runtime.Runtime.queryParam('ci_blockedByEnterprisePolicy') === 'true';
+}
+
+function isDisabledByDefault(): boolean {
+  return Root.Runtime.Runtime.queryParam('ci_disabledByDefault') === 'true';
+}
+
 function isFeatureEnabled(): boolean {
   return Root.Runtime.Runtime.queryParam('enableAida') === 'true';
 }
@@ -99,7 +122,7 @@ Common.Settings.registerSettingExtension({
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),
-  defaultValue: true,
+  defaultValue: isDisabledByDefault() ? false : true,
   reloadRequired: true,
   condition: isSettingAvailable,
   disabledCondition: () => {
@@ -108,6 +131,12 @@ Common.Settings.registerSettingExtension({
     }
     if (isAgeRestricted()) {
       return {disabled: true, reason: i18nString(UIStrings.ageRestricted)};
+    }
+    if (isGeoRestricted()) {
+      return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};
+    }
+    if (isPolicyRestricted()) {
+      return {disabled: true, reason: i18nString(UIStrings.policyRestricted)};
     }
     return {disabled: false};
   },

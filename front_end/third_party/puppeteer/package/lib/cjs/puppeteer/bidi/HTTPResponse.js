@@ -65,6 +65,12 @@ let BidiHTTPResponse = (() => {
             this.#request = request;
         }
         #initialize() {
+            if (this.#data.fromCache) {
+                this.#request
+                    .frame()
+                    ?.page()
+                    .trustedEmitter.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, this.#request);
+            }
             this.#request.frame()?.page().trustedEmitter.emit("response" /* PageEvent.Response */, this);
         }
         remoteAddress() {

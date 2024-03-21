@@ -43,7 +43,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         return this.#request.url;
     }
     resourceType() {
-        return this.initiator().type.toLowerCase();
+        throw new Errors_js_1.UnsupportedOperation();
     }
     method() {
         return this.#request.method;

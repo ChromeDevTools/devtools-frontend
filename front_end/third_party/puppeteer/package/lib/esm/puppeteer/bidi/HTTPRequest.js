@@ -40,7 +40,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#request.url;
     }
     resourceType() {
-        return this.initiator().type.toLowerCase();
+        throw new UnsupportedOperation();
     }
     method() {
         return this.#request.method;

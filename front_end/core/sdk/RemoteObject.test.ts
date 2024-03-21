@@ -4,6 +4,10 @@
 
 const {assert} = chai;
 
+import type * as Protocol from '../../generated/protocol.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+
 import * as SDK from './sdk.js';
 
 describe('RemoteObject', () => {
@@ -403,5 +407,67 @@ describe('RemoteObjectProperty', () => {
       assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /bar/}));
       assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /foo/}));
     });
+  });
+});
+
+describeWithMockConnection('RemoteError', () => {
+  let target: SDK.Target.Target;
+  let runtimeModel: SDK.RuntimeModel.RuntimeModel;
+
+  beforeEach(() => {
+    target = createTarget();
+    runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
+  });
+
+  it('throws on creation for non-error subtypes', () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+    assert.throws(() => SDK.RemoteObject.RemoteError.objectAsError(object));
+  });
+
+  it('caches the exception details', async () => {
+    const exceptionDetailsStub = sinon.stub(runtimeModel, 'getExceptionDetails').returns(Promise.resolve(undefined));
+    const object = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel, '1' as Protocol.Runtime.RemoteObjectId, 'object', 'error', {});
+    const error = SDK.RemoteObject.RemoteError.objectAsError(object);
+
+    assert.isUndefined(await error.exceptionDetails());
+    assert.isUndefined(await error.exceptionDetails());
+
+    assert.isTrue(exceptionDetailsStub.calledOnce);
+  });
+
+  it('caches the cause', async () => {
+    const object = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel, '1' as Protocol.Runtime.RemoteObjectId, 'object', 'error', {});
+    const getAllPropertiesStub =
+        sinon.stub(object, 'getAllProperties').returns(Promise.resolve({internalProperties: null, properties: null}));
+    const error = SDK.RemoteObject.RemoteError.objectAsError(object);
+
+    assert.isUndefined(await error.cause());
+    assert.isUndefined(await error.cause());
+
+    assert.isTrue(getAllPropertiesStub.calledOnce);
+  });
+
+  it('returns undefined if error has no "cause" property', async () => {
+    const object = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel, '1' as Protocol.Runtime.RemoteObjectId, 'object', 'error', {});
+    const properties = [new SDK.RemoteObject.RemoteObjectProperty(
+        'message', SDK.RemoteObject.RemoteObject.fromLocalObject('the message itself'))];
+    sinon.stub(object, 'getAllProperties').returns(Promise.resolve({internalProperties: null, properties}));
+    const error = SDK.RemoteObject.RemoteError.objectAsError(object);
+
+    assert.isUndefined(await error.cause());
+  });
+
+  it('returns the value of the "cause" property', async () => {
+    const object = new SDK.RemoteObject.RemoteObjectImpl(
+        runtimeModel, '1' as Protocol.Runtime.RemoteObjectId, 'object', 'error', {});
+    const causeValue = SDK.RemoteObject.RemoteObject.fromLocalObject('a string cause');
+    const properties = [new SDK.RemoteObject.RemoteObjectProperty('cause', causeValue)];
+    sinon.stub(object, 'getAllProperties').returns(Promise.resolve({internalProperties: null, properties}));
+    const error = SDK.RemoteObject.RemoteError.objectAsError(object);
+
+    assert.strictEqual(await error.cause(), causeValue);
   });
 });

@@ -896,26 +896,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
-    const errorStack = output.description || '';
+    const error = SDK.RemoteObject.RemoteError.objectAsError(output);
 
     // Combine the ExceptionDetails for this error object with the parsed Error#stack.
     // The Exceptiondetails include script IDs for stack frames, which allows more accurate
     // linking.
-    this.#formatErrorStackPromiseForTest = this.retrieveExceptionDetails(output).then(exceptionDetails => {
-      const errorSpan = this.tryFormatAsError(errorStack, exceptionDetails);
-      result.appendChild(errorSpan ?? this.linkifyStringAsFragment(errorStack));
+    this.#formatErrorStackPromiseForTest = error.exceptionDetails().then(exceptionDetails => {
+      const errorSpan = this.tryFormatAsError(error.errorStack, exceptionDetails);
+      result.appendChild(errorSpan ?? this.linkifyStringAsFragment(error.errorStack));
     });
 
     return result;
-  }
-
-  private async retrieveExceptionDetails(errorObject: SDK.RemoteObject.RemoteObject):
-      Promise<Protocol.Runtime.ExceptionDetails|undefined> {
-    const runtimeModel = this.message.runtimeModel();
-    if (runtimeModel && errorObject.objectId) {
-      return runtimeModel.getExceptionDetails(errorObject.objectId);
-    }
-    return undefined;
   }
 
   private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): HTMLElement {

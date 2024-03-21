@@ -1139,6 +1139,57 @@ export class RemoteFunction {
   }
 }
 
+export class RemoteError {
+  readonly #object: RemoteObject;
+
+  #exceptionDetails?: Promise<Protocol.Runtime.ExceptionDetails|undefined>;
+  #cause?: Promise<RemoteObject|undefined>;
+
+  private constructor(object: RemoteObject) {
+    this.#object = object;
+  }
+
+  static objectAsError(object: RemoteObject): RemoteError {
+    if (object.subtype !== 'error') {
+      throw new Error(`Object of type ${object.subtype} is not an error`);
+    }
+    return new RemoteError(object);
+  }
+
+  get errorStack(): string {
+    return this.#object.description ?? '';
+  }
+
+  exceptionDetails(): Promise<Protocol.Runtime.ExceptionDetails|undefined> {
+    if (!this.#exceptionDetails) {
+      this.#exceptionDetails = this.#lookupExceptionDetails();
+    }
+    return this.#exceptionDetails;
+  }
+
+  #lookupExceptionDetails(): Promise<Protocol.Runtime.ExceptionDetails|undefined> {
+    if (this.#object.objectId) {
+      return this.#object.runtimeModel().getExceptionDetails(this.#object.objectId);
+    }
+    return Promise.resolve(undefined);
+  }
+
+  cause(): Promise<RemoteObject|undefined> {
+    if (!this.#cause) {
+      this.#cause = this.#lookupCause();
+    }
+    return this.#cause;
+  }
+
+  async #lookupCause(): Promise<RemoteObject|undefined> {
+    const allProperties =
+        await this.#object.getAllProperties(false /* accessorPropertiesOnly */, false /* generatePreview */);
+    const cause = allProperties.properties?.find(prop => prop.name === 'cause');
+
+    return cause?.value;
+  }
+}
+
 const descriptionLengthParenRegex = /\(([0-9]+)\)/;
 const descriptionLengthSquareRegex = /\[([0-9]+)\]/;
 

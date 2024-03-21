@@ -58,7 +58,7 @@ describe('The Console Tab', function() {
       });
       assert.include(
           evaluateResult || '', '\'unsafe-eval\' is not an allowed source of script',
-          'Didn\'t find expected CSP error message');
+          'Didn\'t find expected CSP error message in ' + evaluateResult);
     });
   });
 });

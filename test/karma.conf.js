@@ -140,16 +140,41 @@ for (const pattern of TEST_FILES) {
   }
 }
 
+function* formatDiff(diffBlocks, onSame, onAdded, onRemoved) {
+  for (const block of diffBlocks) {
+    const lines = block.value.split('\n').filter(l => l.length > 0);
+    if (!block.added && !block.removed && lines.length > 3) {
+      yield onSame(lines[0]);
+      yield onSame('  ...');
+      yield onSame(lines[lines.length - 1]);
+    } else {
+      for (const line of lines) {
+        if (block.added) {
+          yield onAdded(line);
+        } else if (block.removed) {
+          yield onRemoved(line);
+        } else {
+          yield onSame(line);
+        }
+      }
+    }
+  }
+}
+
 const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
+  this.USE_COLORS = true;
+
   const capturedLog = [];
+  const diff = require('diff');
+  const chalk = require('chalk');
   this.onBrowserLog = (browser, log, type) => {
     capturedLog.push({log, type});
   };
 
   const specComplete = (browser, result) => {
-    const {suite, description, log, startTime, endTime, success, skipped} = result;
+    const {suite, description, log, startTime, endTime, success, skipped, assertionErrors} = result;
     const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
     const expected = success || skipped;
     const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
@@ -164,12 +189,42 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
     let summaryHtml = undefined;
     if (!expected || consoleLog.length > 0) {
       const messages = [...consoleLog, ...log.map(formatError)];
+
+      const assertionDiff = assertionErrors && assertionErrors.length > 0 ?
+          diff.diffLines(`${assertionErrors[0].expected}`, `${assertionErrors[0].actual}`) :
+          [];
+
       // Prepare resultsdb summary
-      summaryHtml = messages.map(m => `<p><pre>${m}</pre></p>`).join('\n');
+      const summaryLines = messages.map(m => `<p><pre>${m}</pre></p>`);
+      const htmlDiffLines = Array.from(formatDiff(
+          assertionDiff, same => `<pre style="margin: 0;"> ${same}</pre>`,
+          actual => `<pre style="color: green;margin: 0;">+${actual}</pre>`,
+          expected => `<pre style="color: red;margin: 0;">-${expected}</pre>`));
+      if (htmlDiffLines.length > 0) {
+        summaryLines.push(
+            '<p>',
+            '<pre style="color: red;margin: 0;">- expected</pre>',
+            '<pre style="color: green;margin: 0;">+ actual</pre>',
+            '</p>',
+            '<p>',
+        );
+        summaryLines.push(...htmlDiffLines);
+        summaryLines.push('</p>');
+      }
+      summaryHtml = summaryLines.join('\n');
 
       // Log to console
-      const header = `==== ${status}: ${testId}`;
-      this.write(`${header}\n${messages.join('\n\n')}\n${'='.repeat(header.length)}\n\n`);
+      const consoleHeader = `==== ${status}: ${testId}`;
+      this.write(`${consoleHeader}\n${messages.join('\n\n')}\n`);
+      const consoleDiffLines = Array.from(formatDiff(
+          assertionDiff, same => ` ${same}`, actual => chalk.green(`+${actual}`),
+          expected => chalk.red(`-${expected}`)));
+      if (consoleDiffLines.length > 0) {
+        this.write(`${chalk.red('- expected')}\n`);
+        this.write(`${chalk.green('+ actual')}\n`);
+        this.write(`\n${consoleDiffLines.join('\n')}\n`);
+      }
+      this.write(`${'='.repeat(consoleHeader.length)}\n\n`);
     } else if (skipped) {
       this.write(`==== ${status}: ${testId}\n\n`);
     }

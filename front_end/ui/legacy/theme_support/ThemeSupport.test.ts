@@ -23,7 +23,7 @@ describe('ThemeSupport', () => {
       colorsLink.rel = 'stylesheet';
       doc.head.appendChild(colorsLink);
 
-      void ThemeSupport.ThemeSupport.fetchColors(doc);
+      ThemeSupport.ThemeSupport.fetchColors(doc);
 
       const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
       assert.notEqual(updatedHref, originalColorHref);

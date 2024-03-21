@@ -164,33 +164,27 @@ export class ThemeSupport extends EventTarget {
     themeValueByTargetByName.clear();
   }
 
-  static async fetchColors(document: Document|undefined): Promise<void> {
+  static fetchColors(document?: Document): void {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       return;
     }
     if (!document) {
       return;
     }
+
+    const oldColorsCssLink = document.querySelector('link[href*=\'//theme/colors.css\']');
     const newColorsCssLink = document.createElement('link');
     newColorsCssLink.setAttribute(
         'href', `devtools://theme/colors.css?sets=ui,chrome&version=${(new Date()).getTime().toString()}`);
     newColorsCssLink.setAttribute('rel', 'stylesheet');
     newColorsCssLink.setAttribute('type', 'text/css');
-    const newColorsLoaded = new Promise<boolean>(resolve => {
-      newColorsCssLink.onload = () => {
-        ThemeSupport.instance().applyTheme(document);
-        resolve(true);
-      };
-      newColorsCssLink.onerror = () => {
-        resolve(false);
-      };
-    });
-    const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
-    const colorCssNode = document.querySelector(COLORS_CSS_SELECTOR);
+    newColorsCssLink.onload = () => {
+      if (oldColorsCssLink) {
+        oldColorsCssLink.remove();
+      }
+      ThemeSupport.instance().applyTheme(document);
+    };
     document.body.appendChild(newColorsCssLink);
-    if (colorCssNode && await newColorsLoaded) {
-      colorCssNode.remove();
-    }
   }
 }
 

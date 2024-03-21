@@ -109,21 +109,4 @@ performActions @ resource-errors.html:8
       },
     ]);
   });
-
-  it('shows Error.cause', async () => {
-    await goToResource('sources/error-with-cause.html');
-    await navigateToConsoleTab();
-    await showVerboseMessages();
-    await waitForConsoleMessagesToBeNonEmpty(/* numberOfMessages */ 1);
-
-    const messages = await getStructuredConsoleMessages();
-    assert.lengthOf(messages, 1);
-    assert.strictEqual(messages[0].message, `Uncaught Error: rethrower
-    at caller (error-with-cause.html:20:13)
-    at error-with-cause.html:24:3Caused by: Error: original
-    at foo (error-with-cause.html:9:11)
-    at bar (error-with-cause.html:13:5)
-    at caller (error-with-cause.html:18:7)
-    at error-with-cause.html:24:3`);
-  });
 });

@@ -896,29 +896,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
+    const error = SDK.RemoteObject.RemoteError.objectAsError(output);
 
     // Combine the ExceptionDetails for this error object with the parsed Error#stack.
     // The Exceptiondetails include script IDs for stack frames, which allows more accurate
     // linking.
-    const formatErrorStack =
-        async(errorObj: SDK.RemoteObject.RemoteObject, includeCausedByPrefix: boolean): Promise<void> => {
-      const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
-      const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-      const errorElement =
-          this.tryFormatAsError(error.errorStack, details) ?? this.linkifyStringAsFragment(error.errorStack);
-      if (includeCausedByPrefix) {
-        errorElement.prepend('Caused by: ');
-      }
-      result.appendChild(errorElement);
-
-      if (cause && cause.subtype === 'error') {
-        await formatErrorStack(cause, /* includeCausedByPrefix */ true);
-      } else if (cause && cause.type === 'string') {
-        result.append(`Caused by: ${cause.value}`);
-      }
-    };
-
-    this.#formatErrorStackPromiseForTest = formatErrorStack(output, /* includeCausedByPrefix */ false);
+    this.#formatErrorStackPromiseForTest = error.exceptionDetails().then(exceptionDetails => {
+      const errorSpan = this.tryFormatAsError(error.errorStack, exceptionDetails);
+      result.appendChild(errorSpan ?? this.linkifyStringAsFragment(error.errorStack));
+    });
 
     return result;
   }
@@ -1654,8 +1640,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     const debuggerModel = runtimeModel.debuggerModel();
-    const formattedResult = document.createElement('div');
-
+    const formattedResult = document.createElement('span');
     for (let i = 0; i < linkInfos.length; ++i) {
       const newline = i < linkInfos.length - 1 ? '\n' : '';
       const {line, link} = linkInfos[i];

@@ -14,11 +14,14 @@ import '../../panels/network/network-meta.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Main from '../main/main.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
+import type * as Sources from '../../panels/sources/sources.js';
 
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
@@ -74,6 +77,42 @@ SDK.SDKModel.SDKModel.register(
     early: true,
   },
 );
+
+const UIStrings = {
+  /**
+   *@description Title of the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
+   */
+  networkTitle: 'React Native',
+  /**
+   *@description Command for showing the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
+   */
+  showReactNative: 'Show React Native',
+};
+
+const str_ = i18n.i18n.registerUIStrings('entrypoints/rn_inspector/rn_inspector.ts', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+let loadedSourcesModule: (typeof Sources|undefined);
+
+async function loadSourcesModule(): Promise<typeof Sources> {
+  if (!loadedSourcesModule) {
+    loadedSourcesModule = await import('../../panels/sources/sources.js');
+  }
+  return loadedSourcesModule;
+}
+
+UI.ViewManager.registerViewExtension({
+  location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
+  id: 'navigator-network',
+  title: i18nLazyString(UIStrings.networkTitle),
+  commandPrompt: i18nLazyString(UIStrings.showReactNative),
+  order: 2,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  async loadView() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.NetworkNavigatorView.instance();
+  },
+});
 
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});

@@ -20,17 +20,19 @@ export class DynamicTheming {
     newColorsCssLink.setAttribute('rel', 'stylesheet');
     newColorsCssLink.setAttribute('type', 'text/css');
     const newColorsLoaded = new Promise<boolean>(resolve => {
-      newColorsCssLink.onload = resolve.bind(this, true);
-      newColorsCssLink.onerror = resolve.bind(this, false);
+      newColorsCssLink.onload = () => {
+        ThemeSupport.ThemeSupport.instance().applyTheme(document);
+        resolve(true);
+      };
+      newColorsCssLink.onerror = () => {
+        resolve(false);
+      };
     });
     const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
     const colorCssNode = document.querySelector(COLORS_CSS_SELECTOR);
     document.body.appendChild(newColorsCssLink);
-    if (await newColorsLoaded) {
-      if (colorCssNode) {
-        colorCssNode.remove();
-      }
-      ThemeSupport.ThemeSupport.instance().applyTheme(document);
+    if (colorCssNode && await newColorsLoaded) {
+      colorCssNode.remove();
     }
   }
 }

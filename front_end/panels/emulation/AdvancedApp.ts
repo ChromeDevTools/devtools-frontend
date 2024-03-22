@@ -27,9 +27,8 @@ export class AdvancedApp implements Common.App.App {
         UI.DockController.Events.BeforeDockSideChanged, this.openToolboxWindow, this);
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, async () => {
-          await UI.Utils.DynamicTheming.fetchColors(this.toolboxDocument);
-        }, this);
+        Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
+        () => UI.Utils.DynamicTheming.fetchColors(this.toolboxDocument));
   }
 
   /**

@@ -19,7 +19,7 @@ describe('DynamicTheming', () => {
     colorsLink.rel = 'stylesheet';
     doc.head.appendChild(colorsLink);
 
-    void UI.Utils.DynamicTheming.fetchColors(doc);
+    UI.Utils.DynamicTheming.fetchColors(doc);
 
     const updatedHref = doc.body.querySelector(COLORS_CSS_SELECTOR)!.getAttribute('href');
     assert.notEqual(updatedHref, originalColorHref);

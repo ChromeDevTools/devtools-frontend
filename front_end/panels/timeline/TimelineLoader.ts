@@ -40,6 +40,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private filter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null;
   #traceIsCPUProfile: boolean;
   #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+  #metadata: TraceEngine.Types.File.MetaData|null;
 
   #traceFinalizedCallbackForTest?: () => void;
   #traceFinalizedPromiseForTest: Promise<void>;
@@ -52,6 +53,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     this.firstRawChunk = true;
     this.filter = null;
     this.#traceIsCPUProfile = false;
+    this.#metadata = null;
 
     this.#traceFinalizedPromiseForTest = new Promise<void>(resolve => {
       this.#traceFinalizedCallbackForTest = resolve;
@@ -164,7 +166,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     if (this.client) {
       await this.client.loadingComplete(
           /* collectedEvents */[], /* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
-          /* recordingStartTime= */ null);
+          /* recordingStartTime= */ null, /* metadata= */ null);
       this.client = null;
     }
     if (this.canceledCallback) {
@@ -215,6 +217,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
         this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS));
         return;
       }
+
+      if (trace.metadata) {
+        this.#metadata = trace.metadata as TraceEngine.Types.File.MetaData;
+      }
       return Promise.resolve();
     }
   }
@@ -242,7 +248,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     (this.tracingModel as TraceEngine.Legacy.TracingModel).tracingComplete();
     await (this.client as Client)
         .loadingComplete(
-            this.#collectedEvents, this.tracingModel, this.filter, this.isCpuProfile(), /* recordingStartTime=*/ null);
+            this.#collectedEvents, this.tracingModel, this.filter, this.isCpuProfile(), /* recordingStartTime=*/ null,
+            this.#metadata);
     this.#traceFinalizedCallbackForTest?.();
   }
 

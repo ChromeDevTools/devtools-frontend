@@ -3,10 +3,16 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
-export async function forNewRecording(recordStartTime?: number): Promise<Types.File.MetaData> {
+export async function forNewRecording(isCpuProfile: boolean, recordStartTime?: number): Promise<Types.File.MetaData> {
   try {
+    if (isCpuProfile) {
+      // For CPU profile, only specify data origin
+      return {
+        dataOrigin: Types.File.DataOrigin.CPUProfile,
+      };
+    }
     const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 
     // If the CPU Throttling manager has yet to have its primary page target
@@ -40,6 +46,7 @@ export async function forNewRecording(recordStartTime?: number): Promise<Types.F
       cpuThrottling,
       networkThrottling: networkTitle,
       hardwareConcurrency,
+      dataOrigin: Types.File.DataOrigin.TraceEvents,
     };
   } catch {
     // If anything went wrong, it does not really matter. The impact is that we

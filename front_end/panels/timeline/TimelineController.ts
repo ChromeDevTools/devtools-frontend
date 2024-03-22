@@ -210,7 +210,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     this.tracingModel.tracingComplete();
     await this.client.loadingComplete(
         this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
-        this.#recordingStartTime);
+        this.#recordingStartTime, /* metadata= */ null);
     this.client.loadingCompleteForTest();
   }
 
@@ -232,7 +232,7 @@ export interface Client {
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null, isCpuProfile: boolean,
-      recordingStartTime: number|null): Promise<void>;
+      recordingStartTime: number|null, metadata: TraceEngine.Types.File.MetaData|null): Promise<void>;
   loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {

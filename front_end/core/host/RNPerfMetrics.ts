@@ -5,26 +5,20 @@
 
 export type RNReliabilityEventListener = (event: ReactNativeChromeDevToolsEvent) => void;
 
-type UnsunscribeFn = () => void;
-export type RNPerfMetrics = {
-  addEventListener: (listener: RNReliabilityEventListener) => UnsunscribeFn,
-  removeAllEventListeners: () => void,
-  sendEvent: (event: ReactNativeChromeDevToolsEvent) => void,
-};
-
 let instance: RNPerfMetrics|null = null;
 
 export function getInstance(): RNPerfMetrics {
   if (instance === null) {
-    instance = new RNPerfMetricsImpl();
+    instance = new RNPerfMetrics();
   }
   return instance;
 }
 
-class RNPerfMetricsImpl implements RNPerfMetrics {
+type UnsubscribeFn = () => void;
+class RNPerfMetrics {
   #listeners: Set<RNReliabilityEventListener> = new Set();
 
-  addEventListener(listener: RNReliabilityEventListener): () => void {
+  addEventListener(listener: RNReliabilityEventListener): UnsubscribeFn {
     this.#listeners.add(listener);
 
     const unsubscribe = (): void => {

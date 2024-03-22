@@ -2141,11 +2141,6 @@ export const NativeFunctions = [
   },
   {
     name: "setData",
-    signatures: [["data"]],
-    receivers: ["PendingPostBeacon"]
-  },
-  {
-    name: "setData",
     signatures: [["key","data"]],
     receivers: ["LockScreenData"]
   },
@@ -6638,18 +6633,6 @@ export const NativeFunctions = [
   {
     name: "getHighEntropyValues",
     signatures: [["hints"]]
-  },
-  {
-    name: "PendingGetBeacon",
-    signatures: [["url","?options"]]
-  },
-  {
-    name: "setURL",
-    signatures: [["url"]]
-  },
-  {
-    name: "PendingPostBeacon",
-    signatures: [["url","?options"]]
   },
   {
     name: "ReportingObserver",

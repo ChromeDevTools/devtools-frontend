@@ -84,6 +84,7 @@ export class AdvancedApp implements Common.App.App {
 
   deviceModeEmulationFrameLoaded(toolboxDocument: Document): void {
     ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
+    ThemeSupport.ThemeSupport.fetchColors(toolboxDocument);
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
     });

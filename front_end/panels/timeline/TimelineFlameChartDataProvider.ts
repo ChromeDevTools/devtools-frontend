@@ -1190,7 +1190,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let desiredBoxStartX = timeToPixel(entry.processingStart);
     const desiredBoxEndX = timeToPixel(entry.processingEnd);
 
-    // If the entry has no processing time, ensure the box is 1px wide so at least it is visible.
+    // If the entry has no processing duration, ensure the box is 1px wide so at least it is visible.
     if (entry.processingEnd - entry.processingStart === 0) {
       desiredBoxStartX -= 1;
     }

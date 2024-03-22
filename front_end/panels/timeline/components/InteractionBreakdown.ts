@@ -14,9 +14,9 @@ const UIStrings = {
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's thread processing time in the detail view.
+   *@description Text shown next to the interaction event's thread processing duration in the detail view.
    */
-  processingTime: 'Processing time',
+  processingDuration: 'Processing duration',
   /**
    *@description Text shown next to the interaction event's presentation delay time in the detail view.
    */
@@ -54,8 +54,8 @@ export class InteractionBreakdown extends HTMLElement {
         LitHtml.html`<ul class="breakdown">
                      <li data-entry="input-delay">${i18nString(UIStrings.inputDelay)}<span class="value">${
             inputDelay}</span></li>
-                     <li data-entry="processing-time">${i18nString(UIStrings.processingTime)}<span class="value">${
-            mainThreadTime}</span></li>
+                     <li data-entry="processing-duration">${
+            i18nString(UIStrings.processingDuration)}<span class="value">${mainThreadTime}</span></li>
                      <li data-entry="presentation-delay">${
             i18nString(UIStrings.presentationDelay)}<span class="value">${presentationDelay}</span></li>
                    </ul>

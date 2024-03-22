@@ -486,7 +486,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: '1ms',
         },
         {
-          title: 'Processing time',
+          title: 'Processing duration',
           value: '977ms',
         },
         {

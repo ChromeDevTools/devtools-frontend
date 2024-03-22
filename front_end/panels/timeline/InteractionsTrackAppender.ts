@@ -113,7 +113,7 @@ export class InteractionsTrackAppender implements TrackAppender {
           type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
           startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
           // Interaction events have whiskers, so we do not want to candy stripe
-          // the entire duration. The box represents processing time, so we only
+          // the entire duration. The box represents processing duration, so we only
           // candystripe up to the end of processing.
           endAtTime: entry.processingEnd,
         },

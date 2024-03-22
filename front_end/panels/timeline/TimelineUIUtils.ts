@@ -88,9 +88,9 @@ const UIStrings = {
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's thread processing time in the detail view.
+   *@description Text shown next to the interaction event's thread processing duration in the detail view.
    */
-  processingTime: 'Processing time',
+  processingDuration: 'Processing duration',
   /**
    *@description Text shown next to the interaction event's presentation delay time in the detail view.
    */
@@ -559,7 +559,6 @@ type LinkifyLocationOptions = {
 };
 
 export class TimelineUIUtils {
-
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     if (!TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
       return UI.UIUtils.beautifyFunctionName(frame.functionName);
@@ -1549,7 +1548,7 @@ export class TimelineUIUtils {
           const presentationDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(payload.presentationDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.interactionID), payload.interactionId);
           contentHelper.appendTextRow(i18nString(UIStrings.inputDelay), inputDelay);
-          contentHelper.appendTextRow(i18nString(UIStrings.processingTime), mainThreadTime);
+          contentHelper.appendTextRow(i18nString(UIStrings.processingDuration), mainThreadTime);
           contentHelper.appendTextRow(i18nString(UIStrings.presentationDelay), presentationDelay);
         }
         break;

@@ -82,15 +82,29 @@ const consoleBuiltinFunctions = [
 ];
 const consoleBuiltinVariables = ['$', '$$', '$x', '$0', '$_'];
 
+// React Native currently doesn't support any of the builtins comprising the
+// Console Utilities API, but it likely will in the future. This Set is the
+// allowlist for functions/variables in the global console scope out of
+// consoleBuiltinFunctions and consoleBuiltinVariables above.
+const reactNativeBuiltinsAllowlist = new Set();
+const reactNativeBaseCompletions = new CompletionSet();
+
 const baseCompletions = new CompletionSet();
 for (const kw of javascriptKeywords) {
   baseCompletions.add({label: kw, type: 'keyword'});
+  reactNativeBaseCompletions.add({label: kw, type: 'keyword'});
 }
 for (const builtin of consoleBuiltinFunctions) {
   baseCompletions.add({label: builtin, type: 'function'});
+  if (reactNativeBuiltinsAllowlist.has(builtin)) {
+    reactNativeBaseCompletions.add({label: builtin, type: 'function'});
+  }
 }
 for (const varName of consoleBuiltinVariables) {
   baseCompletions.add({label: varName, type: 'variable'});
+  if (reactNativeBuiltinsAllowlist.has(varName)) {
+    reactNativeBaseCompletions.add({label: varName, type: 'variable'});
+  }
 }
 
 const dontCompleteIn = new Set([
@@ -435,11 +449,17 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
     return cached;
   }
 
+  const baseCompletionsForTarget = Root.Runtime.experiments.isEnabled(
+    Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI
+  )
+    ? reactNativeBaseCompletions
+    : baseCompletions;
+  
   const context = getExecutionContext();
   if (!context) {
-    return baseCompletions;
+    return baseCompletionsForTarget;
   }
-  const result = baseCompletions.copy();
+  const result = baseCompletionsForTarget.copy();
 
   const fetchNames = completePropertiesInner('globalThis', context).then(fromWindow => {
     return context.globalLexicalScopeNames().then(globals => {

@@ -7,26 +7,32 @@ import * as ThemeSupport from '../theme_support/theme_support.js';
 
 // export class instead of function to make sinon spying possible (it cannot mock ES modules)
 export class DynamicTheming {
-  static fetchColors(document?: Document): void {
+  static async fetchColors(document: Document|undefined): Promise<void> {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       return;
     }
     if (!document) {
       return;
     }
-
-    const oldColorsCssLink = document.querySelector('link[href*=\'//theme/colors.css\']');
     const newColorsCssLink = document.createElement('link');
     newColorsCssLink.setAttribute(
         'href', `devtools://theme/colors.css?sets=ui,chrome&version=${(new Date()).getTime().toString()}`);
     newColorsCssLink.setAttribute('rel', 'stylesheet');
     newColorsCssLink.setAttribute('type', 'text/css');
-    newColorsCssLink.onload = () => {
-      if (oldColorsCssLink) {
-        oldColorsCssLink.remove();
-      }
-      ThemeSupport.ThemeSupport.instance().applyTheme(document);
-    };
+    const newColorsLoaded = new Promise<boolean>(resolve => {
+      newColorsCssLink.onload = () => {
+        ThemeSupport.ThemeSupport.instance().applyTheme(document);
+        resolve(true);
+      };
+      newColorsCssLink.onerror = () => {
+        resolve(false);
+      };
+    });
+    const COLORS_CSS_SELECTOR = 'link[href*=\'//theme/colors.css\']';
+    const colorCssNode = document.querySelector(COLORS_CSS_SELECTOR);
     document.body.appendChild(newColorsCssLink);
+    if (colorCssNode && await newColorsLoaded) {
+      colorCssNode.remove();
+    }
   }
 }

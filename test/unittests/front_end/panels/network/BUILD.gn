@@ -15,6 +15,7 @@ ts_library("network") {
     "NetworkPanel_test.ts",
     "NetworkSearchScope_test.ts",
     "RequestCookiesView_test.ts",
+    "RequestHTMLView_test.ts",
     "RequestPayloadView_test.ts",
     "RequestPreviewView_test.ts",
     "RequestResponseView_test.ts",

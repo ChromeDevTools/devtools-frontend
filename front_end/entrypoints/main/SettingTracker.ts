@@ -3,27 +3,48 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
+
+const consoleInsightsToggledSettingName = 'console-insights-toggled';
+// Keep setting names in sync with front_end/panels/explain/*.
+const consoleInsightsEnabledSettingName = 'console-insights-enabled';
 
 export class SettingTracker {
   constructor() {
     this.#trackConsoleInsightSettingChange();
+    this.#syncConsoleInsightSettingsWithQueryParams();
   }
 
   #trackConsoleInsightSettingChange(): void {
-    // Keep setting names in sync with front_end/panels/explain/*.
-    let setting: Common.Settings.Setting<unknown>;
-    try {
-      setting = Common.Settings.moduleSetting('console-insights-enabled');
-    } catch {
-      return;
-    }
-    setting.addChangeListener(() => {
+    const setting = this.#getModuleSetting(consoleInsightsEnabledSettingName);
+    setting?.addChangeListener(() => {
       // If setting was turned on, reset the consent.
       if (setting.get()) {
         Common.Settings.Settings.instance()
             .createLocalSetting('console-insights-onboarding-finished', false)
             .set(false);
       }
+      // If console-insights-enabled was edited by the user, it becomes "sticky",
+      // which means Finch won't change the setting state.
+      Common.Settings.Settings.instance().createLocalSetting(consoleInsightsToggledSettingName, false).set(true);
     });
+  }
+
+  #getModuleSetting(name: string): Common.Settings.Setting<unknown>|undefined {
+    try {
+      return Common.Settings.moduleSetting(name);
+    } catch {
+      return;
+    }
+  }
+
+  #syncConsoleInsightSettingsWithQueryParams(): void {
+    const toggledSetting =
+        Common.Settings.Settings.instance().createLocalSetting(consoleInsightsToggledSettingName, false);
+    const enabledSetting = this.#getModuleSetting(consoleInsightsEnabledSettingName);
+    if (!toggledSetting.get()) {
+      // If the setting was not toggled, update according to ci_disabledByDefault.
+      enabledSetting?.set(Root.Runtime.Runtime.queryParam('ci_disabledByDefault') !== 'true');
+    }
   }
 }

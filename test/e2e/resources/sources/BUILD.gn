@@ -32,6 +32,7 @@ copy_to_gen("sources") {
     "dynamic-loading-css.html",
     "dynamic-loading-javascript.html",
     "dynamic.css",
+    "error-with-cause.html",
     "error-with-sourcemap.html",
     "error-with-sourcemap.js",
     "error-with-sourcemap.js.map",

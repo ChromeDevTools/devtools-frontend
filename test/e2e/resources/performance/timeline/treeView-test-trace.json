@@ -249,7 +249,7 @@
   {"args":{"number":16},"cat":"__metadata","name":"num_cpus","ph":"M","pid":21244,"tid":11744,"ts":114480021826},
   {"args":{"sort_index":-5},"cat":"__metadata","name":"process_sort_index","ph":"M","pid":21244,"tid":11744,"ts":114480021831},
   {"args":{"labels":"http://localhost:8080/"},"cat":"__metadata","name":"process_labels","ph":"M","pid":21244,"tid":11744,"ts":114480021832},
-  {"args":{"sort_index":-1},"cat":"__metadata","name":"thread_sort_index","ph":"M","pid":21244,"tid":11744,"ts":114480021833},
+  {"args":{"sort_index":-1},"cat":"__metadata","name":"thread_sort_index","ph":"M","pid":21244,"tid":11744,"ts":114480021833}
 ],
 "metadata": {
   "source": "DevTools",

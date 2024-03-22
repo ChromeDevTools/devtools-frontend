@@ -78,10 +78,10 @@ describeWithEnvironment('TimelineLoader', () => {
     const loader = await Timeline.TimelineLoader.TimelineLoader.loadFromFile(file, client);
     await loader.traceFinalizedForTest();
     assert.isTrue(loadingStartedSpy.calledOnce);
-    // Exact number is deterministic so we can assert, but the fact it was 28
+    // Exact number is deterministic so we can assert, but the fact it was 29
     // calls doesn't really matter. We just want to check it got called "a
     // bunch of times".
-    assert.strictEqual(loadingProgressSpy.callCount, 28);
+    assert.strictEqual(loadingProgressSpy.callCount, 29);
     assert.isTrue(processingStartedSpy.calledOnce);
     assert.isTrue(loadingCompleteSpy.calledOnce);
 
@@ -106,9 +106,9 @@ describeWithEnvironment('TimelineLoader', () => {
     const loader = await Timeline.TimelineLoader.TimelineLoader.loadFromFile(file, client);
     await loader.traceFinalizedForTest();
     assert.isTrue(loadingStartedSpy.calledOnce);
-    // For the CPU Profile we are testing, loadingProgress will be called only twice, because the
+    // For the CPU Profile we are testing, loadingProgress will be called three times, because the
     // file is not that big.
-    assert.strictEqual(loadingProgressSpy.callCount, 2);
+    assert.strictEqual(loadingProgressSpy.callCount, 3);
     assert.isTrue(processingStartedSpy.calledOnce);
     assert.isTrue(loadingCompleteSpy.calledOnce);
 

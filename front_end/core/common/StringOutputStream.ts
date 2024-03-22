@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 export interface OutputStream {
-  write(data: string): Promise<void>;
+  write(data: string, endOfFile?: boolean): Promise<void>;
   close(): Promise<void>;
 }
 

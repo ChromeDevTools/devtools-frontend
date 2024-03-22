@@ -93,7 +93,7 @@
   border-bottom: 1px solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;
-  background-color: var(--app-color-toolbar-background);
+  background-color: var(--sys-color-cdt-base);
 }
 
 .tabbed-pane-header-contents {

@@ -37,8 +37,12 @@ function findFirstEntry(
 
 describe('AnnotationsManager', () => {
   it('correctly generates an entry hash', async function() {
-    const manager = AnnotationsManager.AnnotationsManager.AnnotationsManager.instance();
     const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
+    const manager = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
+        {entries: data.Renderer.allTraceEntries});
+    if (!manager) {
+      throw new Error('Manager does not exist.');
+    }
     const mainThread = getMainThread(data.Renderer);
     assert.exists(manager);
     // Find first 'Timer Fired' entry in the trace

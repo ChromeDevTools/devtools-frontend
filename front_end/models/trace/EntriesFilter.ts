@@ -128,6 +128,13 @@ export class EntriesFilter {
     return this.#invisibleEntries;
   }
 
+  /**
+   * Sets invisible entries. Called when a trace with annotations is loaded and some entries are set as hidden.
+   **/
+  setInvisibleEntries(entries: Types.TraceEvents.TraceEventData[]): void {
+    this.#invisibleEntries.push(...entries);
+  }
+
   inEntryInvisible(entry: Types.TraceEvents.TraceEventData): boolean {
     return this.#invisibleEntries.includes(entry);
   }

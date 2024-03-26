@@ -45,12 +45,7 @@ export class HeapSnapshotLoader {
   #snapshot?: {[x: string]: any};
   #array!: number[]|Uint32Array|null;
   #arrayIndex!: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #json?: any;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #jsonTokenizer?: any;
+  #json: string = '';
   constructor(dispatcher: HeapSnapshotWorkerDispatcher) {
     this.#reset();
     this.#progress = new HeapSnapshotProgress(dispatcher);
@@ -203,16 +198,17 @@ export class HeapSnapshotLoader {
 
     this.#progress.updateStatus('Loading snapshot info…');
     const json = this.#json.slice(snapshotTokenIndex + snapshotToken.length + 1);
-    this.#jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
-      this.#json = this.#jsonTokenizer.remainder();
-      this.#jsonTokenizer = null;
+    let jsonTokenizerDone = false;
+    const jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
+      this.#json = jsonTokenizer.remainder();
+      jsonTokenizerDone = true;
 
       this.#snapshot = this.#snapshot || {};
       this.#snapshot.snapshot = (JSON.parse(metaJSON) as HeapSnapshotHeader);
     });
-    this.#jsonTokenizer.write(json);
-    while (this.#jsonTokenizer) {
-      this.#jsonTokenizer.write(await this.#fetchChunk());
+    jsonTokenizer.write(json);
+    while (!jsonTokenizerDone) {
+      jsonTokenizer.write(await this.#fetchChunk());
     }
 
     this.#snapshot = this.#snapshot || {};

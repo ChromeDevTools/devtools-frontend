@@ -317,18 +317,15 @@ export class RemoteObjectImpl extends RemoteObject {
   hasChildrenInternal: boolean;
   readonly #previewInternal: Protocol.Runtime.ObjectPreview|undefined;
   readonly #unserializableValueInternal: string|undefined;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly #valueInternal: any;
+  readonly #valueInternal: typeof RemoteObject.prototype.value;
   readonly #customPreviewInternal: Protocol.Runtime.CustomPreview|null;
   readonly #classNameInternal: string|null;
 
   constructor(
       runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, type: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subtype: string|undefined, value: any, unserializableValue?: string, description?: string,
-      preview?: Protocol.Runtime.ObjectPreview, customPreview?: Protocol.Runtime.CustomPreview, className?: string) {
+      subtype: string|undefined, value: typeof RemoteObject.prototype.value, unserializableValue?: string,
+      description?: string, preview?: Protocol.Runtime.ObjectPreview, customPreview?: Protocol.Runtime.CustomPreview,
+      className?: string) {
     super();
 
     this.runtimeModelInternal = runtimeModel;
@@ -388,9 +385,7 @@ export class RemoteObjectImpl extends RemoteObject {
     return this.#subtypeInternal;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override get value(): any {
+  override get value(): typeof RemoteObject.prototype.value {
     return this.#valueInternal;
   }
 
@@ -644,10 +639,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
 
   constructor(
       runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, scopeRef: ScopeRef, type: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subtype: string|undefined, value: any, unserializableValue?: string, description?: string,
-      preview?: Protocol.Runtime.ObjectPreview) {
+      subtype: string|undefined, value: typeof RemoteObjectImpl.prototype.value, unserializableValue?: string,
+      description?: string, preview?: Protocol.Runtime.ObjectPreview) {
     super(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview);
     this.#scopeRef = scopeRef;
     this.#savedScopeProperties = undefined;
@@ -792,15 +785,11 @@ export class RemoteObjectProperty {
 // or functions.
 
 export class LocalJSONObject extends RemoteObject {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  valueInternal: any;
+  valueInternal: typeof RemoteObject.prototype.value;
   #cachedDescription!: string;
   #cachedChildren!: RemoteObjectProperty[];
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(value: any) {
+  constructor(value: typeof RemoteObject.prototype.value) {
     super();
     this.valueInternal = value;
   }
@@ -809,9 +798,7 @@ export class LocalJSONObject extends RemoteObject {
     return undefined;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override get value(): any {
+  override get value(): typeof RemoteObject.prototype.value {
     return this.valueInternal;
   }
 

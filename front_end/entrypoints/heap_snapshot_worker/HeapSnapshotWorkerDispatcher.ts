@@ -39,26 +39,23 @@ import * as HeapSnapshotLoader from './HeapSnapshotLoader.js';
 
 interface DispatcherResponse {
   callId?: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  result: any;
+  result: unknown;
   error?: string;
   errorCallStack?: Object;
   errorMethodName?: string;
 }
+
 export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #objects: any[];
-  readonly #postMessage: Function;
-  constructor(globalObject: Worker, postMessage: Function) {
+  readonly #postMessage: typeof Window.prototype.postMessage;
+  constructor(postMessage: typeof Window.prototype.postMessage) {
     this.#objects = [];
     this.#postMessage = postMessage;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sendEvent(name: string, data: any): void {
+  sendEvent(name: string, data: unknown): void {
     this.#postMessage({eventName: name, data: data});
   }
 

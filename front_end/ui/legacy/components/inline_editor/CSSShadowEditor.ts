@@ -55,6 +55,13 @@ export interface CSSShadowModel {
   spreadRadius(): CSSLength;
 }
 
+const CSS_LENGTH_REGEX = (function(): string {
+  const number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
+  const unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
+  const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
+  return new RegExp(number + unit + '|' + zero, 'gi').source;
+})();
+
 export class CSSLength {
   amount: number;
   unit: string;
@@ -64,7 +71,7 @@ export class CSSLength {
   }
 
   static parse(text: string): CSSLength|null {
-    const lengthRegex = new RegExp('^(?:' + CSSLength.Regex.source + ')$', 'i');
+    const lengthRegex = new RegExp('^(?:' + CSS_LENGTH_REGEX + ')$', 'i');
     const match = text.match(lengthRegex);
     if (!match) {
       return null;
@@ -82,14 +89,6 @@ export class CSSLength {
   asCSSText(): string {
     return this.amount + this.unit;
   }
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static Regex = (function(): RegExp {
-    const number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
-    const unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
-    const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
-    return new RegExp(number + unit + '|' + zero, 'gi');
-  })();
 }
 
 export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(

@@ -490,8 +490,7 @@ export class OverlayPersistentHighlighter {
 }
 
 export interface OverlayAgent {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  /* eslint-disable @typescript-eslint/naming-convention */
   invoke_setShowGridOverlays(param: {
     gridNodeHighlightConfigs: Array<{
       nodeId: number,
@@ -499,8 +498,6 @@ export interface OverlayAgent {
     }>,
   }): void;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   invoke_setShowFlexOverlays(param: {
     flexNodeHighlightConfigs: Array<{
       nodeId: number,
@@ -508,16 +505,12 @@ export interface OverlayAgent {
     }>,
   }): void;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   invoke_setShowScrollSnapOverlays(param: {
     scrollSnapHighlightConfigs: Array<{
       nodeId: number,
     }>,
   }): void;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   invoke_setShowContainerQueryOverlays(param: {
     containerQueryHighlightConfigs: Array<{
       nodeId: number,
@@ -525,14 +518,13 @@ export interface OverlayAgent {
     }>,
   }): void;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   invoke_setShowIsolatedElements(param: {
     isolatedElementHighlightConfigs: Array<{
       nodeId: number,
       isolationModeHighlightConfig: Protocol.Overlay.IsolationModeHighlightConfig,
     }>,
   }): void;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface Target {

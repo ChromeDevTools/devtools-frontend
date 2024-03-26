@@ -4,17 +4,7 @@
 
 import * as HeapSnapshotWorker from './heap_snapshot_worker.js';
 
-// We need to force the worker context
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ctxSelf = self as any as Worker;
-const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher(
-    ctxSelf, (message: unknown) => self.postMessage(message));
-
-function installMessageEventListener(listener: EventListener): void {
-  ctxSelf.addEventListener('message', listener, false);
-}
-
-// @ts-ignore
-installMessageEventListener(dispatcher.dispatchMessage.bind(dispatcher));
-
+const dispatcher =
+    new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher(self.postMessage.bind(self));
+self.addEventListener('message', dispatcher.dispatchMessage.bind(dispatcher), false);
 self.postMessage('workerReady');

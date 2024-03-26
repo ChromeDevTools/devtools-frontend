@@ -81,7 +81,6 @@ export class AllocationProfile {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #buildAllocationTree(profile: Profile, liveObjectStats: LiveObjects): TopDownAllocationNode {
     const traceTreeRaw = profile.trace_tree;
     const functionInfos = this.#functionInfos;

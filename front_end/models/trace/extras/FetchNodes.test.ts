@@ -24,7 +24,7 @@ function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: num
 describeWithMockConnection('TraceSDKServices', function() {
   beforeEach(async () => {
     clearAllMockConnectionResponseHandlers();
-    TraceEngine.Extras.FetchNodes._TEST_clearCache();
+    TraceEngine.Extras.FetchNodes.clearCacheForTesting();
   });
 
   describe('DOMNodeLookup', function() {

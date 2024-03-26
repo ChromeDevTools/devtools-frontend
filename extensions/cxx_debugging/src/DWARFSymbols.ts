@@ -32,7 +32,6 @@ type ScopeInfo = {
   icon?: string,
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type LazyFSNode = FS.FSNode&{contents: {cacheLength: Function, length: number}};
 
 function mapEnumerator(apiEnumerator: SymbolsBackend.Enumerator): Formatters.Enumerator {

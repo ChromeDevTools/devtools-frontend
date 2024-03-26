@@ -13,8 +13,7 @@ const domLookUpBatchNodesCache = new Map<
     Handlers.Types.TraceParseData,
     Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function _TEST_clearCache(): void {
+export function clearCacheForTesting(): void {
   domLookUpSingleNodeCache.clear();
   domLookUpBatchNodesCache.clear();
   layoutShiftSourcesCache.clear();

@@ -588,7 +588,7 @@ export class HeapSnapshotProblemReport {
   }
 }
 export interface Profile {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  /* eslint-disable @typescript-eslint/naming-convention */
   root_index: number;
   nodes: Uint32Array;
   edges: Uint32Array;
@@ -596,10 +596,9 @@ export interface Profile {
   samples: number[];
   strings: string[];
   locations: number[];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   trace_function_infos: Uint32Array;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   trace_tree: Object;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface LiveObjects {

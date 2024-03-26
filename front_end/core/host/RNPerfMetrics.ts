@@ -57,6 +57,25 @@ class RNPerfMetrics {
     this.#launchId = launchId;
   }
 
+  entryPointLoadingStarted(): void {
+    this.sendEvent({
+      eventName: 'Entrypoint.LoadingStarted',
+      timestamp: getPerfTimestamp(),
+      launchId: this.#launchId,
+    });
+  }
+
+  debuggerReadyToPause(): void {
+    this.sendEvent({
+      eventName: 'Debugger.IsReadyToPause',
+      timestamp: getPerfTimestamp(),
+      launchId: this.#launchId,
+    });
+  }
+}
+
+function getPerfTimestamp(): DOMHighResTimeStamp {
+  return performance.timeOrigin + performance.now();
 }
 
 export function registerPerfMetricsGlobalPostMessageHandler(): void {
@@ -70,4 +89,17 @@ export function registerPerfMetricsGlobalPostMessageHandler(): void {
   });
 }
 
-export type ReactNativeChromeDevToolsEvent = {};
+type CommonEventFields = Readonly<{
+  timestamp: DOMHighResTimeStamp,
+  launchId: string | void | null,
+}>;
+
+export type DebuggerLaunchedEvent = Readonly<CommonEventFields&{
+  eventName: 'Entrypoint.LoadingStarted',
+}>;
+
+export type DebuggerReadyEvent = Readonly<CommonEventFields&{
+  eventName: 'Debugger.IsReadyToPause',
+}>;
+
+export type ReactNativeChromeDevToolsEvent = DebuggerLaunchedEvent|DebuggerReadyEvent;

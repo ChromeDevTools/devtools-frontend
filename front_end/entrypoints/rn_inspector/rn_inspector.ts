@@ -26,6 +26,14 @@ import type * as Sources from '../../panels/sources/sources.js';
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
 Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
+Host.rnPerfMetrics.entryPointLoadingStarted();
+
+SDK.TargetManager.TargetManager.instance().addModelListener(
+    SDK.DebuggerModel.DebuggerModel,
+    SDK.DebuggerModel.Events.DebuggerIsReadyToPause,
+    () => Host.rnPerfMetrics.debuggerReadyToPause(),
+);
+
 // Legacy JavaScript Profiler - we support this until Hermes can support the
 // modern Performance panel.
 Root.Runtime.experiments.register(

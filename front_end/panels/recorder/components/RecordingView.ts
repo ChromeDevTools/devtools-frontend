@@ -897,7 +897,7 @@ export class RecordingView extends HTMLElement {
                   return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
-                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}
+                    jslog=${VisualLogging.action().track({click: true}).context('converter-extension')}
                   >
                     ${converter.getFormatName()}
                   </${Menus.Menu.MenuItem.litTagName}>`;

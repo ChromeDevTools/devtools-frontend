@@ -208,6 +208,29 @@ function setVeDebugLoggingEnabled(enabled: boolean): void {
   }
 }
 
+function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): Entry|undefined {
+  const findImpression = (entry: Entry): Entry|undefined => {
+    if (entry.event === 'Impression' && entry.veid === veid) {
+      return entry;
+    }
+    let i = 0;
+    for (const childEntry of entry.children || []) {
+      const matchingEntry = findImpression(childEntry);
+      if (matchingEntry) {
+        if (includeAncestorChain) {
+          const children = [];
+          children[i] = matchingEntry;
+          return {...entry, children};
+        }
+        return matchingEntry;
+      }
+      ++i;
+    }
+    return undefined;
+  };
+  return findImpression({children: veDebugEventsLog});
+}
+
 let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
@@ -222,3 +245,5 @@ export function processStartLoggingForDebugging(): void {
 globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
 // @ts-ignore
 globalThis.veDebugEventsLog = veDebugEventsLog;
+// @ts-ignore
+globalThis.findVeDebugImpression = findVeDebugImpression;

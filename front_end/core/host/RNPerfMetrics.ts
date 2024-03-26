@@ -17,6 +17,7 @@ export function getInstance(): RNPerfMetrics {
 type UnsubscribeFn = () => void;
 class RNPerfMetrics {
   #listeners: Set<RNReliabilityEventListener> = new Set();
+  #launchId: string|null = null;
 
   addEventListener(listener: RNReliabilityEventListener): UnsubscribeFn {
     this.#listeners.add(listener);
@@ -51,6 +52,11 @@ class RNPerfMetrics {
       console.error('Error occurred when calling event listeners', error);
     }
   }
+
+  setLaunchId(launchId: string|null): void {
+    this.#launchId = launchId;
+  }
+
 }
 
 export function registerPerfMetricsGlobalPostMessageHandler(): void {

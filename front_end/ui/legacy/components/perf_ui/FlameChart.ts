@@ -134,6 +134,10 @@ interface GroupHiddenState {
   [groupName: string]: boolean;
 }
 
+interface PopoverState {
+  entryIndex: number;
+  hiddenEntriesPopover: boolean;
+}
 interface GroupTreeNode {
   index: number;
   nestingLevel: number;
@@ -208,7 +212,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private forceDecorationCache?: Int8Array|null;
   private entryColorsCache?: string[]|null;
   private totalTime?: number;
-  private lastIndexOfUpdatedPopover: number;
+  private lastPopoverState: PopoverState;
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number;
@@ -284,7 +288,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.lastMouseOffsetX = 0;
     this.selectedGroupIndex = -1;
-    this.lastIndexOfUpdatedPopover = -1;
+    this.lastPopoverState = {
+      entryIndex: -1,
+      hiddenEntriesPopover: false,
+    };
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this.keyboardFocusedGroup = -1;
@@ -357,6 +364,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   hideHighlight(): void {
     if (this.#searchResultEntryIndex === -1) {
       this.entryInfo.removeChildren();
+      this.lastPopoverState = {
+        entryIndex: -1,
+        hiddenEntriesPopover: false,
+      };
     }
     if (this.highlightedEntryIndex === -1) {
       return;
@@ -548,7 +559,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private updatePopover(entryIndex: number): void {
     // Just update position if cursor is hovering the same entry.
-    if (entryIndex === this.lastIndexOfUpdatedPopover) {
+    const isMouseOverRevealChildrenArrow = this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex);
+    if (entryIndex === this.lastPopoverState.entryIndex &&
+        isMouseOverRevealChildrenArrow === this.lastPopoverState.hiddenEntriesPopover) {
       return this.updatePopoverOffset();
     }
     this.entryInfo.removeChildren();
@@ -558,7 +571,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     const group = data.groups.at(this.selectedGroupIndex);
     // If the mouse is hovering over the hidden descendants arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
-    const popoverElement = (this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex) && group) ?
+    const popoverElement = (isMouseOverRevealChildrenArrow && group) ?
         this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
             this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(entryIndex) :
         this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
@@ -566,7 +579,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.entryInfo.appendChild(popoverElement);
       this.updatePopoverOffset();
     }
-    this.lastIndexOfUpdatedPopover = entryIndex;
+    this.lastPopoverState = {
+      entryIndex,
+      hiddenEntriesPopover: isMouseOverRevealChildrenArrow,
+    };
   }
 
   private updatePopoverOffset(): void {

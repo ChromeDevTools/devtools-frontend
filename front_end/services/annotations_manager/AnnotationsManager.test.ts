@@ -39,7 +39,7 @@ describe('AnnotationsManager', () => {
   it('correctly generates an entry hash', async function() {
     const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
     const manager = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-        {entries: data.Renderer.allTraceEntries});
+        {entryToNodeMap: data.Renderer.entryToNode});
     if (!manager) {
       throw new Error('Manager does not exist.');
     }

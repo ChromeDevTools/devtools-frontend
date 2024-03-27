@@ -6,20 +6,23 @@ import * as TraceEngine from '../../models/trace/trace.js';
 
 let instance: AnnotationsManager|null = null;
 type HashToEntryMap = Map<string, TraceEngine.Types.TraceEvents.SyntheticTraceEntry>;
+type EntryToNodeMap =
+    Map<TraceEngine.Types.TraceEvents.SyntheticTraceEntry, TraceEngine.Helpers.TreeHelpers.TraceEntryNode>;
 
 export class AnnotationsManager {
   /**
    * Maps a hash to an individual TraceEvent entry.
-   * We save annotations into the trace file by saving the hidden entry's hash.
+   * We save annotations into the trace file pby saving the hidden entry's hash.
    * Build a hash to entry map to faster find an entry to apply an annotation to.
    **/
   #hashToEntry: HashToEntryMap = new Map();
+  #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
 
   static maybeInstance(opts: {
-    entries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[]|null,
-  } = {entries: null}): AnnotationsManager|null {
-    if (opts.entries) {
-      instance = new AnnotationsManager(opts.entries);
+    entryToNodeMap: EntryToNodeMap|null,
+  } = {entryToNodeMap: null}): AnnotationsManager|null {
+    if (opts.entryToNodeMap) {
+      instance = new AnnotationsManager(opts.entryToNodeMap);
     }
     return instance;
   }
@@ -28,8 +31,14 @@ export class AnnotationsManager {
     instance = null;
   }
 
-  private constructor(entries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[]) {
-    entries.map(entry => this.#hashToEntry.set(this.generateTraceEntryHash(entry), entry));
+  private constructor(entryToNodeMap: EntryToNodeMap) {
+    // Fill HashToEntryMap with hashes for each entry
+    Array.from(entryToNodeMap.keys()).map(entry => this.#hashToEntry.set(this.generateTraceEntryHash(entry), entry));
+    this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(entryToNodeMap);
+  }
+
+  getEntriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {
+    return this.#entriesFilter;
   }
 
   /**
@@ -37,7 +46,7 @@ export class AnnotationsManager {
    */
   getAnnotations(): TraceEngine.Types.File.Annotations {
     const hashesOfSynteticEntries: string[] = [];
-    const hiddenEntries = TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.invisibleEntries();
+    const hiddenEntries = this.#entriesFilter.invisibleEntries();
     if (hiddenEntries) {
       for (const entry of hiddenEntries) {
         if (!TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
@@ -71,7 +80,7 @@ export class AnnotationsManager {
           hiddenEntries.push(hiddenEntry);
         }
       });
-      TraceEngine.EntriesFilter.EntriesFilter.maybeInstance()?.setInvisibleEntries(hiddenEntries);
+      this.#entriesFilter.setInvisibleEntries(hiddenEntries);
     }
   }
 }

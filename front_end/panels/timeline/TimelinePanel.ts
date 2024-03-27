@@ -1200,19 +1200,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           traceParsedData.Meta.traceBounds,
       );
 
-      // Since we have a single instance to EntriesFilter, combine both SyntheticEvent to Node maps
+      // Since we have a single instance to AnnotationsManager, combine both SyntheticEvent to Node maps
       const samplesAndRendererEventsEntryToNodeMap =
           new Map([...traceParsedData.Samples.entryToNode, ...traceParsedData.Renderer.entryToNode]);
-      TraceEngine.EntriesFilter.EntriesFilter.maybeInstance({entryToNodeMap: samplesAndRendererEventsEntryToNodeMap});
-
       // If the annotations experiment is on and there are some annotations saved, apply the annotations from the file.
-      // The call order here is important, we need to apply annotations after EntriesFilter is instantiated because the read annotations will be passed to it.
-      // TODO(b.corp.google.com/issues/313757110): Make EntriesFilter an instance within AnnotationsManager
+      // We create AnnotationsManager regardless of the experiment because the EntriesFilterer initiated in the AnnotationsManager
+      // needs to work even if the experiment is off.
+      AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
+          {entryToNodeMap: samplesAndRendererEventsEntryToNodeMap});
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS) &&
           metadata?.annotations) {
-        AnnotationsManager.AnnotationsManager.AnnotationsManager
-            .maybeInstance({entries: traceParsedData.Renderer.allTraceEntries})
-            ?.applyAnnotations(metadata?.annotations);
+        AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.applyAnnotations(
+            metadata?.annotations);
       }
 
       this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);

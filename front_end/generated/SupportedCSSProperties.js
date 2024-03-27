@@ -2856,6 +2856,15 @@ export const generatedProperties = [
   "name": "position-try-order"
  },
  {
+  "keywords": [
+   "always",
+   "anchors-valid",
+   "anchors-visible",
+   "no-overflow"
+  ],
+  "name": "position-visibility"
+ },
+ {
   "name": "prefix"
  },
  {
@@ -5286,6 +5295,14 @@ export const generatedPropertyValues = {
    "most-height",
    "most-block-size",
    "most-inline-size"
+  ]
+ },
+ "position-visibility": {
+  "values": [
+   "always",
+   "anchors-valid",
+   "anchors-visible",
+   "no-overflow"
   ]
  },
  "quotes": {

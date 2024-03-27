@@ -1253,7 +1253,7 @@ export const NativeFunctions = [
   {
     name: "add",
     signatures: [["key"]],
-    receivers: ["CustomStateSet"]
+    receivers: ["CustomStateSet","ViewTransitionTypeSet"]
   },
   {
     name: "add",

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
 let instance: AnnotationsManager|null = null;
 type HashToEntryMap = Map<string, TraceEngine.Types.TraceEvents.SyntheticTraceEntry>;
@@ -17,12 +18,19 @@ export class AnnotationsManager {
    **/
   #hashToEntry: HashToEntryMap = new Map();
   #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
+  #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
 
+  /**
+   * A new instance is create each time a trace is recorded or loaded from a file.
+   * Both entryToNodeMap and wholeTraceBounds are mandatory to support all annotations and if one of them
+   * is not present, something has gone wrong so let's load the trace without the annotations support.
+   **/
   static maybeInstance(opts: {
     entryToNodeMap: EntryToNodeMap|null,
-  } = {entryToNodeMap: null}): AnnotationsManager|null {
-    if (opts.entryToNodeMap) {
-      instance = new AnnotationsManager(opts.entryToNodeMap);
+    wholeTraceBounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds|null|undefined,
+  } = {entryToNodeMap: null, wholeTraceBounds: null}): AnnotationsManager|null {
+    if (opts.entryToNodeMap && opts.wholeTraceBounds) {
+      instance = new AnnotationsManager(opts.entryToNodeMap, opts.wholeTraceBounds);
     }
     return instance;
   }
@@ -31,14 +39,20 @@ export class AnnotationsManager {
     instance = null;
   }
 
-  private constructor(entryToNodeMap: EntryToNodeMap) {
+  private constructor(
+      entryToNodeMap: EntryToNodeMap, wholeTraceBounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
     // Fill HashToEntryMap with hashes for each entry
     Array.from(entryToNodeMap.keys()).map(entry => this.#hashToEntry.set(this.generateTraceEntryHash(entry), entry));
     this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(entryToNodeMap);
+    this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(wholeTraceBounds);
   }
 
   getEntriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {
     return this.#entriesFilter;
+  }
+
+  getTimelineBreadcrumbs(): TimelineComponents.Breadcrumbs.Breadcrumbs {
+    return this.#timelineBreadcrumbs;
   }
 
   /**

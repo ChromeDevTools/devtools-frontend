@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -144,9 +145,15 @@ export class TimelineMiniMap extends
     );
 
     if (this.breadcrumbs === null) {
-      this.breadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(newVisibleTraceWindow);
+      this.breadcrumbs =
+          AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getTimelineBreadcrumbs() ?? null;
     } else {
       this.breadcrumbs.add(newVisibleTraceWindow);
+    }
+
+    if (!this.breadcrumbs) {
+      console.warn('AnnotationsManager has not been created, therefore Breadcrumbs can not be added');
+      return;
     }
 
     this.#breadcrumbsUI.data = {

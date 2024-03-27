@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -68,7 +69,10 @@ describeWithEnvironment('TimelineMiniMap', function() {
   it('creates the first breadcrumb', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
-    TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(traceParsedData.Meta.traceBounds);
+    const boundsManager =
+        TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(traceParsedData.Meta.traceBounds);
+    AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
+        {entryToNodeMap: new Map(), wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds});
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);

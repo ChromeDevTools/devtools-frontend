@@ -4,6 +4,7 @@
 
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as AnnotationsManager from '../../services/annotations_manager/annotations_manager.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -23,6 +24,14 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   highlightEvent(_event: TraceEngine.Legacy.Event|null): void {
   }
 }
+
+const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+  min: TraceEngine.Types.Timing.MicroSeconds(0),
+  max: TraceEngine.Types.Timing.MicroSeconds(10_000),
+  range: TraceEngine.Types.Timing.MicroSeconds(10_000),
+};
+const boundsManager =
+    TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
 
 describeWithEnvironment('TimelineFlameChartView', function() {
   it('Can search for events by name in the timeline', async function() {
@@ -97,8 +106,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     flameChartView.setModel(performanceModel, traceParsedData);
-    AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-        {entryToNodeMap: traceParsedData.Renderer.entryToNode});
+    AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance({
+      entryToNodeMap: traceParsedData.Renderer.entryToNode,
+      wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
+    });
 
     // Find the main track to later collapse entries of
     const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -143,8 +154,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
        flameChartView.setModel(performanceModel, traceParsedData);
-       AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-           {entryToNodeMap: traceParsedData.Renderer.entryToNode});
+       AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance({
+         entryToNodeMap: traceParsedData.Renderer.entryToNode,
+         wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
+       });
 
        // Find the main track to later collapse entries of
        const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -192,8 +205,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
        flameChartView.setModel(performanceModel, traceParsedData);
-       AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-           {entryToNodeMap: traceParsedData.Renderer.entryToNode});
+       AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance({
+         entryToNodeMap: traceParsedData.Renderer.entryToNode,
+         wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
+       });
 
        // Find the main track to later collapse entries of
        let mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -255,8 +270,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(performanceModel, traceParsedData);
-      AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-          {entryToNodeMap: traceParsedData.Renderer.entryToNode});
+      AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance({
+        entryToNodeMap: traceParsedData.Renderer.entryToNode,
+        wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds,
+      });
 
       // Find the Main track to later collapse entries of
       const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {

@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as AnnotationsManager from './annotations_manager.js';
@@ -35,22 +36,30 @@ function findFirstEntry(
   return entry;
 }
 
+const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+  min: TraceEngine.Types.Timing.MicroSeconds(0),
+  max: TraceEngine.Types.Timing.MicroSeconds(10_000),
+  range: TraceEngine.Types.Timing.MicroSeconds(10_000),
+};
+
 describe('AnnotationsManager', () => {
   it('correctly generates an entry hash', async function() {
     const data = await TraceLoader.traceEngine(null, 'basic-stack.json.gz');
-    const manager = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-        {entryToNodeMap: data.Renderer.entryToNode});
-    if (!manager) {
+    const boundsManager =
+        TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
+    const annotationsManager = AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
+        {entryToNodeMap: data.Renderer.entryToNode, wholeTraceBounds: boundsManager.state()?.micro.entireTraceBounds});
+    if (!annotationsManager) {
       throw new Error('Manager does not exist.');
     }
     const mainThread = getMainThread(data.Renderer);
-    assert.exists(manager);
+    assert.exists(annotationsManager);
     // Find first 'Timer Fired' entry in the trace
     const timerFireEntry = findFirstEntry(mainThread.entries, entry => {
       return entry.name === 'TimerFire';
     });
 
-    const entryHash = manager.generateTraceEntryHash(timerFireEntry);
+    const entryHash = annotationsManager.generateTraceEntryHash(timerFireEntry);
     assert.strictEqual('devtools.timeline,TimerFire,X,55385,259,164398376028,452669', entryHash);
   });
 });

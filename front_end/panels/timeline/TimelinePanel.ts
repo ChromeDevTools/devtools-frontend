@@ -1206,8 +1206,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // If the annotations experiment is on and there are some annotations saved, apply the annotations from the file.
       // We create AnnotationsManager regardless of the experiment because the EntriesFilterer initiated in the AnnotationsManager
       // needs to work even if the experiment is off.
-      AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance(
-          {entryToNodeMap: samplesAndRendererEventsEntryToNodeMap});
+      const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state();
+      AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance({
+        entryToNodeMap: samplesAndRendererEventsEntryToNodeMap,
+        wholeTraceBounds: traceBounds?.micro.entireTraceBounds,
+      });
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS) &&
           metadata?.annotations) {
         AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.applyAnnotations(

@@ -7716,6 +7716,10 @@ export const NativeFunctions = [
     signatures: [["input","weight","recurrentWeight","steps","hiddenSize","?options"]]
   },
   {
+    name: "lstmCell",
+    signatures: [["input","weight","recurrentWeight","hiddenState","cellState","hiddenSize","?options"]]
+  },
+  {
     name: "pad",
     signatures: [["input","beginningPadding","endingPadding","?options"]]
   },

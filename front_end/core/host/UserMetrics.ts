@@ -368,13 +368,6 @@ export class UserMetrics {
         EnumeratedHistogram.BadgeActivated, badge, BadgeType.MaxValue);
   }
 
-  breakpointsRestoredFromStorage(count: number): void {
-    const countBucket = this.#breakpointCountToBucket(count);
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.BreakpointsRestoredFromStorageCount, countBucket,
-        BreakpointsRestoredFromStorageCount.MaxValue);
-  }
-
   animationPlaybackRateChanged(playbackRate: AnimationsPlaybackRate): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.AnimationPlaybackRateChanged, playbackRate, AnimationsPlaybackRate.MaxValue);
@@ -383,37 +376,6 @@ export class UserMetrics {
   animationPointDragged(dragType: AnimationPointDragType): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.AnimationPointDragged, dragType, AnimationPointDragType.MaxValue);
-  }
-
-  #breakpointCountToBucket(count: number): BreakpointsRestoredFromStorageCount {
-    if (count < 100) {
-      return BreakpointsRestoredFromStorageCount.LessThan100;
-    }
-    if (count < 300) {
-      return BreakpointsRestoredFromStorageCount.LessThan300;
-    }
-    if (count < 1000) {
-      return BreakpointsRestoredFromStorageCount.LessThan1000;
-    }
-    if (count < 3000) {
-      return BreakpointsRestoredFromStorageCount.LessThan3000;
-    }
-    if (count < 10000) {
-      return BreakpointsRestoredFromStorageCount.LessThan10000;
-    }
-    if (count < 30000) {
-      return BreakpointsRestoredFromStorageCount.LessThan30000;
-    }
-    if (count < 100000) {
-      return BreakpointsRestoredFromStorageCount.LessThan100000;
-    }
-    if (count < 300000) {
-      return BreakpointsRestoredFromStorageCount.LessThan300000;
-    }
-    if (count < 1000000) {
-      return BreakpointsRestoredFromStorageCount.LessThan1000000;
-    }
-    return BreakpointsRestoredFromStorageCount.Above1000000;
   }
 
   workspacesPopulated(wallClockTimeInMilliseconds: number): void {
@@ -1129,20 +1091,6 @@ export const enum CSSPropertyDocumentation {
   ToggledOn = 1,
   ToggledOff = 2,
   MaxValue = 3,
-}
-
-export const enum BreakpointsRestoredFromStorageCount {
-  LessThan100 = 0,
-  LessThan300 = 1,
-  LessThan1000 = 2,
-  LessThan3000 = 3,
-  LessThan10000 = 4,
-  LessThan30000 = 5,
-  LessThan100000 = 6,
-  LessThan300000 = 7,
-  LessThan1000000 = 8,
-  Above1000000 = 9,
-  MaxValue = 10,
 }
 
 // Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.

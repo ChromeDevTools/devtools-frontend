@@ -468,7 +468,6 @@ export const enum EnumeratedHistogram {
   ColorConvertedFrom = 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom = 'DevTools.ColorPickerOpenedFrom',
   CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
-  BreakpointsRestoredFromStorageCount = 'DevTools.BreakpointsRestoredFromStorageCount',
   SwatchActivated = 'DevTools.SwatchActivated',
   BadgeActivated = 'DevTools.BadgeActivated',
   AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',

@@ -672,6 +672,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private contextMenu(event: Event): void {
+    // Do not show this Context menu on FlameChart entries because we have a different context menu for FlameChart entries
+    const mouseEvent = (event as MouseEvent);
+    if (this.flameChart.getMainFlameChart().coordinatesToEntryIndex(mouseEvent.offsetX, mouseEvent.offsetY) !== -1) {
+      return;
+    }
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
     contextMenu.appendItemsAtLocation('timelineMenu');
     void contextMenu.show();

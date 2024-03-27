@@ -70,6 +70,7 @@ let Realm = (() => {
         disposables = new disposable_js_1.DisposableStack();
         id;
         origin;
+        executionContextId;
         // keep-sorted end
         constructor(id, origin) {
             super();
@@ -115,8 +116,11 @@ let Realm = (() => {
             return result;
         }
         async resolveExecutionContextId() {
-            const { result } = await this.session.connection.send('cdp.resolveRealm', { realm: this.id });
-            return result.executionContextId;
+            if (!this.executionContextId) {
+                const { result } = await this.session.connection.send('cdp.resolveRealm', { realm: this.id });
+                this.executionContextId = result.executionContextId;
+            }
+            return this.executionContextId;
         }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _disown_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
                 // SAFETY: Disposal implies this exists.
@@ -175,6 +179,7 @@ class WindowRealm extends Realm {
             }
             this.id = info.realm;
             this.origin = info.origin;
+            this.executionContextId = undefined;
             this.emit('updated', this);
         });
         sessionEmitter.on('script.realmCreated', info => {

@@ -16,6 +16,10 @@ import { UserPrompt } from './UserPrompt.js';
 /**
  * @internal
  */
+export type AddInterceptOptions = Omit<Bidi.Network.AddInterceptParameters, 'contexts'>;
+/**
+ * @internal
+ */
 export type CaptureScreenshotOptions = Omit<Bidi.BrowsingContext.CaptureScreenshotParameters, 'context'>;
 /**
  * @internal
@@ -108,11 +112,13 @@ export declare class BrowsingContext extends EventEmitter<{
     releaseActions(): Promise<void>;
     createWindowRealm(sandbox: string): WindowRealm;
     addPreloadScript(functionDeclaration: string, options?: AddPreloadScriptOptions): Promise<string>;
+    addIntercept(options: AddInterceptOptions): Promise<string>;
     removePreloadScript(script: string): Promise<void>;
     getCookies(options?: GetCookiesOptions): Promise<Bidi.Network.Cookie[]>;
     setCookie(cookie: Bidi.Storage.PartialCookie): Promise<void>;
     setFiles(element: Bidi.Script.SharedReference, files: string[]): Promise<void>;
     subscribe(events: [string, ...string[]]): Promise<void>;
+    addInterception(events: [string, ...string[]]): Promise<void>;
     [disposeSymbol](): void;
     deleteCookie(...cookieFilters: Bidi.Storage.CookieFilter[]): Promise<void>;
 }

@@ -1088,14 +1088,14 @@ let ElementHandle = (() => {
             return point;
         }
         async screenshot(options = {}) {
-            const { scrollIntoView = true } = options;
-            let clip = await this.#nonEmptyVisibleBoundingBox();
+            const { scrollIntoView = true, clip } = options;
+            let elementClip = await this.#nonEmptyVisibleBoundingBox();
             const page = this.frame.page();
             // Only scroll the element into view if the user wants it.
             if (scrollIntoView) {
                 await this.scrollIntoViewIfNeeded();
                 // We measure again just in case.
-                clip = await this.#nonEmptyVisibleBoundingBox();
+                elementClip = await this.#nonEmptyVisibleBoundingBox();
             }
             const [pageLeft, pageTop] = await this.evaluate(() => {
                 if (!window.visualViewport) {
@@ -1106,9 +1106,15 @@ let ElementHandle = (() => {
                     window.visualViewport.pageTop,
                 ];
             });
-            clip.x += pageLeft;
-            clip.y += pageTop;
-            return await page.screenshot({ ...options, clip });
+            elementClip.x += pageLeft;
+            elementClip.y += pageTop;
+            if (clip) {
+                elementClip.x += clip.x;
+                elementClip.y += clip.y;
+                elementClip.height = clip.height;
+                elementClip.width = clip.width;
+            }
+            return await page.screenshot({ ...options, clip: elementClip });
         }
         async #nonEmptyVisibleBoundingBox() {
             const box = await this.boundingBox();

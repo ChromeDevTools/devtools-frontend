@@ -99,6 +99,7 @@ let Browser = (() => {
     let _dispose_decorators;
     let _close_decorators;
     let _addPreloadScript_decorators;
+    let _removeIntercept_decorators;
     let _removePreloadScript_decorators;
     let _createUserContext_decorators;
     return class Browser extends _classSuper {
@@ -107,6 +108,7 @@ let Browser = (() => {
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _close_decorators, { kind: "method", name: "close", static: false, private: false, access: { has: obj => "close" in obj, get: obj => obj.close }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _addPreloadScript_decorators, { kind: "method", name: "addPreloadScript", static: false, private: false, access: { has: obj => "addPreloadScript" in obj, get: obj => obj.addPreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _removeIntercept_decorators, { kind: "method", name: "removeIntercept", static: false, private: false, access: { has: obj => "removeIntercept" in obj, get: obj => obj.removeIntercept }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createUserContext_decorators, { kind: "method", name: "createUserContext", static: false, private: false, access: { has: obj => "createUserContext" in obj, get: obj => obj.createUserContext }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
@@ -234,6 +236,11 @@ let Browser = (() => {
             });
             return script;
         }
+        async removeIntercept(intercept) {
+            await this.session.send('network.removeIntercept', {
+                intercept,
+            });
+        }
         async removePreloadScript(script) {
             await this.session.send('script.removePreloadScript', {
                 script,
@@ -247,6 +254,9 @@ let Browser = (() => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _addPreloadScript_decorators = [(0, decorators_js_1.throwIfDisposed)(browser => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return browser.#reason;
+            })], _removeIntercept_decorators = [(0, decorators_js_1.throwIfDisposed)(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _removePreloadScript_decorators = [(0, decorators_js_1.throwIfDisposed)(browser => {

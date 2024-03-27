@@ -683,7 +683,10 @@ export class CdpPage extends Page {
     }
     async reload(options) {
         const [result] = await Promise.all([
-            this.waitForNavigation(options),
+            this.waitForNavigation({
+                ...options,
+                ignoreSameDocumentNavigation: true,
+            }),
             this.#primaryTargetClient.send('Page.reload'),
         ]);
         return result;

@@ -31,6 +31,8 @@ export declare class Request extends EventEmitter<{
     get redirect(): Request | undefined;
     get response(): Bidi.Network.ResponseData | undefined;
     get url(): string;
+    continueRequest(): Promise<void>;
+    failRequest(): Promise<void>;
     private dispose;
     [disposeSymbol](): void;
 }

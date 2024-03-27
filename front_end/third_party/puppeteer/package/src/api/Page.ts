@@ -274,7 +274,7 @@ export interface ScreenshotOptions {
    */
   path?: string;
   /**
-   * Specifies the region of the page to clip.
+   * Specifies the region of the page/element to clip.
    */
   clip?: ScreenshotClip;
   /**
@@ -1342,7 +1342,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * Functions installed via `page.exposeFunction` survive navigations.
    *
-   * :::note
+   * :::
    *
    * @example
    * An example of adding an `md5` function into the page:

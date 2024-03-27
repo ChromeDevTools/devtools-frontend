@@ -36,6 +36,7 @@ export declare abstract class Realm extends EventEmitter<{
     protected readonly disposables: DisposableStack;
     readonly id: string;
     readonly origin: string;
+    protected executionContextId?: number;
     protected constructor(id: string, origin: string);
     get disposed(): boolean;
     protected abstract get session(): Session;

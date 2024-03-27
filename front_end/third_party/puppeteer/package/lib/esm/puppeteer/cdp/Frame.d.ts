@@ -50,6 +50,7 @@ export declare class CdpFrame extends Frame {
     waitForNavigation(options?: {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+        ignoreSameDocumentNavigation?: boolean;
     }): Promise<HTTPResponse | null>;
     get client(): CDPSession;
     mainRealm(): IsolatedWorld;

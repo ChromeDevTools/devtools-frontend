@@ -155,6 +155,30 @@ let Request = (() => {
             return this.#event.request.url;
         }
         // keep-sorted end
+        async continueRequest() {
+            if (!this.#event.isBlocked) {
+                throw new Error('Request Interception is not enabled!');
+            }
+            // Request interception is not supported for data: urls.
+            if (this.url.startsWith('data:')) {
+                return;
+            }
+            await this.#session.send('network.continueRequest', {
+                request: this.id,
+            });
+        }
+        async failRequest() {
+            if (!this.#event.isBlocked) {
+                throw new Error('Request Interception is not enabled!');
+            }
+            // Request interception is not supported for data: urls.
+            if (this.url.startsWith('data:')) {
+                return;
+            }
+            await this.#session.send('network.failRequest', {
+                request: this.id,
+            });
+        }
         dispose() {
             this[disposable_js_1.disposeSymbol]();
         }

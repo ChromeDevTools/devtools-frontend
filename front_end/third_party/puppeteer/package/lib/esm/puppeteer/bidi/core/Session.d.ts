@@ -41,6 +41,7 @@ export declare class Session extends EventEmitter<BidiEvents & {
         result: Commands[T]['returnType'];
     }>;
     subscribe(events: [string, ...string[]], contexts?: [string, ...string[]]): Promise<void>;
+    addIntercepts(events: [string, ...string[]], contexts?: [string, ...string[]]): Promise<void>;
     end(): Promise<void>;
     [disposeSymbol](): void;
 }

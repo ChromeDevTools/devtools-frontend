@@ -55,6 +55,7 @@ let Session = (() => {
     let _dispose_decorators;
     let _send_decorators;
     let _subscribe_decorators;
+    let _addIntercepts_decorators;
     let _end_decorators;
     return class Session extends _classSuper {
         static {
@@ -63,6 +64,7 @@ let Session = (() => {
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _send_decorators, { kind: "method", name: "send", static: false, private: false, access: { has: obj => "send" in obj, get: obj => obj.send }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _subscribe_decorators, { kind: "method", name: "subscribe", static: false, private: false, access: { has: obj => "subscribe" in obj, get: obj => obj.subscribe }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _addIntercepts_decorators, { kind: "method", name: "addIntercepts", static: false, private: false, access: { has: obj => "addIntercepts" in obj, get: obj => obj.addIntercepts }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _end_decorators, { kind: "method", name: "end", static: false, private: false, access: { has: obj => "end" in obj, get: obj => obj.end }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
@@ -181,6 +183,12 @@ let Session = (() => {
                 contexts,
             });
         }
+        async addIntercepts(events, contexts) {
+            await this.send('session.subscribe', {
+                events,
+                contexts,
+            });
+        }
         async end() {
             try {
                 await this.send('session.end', {});
@@ -193,6 +201,9 @@ let Session = (() => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return session.#reason;
             })], _subscribe_decorators = [throwIfDisposed(session => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return session.#reason;
+            })], _addIntercepts_decorators = [throwIfDisposed(session => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return session.#reason;
             })], _end_decorators = [throwIfDisposed(session => {

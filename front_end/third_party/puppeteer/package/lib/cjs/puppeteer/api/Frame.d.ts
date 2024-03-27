@@ -36,6 +36,10 @@ export interface WaitForOptions {
      * @defaultValue `'load'`
      */
     waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+    /**
+     * @internal
+     */
+    ignoreSameDocumentNavigation?: boolean;
 }
 /**
  * @public

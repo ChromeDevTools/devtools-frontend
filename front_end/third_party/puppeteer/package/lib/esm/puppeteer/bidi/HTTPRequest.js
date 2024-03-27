@@ -98,8 +98,8 @@ export class BidiHTTPRequest extends HTTPRequest {
     continueRequestOverrides() {
         throw new UnsupportedOperation();
     }
-    continue(_overrides = {}) {
-        throw new UnsupportedOperation();
+    async continue(_overrides = {}) {
+        return await this.#request.continueRequest();
     }
     responseForRequest() {
         throw new UnsupportedOperation();
@@ -116,10 +116,10 @@ export class BidiHTTPRequest extends HTTPRequest {
     finalizeInterceptions() {
         throw new UnsupportedOperation();
     }
-    abort() {
-        throw new UnsupportedOperation();
+    async abort() {
+        return await this.#request.failRequest();
     }
-    respond(_response, _priority) {
+    async respond(_response, _priority) {
         throw new UnsupportedOperation();
     }
 }

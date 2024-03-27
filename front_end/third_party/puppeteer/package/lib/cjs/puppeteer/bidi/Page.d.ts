@@ -89,7 +89,7 @@ export declare class BidiPage extends Page {
     target(): never;
     waitForFileChooser(): never;
     workers(): BidiWebWorker[];
-    setRequestInterception(): never;
+    setRequestInterception(enable: boolean): Promise<void>;
     setDragInterception(): never;
     setBypassServiceWorker(): never;
     setOfflineMode(): never;

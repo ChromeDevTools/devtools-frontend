@@ -236,6 +236,11 @@ let BidiPage = (() => {
         }
         async close(options) {
             try {
+                if (this.#interception) {
+                    // Workaround for Firefox
+                    // TODO: Remove once https://bugzilla.mozilla.org/show_bug.cgi?id=1882260 is fixed
+                    await this.setRequestInterception(false);
+                }
                 await this.#frame.browsingContext.close(options?.runBeforeUnload);
             }
             catch {
@@ -441,8 +446,20 @@ let BidiPage = (() => {
         workers() {
             return [...this.#workers];
         }
-        setRequestInterception() {
-            throw new Errors_js_1.UnsupportedOperation();
+        #interception;
+        async setRequestInterception(enable) {
+            if (enable && !this.#interception) {
+                this.#interception = await this.#frame.browsingContext.addIntercept({
+                    phases: [
+                        "beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */,
+                        "authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */,
+                    ],
+                });
+            }
+            else if (!enable && this.#interception) {
+                await this.#frame.browsingContext.userContext.browser.removeIntercept(this.#interception);
+                this.#interception = undefined;
+            }
         }
         setDragInterception() {
             throw new Errors_js_1.UnsupportedOperation();

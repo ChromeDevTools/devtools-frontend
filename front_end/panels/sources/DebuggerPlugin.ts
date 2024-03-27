@@ -2339,7 +2339,7 @@ function containsSideEffects(doc: CodeMirror.Text, root: CodeMirror.SyntaxNode):
           return false;
         }
         case 'ArithOp': {
-          const op = doc.sliceString(node.from, node.to);
+          const op = doc.sliceString(root.from + node.from, root.from + node.to);
           if (op === '++' || op === '--') {
             containsSideEffects = true;
             return false;

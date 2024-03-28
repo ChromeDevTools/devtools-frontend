@@ -20,7 +20,10 @@ export const enum DataOrigin {
   TraceEvents = 'TraceEvents',
 }
 export interface Annotations {
-  hiddenEntriesIndexes: number[];
+  entriesFilterAnnotations: {
+    hiddenEntriesIndexes: number[],
+    modifiedEntriesIndexes: number[],
+  };
   initialBreadcrumb: Breadcrumb;
 }
 

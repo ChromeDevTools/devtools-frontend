@@ -68,22 +68,46 @@ export class AnnotationsManager {
       }
     }
 
+    const indexesOfModifiedEntries: number[] = [];
+    const modifiedEntries = this.#entriesFilter.modifiedEntries();
+    if (modifiedEntries) {
+      for (const entry of modifiedEntries) {
+        indexesOfModifiedEntries.push(this.getEntryIndex(entry));
+      }
+    }
+
     return {
-      hiddenEntriesIndexes: indexesOfSynteticEntries,
+      entriesFilterAnnotations: {
+        hiddenEntriesIndexes: indexesOfSynteticEntries,
+        modifiedEntriesIndexes: indexesOfModifiedEntries,
+      },
       initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
     };
   }
 
   applyAnnotations(annotations: TraceEngine.Types.File.Annotations): void {
+    this.applyEntriesFilterAnnotations(
+        annotations.entriesFilterAnnotations.hiddenEntriesIndexes,
+        annotations.entriesFilterAnnotations.modifiedEntriesIndexes);
+    this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
+  }
+
+  applyEntriesFilterAnnotations(hiddenEntriesIndexes: number[], modifiedEntriesIndexes: number[]): void {
     // Build the hidden events array by getting the entries by their index in the allEntries array.
     const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
-    annotations.hiddenEntriesIndexes.map(hiddenEntryHash => {
+    hiddenEntriesIndexes.map(hiddenEntryHash => {
       const hiddenEntry = this.#allEntries[hiddenEntryHash];
       if (hiddenEntry) {
         hiddenEntries.push(hiddenEntry);
       }
     });
-    this.#entriesFilter.setInvisibleEntries(hiddenEntries);
-    this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
+    const modifiedEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
+    modifiedEntriesIndexes.map(hiddenEntryHash => {
+      const modifiedEntry = this.#allEntries[hiddenEntryHash];
+      if (modifiedEntry) {
+        modifiedEntries.push(modifiedEntry);
+      }
+    });
+    this.#entriesFilter.setInvisibleAndModifiedEntries(hiddenEntries, modifiedEntries);
   }
 }

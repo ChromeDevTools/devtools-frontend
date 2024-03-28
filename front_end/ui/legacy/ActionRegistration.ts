@@ -369,6 +369,7 @@ export const enum IconClass {
   BREAKPOINT_CROSSED_FILLED = 'breakpoint-crossed-filled',
   BREAKPOINT_CROSSED = 'breakpoint-crossed',
   PLUS = 'plus',
+  BUG = 'bug',
 }
 
 export const enum KeybindSet {

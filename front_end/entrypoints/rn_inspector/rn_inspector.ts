@@ -20,6 +20,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Main from '../main/main.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 import type * as Sources from '../../panels/sources/sources.js';
 
@@ -47,6 +48,7 @@ Root.Runtime.experiments.register(
     'Show React Native-specific UI',
     /* unstable */ false,
     /* docLink */ globalThis.reactNativeDocLink ?? 'https://reactnative.dev/docs/debugging',
+    /* feedbackLink */ globalThis.FB_ONLY__reactNativeFeedbackLink,
 );
 
 Root.Runtime.experiments.register(
@@ -97,6 +99,10 @@ const UIStrings = {
    *@description Command for showing the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
    */
   showReactNative: 'Show React Native',
+  /**
+   *@description Label of the FB-only 'send feedback' action button in the toolbar
+   */
+  sendFeedback: '[FB-only] Send feedback',
 };
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/rn_inspector/rn_inspector.ts', UIStrings);
@@ -127,3 +133,36 @@ UI.ViewManager.registerViewExtension({
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});
 new Main.MainImpl.MainImpl();
+
+if (globalThis.FB_ONLY__reactNativeFeedbackLink) {
+  const feedbackLink = globalThis.FB_ONLY__reactNativeFeedbackLink as Platform.DevToolsPath.UrlString;
+  const actionId = 'react-native-send-feedback';
+  const sendFeedbackActionDelegate: UI.ActionRegistration.ActionDelegate = {
+    handleAction(_context, incomingActionId): boolean {
+      if (incomingActionId !== actionId) {
+        return false;
+      }
+
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          feedbackLink,
+      );
+      return true;
+    },
+  };
+
+  UI.ActionRegistration.registerActionExtension({
+    category: UI.ActionRegistration.ActionCategory.GLOBAL,
+    actionId,
+    title: i18nLazyString(UIStrings.sendFeedback),
+    async loadActionDelegate() {
+      return sendFeedbackActionDelegate;
+    },
+    iconClass: UI.ActionRegistration.IconClass.BUG,
+  });
+
+  UI.Toolbar.registerToolbarItem({
+    location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
+    actionId,
+    showLabel: true,
+  });
+}

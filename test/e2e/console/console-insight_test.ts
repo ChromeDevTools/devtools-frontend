@@ -115,6 +115,20 @@ describe('ConsoleInsight', function() {
     await waitForNone('.hover-button', undefined, undefined, 'pierce');
   });
 
+  it('does not show the hover button if the feature is not rolled out', async () => {
+    const {target} = getBrowserAndPages();
+    await setupMocks(
+        [
+          {'textChunk': {'text': 'test'}},
+        ],
+        '?ci_blockedByRollout=true');
+    await click(CONSOLE_TAB_SELECTOR);
+    await target.evaluate(() => {
+      console.error(new Error('Unexpected error'));
+    });
+    await waitForNone('.hover-button', undefined, undefined, 'pierce');
+  });
+
   it('does not show the hover button if it is restriced by geography', async () => {
     const {target} = getBrowserAndPages();
     await setupMocks(

@@ -20,9 +20,7 @@ export const enum DataOrigin {
   TraceEvents = 'TraceEvents',
 }
 export interface Annotations {
-  hiddenRendererEventsHashes: string[];
-  hiddenProfileCallsSampleIndexes: number[];
-  hiddenProfileCallsDepths: number[];
+  hiddenEntriesIndexes: number[];
   initialBreadcrumb: Breadcrumb;
 }
 

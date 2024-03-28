@@ -6,17 +6,15 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
 
 let instance: AnnotationsManager|null = null;
-type HashToEntryMap = Map<string, TraceEngine.Types.TraceEvents.SyntheticTraceEntry>;
 type EntryToNodeMap =
     Map<TraceEngine.Types.TraceEvents.SyntheticTraceEntry, TraceEngine.Helpers.TreeHelpers.TraceEntryNode>;
 
 export class AnnotationsManager {
   /**
-   * Maps a hash to an individual TraceEvent entry.
-   * We save annotations into the trace file pby saving the hidden entry's hash.
-   * Build a hash to entry map to faster find an entry to apply an annotation to.
+   * An Array with all trace entries.
+   * We save annotations into the trace file by saving their id in the allEntries Array.
    **/
-  #hashToEntry: HashToEntryMap = new Map();
+  #allEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[];
   #entriesFilter: TraceEngine.EntriesFilter.EntriesFilter;
   #timelineBreadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs;
 
@@ -41,10 +39,9 @@ export class AnnotationsManager {
 
   private constructor(
       entryToNodeMap: EntryToNodeMap, wholeTraceBounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
-    // Fill HashToEntryMap with hashes for each entry
-    Array.from(entryToNodeMap.keys()).map(entry => this.#hashToEntry.set(this.generateTraceEntryHash(entry), entry));
     this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(entryToNodeMap);
     this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(wholeTraceBounds);
+    this.#allEntries = Array.from(entryToNodeMap.keys());
   }
 
   getEntriesFilter(): TraceEngine.EntriesFilter.EntriesFilter {
@@ -55,47 +52,38 @@ export class AnnotationsManager {
     return this.#timelineBreadcrumbs;
   }
 
+  getEntryIndex(entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): number {
+    return this.#allEntries.indexOf(entry);
+  }
+
   /**
    * Builds all annotations and returns the object written into the 'annotations' trace file metada field.
    */
   getAnnotations(): TraceEngine.Types.File.Annotations {
-    const hashesOfSynteticEntries: string[] = [];
+    const indexesOfSynteticEntries: number[] = [];
     const hiddenEntries = this.#entriesFilter.invisibleEntries();
     if (hiddenEntries) {
       for (const entry of hiddenEntries) {
-        if (!TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
-          hashesOfSynteticEntries.push(this.generateTraceEntryHash(entry));
-        }
+        indexesOfSynteticEntries.push(this.getEntryIndex(entry));
       }
     }
 
     return {
-      hiddenRendererEventsHashes: hashesOfSynteticEntries,
-      hiddenProfileCallsSampleIndexes: [],
-      hiddenProfileCallsDepths: [],
+      hiddenEntriesIndexes: indexesOfSynteticEntries,
       initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
     };
   }
 
-  generateTraceEntryHash(entry: TraceEngine.Types.TraceEvents.SyntheticTraceEntry): string {
-    if (!TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
-      return `${entry.cat},${entry.name},${entry.ph},${entry.pid},${entry.tid},${entry.ts},${entry.tts}`;
-    }
-    return '';
-  }
-
   applyAnnotations(annotations: TraceEngine.Types.File.Annotations): void {
-    // Currently, we are only saving the hidden Renderer Events.
-    // Build the hidden events array by getting the entries from hashToEntry map by their hash.
-      const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
-      annotations.hiddenRendererEventsHashes.map(hiddenEntryHash => {
-        const hiddenEntry = this.#hashToEntry.get(hiddenEntryHash);
-        if (hiddenEntry) {
-          hiddenEntries.push(hiddenEntry);
-        }
-      });
-      this.#entriesFilter.setInvisibleEntries(hiddenEntries);
-
-      this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
+    // Build the hidden events array by getting the entries by their index in the allEntries array.
+    const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
+    annotations.hiddenEntriesIndexes.map(hiddenEntryHash => {
+      const hiddenEntry = this.#allEntries[hiddenEntryHash];
+      if (hiddenEntry) {
+        hiddenEntries.push(hiddenEntry);
+      }
+    });
+    this.#entriesFilter.setInvisibleEntries(hiddenEntries);
+    this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
   }
 }

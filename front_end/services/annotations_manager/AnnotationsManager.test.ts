@@ -59,7 +59,7 @@ describe('AnnotationsManager', () => {
       return entry.name === 'TimerFire';
     });
 
-    const entryHash = annotationsManager.generateTraceEntryHash(timerFireEntry);
-    assert.strictEqual('devtools.timeline,TimerFire,X,55385,259,164398376028,452669', entryHash);
+    const entryHash = annotationsManager.getEntryIndex(timerFireEntry);
+    assert.strictEqual(3649, entryHash);
   });
 });

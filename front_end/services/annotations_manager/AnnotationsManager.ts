@@ -73,6 +73,7 @@ export class AnnotationsManager {
       hiddenRendererEventsHashes: hashesOfSynteticEntries,
       hiddenProfileCallsSampleIndexes: [],
       hiddenProfileCallsDepths: [],
+      initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
     };
   }
 
@@ -86,7 +87,6 @@ export class AnnotationsManager {
   applyAnnotations(annotations: TraceEngine.Types.File.Annotations): void {
     // Currently, we are only saving the hidden Renderer Events.
     // Build the hidden events array by getting the entries from hashToEntry map by their hash.
-    if (annotations.hiddenRendererEventsHashes) {
       const hiddenEntries: TraceEngine.Types.TraceEvents.SyntheticTraceEntry[] = [];
       annotations.hiddenRendererEventsHashes.map(hiddenEntryHash => {
         const hiddenEntry = this.#hashToEntry.get(hiddenEntryHash);
@@ -95,6 +95,7 @@ export class AnnotationsManager {
         }
       });
       this.#entriesFilter.setInvisibleEntries(hiddenEntries);
-    }
+
+      this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedAnnotations(annotations.initialBreadcrumb);
   }
 }

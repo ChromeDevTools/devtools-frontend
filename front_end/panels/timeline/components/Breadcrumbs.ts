@@ -3,15 +3,12 @@
 // found in the LICENSE file.
 
 import type * as TraceEngine from '../../../models/trace/trace.js';
+import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 
-export interface Breadcrumb {
-  window: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
-  child: Breadcrumb|null;
-}
-
-export function flattenBreadcrumbs(initialBreadcrumb: Breadcrumb): Breadcrumb[] {
-  const allBreadcrumbs: Breadcrumb[] = [initialBreadcrumb];
-  let breadcrumbsIter: Breadcrumb = initialBreadcrumb;
+export function flattenBreadcrumbs(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb):
+    TraceEngine.Types.File.Breadcrumb[] {
+  const allBreadcrumbs: TraceEngine.Types.File.Breadcrumb[] = [initialBreadcrumb];
+  let breadcrumbsIter: TraceEngine.Types.File.Breadcrumb = initialBreadcrumb;
 
   while (breadcrumbsIter.child !== null) {
     const iterChild = breadcrumbsIter.child;
@@ -25,8 +22,8 @@ export function flattenBreadcrumbs(initialBreadcrumb: Breadcrumb): Breadcrumb[] 
 }
 
 export class Breadcrumbs {
-  readonly initialBreadcrumb: Breadcrumb;
-  lastBreadcrumb: Breadcrumb;
+  initialBreadcrumb: TraceEngine.Types.File.Breadcrumb;
+  lastBreadcrumb: TraceEngine.Types.File.Breadcrumb;
 
   constructor(initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
     this.initialBreadcrumb = {
@@ -45,7 +42,7 @@ export class Breadcrumbs {
       // To add a new Breadcrumb to the Breadcrumbs Linked List, set the child of last breadcrumb
       // to the new breadcrumb and update the last Breadcrumb
       this.lastBreadcrumb.child = newBreadcrumb;
-      this.lastBreadcrumb = this.lastBreadcrumb.child;
+      this.setLastBreadcrumb(newBreadcrumb);
     } else {
       throw new Error('Can not add a breadcrumb that is equal to or is outside of the parent breadcrumb TimeWindow');
     }
@@ -59,9 +56,27 @@ export class Breadcrumbs {
         !(child.min === parent.min && child.max === parent.max);
   }
 
-  // Make breadcrumb active by removing all of its children and making it the last breadcrumb
-  makeBreadcrumbActive(newLastBreadcrumb: Breadcrumb): void {
-    this.lastBreadcrumb = newLastBreadcrumb;
+  // Used to set an initial breadcrumbs from annotations loaded from a file
+  setInitialBreadcrumbFromLoadedAnnotations(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+    this.initialBreadcrumb = initialBreadcrumb;
+    // Make last breadcrumb active
+    let lastBreadcrumb = initialBreadcrumb;
+    while (lastBreadcrumb.child !== null) {
+      lastBreadcrumb = lastBreadcrumb.child;
+    }
+    this.setLastBreadcrumb(lastBreadcrumb);
+  }
+
+  setLastBreadcrumb(lastBreadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+    // When we assign a new active breadcrumb, both the minimap bounds and the visible
+    // window get set to that breadcrumb's window.
+    this.lastBreadcrumb = lastBreadcrumb;
     this.lastBreadcrumb.child = null;
+    TraceBounds.TraceBounds.BoundsManager.instance().setMiniMapBounds(
+        lastBreadcrumb.window,
+    );
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+        lastBreadcrumb.window,
+    );
   }
 }

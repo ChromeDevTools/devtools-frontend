@@ -14,7 +14,7 @@ const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
   range: TraceEngine.Types.Timing.MicroSeconds(6),
 };
 
-const breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb = {
+const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
   window: traceWindow,
   child: null,
 };

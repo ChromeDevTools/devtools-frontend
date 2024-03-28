@@ -135,15 +135,6 @@ export class TimelineMiniMap extends
     const newVisibleTraceWindow =
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
 
-    // When you create a breadcrumb, both the minimap bounds and the visible
-    // window get set to that breadcrumb's window.
-    TraceBounds.TraceBounds.BoundsManager.instance().setMiniMapBounds(
-        newVisibleTraceWindow,
-    );
-    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-        newVisibleTraceWindow,
-    );
-
     if (this.breadcrumbs === null) {
       this.breadcrumbs =
           AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.getTimelineBreadcrumbs() ?? null;
@@ -161,29 +152,17 @@ export class TimelineMiniMap extends
     };
   }
 
-  #removeBreadcrumb(breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb): void {
+  #removeBreadcrumb(breadcrumb: TraceEngine.Types.File.Breadcrumb): void {
     // Note this is slightly confusing: when the user clicks on a breadcrumb,
     // we do not remove it, but we do remove all of its children, and make it
     // the new active breadcrumb.
-    const visibleTimesMilli = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(breadcrumb.window);
     if (this.breadcrumbs) {
-      this.breadcrumbs.makeBreadcrumbActive(breadcrumb);
+      this.breadcrumbs.setLastBreadcrumb(breadcrumb);
       // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
       this.#breadcrumbsUI.data = {
         breadcrumb: this.breadcrumbs.initialBreadcrumb,
       };
     }
-    const newVisibleTraceWindow = TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
-        visibleTimesMilli.min,
-        visibleTimesMilli.max,
-    );
-
-    TraceBounds.TraceBounds.BoundsManager.instance().setMiniMapBounds(
-        newVisibleTraceWindow,
-    );
-    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-        newVisibleTraceWindow,
-    );
   }
 
   override wasShown(): void {

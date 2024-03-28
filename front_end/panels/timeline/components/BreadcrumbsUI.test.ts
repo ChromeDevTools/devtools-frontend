@@ -36,7 +36,7 @@ describe('BreadcrumbsUI', () => {
       range: milliToMicro(9),
     };
 
-    const breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb = {
+    const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
       window: traceWindow,
       child: null,
     };
@@ -68,12 +68,12 @@ describe('BreadcrumbsUI', () => {
       range: milliToMicro(9),
     };
 
-    const breadcrumb2: TimelineComponents.Breadcrumbs.Breadcrumb = {
+    const breadcrumb2: TraceEngine.Types.File.Breadcrumb = {
       window: traceWindow2,
       child: null,
     };
 
-    const breadcrumb: TimelineComponents.Breadcrumbs.Breadcrumb = {
+    const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
       window: traceWindow,
       child: breadcrumb2,
     };

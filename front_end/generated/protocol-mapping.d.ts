@@ -2056,6 +2056,24 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Emulation.SetDeviceMetricsOverrideRequest];
       returnType: void;
     };
+    /**
+     * Start reporting the given posture value to the Device Posture API.
+     * This override can also be set in setDeviceMetricsOverride().
+     */
+    'Emulation.setDevicePostureOverride': {
+      paramsType: [Protocol.Emulation.SetDevicePostureOverrideRequest];
+      returnType: void;
+    };
+    /**
+     * Clears a device posture override set with either setDeviceMetricsOverride()
+     * or setDevicePostureOverride() and starts using posture information from the
+     * platform again.
+     * Does nothing if no override is set.
+     */
+    'Emulation.clearDevicePostureOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     'Emulation.setScrollbarsHidden': {
       paramsType: [Protocol.Emulation.SetScrollbarsHiddenRequest];
       returnType: void;

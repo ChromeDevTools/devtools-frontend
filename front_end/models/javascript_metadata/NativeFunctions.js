@@ -5760,7 +5760,13 @@ export const NativeFunctions = [
   },
   {
     name: "flatMap",
-    signatures: [["callback","?thisArg"]]
+    signatures: [["callback","?thisArg"]],
+    receivers: ["ReadonlyArray","Array"]
+  },
+  {
+    name: "flatMap",
+    signatures: [["mapper"]],
+    receivers: ["Observable"]
   },
   {
     name: "flat",

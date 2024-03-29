@@ -9121,12 +9121,29 @@
                         },
                         {
                             "name": "devicePosture",
-                            "description": "If set, the posture of a foldable device. If not set the posture is set\nto continuous.",
+                            "description": "If set, the posture of a foldable device. If not set the posture is set\nto continuous.\nDeprecated, use Emulation.setDevicePostureOverride.",
                             "experimental": true,
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "DevicePosture"
                         }
                     ]
+                },
+                {
+                    "name": "setDevicePostureOverride",
+                    "description": "Start reporting the given posture value to the Device Posture API.\nThis override can also be set in setDeviceMetricsOverride().",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "posture",
+                            "$ref": "DevicePosture"
+                        }
+                    ]
+                },
+                {
+                    "name": "clearDevicePostureOverride",
+                    "description": "Clears a device posture override set with either setDeviceMetricsOverride()\nor setDevicePostureOverride() and starts using posture information from the\nplatform again.\nDoes nothing if no override is set.",
+                    "experimental": true
                 },
                 {
                     "name": "setScrollbarsHidden",
@@ -12543,6 +12560,12 @@
                         },
                         {
                             "name": "fromPrefetchCache",
+                            "description": "Specifies that the request was served from the prefetch cache.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "fromEarlyHints",
                             "description": "Specifies that the request was served from the prefetch cache.",
                             "optional": true,
                             "type": "boolean"

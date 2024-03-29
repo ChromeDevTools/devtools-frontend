@@ -87,6 +87,7 @@ function networkRequestIsRenderBlockingInFrame(
 export class LayoutShiftRootCauses {
   #protocolInterface: RootCauseProtocolInterface;
   #rootCauseCacheMap = new Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>();
+  #nodeDetailsCache = new Map<Protocol.DOM.NodeId, Protocol.DOM.Node|null>();
 
   constructor(protocolInterface: RootCauseProtocolInterface) {
     this.#protocolInterface = protocolInterface;
@@ -296,7 +297,7 @@ export class LayoutShiftRootCauses {
       return null;
     }
 
-    const layoutInvalidationNode = await this.#protocolInterface.getNode(layoutInvalidationNodeId);
+    const layoutInvalidationNode = await this.getNodeDetails(layoutInvalidationNodeId);
     if (!layoutInvalidationNode) {
       return null;
     }
@@ -328,7 +329,7 @@ export class LayoutShiftRootCauses {
       return null;
     }
 
-    const layoutInvalidationNode = await this.#protocolInterface.getNode(layoutInvalidationNodeId);
+    const layoutInvalidationNode = await this.getNodeDetails(layoutInvalidationNodeId);
     if (!layoutInvalidationNode) {
       return null;
     }
@@ -338,6 +339,18 @@ export class LayoutShiftRootCauses {
       return null;
     }
     return {iframe};
+  }
+
+  async getNodeDetails(nodeId: Protocol.DOM.NodeId): Promise<Protocol.DOM.Node|null> {
+    let nodeDetails = this.#nodeDetailsCache.get(nodeId);
+    if (nodeDetails !== undefined) {
+      return nodeDetails;
+    }
+
+    nodeDetails = await this.#protocolInterface.getNode(nodeId);
+    this.#nodeDetailsCache.set(nodeId, nodeDetails);
+
+    return nodeDetails;
   }
 
   /**

@@ -931,6 +931,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       cookiePartitionKeyOpaque,
       exemptedResponseCookies: exemptedCookies?.map(exemptedCookie => ({
                                                       cookie: Cookie.fromProtocolCookie(exemptedCookie.cookie),
+                                                      cookieLine: exemptedCookie.cookieLine,
                                                       exemptionReason: exemptedCookie.exemptionReason,
                                                     })),
     };

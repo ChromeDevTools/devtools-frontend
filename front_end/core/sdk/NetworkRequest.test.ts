@@ -186,8 +186,11 @@ describe('NetworkRequest', () => {
       statusCode: undefined,
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
-      exemptedResponseCookies:
-          [{cookie: cookie, exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics}],
+      exemptedResponseCookies: [{
+        cookie: cookie,
+        cookieLine: cookie.getCookieLine() as string,
+        exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics,
+      }],
     });
 
     assert.deepEqual(
@@ -296,7 +299,11 @@ describeWithMockConnection('NetworkRequest', () => {
       statusCode: undefined,
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
-      exemptedResponseCookies: [{cookie, exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics}],
+      exemptedResponseCookies: [{
+        cookie,
+        cookieLine: cookie.getCookieLine() as string,
+        exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics,
+      }],
     });
     assert.isTrue(removeBlockedCookieSpy.calledOnceWith(cookie));
     assert.isEmpty(await cookieModel.getCookies([url]));

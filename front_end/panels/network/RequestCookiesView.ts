@@ -242,10 +242,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
         // exempted cookies are received via CDP as objects of type cookie. Therefore they are different objects in
         // DevTools and need to be matched here in order for the rendering logic to be able to lookup a potential
         // exemption reason for a cookie.
-        // TODO(crbug.com/1518872): Consider comparing the cookieLine string instead since it will be more accurate.
-        const matchedResponseCookie = responseCookies.find(
-            responseCookie => exemptedCookie.cookie.key() === responseCookie.key() &&
-                exemptedCookie.cookie.value() === responseCookie.value());
+        const matchedResponseCookie =
+            responseCookies.find(responseCookie => exemptedCookie.cookieLine === responseCookie.getCookieLine());
         if (matchedResponseCookie) {
           responseCookieToExemptionReason.set(matchedResponseCookie, {
             uiString: SDK.NetworkRequest.cookieExemptionReasonToUiString(exemptedCookie.exemptionReason),

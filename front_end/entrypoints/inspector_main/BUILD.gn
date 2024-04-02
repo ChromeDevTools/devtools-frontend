@@ -62,6 +62,7 @@ devtools_entrypoint("meta") {
   visibility = [
     "../../../test/unittests/front_end/helpers/*",
     "../devtools_app/*",
+    "../rn_fusebox:*",
     "../rn_inspector:*",
   ]
 }

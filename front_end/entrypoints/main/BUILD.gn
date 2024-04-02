@@ -49,6 +49,7 @@ devtools_entrypoint("bundle") {
     "../js_app:*",
     "../ndb_app:*",
     "../node_app:*",
+    "../rn_fusebox:*",
     "../rn_inspector:*",
     "../worker_app:*",
   ]

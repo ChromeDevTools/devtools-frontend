@@ -1,0 +1,43 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("entrypoint") {
+  entrypoint = "rn_fusebox.ts"
+
+  deps = [
+    "../../entrypoints/inspector_main:meta",
+    "../../panels/accessibility:meta",
+    "../../panels/animation:meta",
+    "../../panels/application:meta",
+    "../../panels/browser_debugger:meta",
+    "../../panels/css_overview:meta",
+    "../../panels/developer_resources:meta",
+    "../../panels/elements:meta",
+    "../../panels/emulation:meta",
+    "../../panels/issues:meta",
+    "../../panels/js_profiler:meta",
+    "../../panels/layer_viewer:meta",
+    "../../panels/layers:meta",
+    "../../panels/lighthouse:meta",
+    "../../panels/media:meta",
+    "../../panels/mobile_throttling:meta",
+    "../../panels/network:meta",
+    "../../panels/performance_monitor:meta",
+    "../../panels/recorder:meta",
+    "../../panels/rn_welcome:meta",
+    "../../panels/security:meta",
+    "../../panels/sensors:meta",
+    "../../panels/web_audio:meta",
+    "../../panels/webauthn:meta",
+    "../main:bundle",
+    "../shell",
+  ]
+
+  visibility = [ "../../:*" ]
+
+  visibility += devtools_entrypoints_visibility
+}

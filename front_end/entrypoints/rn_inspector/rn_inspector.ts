@@ -15,25 +15,10 @@ import '../../panels/js_profiler/js_profiler-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Main from '../main/main.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Platform from '../../core/platform/platform.js';
-import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 import type * as Sources from '../../panels/sources/sources.js';
-
-Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
-
-Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
-Host.rnPerfMetrics.entryPointLoadingStarted();
-
-SDK.TargetManager.TargetManager.instance().addModelListener(
-    SDK.DebuggerModel.DebuggerModel,
-    SDK.DebuggerModel.Events.DebuggerIsReadyToPause,
-    () => Host.rnPerfMetrics.debuggerReadyToPause(),
-);
 
 // Legacy JavaScript Profiler - we support this until Hermes can support the
 // modern Performance panel.
@@ -51,44 +36,10 @@ Root.Runtime.experiments.register(
     /* feedbackLink */ globalThis.FB_ONLY__reactNativeFeedbackLink,
 );
 
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-  'Enable React DevTools panel',
-  /* unstable */ true,
-);
-
 Root.Runtime.experiments.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
-
-class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
-  constructor(target: SDK.Target.Target) {
-    super(target);
-    target.router()?.sendMessage(
-      target.sessionId,
-      'FuseboxClient',
-      'FuseboxClient.setClientMetadata' as InspectorBackend.QualifiedName,
-      {},
-      () => {},
-    );
-  }
-}
-
-SDK.SDKModel.SDKModel.register(
-  FuseboxClientMetadataModel,
-  {
-    capabilities: SDK.Target.Capability.None,
-    autostart: true,
-    // Ensure FuseboxClient.setClientMetadata is sent before most other CDP domains
-    // are initialised. This allows the backend to confidently detect non-Fusebox
-    // clients by the fact that they send e.g. Runtime.enable without sending any
-    // Fusebox-specific messages first.
-    // TODO: Explicitly depend on this model in RuntimeModel and LogModel, and
-    // remove the `early` and `autostart` flags.
-    early: true,
-  },
-);
 
 const UIStrings = {
   /**
@@ -99,10 +50,6 @@ const UIStrings = {
    *@description Command for showing the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
    */
   showReactNative: 'Show React Native',
-  /**
-   *@description Label of the FB-only 'send feedback' action button in the toolbar
-   */
-  sendFeedback: '[FB-only] Send feedback',
 };
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/rn_inspector/rn_inspector.ts', UIStrings);
@@ -134,35 +81,3 @@ UI.ViewManager.registerViewExtension({
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});
 new Main.MainImpl.MainImpl();
 
-if (globalThis.FB_ONLY__reactNativeFeedbackLink) {
-  const feedbackLink = globalThis.FB_ONLY__reactNativeFeedbackLink as Platform.DevToolsPath.UrlString;
-  const actionId = 'react-native-send-feedback';
-  const sendFeedbackActionDelegate: UI.ActionRegistration.ActionDelegate = {
-    handleAction(_context, incomingActionId): boolean {
-      if (incomingActionId !== actionId) {
-        return false;
-      }
-
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-          feedbackLink,
-      );
-      return true;
-    },
-  };
-
-  UI.ActionRegistration.registerActionExtension({
-    category: UI.ActionRegistration.ActionCategory.GLOBAL,
-    actionId,
-    title: i18nLazyString(UIStrings.sendFeedback),
-    async loadActionDelegate() {
-      return sendFeedbackActionDelegate;
-    },
-    iconClass: UI.ActionRegistration.IconClass.BUG,
-  });
-
-  UI.Toolbar.registerToolbarItem({
-    location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-    actionId,
-    showLabel: true,
-  });
-}

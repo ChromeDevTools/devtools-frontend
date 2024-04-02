@@ -3627,6 +3627,9 @@ export const generatedProperties = [
   "name": "translate"
  },
  {
+  "name": "types"
+ },
+ {
   "keywords": [
    "normal",
    "embed",

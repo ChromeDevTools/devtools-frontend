@@ -2172,18 +2172,15 @@ export abstract class HeapSnapshot {
 
   getDistanceForRetainersView(nodeIndex: number): number {
     const nodeOrdinal = nodeIndex / this.nodeFieldCount;
-    if (this.#nodeDistancesForRetainersView) {
-      const distance = this.#nodeDistancesForRetainersView[nodeOrdinal];
-      if (distance === this.#noDistance) {
-        // An unreachable node should be sorted to the end, not the beginning.
-        // To give such nodes a reasonable sorting order, we add a very large
-        // number to the original distance computed without ignoring any nodes.
-        return Math.max(0, this.nodeDistances[nodeOrdinal]) +
-            HeapSnapshotModel.HeapSnapshotModel.baseUnreachableDistance;
-      }
-      return distance;
+    const distances = this.#nodeDistancesForRetainersView ?? this.nodeDistances;
+    const distance = distances[nodeOrdinal];
+    if (distance === this.#noDistance) {
+      // An unreachable node should be sorted to the end, not the beginning.
+      // To give such nodes a reasonable sorting order, we add a very large
+      // number to the original distance computed without ignoring any nodes.
+      return Math.max(0, this.nodeDistances[nodeOrdinal]) + HeapSnapshotModel.HeapSnapshotModel.baseUnreachableDistance;
     }
-    return this.nodeDistances[nodeOrdinal];
+    return distance;
   }
 
   isNodeIgnoredInRetainersView(nodeIndex: number): boolean {

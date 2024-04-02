@@ -19,6 +19,7 @@ import {
   Events,
   type PageVisibleSecurityState,
   SecurityModel,
+  securityStateCompare,
   SecurityStyleExplanation,
   SummaryMessages,
 } from './SecurityModel.js';
@@ -650,9 +651,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       return;
     }
 
-    let securityState: Protocol.Security.SecurityState.Insecure|Protocol.Security.SecurityState =
-        request.securityState() as Protocol.Security.SecurityState;
-
+    let securityState = request.securityState();
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable ||
         request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
       securityState = Protocol.Security.SecurityState.Insecure;
@@ -660,10 +659,9 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
     const originState = this.origins.get(origin);
     if (originState) {
-      const oldSecurityState = originState.securityState;
-      originState.securityState = this.securityStateMin(oldSecurityState, securityState);
-      if (oldSecurityState !== originState.securityState) {
-        const securityDetails = request.securityDetails() as Protocol.Network.SecurityDetails | null;
+      if (securityStateCompare(securityState, originState.securityState) < 0) {
+        originState.securityState = securityState;
+        const securityDetails = request.securityDetails();
         if (securityDetails) {
           originState.securityDetails = securityDetails;
         }
@@ -722,11 +720,6 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
   filterRequestCount(filterKey: string): number {
     return this.filterRequestCounts.get(filterKey) || 0;
-  }
-
-  private securityStateMin(stateA: Protocol.Security.SecurityState, stateB: Protocol.Security.SecurityState):
-      Protocol.Security.SecurityState {
-    return SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
   }
 
   modelAdded(securityModel: SecurityModel): void {

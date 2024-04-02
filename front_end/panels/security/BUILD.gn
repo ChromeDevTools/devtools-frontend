@@ -65,7 +65,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "SecurityPanel.test.ts" ]
+  sources = [
+    "SecurityModel.test.ts",
+    "SecurityPanel.test.ts",
+  ]
 
   deps = [
     ":bundle",

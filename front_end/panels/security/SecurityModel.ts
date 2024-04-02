@@ -59,38 +59,22 @@ export class SecurityModel extends SDK.SDKModel.SDKModel<EventTypes> {
   networkManager(): SDK.NetworkManager.NetworkManager {
     return this.target().model(SDK.NetworkManager.NetworkManager) as SDK.NetworkManager.NetworkManager;
   }
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static SecurityStateComparator(a: Protocol.Security.SecurityState|null, b: Protocol.Security.SecurityState|null):
-      number {
-    const securityStateMap = getOrCreateSecurityStateOrdinalMap();
-    const aScore = a && securityStateMap.get(a) || 0;
-    const bScore = b && securityStateMap.get(b) || 0;
-
-    return aScore - bScore;
-  }
 }
-let securityStateToOrdinal: Map<Protocol.Security.SecurityState, number>|null = null;
 
-const getOrCreateSecurityStateOrdinalMap = (): Map<Protocol.Security.SecurityState, number> => {
-  if (!securityStateToOrdinal) {
-    securityStateToOrdinal = new Map();
-    const ordering = [
-      Protocol.Security.SecurityState.Info,
-      Protocol.Security.SecurityState.InsecureBroken,
-      Protocol.Security.SecurityState.Insecure,
-      Protocol.Security.SecurityState.Neutral,
-      Protocol.Security.SecurityState.Secure,
-      // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
-      // and so that failed/cancelled requests appear at the bottom of the origins list.
-      Protocol.Security.SecurityState.Unknown,
-    ];
-    for (let i = 0; i < ordering.length; i++) {
-      securityStateToOrdinal.set(ordering[i], i + 1);
-    }
-  }
-  return securityStateToOrdinal;
-};
+export function securityStateCompare(a: Protocol.Security.SecurityState, b: Protocol.Security.SecurityState): number {
+  const SECURITY_STATE_ORDER = [
+    Protocol.Security.SecurityState.Info,
+    Protocol.Security.SecurityState.InsecureBroken,
+    Protocol.Security.SecurityState.Insecure,
+    Protocol.Security.SecurityState.Neutral,
+    Protocol.Security.SecurityState.Secure,
+    // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
+    // and so that failed/cancelled requests appear at the bottom of the origins list.
+    Protocol.Security.SecurityState.Unknown,
+  ];
+
+  return SECURITY_STATE_ORDER.indexOf(a) - SECURITY_STATE_ORDER.indexOf(b);
+}
 
 SDK.SDKModel.SDKModel.register(SecurityModel, {capabilities: SDK.Target.Capability.Security, autostart: false});
 

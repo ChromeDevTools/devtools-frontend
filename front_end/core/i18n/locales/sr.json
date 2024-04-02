@@ -2498,9 +2498,6 @@
   "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "Верзија: {PH1} (празно)"
   },
-  "panels/application/ApplicationPanelSidebar.ts | webSql": {
-    "message": "SQL за веб"
-  },
   "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Веб обрађивачи"
   },
@@ -2641,33 +2638,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "Вредност"
-  },
-  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "Дошло је до неочекиване грешке {PH1}."
-  },
-  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "База података више нема очекивану верзију."
-  },
-  "panels/application/DatabaseQueryView.ts | databaseQuery": {
-    "message": "Упит о бази података"
-  },
-  "panels/application/DatabaseQueryView.ts | queryS": {
-    "message": "Упит: {PH1}"
-  },
-  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "Дошло је до грешке при покушају читања табеле „{PH1}“."
-  },
-  "panels/application/DatabaseTableView.ts | database": {
-    "message": "База података"
-  },
-  "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "Освежи"
-  },
-  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "Табела {PH1} је празна."
-  },
-  "panels/application/DatabaseTableView.ts | visibleColumns": {
-    "message": "Видљиве колоне"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Обриши меморијски простор објекта"
@@ -2815,9 +2785,6 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API за извештавање"
-  },
-  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
-    "message": "Веб SQL је застарео. Можете да се придружите тестирању застаревања да бисте га користили до Chrome-а 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Меморијски простор кеша"
@@ -3155,6 +3122,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Заустави снимање догађаја"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
+    "message": "Недефинисано"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
     "message": "Недефинисано"
   },
@@ -3171,6 +3141,9 @@
     "message": "Chrome је открио покушај извршавања JavaScript-а док је био у кешу."
   },
   "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "Недефинисано"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
     "message": "Недефинисано"
   },
   "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
@@ -3935,6 +3908,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Још није направљенo"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
+    "message": "Број искоришћених бајтова"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Број уноса"
   },
@@ -4542,7 +4518,10 @@
     "message": "атр."
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "Отвори окно при аутоматском попуњавању"
+    "message": "Аутоматски отвори ово окно"
+  },
+  "panels/autofill/AutofillView.ts | autoShowTooltip": {
+    "message": "Аутоматски отварај окно за аутоматско попуњавање када се открије активност аутоматског попуњавања."
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "Атрибут аутоматског довршавања"
@@ -4559,11 +4538,17 @@
   "panels/autofill/AutofillView.ts | inferredByHeuristics": {
     "message": "На основу хеуристике"
   },
-  "panels/autofill/AutofillView.ts | noDataAvailable": {
-    "message": "Није откривен ниједан догађај аутоматског попуњавања"
+  "panels/autofill/AutofillView.ts | learnMore": {
+    "message": "Сазнајте више"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Предвиђена вредност аутоматског попуњавања"
+  },
+  "panels/autofill/AutofillView.ts | sendFeedback": {
+    "message": "Пошаљи повратне информације"
+  },
+  "panels/autofill/AutofillView.ts | toStartDebugging": {
+    "message": "Да бисте започели отклањање грешака са аутоматским попуњавањем, користите Chrome мени за аутоматско попуњавање да бисте попунили образац за адресу."
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "Вредност"
@@ -5055,13 +5040,13 @@
     "message": "<изузетак>"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
-    "message": "Објасни ову грешку"
+    "message": "Објашњење ове грешке"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
-    "message": "Објасни ову поруку"
+    "message": "Објашњење ове поруке"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
-    "message": "Објасни ово упозорење"
+    "message": "Објашњење овог упозорења"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Функција је разрешена на основу везане функције."
@@ -5981,12 +5966,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Копирајте CSS промене"
   },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Назив производа CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Вредност својства CSS: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Филтер"
   },
@@ -6383,50 +6362,47 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Укључи/искључи подешавање које одређује да ли је обрађивач догађаја пасиван или блокира"
   },
-  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
-    "message": "Затвори увид"
+  "panels/explain/components/ConsoleInsight.ts | cancel": {
+    "message": "Откажи"
   },
-  "panels/explain/components/ConsoleInsight.ts | consentButton": {
-    "message": "Настави"
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Затворите објашњење"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Порука конзоле"
   },
-  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
-    "message": "Следећи подаци ће бити послати Google-у да би се пронашло објашњење за поруку конзоле. Могу да их прегледају људи и да се користе за побољшање производа."
-  },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "Дошло је до грешке…"
+    "message": "Алатке за програмере су наишле на грешку"
   },
-  "panels/explain/components/ConsoleInsight.ts | finePrint": {
-    "message": "Ово је експериментална алатка за увид вештачке интелигенције и неће увек одговорити тачно."
+  "panels/explain/components/ConsoleInsight.ts | errorBody": {
+    "message": "Дошло је до грешке. Пробајте поново."
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Проналазимо објашњење…"
-  },
-  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
-    "message": "Иди у подешавања"
+    "message": "Генерише се објашњење..."
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
-    "message": "Подаци на основу којих је направљен овај увид"
+    "message": "Подаци који се користе за разумевање ове поруке"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
-    "message": "Увид"
+    "message": "Објашњење"
   },
   "panels/explain/components/ConsoleInsight.ts | learnMore": {
-    "message": "Сазнајте више о вештачкој интелигенцији у Алаткама за програмере"
+    "message": "Сазнајте више"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Мрежни захтев"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "Увид у конзолу није доступан"
+    "message": "Ова функција није доступна"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "Ова функција је доступна само ако сте пријављени у Chrome помоћу Google налога."
+    "message": "Ова функција је доступна само када се пријавите у Chrome помоћу Google налога."
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
-    "message": "Интернет веза тренутно није доступна."
+    "message": "Проверите интернет везу и пробајте поново."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offlineHeader": {
+    "message": "Алатке за програмере не могу да се повежу на интернет"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(отвара се на новој картици)"
@@ -6434,14 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Сродни кôд"
   },
+  "panels/explain/components/ConsoleInsight.ts | report": {
+    "message": "Пријави правни проблем"
+  },
+  "panels/explain/components/ConsoleInsight.ts | signInToUse": {
+    "message": "Пријавите се да бисте користили ову функцију"
+  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "Стање стека"
   },
-  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
-    "message": "Пошаљи повратне информације"
-  },
   "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "Ова функција је доступна само ако сте укључили Chrome синхронизацију."
+    "message": "Ова функција захтева да укључите Chrome синхронизацију."
   },
   "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
     "message": "Не свиђа ми се"
@@ -6449,20 +6428,23 @@
   "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
     "message": "Свиђа ми се"
   },
+  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
+    "message": "Ажурирај подешавања"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
-    "message": "Омогући Увид у конзолу"
+    "message": "Објашњење порука у конзоли помоћу вештачке интелигенције"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
-    "message": "Објасни ову грешку"
+    "message": "Објашњење ове грешке"
   },
   "panels/explain/explain-meta.ts | explainThisMessage": {
-    "message": "Објасни ову поруку"
+    "message": "Објашњење ове поруке"
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
-    "message": "Објасни ово упозорење"
+    "message": "Објашњење овог упозорења"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Тренутно су подржани само енглески локалитети."
+    "message": "Да бисте користили ову функцију, ажурирајте подешавање језика у Подешавањима Алатки за програмере на енглески."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Блокирани ресурс"
@@ -6851,26 +6833,17 @@
   "panels/js_profiler/js_profiler-meta.ts | performance": {
     "message": "Учинак"
   },
-  "panels/js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "Алатка за профиле"
-  },
   "panels/js_profiler/js_profiler-meta.ts | record": {
     "message": "Снимај"
   },
   "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
     "message": "Прикажи учинак"
   },
-  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "Прикажи алатку за профиле"
-  },
   "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
     "message": "Прикажи недавне сесије у хронологији"
   },
   "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
     "message": "Започни профилисање и поново учитај страницу"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "Покрените/зауставите снимање"
   },
   "panels/js_profiler/js_profiler-meta.ts | stop": {
     "message": "Заустави"
@@ -6959,6 +6932,9 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "3D приказ слојева"
   },
+  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
+    "message": "Окно са слојевима ће можда ускоро застарети. Реците нам своје мишљење и недоумице пре него што одлучимо."
+  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "Информације о слоју још увек нису доступне."
   },
@@ -6967,6 +6943,9 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "Ресетуј приказ"
+  },
+  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
+    "message": "Пошаљи повратне информације"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "Прикажи алатку за профиле боја"
@@ -7079,14 +7058,17 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
     "message": "Да ли ова страница испуњава стандард за прогресивну веб-апликацију"
   },
+  "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
+    "message": "Омогућите JavaScript узорковање током покретања Lighthouse-а. Тако се приказује више детаља о извршавању у окну за учинак када прегледате траг, али има веће оптерећење процесора и може да утиче на учинак странице."
+  },
+  "panels/lighthouse/LighthouseController.ts | enableSampling": {
+    "message": "Омогући JS узорковање"
+  },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "Колико дуго треба овој апликацији да прикаже садржај и постане употребљива"
   },
   "panels/lighthouse/LighthouseController.ts | indexeddb": {
     "message": "Индексирана база података"
-  },
-  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "Да ли је ова страница оптимизована за брзину и квалитет огласа"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
     "message": "Да ли је ова страница оптимизована за рангирање резултата претраживача"
@@ -7120,9 +7102,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
     "message": "Прогресивна веб-апликација"
-  },
-  "panels/lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "Огласи објављивача"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Ресетујте меморијски простор (cache, service workers, итд.) пре ревизије. (добро је за тестирање учинка и PWA)"
@@ -7210,9 +7189,6 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Режим"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | plugins": {
-    "message": "Додатне компоненте"
   },
   "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Започни период"
@@ -7700,8 +7676,35 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "Профили ограничавања мреже"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
+    "message": "Искључено"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
+    "message": "Укључено"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "опционално"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packet": {
+    "message": "пакет"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLoss": {
+    "message": "Губитак пакета"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLossMustBeAnIntegerBetweenSpct": {
+    "message": "Губитак пакета мора да буде број између {PH1} % и {PH2} %, укључујући те две вредности"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLength": {
+    "message": "Дужина реда пакета"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
+    "message": "Дужина реда пакета мора да буде већа од или једнака 0"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
+    "message": "Прераспоређивање пакета"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
+    "message": "проценат"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Назив профила"
@@ -7912,6 +7915,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "Подудара се са ServiceWorker router бр. {PH1}, величина ресурса: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouterWithNetworkSource": {
+    "message": "Подудара се са ServiceWorker router бр. {PH1}, {PH2} је пренето преко мреже, величина ресурса: {PH3}"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(кеш меморије)"
@@ -9320,6 +9326,18 @@
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "Величина објекта плус графикон који задржава у бајтовима"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | compiledCodeSummary": {
+    "message": "Интерни подаци које V8 користи за покретање функција које дефинишу JavaScript или WebAssembly."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | concatenatedStringSummary": {
+    "message": "Стринг који представља садржај још два спојена стринга."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | contextSummary": {
+    "message": "Интерни објекат који садржи променљиве из JavaScript опсега које ће можда захтевати функција направљена у том опсегу."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | descriptorArraySummary": {
+    "message": "Листа назива својстава које користи JavaScript објекат."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "Одвојено од DOM стабла"
   },
@@ -9332,6 +9350,21 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(интерни низ)[]"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalArraySummary": {
+    "message": "Интерна структура података налик низу (а не JavaScript низ)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
+    "message": "Објекат додељен компоненти која није V8, на пример, C++ објекти дефинисани Blink-ом."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
+    "message": "Интерни објекат који представља облик JavaScript објекта (не JavaScript мапе)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectElementsSummary": {
+    "message": "Интерни објекат који чува индексирана својства у JavaScript објекту, као што је садржај низа."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectPropertiesSummary": {
+    "message": "Интерни објекат који чува именована својства у JavaScript објекту."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "Преглед није доступан"
   },
@@ -9340,6 +9373,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "Откриј објекат {PH1} са ИД-ом @{PH2} у приказу резимеа"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
+    "message": "Стринг који представља неке од знакова из другог стринга."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Чувај као општу променљиву"
@@ -12260,6 +12296,9 @@
   "panels/timeline/EventUICategory.ts | drawFrame": {
     "message": "Нацртај оквир"
   },
+  "panels/timeline/EventUICategory.ts | drawing": {
+    "message": "Цртеж"
+  },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
     "message": "Повратни позив уграђивача"
   },
@@ -12353,8 +12392,14 @@
   "panels/timeline/EventUICategory.ts | majorGc": {
     "message": "Већи GC"
   },
+  "panels/timeline/EventUICategory.ts | messaging": {
+    "message": "Размена порука"
+  },
   "panels/timeline/EventUICategory.ts | minorGc": {
     "message": "Мањи GC"
+  },
+  "panels/timeline/EventUICategory.ts | onMessage": {
+    "message": "У поруци"
   },
   "panels/timeline/EventUICategory.ts | onloadEvent": {
     "message": "Догађај onLoad"
@@ -12395,6 +12440,9 @@
   "panels/timeline/EventUICategory.ts | rasterizePaint": {
     "message": "Растеризуј приказ"
   },
+  "panels/timeline/EventUICategory.ts | rasterizing": {
+    "message": "Растеризовање"
+  },
   "panels/timeline/EventUICategory.ts | recalculateStyle": {
     "message": "Поново израчунај стил"
   },
@@ -12425,6 +12473,9 @@
   "panels/timeline/EventUICategory.ts | runMicrotasks": {
     "message": "Покрени микрозадатке"
   },
+  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
+    "message": "Закажите postMessage"
+  },
   "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
     "message": "Закажи поновно израчунавање стила"
   },
@@ -12441,7 +12492,7 @@
     "message": "Пошаљи WebSocket „руковање“"
   },
   "panels/timeline/EventUICategory.ts | sign": {
-    "message": "Потпиши"
+    "message": "Потписивање"
   },
   "panels/timeline/EventUICategory.ts | signReply": {
     "message": "Потпиши одговор"
@@ -12701,20 +12752,8 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Изаберите сесију хронологије"
   },
-  "panels/timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
-    "message": "Стари формат хронологије није подржан."
-  },
-  "panels/timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
-    "message": "Погрешно форматиран профил процесора"
-  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Погрешно обликовани подаци хронологије: {PH1}"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "Погрешно обликовани подаци хронологије: непознат JSON формат"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
-    "message": "Погрешно обликован унос хронологије, погрешно стање JSON заграда"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Ограничавање процесора је омогућено"
@@ -12965,29 +13004,8 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "Додељено време"
   },
-  "panels/timeline/TimelineUIUtils.ts | animation": {
-    "message": "Анимација"
-  },
-  "panels/timeline/TimelineUIUtils.ts | animationFrameFired": {
-    "message": "Активиран је оквир анимације"
-  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "Затражен је оквир анимације"
-  },
-  "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "Асинхрони подаци"
-  },
-  "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "Асинхрон задатак"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
-    "message": "Кôд модула за кеш"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
-    "message": "Кôд скрипте за кеш"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "Кеширани Wasm модул"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Функција повратног позива"
@@ -12995,17 +13013,8 @@
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
     "message": "ИД повратног позива"
   },
-  "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
-    "message": "Откажи оквир анимације"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "Откажи неактиван повратни позив"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Прикупљено"
-  },
-  "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "Примени"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "Врста кеша компилације"
@@ -13019,32 +13028,8 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Компајлирај"
   },
-  "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "Kомпајлираj кôд"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "Компајлирај модул"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "Компајлирај скрипту"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "Компајлиран Wasm модул"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
-    "message": "Композитни слојеви"
-  },
-  "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "Израчунај пресеке"
-  },
-  "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "Време конзоле"
-  },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Величина искоришћеног кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "Направи WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Кумулативни помаци садржаја странице"
@@ -13061,38 +13046,11 @@
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Декодирано тело"
   },
-  "panels/timeline/TimelineUIUtils.ts | decrypt": {
-    "message": "Дешифруј"
-  },
-  "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "Дешифруј одговор"
-  },
-  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
-    "message": "Десеријализујте кеш кода"
-  },
-  "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
-    "message": "Уништи WebSocket"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Детаљи"
   },
-  "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "Сажми"
-  },
-  "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "Сажми одговор"
-  },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Димензије"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
-    "message": "Догађај DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drawFrame": {
-    "message": "Нацртај оквир"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Трајање"
@@ -13103,50 +13061,20 @@
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Елементи на које ово утиче"
   },
-  "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "Повратни позив уграђивача"
-  },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Кодирани подаци"
   },
-  "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "Шифруј"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "Шифруј одговор"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "Оцени модул"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "Оцени скрипту"
-  },
-  "panels/timeline/TimelineUIUtils.ts | event": {
-    "message": "Догађај"
-  },
-  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
-    "message": "Време догађаја"
+  "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
+    "message": "(унос је скривен)"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "развијено"
   },
-  "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Доживљај"
-  },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "учитавање скрипте из кеша није успело"
-  },
-  "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "Заврши учитавање"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "Активирај неактиван повратни позив"
-  },
-  "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "Прво приказивање садржаја"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "Прво поништено"
@@ -13154,50 +13082,17 @@
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "Поништавањe првог распореда"
   },
-  "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "Прво приказивање"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Оквир"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStart": {
-    "message": "Почетак оквира"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "Почетак оквира (главна нит)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
-    "message": "Оквир је почео да се учитава"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функција"
   },
-  "panels/timeline/TimelineUIUtils.ts | functionCall": {
-    "message": "Позив функције"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "GC догађај"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gpu": {
-    "message": "GPU"
-  },
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Било је недавних уноса"
   },
-  "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "Тестирање циља"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idle": {
-    "message": "Неактивно"
-  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Затражен је неактиван повратни позив"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "Декодирање слика"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageResize": {
-    "message": "Промена величине слике"
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "URL слике"
@@ -13211,17 +13106,14 @@
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "Иницијатор за"
   },
+  "panels/timeline/TimelineUIUtils.ts | initiatorStackTrace": {
+    "message": "Стање стека иницијатора"
+  },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Кашњење уноса"
   },
-  "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "Тајмер инсталирања"
-  },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ИД"
-  },
-  "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "Неважећи распоред"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
     "message": "{PH1} на {PH2}"
@@ -13232,29 +13124,8 @@
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Активирано временским ограничењем"
   },
-  "panels/timeline/TimelineUIUtils.ts | jsFrame": {
-    "message": "JS оквир"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
-    "message": "Неактиван JS оквир"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
-    "message": "JS основни ниво"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
-    "message": "JS оквир система"
-  },
-  "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "Највеће приказивање садржаја"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Основни ниво слоја"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layerize": {
-    "message": "Слојеви"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layout": {
-    "message": "Распоред"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "Распоред је принудно примењен"
@@ -13262,32 +13133,20 @@
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Основни ниво распореда"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Промена распореда"
-  },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Сазнајте више"
   },
   "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "учитај из кеша"
   },
-  "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "Учитава се"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Локација"
-  },
-  "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "Већи GC"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Порука"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "MIME тип"
-  },
-  "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "Мањи GC"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Модул"
@@ -13310,50 +13169,20 @@
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Чворови којима треба распоред"
   },
-  "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "Догађај onLoad"
-  },
-  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "Оптимизуј кôд"
-  },
-  "panels/timeline/TimelineUIUtils.ts | other": {
-    "message": "Друго"
+  "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
+    "message": "(изван опсега путање)"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "Елемент власника"
   },
-  "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "Приказивање"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "Приказивање слике"
-  },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "Алатка за профиле приказа"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "Подешавање приказивања"
-  },
-  "panels/timeline/TimelineUIUtils.ts | painting": {
-    "message": "Приказивање"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
     "message": "Рашчлани"
   },
-  "panels/timeline/TimelineUIUtils.ts | parseAndCompile": {
-    "message": "Рашчлани и компајлирај"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseHtml": {
-    "message": "Рашчлани HTML"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "Рашчлани опис стила"
-  },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Чека се на"
-  },
-  "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "Предпреказивање"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
     "message": "Кашњење презентације"
@@ -13364,62 +13193,23 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Приоритет"
   },
-  "panels/timeline/TimelineUIUtils.ts | processingTime": {
-    "message": "Време обраде"
-  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Величина добијеног кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "Модел профилисања одозго надоле"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Опсег"
   },
-  "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "Растеризуј приказ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "Поново израчунај стил"
-  },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "Наметнуто је поновно израчунавање"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "Примај податке"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
-    "message": "Примај одговор"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "Примај WebSocket „руковање“"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Сродни чвор"
   },
-  "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "Уклони тајмер"
-  },
-  "panels/timeline/TimelineUIUtils.ts | rendering": {
-    "message": "Рендеровање"
-  },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Понављања"
   },
-  "panels/timeline/TimelineUIUtils.ts | requestAnimationFrame": {
-    "message": "Затражи оквир анимације"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "Затражи неактиван повратни позив"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
-    "message": "Затражи оквир главне нити"
-  },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Метод захтева"
-  },
-  "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
-    "message": "Покрени микрозадатке"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} на {PH2}"
@@ -13457,9 +13247,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "Закажи поновно израчунавање стила"
-  },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "Резултат"
   },
@@ -13472,26 +13259,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипта не испуњава услове"
   },
-  "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "Писање скрипте"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scroll": {
-    "message": "Померај"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Време појединачне активности"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "Пошаљи захтев"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "Пошаљи WebSocket „руковање“"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "Потпиши"
-  },
-  "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "Потпиши одговор"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Величина"
@@ -13505,29 +13274,14 @@
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Стримовано"
   },
-  "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "Стримује се задатак компајлирања"
-  },
-  "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
-    "message": "Стримује се Wasm одговор"
-  },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "URL описа стила"
-  },
-  "panels/timeline/TimelineUIUtils.ts | system": {
-    "message": "Систем"
-  },
-  "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "Задатак"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Време проведено у рендеровању"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Временско ограничење"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timerFired": {
-    "message": "Активиран је тајмер"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "ИД тајмера"
@@ -13544,44 +13298,11 @@
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Тип"
   },
-  "panels/timeline/TimelineUIUtils.ts | updateLayer": {
-    "message": "Ажурирај слој"
-  },
-  "panels/timeline/TimelineUIUtils.ts | updateLayerTree": {
-    "message": "Ажурирајте стабло слојева"
-  },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "URL"
   },
-  "panels/timeline/TimelineUIUtils.ts | userTiming": {
-    "message": "Време корисника"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "Потврди"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "Потврди одговор"
-  },
-  "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
-    "message": "Чека се мрежа"
-  },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "Упозорење"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
-    "message": "Погодак кеша Wasm модула"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
-    "message": "Кеш Wasm модула је неважећи"
-  },
-  "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
-    "message": "Послаће захтев"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "Учитавање XHR"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "Промена статуса спремности за XHR"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Да"
@@ -13589,14 +13310,23 @@
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Времена"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | async": {
+    "message": "Асинхрони подаци"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Нацртај оквир"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
     "message": "Цртеж"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | experience": {
+    "message": "Доживљај"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "Почетак оквира"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | gpu": {
+    "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
     "message": "Неактивно"
@@ -13604,11 +13334,23 @@
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
     "message": "Распоред"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | loading": {
+    "message": "Учитава се"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | messaging": {
+    "message": "Размена порука"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
     "message": "Приказивање"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "Растеризовање"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | rendering": {
+    "message": "Рендеровање"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | scripting": {
+    "message": "Писање скрипте"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Систем"
@@ -13643,14 +13385,8 @@
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Кашњење презентације"
   },
-  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
-    "message": "Време обраде"
-  },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Сакриј chrome оквир у приказу слојева"
-  },
-  "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript алатка за профилисање"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Учитај профил…"
@@ -13676,9 +13412,6 @@
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "Сачувај профил…"
   },
-  "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "Прикажи JavaScript алатку за профиле"
-  },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "Прикажи учинак"
   },
@@ -13687,9 +13420,6 @@
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Започни профилисање и поново учитај страницу"
-  },
-  "panels/timeline/timeline-meta.ts | startStopRecording": {
-    "message": "Покрените/зауставите снимање"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Заустави"
@@ -13909,6 +13639,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Копирај кôд"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
+    "message": "Пажљиво користите фрагменте кода"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Повратне информације"
@@ -14566,6 +14299,9 @@
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Прикажи као JavaScript објекат"
+  },
+  "ui/legacy/components/object_ui/ObjectPopoverHelper.ts | learnMore": {
+    "message": "Сазнајте више"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Скупи подређене елементе"

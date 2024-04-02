@@ -2498,9 +2498,6 @@
   "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "版本：{PH1}（空）"
   },
-  "panels/application/ApplicationPanelSidebar.ts | webSql": {
-    "message": "Web SQL"
-  },
   "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "网络工作器"
   },
@@ -2641,33 +2638,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "值"
-  },
-  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "发生意外错误 {PH1}。"
-  },
-  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "数据库不再有预期版本。"
-  },
-  "panels/application/DatabaseQueryView.ts | databaseQuery": {
-    "message": "数据库查询"
-  },
-  "panels/application/DatabaseQueryView.ts | queryS": {
-    "message": "查询：{PH1}"
-  },
-  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "尝试读取“{PH1}”表时发生错误。"
-  },
-  "panels/application/DatabaseTableView.ts | database": {
-    "message": "数据库"
-  },
-  "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "刷新"
-  },
-  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "“{PH1}”表格为空。"
-  },
-  "panels/application/DatabaseTableView.ts | visibleColumns": {
-    "message": "可见列"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "清除对象仓库"
@@ -2815,9 +2785,6 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
-  },
-  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
-    "message": "Web SQL 已被弃用。您可加入弃用试用，以便在 Chrome 123 之前继续使用该数据库。"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "缓存空间"
@@ -3155,6 +3122,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "停止记录事件"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
+    "message": "未定义"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
     "message": "未定义"
   },
@@ -3171,6 +3141,9 @@
     "message": "Chrome 检测到一项在储存于缓存期间执行 JavaScript 的意图。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "未定义"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
     "message": "未定义"
   },
   "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
@@ -3935,6 +3908,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "尚未创建"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
+    "message": "已用字节数"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "条目数"
   },
@@ -4542,7 +4518,10 @@
     "message": "属性"
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "在自动填充时打开面板"
+    "message": "自动打开此面板"
+  },
+  "panels/autofill/AutofillView.ts | autoShowTooltip": {
+    "message": "当系统检测到自动填充活动时，自动打开自动填充面板。"
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "自动补全属性"
@@ -4559,11 +4538,17 @@
   "panels/autofill/AutofillView.ts | inferredByHeuristics": {
     "message": "基于启发法的推理"
   },
-  "panels/autofill/AutofillView.ts | noDataAvailable": {
-    "message": "未检测到自动填充事件"
+  "panels/autofill/AutofillView.ts | learnMore": {
+    "message": "了解详情"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "预测的自动填充值"
+  },
+  "panels/autofill/AutofillView.ts | sendFeedback": {
+    "message": "发送反馈"
+  },
+  "panels/autofill/AutofillView.ts | toStartDebugging": {
+    "message": "若要开始调试自动填充功能，请使用 Chrome 的自动填充菜单填充地址表单。"
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "值"
@@ -5055,13 +5040,13 @@
     "message": "<exception>"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
-    "message": "解释此错误"
+    "message": "了解此错误"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
-    "message": "解释这条消息"
+    "message": "了解此消息"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
-    "message": "解释此警告"
+    "message": "了解此警告"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "函数已根据绑定的函数进行解析。"
@@ -5742,7 +5727,7 @@
     "message": "停用滚动贴靠叠加层"
   },
   "panels/elements/ElementsTreeElement.ts | duplicateElement": {
-    "message": "创建元素副本"
+    "message": "复制粘贴元素"
   },
   "panels/elements/ElementsTreeElement.ts | editAsHtml": {
     "message": "以 HTML 格式修改"
@@ -5981,12 +5966,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "复制 CSS 更改"
   },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS 属性名称：{PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS 属性值：{PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "过滤"
   },
@@ -6120,7 +6099,7 @@
     "message": "停用 DOM 自动换行"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
-    "message": "创建元素副本"
+    "message": "复制粘贴元素"
   },
   "panels/elements/elements-meta.ts | editAsHtml": {
     "message": "以 HTML 格式修改"
@@ -6383,50 +6362,47 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "将事件监听器状态切换为被动或屏蔽"
   },
-  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
-    "message": "关闭数据分析"
+  "panels/explain/components/ConsoleInsight.ts | cancel": {
+    "message": "取消"
   },
-  "panels/explain/components/ConsoleInsight.ts | consentButton": {
-    "message": "继续"
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "关闭说明"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "控制台消息"
   },
-  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
-    "message": "系统会将以下数据发送给 Google，以便查找针对控制台消息的说明。它们可能会经过人工审核，并用于改进商品。"
-  },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "出了点问题…"
+    "message": "开发者工具遇到错误"
   },
-  "panels/explain/components/ConsoleInsight.ts | finePrint": {
-    "message": "这是一项实验性 AI 数据分析工具，并非始终准确无误。"
+  "panels/explain/components/ConsoleInsight.ts | errorBody": {
+    "message": "出了点问题。请重试。"
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "正在给出解释…"
-  },
-  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
-    "message": "前往“设置”"
+    "message": "正在生成说明…"
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
-    "message": "用于创建此数据分析的数据"
+    "message": "用于了解此消息的数据"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
-    "message": "数据分析"
+    "message": "说明"
   },
   "panels/explain/components/ConsoleInsight.ts | learnMore": {
-    "message": "详细了解开发者工具中的 AI 功能"
+    "message": "了解详情"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "网络请求"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "控制台数据分析不可用"
+    "message": "此功能不可用"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "只有当您使用 Google 账号登录 Chrome 时，此功能才可用。"
+    "message": "只有当您使用 Google 账号登录 Chrome 时，才能使用此功能。"
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
-    "message": "当前无法连接互联网。"
+    "message": "请检查互联网连接情况，然后重试。"
+  },
+  "panels/explain/components/ConsoleInsight.ts | offlineHeader": {
+    "message": "开发者工具无法连接到互联网"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "（在新标签页中打开）"
@@ -6434,14 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "相关代码"
   },
+  "panels/explain/components/ConsoleInsight.ts | report": {
+    "message": "举报法律问题"
+  },
+  "panels/explain/components/ConsoleInsight.ts | signInToUse": {
+    "message": "登录以使用此功能"
+  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "堆栈轨迹"
   },
-  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
-    "message": "提交反馈"
-  },
   "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "您必须开启 Chrome 同步功能，才能使用此功能。"
+    "message": "此功能需要您开启 Chrome 同步功能。"
   },
   "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
     "message": "不喜欢"
@@ -6449,20 +6428,23 @@
   "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
     "message": "我喜欢"
   },
+  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
+    "message": "更新设置"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
-    "message": "启用控制台数据分析"
+    "message": "利用 AI 了解控制台消息"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
-    "message": "解释此错误"
+    "message": "了解此错误"
   },
   "panels/explain/explain-meta.ts | explainThisMessage": {
-    "message": "解释这条消息"
+    "message": "了解此消息"
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
-    "message": "解释此警告"
+    "message": "了解此警告"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "目前仅支持英语语言区域。"
+    "message": "如需使用此功能，请将开发者工具设置中的语言偏好设置更新为英语。"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已拦截的资源"
@@ -6851,26 +6833,17 @@
   "panels/js_profiler/js_profiler-meta.ts | performance": {
     "message": "性能"
   },
-  "panels/js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "分析器"
-  },
   "panels/js_profiler/js_profiler-meta.ts | record": {
     "message": "录制"
   },
   "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
     "message": "显示“性能”工具"
   },
-  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "显示“分析器”工具"
-  },
   "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
     "message": "显示近期时间轴会话"
   },
   "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
     "message": "开始分析并重新加载网页"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "开始/停止录制"
   },
   "panels/js_profiler/js_profiler-meta.ts | stop": {
     "message": "停止"
@@ -6959,6 +6932,9 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "3D 图层视图"
   },
+  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
+    "message": "“图层”面板可能即将被弃用。在我们做出决定之前，请分享您的想法和疑虑。"
+  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "尚无层信息。"
   },
@@ -6967,6 +6943,9 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "重置视图"
+  },
+  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
+    "message": "发送反馈"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "显示“绘制性能剖析器”"
@@ -7079,14 +7058,17 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
     "message": "此网页是否符合渐进式 Web 应用的标准"
   },
+  "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
+    "message": "在 Lighthouse 运行期间启用 JavaScript 采样。查看轨迹时，这将在性能面板中提供更多执行详细信息，但 CPU 开销较高，并且可能会影响页面的性能。"
+  },
+  "panels/lighthouse/LighthouseController.ts | enableSampling": {
+    "message": "启用 JS 采样"
+  },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "此应用需要多长时间才会显示内容并变为可以使用"
   },
   "panels/lighthouse/LighthouseController.ts | indexeddb": {
     "message": "IndexedDB"
-  },
-  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "此网页是否针对广告速度和质量进行了优化"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
     "message": "该网页是否已经过优化，以提升其在搜索引擎结果中的排名"
@@ -7120,9 +7102,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
     "message": "渐进式 Web 应用"
-  },
-  "panels/lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "发布商广告"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "在审核前重置存储空间（cache 和 service workers 等）。（适用于性能和 PWA 测试）"
@@ -7210,9 +7189,6 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "模式"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | plugins": {
-    "message": "插件"
   },
   "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "启用时间跨度模式"
@@ -7700,8 +7676,35 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "网络节流性能分析报告"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
+    "message": "已停用"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
+    "message": "已启用"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "可选"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packet": {
+    "message": "数据包"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLoss": {
+    "message": "丟包率"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLossMustBeAnIntegerBetweenSpct": {
+    "message": "丢包率必须是介于 {PH1}% 到 {PH2}%（含端点值）之间的数字"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLength": {
+    "message": "数据包队列长度"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
+    "message": "数据包队列长度必须大于或等于 0"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
+    "message": "数据包重新排序"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
+    "message": "百分比"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "性能分析报告名称"
@@ -7912,6 +7915,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "与 ServiceWorker router#{PH1} 匹配，资源大小：{PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouterWithNetworkSource": {
+    "message": "与 ServiceWorker router#{PH1} 匹配，已通过网络传输 {PH2}，资源大小：{PH3}"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "（内存缓存）"
@@ -9320,6 +9326,18 @@
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "对象加上其保留的图表的大小（以字节为单位）"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | compiledCodeSummary": {
+    "message": "V8 用于运行由 JavaScript 或 WebAssembly 定义的函数的内部数据。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | concatenatedStringSummary": {
+    "message": "一个字符串，表示连接在一起的其他两个字符串的内容。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | contextSummary": {
+    "message": "一个内部对象，其中包含来自 JavaScript 作用域的变量，在该作用域内创建的函数可能需要这些变量。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | descriptorArraySummary": {
+    "message": "JavaScript 对象使用的属性名称的列表。"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "已从 DOM 树分离"
   },
@@ -9332,6 +9350,21 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "（内部数组）[]"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalArraySummary": {
+    "message": "类似于数组的内部数据结构（不是 JavaScript 数组）。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
+    "message": "由 V8 以外的组件分配的对象，例如 Blink 定义的 C++ 对象。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
+    "message": "表示 JavaScript 对象（不是 JavaScript 映射）形状的内部对象。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectElementsSummary": {
+    "message": "一个内部对象，用于将编入索引的属性（例如数组的内容）存储在 JavaScript 对象中。"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectPropertiesSummary": {
+    "message": "一个内部对象，用于将命名的属性存储在 JavaScript 对象中。"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "无法预览"
   },
@@ -9340,6 +9373,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "在“摘要”视图中显示 ID 为 @{PH2} 的对象“{PH1}”"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
+    "message": "一个字符串，表示另一个字符串中的部分字符。"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "存储为全局变量"
@@ -10749,7 +10785,7 @@
     "message": "禁止替换"
   },
   "panels/sensors/SensorsView.ts | off": {
-    "message": "停用"
+    "message": "关闭"
   },
   "panels/sensors/SensorsView.ts | orientation": {
     "message": "屏幕方向"
@@ -12260,6 +12296,9 @@
   "panels/timeline/EventUICategory.ts | drawFrame": {
     "message": "绘制帧"
   },
+  "panels/timeline/EventUICategory.ts | drawing": {
+    "message": "绘制"
+  },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
     "message": "嵌入器回调"
   },
@@ -12279,7 +12318,7 @@
     "message": "事件"
   },
   "panels/timeline/EventUICategory.ts | eventTiming": {
-    "message": "事件计时"
+    "message": "事件时间"
   },
   "panels/timeline/EventUICategory.ts | experience": {
     "message": "体验"
@@ -12309,13 +12348,13 @@
     "message": "函数调用"
   },
   "panels/timeline/EventUICategory.ts | gcEvent": {
-    "message": "GC 事件"
+    "message": "垃圾回收事件"
   },
   "panels/timeline/EventUICategory.ts | gpu": {
     "message": "GPU"
   },
   "panels/timeline/EventUICategory.ts | hitTest": {
-    "message": "点击测试"
+    "message": "命中测试"
   },
   "panels/timeline/EventUICategory.ts | idle": {
     "message": "空闲"
@@ -12351,13 +12390,19 @@
     "message": "加载"
   },
   "panels/timeline/EventUICategory.ts | majorGc": {
-    "message": "主要 GC"
+    "message": "主要垃圾回收"
+  },
+  "panels/timeline/EventUICategory.ts | messaging": {
+    "message": "消息功能"
   },
   "panels/timeline/EventUICategory.ts | minorGc": {
-    "message": "次要 GC"
+    "message": "次要垃圾回收"
+  },
+  "panels/timeline/EventUICategory.ts | onMessage": {
+    "message": "在消息上"
   },
   "panels/timeline/EventUICategory.ts | onloadEvent": {
-    "message": "onload 事件"
+    "message": "Onload 事件"
   },
   "panels/timeline/EventUICategory.ts | optimizeCode": {
     "message": "优化代码"
@@ -12393,7 +12438,10 @@
     "message": "分析开销"
   },
   "panels/timeline/EventUICategory.ts | rasterizePaint": {
-    "message": "光栅化绘制"
+    "message": "光栅化绘制内容"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizing": {
+    "message": "正在光栅化"
   },
   "panels/timeline/EventUICategory.ts | recalculateStyle": {
     "message": "重新计算样式"
@@ -12424,6 +12472,9 @@
   },
   "panels/timeline/EventUICategory.ts | runMicrotasks": {
     "message": "运行微任务"
+  },
+  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
+    "message": "安排 postMessage 的时间"
   },
   "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
     "message": "安排重新计算样式的时间"
@@ -12480,7 +12531,7 @@
     "message": "验证回复"
   },
   "panels/timeline/EventUICategory.ts | waitingForNetwork": {
-    "message": "等待连接到网络"
+    "message": "正在等待连接到网络"
   },
   "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
     "message": "Wasm 模块缓存命中"
@@ -12701,20 +12752,8 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "选择时间轴会话"
   },
-  "panels/timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
-    "message": "旧版时间轴格式不受支持。"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
-    "message": "CPU 配置文件格式有误"
-  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "格式有误的时间轴数据：{PH1}"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "时间轴数据格式错误：未知 JSON 格式"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
-    "message": "时间轴输入项格式错误，JSON 括号对应有误"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU 节流已启用"
@@ -12965,29 +13004,8 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "分配的时间"
   },
-  "panels/timeline/TimelineUIUtils.ts | animation": {
-    "message": "动画"
-  },
-  "panels/timeline/TimelineUIUtils.ts | animationFrameFired": {
-    "message": "动画帧已触发"
-  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "已请求动画帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "异步"
-  },
-  "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "异步任务"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
-    "message": "缓存模块代码"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
-    "message": "缓存脚本代码"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "缓存的 Wasm 模块"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "回调函数"
@@ -12995,17 +13013,8 @@
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
     "message": "回调 ID"
   },
-  "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
-    "message": "取消动画帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "取消空闲回调"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "已回收"
-  },
-  "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "提交"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "编译缓存种类"
@@ -13019,32 +13028,8 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "编译"
   },
-  "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "编译代码"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "编译模块"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "编译脚本"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "已编译的 Wasm 模块"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
-    "message": "复合图层"
-  },
-  "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "计算相交部分"
-  },
-  "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "控制台时间事件"
-  },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "已使用的缓存大小"
-  },
-  "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "创建 WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Cumulative Layout Shift"
@@ -13061,38 +13046,11 @@
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "经过解码的正文"
   },
-  "panels/timeline/TimelineUIUtils.ts | decrypt": {
-    "message": "解密"
-  },
-  "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "解密回复"
-  },
-  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
-    "message": "反序列化代码缓存"
-  },
-  "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
-    "message": "销毁 WebSocket"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "详细信息"
   },
-  "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "摘要"
-  },
-  "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "摘要回复"
-  },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "尺寸"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded 事件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drawFrame": {
-    "message": "绘制帧"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "时长"
@@ -13103,50 +13061,20 @@
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "受影响的元素"
   },
-  "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "嵌入器回调"
-  },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "已编码的数据"
   },
-  "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "加密"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "加密回复"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "评估模块"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "评估脚本"
-  },
-  "panels/timeline/TimelineUIUtils.ts | event": {
-    "message": "事件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
-    "message": "事件计时"
+  "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
+    "message": "（条目已隐藏）"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "演变了"
   },
-  "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "体验"
-  },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "无法从缓存加载脚本"
-  },
-  "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "完成加载"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "触发空闲回调"
-  },
-  "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "首次失效"
@@ -13154,50 +13082,17 @@
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "首次布局失效"
   },
-  "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "首次绘制"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStart": {
-    "message": "开始显示帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "帧开始（主线程）"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
-    "message": "帧开始加载"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "函数"
   },
-  "panels/timeline/TimelineUIUtils.ts | functionCall": {
-    "message": "函数调用"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "GC 事件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gpu": {
-    "message": "GPU"
-  },
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "包含最近输入的内容"
   },
-  "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "点击测试"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idle": {
-    "message": "空闲"
-  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "已请求空闲回调"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "图片解码"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageResize": {
-    "message": "调整图片大小"
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "图片网址"
@@ -13211,17 +13106,14 @@
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "发起者"
   },
+  "panels/timeline/TimelineUIUtils.ts | initiatorStackTrace": {
+    "message": "启动器堆栈轨迹"
+  },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "输入延迟"
   },
-  "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "安装定时器"
-  },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ID"
-  },
-  "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "使布局失效"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
     "message": "{PH1}（位于 {PH2}）"
@@ -13232,29 +13124,8 @@
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "根据超时时长调用"
   },
-  "panels/timeline/TimelineUIUtils.ts | jsFrame": {
-    "message": "JS 帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
-    "message": "JS 空闲框架"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
-    "message": "JS 根"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
-    "message": "JS 系统框架"
-  },
-  "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "图层根"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layerize": {
-    "message": "分层"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layout": {
-    "message": "布局"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "已强制应用布局"
@@ -13262,32 +13133,20 @@
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "布局根"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "布局偏移"
-  },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "了解详情"
   },
   "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "从缓存加载"
   },
-  "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "加载"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "位置"
-  },
-  "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "主要 GC"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "消息"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "MIME 类型"
-  },
-  "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "次要 GC"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "模块"
@@ -13310,50 +13169,20 @@
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "需要布局的节点"
   },
-  "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "onload 事件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "优化代码"
-  },
-  "panels/timeline/TimelineUIUtils.ts | other": {
-    "message": "其他"
+  "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
+    "message": "（面包屑导航范围之外）"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "所有者元素"
   },
-  "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "绘制"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "绘制图片"
-  },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "绘制性能剖析器"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "绘制设置"
-  },
-  "panels/timeline/TimelineUIUtils.ts | painting": {
-    "message": "绘制"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
     "message": "解析"
   },
-  "panels/timeline/TimelineUIUtils.ts | parseAndCompile": {
-    "message": "解析和编译"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseHtml": {
-    "message": "解析 HTML"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "解析样式表"
-  },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "等待"
-  },
-  "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "预先绘制"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
     "message": "展示延迟时间"
@@ -13364,62 +13193,23 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "优先级"
   },
-  "panels/timeline/TimelineUIUtils.ts | processingTime": {
-    "message": "处理时间"
-  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "已产生的缓存大小"
-  },
-  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "分析开销"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "范围"
   },
-  "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "光栅化绘制"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "重新计算样式"
-  },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "已强制重新计算"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "接收数据"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
-    "message": "接收响应"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "接收 WebSocket 握手"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "相关节点"
   },
-  "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "移除定时器"
-  },
-  "panels/timeline/TimelineUIUtils.ts | rendering": {
-    "message": "渲染"
-  },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "重复"
   },
-  "panels/timeline/TimelineUIUtils.ts | requestAnimationFrame": {
-    "message": "请求动画帧"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "请求空闲回调"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
-    "message": "请求主线程帧"
-  },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "请求方法"
-  },
-  "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
-    "message": "运行微任务"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH2}时显示的{PH1}"
@@ -13457,9 +13247,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "安排重新计算样式的时间"
-  },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "得分"
   },
@@ -13472,26 +13259,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "脚本不符合条件"
   },
-  "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "执行脚本"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scroll": {
-    "message": "滚动"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "自身耗时"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "发送请求"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "发送 WebSocket 握手"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "签名"
-  },
-  "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "签名回复"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "大小"
@@ -13505,29 +13274,14 @@
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "流式"
   },
-  "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "流式编译任务"
-  },
-  "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
-    "message": "流式 Wasm 响应"
-  },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "样式表网址"
-  },
-  "panels/timeline/TimelineUIUtils.ts | system": {
-    "message": "系统"
-  },
-  "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "任务"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "渲染耗时"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "超时时限"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timerFired": {
-    "message": "定时器已触发"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "定时器 ID"
@@ -13544,44 +13298,11 @@
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "类型"
   },
-  "panels/timeline/TimelineUIUtils.ts | updateLayer": {
-    "message": "更新图层"
-  },
-  "panels/timeline/TimelineUIUtils.ts | updateLayerTree": {
-    "message": "更新图层树"
-  },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "网址"
   },
-  "panels/timeline/TimelineUIUtils.ts | userTiming": {
-    "message": "用户计时"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "验证"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "验证回复"
-  },
-  "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
-    "message": "等待连接到网络"
-  },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "警告"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
-    "message": "Wasm 模块缓存命中"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm 模块缓存无效"
-  },
-  "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
-    "message": "将发送请求"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "XHR 加载"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "XHR 就绪状态变更"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "是"
@@ -13589,14 +13310,23 @@
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "时间"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | async": {
+    "message": "异步"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "绘制帧"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
-    "message": "正在绘制"
+    "message": "绘制"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | experience": {
+    "message": "体验"
   },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "开始显示帧"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | gpu": {
+    "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
     "message": "空闲"
@@ -13604,11 +13334,23 @@
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
     "message": "布局"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | loading": {
+    "message": "加载"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | messaging": {
+    "message": "消息功能"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
     "message": "正在绘制"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "正在光栅化"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | rendering": {
+    "message": "渲染"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | scripting": {
+    "message": "执行脚本"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "系统"
@@ -13643,14 +13385,8 @@
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "展示延迟时间"
   },
-  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
-    "message": "处理时间"
-  },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "在“图层”视图中隐藏 chrome 框架"
-  },
-  "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript 性能分析器"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "加载性能分析报告…"
@@ -13676,9 +13412,6 @@
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "保存性能分析报告…"
   },
-  "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "显示“JavaScript 性能剖析器”"
-  },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "显示“性能”工具"
   },
@@ -13687,9 +13420,6 @@
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "开始分析并重新加载网页"
-  },
-  "panels/timeline/timeline-meta.ts | startStopRecording": {
-    "message": "开始/停止录制"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
@@ -13910,6 +13640,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "复制代码"
   },
+  "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
+    "message": "谨慎使用代码段"
+  },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "反馈"
   },
@@ -13983,7 +13716,7 @@
     "message": "帮助"
   },
   "ui/legacy/ActionRegistration.ts | javascript_profiler": {
-    "message": "JavaScript 性能分析器"
+    "message": "JavaScript 性能剖析器"
   },
   "ui/legacy/ActionRegistration.ts | layers": {
     "message": "图层"
@@ -14566,6 +14299,9 @@
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "显示为 JavaScript 对象"
+  },
+  "ui/legacy/components/object_ui/ObjectPopoverHelper.ts | learnMore": {
+    "message": "了解详情"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "收起子级"

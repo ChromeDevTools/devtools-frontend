@@ -2498,9 +2498,6 @@
   "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "Версия: {PH1} (пусто)"
   },
-  "panels/application/ApplicationPanelSidebar.ts | webSql": {
-    "message": "Web SQL"
-  },
   "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Объекты Web Worker"
   },
@@ -2641,33 +2638,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "Значение"
-  },
-  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "Произошла ошибка {PH1}."
-  },
-  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "Версия базы данных не соответствует ожидаемой."
-  },
-  "panels/application/DatabaseQueryView.ts | databaseQuery": {
-    "message": "Запрос базы данных"
-  },
-  "panels/application/DatabaseQueryView.ts | queryS": {
-    "message": "Запрос: {PH1}"
-  },
-  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "Произошла ошибка при чтении таблицы \"{PH1}\"."
-  },
-  "panels/application/DatabaseTableView.ts | database": {
-    "message": "База данных"
-  },
-  "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "Обновить"
-  },
-  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "Таблица \"{PH1}\" пуста."
-  },
-  "panels/application/DatabaseTableView.ts | visibleColumns": {
-    "message": "Доступные столбцы"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Очистить хранилище объектов"
@@ -2815,9 +2785,6 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
-  },
-  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
-    "message": "Web SQL больше не поддерживается. Вы можете подать заявку, чтобы продолжить использовать эту технологию, пока не выйдет Chrome 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Хранилище кеша"
@@ -3155,6 +3122,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Остановить запись событий"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
+    "message": "Нет данных"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
     "message": "Нет данных"
   },
@@ -3171,6 +3141,9 @@
     "message": "Chrome обнаружил попытку выполнить код JavaScript в кеше."
   },
   "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "Нет данных"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
     "message": "Нет данных"
   },
   "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
@@ -3935,6 +3908,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Ещё не создано"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
+    "message": "Количество использованных байтов"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Количество записей"
   },
@@ -4542,7 +4518,10 @@
     "message": "атриб."
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "Открывать панель при автозаполнении"
+    "message": "Открывать панель автоматически"
+  },
+  "panels/autofill/AutofillView.ts | autoShowTooltip": {
+    "message": "Автоматически открывать панель \"Автозаполнение\" при обнаружении действий, относящихся к автозаполнению"
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "Атрибут автозаполнения"
@@ -4559,11 +4538,17 @@
   "panels/autofill/AutofillView.ts | inferredByHeuristics": {
     "message": "Определяется на основе эвристических алгоритмов"
   },
-  "panels/autofill/AutofillView.ts | noDataAvailable": {
-    "message": "Событие автозаполнения не обнаружено"
+  "panels/autofill/AutofillView.ts | learnMore": {
+    "message": "Подробнее…"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Прогнозируемое значение автозаполнения"
+  },
+  "panels/autofill/AutofillView.ts | sendFeedback": {
+    "message": "Отправить отзыв"
+  },
+  "panels/autofill/AutofillView.ts | toStartDebugging": {
+    "message": "Чтобы запустить отладку автозаполнения, добавьте данные в форму для адреса с помощью меню автозаполнения Chrome."
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "Значение"
@@ -5055,13 +5040,13 @@
     "message": "<exception>"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
-    "message": "Объяснить эту ошибку"
+    "message": "Пояснение к ошибке"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
-    "message": "Объяснить это сообщение"
+    "message": "Пояснение к сообщению"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
-    "message": "Объяснить это предупреждение"
+    "message": "Пояснение к предупреждению"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Функция была распознана из привязанной функции"
@@ -5981,12 +5966,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Копировать изменения кода CSS"
   },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Название свойства CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Значение свойства CSS: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Фильтр"
   },
@@ -6383,50 +6362,47 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Показать или скрыть, является ли прослушиватель событий пассивным или блокирующим"
   },
-  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
-    "message": "Закрыть подсказку"
+  "panels/explain/components/ConsoleInsight.ts | cancel": {
+    "message": "Отмена"
   },
-  "panels/explain/components/ConsoleInsight.ts | consentButton": {
-    "message": "Продолжить"
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Закрыть пояснение"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Сообщение из консоли"
   },
-  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
-    "message": "Указанные ниже данные будут отправлены в Google, чтобы вы получили объяснение сообщения из консоли. Они могут быть проверены нашими специалистами и использованы для улучшения продуктов."
-  },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "Что-то пошло не так"
+    "message": "В инструментах разработчика возникла ошибка"
   },
-  "panels/explain/components/ConsoleInsight.ts | finePrint": {
-    "message": "Это экспериментальная функция для получения статистики с помощью ИИ, которая не всегда дает правильный результат."
+  "panels/explain/components/ConsoleInsight.ts | errorBody": {
+    "message": "Что-то пошло не так. Повторите попытку."
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Подготовка объяснения…"
-  },
-  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
-    "message": "Перейти в настройки"
+    "message": "Генерируется пояснение…"
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
-    "message": "Данные, на основе которых получена эта статистика"
+    "message": "Данные, с помощью которых сгенерировано пояснение к сообщению"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
-    "message": "Подсказка"
+    "message": "Пояснение"
   },
   "panels/explain/components/ConsoleInsight.ts | learnMore": {
-    "message": "Подробнее об ИИ в инструментах разработчика…"
+    "message": "Подробнее…"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Сетевой запрос"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "Функция Console Insights недоступна"
+    "message": "Функция недоступна"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "Эта функция доступна, только когда выполнен вход в Chrome с аккаунтом Google."
+    "message": "Вы сможете использовать эту функцию, только если войдете в Chrome с аккаунтом Google."
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
-    "message": "Подключение к интернету недоступно."
+    "message": "Проверьте подключение к интернету и повторите попытку."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offlineHeader": {
+    "message": "У инструментов разработчика нет доступа к интернету"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(ссылка откроется в новой вкладке)"
@@ -6434,14 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Связанный код"
   },
+  "panels/explain/components/ConsoleInsight.ts | report": {
+    "message": "Сообщить о нарушении закона"
+  },
+  "panels/explain/components/ConsoleInsight.ts | signInToUse": {
+    "message": "Чтобы использовать эту функцию, войдите в аккаунт."
+  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "Трассировка стека"
   },
-  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
-    "message": "Отправить отзыв"
-  },
   "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "Эта функция доступна, только когда включена синхронизация Chrome."
+    "message": "Чтобы использовать эту функцию, включите синхронизацию Chrome."
   },
   "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
     "message": "Не нравится"
@@ -6449,20 +6428,23 @@
   "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
     "message": "Нравится"
   },
+  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
+    "message": "Обновить настройки"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
-    "message": "Включить функцию Console Insights"
+    "message": "Генерировать пояснения к сообщениям в консоли с помощью ИИ"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
-    "message": "Объяснить эту ошибку"
+    "message": "Пояснение к ошибке"
   },
   "panels/explain/explain-meta.ts | explainThisMessage": {
-    "message": "Объяснить это сообщение"
+    "message": "Пояснение к сообщению"
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
-    "message": "Объяснить это предупреждение"
+    "message": "Пояснение к предупреждению"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "В настоящее время в региональных настройках поддерживается только английский язык."
+    "message": "Чтобы использовать эту функцию, в настройках инструментов разработчика измените язык на английский."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Заблокированный ресурс"
@@ -6851,26 +6833,17 @@
   "panels/js_profiler/js_profiler-meta.ts | performance": {
     "message": "Производительность"
   },
-  "panels/js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "Профилировщик"
-  },
   "panels/js_profiler/js_profiler-meta.ts | record": {
     "message": "Запись"
   },
   "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
     "message": "Показать панель \"Производительность\""
   },
-  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "Открыть профилировщик"
-  },
   "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
     "message": "Показать недавние сеансы хронологии"
   },
   "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
     "message": "Начать профилирование и обновить страницу"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "Начать/остановить запись"
   },
   "panels/js_profiler/js_profiler-meta.ts | stop": {
     "message": "Остановить"
@@ -6959,6 +6932,9 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Вид трехмерных слоев"
   },
+  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
+    "message": "Поддержка панели \"Слои\" может скоро быть прекращена. Поделитесь своим мнением об этом инструменте, пока решение не принято."
+  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "Информация о слоях пока недоступна."
   },
@@ -6967,6 +6943,9 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "Сбросить просмотр"
+  },
+  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
+    "message": "Отправить отзыв"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "Показать профилировщик отрисовки"
@@ -7079,14 +7058,17 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
     "message": "Соответствует ли страница нормам современных веб-приложений?"
   },
+  "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
+    "message": "Включить выборку JavaScript во время работы Lighthouse. При просмотре трассировки на панели \"Производительность\" вы будете видеть больше сведений о выполнении, однако это приведет к увеличенному потреблению ресурсов ЦП и может снизить скорость загрузки страницы."
+  },
+  "panels/lighthouse/LighthouseController.ts | enableSampling": {
+    "message": "Включить выборку JavaScript"
+  },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "Сколько времени занимает в этом приложении отображение контента и подготовка его к использованию"
   },
   "panels/lighthouse/LighthouseController.ts | indexeddb": {
     "message": "IndexedDB"
-  },
-  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "Оптимизирована ли эта страница под скорость и качество рекламы?"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
     "message": "Эта страница оптимизирована для индексации поисковыми системами?"
@@ -7120,9 +7102,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
     "message": "Современное веб-приложение"
-  },
-  "panels/lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "Объявления издателя"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Очистить хранилище (cache, service workers и др.) перед аудитом. Это помогает при тестировании PWA и производительности."
@@ -7210,9 +7189,6 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Режим"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | plugins": {
-    "message": "Плагины"
   },
   "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Запустить анализ временного диапазона"
@@ -7700,8 +7676,35 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "Профили ограничения пропускной способности сети"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
+    "message": "Отключено"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
+    "message": "Включено"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "необязательно"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packet": {
+    "message": "Пакет"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLoss": {
+    "message": "Потерянные пакеты"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLossMustBeAnIntegerBetweenSpct": {
+    "message": "Значение показателя \"Потерянные пакеты\" должно быть числом от {PH1} % до {PH2} % включительно."
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLength": {
+    "message": "Длина очереди пакетов"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
+    "message": "Длина очереди пакетов должна быть больше нуля или равна ему."
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
+    "message": "Изменение порядка пакетов"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
+    "message": "%"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Название профиля"
@@ -7912,6 +7915,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "Соответствие: ServiceWorker router {PH1}. Размер ресурса: {PH2}."
+  },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouterWithNetworkSource": {
+    "message": "Сопоставлено с ServiceWorker router под номером {PH1}, {PH2} передано через сеть, размер ресурса: {PH3}"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(кеш памяти)"
@@ -8607,7 +8613,7 @@
     "message": "Во время разработки можно использовать сайт {PH1}, чтобы добавлять статистику в серверный таймер этого запроса."
   },
   "panels/network/RequestTimingView.ts | explanation": {
-    "message": "Описание"
+    "message": "Пояснение"
   },
   "panels/network/RequestTimingView.ts | fallbackCode": {
     "message": "Резервный код"
@@ -9320,6 +9326,18 @@
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "Размер объекта плюс график, который он хранит, в байтах"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | compiledCodeSummary": {
+    "message": "Внутренние данные, с помощью которых движок V8 запускает функции, объявленные в коде JavaScript или WebAssembly."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | concatenatedStringSummary": {
+    "message": "Строка, в которой представлено объединенное содержимое двух других строк."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | contextSummary": {
+    "message": "Внутренний объект с переменными из области видимости JavaScript, которые могут потребоваться для выполнения функции, созданной в этой области видимости."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | descriptorArraySummary": {
+    "message": "Список имен свойств, используемых объектом JavaScript."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "Отключено от дерева модели DOM"
   },
@@ -9332,6 +9350,21 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(внутренний массив)[]"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalArraySummary": {
+    "message": "Внутренняя структура данных, которая похожа на массив, но не является объектом JavaScript Array."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
+    "message": "Объект, размещенный в памяти компонентом, отличным от движка V8. Например, объект C++, определенный движком Blink."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
+    "message": "Внутренний объект, который представляет структуру (shape) объекта JavaScript, но не является объектом JavaScript Map."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectElementsSummary": {
+    "message": "Внутренний объект, в котором хранятся индексированные свойства объекта JavaScript, например содержимое объекта Array."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectPropertiesSummary": {
+    "message": "Внутренний объект, в котором хранятся именованные свойства объекта JavaScript."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "Предпросмотр недоступен."
   },
@@ -9340,6 +9373,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "Показать объект {PH1} с идентификатором @{PH2} в сводных данных"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
+    "message": "Строка, в которой представлены некоторые символы из другой строки."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Сохранить как глобальную переменную"
@@ -9849,7 +9885,7 @@
     "message": "Показать монитор протокола"
   },
   "panels/recorder/RecorderController.ts | continueReplay": {
-    "message": "Продолжить"
+    "message": "Продолжить воспроизведение"
   },
   "panels/recorder/RecorderController.ts | copyShortcut": {
     "message": "Копировать запись или выбранный шаг"
@@ -10749,7 +10785,7 @@
     "message": "Не переопределять"
   },
   "panels/sensors/SensorsView.ts | off": {
-    "message": "Выключено"
+    "message": "Отключено"
   },
   "panels/sensors/SensorsView.ts | orientation": {
     "message": "Ориентация"
@@ -12186,7 +12222,7 @@
     "message": "Асинхронный"
   },
   "panels/timeline/EventUICategory.ts | asyncTask": {
-    "message": "Асинхронная задача"
+    "message": "Задача по асинхронизации"
   },
   "panels/timeline/EventUICategory.ts | cacheModule": {
     "message": "Код модуля кеша"
@@ -12207,10 +12243,10 @@
     "message": "Перенос"
   },
   "panels/timeline/EventUICategory.ts | compileCode": {
-    "message": "Компилировать код"
+    "message": "Скомпилировать код"
   },
   "panels/timeline/EventUICategory.ts | compileModule": {
-    "message": "Компилировать модуль"
+    "message": "Компиляция модуля"
   },
   "panels/timeline/EventUICategory.ts | compileScript": {
     "message": "Компилировать скрипт"
@@ -12231,13 +12267,13 @@
     "message": "Сборка мусора в C++"
   },
   "panels/timeline/EventUICategory.ts | createWebsocket": {
-    "message": "Создать WebSocket"
+    "message": "Создать объект WebSocket"
   },
   "panels/timeline/EventUICategory.ts | decrypt": {
     "message": "Расшифровка"
   },
   "panels/timeline/EventUICategory.ts | decryptReply": {
-    "message": "Расшифровать ответ"
+    "message": "Расшифровка ответа"
   },
   "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
     "message": "Десериализовать кеш кода"
@@ -12246,10 +12282,10 @@
     "message": "Уничтожить WebSocket"
   },
   "panels/timeline/EventUICategory.ts | digest": {
-    "message": "Хеш-сумма"
+    "message": "Сводка"
   },
   "panels/timeline/EventUICategory.ts | digestReply": {
-    "message": "Ответ с хеш-суммой"
+    "message": "Краткий ответ"
   },
   "panels/timeline/EventUICategory.ts | domGc": {
     "message": "Сборка мусора DOM"
@@ -12260,11 +12296,14 @@
   "panels/timeline/EventUICategory.ts | drawFrame": {
     "message": "Рисование фрейма"
   },
+  "panels/timeline/EventUICategory.ts | drawing": {
+    "message": "Отрисовка"
+  },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
-    "message": "Обратный вызов встраивания"
+    "message": "Обратный вызов встраивателя"
   },
   "panels/timeline/EventUICategory.ts | encrypt": {
-    "message": "Шифрование"
+    "message": "Зашифровать"
   },
   "panels/timeline/EventUICategory.ts | encryptReply": {
     "message": "Зашифровать ответ"
@@ -12273,7 +12312,7 @@
     "message": "Оценка модуля"
   },
   "panels/timeline/EventUICategory.ts | evaluateScript": {
-    "message": "Оценка скрипта"
+    "message": "Оценить скрипт"
   },
   "panels/timeline/EventUICategory.ts | event": {
     "message": "Событие"
@@ -12294,7 +12333,7 @@
     "message": "Первое существенное отображение"
   },
   "panels/timeline/EventUICategory.ts | firstPaint": {
-    "message": "Первая отрисовка"
+    "message": "Первое отображение"
   },
   "panels/timeline/EventUICategory.ts | frameStart": {
     "message": "Запуск фрейма"
@@ -12327,7 +12366,7 @@
     "message": "Изменение размера изображения"
   },
   "panels/timeline/EventUICategory.ts | installTimer": {
-    "message": "Установить таймер"
+    "message": "Таймер установки"
   },
   "panels/timeline/EventUICategory.ts | invalidateLayout": {
     "message": "Аннулировать макет"
@@ -12353,8 +12392,14 @@
   "panels/timeline/EventUICategory.ts | majorGc": {
     "message": "Полная сборка мусора"
   },
+  "panels/timeline/EventUICategory.ts | messaging": {
+    "message": "Сообщения"
+  },
   "panels/timeline/EventUICategory.ts | minorGc": {
     "message": "Быстрая сборка мусора"
+  },
+  "panels/timeline/EventUICategory.ts | onMessage": {
+    "message": "Сообщение о включении"
   },
   "panels/timeline/EventUICategory.ts | onloadEvent": {
     "message": "Событие onload"
@@ -12366,13 +12411,13 @@
     "message": "Другое"
   },
   "panels/timeline/EventUICategory.ts | paint": {
-    "message": "Отрисовка"
+    "message": "Отображение"
   },
   "panels/timeline/EventUICategory.ts | paintImage": {
-    "message": "Отрисовка изображения"
+    "message": "Отображение изображения"
   },
   "panels/timeline/EventUICategory.ts | paintSetup": {
-    "message": "Настройка отрисовки"
+    "message": "Настройка отображения"
   },
   "panels/timeline/EventUICategory.ts | painting": {
     "message": "Отображение"
@@ -12393,19 +12438,22 @@
     "message": "Ресурсопотребление профилирования"
   },
   "panels/timeline/EventUICategory.ts | rasterizePaint": {
-    "message": "Растрировать отрисовку"
+    "message": "Растрировать отображение"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizing": {
+    "message": "Растрирование"
   },
   "panels/timeline/EventUICategory.ts | recalculateStyle": {
     "message": "Рассчитать стиль заново"
   },
   "panels/timeline/EventUICategory.ts | receiveData": {
-    "message": "Получить данные"
+    "message": "Прием данных"
   },
   "panels/timeline/EventUICategory.ts | receiveResponse": {
     "message": "Получить ответ"
   },
   "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
-    "message": "Получить рукопожатие WebSocket"
+    "message": "Получить подтверждение WebSocket"
   },
   "panels/timeline/EventUICategory.ts | removeTimer": {
     "message": "Удалить таймер"
@@ -12425,8 +12473,11 @@
   "panels/timeline/EventUICategory.ts | runMicrotasks": {
     "message": "Запуск микрозадач"
   },
+  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
+    "message": "Запланировать выполнение функции postMessage"
+  },
   "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
-    "message": "Планирование пересчета стилей"
+    "message": "Расписание пересчета стилей"
   },
   "panels/timeline/EventUICategory.ts | scripting": {
     "message": "Выполнение скриптов"
@@ -12438,7 +12489,7 @@
     "message": "Отправить запрос"
   },
   "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
-    "message": "Отправить рукопожатие WebSocket"
+    "message": "Отправить подтверждение WebSocket"
   },
   "panels/timeline/EventUICategory.ts | sign": {
     "message": "Подписание"
@@ -12447,7 +12498,7 @@
     "message": "Подпись ответа"
   },
   "panels/timeline/EventUICategory.ts | streamingCompileTask": {
-    "message": "Задача по компиляции для потоковой передачи"
+    "message": "Потоковая передача задачи компиляции"
   },
   "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
     "message": "Потоковая передача ответа Wasm"
@@ -12495,7 +12546,7 @@
     "message": "Загрузка XHR"
   },
   "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
-    "message": "Изменение состояния готовности: XHR"
+    "message": "Изменение состояния готовности XHR"
   },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} мс"
@@ -12701,20 +12752,8 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Выбрать сеанс хронологии"
   },
-  "panels/timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
-    "message": "Устаревший формат хронологии не поддерживается."
-  },
-  "panels/timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
-    "message": "Неверный формат профиля ЦП"
-  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Неверный формат данных хронологии: {PH1}."
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "Неверный формат данных хронологии: неизвестный формат JSON"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
-    "message": "Неверные входные данные хронологии и баланс скобок в данных JSON"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Ограничение процессора включено"
@@ -12965,29 +13004,8 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "Отведенное время"
   },
-  "panels/timeline/TimelineUIUtils.ts | animation": {
-    "message": "Анимация"
-  },
-  "panels/timeline/TimelineUIUtils.ts | animationFrameFired": {
-    "message": "Запущен фрейм анимации."
-  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "Фрейм анимации запрошен"
-  },
-  "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "Асинхронный"
-  },
-  "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "Асинхронная задача"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
-    "message": "Код модуля кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
-    "message": "Код скрипта кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "Кешированный модуль Wasm"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Функция обратного вызова"
@@ -12995,17 +13013,8 @@
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
     "message": "Идентификатор обратного вызова"
   },
-  "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
-    "message": "Отключить фрейм анимации"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "Отмена вызова функции в период простоя"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Собрано"
-  },
-  "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "Перенос"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "Тип кеша компилирования"
@@ -13019,32 +13028,8 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Компиляция"
   },
-  "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "Компилировать код"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "Компилировать модуль"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "Компилировать скрипт"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "Скомпилированный модуль Wasm"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
-    "message": "Составные слои"
-  },
-  "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "Рассчитать пересечения"
-  },
-  "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "Время консоли"
-  },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Размер использованного кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "Создать WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Совокупные смещения макета"
@@ -13061,38 +13046,11 @@
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Декодированный текст"
   },
-  "panels/timeline/TimelineUIUtils.ts | decrypt": {
-    "message": "Расшифровка"
-  },
-  "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "Расшифровать ответ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
-    "message": "Десериализовать кеш кода"
-  },
-  "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
-    "message": "Уничтожить WebSocket"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Сведения"
   },
-  "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "Хеш-сумма"
-  },
-  "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "Ответ с хеш-суммой"
-  },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Размеры"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "Сборка мусора DOM"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
-    "message": "Событие DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drawFrame": {
-    "message": "Рисование фрейма"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Продолжительность"
@@ -13103,50 +13061,20 @@
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Затронутые элементы"
   },
-  "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "Обратный вызов встраивания"
-  },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Данные в кодировке"
   },
-  "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "Шифрование"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "Зашифровать ответ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "Оценка модуля"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "Оценка скрипта"
-  },
-  "panels/timeline/TimelineUIUtils.ts | event": {
-    "message": "Событие"
-  },
-  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
-    "message": "Временные метки событий"
+  "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
+    "message": "(запись скрыта)"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "усовершенствованный"
   },
-  "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Взаимодействие"
-  },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "не удалось загрузить скрипт из кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "Завершить загрузку"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "Запуск функции обратного вызова для простоя"
-  },
-  "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "Первое существенное отображение"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "Первое объявление недействительным"
@@ -13154,50 +13082,17 @@
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "Первое аннулирование макета"
   },
-  "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "Первая отрисовка"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Фрейм"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStart": {
-    "message": "Запуск фрейма"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "Начало фрейма (основной поток)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
-    "message": "Фрейм начал загружаться"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Функция"
   },
-  "panels/timeline/TimelineUIUtils.ts | functionCall": {
-    "message": "Вызов функции"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "Событие сборки мусора"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gpu": {
-    "message": "Графический процессор"
-  },
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Ввод был осуществлен недавно"
   },
-  "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "Проверка нажатия"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idle": {
-    "message": "Бездействует"
-  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Запрошен вызов функции в период простоя"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "Расшифровка изображения"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageResize": {
-    "message": "Изменение размера изображения"
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "URL изображения"
@@ -13211,17 +13106,14 @@
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "Инициирующее событие для события"
   },
+  "panels/timeline/TimelineUIUtils.ts | initiatorStackTrace": {
+    "message": "Трассировка стека инициатора"
+  },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Задержка ввода"
   },
-  "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "Установить таймер"
-  },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "Идентификатор"
-  },
-  "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "Аннулировать макет"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
     "message": "{PH1} в {PH2}"
@@ -13232,29 +13124,8 @@
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Вызвано временем ожидания"
   },
-  "panels/timeline/TimelineUIUtils.ts | jsFrame": {
-    "message": "Фрейм JS"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
-    "message": "Бездействующий фрейм JS"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
-    "message": "Источник JS"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
-    "message": "Системный фрейм JS"
-  },
-  "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "Самое крупное существенное отображение"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Корень слоя"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layerize": {
-    "message": "Создание слоев"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layout": {
-    "message": "Макет"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "Макет принудительно применен"
@@ -13262,32 +13133,20 @@
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Корневой макет"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Смещение макета"
-  },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Подробнее…"
   },
   "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "загрузка из кеша"
   },
-  "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "Загрузка"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Расположение"
-  },
-  "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "Полная сборка мусора"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Сообщение"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "MIME-тип"
-  },
-  "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "Быстрая сборка мусора"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Модуль"
@@ -13310,50 +13169,20 @@
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Узлы, для которых нужны макеты"
   },
-  "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "Событие onload"
-  },
-  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "Оптимизировать код"
-  },
-  "panels/timeline/TimelineUIUtils.ts | other": {
-    "message": "Другое"
+  "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
+    "message": "(вне диапазона строки навигации)"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "Элемент owner"
   },
-  "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "Отрисовка"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "Отрисовка изображения"
-  },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "Профилировщик отображения"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "Настройка отрисовки"
-  },
-  "panels/timeline/TimelineUIUtils.ts | painting": {
-    "message": "Отображение"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
     "message": "Синтаксический анализ"
   },
-  "panels/timeline/TimelineUIUtils.ts | parseAndCompile": {
-    "message": "Синтаксический анализ и компиляция"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseHtml": {
-    "message": "Синтаксический анализ HTML"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "Синтаксический анализ таблицы стилей"
-  },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Ожидание:"
-  },
-  "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "Предварительная отрисовка"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
     "message": "Задержка вывода ответа на экран"
@@ -13364,62 +13193,23 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Приоритет"
   },
-  "panels/timeline/TimelineUIUtils.ts | processingTime": {
-    "message": "Время обработки"
-  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Выполненный размер кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "Ресурсопотребление профилирования"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Диапазон"
   },
-  "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "Растрировать отрисовку"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "Рассчитать стиль заново"
-  },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "Вычисление принудительно выполнено заново"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "Получить данные"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
-    "message": "Получить ответ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "Получить рукопожатие WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Связанный узел"
   },
-  "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "Удалить таймер"
-  },
-  "panels/timeline/TimelineUIUtils.ts | rendering": {
-    "message": "Отрисовка"
-  },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Повтор"
   },
-  "panels/timeline/TimelineUIUtils.ts | requestAnimationFrame": {
-    "message": "Запрос фрейма анимации"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "Запрос функции обратного вызова для простоя"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
-    "message": "Запрос фрейма основного потока"
-  },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Метод запроса"
-  },
-  "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
-    "message": "Запуск микрозадач"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}: {PH2}"
@@ -13457,9 +13247,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "Планирование пересчета стилей"
-  },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "Оценка"
   },
@@ -13472,26 +13259,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипт не поддерживается"
   },
-  "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "Выполнение скриптов"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scroll": {
-    "message": "Прокрутка"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Время одного действия"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "Отправить запрос"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "Отправить рукопожатие WebSocket"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "Подписание"
-  },
-  "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "Подпись ответа"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Размер"
@@ -13505,29 +13274,14 @@
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Завершено"
   },
-  "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "Задача по компиляции для потоковой передачи"
-  },
-  "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
-    "message": "Потоковая передача ответа Wasm"
-  },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "URL таблицы стилей"
-  },
-  "panels/timeline/TimelineUIUtils.ts | system": {
-    "message": "Система"
-  },
-  "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "Задача"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Время отрисовки"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Время ожидания"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timerFired": {
-    "message": "Таймер запущен"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "Идентификатор таймера"
@@ -13544,44 +13298,11 @@
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Тип"
   },
-  "panels/timeline/TimelineUIUtils.ts | updateLayer": {
-    "message": "Обновить слой"
-  },
-  "panels/timeline/TimelineUIUtils.ts | updateLayerTree": {
-    "message": "Обновить дерево слоев"
-  },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "URL"
   },
-  "panels/timeline/TimelineUIUtils.ts | userTiming": {
-    "message": "Пользовательское время"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "Подтвердить"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "Проверить ответ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
-    "message": "Поиск сети"
-  },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "Предупреждение"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
-    "message": "Совпадение в кеше модуля Wasm"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
-    "message": "Недействительный кеш модуля Wasm"
-  },
-  "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
-    "message": "Запрос будет отправлен"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "Загрузка XHR"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "Изменение состояния готовности: XHR"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Да"
@@ -13589,14 +13310,23 @@
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Временные метки"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | async": {
+    "message": "Асинхронный"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Рисование фрейма"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
-    "message": "Рисунок"
+    "message": "Отрисовка"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | experience": {
+    "message": "Взаимодействие"
   },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "Запуск фрейма"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | gpu": {
+    "message": "Графический процессор"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
     "message": "Бездействует"
@@ -13604,11 +13334,23 @@
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
     "message": "Макет"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | loading": {
+    "message": "Загрузка"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | messaging": {
+    "message": "Сообщения"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
     "message": "Отображение"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "Растрирование"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | rendering": {
+    "message": "Отрисовка"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | scripting": {
+    "message": "Выполнение скриптов"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Система"
@@ -13643,14 +13385,8 @@
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Задержка вывода ответа на экран"
   },
-  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
-    "message": "Время обработки"
-  },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Скрыть фрейм chrome в виде слоев"
-  },
-  "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "Профилировщик JavaScript"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Загрузить профиль…"
@@ -13676,9 +13412,6 @@
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "Сохранить профиль…"
   },
-  "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "Показать профилировщик JavaScript"
-  },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "Показать панель \"Производительность\""
   },
@@ -13687,9 +13420,6 @@
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Начать профилирование и обновить страницу"
-  },
-  "panels/timeline/timeline-meta.ts | startStopRecording": {
-    "message": "Начать/остановить запись"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Остановить"
@@ -13909,6 +13639,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Скопировать код"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
+    "message": "Используйте фрагменты кода с осторожностью"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Отправить отзыв"
@@ -14566,6 +14299,9 @@
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Показать как объект JavaScript"
+  },
+  "ui/legacy/components/object_ui/ObjectPopoverHelper.ts | learnMore": {
+    "message": "Подробнее…"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Свернуть дочерние элементы"

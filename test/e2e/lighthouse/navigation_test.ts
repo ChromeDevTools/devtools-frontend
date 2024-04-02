@@ -225,7 +225,7 @@ describe('Navigation', function() {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 
-    await setToolbarCheckboxWithText(true, 'Enable JS sampling');  // TODO: Use translated string once it's added
+    await setToolbarCheckboxWithText(true, 'Habilitar muestreo de JS');
     await setToolbarCheckboxWithText(false, 'Borrar almacenamiento');
     await selectCategories(['performance', 'best-practices']);
     await selectDevice('desktop');

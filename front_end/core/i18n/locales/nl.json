@@ -2498,9 +2498,6 @@
   "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "Versie: {PH1} (leeg)"
   },
-  "panels/application/ApplicationPanelSidebar.ts | webSql": {
-    "message": "Web SQL"
-  },
   "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Web Workers"
   },
@@ -2641,33 +2638,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "Waarde"
-  },
-  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "Er is een onverwachte fout {PH1} opgetreden."
-  },
-  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "De database heeft geen verwachte versie meer."
-  },
-  "panels/application/DatabaseQueryView.ts | databaseQuery": {
-    "message": "Database-query"
-  },
-  "panels/application/DatabaseQueryView.ts | queryS": {
-    "message": "Query: {PH1}"
-  },
-  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "Er is een fout opgetreden bij het lezen van de tabel {PH1}."
-  },
-  "panels/application/DatabaseTableView.ts | database": {
-    "message": "Database"
-  },
-  "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "Vernieuwen"
-  },
-  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "De tabel {PH1} is leeg."
-  },
-  "panels/application/DatabaseTableView.ts | visibleColumns": {
-    "message": "Zichtbare kolommen"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Objectopslag wissen"
@@ -2815,9 +2785,6 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting-API"
-  },
-  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
-    "message": "Web SQL is beëindigd. Je kunt deelnemen aan de beëindigingsproefperiode om deze te blijven gebruiken tot Chrome 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Cache-opslag"
@@ -3155,6 +3122,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stoppen met gebeurtenissen registreren"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
+    "message": "Ongedefinieerd"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
     "message": "Ongedefinieerd"
   },
@@ -3171,6 +3141,9 @@
     "message": "Chrome heeft een poging waargenomen om JavaScript uit te voeren in het cachegeheugen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "Ongedefinieerd"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
     "message": "Ongedefinieerd"
   },
   "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
@@ -3935,6 +3908,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Nog niet gemaakt"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
+    "message": "Aantal gebruikte bytes"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Aantal items"
   },
@@ -4542,7 +4518,10 @@
     "message": "kenm"
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "Deelvenster voor automatisch invullen openen"
+    "message": "Dit deelvenster automatisch openen"
+  },
+  "panels/autofill/AutofillView.ts | autoShowTooltip": {
+    "message": "Open het deelvenster voor automatisch invullen automatisch als er een activiteit voor automatisch invullen wordt waargenomen."
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "Kenmerk voor automatisch invullen"
@@ -4559,11 +4538,17 @@
   "panels/autofill/AutofillView.ts | inferredByHeuristics": {
     "message": "Afgeleid op basis van heuristiek"
   },
-  "panels/autofill/AutofillView.ts | noDataAvailable": {
-    "message": "Geen gebeurtenis voor automatisch invullen gevonden"
+  "panels/autofill/AutofillView.ts | learnMore": {
+    "message": "Meer informatie"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Voorspelde waarde voor automatisch invullen"
+  },
+  "panels/autofill/AutofillView.ts | sendFeedback": {
+    "message": "Feedback sturen"
+  },
+  "panels/autofill/AutofillView.ts | toStartDebugging": {
+    "message": "Als je fouten met automatisch invullen wilt opsporen, gebruik je het Chrome-menu voor automatisch invullen om een adresformulier in te vullen."
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "Waarde"
@@ -5055,13 +5040,13 @@
     "message": "<uitzondering>"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
-    "message": "Leg deze fout uit"
+    "message": "Deze fout begrijpen"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
-    "message": "Leg dit bericht uit"
+    "message": "Dit bericht begrijpen"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
-    "message": "Leg deze waarschuwing uit"
+    "message": "Deze waarschuwing begrijpen"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Functie is omgezet vanuit gebonden functie."
@@ -5981,12 +5966,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Css-wijzigingen kopiëren"
   },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Naam van CSS-property: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Waarde van CSS-property: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
   },
@@ -6383,50 +6362,47 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Schakelen tussen een passieve of blokkerende event-listener"
   },
-  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
-    "message": "Inzicht sluiten"
+  "panels/explain/components/ConsoleInsight.ts | cancel": {
+    "message": "Annuleren"
   },
-  "panels/explain/components/ConsoleInsight.ts | consentButton": {
-    "message": "Doorgaan"
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "Uitleg sluiten"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Consolebericht"
   },
-  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
-    "message": "De volgende gegevens worden naar Google gestuurd om een uitleg te vinden voor het consolebericht. Ze kunnen door mensen worden beoordeeld en worden gebruikt om producten te verbeteren."
-  },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "Er is iets misgegaan…"
+    "message": "Er is een fout opgetreden in DevTools"
   },
-  "panels/explain/components/ConsoleInsight.ts | finePrint": {
-    "message": "Dit is een experimentele tool voor AI-inzichten die het niet altijd juist heeft."
+  "panels/explain/components/ConsoleInsight.ts | errorBody": {
+    "message": "Er is iets misgegaan. Probeer het opnieuw."
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
-    "message": "Een uitleg zoeken…"
-  },
-  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
-    "message": "Naar instellingen"
+    "message": "Uitleg genereren…"
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
-    "message": "Gegevens die zijn gebruikt om dit inzicht te maken"
+    "message": "Gegevens gebruikt om dit bericht te begrijpen"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
-    "message": "Inzicht"
+    "message": "Uitleg"
   },
   "panels/explain/components/ConsoleInsight.ts | learnMore": {
-    "message": "Meer informatie over AI in DevTools"
+    "message": "Meer informatie"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Netwerkverzoek"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "Console-inzichten zijn niet beschikbaar"
+    "message": "Deze functie is niet beschikbaar"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "Deze functie is alleen beschikbaar als je bent ingelogd bij Chrome met je Google-account."
+    "message": "Deze functie is alleen beschikbaar als je inlogt bij Chrome met je Google-account."
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
-    "message": "Er is op dit moment geen internetverbinding beschikbaar."
+    "message": "Check je internetverbinding en probeer het opnieuw."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offlineHeader": {
+    "message": "DevTools kan internet niet bereiken"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(wordt in een nieuw tabblad geopend)"
@@ -6434,14 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Gerelateerde code"
   },
+  "panels/explain/components/ConsoleInsight.ts | report": {
+    "message": "Juridisch probleem melden"
+  },
+  "panels/explain/components/ConsoleInsight.ts | signInToUse": {
+    "message": "Log in om deze functie te gebruiken"
+  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "Stacktrace"
   },
-  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
-    "message": "Feedback sturen"
-  },
   "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "Deze functie is alleen beschikbaar als je Chrome-synchronisatie hebt aangezet."
+    "message": "Voor deze functie moet je Chrome-synchronisatie aanzetten."
   },
   "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
     "message": "Niet leuk"
@@ -6449,20 +6428,23 @@
   "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
     "message": "Leuk"
   },
+  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
+    "message": "Instellingen updaten"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
-    "message": "Console-inzichten aanzetten"
+    "message": "Consoleberichten begrijpen met AI"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
-    "message": "Leg deze fout uit"
+    "message": "Deze fout begrijpen"
   },
   "panels/explain/explain-meta.ts | explainThisMessage": {
-    "message": "Leg dit bericht uit"
+    "message": "Dit bericht begrijpen"
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
-    "message": "Leg deze waarschuwing uit"
+    "message": "Deze waarschuwing begrijpen"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Alleen Engelstalige landen worden ondersteund."
+    "message": "Als je deze functie wilt gebruiken, update je je taalvoorkeur in de DevTools-instellingen naar het Engels."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Geblokkeerde resource"
@@ -6851,26 +6833,17 @@
   "panels/js_profiler/js_profiler-meta.ts | performance": {
     "message": "Prestaties"
   },
-  "panels/js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "Profiler"
-  },
   "panels/js_profiler/js_profiler-meta.ts | record": {
     "message": "Opnemen"
   },
   "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
     "message": "Prestaties tonen"
   },
-  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "Profiler tonen"
-  },
   "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
     "message": "Recente tijdlijnsessies tonen"
   },
   "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
     "message": "Profilering starten en pagina opnieuw laden"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "Opname starten/stoppen"
   },
   "panels/js_profiler/js_profiler-meta.ts | stop": {
     "message": "Stoppen"
@@ -6959,6 +6932,9 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Weergave 3D-lagen"
   },
+  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
+    "message": "Het deelvenster Lagen wordt binnenkort misschien beëindigd. Deel je gedachten en zorgen voordat we een beslissing nemen."
+  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "Er is nog geen laaginformatie beschikbaar."
   },
@@ -6967,6 +6943,9 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "Weergave resetten"
+  },
+  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
+    "message": "Feedback sturen"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "Weergaveprofiler tonen"
@@ -7079,14 +7058,17 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
     "message": "Of deze pagina voldoet aan de standaard van een progressive web-app"
   },
+  "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
+    "message": "Zet JavaScript-sampling aan tijdens de Lighthouse-uitvoering. Dit levert meer uitvoeringsgegevens op in het deelvenster Prestaties als je de tracering bekijkt maar leidt wel tot een hogere CPU-overhead en kan invloed hebben op de prestaties van de pagina."
+  },
+  "panels/lighthouse/LighthouseController.ts | enableSampling": {
+    "message": "JS-sampling aanzetten"
+  },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "Hoelang duurt het voordat deze app content toont en bruikbaar wordt"
   },
   "panels/lighthouse/LighthouseController.ts | indexeddb": {
     "message": "IndexedDB"
-  },
-  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "Of de pagina is geoptimaliseerd voor advertentiesnelheid en -kwaliteit"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
     "message": "Is deze pagina geoptimaliseerd voor het rangschikken van zoekresultaten"
@@ -7120,9 +7102,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
     "message": "Progressive web-app"
-  },
-  "panels/lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "Advertenties van uitgever"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Opslag resetten (cache, service workers enzovoort) voor controle. (Goed voor prestaties en PWA-tests)"
@@ -7210,9 +7189,6 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Modus"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | plugins": {
-    "message": "Plug-ins"
   },
   "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Tijdsduur starten"
@@ -7700,8 +7676,35 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "Netwerkbeperkingsprofielen"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
+    "message": "Uit"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
+    "message": "Aan"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "optioneel"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packet": {
+    "message": "pakket"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLoss": {
+    "message": "Pakketverlies"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLossMustBeAnIntegerBetweenSpct": {
+    "message": "Pakketverlies moet een getal zijn tussen {PH1} % en {PH2} %"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLength": {
+    "message": "Lengte van pakketwachtrij"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
+    "message": "Lengte van pakketwachtrij moet groter dan of gelijk aan 0 zijn"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
+    "message": "Pakketten opnieuw ordenen"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
+    "message": "procent"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profielnaam"
@@ -7912,6 +7915,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "Komt overeen met ServiceWorker router#{PH1}, bronformaat: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouterWithNetworkSource": {
+    "message": "Komt overeen met ServiceWorker router#{PH1}, {PH2} overgezet via netwerk, brongrootte: {PH3}"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(geheugencache)"
@@ -9320,6 +9326,18 @@
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "Grootte van het object plus het diagram dat erin wordt bewaard, in bytes"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | compiledCodeSummary": {
+    "message": "Interne gegevens die V8 gebruikt om functies uit te voeren die zijn gedefinieerd door JavaScript of WebAssembly."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | concatenatedStringSummary": {
+    "message": "Een tekenreeks die de content vertegenwoordigt van 2 andere tekenreeksen die met elkaar zijn samengevoegd."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | contextSummary": {
+    "message": "Een intern object met variabelen uit een JavaScript-bereik die nodig kunnen zijn voor een functie die binnen dat bereik is gemaakt."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | descriptorArraySummary": {
+    "message": "Een lijst met de propertynamen die door een JavaScript-object worden gebruikt."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "Losgekoppeld van de DOM-boomstructuur"
   },
@@ -9332,6 +9350,21 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(interne array)[]"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalArraySummary": {
+    "message": "Een interne matrixachtige gegevensstructuur (geen JavaScript-matrix)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
+    "message": "Een object dat is toegewezen door een andere component dan V8, zoals C++ objecten die zijn gedefinieerd door Blink."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
+    "message": "Een intern object dat de vorm van een JavaScript-object vertegenwoordigt (geen JavaScript-toewijzing)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectElementsSummary": {
+    "message": "Een intern object dat de geïndexeerde property's opslaat in een JavaScript-object, zoals de content van een matrix."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectPropertiesSummary": {
+    "message": "Een intern object dat de benoemde property's opslaat in een JavaScript-object."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "Geen voorbeeld beschikbaar"
   },
@@ -9340,6 +9373,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "Object {PH1} met ID @{PH2} bekijken in de overzichtsweergave"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
+    "message": "Een tekenreeks die enkele tekens van een andere tekenreeks vertegenwoordigt."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Opslaan als globale variabele"
@@ -12237,7 +12273,7 @@
     "message": "Ontsleutelen"
   },
   "panels/timeline/EventUICategory.ts | decryptReply": {
-    "message": "Reactie ontsleutelen"
+    "message": "Antwoord ontsleutelen"
   },
   "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
     "message": "Cachegeheugen voor code deserialiseren"
@@ -12259,6 +12295,9 @@
   },
   "panels/timeline/EventUICategory.ts | drawFrame": {
     "message": "Frame tekenen"
+  },
+  "panels/timeline/EventUICategory.ts | drawing": {
+    "message": "Tekenen"
   },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
     "message": "Callback van insluiting"
@@ -12294,7 +12333,7 @@
     "message": "Eerste weergave met content (FCP)"
   },
   "panels/timeline/EventUICategory.ts | firstPaint": {
-    "message": "Eerste weergave (FP)"
+    "message": "Eerste weergave"
   },
   "panels/timeline/EventUICategory.ts | frameStart": {
     "message": "Start van frame"
@@ -12353,8 +12392,14 @@
   "panels/timeline/EventUICategory.ts | majorGc": {
     "message": "Hoofd-GC"
   },
+  "panels/timeline/EventUICategory.ts | messaging": {
+    "message": "Berichten"
+  },
   "panels/timeline/EventUICategory.ts | minorGc": {
     "message": "Beperkte GC"
+  },
+  "panels/timeline/EventUICategory.ts | onMessage": {
+    "message": "In bericht"
   },
   "panels/timeline/EventUICategory.ts | onloadEvent": {
     "message": "Onload-gebeurtenis"
@@ -12395,6 +12440,9 @@
   "panels/timeline/EventUICategory.ts | rasterizePaint": {
     "message": "Weergave via raster"
   },
+  "panels/timeline/EventUICategory.ts | rasterizing": {
+    "message": "Raster maken"
+  },
   "panels/timeline/EventUICategory.ts | recalculateStyle": {
     "message": "Stijl opnieuw berekenen"
   },
@@ -12425,6 +12473,9 @@
   "panels/timeline/EventUICategory.ts | runMicrotasks": {
     "message": "Microtaken uitvoeren"
   },
+  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
+    "message": "postMessage plannen"
+  },
   "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
     "message": "Herberekening van stijl plannen"
   },
@@ -12441,7 +12492,7 @@
     "message": "WebSocket-handshake versturen"
   },
   "panels/timeline/EventUICategory.ts | sign": {
-    "message": "Ondertekenen"
+    "message": "Sterrenbeeld"
   },
   "panels/timeline/EventUICategory.ts | signReply": {
     "message": "Reactie ondertekenen"
@@ -12483,7 +12534,7 @@
     "message": "Wachten op netwerk"
   },
   "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
-    "message": "Wasm-module aanwezig in cache"
+    "message": "Wasm-module aanwezig in cachegeheugen"
   },
   "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
     "message": "Wasm-module in cachegeheugen ongeldig"
@@ -12701,20 +12752,8 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Tijdlijnsessie selecteren"
   },
-  "panels/timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
-    "message": "Verouderde tijdlijnindeling wordt niet ondersteund."
-  },
-  "panels/timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
-    "message": "CPU-profiel heeft een onjuiste indeling"
-  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Onjuist gevormde tijdlijngegevens: {PH1}"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "Onjuist gevormde tijdlijngegevens: onbekende JSON-indeling"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
-    "message": "Onjuiste tijdlijninvoer: JSON-accolades niet in balans"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU-throttling is aangezet"
@@ -12965,29 +13004,8 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "Toegewezen tijd"
   },
-  "panels/timeline/TimelineUIUtils.ts | animation": {
-    "message": "Animatie"
-  },
-  "panels/timeline/TimelineUIUtils.ts | animationFrameFired": {
-    "message": "Animatieframe geactiveerd"
-  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "Animatieframe aangevraagd"
-  },
-  "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "Asynchroon"
-  },
-  "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "Asynchrone taak"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
-    "message": "Code voor cachemodule"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
-    "message": "Code voor cachescript"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "Gecachete Wasm-module"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Callbackfunctie"
@@ -12995,17 +13013,8 @@
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
     "message": "Callback-ID"
   },
-  "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
-    "message": "Animatieframe annuleren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "Inactieve callback annuleren"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Opgehaald"
-  },
-  "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "Toewijzen"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "Soort compilatiecache"
@@ -13019,32 +13028,8 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Compileren"
   },
-  "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "Code compileren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "Module compileren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "Script compileren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "Wasm-module gecompileerd"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
-    "message": "Samengestelde lagen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "Kruispunten berekenen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "Consoletijd"
-  },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Gebruikte cachegrootte"
-  },
-  "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "WebSocket maken"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Cumulatieve indelingsverschuivingen (CLS)"
@@ -13061,38 +13046,11 @@
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Gedecodeerde body"
   },
-  "panels/timeline/TimelineUIUtils.ts | decrypt": {
-    "message": "Ontsleutelen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "Reactie ontsleutelen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
-    "message": "Cachegeheugen voor code deserialiseren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
-    "message": "WebSocket beëindigen"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Details"
   },
-  "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "Samenvatting"
-  },
-  "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "Reactie verwerken"
-  },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Afmetingen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "DOM-GC"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded-gebeurtenis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drawFrame": {
-    "message": "Frame tekenen"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duur"
@@ -13103,50 +13061,20 @@
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Beïnvloede elementen"
   },
-  "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "Callback van insluiting"
-  },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "Gecodeerde gegevens"
   },
-  "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "Versleutelen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "Reactie versleutelen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "Module evalueren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "Script evalueren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | event": {
-    "message": "Gebeurtenis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
-    "message": "Gebeurtenistiming"
+  "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
+    "message": "(vermelding is verborgen)"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ontwikkeld"
   },
-  "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Functionaliteit"
-  },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "kan script niet laden uit cachegeheugen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "Stoppen met laden"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "Inactieve callback activeren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "Eerste weergave met content (FCP)"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "Eerst ongeldig gemaakt"
@@ -13154,50 +13082,17 @@
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "Invalidatie van eerste indeling"
   },
-  "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "Eerste weergave (FP)"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Frame"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStart": {
-    "message": "Start van frame"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "Start van frame (primaire thread)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
-    "message": "Frame is begonnen met laden"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "Functie"
   },
-  "panels/timeline/TimelineUIUtils.ts | functionCall": {
-    "message": "Functieaanroep"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "GC-gebeurtenis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gpu": {
-    "message": "GPU"
-  },
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "Heeft recent invoer gehad"
   },
-  "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "Hit-test"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idle": {
-    "message": "Inactief"
-  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "Inactieve callback gevraagd"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "Afbeelding decoderen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageResize": {
-    "message": "Formaat van afbeelding aanpassen"
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Afbeeldings-URL"
@@ -13211,17 +13106,14 @@
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "Initiator voor"
   },
+  "panels/timeline/TimelineUIUtils.ts | initiatorStackTrace": {
+    "message": "Stacktrace van initiator"
+  },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "Invoervertraging"
   },
-  "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "Installatietimer"
-  },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ID"
-  },
-  "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "Indeling ongeldig maken"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
     "message": "{PH1} op {PH2}"
@@ -13232,29 +13124,8 @@
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Aangeroepen door time-out"
   },
-  "panels/timeline/TimelineUIUtils.ts | jsFrame": {
-    "message": "JavaScript-frame"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
-    "message": "Inactief JS-frame"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
-    "message": "JS-root"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
-    "message": "JS-systeemframe"
-  },
-  "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "Grootste weergave met content (LCP)"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Root van laag"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layerize": {
-    "message": "Lagen maken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layout": {
-    "message": "Indeling"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "Indeling afgedwongen"
@@ -13262,32 +13133,20 @@
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "Root van indeling"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Verschuiving van indeling"
-  },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Meer informatie"
   },
   "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "laden uit cachegeheugen"
   },
-  "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "Laden"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Locatie"
-  },
-  "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "Hoofd-GC"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Bericht"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "MIME-type"
-  },
-  "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "Beperkte GC"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Module"
@@ -13310,50 +13169,20 @@
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Nodes die een indeling nodig hebben"
   },
-  "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "Onload-gebeurtenis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "Code optimaliseren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | other": {
-    "message": "Anders"
+  "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
+    "message": "(buiten het broodkruimelbereik)"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "Eigenaarselement"
   },
-  "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "Weergave"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "Weergave-afbeelding"
-  },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "Weergaveprofiler"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "Weergave instellen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | painting": {
-    "message": "Weergeven"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
     "message": "Parseren"
   },
-  "panels/timeline/TimelineUIUtils.ts | parseAndCompile": {
-    "message": "Parseren en compileren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseHtml": {
-    "message": "HTML parseren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "Stylesheet parseren"
-  },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Wachten op"
-  },
-  "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "Voorafgaand aan weergave"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
     "message": "Presentatievertraging"
@@ -13364,62 +13193,23 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Prioriteit"
   },
-  "panels/timeline/TimelineUIUtils.ts | processingTime": {
-    "message": "Verwerkingstijd"
-  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Geproduceerde cachegrootte"
-  },
-  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "Overhead voor profileren"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Bereik"
   },
-  "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "Weergave via raster"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "Stijl opnieuw berekenen"
-  },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "Herberekening afgedwongen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "Gegevens ontvangen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
-    "message": "Reactie ontvangen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket-handshake ontvangen"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "Gerelateerde node"
   },
-  "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "Timer verwijderen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | rendering": {
-    "message": "Renderen"
-  },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "Herhaald"
   },
-  "panels/timeline/TimelineUIUtils.ts | requestAnimationFrame": {
-    "message": "Animatieframe vragen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "Inactieve callback vragen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
-    "message": "Frame van primaire thread vragen"
-  },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "Verzoekmethode"
-  },
-  "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
-    "message": "Microtaken uitvoeren"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1} om {PH2}"
@@ -13457,9 +13247,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "Herberekening van stijl plannen"
-  },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "Score"
   },
@@ -13472,26 +13259,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script komt niet in aanmerking"
   },
-  "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "Scripting"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scroll": {
-    "message": "Scrollen"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Zelftijd"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "Verzoek sturen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "WebSocket-handshake versturen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "Ondertekenen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "Reactie ondertekenen"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Grootte"
@@ -13505,29 +13274,14 @@
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Gestreamd"
   },
-  "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "Streaming-compileertaak"
-  },
-  "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
-    "message": "Stream Wasm-reactie"
-  },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "Stylesheet-URL"
-  },
-  "panels/timeline/TimelineUIUtils.ts | system": {
-    "message": "Systeem"
-  },
-  "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "Taak"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Tijd besteed aan renderen"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Time-out"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timerFired": {
-    "message": "Timer geactiveerd"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "Timer-ID"
@@ -13544,44 +13298,11 @@
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
   },
-  "panels/timeline/TimelineUIUtils.ts | updateLayer": {
-    "message": "Laag updaten"
-  },
-  "panels/timeline/TimelineUIUtils.ts | updateLayerTree": {
-    "message": "Laagstructuur updaten"
-  },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "URL"
   },
-  "panels/timeline/TimelineUIUtils.ts | userTiming": {
-    "message": "Gebruikerstiming"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "Verifiëren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "Reactie verifiëren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
-    "message": "Wachten op netwerk"
-  },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "Waarschuwing"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
-    "message": "Wasm-module aanwezig in cache"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm-module in cachegeheugen ongeldig"
-  },
-  "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
-    "message": "Verstuurt verzoek"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "XHR laden"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "Status Klaar voor XHR gewijzigd"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
@@ -13589,14 +13310,23 @@
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Timings"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | async": {
+    "message": "Asynchroon"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Frame tekenen"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
     "message": "Tekenen"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | experience": {
+    "message": "Functionaliteit"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "Start van frame"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | gpu": {
+    "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
     "message": "Inactief"
@@ -13604,11 +13334,23 @@
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
     "message": "Indeling"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | loading": {
+    "message": "Laden"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | messaging": {
+    "message": "Berichten"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
     "message": "Weergeven"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "Raster maken"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | rendering": {
+    "message": "Renderen"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | scripting": {
+    "message": "Scripting"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Systeem"
@@ -13643,14 +13385,8 @@
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Presentatievertraging"
   },
-  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
-    "message": "Verwerkingstijd"
-  },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "chrome-frame verbergen in laagweergave"
-  },
-  "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript-profiler"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Profiel laden…"
@@ -13676,9 +13412,6 @@
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "Profiel opslaan…"
   },
-  "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "JavaScript-profiler bekijken"
-  },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "Prestaties tonen"
   },
@@ -13687,9 +13420,6 @@
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Profilering starten en pagina opnieuw laden"
-  },
-  "panels/timeline/timeline-meta.ts | startStopRecording": {
-    "message": "Opname starten/stoppen"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppen"
@@ -13909,6 +13639,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Code kopiëren"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
+    "message": "Wees voorzichtig met het gebruik van codefragmenten"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"
@@ -14567,6 +14300,9 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Tonen als JavaScript-object"
   },
+  "ui/legacy/components/object_ui/ObjectPopoverHelper.ts | learnMore": {
+    "message": "Meer informatie"
+  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Onderliggende elementen samenvouwen"
   },
@@ -14925,7 +14661,7 @@
     "message": "Openen met {PH1}"
   },
   "ui/legacy/components/utils/Linkifier.ts | reveal": {
-    "message": "Weergeven"
+    "message": "Onthulling"
   },
   "ui/legacy/components/utils/Linkifier.ts | revealInS": {
     "message": "Tonen in {PH1}"

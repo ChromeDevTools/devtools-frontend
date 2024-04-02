@@ -2498,9 +2498,6 @@
   "panels/application/ApplicationPanelSidebar.ts | versionSEmpty": {
     "message": "பதிப்பு: {PH1} (காலியாக உள்ளது)"
   },
-  "panels/application/ApplicationPanelSidebar.ts | webSql": {
-    "message": "இணைய SQL"
-  },
   "panels/application/ApplicationPanelSidebar.ts | webWorkers": {
     "message": "Web Workers"
   },
@@ -2641,33 +2638,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "மதிப்பு"
-  },
-  "panels/application/DatabaseModel.ts | anUnexpectedErrorSOccurred": {
-    "message": "எதிர்பாராத பிழை {PH1} ஏற்பட்டது."
-  },
-  "panels/application/DatabaseModel.ts | databaseNoLongerHasExpected": {
-    "message": "எதிர்பார்க்கப்படும் பதிப்பைத் தரவுத்தளம் இனி கொண்டிருக்காது."
-  },
-  "panels/application/DatabaseQueryView.ts | databaseQuery": {
-    "message": "தரவுத்தள வினவல்"
-  },
-  "panels/application/DatabaseQueryView.ts | queryS": {
-    "message": "வினவல்: {PH1}"
-  },
-  "panels/application/DatabaseTableView.ts | anErrorOccurredTryingToreadTheS": {
-    "message": "\"{PH1}\" டேபிளைப் படிக்க முயலும்போது பிழை ஏற்பட்டது."
-  },
-  "panels/application/DatabaseTableView.ts | database": {
-    "message": "தரவுத்தளம்"
-  },
-  "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "ரெஃப்ரெஷ் செய்"
-  },
-  "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
-    "message": "\"{PH1}\" டேபிள் காலியாக உள்ளது."
-  },
-  "panels/application/DatabaseTableView.ts | visibleColumns": {
-    "message": "காட்டப்படும் நெடுவரிசைகள்"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "ஆப்ஜெக்ட் சேமிப்பை அழிக்கும்"
@@ -2815,9 +2785,6 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
-  },
-  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
-    "message": "இணைய SQL நிறுத்தப்பட்டது. Chrome 123 பதிப்பு வரை இதைத் தொடர்ந்து பயன்படுத்த, நிறுத்தச் செயல்முறையின் பரிசோதனைக் காலத்தில் நீங்கள் சேரலாம்."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "தற்காலிகச் சேமிப்பிடம்"
@@ -3155,6 +3122,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "நிகழ்வுகளை ரெக்கார்டு செய்வதை நிறுத்து"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | BroadcastChannelOnMessage": {
+    "message": "வரையறுக்கப்படவில்லை"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
     "message": "வரையறுக்கப்படவில்லை"
   },
@@ -3171,6 +3141,9 @@
     "message": "பக்கம் தற்காலிகச் சேமிப்பில் சேமிக்கப்பட்டிருக்கும்போது JavaScriptடைச் செயல்படுத்துவதற்கு முயற்சி செய்யப்பட்டதாக Chrome கண்டறிந்துள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | LiveMediaStreamTrack": {
+    "message": "வரையறுக்கப்படவில்லை"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ParserAborted": {
     "message": "வரையறுக்கப்படவில்லை"
   },
   "panels/application/components/BackForwardCacheStrings.ts | SmartCard": {
@@ -3935,6 +3908,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "இன்னும் உருவாக்கப்படவில்லை"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | numBytesUsed": {
+    "message": "பயன்படுத்தப்பட்ட பைட்டுகளின் எண்ணிக்கை"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "உள்ளீடுகளின் எண்ணிக்கை"
   },
@@ -4542,7 +4518,10 @@
     "message": "பண்புக்கூறு"
   },
   "panels/autofill/AutofillView.ts | autoShow": {
-    "message": "தன்னிரப்பி செயல்படும்போது பேனலைத் திற"
+    "message": "இந்தப் பேனலைத் தானாகத் திற"
+  },
+  "panels/autofill/AutofillView.ts | autoShowTooltip": {
+    "message": "தன்னிரப்பிச் செயல்பாடு கண்டறியப்படும்போது தன்னிரப்பி பேனல் தானாகவே திறக்கப்படும்."
   },
   "panels/autofill/AutofillView.ts | autocompleteAttribute": {
     "message": "'தன்னிரப்பி' பண்புக்கூறு"
@@ -4559,11 +4538,17 @@
   "panels/autofill/AutofillView.ts | inferredByHeuristics": {
     "message": "ஹியுரிஸ்ட்டிக்ஸ் மூலம் பெறப்பட்டது"
   },
-  "panels/autofill/AutofillView.ts | noDataAvailable": {
-    "message": "தன்னிரப்பி நிகழ்வு எதுவும் கண்டறியப்படவில்லை"
+  "panels/autofill/AutofillView.ts | learnMore": {
+    "message": "மேலும் அறிக"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "கணிக்கப்பட்ட தன்னிரப்பி மதிப்பு"
+  },
+  "panels/autofill/AutofillView.ts | sendFeedback": {
+    "message": "கருத்தை அனுப்பு"
+  },
+  "panels/autofill/AutofillView.ts | toStartDebugging": {
+    "message": "தன்னிரப்பியில் பிழைதிருத்தம் செய்யத் தொடங்க, முகவரிப் படிவத்தை நிரப்புவதற்கான Chromeமின் தன்னிரப்பி மெனுவைப் பயன்படுத்தவும்."
   },
   "panels/autofill/AutofillView.ts | value": {
     "message": "மதிப்பு"
@@ -5055,13 +5040,13 @@
     "message": "<விதிவிலக்கு>"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
-    "message": "இந்தப் பிழையை விவரியுங்கள்"
+    "message": "இந்தப் பிழையைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
-    "message": "இந்த மெசேஜை விவரி"
+    "message": "இந்த மெசேஜைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
-    "message": "இந்த எச்சரிக்கையை விவரி"
+    "message": "இந்த எச்சரிக்கையைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "இணைக்கப்பட்ட செயல்பாட்டில் இருந்து செயல்பாடு தீர்க்கப்பட்டது."
@@ -5981,12 +5966,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "CSS மாற்றங்களை நகலெடுக்கும்"
   },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS பண்பின் பெயர்: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS பண்பின் மதிப்பு: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "வடிகட்டு"
   },
@@ -6383,50 +6362,47 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "ஈவண்ட் லிசனர் பேஸிவ் ஆக உள்ளதா தடுக்கிறதா என்று நிலைமாற்று"
   },
-  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
-    "message": "புள்ளிவிவரத்தை மூடு"
+  "panels/explain/components/ConsoleInsight.ts | cancel": {
+    "message": "வேண்டாம்"
   },
-  "panels/explain/components/ConsoleInsight.ts | consentButton": {
-    "message": "தொடர்க"
+  "panels/explain/components/ConsoleInsight.ts | closeInsight": {
+    "message": "விளக்கத்தை மூடு"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "கன்சோல் மெசேஜ்"
   },
-  "panels/explain/components/ConsoleInsight.ts | disclaimer": {
-    "message": "கன்சோல் மெசேஜிற்கான விளக்கத்தைக் கண்டறிய இந்தத் தரவு Googleளுக்கு அனுப்பப்படும். அவை மனிதர்களால் மதிப்பாய்வு செய்யப்பட்டு, தயாரிப்புகளை மேம்படுத்தப் பயன்படுத்தப்படலாம்."
-  },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "ஏதோ தவறாகிவிட்டது…"
+    "message": "டெவெலப்பர் கருவியில் பிழை ஏற்பட்டுள்ளது"
   },
-  "panels/explain/components/ConsoleInsight.ts | finePrint": {
-    "message": "இந்த AI புள்ளிவிவரக் கருவி பரிசோதனை நிலையில் உள்ளதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம்."
+  "panels/explain/components/ConsoleInsight.ts | errorBody": {
+    "message": "ஏதோ தவறாகிவிட்டது. மீண்டும் முயலவும்."
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
     "message": "விளக்கத்தை உருவாக்குகிறது…"
   },
-  "panels/explain/components/ConsoleInsight.ts | goToSettings": {
-    "message": "அமைப்புகளுக்குச் செல்"
-  },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
-    "message": "இந்தப் புள்ளிவிவரத்தை உருவாக்கப் பயன்படுத்தப்பட்ட தரவு"
+    "message": "இந்த மெசேஜைப் புரிந்துகொள்ள பயன்படுத்தப்பட்ட தரவு"
   },
   "panels/explain/components/ConsoleInsight.ts | insight": {
-    "message": "புள்ளிவிவரம்"
+    "message": "விளக்கம்"
   },
   "panels/explain/components/ConsoleInsight.ts | learnMore": {
-    "message": "டெவெலப்பர் கருவிகளில் AI குறித்து மேலும் தெரிந்துகொள்ளுங்கள்"
+    "message": "மேலும் அறிக"
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "நெட்வொர்க் கோரிக்கை"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "கன்சோல் புள்ளிவிவரங்கள் இல்லை"
+    "message": "அம்சம் கிடைக்கவில்லை"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
-    "message": "உங்கள் Google கணக்கு மூலம் Chromeமில் உள்நுழைந்திருந்தால் மட்டுமே இந்த அம்சத்தைப் பயன்படுத்த முடியும்."
+    "message": "உங்கள் Google கணக்கு மூலம் Chromeமில் உள்நுழையும்போது மட்டுமே இந்த அம்சம் கிடைக்கும்."
   },
   "panels/explain/components/ConsoleInsight.ts | offline": {
-    "message": "இணைய இணைப்பு தற்போது இல்லை."
+    "message": "இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்."
+  },
+  "panels/explain/components/ConsoleInsight.ts | offlineHeader": {
+    "message": "டெவெலப்பர் கருவிகள் இணையத்தைத் தொடர்புகொள்ள முடியவில்லை"
   },
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(புதிய பக்கத்தில் திறக்கும்)"
@@ -6434,14 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "தொடர்புடைய குறியீடு"
   },
+  "panels/explain/components/ConsoleInsight.ts | report": {
+    "message": "சட்டச் சிக்கலைப் புகாரளி"
+  },
+  "panels/explain/components/ConsoleInsight.ts | signInToUse": {
+    "message": "இந்த அம்சத்தைப் பயன்படுத்த உள்நுழையவும்"
+  },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "ஸ்டாக் டிரேஸ்:"
   },
-  "panels/explain/components/ConsoleInsight.ts | submitFeedback": {
-    "message": "கருத்தைச் சமர்ப்பி"
-  },
   "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "Chrome ஒத்திசைவு இயக்கப்பட்டிருந்தால் மட்டுமே இந்த அம்சத்தைப் பயன்படுத்த முடியும்."
+    "message": "இந்த அம்சத்திற்கு Chrome ஒத்திசைவை இயக்க வேண்டும்."
   },
   "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
     "message": "தம்ஸ்-டவுன்"
@@ -6449,20 +6428,23 @@
   "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
     "message": "தம்ஸ்-அப்"
   },
+  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
+    "message": "அமைப்புகளை மாற்று"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
-    "message": "கன்சோல் புள்ளிவிவரங்களை இயக்கு"
+    "message": "AI மூலம் கன்சோல் மெசேஜ்களைப் புரிந்துகொள்ளுதல்"
   },
   "panels/explain/explain-meta.ts | explainThisError": {
-    "message": "இந்தப் பிழையை விவரியுங்கள்"
+    "message": "இந்தப் பிழையைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/explain/explain-meta.ts | explainThisMessage": {
-    "message": "இந்த மெசேஜை விவரி"
+    "message": "இந்த மெசேஜைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
-    "message": "இந்த எச்சரிக்கையை விவரி"
+    "message": "இந்த எச்சரிக்கையைப் புரிந்துகொள்ளுங்கள்"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "தற்போது ஆங்கிலத்தில் மட்டுமே கிடைக்கிறது."
+    "message": "இந்த அம்சத்தைப் பயன்படுத்த, டெவெலப்பர் கருவிகளின் அமைப்புகளில் உங்கள் மொழி விருப்பத்தேர்வை ஆங்கிலத்திற்கு மாற்றுங்கள்."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "தடுக்கப்பட்ட ஆதாரம்"
@@ -6851,26 +6833,17 @@
   "panels/js_profiler/js_profiler-meta.ts | performance": {
     "message": "செயல்திறன்"
   },
-  "panels/js_profiler/js_profiler-meta.ts | profiler": {
-    "message": "ப்ரொஃபைலர்"
-  },
   "panels/js_profiler/js_profiler-meta.ts | record": {
     "message": "ரெக்கார்டு செய்"
   },
   "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
     "message": "செயல்திறனைக் காட்டு"
   },
-  "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
-    "message": "ப்ரொஃபைலரைக் காட்டு"
-  },
   "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
     "message": "சமீபத்திய காலப்பதிவு அமர்வுகளைக் காட்டு"
   },
   "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
     "message": "ப்ரொஃபைலிங்கைத் தொடங்கி பக்கத்தை ரெஃப்ரெஷ் செய்"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
-    "message": "ரெக்கார்டிங்கைத் தொடங்க/நிறுத்த"
   },
   "panels/js_profiler/js_profiler-meta.ts | stop": {
     "message": "நிறுத்து"
@@ -6959,6 +6932,9 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "3D லேயர்ஸ் வியூ"
   },
+  "panels/layer_viewer/Layers3DView.ts | deprecationWarning": {
+    "message": "அடுக்குகள் பேனல் விரைவில் நிறுத்தப்படக்கூடும். நாங்கள் முடிவெடுப்பதற்கு முன்பு உங்கள் கருத்துகளைப் பகிருங்கள்."
+  },
   "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
     "message": "லேயர் தொடர்பான தகவல்கள் இதுவரை கிடைக்கவில்லை."
   },
@@ -6967,6 +6943,9 @@
   },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "காட்சியை மீட்டமை"
+  },
+  "panels/layer_viewer/Layers3DView.ts | sendFeedback": {
+    "message": "கருத்தை அனுப்பு"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "பெயிண்ட் ப்ரொஃபைலரைக் காட்டு"
@@ -7079,14 +7058,17 @@
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
     "message": "இந்தப் பக்கம் மேம்பட்ட இணைய ஆப்ஸிற்கான தரநிலையுடன் பொருந்துகிறதா?"
   },
+  "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
+    "message": "Lighthouse இயங்கும்போது JavaScript சாம்பிளிங்கை இயக்கும். டிரேஸை நீங்கள் பார்க்கும்போது செயல்திறன் பேனலில் செயல்படுத்தலுக்கான கூடுதல் விவரங்களை இது வழங்கும். ஆனால், இது CPUவின் சுமையை அதிகரிப்பதால் இணையப் பக்கத்தின் செயல்திறனைப் பாதிக்கக்கூடும்."
+  },
+  "panels/lighthouse/LighthouseController.ts | enableSampling": {
+    "message": "JS சாம்பிளிங்கை இயக்கு"
+  },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "உள்ளடக்கத்தைக் காட்டவும் இவற்றைப் பயன்படுத்துவதற்காக மாற்றவும் இந்த ஆப்ஸ் எவ்வளவு நேரம் எடுக்கும்?"
   },
   "panels/lighthouse/LighthouseController.ts | indexeddb": {
     "message": "IndexedDB"
-  },
-  "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "விளம்பர வேகம் & தரத்திற்கு ஏற்றவாறு இந்தப் பக்கம் மேம்படுத்தப்பட்டுள்ளதா?"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
     "message": "தேடல் இன்ஜின் முடிவுகள் ரேங்கிங்கிற்காக இந்தப் பக்கம் உகந்ததாக்கப்பட்டுள்ளதா?"
@@ -7120,9 +7102,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | progressiveWebApp": {
     "message": "மேம்பட்ட இணைய ஆப்ஸ்"
-  },
-  "panels/lighthouse/LighthouseController.ts | publisherAds": {
-    "message": "வெளியீட்டாளர் விளம்பரங்கள்"
   },
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "தணிக்கைக்கு முன்பு சேமிப்பகத்தை (cache, service workers, போன்றவை) மீட்டெடுக்கும். (செயல்திறன் & PWA சோதனைக்குச் சிறந்தது)"
@@ -7210,9 +7189,6 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "பயன்முறை"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | plugins": {
-    "message": "செருகுநிரல்கள்"
   },
   "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "கால அளவைத் தொடங்கு"
@@ -7700,8 +7676,35 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "நெட்வொர்க் த்ராட்லிங் சுயவிவரங்கள்"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
+    "message": "முடக்கப்பட்டுள்ளது"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | on": {
+    "message": "இயக்கப்பட்டுள்ளது"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "விரும்பினால்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packet": {
+    "message": "பாக்கெட்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLoss": {
+    "message": "பாக்கெட் இழப்பு"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetLossMustBeAnIntegerBetweenSpct": {
+    "message": "பாக்கெட் இழப்பு என்பது {PH1} %, {PH2} % (இரண்டும் அடங்கும்) ஆகியவற்றுக்கு இடையே உள்ள ஒரு மதிப்பாக இருக்க வேண்டும்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLength": {
+    "message": "பாக்கெட் வரிசையின் நீளம்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero": {
+    "message": "பாக்கெட் வரிசையின் நீளம் 0 அல்லது அதற்கு அதிகமாக இருக்க வேண்டும்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
+    "message": "பாக்கெட் மறுவரிசைப்படுத்தல்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
+    "message": "சதவீதம்"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "சுயவிவரப் பெயர்"
@@ -7912,6 +7915,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouter": {
     "message": "ServiceWorker router#{PH1} உடன் பொருத்தப்பட்டது, ஆதாரத்தின் அளவு: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | matchedToServiceWorkerRouterWithNetworkSource": {
+    "message": "ServiceWorker router#{PH1}க்குப் பொருத்தப்பட்டது, நெட்வொர்க் மூலம் {PH2} மாற்றப்பட்டது, ஆதாரத்தின் அளவு: {PH3}"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(தற்காலிக நினைவகம்)"
@@ -9320,6 +9326,18 @@
   "panels/profiler/HeapSnapshotDataGrids.ts | sizeOfTheObjectPlusTheGraphIt": {
     "message": "ஆப்ஜெக்டின் அளவும் அது தக்கவைத்துக்கொள்ளும் வரைபடத்தின் அளவும் பைட்டுகளில் கொடுக்கப்பட்டுள்ளது"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | compiledCodeSummary": {
+    "message": "JavaScript அல்லது WebAssembly மூலம் வரையறுக்கப்பட்ட செயல்பாடுகளை இயக்க V8ஐப் பயன்படுத்துகின்ற அகத் தரவு."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | concatenatedStringSummary": {
+    "message": "ஒன்றாக இணைக்கப்பட்ட வேறு இரண்டு வார்த்தைகளின் உள்ளடக்கத்தைக் குறிக்கும் வார்த்தை."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | contextSummary": {
+    "message": "JavaScript வரம்பில் இருந்து பெறப்பட்ட வேரியபிள்கள் இருக்கும் உட்புற ஆப்ஜெக்ட். அந்த வரம்பிற்குள் உருவாக்கப்பட்ட செயல்பாட்டிற்கு அவை தேவைப்படக்கூடும்."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | descriptorArraySummary": {
+    "message": "JavaScript ஆப்ஜெக்ட் பயன்படுத்தும் பிராப்பர்ட்டி பெயர்களின் பட்டியல்."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | detachedFromDomTree": {
     "message": "DOM ட்ரீயில் இருந்து பிரிக்கப்பட்டது"
   },
@@ -9332,6 +9350,21 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | internalArray": {
     "message": "(அக வரிசை)[]"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalArraySummary": {
+    "message": "வரிசை போன்ற அகத் தரவுக் கட்டமைப்பு (JavaScript வரிசை அல்ல)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | internalNodeSummary": {
+    "message": "V8 தவிர்த்து வேறொரு காம்பனென்ட் மூலம் ஒதுக்கீடு செய்யப்பட்ட ஆப்ஜெக்ட் (Blink மூலம் வரையறுக்கப்படும் C++ ஆப்ஜெக்ட்டுகள் போன்றவை)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | mapSummary": {
+    "message": "JavaScript ஆப்ஜெக்ட்டின் வடிவத்தைக் குறிக்கும் உட்புற ஆப்ஜெக்ட் (JavaScript வரைபடம் அல்ல)."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectElementsSummary": {
+    "message": "JavaScript ஆப்ஜெக்ட்டில் அட்டவணைப்படுத்தப்பட்ட பிராப்பர்ட்டிகளை (வரிசையில் உள்ள உள்ளடக்கம் போன்றவை) சேமிக்கும் உட்புற ஆப்ஜெக்ட்."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | objectPropertiesSummary": {
+    "message": "JavaScript ஆப்ஜெக்ட்டில் பெயரிடப்பட்டுள்ள பிராப்பர்ட்டிகளைச் சேமிக்கும் உட்புற ஆப்ஜெக்ட்."
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | previewIsNotAvailable": {
     "message": "மாதிரிக்காட்சி கிடைக்கவில்லை"
   },
@@ -9340,6 +9373,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
     "message": "@{PH2} என்ற ஐடியைக் கொண்ட “{PH1}” ஆப்ஜெக்ட்டைச் சுருக்கக் காட்சியில் காட்டு"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
+    "message": "மற்றொரு வார்த்தையில் இருக்கும் சில எழுத்துகள் இடம்பெறும் வார்த்தை."
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "பொது மாறிகளாகச் சேமி"
@@ -10749,7 +10785,7 @@
     "message": "மீறிச் செயல்படுதல் இல்லை"
   },
   "panels/sensors/SensorsView.ts | off": {
-    "message": "ஆஃப்"
+    "message": "முடக்கப்பட்டுள்ளது"
   },
   "panels/sensors/SensorsView.ts | orientation": {
     "message": "திசையமைப்பு"
@@ -12207,7 +12243,7 @@
     "message": "அனுப்புதல்"
   },
   "panels/timeline/EventUICategory.ts | compileCode": {
-    "message": "குறியீட்டை கம்பைல் செய்"
+    "message": "குறியீட்டைத் தொகு"
   },
   "panels/timeline/EventUICategory.ts | compileModule": {
     "message": "மாடியூலைத் தொகு"
@@ -12216,7 +12252,7 @@
     "message": "ஸ்கிரிப்ட்டைத் தொகு"
   },
   "panels/timeline/EventUICategory.ts | compiledWasmModule": {
-    "message": "கம்பைல் செய்த Wasm மாடியூல்"
+    "message": "தொகுக்கப்பட்ட Wasm மாடியூல்"
   },
   "panels/timeline/EventUICategory.ts | compositeLayers": {
     "message": "தொகுப்பு லேயர்கள்"
@@ -12249,7 +12285,7 @@
     "message": "செயல்பாட்டு விவரங்கள்"
   },
   "panels/timeline/EventUICategory.ts | digestReply": {
-    "message": "செயல்பாட்டு விவரங்களின் பதில்"
+    "message": "செயல்பாட்டு விவரங்கள் பதில்"
   },
   "panels/timeline/EventUICategory.ts | domGc": {
     "message": "DOM GC"
@@ -12260,8 +12296,11 @@
   "panels/timeline/EventUICategory.ts | drawFrame": {
     "message": "டிரா ஃபிரேம்"
   },
+  "panels/timeline/EventUICategory.ts | drawing": {
+    "message": "வரைதல்"
+  },
   "panels/timeline/EventUICategory.ts | embedderCallback": {
-    "message": "எம்பெடர் கால்பேக்"
+    "message": "உட்பொதிவு கால்பேக்"
   },
   "panels/timeline/EventUICategory.ts | encrypt": {
     "message": "என்கிரிப்ட் செய்"
@@ -12270,10 +12309,10 @@
     "message": "பதிலை என்கிரிப்ட் செய்"
   },
   "panels/timeline/EventUICategory.ts | evaluateModule": {
-    "message": "மாடியூலை இயக்கு"
+    "message": "மாடியூலை ஆய்வு செய்க"
   },
   "panels/timeline/EventUICategory.ts | evaluateScript": {
-    "message": "ஸ்கிரிப்ட்டை இயக்கு"
+    "message": "ஸ்கிரிப்ட்டை ஆய்வு செய்க"
   },
   "panels/timeline/EventUICategory.ts | event": {
     "message": "நிகழ்வு"
@@ -12303,7 +12342,7 @@
     "message": "ஃபிரேம் தொடக்கம் (முக்கியத் தொடரிழை)"
   },
   "panels/timeline/EventUICategory.ts | frameStartedLoading": {
-    "message": "ஃபிரேம் காட்டப்படுகிறது"
+    "message": "ஃபிரேம் ஏற்றத் தொடங்கியது"
   },
   "panels/timeline/EventUICategory.ts | functionCall": {
     "message": "ஃபங்ஷன் கால்"
@@ -12321,16 +12360,16 @@
     "message": "செயல்படவில்லை"
   },
   "panels/timeline/EventUICategory.ts | imageDecode": {
-    "message": "படத்தை டீகோட் செய்தல்"
+    "message": "படத்தை டீகோட் செய்"
   },
   "panels/timeline/EventUICategory.ts | imageResize": {
-    "message": "படத்தின் அளவை மாற்றுதல்"
+    "message": "படத்தின் அளவை மாற்றுக"
   },
   "panels/timeline/EventUICategory.ts | installTimer": {
     "message": "டைமரை நிறுவு"
   },
   "panels/timeline/EventUICategory.ts | invalidateLayout": {
-    "message": "தளவமைப்பைச் செல்லாததாக்கு"
+    "message": "தவறான தளவமைப்பு"
   },
   "panels/timeline/EventUICategory.ts | jsFrame": {
     "message": "JS ஃபிரேம்"
@@ -12353,8 +12392,14 @@
   "panels/timeline/EventUICategory.ts | majorGc": {
     "message": "மேஜர் GC"
   },
+  "panels/timeline/EventUICategory.ts | messaging": {
+    "message": "மெசேஜிங்"
+  },
   "panels/timeline/EventUICategory.ts | minorGc": {
     "message": "மைனர் GC"
+  },
+  "panels/timeline/EventUICategory.ts | onMessage": {
+    "message": "மெசேஜில்"
   },
   "panels/timeline/EventUICategory.ts | onloadEvent": {
     "message": "ஏற்றுதல் நிகழ்வு"
@@ -12378,7 +12423,7 @@
     "message": "பெயிண்டிங்"
   },
   "panels/timeline/EventUICategory.ts | parseAndCompile": {
-    "message": "பாகுபடுத்தி கம்பைல் செய்"
+    "message": "பாகுபடுத்தித் தொகு"
   },
   "panels/timeline/EventUICategory.ts | parseHtml": {
     "message": "HTMLலைப் பாகுபடுத்து"
@@ -12394,6 +12439,9 @@
   },
   "panels/timeline/EventUICategory.ts | rasterizePaint": {
     "message": "பெயிண்ட்டை ராஸ்டெரைஸ் செய்"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizing": {
+    "message": "ராஸ்டெரைஸிங்"
   },
   "panels/timeline/EventUICategory.ts | recalculateStyle": {
     "message": "ஸ்டைலை மீண்டும் கணக்கிடு"
@@ -12425,6 +12473,9 @@
   "panels/timeline/EventUICategory.ts | runMicrotasks": {
     "message": "சிறிய பணிகளைச் செயல்படுத்து"
   },
+  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
+    "message": "postMessageஐத் திட்டமிடுதல்"
+  },
   "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
     "message": "ஸ்டைல் மறு கணக்கீடைத் திட்டமிடுக"
   },
@@ -12447,7 +12498,7 @@
     "message": "கையொப்பமிட்ட பதில்"
   },
   "panels/timeline/EventUICategory.ts | streamingCompileTask": {
-    "message": "ஸ்ட்ரீமிங்கை கம்பைல் செய்யும் பணி"
+    "message": "ஸ்ட்ரீமிங்கைத் தொகுக்கும் பணி"
   },
   "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
     "message": "Wasm பதிலை ஸ்ட்ரீம் செய்கிறது"
@@ -12471,7 +12522,7 @@
     "message": "லேயர் வரிசையைப் புதுப்பி"
   },
   "panels/timeline/EventUICategory.ts | userTiming": {
-    "message": "பயனர் நேரம்"
+    "message": "User Timing"
   },
   "panels/timeline/EventUICategory.ts | verify": {
     "message": "சரிபார்"
@@ -12480,10 +12531,10 @@
     "message": "பதிலைச் சரிபார்"
   },
   "panels/timeline/EventUICategory.ts | waitingForNetwork": {
-    "message": "நெட்வொர்க்கிற்காகக் காத்திருக்கிறது"
+    "message": "நெட்வொர்க் இணைப்பிற்காகக் காத்திருக்கிறது"
   },
   "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
-    "message": "Wasm மாடியூல் தற்காலிகச் சேமிப்பு ஹிட்"
+    "message": "Wasm Module Cache Hit"
   },
   "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
     "message": "தவறான Wasm மாடியூல் தற்காலிகச் சேமிப்பு"
@@ -12701,20 +12752,8 @@
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "காலப்பதிவு அமர்வைத் தேர்ந்தெடுங்கள்"
   },
-  "panels/timeline/TimelineLoader.ts | legacyTimelineFormatIsNot": {
-    "message": "லெகஸி காலப்பதிவு வடிவம் ஆதரிக்கப்படாது."
-  },
-  "panels/timeline/TimelineLoader.ts | malformedCpuProfileFormat": {
-    "message": "தவறான CPU சுயவிவர வடிவம்"
-  },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "தவறான காலப்பதிவுத் தரவு: {PH1}"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineDataUnknownJson": {
-    "message": "தவறான காலப்பதிவுத் தரவு: அறியப்படாத JSON வடிவம்"
-  },
-  "panels/timeline/TimelineLoader.ts | malformedTimelineInputWrongJson": {
-    "message": "தவறான காலப்பதிவு உள்ளீடு, தவறான JSON அடைப்புக்குறிகள்"
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU த்ராட்லிங் இயக்கப்பட்டுள்ளது"
@@ -12965,29 +13004,8 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "ஒதுக்கப்பட்ட நேரம்"
   },
-  "panels/timeline/TimelineUIUtils.ts | animation": {
-    "message": "அனிமேஷன்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | animationFrameFired": {
-    "message": "அனிமேஷன் ஃபிரேம் செயல்படுத்தப்பட்டது"
-  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "அனிமேஷன் ஃபிரேம் கோரப்பட்டது"
-  },
-  "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "ஒத்திசையாதவை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "ஒத்திசையாத பணி"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
-    "message": "தற்காலிகச் சேமிப்பு மாடியூல் குறியீடு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
-    "message": "தற்காலிகச் சேமிப்பு ஸ்கிரிப்ட் குறியீடு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "தற்காலிக நினைவகத்தில் சேமிக்கப்பட்ட Wasm மாடியூல்"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "கால்பேக் ஃபங்க்ஷன்"
@@ -12995,17 +13013,8 @@
   "panels/timeline/TimelineUIUtils.ts | callbackId": {
     "message": "கால்பேக் ஐடி"
   },
-  "panels/timeline/TimelineUIUtils.ts | cancelAnimationFrame": {
-    "message": "அனிமேஷன் ஃபிரேமை ரத்துசெய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cancelIdleCallback": {
-    "message": "ஐடில் கால்பேக்கை ரத்துசெய்"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "தொகுக்கப்பட்டவை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "அனுப்புதல்"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "தற்காலிகச் சேமிப்பகத் தொகுப்பின் வகை"
@@ -13019,32 +13028,8 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "தொகு"
   },
-  "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "குறியீட்டை கம்பைல் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "மாடியூலைத் தொகு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "ஸ்கிரிப்ட்டைத் தொகு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "கம்பைல் செய்த Wasm மாடியூல்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
-    "message": "தொகுப்பு லேயர்கள்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "குறுக்கீடுகளைக் கணக்கிடு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "கன்சோல் நேரம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "உபயோகப்படுத்தப்பட்ட தற்காலிகச் சேமிப்பின் அளவு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "WebSocketடை உருவாக்கு"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட்"
@@ -13061,38 +13046,11 @@
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "டீகோட் செய்யப்பட்ட பகுதி"
   },
-  "panels/timeline/TimelineUIUtils.ts | decrypt": {
-    "message": "டீக்ரிப்ட் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "பதிலை டீகிரிப்ட் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
-    "message": "குறியீட்டுத் தற்காலிகச் சேமிப்பைப் படி"
-  },
-  "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
-    "message": "WebSocketடை அழி"
-  },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "விவரங்கள்"
   },
-  "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "செயல்பாட்டு விவரங்கள்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "செயல்பாட்டு விவரங்களின் பதில்"
-  },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "பரிமாணங்கள்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded நிகழ்வு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drawFrame": {
-    "message": "டிரா ஃபிரேம்"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "கால அளவு"
@@ -13103,50 +13061,20 @@
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "பாதிக்கப்பட்ட உறுப்புகள்"
   },
-  "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "எம்பெடர் கால்பேக்"
-  },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | encodedData": {
     "message": "என்கோட் செய்யப்பட்ட தரவு"
   },
-  "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "என்கிரிப்ட் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "பதிலை என்கிரிப்ட் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "மாடியூலை இயக்கு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "ஸ்கிரிப்ட்டை இயக்கு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | event": {
-    "message": "நிகழ்வு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
-    "message": "நிகழ்வின் நேரம்"
+  "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
+    "message": "(உள்ளீடு மறைக்கப்பட்டுள்ளது)"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "மாறியுள்ளது"
   },
-  "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "அனுபவம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "தற்காலிகச் சேமிப்பில் இருந்து ஸ்கிரிப்ட்டை ஏற்ற முடியவில்லை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "ஏற்றுதலை நிறைவுசெய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
-    "message": "ஐடில் கால்பேக்கைத் தொடங்கு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "உள்ளடக்கத்துடன் முதல் தோற்றம்"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "முதலில் செல்லாததாக்கப்பட்டவை"
@@ -13154,50 +13082,17 @@
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "முதல் லேஅவுட் இன்வேலிடேஷன்கள்"
   },
-  "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "முதல் தோற்றம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "ஃபிரேம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStart": {
-    "message": "ஃபிரேம் தொடக்கம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "ஃபிரேம் தொடக்கம் (முக்கியத் தொடரிழை)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
-    "message": "ஃபிரேம் காட்டப்படுகிறது"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "செயல்பாடு"
   },
-  "panels/timeline/TimelineUIUtils.ts | functionCall": {
-    "message": "ஃபங்ஷன் கால்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "GC நிகழ்வு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | gpu": {
-    "message": "GPU"
-  },
   "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
     "message": "சமீபத்திய உள்ளீட்டைக் கொண்டுள்ளது"
   },
-  "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "ஹிட் சோதனை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | idle": {
-    "message": "செயல்படவில்லை"
-  },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "ஐடில் கால்பேக் கோரப்பட்டது"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "படத்தை டீகோட் செய்தல்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | imageResize": {
-    "message": "படத்தின் அளவை மாற்றுதல்"
   },
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "பட URL"
@@ -13211,17 +13106,14 @@
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "இதற்கான இனிஷியேட்டர்:"
   },
+  "panels/timeline/TimelineUIUtils.ts | initiatorStackTrace": {
+    "message": "இனிஷியேட்டர் ஸ்டாக் டிரேஸ்"
+  },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
     "message": "உள்ளீட்டுத் தாமதம்"
   },
-  "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "டைமரை நிறுவு"
-  },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ஐடி"
-  },
-  "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "தளவமைப்பைச் செல்லாததாக்கு"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
     "message": "{PH1}, {PH2}"
@@ -13232,29 +13124,8 @@
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "நேரம் முடிந்ததால் செயல்படுத்தப்பட்டது"
   },
-  "panels/timeline/TimelineUIUtils.ts | jsFrame": {
-    "message": "JS ஃபிரேம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
-    "message": "JS செயல்படாத ஃபிரேம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
-    "message": "JS ரூட்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
-    "message": "JS சிஸ்டம் ஃபிரேம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "பெரிய பகுதியைக் காண்பிக்கும் நேரம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "லேயர் ரூட்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layerize": {
-    "message": "லேயராக்குதல்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | layout": {
-    "message": "தளவமைப்பு"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutForced": {
     "message": "தளவமைப்பு இயக்கப்பட்டது"
@@ -13262,32 +13133,20 @@
   "panels/timeline/TimelineUIUtils.ts | layoutRoot": {
     "message": "தளவமைப்பு ரூட்"
   },
-  "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "லேஅவுட் ஷிஃப்ட்"
-  },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "மேலும் அறிக"
   },
   "panels/timeline/TimelineUIUtils.ts | loadFromCache": {
     "message": "தற்காலிகச் சேமிப்பில் இருந்து ஏற்று"
   },
-  "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "ஏற்றுகிறது"
-  },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "இருப்பிடம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "மேஜர் GC"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "மெசேஜ்"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeType": {
     "message": "Mime வகை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "மைனர் GC"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "மாடியூல்"
@@ -13310,50 +13169,20 @@
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "தளவமைப்பு தேவைப்படும் கணுக்கள்"
   },
-  "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "ஏற்றுதல் நிகழ்வு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "குறியீட்டை மேம்படுத்து"
-  },
-  "panels/timeline/TimelineUIUtils.ts | other": {
-    "message": "பிற"
+  "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
+    "message": "(பாதை வரம்பிற்கு வெளியே)"
   },
   "panels/timeline/TimelineUIUtils.ts | ownerElement": {
     "message": "உரிமையாளர் உறுப்பு"
   },
-  "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "பெயிண்ட்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "படத்தைப் பெயிண்ட் செய்"
-  },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "பெயிண்ட் ப்ரொஃபைலர்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "பெயிண்ட் அமைவு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | painting": {
-    "message": "பெயிண்டிங்"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
     "message": "பாகுபடுத்து"
   },
-  "panels/timeline/TimelineUIUtils.ts | parseAndCompile": {
-    "message": "பாகுபடுத்தி கம்பைல் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseHtml": {
-    "message": "HTMLலைப் பாகுபடுத்து"
-  },
-  "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "ஸ்டைல்ஷீட்டைப் பாகுபடுத்து"
-  },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "நிலுவையில் உள்ள நேரம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "ப்ரீ-பெயிண்ட்"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
     "message": "காட்சிப்படுத்தல் தாமதம்"
@@ -13364,62 +13193,23 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "முன்னுரிமை"
   },
-  "panels/timeline/TimelineUIUtils.ts | processingTime": {
-    "message": "செயலாக்க நேரம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "உருவாக்கப்பட்ட தற்காலிகச் சேமிப்பின் அளவு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "ப்ரொஃபைலிங் சுமை"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "வரம்பு"
   },
-  "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "பெயிண்ட்டை ராஸ்டெரைஸ் செய்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "ஸ்டைலை மீண்டும் கணக்கிடு"
-  },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "மறு கணக்கீடு இயக்கப்பட்டது"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "தரவைப் பெறுக"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
-    "message": "பதிலைப் பெறுக"
-  },
-  "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket ஹேண்ட்ஷேக்கைப் பெறு"
   },
   "panels/timeline/TimelineUIUtils.ts | relatedNode": {
     "message": "தொடர்புடைய கணு"
   },
-  "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "டைமரை அகற்று"
-  },
-  "panels/timeline/TimelineUIUtils.ts | rendering": {
-    "message": "ரெண்டரிங்"
-  },
   "panels/timeline/TimelineUIUtils.ts | repeats": {
     "message": "மீண்டும் நிகழ்ந்தவை"
   },
-  "panels/timeline/TimelineUIUtils.ts | requestAnimationFrame": {
-    "message": "அனிமேஷன் ஃபிரேமைக் கோரு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestIdleCallback": {
-    "message": "ஐடில் கால்பேக்கைக் கோரு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | requestMainThreadFrame": {
-    "message": "முக்கியத் தொடரிழை ஃபிரேமைக் கோரு"
-  },
   "panels/timeline/TimelineUIUtils.ts | requestMethod": {
     "message": "கோரிக்கை முறை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | runMicrotasks": {
-    "message": "சிறிய பணிகளைச் செயல்படுத்து"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
     "message": "{PH1}, {PH2}"
@@ -13457,9 +13247,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "ஸ்டைல் மறு கணக்கீடைத் திட்டமிடுக"
-  },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "ஸ்கோர்"
   },
@@ -13472,26 +13259,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ஸ்கிரிப்ட் தகுதிபெறவில்லை"
   },
-  "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "ஸ்கிரிப்ட்டிங்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scroll": {
-    "message": "ஸ்க்ரோல்"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "சுய நேரம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "கோரிக்கையை அனுப்பு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "WebSocket ஹேண்ட்ஷேக்கை அனுப்பு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "கையொப்பம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "கையொப்பமிட்ட பதில்"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "அளவு"
@@ -13505,29 +13274,14 @@
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "ஸ்ட்ரீம் செய்யப்பட்டது"
   },
-  "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "ஸ்ட்ரீமிங்கை கம்பைல் செய்யும் பணி"
-  },
-  "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
-    "message": "Wasm பதிலை ஸ்ட்ரீம் செய்கிறது"
-  },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "ஸ்டைல்ஷீட் URL"
-  },
-  "panels/timeline/TimelineUIUtils.ts | system": {
-    "message": "சிஸ்டம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "பணி"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ரெண்டரிங்கில் செலவிட்ட நேரம்"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "நேர முடிவு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timerFired": {
-    "message": "டைமர் செயல்படுத்தப்பட்டது"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "டைமர் ஐடி"
@@ -13544,44 +13298,11 @@
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "உள்ளிடு"
   },
-  "panels/timeline/TimelineUIUtils.ts | updateLayer": {
-    "message": "லேயரைப் புதுப்பி"
-  },
-  "panels/timeline/TimelineUIUtils.ts | updateLayerTree": {
-    "message": "லேயர் வரிசையைப் புதுப்பி"
-  },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "Url"
   },
-  "panels/timeline/TimelineUIUtils.ts | userTiming": {
-    "message": "பயனர் நேரம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "சரிபார்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "பதிலைச் சரிபார்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
-    "message": "நெட்வொர்க்கிற்காகக் காத்திருக்கிறது"
-  },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "எச்சரிக்கை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheHit": {
-    "message": "Wasm மாடியூல் தற்காலிகச் சேமிப்பு ஹிட்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | wasmModuleCacheInvalid": {
-    "message": "தவறான Wasm மாடியூல் தற்காலிகச் சேமிப்பு"
-  },
-  "panels/timeline/TimelineUIUtils.ts | willSendRequest": {
-    "message": "கோரிக்கையை அனுப்பும்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrLoad": {
-    "message": "XHR ஏற்றம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "XHR ரெடி ஸ்டேட் மாற்றம்"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ஆம்"
@@ -13589,14 +13310,23 @@
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "நேரங்கள்"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | async": {
+    "message": "ஒத்திசையாதவை"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "டிரா ஃபிரேம்"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
     "message": "வரைதல்"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | experience": {
+    "message": "அனுபவம்"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
     "message": "ஃபிரேம் தொடக்கம்"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | gpu": {
+    "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
     "message": "ஐடில்"
@@ -13604,11 +13334,23 @@
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
     "message": "தளவமைப்பு"
   },
+  "panels/timeline/UIDevtoolsUtils.ts | loading": {
+    "message": "ஏற்றுகிறது"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | messaging": {
+    "message": "மெசேஜிங்"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
     "message": "பெயிண்ட்டிங்"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
     "message": "ராஸ்டெரைஸிங்"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | rendering": {
+    "message": "ரெண்டரிங்"
+  },
+  "panels/timeline/UIDevtoolsUtils.ts | scripting": {
+    "message": "ஸ்கிரிப்ட்டிங்"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "சிஸ்டம்"
@@ -13643,14 +13385,8 @@
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "காட்சிப்படுத்தல் தாமதம்"
   },
-  "panels/timeline/components/InteractionBreakdown.ts | processingTime": {
-    "message": "செயலாக்க நேரம்"
-  },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "லேயர்கள் காட்சியில் chrome ஃபிரேமை மறை"
-  },
-  "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript ப்ரொஃபைலர்"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "சுயவிவரத்தை ஏற்றும்…"
@@ -13676,9 +13412,6 @@
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "சுயவிவரத்தைச் சேமிக்கும்…"
   },
-  "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "JavaScript ப்ரொஃபைலரைக் காட்டு"
-  },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "செயல்திறனைக் காட்டு"
   },
@@ -13687,9 +13420,6 @@
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "ப்ரொஃபைலிங்கைத் தொடங்கி பக்கத்தை ரெஃப்ரெஷ் செய்"
-  },
-  "panels/timeline/timeline-meta.ts | startStopRecording": {
-    "message": "ரெக்கார்டிங்கைத் தொடங்க/நிறுத்த"
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "நிறுத்து"
@@ -13909,6 +13639,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "குறியீட்டை நகலெடு"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
+    "message": "குறியீட்டுத் துணுக்குகளைக் கவனமாகப் பயன்படுத்துங்கள்"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "கருத்து"
@@ -14566,6 +14299,9 @@
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "JavaScript ஆப்ஜெக்ட்டாகக் காட்டு"
+  },
+  "ui/legacy/components/object_ui/ObjectPopoverHelper.ts | learnMore": {
+    "message": "மேலும் அறிக"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "உபநிலையைச் சுருக்கு"

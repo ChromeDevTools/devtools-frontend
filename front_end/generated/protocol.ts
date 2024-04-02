@@ -8705,6 +8705,10 @@ export namespace Network {
      */
     exemptionReason: CookieExemptionReason;
     /**
+     * The string representing this individual cookie as it would appear in the header.
+     */
+    cookieLine: string;
+    /**
      * The cookie object representing the cookie.
      */
     cookie: Cookie;

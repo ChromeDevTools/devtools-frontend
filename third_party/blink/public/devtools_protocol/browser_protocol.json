@@ -12991,6 +12991,11 @@
                             "$ref": "CookieExemptionReason"
                         },
                         {
+                            "name": "cookieLine",
+                            "description": "The string representing this individual cookie as it would appear in the header.",
+                            "type": "string"
+                        },
+                        {
                             "name": "cookie",
                             "description": "The cookie object representing the cookie.",
                             "$ref": "Cookie"

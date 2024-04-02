@@ -656,6 +656,7 @@ describe('StringUtilities', () => {
     it('should handle numeronyms', () => {
       assert.strictEqual(toKebabCase('lighthouse.cat_a11y'), 'lighthouse.cat-a11y');
       assert.strictEqual(toKebabCase('i18n'), 'i18n');
+      assert.strictEqual(toKebabCase('timeline-v8-runtime-call-stats'), 'timeline-v8-runtime-call-stats');
     });
 
     it('should handle numbers', () => {

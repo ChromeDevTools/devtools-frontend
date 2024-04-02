@@ -497,8 +497,8 @@ export const toLowerCaseString = function(input: string): LowerCaseString {
   return input.toLowerCase() as LowerCaseString;
 };
 
-const WORD = /[A-Z]{2,}(?=[A-Z0-9][a-z0-9]+|\b|_)|[A-Za-z][0-9]+[a-z]|[A-Z]?[a-z]+|[0-9][A-Za-z]+|[A-Z]|[0-9]+|[.]/g;
-//            <---1---><------------2-----------> <--------3--------> <-----4----> <------5-----> <-----6----> <7>
+const WORD = /[A-Z]{2,}(?=[A-Z0-9][a-z0-9]+|\b|_)|[A-Za-z][0-9]+[a-z]?|[A-Z]?[a-z]+|[0-9][A-Za-z]+|[A-Z]|[0-9]+|[.]/g;
+//            <---1---><------------2-----------> <---------3--------> <-----4----> <------5-----> <-----6----> <7>
 // 1: two or more consecutive uppercase letters. This is useful for identifying acronyms
 // 2: lookahead assertion that matches a word boundary
 // 3: numeronym: single letter followed by number and another letter
@@ -509,7 +509,7 @@ const WORD = /[A-Z]{2,}(?=[A-Z0-9][a-z0-9]+|\b|_)|[A-Za-z][0-9]+[a-z]|[A-Z]?[a-z
 //    This is makes more sense conceptually and allows accounting for all possible word variants.
 //    Making dot a part of a word prevent us from handling acronyms or numeronyms after the word
 //    correctly without making the RegExp prohibitively complicated.
-// https://regex101.com/r/Plutm2/1
+// https://regex101.com/r/FhMVKc/1
 export const toKebabCase = function(input: string): Lowercase<string> {
   return (input.match?.(WORD)?.map(w => w.toLowerCase()).join('-').replaceAll('-.-', '.') || input) as
       Lowercase<string>;

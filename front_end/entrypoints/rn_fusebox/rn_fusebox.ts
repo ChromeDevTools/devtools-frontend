@@ -35,11 +35,17 @@ SDK.TargetManager.TargetManager.instance().addModelListener(
     () => Host.rnPerfMetrics.debuggerReadyToPause(),
 );
 
-// Legacy JavaScript Profiler - we support this until Hermes can support the
-// modern Performance panel.
+// Legacy JavaScript Profiler - disabled until we have complete support.
 Root.Runtime.experiments.register(
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   'Enable JavaScript Profiler (legacy)',
+  /* unstable */ false,
+);
+
+// Heap Profiler (Memory panel) - disabled until we have complete support.
+Root.Runtime.experiments.register(
+  Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
+  'Enable Heap Profiler',
   /* unstable */ false,
 );
 

@@ -78,6 +78,7 @@ UI.ViewManager.registerViewExtension({
     const Profiler = await loadProfilerModule();
     return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
   },
+  experiment: Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
 });
 
 UI.ViewManager.registerViewExtension({

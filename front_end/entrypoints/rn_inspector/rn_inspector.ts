@@ -28,6 +28,13 @@ Root.Runtime.experiments.register(
   /* unstable */ false,
 );
 
+// Heap Profiler (Memory panel) - supported, but disabled in rn_fusebox.
+Root.Runtime.experiments.register(
+  Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
+  'Enable Heap Profiler',
+  /* unstable */ false,
+);
+
 Root.Runtime.experiments.register(
     Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
     'Show React Native-specific UI',
@@ -37,6 +44,7 @@ Root.Runtime.experiments.register(
 );
 
 Root.Runtime.experiments.enableExperimentsByDefault([
+  Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);

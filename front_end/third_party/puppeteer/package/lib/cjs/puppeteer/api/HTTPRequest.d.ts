@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
+import type { ProtocolError } from '../common/Errors.js';
 import type { CDPSession } from './CDPSession.js';
 import type { Frame } from './Frame.js';
 import type { HTTPResponse } from './HTTPResponse.js';
@@ -377,4 +378,8 @@ export declare function headersArray(headers: Record<string, string | string[]>)
  * with extra 306 and 418 codes.
  */
 export declare const STATUS_TEXTS: Record<string, string>;
+/**
+ * @internal
+ */
+export declare function handleError(error: ProtocolError): void;
 //# sourceMappingURL=HTTPRequest.d.ts.map

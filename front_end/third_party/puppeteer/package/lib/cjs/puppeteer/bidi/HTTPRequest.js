@@ -101,8 +101,30 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     continueRequestOverrides() {
         throw new Errors_js_1.UnsupportedOperation();
     }
-    async continue(_overrides = {}) {
-        return await this.#request.continueRequest();
+    async continue(overrides = {}) {
+        if (!this.#request.isBlocked) {
+            throw new Error('Request Interception is not enabled!');
+        }
+        // Request interception is not supported for data: urls.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
+        const headers = getBidiHeaders(overrides.headers);
+        return await this.#request
+            .continueRequest({
+            url: overrides.url,
+            method: overrides.method,
+            body: overrides.postData
+                ? {
+                    type: 'base64',
+                    value: btoa(overrides.postData),
+                }
+                : undefined,
+            headers: headers.length > 0 ? headers : undefined,
+        })
+            .catch(error => {
+            return (0, HTTPRequest_js_1.handleError)(error);
+        });
     }
     responseForRequest() {
         throw new Errors_js_1.UnsupportedOperation();
@@ -120,12 +142,83 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         throw new Errors_js_1.UnsupportedOperation();
     }
     async abort() {
+        if (!this.#request.isBlocked) {
+            throw new Error('Request Interception is not enabled!');
+        }
+        // Request interception is not supported for data: urls.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
         return await this.#request.failRequest();
     }
-    async respond(_response, _priority) {
-        throw new Errors_js_1.UnsupportedOperation();
+    async respond(response, _priority) {
+        if (!this.#request.isBlocked) {
+            throw new Error('Request Interception is not enabled!');
+        }
+        // Request interception is not supported for data: urls.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
+        const responseBody = response.body && response.body instanceof Uint8Array
+            ? response.body.toString('base64')
+            : response.body
+                ? btoa(response.body)
+                : undefined;
+        const headers = getBidiHeaders(response.headers);
+        const hasContentLength = headers.some(header => {
+            return header.name === 'content-length';
+        });
+        if (response.contentType) {
+            headers.push({
+                name: 'content-type',
+                value: {
+                    type: 'string',
+                    value: response.contentType,
+                },
+            });
+        }
+        if (responseBody && !hasContentLength) {
+            const encoder = new TextEncoder();
+            headers.push({
+                name: 'content-length',
+                value: {
+                    type: 'string',
+                    value: String(encoder.encode(responseBody).byteLength),
+                },
+            });
+        }
+        const status = response.status || 200;
+        return await this.#request.provideResponse({
+            statusCode: status,
+            headers: headers.length > 0 ? headers : undefined,
+            reasonPhrase: HTTPRequest_js_1.STATUS_TEXTS[status],
+            body: responseBody
+                ? {
+                    type: 'base64',
+                    value: responseBody,
+                }
+                : undefined,
+        });
     }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;
 _a = BidiHTTPRequest;
+function getBidiHeaders(rawHeaders) {
+    const headers = [];
+    for (const [name, value] of Object.entries(rawHeaders ?? [])) {
+        if (!Object.is(value, undefined)) {
+            const values = Array.isArray(value) ? value : [value];
+            for (const value of values) {
+                headers.push({
+                    name: name.toLowerCase(),
+                    value: {
+                        type: 'string',
+                        value: String(value),
+                    },
+                });
+            }
+        }
+    }
+    return headers;
+}
 //# sourceMappingURL=HTTPRequest.js.map

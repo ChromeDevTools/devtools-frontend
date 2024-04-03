@@ -37,13 +37,13 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
     frame(): BidiFrame | null;
     continueRequestOverrides(): never;
-    continue(_overrides?: ContinueRequestOverrides): Promise<void>;
+    continue(overrides?: ContinueRequestOverrides): Promise<void>;
     responseForRequest(): never;
     abortErrorReason(): never;
     interceptResolutionState(): never;
     isInterceptResolutionHandled(): never;
     finalizeInterceptions(): never;
     abort(): Promise<void>;
-    respond(_response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;
+    respond(response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

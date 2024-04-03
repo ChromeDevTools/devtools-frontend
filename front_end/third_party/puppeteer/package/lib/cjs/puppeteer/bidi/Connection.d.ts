@@ -35,7 +35,7 @@ export declare class BidiConnection extends EventEmitter<BidiEvents> implements 
     get url(): string;
     pipeTo<Events extends BidiEvents>(emitter: EventEmitter<Events>): void;
     emit<Key extends keyof EventsWithWildcard<BidiEvents>>(type: Key, event: EventsWithWildcard<BidiEvents>[Key]): boolean;
-    send<T extends keyof Commands>(method: T, params: Commands[T]['params']): Promise<{
+    send<T extends keyof Commands>(method: T, params: Commands[T]['params'], timeout?: number): Promise<{
         result: Commands[T]['returnType'];
     }>;
     /**

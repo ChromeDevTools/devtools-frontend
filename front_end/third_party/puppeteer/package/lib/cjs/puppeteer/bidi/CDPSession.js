@@ -45,7 +45,7 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
     connection() {
         return undefined;
     }
-    async send(method, params) {
+    async send(method, params, options) {
         if (this.#connection === undefined) {
             throw new Errors_js_1.UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');
         }
@@ -57,7 +57,7 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
             method: method,
             params: params,
             session,
-        });
+        }, options?.timeout);
         return result.result;
     }
     async detach() {

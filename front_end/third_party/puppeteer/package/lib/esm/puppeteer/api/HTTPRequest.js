@@ -1,3 +1,4 @@
+import { debugError } from '../common/util.js';
 /**
  * The default cooperative request interception resolution priority
  *
@@ -161,4 +162,16 @@ export const STATUS_TEXTS = {
     '510': 'Not Extended',
     '511': 'Network Authentication Required',
 };
+/**
+ * @internal
+ */
+export function handleError(error) {
+    if (error.originalMessage.includes('Invalid header')) {
+        throw error;
+    }
+    // In certain cases, protocol will return error if the request was
+    // already canceled or the page was closed. We should tolerate these
+    // errors.
+    debugError(error);
+}
 //# sourceMappingURL=HTTPRequest.js.map

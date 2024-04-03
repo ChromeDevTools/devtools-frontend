@@ -13,10 +13,7 @@ const bidiServerLogger = (prefix, ...args) => {
 /**
  * @internal
  */
-export async function connectBidiOverCdp(cdp, 
-// TODO: replace with `BidiMapper.MapperOptions`, once it's exported in
-//  https://github.com/puppeteer/puppeteer/pull/11415.
-options) {
+export async function connectBidiOverCdp(cdp, options) {
     const transportBiDi = new NoOpTransport();
     const cdpConnectionAdapter = new CdpConnectionAdapter(cdp);
     const pptrTransport = {

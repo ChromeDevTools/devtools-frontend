@@ -151,29 +151,32 @@ let Request = (() => {
         get url() {
             return this.#event.request.url;
         }
+        get isBlocked() {
+            return this.#event.isBlocked;
+        }
         // keep-sorted end
-        async continueRequest() {
-            if (!this.#event.isBlocked) {
-                throw new Error('Request Interception is not enabled!');
-            }
-            // Request interception is not supported for data: urls.
-            if (this.url.startsWith('data:')) {
-                return;
-            }
+        async continueRequest({ url, method, headers, cookies, body, }) {
             await this.#session.send('network.continueRequest', {
                 request: this.id,
+                url,
+                method,
+                headers,
+                body,
+                cookies,
             });
         }
         async failRequest() {
-            if (!this.#event.isBlocked) {
-                throw new Error('Request Interception is not enabled!');
-            }
-            // Request interception is not supported for data: urls.
-            if (this.url.startsWith('data:')) {
-                return;
-            }
             await this.#session.send('network.failRequest', {
                 request: this.id,
+            });
+        }
+        async provideResponse({ statusCode, reasonPhrase, headers, body, }) {
+            await this.#session.send('network.provideResponse', {
+                request: this.id,
+                statusCode,
+                reasonPhrase,
+                headers,
+                body,
             });
         }
         dispose() {

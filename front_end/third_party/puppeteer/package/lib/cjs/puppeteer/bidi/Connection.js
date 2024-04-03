@@ -49,9 +49,9 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
         }
         return super.emit(type, event);
     }
-    send(method, params) {
+    send(method, params, timeout) {
         (0, assert_js_1.assert)(!this.#closed, 'Protocol error: Connection closed.');
-        return this.#callbacks.create(method, this.#timeout, id => {
+        return this.#callbacks.create(method, timeout ?? this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 id,
                 method,

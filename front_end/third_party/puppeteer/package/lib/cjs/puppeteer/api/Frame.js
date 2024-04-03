@@ -88,7 +88,6 @@ exports.Frame = exports.throwIfDetached = exports.FrameEvent = void 0;
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
 const HandleIterator_js_1 = require("../common/HandleIterator.js");
-const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -586,32 +585,30 @@ let Frame = (() => {
                 content += `//# sourceURL=${path.replace(/\n/g, '')}`;
             }
             type = type ?? 'text/javascript';
-            return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, id, type, content }) => {
-                const deferred = Deferred.create();
-                const script = document.createElement('script');
-                script.type = type;
-                script.text = content;
-                if (url) {
-                    script.src = url;
-                    script.addEventListener('load', () => {
-                        return deferred.resolve();
-                    }, { once: true });
+            return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ url, id, type, content }) => {
+                return await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.type = type;
+                    script.text = content;
                     script.addEventListener('error', event => {
-                        deferred.reject(new Error(event.message ?? 'Could not load script'));
+                        reject(new Error(event.message ?? 'Could not load script'));
                     }, { once: true });
-                }
-                else {
-                    deferred.resolve();
-                }
-                if (id) {
-                    script.id = id;
-                }
-                document.head.appendChild(script);
-                await deferred.valueOrThrow();
-                return script;
-            }, LazyArg_js_1.LazyArg.create(context => {
-                return context.puppeteerUtil;
-            }), { ...options, type, content }));
+                    if (id) {
+                        script.id = id;
+                    }
+                    if (url) {
+                        script.src = url;
+                        script.addEventListener('load', () => {
+                            resolve(script);
+                        }, { once: true });
+                        document.head.appendChild(script);
+                    }
+                    else {
+                        document.head.appendChild(script);
+                        resolve(script);
+                    }
+                });
+            }, { ...options, type, content }));
         }
         /**
          * @internal
@@ -628,31 +625,29 @@ let Frame = (() => {
                 content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
                 options.content = content;
             }
-            return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, content }) => {
-                const deferred = Deferred.create();
-                let element;
-                if (!url) {
-                    element = document.createElement('style');
-                    element.appendChild(document.createTextNode(content));
-                }
-                else {
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = url;
-                    element = link;
-                }
-                element.addEventListener('load', () => {
-                    deferred.resolve();
-                }, { once: true });
-                element.addEventListener('error', event => {
-                    deferred.reject(new Error(event.message ?? 'Could not load style'));
-                }, { once: true });
-                document.head.appendChild(element);
-                await deferred.valueOrThrow();
-                return element;
-            }, LazyArg_js_1.LazyArg.create(context => {
-                return context.puppeteerUtil;
-            }), options));
+            return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ url, content }) => {
+                return await new Promise((resolve, reject) => {
+                    let element;
+                    if (!url) {
+                        element = document.createElement('style');
+                        element.appendChild(document.createTextNode(content));
+                    }
+                    else {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = url;
+                        element = link;
+                    }
+                    element.addEventListener('load', () => {
+                        resolve(element);
+                    }, { once: true });
+                    element.addEventListener('error', event => {
+                        reject(new Error(event.message ?? 'Could not load style'));
+                    }, { once: true });
+                    document.head.appendChild(element);
+                    return element;
+                });
+            }, options));
         }
         /**
          * Clicks the first element found that matches `selector`.

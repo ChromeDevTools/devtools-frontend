@@ -198,7 +198,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         })
             .catch(error => {
             this.#interceptionHandled = false;
-            return handleError(error);
+            return (0, HTTPRequest_js_1.handleError)(error);
         });
     }
     async respond(response, priority) {
@@ -263,7 +263,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         })
             .catch(error => {
             this.#interceptionHandled = false;
-            return handleError(error);
+            return (0, HTTPRequest_js_1.handleError)(error);
         });
     }
     async abort(errorCode = 'failed', priority) {
@@ -298,7 +298,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             requestId: this._interceptionId,
             errorReason: errorReason || 'Failed',
         })
-            .catch(handleError);
+            .catch(HTTPRequest_js_1.handleError);
     }
 }
 exports.CdpHTTPRequest = CdpHTTPRequest;
@@ -318,13 +318,4 @@ const errorReasons = {
     timedout: 'TimedOut',
     failed: 'Failed',
 };
-async function handleError(error) {
-    if (['Invalid header'].includes(error.originalMessage)) {
-        throw error;
-    }
-    // In certain cases, protocol will return error if the request was
-    // already canceled or the page was closed. We should tolerate these
-    // errors.
-    (0, util_js_1.debugError)(error);
-}
 //# sourceMappingURL=HTTPRequest.js.map

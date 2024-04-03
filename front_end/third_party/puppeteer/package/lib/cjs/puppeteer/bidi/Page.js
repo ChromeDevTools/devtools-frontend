@@ -236,11 +236,6 @@ let BidiPage = (() => {
         }
         async close(options) {
             try {
-                if (this.#interception) {
-                    // Workaround for Firefox
-                    // TODO: Remove once https://bugzilla.mozilla.org/show_bug.cgi?id=1882260 is fixed
-                    await this.setRequestInterception(false);
-                }
                 await this.#frame.browsingContext.close(options?.runBeforeUnload);
             }
             catch {

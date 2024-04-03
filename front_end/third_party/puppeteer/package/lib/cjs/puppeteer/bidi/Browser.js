@@ -45,7 +45,6 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
-const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -141,8 +140,8 @@ let BidiBrowser = (() => {
         get cdpSupported() {
             return !this.#browserName.toLocaleLowerCase().includes('firefox');
         }
-        userAgent() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async userAgent() {
+            return this.#browserCore.session.capabilities.userAgent;
         }
         #createBrowserContext(userContext) {
             const browserContext = BrowserContext_js_1.BidiBrowserContext.from(this, userContext, {

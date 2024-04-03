@@ -34,7 +34,7 @@ export declare class BidiBrowser extends Browser {
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
     private constructor();
     get cdpSupported(): boolean;
-    userAgent(): never;
+    userAgent(): Promise<string>;
     get connection(): BidiConnection;
     wsEndpoint(): string;
     close(): Promise<void>;

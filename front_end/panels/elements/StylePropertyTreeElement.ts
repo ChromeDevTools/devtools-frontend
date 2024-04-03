@@ -1049,7 +1049,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           StylePropertyTreeElementParams,
   ) {
     // Pass an empty title, the title gets made later in onattach.
-    super('', isShorthand, property.name);
+    const jslogContext = property.name.startsWith('--') ? 'custom-property' : property.name;
+    super('', isShorthand, jslogContext);
     this.style = property.ownerStyle;
     this.matchedStylesInternal = matchedStyles;
     this.property = property;

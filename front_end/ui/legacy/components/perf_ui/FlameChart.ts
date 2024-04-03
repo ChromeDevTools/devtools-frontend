@@ -1966,7 +1966,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const height = this.offsetHeight;
     const top = this.chartViewport.scrollOffset();
-    const visibleLevelOffsets = this.visibleLevelOffsets ?? new Uint32Array();
 
     const textPadding = this.textPadding;
     // How wide in pixels / long in duration an event needs to be to make it
@@ -1974,25 +1973,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
     const minTextWidthDuration = this.chartViewport.pixelToTimeOffset(minTextWidth);
 
-    const minVisibleBarLevel = Math.max(
-        Platform.ArrayUtilities.upperBound(visibleLevelOffsets, top, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1,
-        0);
-
     // As we parse each event, we bucket them into groups based on the color we
     // will render them with. The key of this map will be a color, and all
     // events stored in the `indexes` array for that color will be painted as
     // such. This way, when rendering events, we can render them based on
     // color, and ensure the minimum amount of changes to context.fillStyle.
     const colorBuckets = new Map<string, {indexes: number[]}>();
-    for (let level = minVisibleBarLevel; level < this.dataProvider.maxStackDepth(); ++level) {
-      if (this.levelToOffset(level) > top + height) {
-        break;
+    for (let level = 0; level < this.dataProvider.maxStackDepth(); ++level) {
+      // Since tracks can be reordered the |visibleLevelOffsets| is not necessarily sorted, so we need to check all levels.
+      if (this.levelToOffset(level) < top || this.levelToOffset(level) > top + height) {
+        continue;
       }
       if (!this.visibleLevels || !this.visibleLevels[level]) {
         continue;
       }
       if (!this.timelineLevels) {
-        continue;
+        break;
       }
 
       // Entries are ordered by start time within a level, so find the last visible entry.

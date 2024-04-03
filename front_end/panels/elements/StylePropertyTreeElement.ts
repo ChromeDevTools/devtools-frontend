@@ -1603,6 +1603,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (UI.UIUtils.isBeingEdited((event.target as Node))) {
       return;
     }
+    if (event.composedPath()[0] instanceof HTMLButtonElement) {
+      return;
+    }
 
     event.consume(true);
 

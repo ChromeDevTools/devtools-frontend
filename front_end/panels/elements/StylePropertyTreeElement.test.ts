@@ -401,7 +401,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           undefined;
       assertNotNullOrUndefined(varSwatch);
       const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
-      varSwatch.link?.linkElement?.dispatchEvent(new MouseEvent('mousedown'));
+      varSwatch.link?.linkElement?.click();
       assert.isTrue(revealPropertySpy.calledWith(cssCustomPropertyDef));
     });
 
@@ -440,7 +440,7 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
           undefined;
       assertNotNullOrUndefined(varSwatch);
       const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
-      varSwatch.link?.linkElement?.dispatchEvent(new MouseEvent('mousedown'));
+      varSwatch.link?.linkElement?.click();
       assert.isTrue(jumpToPropertySpy.calledWith(
           'initial-value', '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
     });

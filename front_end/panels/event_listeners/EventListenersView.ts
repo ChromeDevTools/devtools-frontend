@@ -5,17 +5,16 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 /* eslint-disable rulesdir/es_modules_import */
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import eventListenersViewStyles from './eventListenersView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {frameworkEventListeners, type FrameworkEventListenersObject} from './EventListenersUtils.js';
+import eventListenersViewStyles from './eventListenersView.css.js';
 
 const UIStrings = {
   /**
@@ -305,8 +304,9 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     title.appendChild(this.valueTitle);
 
     if (this.eventListenerInternal.canRemove()) {
-      const deleteButton = title.createChild('span', 'event-listener-button');
+      const deleteButton = title.createChild('button', 'event-listener-button');
       deleteButton.textContent = i18nString(UIStrings.remove);
+      deleteButton.setAttribute('jslog', `${VisualLogging.action('delete-event-listener').track({click: true})}`);
       UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteEventListener));
       deleteButton.addEventListener('click', event => {
         this.removeListener();
@@ -316,8 +316,9 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     }
 
     if (this.eventListenerInternal.isScrollBlockingType() && this.eventListenerInternal.canTogglePassive()) {
-      const passiveButton = title.createChild('span', 'event-listener-button');
+      const passiveButton = title.createChild('button', 'event-listener-button');
       passiveButton.textContent = i18nString(UIStrings.togglePassive);
+      passiveButton.setAttribute('jslog', `${VisualLogging.action('passive').track({click: true})}`);
       UI.Tooltip.Tooltip.install(passiveButton, i18nString(UIStrings.toggleWhetherEventListenerIs));
       passiveButton.addEventListener('click', event => {
         this.togglePassiveListener();

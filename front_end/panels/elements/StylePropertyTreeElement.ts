@@ -1080,7 +1080,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   static renderNameElement(name: string): HTMLElement {
     const nameElement = document.createElement('span');
-    nameElement.setAttribute('jslog', `${VisualLogging.key().track({keydown: true, click: true})}`);
+    nameElement.setAttribute(
+        'jslog', `${VisualLogging.key().track({
+          change: true,
+          keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
+          click: true,
+        })}`);
     UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: name}));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = name;
@@ -1090,7 +1095,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   static renderValueElement(propertyName: string, propertyValue: string, renderers: Matcher[]): HTMLElement {
     const valueElement = document.createElement('span');
-    valueElement.setAttribute('jslog', `${VisualLogging.value().track({keydown: true, click: true})}`);
+    valueElement.setAttribute(
+        'jslog', `${VisualLogging.value().track({
+          click: true,
+          change: true,
+          keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
+        })}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: propertyValue}));
     valueElement.className = 'value';
 

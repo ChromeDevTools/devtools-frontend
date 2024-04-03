@@ -946,7 +946,7 @@ export class NetworkRequestNode extends NetworkNode {
               i18nString(UIStrings.sPreflight, {PH1: this.requestInternal.requestMethod}));
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               preflightRequest, i18nString(UIStrings.preflight), undefined,
-              i18nString(UIStrings.selectPreflightRequest)));
+              i18nString(UIStrings.selectPreflightRequest), undefined, 'preflight-request'));
         } else {
           this.setTextAndTitle(cell, this.requestInternal.requestMethod);
         }
@@ -1134,7 +1134,7 @@ export class NetworkRequestNode extends NetworkNode {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               new NetworkForward.NetworkRequestId.NetworkRequestId(
                   webBundleInnerRequestInfo.bundleRequestId, networkManager),
-              secondIconElement));
+              secondIconElement, undefined, undefined, undefined, 'webbundle-request'));
         } else {
           cell.appendChild(secondIconElement);
         }
@@ -1456,9 +1456,11 @@ export class NetworkRequestNode extends NetworkNode {
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-              redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url())));
+              redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url()), undefined, undefined,
+              undefined, 'redirect-source-request'));
         } else {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(redirectSource.url()));
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
+              redirectSource.url(), {jslogContext: 'redirect-source-request-url'}));
         }
         this.appendSubtitle(cell, i18nString(UIStrings.redirect));
         break;
@@ -1500,7 +1502,7 @@ export class NetworkRequestNode extends NetworkNode {
           const icon = IconButton.Icon.create('arrow-up-down-circle');
           const link = Components.Linkifier.Linkifier.linkifyRevealable(
               initiator.initiatorRequest, icon, undefined, i18nString(UIStrings.selectTheRequestThatTriggered),
-              'trailing-link-icon');
+              'trailing-link-icon', 'initator-request');
           UI.ARIAUtils.setLabel(link, i18nString(UIStrings.selectTheRequestThatTriggered));
           cell.appendChild(link);
         }

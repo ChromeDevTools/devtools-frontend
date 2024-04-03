@@ -457,7 +457,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const messageElement = document.createElement('span');
     if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
       UI.UIUtils.createTextChild(messageElement, request.requestMethod + ' ');
-      const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url());
+      const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(
+          request, request.url(), request.url(), undefined, undefined, 'network-request');
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
       this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
@@ -477,7 +478,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
         const linkElement = url === request.url() ?
             Components.Linkifier.Linkifier.linkifyRevealable(
-                (request as SDK.NetworkRequest.NetworkRequest), url, request.url()) :
+                (request as SDK.NetworkRequest.NetworkRequest), url, request.url(), undefined, undefined,
+                'network-request') :
             Components.Linkifier.Linkifier.linkifyURL(
                 url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
         linkElement.tabIndex = -1;

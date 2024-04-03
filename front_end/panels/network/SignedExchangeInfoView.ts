@@ -155,7 +155,8 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       const redirectDestination = request.redirectDestination();
       const requestURLElement = this.formatHeader(i18nString(UIStrings.requestUrl), header.requestUrl);
       if (redirectDestination) {
-        const viewRequestLink = Components.Linkifier.Linkifier.linkifyRevealable(redirectDestination, 'View request');
+        const viewRequestLink = Components.Linkifier.Linkifier.linkifyRevealable(
+            redirectDestination, 'View request', undefined, undefined, undefined, 'redirect-destination-request');
         viewRequestLink.classList.add('header-toggle');
         requestURLElement.appendChild(viewRequestLink);
       }

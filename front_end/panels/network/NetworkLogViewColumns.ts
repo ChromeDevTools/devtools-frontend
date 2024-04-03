@@ -133,7 +133,7 @@ const UIStrings = {
    */
   content: 'Content',
   /**
-   *@description Text that refers to the time
+   *@description Noun that refers to a duration in milliseconds.
    */
   time: 'Time',
   /**

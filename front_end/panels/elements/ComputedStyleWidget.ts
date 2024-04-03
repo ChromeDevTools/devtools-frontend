@@ -448,14 +448,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   private buildTraceNode(property: SDK.CSSProperty.CSSProperty):
       TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData> {
-    const rule = property.ownerStyle.parentRule as SDK.CSSRule.CSSStyleRule;
+    const rule = property.ownerStyle.parentRule;
     return {
       treeNodeData: {
         tag: 'traceElement',
         property,
         rule,
       },
-      id: rule.origin + ': ' + rule.styleSheetId + (property.range || property.name),
+      id: (rule?.origin || '') + ': ' + property.ownerStyle.styleSheetId + (property.range || property.name),
     };
   }
 

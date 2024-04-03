@@ -1,0 +1,55 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "reactDevToolsPlaceholder.css" ]
+}
+
+devtools_module("react_devtools_placeholder") {
+  sources = [ "ReactDevToolsPlaceholder.ts" ]
+
+  deps = [
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/protocol_client:bundle",
+    "../../core/sdk:bundle",
+    "../../models/text_utils:bundle",
+    "../../ui/components/data_grid:bundle",
+    "../../ui/components/icon_button:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/lit-html:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "react_devtools_placeholder.ts"
+
+  deps = [
+    ":css_files",
+    ":react_devtools_placeholder",
+  ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    # "../../../test/unittests/front_end/panels/react_devtools_placeholder/*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}
+
+devtools_entrypoint("meta") {
+  entrypoint = "react_devtools_placeholder-meta.ts"
+
+  deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
+}

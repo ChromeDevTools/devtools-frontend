@@ -28,6 +28,7 @@ devtools_entrypoint("entrypoint") {
     "../../panels/network:meta",
     "../../panels/performance_monitor:meta",
     "../../panels/recorder:meta",
+    "../../panels/react_devtools_placeholder:meta",
     "../../panels/rn_welcome:meta",
     "../../panels/security:meta",
     "../../panels/sensors:meta",

@@ -472,7 +472,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         aria-level=${depth + 1}
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
-        jslog=${VisualLogging.treeItem()}
+        jslog=${VisualLogging.treeItem(node.jslogContext)}
         @click=${this.#onNodeClick}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.#domNodeToTreeNodeMap, node)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {

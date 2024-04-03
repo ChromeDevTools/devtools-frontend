@@ -507,11 +507,13 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     if (!trace) {
       return {
         treeNodeData,
+        jslogContext: propertyName,
         id: propertyName,
       };
     }
     return {
       treeNodeData,
+      jslogContext: propertyName,
       id: propertyName,
       children: async () => trace.map(this.buildTraceNode),
     };

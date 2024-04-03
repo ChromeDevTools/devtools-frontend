@@ -81,7 +81,8 @@ export interface TrackAppender {
 }
 
 export const TrackNames =
-    ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread', 'Thread_AuctionWorklet'] as const;
+    ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread', 'Thread_AuctionWorklet', 'Extension'] as
+    const;
 // Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';

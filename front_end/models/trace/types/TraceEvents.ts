@@ -1046,7 +1046,12 @@ export type TraceEventPerformanceMeasureEnd = TraceEventPairableUserTiming&Trace
 export type TraceEventPerformanceMeasure = TraceEventPerformanceMeasureBegin|TraceEventPerformanceMeasureEnd;
 
 export interface TraceEventPerformanceMark extends TraceEventUserTiming {
-  ph: Phase.INSTANT|Phase.MARK;
+  args: TraceEventArgs&{
+    data?: TraceEventArgsData & {
+      detail?: string,
+    },
+  };
+  ph: Phase.INSTANT|Phase.MARK|Phase.ASYNC_NESTABLE_INSTANT;
 }
 
 export interface TraceEventConsoleTimeBegin extends TraceEventPairableAsyncBegin {
@@ -1071,21 +1076,6 @@ export interface TraceEventTimeStamp extends TraceEventData {
     },
   };
 }
-
-export interface TraceEventExtensionMeasureBegin extends TraceEventPerformanceMeasureBegin {
-  name: `devtools-entry-${string}`;
-}
-
-export interface TraceEventExtensionMeasureEnd extends TraceEventPerformanceMeasureEnd {
-  name: `devtools-entry-${string}`;
-}
-
-export interface TraceEventExtensionMark extends TraceEventPerformanceMark {
-  name: `devtools-entry-${string}`;
-  ph: Phase.INSTANT|Phase.MARK;
-}
-
-export type TraceEventExtensionMeasure = TraceEventExtensionMeasureBegin|TraceEventExtensionMeasureEnd;
 
 /** ChromeFrameReporter args for PipelineReporter event.
     Matching proto: https://source.chromium.org/chromium/chromium/src/+/main:third_party/perfetto/protos/perfetto/trace/track_event/chrome_frame_reporter.proto
@@ -1190,6 +1180,7 @@ export function isTraceEventPipelineReporter(event: TraceEventData): event is Tr
 // display the right information, so we create these synthetic events.
 export interface SyntheticEventPair<T extends TraceEventPairableAsync = TraceEventPairableAsync> extends
     TraceEventData {
+  name: T['name'];
   cat: T['cat'];
   id?: string;
   id2?: {local?: string, global?: string};
@@ -1765,7 +1756,8 @@ export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMark {
   return traceEventData.cat === 'blink.user_timing' &&
-      (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT);
+      (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT ||
+       traceEventData.ph === Phase.ASYNC_NESTABLE_INSTANT);
 }
 
 export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEventData is TraceEventConsoleTime {
@@ -1785,16 +1777,17 @@ export interface TraceEventAsync extends TraceEventData {
       Phase.ASYNC_BEGIN|Phase.ASYNC_END|Phase.ASYNC_STEP_PAST;
 }
 
+const asyncPhases = new Set([
+  Phase.ASYNC_NESTABLE_START,
+  Phase.ASYNC_NESTABLE_INSTANT,
+  Phase.ASYNC_NESTABLE_END,
+  Phase.ASYNC_STEP_INTO,
+  Phase.ASYNC_BEGIN,
+  Phase.ASYNC_END,
+  Phase.ASYNC_STEP_PAST,
+]);
+
 export function isTraceEventAsyncPhase(traceEventData: TraceEventData): boolean {
-  const asyncPhases = new Set([
-    Phase.ASYNC_NESTABLE_START,
-    Phase.ASYNC_NESTABLE_INSTANT,
-    Phase.ASYNC_NESTABLE_END,
-    Phase.ASYNC_STEP_INTO,
-    Phase.ASYNC_BEGIN,
-    Phase.ASYNC_END,
-    Phase.ASYNC_STEP_PAST,
-  ]);
   return asyncPhases.has(traceEventData.ph);
 }
 

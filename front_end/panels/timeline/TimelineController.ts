@@ -45,7 +45,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
    * page in a background, tab target would have multiple subtargets, one
    * of them being primaryPageTarget.
    *
-   * The problems with with using primary page target for tracing are:
+   * The problems with using primary page target for tracing are:
    * 1. Performance trace doesn't include information from the other pages on
    *    the tab which is probably not what the user wants as it does not
    *    reflect reality.

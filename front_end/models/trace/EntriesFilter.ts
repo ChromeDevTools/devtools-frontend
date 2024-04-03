@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
+
 import * as Helpers from './helpers/helpers.js';
 import * as Types from './types/types.js';
 

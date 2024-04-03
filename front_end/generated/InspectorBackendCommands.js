@@ -665,6 +665,7 @@ inspectorBackend.registerEvent("Network.webTransportConnectionEstablished", ["tr
 inspectorBackend.registerEvent("Network.webTransportClosed", ["transportId", "timestamp"]);
 inspectorBackend.registerEvent("Network.requestWillBeSentExtraInfo", ["requestId", "associatedCookies", "headers", "connectTiming", "clientSecurityState", "siteHasCookieInOtherPartition"]);
 inspectorBackend.registerEvent("Network.responseReceivedExtraInfo", ["requestId", "blockedCookies", "headers", "resourceIPAddressSpace", "statusCode", "headersText", "cookiePartitionKey", "cookiePartitionKeyOpaque", "exemptedCookies"]);
+inspectorBackend.registerEvent("Network.responseReceivedEarlyHints", ["requestId", "headers"]);
 inspectorBackend.registerEnum("Network.TrustTokenOperationDoneEventStatus", {Ok: "Ok", InvalidArgument: "InvalidArgument", MissingIssuerKeys: "MissingIssuerKeys", FailedPrecondition: "FailedPrecondition", ResourceExhausted: "ResourceExhausted", AlreadyExists: "AlreadyExists", Unavailable: "Unavailable", Unauthorized: "Unauthorized", BadResponse: "BadResponse", InternalError: "InternalError", UnknownError: "UnknownError", FulfilledLocally: "FulfilledLocally"});
 inspectorBackend.registerEvent("Network.trustTokenOperationDone", ["status", "type", "requestId", "topLevelOrigin", "issuerOrigin", "issuedTokenCount"]);
 inspectorBackend.registerEvent("Network.subresourceWebBundleMetadataReceived", ["requestId", "urls"]);

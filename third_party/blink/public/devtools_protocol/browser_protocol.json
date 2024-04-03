@@ -15137,6 +15137,23 @@
                     ]
                 },
                 {
+                    "name": "responseReceivedEarlyHints",
+                    "description": "Fired when 103 Early Hints headers is received in addition to the common response.\nNot every responseReceived event will have an responseReceivedEarlyHints fired.\nOnly one responseReceivedEarlyHints may be fired for eached responseReceived event.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "Request identifier. Used to match this information to another responseReceived event.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "headers",
+                            "description": "Raw response headers as they were received over the wire.",
+                            "$ref": "Headers"
+                        }
+                    ]
+                },
+                {
                     "name": "trustTokenOperationDone",
                     "description": "Fired exactly once for each Trust Token operation. Depending on\nthe type of the operation and whether the operation succeeded or\nfailed, the event is fired before the corresponding request was sent\nor after the response was received.",
                     "experimental": true,

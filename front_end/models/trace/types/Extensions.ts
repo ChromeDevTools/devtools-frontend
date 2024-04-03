@@ -81,7 +81,7 @@ export function isExtensionPayloadFlameChartEntry(payload: ExtensionDataPayload)
 }
 
 export function isSyntheticExtensionEntry(entry: TraceEventData): entry is SyntheticExtensionEntry {
-  return entry.cat === 'timeline-extension';
+  return entry.cat === 'devtools.extension';
 }
 
 /**
@@ -89,7 +89,7 @@ export function isSyntheticExtensionEntry(entry: TraceEventData): entry is Synth
  */
 export interface SyntheticExtensionFlameChartEntry extends SyntheticTraceEntry {
   args: TraceEventArgs&ExtensionFlameChartEntryPayload;
-  cat: 'timeline-extension';
+  cat: 'devtools.extension';
 }
 
 /**
@@ -97,7 +97,7 @@ export interface SyntheticExtensionFlameChartEntry extends SyntheticTraceEntry {
  */
 export interface SyntheticExtensionMarker extends SyntheticTraceEntry {
   args: TraceEventArgs&ExtensionMarkerPayload;
-  cat: 'timeline-extension';
+  cat: 'devtools.extension';
 }
 
 export interface ExtensionTrackData {

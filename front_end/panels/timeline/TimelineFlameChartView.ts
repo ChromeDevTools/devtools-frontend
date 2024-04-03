@@ -260,12 +260,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     this.#selectedGroupName = null;
     this.#traceEngineData = newTraceEngineData;
-    ExtensionDataGatherer.instace().modelChanged(newTraceEngineData);
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(this.model, newTraceEngineData, isCpuProfile);
     this.networkDataProvider.setModel(newTraceEngineData);
+    ExtensionDataGatherer.instance().modelChanged(newTraceEngineData);
     this.#reset();
 
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();

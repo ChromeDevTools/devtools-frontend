@@ -17,7 +17,7 @@ let extensionDataGathererInstance: ExtensionDataGatherer|undefined;
 export class ExtensionDataGatherer {
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
   #extensionDataByModel: Map<TraceEngine.Handlers.Types.TraceParseData, ExtensionData> = new Map();
-  static instace(): ExtensionDataGatherer {
+  static instance(): ExtensionDataGatherer {
     if (extensionDataGathererInstance) {
       return extensionDataGathererInstance;
     }

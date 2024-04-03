@@ -59,10 +59,14 @@ export function extractExtensionEntries(
       continue;
     }
     const extensionSyntheticEntry = {
-      ...Helpers.Trace.makeSyntheticTraceEntry(
-          timing.name, timing.ts, Types.TraceEvents.ProcessID(0), Types.TraceEvents.ThreadID(0)),
+      name: timing.name,
+      ph: Types.TraceEvents.Phase.COMPLETE,
+      pid: Types.TraceEvents.ProcessID(0),
+      tid: Types.TraceEvents.ThreadID(0),
+      ts: timing.ts,
+      selfTime: Types.Timing.MicroSeconds(0),
       dur: timing.dur as Types.Timing.MicroSeconds,
-      cat: 'timeline-extension',
+      cat: 'devtools.extension',
       args: extensionPayload,
     };
     if (Types.Extensions.isExtensionPayloadMarker(extensionPayload)) {

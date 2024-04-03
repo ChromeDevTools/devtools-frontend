@@ -1815,8 +1815,7 @@ export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMark {
   return traceEventData.cat === 'blink.user_timing' &&
-      (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT ||
-       traceEventData.ph === Phase.ASYNC_NESTABLE_INSTANT);
+      (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT);
 }
 
 export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEventData is TraceEventConsoleTime {

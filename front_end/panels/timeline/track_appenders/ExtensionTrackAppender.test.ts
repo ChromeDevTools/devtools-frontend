@@ -20,7 +20,7 @@ function initTrackAppender(
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl):
     Timeline.ExtensionTrackAppender.ExtensionTrackAppender[] {
-  Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instace().modelChanged(traceParsedData);
+  Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(traceParsedData);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
 

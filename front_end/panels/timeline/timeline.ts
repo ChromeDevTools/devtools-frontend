@@ -11,6 +11,7 @@ import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as EventUICategory from './EventUICategory.js';
 import * as ExtensionDataGatherer from './ExtensionDataGatherer.js';
+import * as ExtensionTrackAppender from './ExtensionTrackAppender.js';
 import * as GPUTrackAppender from './GPUTrackAppender.js';
 import * as Initiators from './Initiators.js';
 import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
@@ -50,6 +51,7 @@ export {
   EventsTimelineTreeView,
   EventUICategory,
   ExtensionDataGatherer,
+  ExtensionTrackAppender,
   GPUTrackAppender,
   Initiators,
   InteractionsTrackAppender,

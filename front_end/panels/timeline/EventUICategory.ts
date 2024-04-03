@@ -914,9 +914,6 @@ export function maybeInitSylesMap(): EventStylesMap {
     [TraceEngine.Types.TraceEvents.KnownEventName.MinorGC]:
         new TimelineRecordStyle(i18nString(UIStrings.minorGc), defaultCategoryStyles.scripting),
 
-    [TraceEngine.Types.TraceEvents.KnownEventName.IncrementalGCMarking]:
-        new TimelineRecordStyle(i18nString(UIStrings.gcEvent), defaultCategoryStyles.scripting),
-
     [TraceEngine.Types.TraceEvents.KnownEventName.CPPGCSweep]:
         new TimelineRecordStyle(i18nString(UIStrings.cppGc), defaultCategoryStyles.scripting),
 

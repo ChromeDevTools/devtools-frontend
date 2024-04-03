@@ -707,6 +707,34 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(relatedNodeRow?.querySelector<HTMLButtonElement>('button')?.innerText, 'A test node name');
     });
 
+    it('renders the details for an extension entry properly', async function() {
+      const data = await TraceLoader.allModels(this, 'extension-tracks-and-marks.json.gz');
+      const extensionEntry = data.traceParsedData.ExtensionTraceData.extensionTrackData[0].flameChartEntries[0];
+
+      if (!extensionEntry) {
+        throw new Error('Could not find extension entry.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          extensionEntry,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {
+              title: 'Description',
+              value: 'This is a top level rendering task',
+            },
+            {title: 'Tip', value: 'A tip to improve this'},
+          ],
+      );
+    });
+
     it('renders the details for a profile call properly', async function() {
       Common.Linkifier.registerLinkifier({
         contextTypes() {

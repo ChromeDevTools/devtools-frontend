@@ -51,8 +51,10 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
     const allMarkerEvents = this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
-    const performanceMarks = this.#traceParsedData.UserTimings.performanceMarks;
-    const performanceMeasures = this.#traceParsedData.UserTimings.performanceMeasures;
+    const performanceMarks = this.#traceParsedData.UserTimings.performanceMarks.filter(
+        m => !TraceEngine.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInTiming(m));
+    const performanceMeasures = this.#traceParsedData.UserTimings.performanceMeasures.filter(
+        m => !TraceEngine.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInTiming(m));
     const timestampEvents = this.#traceParsedData.UserTimings.timestampEvents;
     const consoleTimings = this.#traceParsedData.UserTimings.consoleTimings;
 

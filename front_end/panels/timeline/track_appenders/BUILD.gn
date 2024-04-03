@@ -11,6 +11,7 @@ ts_library("unittests") {
     "AnimationsTrackAppender.test.ts",
     "AppenderUtils.test.ts",
     "CompatibilityTracksAppender.test.ts",
+    "ExtensionTrackAppender.test.ts",
     "GPUTrackAppender.test.ts",
     "InteractionsTrackAppender.test.ts",
     "LayoutShiftsTrackAppender.test.ts",

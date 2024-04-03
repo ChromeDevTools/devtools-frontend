@@ -61,6 +61,7 @@ import {
   TimelineRecordStyle,
   visibleTypes,
 } from './EventUICategory.js';
+import * as Extensions from './extensions/extensions.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {TimelinePanel} from './TimelinePanel.js';
@@ -657,6 +658,10 @@ export class TimelineUIUtils {
         return TimelineUIUtils.colorForId(frame.url);
       }
     }
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+        TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
+      return Extensions.ExtensionUI.extensionEntryColor(event);
+    }
     let parsedColor = TimelineUIUtils.eventStyle(event).category.getComputedColorValue();
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
@@ -1213,9 +1218,7 @@ export class TimelineUIUtils {
 
     const contentHelper = new TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
 
-    const defaultColorForEvent = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
-        getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.getComputedColorValue() :
-        TimelineUIUtils.eventStyle(event).category.getComputedColorValue();
+    const defaultColorForEvent = this.eventColor(event);
     const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
 
     contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
@@ -1271,6 +1274,13 @@ export class TimelineUIUtils {
           i18nString(UIStrings.streamed),
           isStreamed + (isStreamed ? '' : `: ${event.args.data?.notStreamedReason || ''}`));
       TimelineUIUtils.buildConsumeCacheDetails(eventData, contentHelper);
+    }
+
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+        TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
+      for (const [key, value] of event.args.detailsPairs || []) {
+        contentHelper.appendTextRow(key, value);
+      }
     }
 
     switch (event.name) {

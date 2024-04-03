@@ -61,6 +61,7 @@ devtools_module("timeline") {
     "EventUICategory.ts",
     "EventsTimelineTreeView.ts",
     "ExtensionDataGatherer.ts",
+    "ExtensionTrackAppender.ts",
     "GPUTrackAppender.ts",
     "Initiators.ts",
     "InteractionsTrackAppender.ts",
@@ -117,6 +118,7 @@ devtools_module("timeline") {
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit-html:bundle",
     "./components:bundle",
+    "./extensions:bundle",
   ]
 
   visibility = [ "../../component_docs/*" ]

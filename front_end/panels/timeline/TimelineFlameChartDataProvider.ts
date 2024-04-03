@@ -464,6 +464,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return 4;
           case 'Thread_AuctionWorklet':
             return 10;
+          case 'Extension':
+            return 11;
           default:
             return -1;
         }

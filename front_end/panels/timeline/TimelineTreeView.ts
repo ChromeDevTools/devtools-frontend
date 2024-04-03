@@ -15,6 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
 import {getCategoryStyles, stringIsEventCategory} from './EventUICategory.js';
+import * as Extensions from './extensions/extensions.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {type TimelineSelection} from './TimelineSelection.js';
@@ -683,6 +684,10 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const eventCategory = eventStyle.category;
       UI.ARIAUtils.setLabel(icon, eventCategory.title);
       icon.style.backgroundColor = eventCategory.getComputedColorValue();
+      if (TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+          TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
+        icon.style.backgroundColor = Extensions.ExtensionUI.extensionEntryColor(event);
+      }
     }
     return cell;
   }

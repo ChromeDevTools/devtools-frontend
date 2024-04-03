@@ -64,7 +64,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
       const animationsRequests = traceParsedData.Animations.animations;
       for (let i = 0; i < animationsRequests.length; i++) {
         const event = animationsRequests[i];
-        if (TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
+        if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[i]);
           continue;
         }

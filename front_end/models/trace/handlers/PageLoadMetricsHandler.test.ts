@@ -272,7 +272,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       allMarkerEvents = PageLoadMetrics.allMarkerEvents;
     });
     it('extracts all marker events from a trace correctly', () => {
-      for (const metricName of TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MarkerName) {
+      for (const metricName of TraceModel.Types.TraceEvents.MarkerName) {
         const markerEventsOfThisType = allMarkerEvents.filter(event => event.name === metricName);
         // There should be 2 events for each marker and all of them should correspond to the main frame
         assert.strictEqual(markerEventsOfThisType.length, 2);
@@ -283,7 +283,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
     });
     it('only marker events are exported in allMarkerEvents', () => {
       for (const marker of allMarkerEvents) {
-        assert.isTrue(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(marker));
+        assert.isTrue(TraceModel.Types.TraceEvents.isTraceEventMarkerEvent(marker));
       }
     });
 

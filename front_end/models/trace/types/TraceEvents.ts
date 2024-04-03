@@ -569,6 +569,35 @@ export type PageLoadEvent = TraceEventFirstContentfulPaint|TraceEventMarkDOMCont
     TraceEventLargestContentfulPaintCandidate|TraceEventLayoutShift|TraceEventFirstPaint|TraceEventMarkLoad|
     TraceEventNavigationStart;
 
+const markerTypeGuards = [
+  isTraceEventMarkDOMContent,
+  isTraceEventMarkLoad,
+  isTraceEventFirstPaint,
+  isTraceEventFirstContentfulPaint,
+  isTraceEventLargestContentfulPaintCandidate,
+  isTraceEventNavigationStart,
+];
+
+export const MarkerName =
+    ['MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate'] as const;
+
+interface MakerEvent extends TraceEventData {
+  name: typeof MarkerName[number];
+}
+
+export function isTraceEventMarkerEvent(event: TraceEventData): event is MakerEvent {
+  return markerTypeGuards.some(fn => fn(event));
+}
+
+const pageLoadEventTypeGuards = [
+  ...markerTypeGuards,
+  isTraceEventInteractiveTime,
+];
+
+export function eventIsPageLoadEvent(event: TraceEventData): event is PageLoadEvent {
+  return pageLoadEventTypeGuards.some(fn => fn(event));
+}
+
 export interface TraceEventLargestContentfulPaintCandidate extends TraceEventMark {
   name: 'largestContentfulPaint::Candidate';
   args: TraceEventArgs&{

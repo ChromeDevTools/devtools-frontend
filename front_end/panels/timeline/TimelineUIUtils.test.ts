@@ -738,6 +738,32 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ],
       );
     });
+    it('renders the details for an extension marker properly', async function() {
+      const data = await TraceLoader.allModels(this, 'extension-tracks-and-marks.json.gz');
+      const extensionMark = data.traceParsedData.ExtensionTraceData.extensionMarkers[0];
+
+      if (!extensionMark) {
+        throw new Error('Could not find extension mark.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          extensionMark,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {
+              title: 'Description',
+              value: 'This marks the start of a task',
+            },
+          ],
+      );
+    });
 
     it('renders the details for a profile call properly', async function() {
       Common.Linkifier.registerLinkifier({

@@ -76,7 +76,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
           traceParsedData.ExtensionTraceData.extensionTrackData.flatMap(track => track.flameChartEntries);
       for (let i = 0; i < allExtensionTrackEntries.length; i++) {
         const event = allExtensionTrackEntries[i];
-        if (TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
+        if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[i]);
           continue;
         }

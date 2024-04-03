@@ -467,7 +467,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           case 'Extension':
             return 11;
           default:
-            return -1;
+            return 12;
         }
       }
 
@@ -481,7 +481,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         case TimelineModel.TimelineModel.TrackType.Other:
           return 11;
         default:
-          return -1;
+          return 12;
       }
     };
 

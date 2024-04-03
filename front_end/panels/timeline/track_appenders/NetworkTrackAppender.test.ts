@@ -44,7 +44,7 @@ describeWithEnvironment('NetworkTrackAppender', function() {
       const networkRequests = traceParsedData.NetworkRequests.byTime;
       for (let i = 0; i < networkRequests.length; i++) {
         const event = networkRequests[i];
-        if (TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
+        if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[i]);
           continue;
         }

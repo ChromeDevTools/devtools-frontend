@@ -56,38 +56,8 @@ let pageLoadEventsArray: Types.TraceEvents.PageLoadEvent[] = [];
 // the candidates that were the actual LCP events.
 const selectedLCPCandidateEvents = new Set<Types.TraceEvents.TraceEventLargestContentfulPaintCandidate>();
 
-export const MarkerName =
-    ['MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate'] as const;
-
-const markerTypeGuards = [
-  Types.TraceEvents.isTraceEventMarkDOMContent,
-  Types.TraceEvents.isTraceEventMarkLoad,
-  Types.TraceEvents.isTraceEventFirstPaint,
-  Types.TraceEvents.isTraceEventFirstContentfulPaint,
-  Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate,
-  Types.TraceEvents.isTraceEventNavigationStart,
-];
-
-interface MakerEvent extends Types.TraceEvents.TraceEventData {
-  name: typeof MarkerName[number];
-}
-
-export function isTraceEventMarkerEvent(event: Types.TraceEvents.TraceEventData): event is MakerEvent {
-  return markerTypeGuards.some(fn => fn(event));
-}
-
-const pageLoadEventTypeGuards = [
-  ...markerTypeGuards,
-  Types.TraceEvents.isTraceEventInteractiveTime,
-];
-
-export function eventIsPageLoadEvent(event: Types.TraceEvents.TraceEventData):
-    event is Types.TraceEvents.PageLoadEvent {
-  return pageLoadEventTypeGuards.some(fn => fn(event));
-}
-
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (!eventIsPageLoadEvent(event)) {
+  if (!Types.TraceEvents.eventIsPageLoadEvent(event)) {
     return;
   }
   pageLoadEventsArray.push(event);
@@ -448,7 +418,7 @@ export async function finalize(): Promise<void> {
   // Filter out LCP candidates to use only definitive LCP values
   const allEventsButLCP =
       pageLoadEventsArray.filter(event => !Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event));
-  const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(isTraceEventMarkerEvent);
+  const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(Types.TraceEvents.isTraceEventMarkerEvent);
   // Filter by main frame and sort.
   allMarkerEvents =
       markerEvents.filter(event => getFrameIdForPageLoadEvent(event) === mainFrame).sort((a, b) => a.ts - b.ts);

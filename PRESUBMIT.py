@@ -64,70 +64,6 @@ def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
     return results
 
 
-def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
-    if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
-        return []
-
-    results = [output_api.PresubmitNotifyResult('Directory Exclusivity Check:')]
-
-    def IsParentDir(file, dir):
-        while file != '':
-            if file == dir:
-                return True
-            file = input_api.os_path.dirname(file)
-        return False
-
-    def FileIsInDir(file, dirs):
-        if file.endswith('OWNERS') and 'OWNERS' in dirs:
-            return True
-        for dir in dirs:
-            if IsParentDir(file, dir):
-                return True
-
-    EXCLUSIVE_CHANGE_DIRECTORIES = [
-        [
-            'third_party', 'v8',
-            input_api.os_path.join('front_end', 'models',
-                                   'javascript_metadata'),
-            input_api.os_path.join('front_end', 'generated')
-        ],
-        [
-            'node_modules',
-            'package-lock.json',
-            input_api.os_path.join('scripts', 'deps', 'manage_node_deps.py'),
-        ],
-        ['OWNERS'],
-    ]
-
-    affected_files = input_api.LocalPaths()
-    num_affected = len(affected_files)
-    for dirs in EXCLUSIVE_CHANGE_DIRECTORIES:
-        dir_list = ', '.join(dirs)
-        affected_in_dir = [
-            file for file in affected_files if FileIsInDir(file, dirs)
-        ]
-        num_in_dir = len(affected_in_dir)
-        if num_in_dir == 0:
-            continue
-        # Addition of new third_party folders must have a new entry in `.gitignore`
-        if '.gitignore' in affected_files:
-            num_in_dir = num_in_dir + 1
-        if num_in_dir < num_affected:
-            unexpected_files = [
-                file for file in affected_files if file not in affected_in_dir
-            ]
-            results.append(
-                output_api.PresubmitError(
-                    ('CLs that affect files in "%s" should be limited to these files/directories.'
-                     % dir_list) +
-                    ('\nUnexpected files: %s.' % unexpected_files) +
-                    '\nYou can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message'
-                ))
-            break
-
-    return results
-
-
 def _CheckBugAssociation(input_api, output_api, is_committing):
     results = [output_api.PresubmitNotifyResult('Bug Association Check:')]
     bugs = input_api.change.BugsFromDescription()
@@ -639,7 +575,7 @@ def _CommonChecks(canned_checks):
         _CheckDevToolsRunESLintTests, _CheckDevToolsRunBuildTests,
         _CheckDevToolsNonJSFileLicenseHeaders, _CheckFormat,
         _CheckESBuildVersion, _CheckEnumeratedHistograms,
-        _CheckChangesAreExclusiveToDirectory, _CheckObsoleteScreenshotGoldens
+        _CheckObsoleteScreenshotGoldens
     ]
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The

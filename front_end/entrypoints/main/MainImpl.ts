@@ -292,6 +292,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'timeline-track-configuration',
         'Timeline: Enable track configuration feature that can reorder or hide a track in the flame chart', true);
+    Root.Runtime.experiments.register('timeline-extensions', 'Timeline: Enable User Timings based extensions', true);
 
     // Sources
     Root.Runtime.experiments.register(

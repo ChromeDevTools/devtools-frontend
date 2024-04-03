@@ -294,6 +294,7 @@ export const enum ExperimentName {
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
   SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS = 'save-and-load-trace-with-annotations',
   TIMELINE_TRACK_CONFIGURATION = 'timeline-track-configuration',
+  TIMELINE_EXTENSIONS = 'timeline-extensions',
 }
 
 /**

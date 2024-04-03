@@ -93,6 +93,7 @@ export class TimelineModelImpl {
   private currentTaskLayoutAndRecalcEvents: TraceEngine.Legacy.Event[];
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
   private mainFrameLayerTreeId?: any;
+  private lastRecalculateStylesEvent: TraceEngine.Legacy.Event|null;
   #isFreshRecording = false;
 
   constructor() {
@@ -103,6 +104,7 @@ export class TimelineModelImpl {
 
     this.currentTaskLayoutAndRecalcEvents = [];
     this.tracingModelInternal = null;
+    this.lastRecalculateStylesEvent = null;
   }
 
   /**
@@ -849,6 +851,11 @@ export class TimelineModelImpl {
         }
         break;
       }
+
+      case RecordType.SelectorStats: {
+        this.lastRecalculateStylesEvent?.addArgs(event.args);
+        break;
+      }
     }
     return true;
   }
@@ -1008,6 +1015,32 @@ export class TimelineModelImpl {
 
   pageFrameById(frameId: Protocol.Page.FrameId): PageFrame|null {
     return frameId ? this.pageFrames.get(frameId) || null : null;
+  }
+
+  static findRecalculateStyleEvents(
+      events: TraceEngine.Types.TraceEvents.TraceEventData[], startTime: number = 0,
+      endTime: number = Infinity): TraceEngine.Legacy.Event[] {
+    const stack: TraceEngine.Legacy.Event[] = [];
+    const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
+    const startTimeInMicroSec =
+        TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(startTime));
+    const endTimeInMicroSec =
+        TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(endTime));
+    for (let i = startEvent; i < events.length; ++i) {
+      const e = events[i] as unknown as TraceEngine.Types.TraceEvents.TraceEventComplete;
+      if (e.name !== TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles &&
+          e.name !== TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree) {
+        continue;
+      }
+      if (!e.dur || e.ts + e.dur < startTimeInMicroSec) {
+        continue;
+      }
+      if (e.ts >= endTimeInMicroSec) {
+        break;
+      }
+      stack.push(e as unknown as TraceEngine.Legacy.Event);
+    }
+    return stack;
   }
 }
 
@@ -1178,6 +1211,8 @@ export enum RecordType {
   Profile = 'Profile',
 
   AsyncTask = 'AsyncTask',
+
+  SelectorStats = 'SelectorStats',
 }
 
 export namespace TimelineModelImpl {

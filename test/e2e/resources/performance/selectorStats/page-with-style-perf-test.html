@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="page-with-style.css">
+    <script>
+      window.onload= () => {
+        for(let i=0;i<100000;i++){
+          const newDiv = document.createElement('div');
+          newDiv.className = `class${i%10+1}`;
+          newDiv.textContent = `item${i+1}`;
+          document.body.appendChild(newDiv);
+        }
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

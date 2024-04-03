@@ -564,6 +564,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: '3',
         },
         {
+          title: 'Selector Stats',
+          value: 'Select "" to collect detailed CSS selector matching statistics.',
+        },
+        {
           // The "Recalculation forced" Stack trace output would be here but the detailRow helper is
           // unable to parse it, hence why this returns undefined.
           title: undefined,

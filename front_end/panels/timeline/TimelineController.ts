@@ -124,6 +124,9 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     if (options.captureFilmStrip) {
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
     }
+    if (options.captureSelectorStats) {
+      categoriesArray.push(disabledByDefault('blink.debug'));
+    }
 
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
@@ -239,4 +242,5 @@ export interface RecordingOptions {
   enableJSSampling?: boolean;
   capturePictures?: boolean;
   captureFilmStrip?: boolean;
+  captureSelectorStats?: boolean;
 }

@@ -4,7 +4,18 @@
 
 import type * as puppeteer from 'puppeteer-core';
 
-import {click, goToResource, platform, waitFor, waitForAria} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
+import {
+  $,
+  click,
+  goToResource,
+  platform,
+  waitFor,
+  waitForAria,
+  waitForElementWithTextContent,
+  waitForFunction,
+  waitForMany,
+} from '../../shared/helper.js';
 
 export const FILTER_TEXTBOX_SELECTOR = '[aria-label="Filter bottom-up"]';
 export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
@@ -16,6 +27,10 @@ export const CALL_TREE_SELECTOR = '[aria-label="Call Tree"]';
 export const ACTIVITY_COLUMN_SELECTOR = '.activity-column.disclosure';
 export const TOTAL_TIME_SELECTOR =
     'div:nth-child(1) > div.vbox.timeline-details-chip-body > div:nth-child(1) > div.timeline-details-view-row-value';
+const RECALCULATE_STYLE_TITLE = 'Recalculate Style';
+const SELECTOR_STATS_SELECTOR = '[aria-label="Selector Stats"]';
+const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats';
+const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
 export async function navigateToPerformanceTab(testName?: string) {
   if (testName) {
@@ -105,6 +120,17 @@ export async function getTotalTimeFromSummary(): Promise<number> {
   return parseInt(totalText, 10);
 }
 
+export async function getRenderingTimeFromSummary(): Promise<[number, string]> {
+  const pieChartSizes = await waitForMany('.pie-chart-size', 6);
+  const pieChartNames = await waitForMany('.pie-chart-name', 6);
+
+  // update the index if the rendering time is showing in a different row
+  const chartName = await pieChartNames[2].evaluate(node => node.textContent as string);
+  const chartSize = await pieChartSizes[2].evaluate(node => node.textContent as string);
+
+  return [parseInt(chartSize, 10), chartName];
+}
+
 export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page) {
   const treeItems = await frontend.$$('.expanded > td.activity-column,.selected > td.activity-column');
   const tree = [];
@@ -121,4 +147,62 @@ export async function navigateToPerformanceSidebarTab(tabName: string) {
 
 export async function clickOnFunctionLink() {
   await click('.timeline-details.devtools-link');
+}
+
+export async function navigateToSelectorStatsTab() {
+  await click(SELECTOR_STATS_SELECTOR);
+}
+
+export async function selectRecalculateStylesEvent() {
+  const {frontend} = getBrowserAndPages();
+
+  await waitForFunction(async () => {
+    await searchForComponent(frontend, RECALCULATE_STYLE_TITLE);
+    const title = await $('.timeline-details-chip-title');
+    if (!title) {
+      return false;
+    }
+    const titleText = await title.evaluate(x => x.textContent);
+    return titleText === RECALCULATE_STYLE_TITLE;
+  });
+}
+
+export async function enableCSSSelectorStats() {
+  const timelineSettingsPane = await waitFor(TIMELINE_SETTINGS_PANE);
+  if (await timelineSettingsPane.isHidden()) {
+    await openCaptureSettings(TIMELINE_SETTINGS_PANE);
+  }
+
+  // Wait for the checkbox to load
+  const toggle =
+      await waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as puppeteer.ElementHandle<HTMLInputElement>;
+  await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
+    if (e.disabled) {
+      return false;
+    }
+    if (!e.checked) {
+      e.click();
+    }
+    return true;
+  }));
+}
+
+export async function disableCSSSelectorStats() {
+  const timelineSettingsPane = await waitFor(TIMELINE_SETTINGS_PANE);
+  if (await timelineSettingsPane.isHidden()) {
+    await openCaptureSettings(TIMELINE_SETTINGS_PANE);
+  }
+
+  // Wait for the checkbox to load
+  const toggle =
+      await waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as puppeteer.ElementHandle<HTMLInputElement>;
+  await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
+    if (e.disabled) {
+      return false;
+    }
+    if (e.checked) {
+      e.click();
+    }
+    return true;
+  }));
 }

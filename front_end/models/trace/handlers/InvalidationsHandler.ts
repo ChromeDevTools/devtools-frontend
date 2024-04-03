@@ -68,6 +68,16 @@ function addInvalidationToEvent(
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+  if (Types.TraceEvents.isStyleRecalcSelectorStats(event) && lastRecalcStyleEvent) {
+    if (!lastRecalcStyleEvent.args.selector_stats) {
+      lastRecalcStyleEvent.args.selector_stats = event.args.selector_stats;
+    } else {
+      lastRecalcStyleEvent.args.selector_stats.selector_timings.push(
+          ...event.args.selector_stats?.selector_timings ?? []);
+    }
+    return;
+  }
+
   if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
     lastRecalcStyleEvent = event;
 

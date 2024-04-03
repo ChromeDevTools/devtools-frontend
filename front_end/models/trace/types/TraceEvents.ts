@@ -971,6 +971,7 @@ export interface TraceEventStyleRecalcInvalidationTracking extends TraceEventIns
     },
   };
 }
+
 export function isTraceEventStyleRecalcInvalidationTracking(event: TraceEventData):
     event is TraceEventStyleRecalcInvalidationTracking {
   return event.name === KnownEventName.StyleRecalcInvalidationTracking;
@@ -1412,10 +1413,39 @@ export function isSyntheticInvalidation(event: TraceEventData): event is Synthet
   return event.name === 'SyntheticInvalidation';
 }
 
+export interface SelectorTiming {
+  'elapsed (us)': number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'fast_reject_count': number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'match_attempts': number;
+  'selector': string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'style_sheet_id': string;
+}
+
+export interface SelectorStats {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  selector_timings: SelectorTiming[];
+}
+
+export interface TraceEventStyleRecalcSelectorStats extends TraceEventComplete {
+  name: KnownEventName.SelectorStats;
+  args: TraceEventArgs&{
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    selector_stats?: SelectorStats,
+  };
+}
+
+export function isStyleRecalcSelectorStats(event: TraceEventData): event is TraceEventStyleRecalcSelectorStats {
+  return event.name === KnownEventName.SelectorStats;
+}
+
 export interface TraceEventUpdateLayoutTree extends TraceEventComplete {
   name: KnownEventName.UpdateLayoutTree;
   args: TraceEventArgs&{
-    elementCount: number,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    selector_stats?: SelectorStats, elementCount: number,
     beginData?: {
       frame: string,
       stackTrace?: TraceEventCallFrame[],
@@ -2187,6 +2217,7 @@ export const enum KnownEventName {
   ScheduleStyleInvalidationTracking = 'ScheduleStyleInvalidationTracking',
   StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
   StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
+  SelectorStats = 'SelectorStats',
 
   /* Paint */
   ScrollLayer = 'ScrollLayer',

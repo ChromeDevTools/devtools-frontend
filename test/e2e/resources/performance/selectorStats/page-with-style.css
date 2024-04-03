@@ -1,0 +1,55 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.highlight-text {
+    background-color: lightblue;
+    padding: 10px;
+}
+
+div.class1 {
+    color: orange;
+}
+
+div.class1 .class2 {
+    color: red;
+}
+
+.class2 {
+  color: cyan;
+}
+
+.class3 {
+  color: blue;
+}
+
+.class4 {
+  color: grey;
+}
+
+/* intentionally commented for no match situation */
+/* .class5 {
+  color: green;
+} */
+
+.class6 {
+  color: pink;
+}
+
+.class7 {
+  color: violet;
+}
+
+.class8 {
+  color: beige;
+}
+
+.class9 {
+  color: brown;
+}
+
+.class10 {
+  color: coral;
+}

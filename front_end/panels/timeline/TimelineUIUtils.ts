@@ -542,6 +542,15 @@ const UIStrings = {
    *@description Text indicating that something is hidden from the Performace Panel Timeline
    */
   entryIsHidden: '(entry is hidden)',
+  /**
+   * @description Title of a row in the details view for a `Recalculate Styles` event that contains more info about selector stats tracing.
+   */
+  selectorStatsTitle: 'Selector Stats',
+  /**
+   * @description Info text that explains to the user how to enable selector stats tracing.
+   * @example {Setting Name} PH1
+   */
+  sSelectorStatsInfo: 'Select "{PH1}" to collect detailed CSS selector matching statistics.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1437,6 +1446,15 @@ export class TimelineUIUtils {
       case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
       case recordTypes.RecalculateStyles: {
         contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), event.args['elementCount']);
+
+        const selectorStatsSetting =
+            Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false);
+        if (!selectorStatsSetting.get()) {
+          const note = document.createElement('span');
+          note.textContent = i18nString(UIStrings.sSelectorStatsInfo, {PH1: selectorStatsSetting.title()});
+          contentHelper.appendElementRow(i18nString(UIStrings.selectorStatsTitle), note);
+        }
+
         break;
       }
 

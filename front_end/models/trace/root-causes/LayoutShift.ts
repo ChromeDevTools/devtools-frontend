@@ -84,13 +84,20 @@ function networkRequestIsRenderBlockingInFrame(
   return isRenderBlocking && event.args.data.frame === frameId;
 }
 
+interface Options {
+  /** Checking iframe root causes can be an expensive operation, so it is disabled by default. */
+  enableIframeRootCauses?: boolean;
+}
+
 export class LayoutShiftRootCauses {
   #protocolInterface: RootCauseProtocolInterface;
   #rootCauseCacheMap = new Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftRootCausesData>();
   #nodeDetailsCache = new Map<Protocol.DOM.NodeId, Protocol.DOM.Node|null>();
+  #iframeRootCausesEnabled: boolean;
 
-  constructor(protocolInterface: RootCauseProtocolInterface) {
+  constructor(protocolInterface: RootCauseProtocolInterface, options?: Options) {
     this.#protocolInterface = protocolInterface;
+    this.#iframeRootCausesEnabled = options?.enableIframeRootCauses ?? false;
   }
 
   /**
@@ -323,7 +330,11 @@ export class LayoutShiftRootCauses {
   async getIframeRootCause(
       layoutInvalidation: Types.TraceEvents.TraceEventLayoutInvalidationTracking,
       layoutInvalidationNodeId: Protocol.DOM.NodeId): Promise<InjectedIframe|null> {
-    if (layoutInvalidation.args.data.nodeName?.startsWith('IFRAME') &&
+    if (!this.#iframeRootCausesEnabled) {
+      return null;
+    }
+
+    if (!layoutInvalidation.args.data.nodeName?.startsWith('IFRAME') &&
         layoutInvalidation.args.data.reason !== Types.TraceEvents.LayoutInvalidationReason.STYLE_CHANGED &&
         layoutInvalidation.args.data.reason !== Types.TraceEvents.LayoutInvalidationReason.ADDED_TO_LAYOUT) {
       return null;

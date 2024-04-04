@@ -22,3 +22,5 @@ export class RootCauses {
     this.layoutShifts = new LayoutShiftRootCauses(protocolInterface);
   }
 }
+
+export {LayoutShiftRootCauses} from './LayoutShift.js';

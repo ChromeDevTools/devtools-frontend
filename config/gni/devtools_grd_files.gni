@@ -712,6 +712,7 @@ grd_files_debug_sources = [
   "front_end/core/platform/SetUtilities.js",
   "front_end/core/platform/StringUtilities.js",
   "front_end/core/platform/Timing.js",
+  "front_end/core/platform/TypedArrayUtilities.js",
   "front_end/core/platform/TypescriptUtilities.js",
   "front_end/core/platform/UIString.js",
   "front_end/core/platform/UserVisibleError.js",

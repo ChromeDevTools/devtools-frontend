@@ -23,6 +23,7 @@ devtools_module("platform") {
     "SetUtilities.ts",
     "StringUtilities.ts",
     "Timing.ts",
+    "TypedArrayUtilities.ts",
     "TypescriptUtilities.ts",
     "UIString.ts",
     "UserVisibleError.ts",
@@ -51,6 +52,7 @@ ts_library("unittests") {
     "NumberUtilities.test.ts",
     "SetUtilities.test.ts",
     "StringUtilities.test.ts",
+    "TypedArrayUtilities.test.ts",
   ]
 
   deps = [

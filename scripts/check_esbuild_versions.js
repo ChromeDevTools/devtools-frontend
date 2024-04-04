@@ -32,20 +32,20 @@ function findVersionFromDepsFile() {
   return result;
 }
 
-function findVersionFromNodeDepsFile() {
-  const filePath = path.join(devtoolsRootPath(), 'scripts', 'deps', 'manage_node_deps.py');
+function findVersionFromPackageJsonFile() {
+  const filePath = path.join(devtoolsRootPath(), 'package.json');
   const contents = fs.readFileSync(filePath, 'utf8');
   const result = /"esbuild": "([0-9\.]+)"/.exec(contents)?.[1];
   if (!result) {
-    bail('Could not parse out ESBuild version from manage_node_deps.py');
+    bail('Could not parse out ESBuild version from package.json');
   }
   return result;
 }
 
-const nodeDepsVersion = findVersionFromNodeDepsFile();
+const nodeDepsVersion = findVersionFromPackageJsonFile();
 const depsVersion = findVersionFromDepsFile();
 if (nodeDepsVersion !== depsVersion) {
-  bail(`Found mismatching esbuild versions in DEPS vs manage_node_deps:
-    manage_node_deps.py: ${nodeDepsVersion}
-    DEPS:                ${depsVersion}\n`);
+  bail(`Found mismatching esbuild versions in DEPS vs package.json:
+    package.json:   ${nodeDepsVersion}
+    DEPS:           ${depsVersion}\n`);
 }

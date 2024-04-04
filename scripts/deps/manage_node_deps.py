@@ -37,86 +37,6 @@ LICENSES = [
     "W3C",
 ]
 
-# List all DEPS here.
-DEPS = {
-    "@istanbuljs/schema": "0.1.3",
-    "@types/chai": "4.3.0",
-    "@types/codemirror": "5.60.7",
-    "@types/estree": "0.0.50",
-    "@types/emscripten": "1.39.4",
-    "@types/filesystem": "0.0.32",
-    "@types/istanbul-lib-coverage": "2.0.4",
-    "@types/istanbul-lib-instrument": "1.7.4",
-    "@types/istanbul-lib-report": "3.0.0",
-    "@types/istanbul-lib-source-maps": "4.0.1",
-    "@types/istanbul-reports": "3.0.1",
-    "@types/karma-chai-sinon": "0.1.16",
-    "@types/node": "18.11.9",
-    "@types/marked": "4.0.1",
-    "@types/mocha": "9.0.0",
-    "@types/rimraf": "3.0.2",
-    "@types/sinon": "10.0.6",
-    "@types/webidl2": "23.13.6",
-    "@typescript-eslint/parser": "5.59.8",
-    "@typescript-eslint/eslint-plugin": "5.59.8",
-    "@web/rollup-plugin-import-meta-assets": "1.0.7",
-    "chai": "4.3.4",
-    "chokidar": "3.5.2",
-    "convert-source-map": "1.8.0",
-
-    # This should be match with esbuild in DEPS.
-    "esbuild": "0.14.13",
-    "escodegen": "2.0.0",
-    "eslint": "8.19.0",
-    "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-lit-a11y": "2.1.0",
-    "eslint-plugin-mocha": "10.0.3",
-    "eslint-plugin-rulesdir": "0.2.1",
-    "eslint-plugin-jsdoc": "39.6.4",
-    "istanbul-lib-instrument": "5.1.0",
-    "istanbul-lib-report": "3.0.0",
-    "karma": "6.4.0",
-    "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "3.1.0",
-    "karma-coverage": "2.1.0",
-    "karma-mocha": "2.0.1",
-    "karma-mocha-reporter": "2.2.5",
-    "karma-sinon": "1.0.5",
-    "karma-sourcemap-loader": "0.3.8",
-    "karma-spec-reporter": "0.0.32",
-    "license-checker": "25.0.1",
-    "mocha": "9.1.3",
-    "postcss": "8.4.5",
-    "cssnano": "5.1.14",
-    "cssnano-preset-lite": "2.1.3",
-    "puppeteer-core": "22.3.0",
-    "recast": "0.20.5",
-    "rimraf": "3.0.2",
-    "rollup": "2.63.0",
-    "rollup-plugin-sourcemaps": "0.6.2",
-    "rollup-plugin-terser": "7.0.2",
-    "@rollup/plugin-node-resolve": "10.0.0",
-    "sinon": "12.0.1",
-    "source-map-support": "0.5.21",
-    "stylelint": "14.2.0",
-    "stylelint-config-standard": "24.0.0",
-    "svgo": "2.8.0",
-    "terser": "5.19.1",
-    "typescript": "5.4.2",
-    "ws": "8.4.0",
-    "yargs": "17.3.1",
-    "glob": "7.1.7",
-    "webidl2": "24.2.2",
-    "@webref/idl": "3.12.0",
-}
-
-ADDITIONAL_NPM_ARGS = [
-    # This is to avoid downloading esbuild-* package.
-    '--omit',
-    'optional',
-    '--ignore-scripts'
-]
-
 
 def load_json_file(location):
     # By default, json load uses a standard Python dictionary, which is not ordered.
@@ -128,6 +48,20 @@ def load_json_file(location):
     # how an NPM package is loaded. If you would change the order, it could break loading
     # that package.
     return json.load(location, object_pairs_hook=OrderedDict)
+
+
+DEPS = {}
+
+pkg_file = path.join(devtools_paths.root_path(), 'package.json')
+with open(pkg_file, 'r+') as pkg_file:
+    DEPS = load_json_file(pkg_file)["devDependencies"]
+
+ADDITIONAL_NPM_ARGS = [
+    # This is to avoid downloading esbuild-* package.
+    '--omit',
+    'optional',
+    '--ignore-scripts'
+]
 
 
 def exec_command(cmd):
@@ -217,25 +151,6 @@ def install_missing_deps():
     return False
 
 
-def append_package_json_entries():
-    with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
-        try:
-            pkg_data = load_json_file(pkg_file)
-
-            # Replace the dev deps.
-            pkg_data['devDependencies'] = DEPS
-
-            pkg_file.truncate(0)
-            pkg_file.seek(0)
-            json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
-            pkg_file.write('\n')
-
-        except:
-            print('Unable to fix: %s' % sys.exc_info()[0])
-            return True
-    return False
-
-
 def remove_package_json_entries():
     with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
         try:
@@ -244,8 +159,7 @@ def remove_package_json_entries():
             # Remove the dependencies and devDependencies from the root package.json
             # so that they can't be used to overwrite the node_modules managed by this file.
             for key in pkg_data.keys():
-                if key.find('dependencies') == 0 or key.find(
-                        'devDependencies') == 0:
+                if key.find('dependencies') == 0:
                     pkg_data.pop(key)
 
             pkg_file.truncate(0)
@@ -305,9 +219,6 @@ def run_npm_command(npm_command_args=None):
             return True
 
     run_custom_command = npm_command_args is not None
-
-    if append_package_json_entries():
-        return True
 
     if install_missing_deps():
         return True

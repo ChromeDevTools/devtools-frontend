@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
@@ -173,6 +174,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
     const response = await this.tracingManager.start(this, categories, '');
     await this.warmupJsProfiler();
+    Extensions.ExtensionServer.ExtensionServer.instance().profilingStarted();
     return response;
   }
 
@@ -211,6 +213,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   private async finalizeTrace(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.tracingModel.tracingComplete();
+    Extensions.ExtensionServer.ExtensionServer.instance().profilingStopped();
     await this.client.loadingComplete(
         this.#collectedEvents, this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false,
         this.#recordingStartTime, /* metadata= */ null);

@@ -105,6 +105,7 @@ export namespace Chrome {
       inspectedWindow: InspectedWindow;
       languageServices: LanguageExtensions;
       recorder: RecorderExtensions;
+      performance: Performance;
     }
 
     export interface ExperimentalDevToolsAPI {
@@ -287,6 +288,11 @@ export namespace Chrome {
           Promise<void>;
       unregisterRecorderExtensionPlugin(plugin: RecorderExtensionPlugin): Promise<void>;
       createView(title: string, pagePath: string): Promise<RecorderView>;
+    }
+
+    export interface Performance {
+      onProfilingStarted: EventSink<() => unknown>;
+      onProfilingStopped: EventSink<() => unknown>;
     }
 
     export interface Chrome {

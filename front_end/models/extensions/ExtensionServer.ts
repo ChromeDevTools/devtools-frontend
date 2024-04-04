@@ -294,6 +294,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.postNotification(PrivateAPI.Events.ButtonClicked + identifier);
   }
 
+  profilingStarted(): void {
+    this.postNotification(PrivateAPI.Events.ProfilingStarted);
+  }
+
+  profilingStopped(): void {
+    this.postNotification(PrivateAPI.Events.ProfilingStopped);
+  }
+
   private registerLanguageExtensionEndpoint(
       message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
     if (message.command !== PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {

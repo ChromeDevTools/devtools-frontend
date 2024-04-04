@@ -78,5 +78,6 @@ copy_to_gen("traces") {
     "web-dev-with-commit.json.gz",
     "web-dev.json.gz",
     "web-sockets.json.gz",
+    "wrong-main-frame-bug.json.gz",
   ]
 }

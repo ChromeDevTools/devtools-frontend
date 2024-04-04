@@ -218,8 +218,10 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
         continue;
       }
 
-      mainFrameId = frame.frame;
-      mainFrameURL = frame.url;
+      if (frame.url) {
+        mainFrameId = frame.frame;
+        mainFrameURL = frame.url;
+      }
       topLevelRendererIds.add(frame.processId);
     }
     return;

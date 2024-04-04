@@ -192,6 +192,7 @@ export class CompatibilityTracksAppender {
       this.#allTrackAppenders.push(new ExtensionTrackAppender(this, trackData));
     }
   }
+
   #addThreadAppenders(): void {
     const weight = (appender: ThreadAppender): number => {
       switch (appender.threadType) {

@@ -24,6 +24,7 @@
   border: 1px solid var(--override-adorner-border-color, var(--sys-color-neutral-outline));
   border-radius: 10px;
   background: var(--override-adorner-background-color, var(--sys-color-neutral-container));
+  padding: 0;
 }
 
 .expand-button:hover {

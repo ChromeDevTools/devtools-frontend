@@ -2,9 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsTreeExpandButtonStyles from './elementsTreeExpandButton.css.js';
+
+const UIStrings = {
+  /**
+   *@description Aria label for a button expanding collapsed subtree
+   */
+  expand: 'Expand',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsTreeExpandButton.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ElementsTreeExpandButtonData {
   clickHandler: (event?: Event) => void;
@@ -32,9 +43,12 @@ export class ElementsTreeExpandButton extends HTMLElement {
     // clang-format off
     // This button's innerText will be tested by e2e test and blink layout tests.
     // It can't have any other characters like '\n' or space, otherwise it will break tests.
-    LitHtml.render(LitHtml.html`<span
+    LitHtml.render(LitHtml.html`<button
         class="expand-button"
-        @click=${this.#clickHandler}><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`,
+        tabindex="-1"
+        aria-label=${i18nString(UIStrings.expand)}
+        jslog=${VisualLogging.action('expand').track({click: true})}
+        @click=${this.#clickHandler}><span class="dot"></span><span class="dot"></span><span class="dot"></span></button>`,
       this.#shadow, {host: this});
     // clang-format on
   }

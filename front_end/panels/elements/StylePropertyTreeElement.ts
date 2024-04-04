@@ -1084,7 +1084,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         'jslog', `${VisualLogging.key().track({
           change: true,
           keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
-          click: true,
         })}`);
     UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: name}));
     nameElement.className = 'webkit-css-property';
@@ -1097,7 +1096,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const valueElement = document.createElement('span');
     valueElement.setAttribute(
         'jslog', `${VisualLogging.value().track({
-          click: true,
           change: true,
           keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
         })}`);

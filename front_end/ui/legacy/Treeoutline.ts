@@ -475,6 +475,7 @@ export class TreeElement {
     this.listItemNode.addEventListener('dblclick', this.handleDoubleClick.bind(this), false);
     this.listItemNode.setAttribute(
         'jslog', `${VisualLogging.treeItem().parent('parentTreeItem').context(jslogContext).track({
+          click: true,
           keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
         })}`);
     ARIAUtils.markAsTreeitem(this.listItemNode);

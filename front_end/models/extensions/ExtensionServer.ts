@@ -141,6 +141,11 @@ class RegisteredExtension {
   }
 }
 
+export class RevealableNetworkRequestFilter {
+  constructor(readonly filter: string|undefined) {
+  }
+}
+
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly clientObjects: Map<string, unknown>;
   private readonly handlers:
@@ -212,6 +217,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
+    this.registerHandler(PrivateAPI.Commands.ShowNetworkPanel, this.onShowNetworkPanel.bind(this));
     window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
 
     const existingTabId =
@@ -401,6 +407,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     RecorderPluginManager.instance().showView(message.id);
     return undefined;
+  }
+
+  private onShowNetworkPanel(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.ShowNetworkPanel) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowNetworkPanel}`);
+    }
+    void Common.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
+    return this.status.OK();
   }
 
   private onCreateRecorderView(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {

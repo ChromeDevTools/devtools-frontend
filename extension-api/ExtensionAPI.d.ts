@@ -70,6 +70,7 @@ export namespace Chrome {
     export interface Panels {
       elements: PanelWithSidebar;
       sources: PanelWithSidebar;
+      network: NetworkPanel;
       themeName: string;
 
       create(title: string, iconPath: string, pagePath: string, callback?: (panel: ExtensionPanel) => unknown): void;
@@ -92,6 +93,10 @@ export namespace Chrome {
       onRequestFinished: EventSink<(request: Request) => unknown>;
 
       getHAR(callback: (harLog: object) => unknown): void;
+    }
+
+    export interface NetworkPanel {
+      show(options?: {filter: string}): Promise<void>;
     }
 
     export interface DevToolsAPI {

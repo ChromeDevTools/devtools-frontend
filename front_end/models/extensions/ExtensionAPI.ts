@@ -89,6 +89,7 @@ export namespace PrivateAPI {
     RegisterRecorderExtensionPlugin = 'registerRecorderExtensionPlugin',
     CreateRecorderView = 'createRecorderView',
     ShowRecorderView = 'showRecorderView',
+    ShowNetworkPanel = 'showNetworkPanel',
     ReportResourceLoad = 'reportResourceLoad',
   }
 
@@ -227,6 +228,7 @@ export namespace PrivateAPI {
     stopId: unknown,
   };
   type GetWasmOpRequest = {command: Commands.GetWasmOp, op: number, stopId: unknown};
+  type ShowNetworkPanelRequest = {command: Commands.ShowNetworkPanel, filter: string|undefined};
   type ReportResourceLoadRequest = {
     command: Commands.ReportResourceLoad,
     extensionId: string,
@@ -241,7 +243,7 @@ export namespace PrivateAPI {
       OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
       EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
       ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|
-      GetWasmGlobalRequest|GetWasmOpRequest|ReportResourceLoadRequest;
+      GetWasmGlobalRequest|GetWasmOpRequest|ShowNetworkPanelRequest|ReportResourceLoadRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -577,12 +579,13 @@ self.injectedExtensionAPI = function(
   };
 
   function Panels(this: APIImpl.Panels): void {
-    const panels: {[key: string]: ElementsPanel|SourcesPanel} = {
+    const panels: {[key: string]: ElementsPanel|SourcesPanel|PublicAPI.Chrome.DevTools.NetworkPanel} = {
       elements: new ElementsPanel(),
       sources: new SourcesPanel(),
+      network: new (Constructor(NetworkPanel))(),
     };
 
-    function panelGetter(name: string): ElementsPanel|SourcesPanel {
+    function panelGetter(name: string): ElementsPanel|SourcesPanel|PublicAPI.Chrome.DevTools.NetworkPanel {
       return panels[name];
     }
     for (const panel in panels) {
@@ -950,6 +953,17 @@ self.injectedExtensionAPI = function(
 
   };
 
+  function NetworkPanelImpl(this: PublicAPI.Chrome.DevTools.NetworkPanel): void {
+  }
+
+  (NetworkPanelImpl.prototype as Pick<PublicAPI.Chrome.DevTools.NetworkPanel, 'show'>) = {
+    show: function(options?: {filter: string}): Promise<void> {
+      return new Promise<void>(
+          resolve => extensionServer.sendRequest(
+              {command: PrivateAPI.Commands.ShowNetworkPanel, filter: options?.filter}, () => resolve()));
+    },
+  };
+
   function declareInterfaceClass<ImplT extends APIImpl.Callable>(implConstructor: ImplT): (
       this: ThisParameterType<ImplT>, ...args: Parameters<ImplT>) => void {
     return function(this: ThisParameterType<ImplT>, ...args: Parameters<ImplT>): void {
@@ -987,6 +1001,7 @@ self.injectedExtensionAPI = function(
   const PanelWithSidebarClass = declareInterfaceClass(PanelWithSidebarImpl);
   const Request = declareInterfaceClass(RequestImpl);
   const Resource = declareInterfaceClass(ResourceImpl);
+  const NetworkPanel = declareInterfaceClass(NetworkPanelImpl);
 
   class ElementsPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {

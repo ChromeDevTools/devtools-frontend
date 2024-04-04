@@ -1642,8 +1642,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         selectedElement.enclosingNodeOrSelfWithClass('value') ||
         selectedElement.enclosingNodeOrSelfWithClass('styles-semicolon');
     if (!selectedElement || selectedElement === this.nameElement) {
+      VisualLogging.logClick(this.nameElement as Element, event);
       this.startEditingName();
     } else {
+      VisualLogging.logClick(this.valueElement as Element, event);
       this.startEditingValue();
     }
   }

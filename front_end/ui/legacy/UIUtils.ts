@@ -62,6 +62,7 @@ import tokens from './tokens.css.legacy.js';
 import {Toolbar, type ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {type TreeOutline} from './Treeoutline.js';
+import {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -1765,7 +1766,7 @@ export interface ConfirmDialogOptions {
 
 function updateWidgetfocusWidgetForNode(node: Node|null): void {
   while (node) {
-    if (node.__widget) {
+    if (Widget.get(node)) {
       break;
     }
 
@@ -1775,7 +1776,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
     return;
   }
 
-  let widget = node.__widget;
+  let widget = Widget.get(node);
   while (widget && widget.parentWidget()) {
     const parentWidget = widget.parentWidget();
     if (!parentWidget) {

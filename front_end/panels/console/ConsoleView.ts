@@ -276,7 +276,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   private filter: ConsoleViewFilter;
   private readonly consoleToolbarContainer: HTMLElement;
   private readonly splitWidget: UI.SplitWidget.SplitWidget;
-  private readonly contentsElement: UI.Widget.WidgetElement;
+  private readonly contentsElement: typeof UI.Widget.Widget.prototype.element;
   private visibleViewMessages: ConsoleViewMessage[];
   private hiddenByFilterCount: number;
   private shouldBeHiddenCache: Set<ConsoleViewMessage>;

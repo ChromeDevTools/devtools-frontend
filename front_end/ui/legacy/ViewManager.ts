@@ -30,7 +30,7 @@ import {
   ViewPersistence,
   type ViewRegistration,
 } from './ViewRegistration.js';
-import {VBox, type Widget, type WidgetElement} from './Widget.js';
+import {VBox, type Widget} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -859,7 +859,7 @@ class StackLocation extends Location implements ViewLocation {
       locationForView.set(view, this);
       this.manager.views.set(view.viewId(), view);
       container = new ExpandableContainerWidget(view);
-      let beforeElement: (WidgetElement|null)|null = null;
+      let beforeElement: Node|null = null;
       if (insertBefore) {
         const beforeContainer = expandableContainerForView.get(insertBefore);
         beforeElement = beforeContainer ? beforeContainer.element : null;

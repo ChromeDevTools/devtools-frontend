@@ -75,7 +75,7 @@ export class CountersGraph extends UI.Widget.VBox {
   private readonly header: UI.Widget.HBox;
   readonly toolbar: UI.Toolbar.Toolbar;
   private graphsContainer: UI.Widget.VBox;
-  canvasContainer: UI.Widget.WidgetElement;
+  canvasContainer: typeof UI.Widget.Widget.prototype.element;
   private canvas: HTMLCanvasElement;
   private readonly timelineGrid: PerfUI.TimelineGrid.TimelineGrid;
   private readonly counters: Counter[];

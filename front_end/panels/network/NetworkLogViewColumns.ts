@@ -740,10 +740,6 @@ export class NetworkLogViewColumns {
     const dialog = new UI.Dialog.Dialog('manage-custom-headers');
     manageCustomHeaders.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    // @ts-ignore
-    // TypeScript somehow tries to appy the `WidgetElement` class to the
-    // `Document` type of the (Document|Element) union. WidgetElement inherits
-    // from HTMLElement so its valid to be passed here.
     dialog.show(this.networkLogView.element);
   }
 

@@ -7,12 +7,12 @@ import * as Platform from '../../core/platform/platform.js';
 import {type Size} from './Geometry.js';
 import glassPaneStyles from './glassPane.css.legacy.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
-import {Widget, type WidgetElement} from './Widget.js';
+import {Widget} from './Widget.js';
 
 export class GlassPane {
   private readonly widgetInternal: Widget;
-  element: WidgetElement;
-  contentElement: HTMLDivElement;
+  element: typeof Widget.prototype.element;
+  contentElement: typeof Widget.prototype.contentElement;
   private readonly arrowElement: HTMLSpanElement;
   private readonly onMouseDownBound: (event: Event) => void;
   private onClickOutsideCallback: ((arg0: Event) => void)|null;

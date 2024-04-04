@@ -100,7 +100,6 @@ interface Node {
   deepTextContent(): string
   window(): Window;
   childTextNodes(): Node[];
-  __widget?: any;
 }
 
 declare function onInvokeElement(element: Element, callback: (event: Event) => void): void;

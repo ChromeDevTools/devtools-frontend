@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import type * as Types from '../../../../../front_end/models/trace/types/types.js';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
-import type * as LegacyUI from '../../../../../front_end/ui/legacy/legacy.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
 import {describe, it} from '../../../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
@@ -19,10 +18,10 @@ describe('FlameChart', function() {
   }
   async function getCoordinatesForEntryWithTitleAndTs(
       title: string, tsMicroSecs: number): Promise<{x: number, y: number}> {
-    const perfPanel = await waitFor('.vbox.panel.timeline');
-    return await perfPanel.evaluate((element: Element, title: string, ts: number) => {
-      const panelWidget = element as LegacyUI.Widget.WidgetElement;
-      const panel = panelWidget.__widget as Timeline.TimelinePanel.TimelinePanel;
+    const {frontend} = getBrowserAndPages();
+    return await frontend.evaluate((title: string, ts: number) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const panel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
       const mainFlameChart = panel.getFlameChart().getMainFlameChart();
       const data = mainFlameChart.timelineData();
       if (!data) {
@@ -45,14 +44,12 @@ describe('FlameChart', function() {
 
   async function createTimelineBreadcrumb(
       startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds): Promise<void> {
-    const perfPanel = await waitFor('.vbox.panel.timeline');
-    await perfPanel.evaluate(
-        (element: Element, startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds) => {
-          const panelWidget = element as LegacyUI.Widget.WidgetElement;
-          const timelinePanel = panelWidget.__widget as Timeline.TimelinePanel.TimelinePanel;
-          timelinePanel.getMinimap().addBreadcrumb({startTime, endTime});
-        },
-        startTime, endTime);
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluate((startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const timelinePanel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
+      timelinePanel.getMinimap().addBreadcrumb({startTime, endTime});
+    }, startTime, endTime);
   }
 
   it('shows the details of an entry when selected on the timeline', async () => {

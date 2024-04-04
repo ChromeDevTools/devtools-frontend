@@ -38,7 +38,7 @@ import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import {type SplitWidget} from './SplitWidget.js';
 import {type DevToolsCloseButton} from './UIUtils.js';
-import {type WidgetElement, WidgetFocusRestorer} from './Widget.js';
+import {WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
   private tabIndexBehavior: OutsideTabIndexBehavior;
@@ -77,8 +77,9 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     return Boolean(Dialog.instance);
   }
 
-  override show(where?: Document | Element): void {
-    const document = (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
+  override show(where?: Document|Element): void {
+    const document =
+        (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
     this.targetDocument = document;
     this.targetDocument.addEventListener('keydown', this.targetDocumentKeyDownHandler, true);
 
@@ -163,7 +164,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
       return elementSet;
     }
 
-    let node: Node|null|WidgetElement = mainWidget.element;
+    let node: Node|null = mainWidget.element;
     for (; node; node = node.traverseNextNode(mainWidget.element)) {
       if (!(node instanceof HTMLElement)) {
         continue;

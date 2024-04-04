@@ -287,9 +287,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'timeline-v8-runtime-call-stats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
     Root.Runtime.experiments.register(
-        'timeline-as-console-profile-result-panel',
-        'View console.profile() results in the Performance panel for Node.js', true);
-    Root.Runtime.experiments.register(
         'timeline-track-configuration',
         'Timeline: Enable track configuration feature that can reorder or hide a track in the flame chart', true);
     Root.Runtime.experiments.register('timeline-extensions', 'Timeline: Enable User Timings based extensions', true);
@@ -402,7 +399,6 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       'set-all-breakpoints-eagerly',
-      Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
       'evaluate-expressions-with-source-maps',

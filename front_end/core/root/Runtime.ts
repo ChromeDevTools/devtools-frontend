@@ -282,7 +282,6 @@ export const enum ExperimentName {
   IMPORTANT_DOM_PROPERTIES = 'important-dom-properties',
   JUST_MY_CODE = 'just-my-code',
   PRELOADING_STATUS_PANEL = 'preloading-status-panel',
-  TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timeline-as-console-profile-result-panel',
   OUTERMOST_TARGET_SELECTOR = 'outermost-target-selector',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
   SET_ALL_BREAKPOINTS_EAGERLY = 'set-all-breakpoints-eagerly',

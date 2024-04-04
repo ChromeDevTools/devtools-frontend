@@ -433,7 +433,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
-    if (Root.Runtime.experiments.isEnabled('timeline-as-console-profile-result-panel')) {
       const profilerModels = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
       for (const model of profilerModels) {
         for (const message of model.registeredConsoleProfileMessages) {
@@ -452,7 +451,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
             },
           },
       );
-    }
     SDK.TargetManager.TargetManager.instance().observeTargets({
       targetAdded: (target: SDK.Target.Target) => {
         if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {

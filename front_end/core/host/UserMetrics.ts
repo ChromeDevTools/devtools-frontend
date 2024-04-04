@@ -1042,7 +1042,6 @@ export enum DevtoolsExperiments {
   'authored-deployed-grouping' = 63,
   'important-dom-properties' = 64,
   'just-my-code' = 65,
-  'timeline-as-console-profile-result-panel' = 67,
   'preloading-status-panel' = 68,
   'outermost-target-selector' = 71,
   'highlight-errors-elements-panel' = 73,

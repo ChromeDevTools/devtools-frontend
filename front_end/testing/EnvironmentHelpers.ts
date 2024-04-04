@@ -117,7 +117,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
   'css-type-component-length-deprecate',
   Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES,
-  Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
   Root.Runtime.ExperimentName.HEADER_OVERRIDES,
   Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
   Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY,

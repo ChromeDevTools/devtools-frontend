@@ -27,7 +27,7 @@ export class ComputedStyleTrace extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [computedStyleTraceStyles];
-    UI.Utils.injectCoreStyles(this.#shadow);
+    UI.UIUtils.injectCoreStyles(this.#shadow);
   }
 
   set data(data: ComputedStyleTraceData) {

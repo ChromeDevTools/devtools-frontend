@@ -924,7 +924,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     const element = document.createElement('div');
-    const root = UI.Utils.createShadowRootWithCoreStyles(element, {
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {
       cssFile: [timelineFlamechartPopoverStyles],
       delegatesFocus: undefined,
     });
@@ -945,7 +945,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   prepareHighlightedHiddenEntriesArrowInfo(entryIndex: number): Element|null {
     const element = document.createElement('div');
-    const root = UI.Utils.createShadowRootWithCoreStyles(element, {
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {
       cssFile: [timelineFlamechartPopoverStyles],
       delegatesFocus: undefined,
     });

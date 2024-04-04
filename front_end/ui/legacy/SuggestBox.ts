@@ -39,8 +39,7 @@ import {AnchorBehavior, GlassPane} from './GlassPane.js';
 import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {ListModel} from './ListModel.js';
 import suggestBoxStyles from './suggestBox.css.legacy.js';
-import {measurePreferredSize} from './UIUtils.js';
-import * as Utils from './utils/utils.js';
+import {createShadowRootWithCoreStyles, measuredScrollbarWidth, measurePreferredSize} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -106,7 +105,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
-    const shadowRoot = Utils.createShadowRootWithCoreStyles(
+    const shadowRoot = createShadowRootWithCoreStyles(
         this.glassPane.contentElement, {cssFile: suggestBoxStyles, delegatesFocus: undefined});
     shadowRoot.appendChild(this.element);
   }
@@ -146,7 +145,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     }
     const element = this.createElementForItem((maxItem as Suggestion));
     const preferredWidth =
-        measurePreferredSize(element, this.element).width + Utils.measuredScrollbarWidth(this.element.ownerDocument);
+        measurePreferredSize(element, this.element).width + measuredScrollbarWidth(this.element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
 

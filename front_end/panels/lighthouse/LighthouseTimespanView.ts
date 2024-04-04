@@ -67,7 +67,7 @@ export class TimespanView extends UI.Dialog.Dialog {
   }
 
   render(): void {
-    const dialogRoot = UI.Utils.createShadowRootWithCoreStyles(
+    const dialogRoot = UI.UIUtils.createShadowRootWithCoreStyles(
         this.contentElement, {cssFile: [lighthouseDialogStyles], delegatesFocus: undefined});
 
     this.endButton = UI.UIUtils.createTextButton(

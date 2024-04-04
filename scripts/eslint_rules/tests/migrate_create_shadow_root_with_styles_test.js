@@ -33,7 +33,7 @@ ruleTester.run('check_migrate_RegisterRequiredCSS', rule, {
       import smallBubbleStyles from './smallBubbleStyles.css.js';
       export class Component extends UI.Widget.Widget {
         constructor(){
-          const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+          const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
             {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
         }
       }
@@ -52,7 +52,7 @@ constructor(){
     {
       code: `export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {delegatesFocus: undefined});
   }
 }`,
@@ -81,7 +81,7 @@ export class Component extends UI.Widget.Widget {
     {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: 'components/smallBubble.css', delegatesFocus: undefined});
   }
 }`,
@@ -90,7 +90,7 @@ export class Component extends UI.Widget.Widget {
       output: `import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   }
 }`
@@ -98,7 +98,7 @@ export class Component extends UI.Widget.Widget {
     {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: 'ui/smallBubble.css', delegatesFocus: undefined});
   }
 }`,
@@ -107,7 +107,7 @@ export class Component extends UI.Widget.Widget {
       output: `import smallBubbleStyles from '../ui/smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   }
 }`
@@ -115,7 +115,7 @@ export class Component extends UI.Widget.Widget {
     {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
   }
 }`,
@@ -124,7 +124,7 @@ export class Component extends UI.Widget.Widget {
       output: `import smallBubbleStyles from '../ui/legacy/smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
   constructor(){
-    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
       {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   }
 }`
@@ -176,9 +176,9 @@ constructor(){
     {
       code: `export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: 'components/smallBubble.css', delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: 'components/test.css', delegatesFocus: undefined});
 }
 }`,
@@ -187,9 +187,9 @@ constructor(){
       output: `import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: 'components/test.css', delegatesFocus: undefined});
 }
 }`
@@ -198,9 +198,9 @@ constructor(){
       code: `import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: 'components/test.css', delegatesFocus: undefined});
 }
 }`,
@@ -210,9 +210,9 @@ constructor(){
 import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [testStyles], delegatesFocus: undefined});
 }
 }`
@@ -221,9 +221,9 @@ constructor(){
       code: `import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: 'components/smallBubble.css', delegatesFocus: undefined});
 }
 }`,
@@ -232,9 +232,9 @@ constructor(){
       output: `import smallBubbleStyles from './smallBubble.css.js';
 export class Component extends UI.Widget.Widget {
 constructor(){
-  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+  const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
-  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+  const root = UI.UIUtils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
 }
 }`
@@ -254,7 +254,7 @@ constructor(){
       code: `
       export class Component extends UI.Widget.Widget {
         constructor(){
-          const shadow = UI.Utils.createShadowRootWithCoreStyles(this);
+          const shadow = UI.UIUtils.createShadowRootWithCoreStyles(this);
         }
       }
       `,

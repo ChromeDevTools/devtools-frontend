@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import dropTargetStyles from './dropTarget.css.legacy.js';
-import * as Utils from './utils/utils.js';
+import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class DropTarget {
   private element: Element;
@@ -71,8 +71,8 @@ export class DropTarget {
       return;
     }
     this.dragMaskElement = this.element.createChild('div', '');
-    const shadowRoot = Utils.createShadowRootWithCoreStyles(
-        this.dragMaskElement, {cssFile: dropTargetStyles, delegatesFocus: undefined});
+    const shadowRoot =
+        createShadowRootWithCoreStyles(this.dragMaskElement, {cssFile: dropTargetStyles, delegatesFocus: undefined});
     shadowRoot.createChild('div', 'drop-target-message').textContent = this.messageText;
     this.dragMaskElement.addEventListener('drop', this.onDrop.bind(this), true);
     this.dragMaskElement.addEventListener('dragleave', this.onDragLeave.bind(this), true);

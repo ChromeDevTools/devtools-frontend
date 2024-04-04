@@ -9,8 +9,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import infobarStyles from './infobar.css.legacy.js';
 import {Keys} from './KeyboardShortcut.js';
-import {createTextButton} from './UIUtils.js';
-import * as Utils from './utils/utils.js';
+import {createShadowRootWithCoreStyles, createTextButton} from './UIUtils.js';
 import {type Widget} from './Widget.js';
 
 const UIStrings = {
@@ -64,8 +63,7 @@ export class Infobar {
           'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Enter|Escape'})}`);
     }
     this.element.classList.add('flex-none');
-    this.shadowRoot =
-        Utils.createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles, delegatesFocus: undefined});
+    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles, delegatesFocus: undefined});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
 

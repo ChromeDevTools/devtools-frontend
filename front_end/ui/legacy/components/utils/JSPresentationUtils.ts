@@ -225,7 +225,7 @@ export function buildStackTracePreviewContents(
   element.classList.toggle('width-constrained', options.widthConstrained);
   element.style.display = 'inline-block';
   const shadowRoot =
-      UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});
+      UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   contentElement.classList.toggle('width-constrained', options.widthConstrained);
   if (!stackTrace) {

@@ -188,7 +188,7 @@ export class StatusView {
   }
 
   private render(): void {
-    const dialogRoot = UI.Utils.createShadowRootWithCoreStyles(
+    const dialogRoot = UI.UIUtils.createShadowRootWithCoreStyles(
         this.dialog.contentElement, {cssFile: [lighthouseDialogStyles], delegatesFocus: undefined});
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 

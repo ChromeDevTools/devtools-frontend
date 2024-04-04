@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {Keys} from './KeyboardShortcut.js';
-import * as Utils from './utils/utils.js';
+import {registerCustomElement} from './UIUtils.js';
 
 let cachedConstructor: (() => Element)|null = null;
 
@@ -21,7 +21,7 @@ export class HistoryInput extends HTMLInputElement {
 
   static create(): HistoryInput {
     if (!cachedConstructor) {
-      cachedConstructor = Utils.registerCustomElement('input', 'history-input', HistoryInput);
+      cachedConstructor = registerCustomElement('input', 'history-input', HistoryInput);
     }
 
     return cachedConstructor() as HistoryInput;

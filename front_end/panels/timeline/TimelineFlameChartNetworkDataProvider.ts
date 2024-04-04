@@ -265,7 +265,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const /** @const */ maxURLChars = 80;
     const event = this.#events[index];
     const element = document.createElement('div');
-    const root = UI.Utils.createShadowRootWithCoreStyles(element, {
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {
       cssFile: [timelineFlamechartPopoverStyles],
       delegatesFocus: undefined,
     });

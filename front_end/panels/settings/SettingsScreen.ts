@@ -117,7 +117,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
     const settingsLabelElement = document.createElement('div');
     const settingsTitleElement =
-        UI.Utils
+        UI.UIUtils
             .createShadowRootWithCoreStyles(
                 settingsLabelElement, {cssFile: [settingsScreenStyles], delegatesFocus: undefined})
             .createChild('div', 'settings-window-title');

@@ -192,7 +192,7 @@ export class CustomPreviewComponent {
     this.customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, {
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, {
       cssFile: [customPreviewComponentStyles],
       delegatesFocus: undefined,
     });

@@ -121,7 +121,7 @@ export class DebuggerPausedMessage {
     this.elementInternal = document.createElement('div');
     this.elementInternal.classList.add('paused-message');
     this.elementInternal.classList.add('flex-none');
-    const root = UI.Utils.createShadowRootWithCoreStyles(
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(
         this.elementInternal, {cssFile: [debuggerPausedMessageStyles], delegatesFocus: undefined});
     this.contentElement = (root.createChild('div') as HTMLElement);
     UI.ARIAUtils.markAsPoliteLiveRegion(this.elementInternal, false);

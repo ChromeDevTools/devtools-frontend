@@ -34,7 +34,7 @@ import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
-import * as Utils from './utils/utils.js';
+import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import {XWidget} from './XWidget.js';
 
 export class WidgetElement extends HTMLDivElement {
@@ -82,7 +82,7 @@ export class Widget {
       this.element = (document.createElement('div') as WidgetElement);
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
-      this.shadowRoot = Utils.createShadowRootWithCoreStyles(this.element, {
+      this.shadowRoot = createShadowRootWithCoreStyles(this.element, {
         cssFile: undefined,
         delegatesFocus,
       });

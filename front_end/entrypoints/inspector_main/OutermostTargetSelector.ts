@@ -151,7 +151,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   createElementForItem(item: SDK.Target.Target): Element {
     const element = document.createElement('div');
     element.classList.add('target');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
         element, {cssFile: [outermostTargetSelectorStyles], delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));

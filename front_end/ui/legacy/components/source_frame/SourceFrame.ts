@@ -1097,7 +1097,7 @@ export class SelfXssWarningDialog {
     dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     dialog.setDimmed(true);
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
         dialog.contentElement, {cssFile: selfXssDialogStyles, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
 

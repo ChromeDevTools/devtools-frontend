@@ -400,7 +400,7 @@ export class OverviewInfo {
     this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this.visible = false;
-    this.element = UI.Utils
+    this.element = UI.UIUtils
                        .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
                          cssFile: [timelineOverviewInfoStyles],
                          delegatesFocus: undefined,

@@ -85,7 +85,6 @@ export class Widget {
   private invalidationsSuspended: number;
   defaultFocusedChild: Widget|null;
   private parentWidgetInternal: Widget|null;
-  private registeredCSSFiles: boolean;
   private defaultFocusedElement?: Element|null;
   private cachedConstraints?: Constraints;
   private constraintsInternal?: Constraints;
@@ -117,7 +116,6 @@ export class Widget {
     this.invalidationsSuspended = 0;
     this.defaultFocusedChild = null;
     this.parentWidgetInternal = null;
-    this.registeredCSSFiles = false;
   }
 
   /**
@@ -483,7 +481,6 @@ export class Widget {
       root = Helpers.GetRootNode.getRootNode(this.contentElement);
     }
     root.adoptedStyleSheets = root.adoptedStyleSheets.concat(cssFiles);
-    this.registeredCSSFiles = true;
   }
 
   printWidgetHierarchy(): void {

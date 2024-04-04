@@ -18,6 +18,7 @@ const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
 const DRAG_LOG_INTERVAL = 1250;
+const DRAG_REPORT_THRESHOLD = 50;
 const CLICK_LOG_INTERVAL = 500;
 const RESIZE_LOG_INTERVAL = 1000;
 const RESIZE_REPORT_THRESHOLD = 50;
@@ -157,9 +158,9 @@ async function process(): Promise<void> {
       }
       const trackDrag = loggingState.config.track?.drag;
       if (trackDrag) {
-        element.addEventListener('pointerdown', logDrag(dragLogThrottler), {capture: true});
-        document.addEventListener('pointerup', cancelDrag, {capture: true});
-        document.addEventListener('dragend', cancelDrag, {capture: true});
+        element.addEventListener('pointerdown', onDragStart, {capture: true});
+        document.addEventListener('pointerup', maybeCancelDrag, {capture: true});
+        document.addEventListener('dragend', maybeCancelDrag, {capture: true});
       }
       if (loggingState.config.track?.change) {
         element.addEventListener('change', logChange, {capture: true});
@@ -237,6 +238,24 @@ async function process(): Promise<void> {
 async function cancelLogging(): Promise<void> {
 }
 
-function cancelDrag(): void {
+let dragStartX = 0, dragStartY = 0;
+
+function onDragStart(event: Event): void {
+  if (!(event instanceof MouseEvent)) {
+    return;
+  }
+  dragStartX = event.screenX;
+  dragStartY = event.screenY;
+  void logDrag(dragLogThrottler)(event);
+}
+
+function maybeCancelDrag(event: Event): void {
+  if (!(event instanceof MouseEvent)) {
+    return;
+  }
+  if (Math.abs(event.screenX - dragStartX) >= DRAG_REPORT_THRESHOLD ||
+      Math.abs(event.screenY - dragStartY) >= DRAG_REPORT_THRESHOLD) {
+    return;
+  }
   void dragLogThrottler.schedule(cancelLogging);
 }

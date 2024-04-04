@@ -449,7 +449,7 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordDrag.calledOnce);
   });
 
-  it('does not log drag if too short', async () => {
+  it('does not log drag if too short in time', async () => {
     const dragLogThrottler = new Common.Throttler.Throttler(1000000000);
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler});
@@ -464,6 +464,26 @@ describe('LoggingDriver', () => {
     assert.isFalse(recordDrag.called);
 
     element.dispatchEvent(new MouseEvent('pointerup'));
+
+    await dragLogThrottler.process?.();
+    assert.isFalse(recordDrag.called);
+  });
+
+  it('logs drag if short in time but long in distance', async () => {
+    const dragLogThrottler = new Common.Throttler.Throttler(1000000000);
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler});
+    const recordDrag = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordDrag',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new MouseEvent('pointerdown', {screenX: 0, screenY: 0}));
+    assert.exists(dragLogThrottler.process);
+    assert.isFalse(recordDrag.called);
+
+    element.dispatchEvent(new MouseEvent('pointerup', {screenX: 100, screenY: 100}));
 
     await dragLogThrottler.process?.();
     assert.isFalse(recordDrag.called);

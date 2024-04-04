@@ -462,7 +462,7 @@ export class HeadersViewComponent extends HTMLElement {
     // value from the previous render.
     // clang-format off
     const jslog = isKey ? VisualLogging.key() : VisualLogging.value();
-    return LitHtml.html`<span jslog=${jslog.track({change: true, keydown: 'Enter|Escape|Tab'})}
+    return LitHtml.html`<span jslog=${jslog.track({change: true, keydown: 'Enter|Escape|Tab', click: true})}
                               contenteditable="true"
                               class="editable ${className}"
                               tabindex="0"

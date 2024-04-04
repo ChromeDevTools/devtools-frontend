@@ -276,7 +276,7 @@ export class SuggestionInput extends LitElement {
     this.mimeType = '';
     this.autocomplete = true;
     this.addEventListener('blur', this.#handleBlurEvent);
-    let jslog = VisualLogging.value().track({keydown: 'ArrowUp|ArrowDown|Enter', change: true});
+    let jslog = VisualLogging.value().track({keydown: 'ArrowUp|ArrowDown|Enter', change: true, click: true});
     if (this.jslogContext) {
       jslog = jslog.context(this.jslogContext);
     }

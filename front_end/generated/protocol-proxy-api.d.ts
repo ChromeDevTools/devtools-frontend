@@ -106,6 +106,8 @@ declare namespace ProtocolProxyApi {
 
     FedCm: FedCmApi;
 
+    PWA: PWAApi;
+
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -206,6 +208,8 @@ declare namespace ProtocolProxyApi {
     Preload: PreloadDispatcher;
 
     FedCm: FedCmDispatcher;
+
+    PWA: PWADispatcher;
 
     Debugger: DebuggerDispatcher;
 
@@ -3877,6 +3881,16 @@ declare namespace ProtocolProxyApi {
      */
     dialogClosed(params: Protocol.FedCm.DialogClosedEvent): void;
 
+  }
+
+  export interface PWAApi {
+    /**
+     * Returns the following OS state for the given manifest id.
+     */
+    invoke_getOsAppState(params: Protocol.PWA.GetOsAppStateRequest): Promise<Protocol.PWA.GetOsAppStateResponse>;
+
+  }
+  export interface PWADispatcher {
   }
 
   export interface DebuggerApi {

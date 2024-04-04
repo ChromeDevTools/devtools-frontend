@@ -25581,6 +25581,79 @@
             ]
         },
         {
+            "domain": "PWA",
+            "description": "This domain allows interacting with the browser to control PWAs.",
+            "experimental": true,
+            "types": [
+                {
+                    "id": "FileHandlerAccept",
+                    "description": "The following types are the replica of\nhttps://crsrc.org/c/chrome/browser/web_applications/proto/web_app_os_integration_state.proto;drc=9910d3be894c8f142c977ba1023f30a656bc13fc;l=67",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "mediaType",
+                            "description": "New name of the mimetype according to\nhttps://www.iana.org/assignments/media-types/media-types.xhtml",
+                            "type": "string"
+                        },
+                        {
+                            "name": "fileExtensions",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "FileHandler",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "action",
+                            "type": "string"
+                        },
+                        {
+                            "name": "accepts",
+                            "type": "array",
+                            "items": {
+                                "$ref": "FileHandlerAccept"
+                            }
+                        },
+                        {
+                            "name": "displayName",
+                            "type": "string"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "getOsAppState",
+                    "description": "Returns the following OS state for the given manifest id.",
+                    "parameters": [
+                        {
+                            "name": "manifestId",
+                            "description": "The id from the webapp's manifest file, commonly it's the url of the\nsite installing the webapp. See\nhttps://web.dev/learn/pwa/web-app-manifest.",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "badgeCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "fileHandlers",
+                            "type": "array",
+                            "items": {
+                                "$ref": "FileHandler"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Console",
             "description": "This domain is deprecated - use Runtime or Log instead.",
             "deprecated": true,

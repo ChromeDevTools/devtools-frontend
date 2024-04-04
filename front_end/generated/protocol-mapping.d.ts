@@ -4367,6 +4367,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Returns the following OS state for the given manifest id.
+     */
+    'PWA.getOsAppState': {
+      paramsType: [Protocol.PWA.GetOsAppStateRequest];
+      returnType: Protocol.PWA.GetOsAppStateResponse;
+    };
+    /**
      * Continues execution until specific location is reached.
      */
     'Debugger.continueToLocation': {

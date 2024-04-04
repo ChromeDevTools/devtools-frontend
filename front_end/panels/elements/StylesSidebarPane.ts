@@ -329,6 +329,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         const hint = activeHints.get(possibleHintNodeFromHintIcon);
 
         if (hint) {
+          this.#hintPopoverHelper.jslogContext = 'elements.css-hint';
           return {
             box: hoveredNode.boxInWindow(),
             show: async (popover: UI.GlassPane.GlassPane) => {
@@ -349,6 +350,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         const cssProperty = cssPropertyName && this.#webCustomData.findCssProperty(cssPropertyName);
 
         if (cssProperty) {
+          this.#hintPopoverHelper.jslogContext = 'elements.css-property-doc';
           return {
             box: hoveredNode.boxInWindow(),
             show: async (popover: UI.GlassPane.GlassPane) => {
@@ -363,6 +365,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
       if (hoveredNode.matches('.simple-selector')) {
         const specificity = StylePropertiesSection.getSpecificityStoredForNodeElement(hoveredNode);
+        this.#hintPopoverHelper.jslogContext = 'elements.css-selector-specificity';
         return {
           box: hoveredNode.boxInWindow(),
           show: async (popover: UI.GlassPane.GlassPane) => {
@@ -378,7 +381,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
 
       return null;
-    }, 'elements.css-property-doc');
+    });
 
     this.#hintPopoverHelper.setDisableOnClick(true);
     this.#hintPopoverHelper.setTimeout(300);

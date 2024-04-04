@@ -207,6 +207,7 @@ ts_library("unittests") {
     "UIUtils.test.ts",
     "View.test.ts",
     "ViewRegistration.test.ts",
+    "Widget.test.ts",
     "XLink.test.ts",
   ]
 

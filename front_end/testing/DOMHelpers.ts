@@ -44,15 +44,10 @@ function removeChildren(node: Node): void {
     if (child.__widget) {
       // Child is a widget, so we have to use the Widget system to remove it from the DOM.
       child.__widget.detach();
-    } else if (child.__widgetCounter) {
-      // If an element has __widgetCounter, this means it is not a widget
-      // itself, but at least one of its children are, so we now recurse
-      // on this element's children. If we try to just remove this
-      // element, we will get errors about removing widgets using regular
-      // DOM operations.
-      removeChildren(child);
     } else {
-      // Non-widget element, so remove using normal DOM APIs.
+      // For regular children, recursively remove their children, since some of them
+      // might be widgets, and only afterwards remove the child from the current node.
+      removeChildren(child);
       node.removeChild(child);
     }
   }

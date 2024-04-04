@@ -398,36 +398,3 @@ DOMTokenList.prototype['toggle'] = function(token: string, force: boolean|undefi
   return originalToggle.call(this, token, Boolean(force));
 };
 })();
-
-export const originalAppendChild = Element.prototype.appendChild;
-export const originalInsertBefore = Element.prototype.insertBefore;
-export const originalRemoveChild = Element.prototype.removeChild;
-export const originalRemoveChildren = Element.prototype.removeChildren;
-
-Element.prototype.appendChild = function(child: Node|null): Node {
-  if (child.__widget && child.parentElement !== this) {
-    throw new Error('Attempt to add widget via regular DOM operation.');
-  }
-  return originalAppendChild.call(this, child);
-};
-
-Element.prototype.insertBefore = function(child: Node|null, anchor: Node|null): Node {
-  if (child.__widget && child.parentElement !== this) {
-    throw new Error('Attempt to add widget via regular DOM operation.');
-  }
-  return originalInsertBefore.call(this, child, anchor);
-};
-
-Element.prototype.removeChild = function(child: Node|null): Node {
-  if (child.__widgetCounter || child.__widget) {
-    throw new Error('Attempt to remove element containing widget via regular DOM operation');
-  }
-  return originalRemoveChild.call(this, child);
-};
-
-Element.prototype.removeChildren = function(): void {
-  if (this.__widgetCounter) {
-    throw new Error('Attempt to remove element containing widget via regular DOM operation');
-  }
-  originalRemoveChildren.call(this);
-};

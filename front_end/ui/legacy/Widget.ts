@@ -28,7 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
+import '../../core/dom_extension/dom_extension.js';
+
 import * as Platform from '../../core/platform/platform.js';
 import * as Helpers from '../components/helpers/helpers.js';
 
@@ -41,19 +42,25 @@ export class WidgetElement extends HTMLDivElement {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention, rulesdir/no_underscored_properties
   override __widget!: Widget|null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention, rulesdir/no_underscored_properties
-  override __widgetCounter!: number|null;
   constructor() {
     super();
   }
 }
+
+// Remember the original DOM mutation methods here, since we
+// will override them below to sanity check the Widget system.
+const originalAppendChild = Element.prototype.appendChild;
+const originalInsertBefore = Element.prototype.insertBefore;
+const originalRemoveChild = Element.prototype.removeChild;
+const originalRemoveChildren = Element.prototype.removeChildren;
 
 function assert(condition: unknown, message: string): void {
   if (!condition) {
     throw new Error(message);
   }
 }
+
+const widgetCounterMap = new WeakMap<Node, number>();
 
 export class Widget {
   element!: WidgetElement;
@@ -105,28 +112,29 @@ export class Widget {
   }
 
   private static incrementWidgetCounter(parentElement: WidgetElement, childElement: WidgetElement): void {
-    const count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
+    const count = (widgetCounterMap.get(childElement) || 0) + (childElement.__widget ? 1 : 0);
     if (!count) {
       return;
     }
 
     let currentElement: (WidgetElement|null)|WidgetElement = parentElement;
     while (currentElement) {
-      currentElement.__widgetCounter = (currentElement.__widgetCounter || 0) + count;
+      widgetCounterMap.set(currentElement, (widgetCounterMap.get(currentElement) || 0) + count);
       currentElement = parentWidgetElementOrShadowHost(currentElement);
     }
   }
 
   private static decrementWidgetCounter(parentElement: WidgetElement, childElement: WidgetElement): void {
-    const count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
+    const count = (widgetCounterMap.get(childElement) || 0) + (childElement.__widget ? 1 : 0);
     if (!count) {
       return;
     }
 
     let currentElement: (WidgetElement|null)|WidgetElement = parentElement;
     while (currentElement) {
-      if (currentElement.__widgetCounter) {
-        currentElement.__widgetCounter -= count;
+      const currentWidgetCounter = widgetCounterMap.get(currentElement);
+      if (currentWidgetCounter) {
+        widgetCounterMap.set(currentElement, currentWidgetCounter - count);
       }
       currentElement = parentWidgetElementOrShadowHost(currentElement);
     }
@@ -331,9 +339,9 @@ export class Widget {
         Widget.incrementWidgetCounter(parentElement, this.element);
       }
       if (insertBefore) {
-        DOMExtension.DOMExtension.originalInsertBefore.call(parentElement, this.element, insertBefore);
+        originalInsertBefore.call(parentElement, this.element, insertBefore);
       } else {
-        DOMExtension.DOMExtension.originalAppendChild.call(parentElement, this.element);
+        originalAppendChild.call(parentElement, this.element);
       }
     }
 
@@ -366,7 +374,7 @@ export class Widget {
     if (removeFromDOM) {
       // Force legal removal
       Widget.decrementWidgetCounter(parentElement, this.element);
-      DOMExtension.DOMExtension.originalRemoveChild.call(parentElement, this.element);
+      originalRemoveChild.call(parentElement, this.element);
       this.onDetach();
     } else {
       this.element.classList.add('hidden');
@@ -397,7 +405,7 @@ export class Widget {
       const parentElement = (this.element.parentElement as WidgetElement);
       // Force kick out from DOM.
       Widget.decrementWidgetCounter(parentElement, this.element);
-      DOMExtension.DOMExtension.originalRemoveChild.call(parentElement, this.element);
+      originalRemoveChild.call(parentElement, this.element);
     }
 
     // Update widget hierarchy.
@@ -698,3 +706,31 @@ export class WidgetFocusRestorer {
 function parentWidgetElementOrShadowHost(element: WidgetElement): WidgetElement|null {
   return element.parentElementOrShadowHost() as WidgetElement | null;
 }
+
+Element.prototype.appendChild = function<T extends Node>(node: T): T {
+  if (node.__widget && node.parentElement !== this) {
+    throw new Error('Attempt to add widget via regular DOM operation.');
+  }
+  return originalAppendChild.call(this, node) as T;
+};
+
+Element.prototype.insertBefore = function<T extends Node>(node: T, child: Node|null): T {
+  if (node.__widget && node.parentElement !== this) {
+    throw new Error('Attempt to add widget via regular DOM operation.');
+  }
+  return originalInsertBefore.call(this, node, child) as T;
+};
+
+Element.prototype.removeChild = function<T extends Node>(child: T): T {
+  if (widgetCounterMap.get(child) || child.__widget) {
+    throw new Error('Attempt to remove element containing widget via regular DOM operation');
+  }
+  return originalRemoveChild.call(this, child) as T;
+};
+
+Element.prototype.removeChildren = function(): void {
+  if (widgetCounterMap.get(this)) {
+    throw new Error('Attempt to remove element containing widget via regular DOM operation');
+  }
+  return originalRemoveChildren.call(this);
+};

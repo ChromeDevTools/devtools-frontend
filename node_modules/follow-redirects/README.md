@@ -63,10 +63,17 @@ const { http, https } = require('follow-redirects');
 
 const options = url.parse('http://bit.ly/900913');
 options.maxRedirects = 10;
-options.beforeRedirect = (options, { headers }) => {
+options.beforeRedirect = (options, response, request) => {
   // Use this to adjust the request options upon redirecting,
   // to inspect the latest response headers,
   // or to cancel the request by throwing an error
+
+  // response.headers = the redirect response headers
+  // response.statusCode = the redirect response code (eg. 301, 307, etc.)
+
+  // request.url = the requested URL that resulted in a redirect
+  // request.headers = the headers in the request that resulted in a redirect
+  // request.method = the method of the request that resulted in a redirect
   if (options.hostname === "example.com") {
     options.auth = "user:password";
   }

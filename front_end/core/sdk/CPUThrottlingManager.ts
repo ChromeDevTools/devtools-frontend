@@ -5,8 +5,7 @@
 import * as Common from '../../core/common/common.js';
 
 import {EmulationModel} from './EmulationModel.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 let throttlingManagerInstance: CPUThrottlingManager;
 
@@ -133,4 +132,5 @@ export enum CPUThrottlingRates {
   NoThrottling = 1,
   MidTierMobile = 4,
   LowEndMobile = 6,
+  ExtraSlow = 20,
 }

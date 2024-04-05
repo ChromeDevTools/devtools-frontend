@@ -92,7 +92,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChar
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
- * The arrow is drawn from the center, so the indent is in fact the center of the arrow.
+ * The expansion arrow is drawn from the center, so the indent is in fact the center of the arrow.
  * See `drawExpansionArrow` function to understand how we draw the arrow.
  * |headerLeftPadding|Arrow|
  * |expansionArrowIndent|
@@ -102,38 +102,38 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * |ICON_WIDTH|expansionArrowIndent|
  * |EDIT  ICON|headerLeftPadding|Arrow|LabelXPadding|Title|LabelXPadding|
  *            |<--                    labelWidth                     -->|
- *            ^ Blue line that indicate the focused group
+ *            ^ Blue line that indicates the focused group
  *
  * - Nesting Level 1
  * |ICON_WIDTH|expansionArrowIndent|expansionArrowIndent|
  * |EDIT  ICON|headerLeftPadding|                    |Arrow|LabelXPadding|Title|LabelXPadding|
  *            |<--                    labelWidth                                          -->|
- *            ^ Blue line that indicate the focused group
+ *            ^ Blue line that indicates the focused group
  *
  * - Nesting Level 2
  * |ICON_WIDTH|expansionArrowIndent|expansionArrowIndent|expansionArrowIndent|
  * |EDIT  ICON|headerLeftPadding|                                         |Arrow|LabelXPadding|Title|LabelXPadding|
  *            |<--                                labelWidth                                                   -->|
- *            ^ Blue line that indicate the focused group
+ *            ^ Blue line that indicates the focused group
  *
  * Edit mode:
  * - Nesting Level 0
  * |       EDITION_MODE_INDENT      |expansionArrowIndent|
  * | UP   ICON|DOWN  ICON|HIDE  ICON|headerLeftPadding|Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
  *                                  |<--            labelWidth                             -->|
- *                                  ^ Blue line that indicate the focused group
+ *                                  ^ Blue line that indicates the focused group
  *
  * - Nesting Level 1
  * |       EDITION_MODE_INDENT      |expansionArrowIndent|expansionArrowIndent|
  * | UP   ICON|DOWN  ICON|HIDE  ICON|headerLeftPadding|                    |Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
  *                                  |<--                      labelWidth                                        -->|
- *                                  ^ Blue line that indicate the focused group
+ *                                  ^ Blue line that indicates the focused group
  *
  * - Nesting Level 2
  * |       EDITION_MODE_INDENT      |expansionArrowIndent|expansionArrowIndent|expansionArrowIndent|
  * | UP   ICON|DOWN  ICON|HIDE  ICON|headerLeftPadding|                                         |Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
  *                                  |<--                                labelWidth                                                   -->|
- *                                  ^ Blue line that indicate the focused group
+ *                                  ^ Blue line that indicates the focused group
  */
 const HEADER_LEFT_PADDING = 6;
 const ARROW_SIDE = 8;

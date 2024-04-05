@@ -36,6 +36,7 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
   readonly #traceHandlers: Handlers.Types.HandlersWithMeta<EnabledModelHandlers>;
   #status = Status.IDLE;
   #modelConfiguration = Types.Configuration.DEFAULT;
+  #data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null = null;
   #insights: Insights.Types.TraceInsightData<EnabledModelHandlers>|null = null;
 
   static createWithAllHandlers(): TraceProcessor<typeof Handlers.ModelHandlers> {
@@ -118,8 +119,8 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
       handler.reset();
     }
 
+    this.#data = null;
     this.#insights = null;
-
     this.#status = Status.IDLE;
   }
 
@@ -183,6 +184,10 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
       return null;
     }
 
+    if (this.#data) {
+      return this.#data;
+    }
+
     // Handlers that depend on other handlers do so via .data(), which used to always
     // return a shallow clone of its internal data structures. However, that pattern
     // easily results in egregious amounts of allocation. Now .data() does not do any
@@ -215,7 +220,8 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
       Object.assign(traceParsedData, {[name]: data});
     }
 
-    return traceParsedData as Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>;
+    this.#data = traceParsedData as Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>;
+    return this.#data;
   }
 
   #getEnabledInsightRunners(traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>):

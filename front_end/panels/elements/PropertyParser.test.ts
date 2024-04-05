@@ -927,4 +927,35 @@ describe('PropertyParser', () => {
           match.lines.map(line => line.map(n => ast.text(n)).join(' ')), ['"a a" var(--unresolved) / auto 1fr auto']);
     }
   });
+
+  it('parses light-dark correctly', () => {
+    for (const fail of ['light-dark()', 'light-dark(red)', 'light-dark(var(--foo))']) {
+      const {match, text} = matchSingleValue(
+          'color', fail, Elements.PropertyParser.LightDarkColorMatch,
+          new Elements.PropertyParser.LightDarkColorMatcher(nilRenderer(Elements.PropertyParser.LightDarkColorMatch)));
+      assert.isNull(match, text);
+    }
+
+    for (const succeed
+             of ['light-dark(red, blue)', 'light-dark(var(--foo), red)', 'light-dark(red, var(--foo))',
+                 'light-dark(var(--foo), var(--bar))']) {
+      const {ast, match, text} = matchSingleValue(
+          'color', succeed, Elements.PropertyParser.LightDarkColorMatch,
+          new Elements.PropertyParser.LightDarkColorMatcher(nilRenderer(Elements.PropertyParser.LightDarkColorMatch)));
+      Platform.assertNotNullOrUndefined(ast, text);
+      Platform.assertNotNullOrUndefined(match, text);
+
+      const [light, dark] = succeed.slice('light-dark('.length, -1).split(', ');
+      assert.lengthOf(match.light, 1);
+      assert.lengthOf(match.dark, 1);
+      assert.strictEqual(ast.text(match.light[0]), light);
+      assert.strictEqual(ast.text(match.dark[0]), dark);
+    }
+
+    // light-dark only applies to color properties
+    const {match, text} = matchSingleValue(
+        'width', 'light-dark(red, blue)', Elements.PropertyParser.LightDarkColorMatch,
+        new Elements.PropertyParser.LightDarkColorMatcher(nilRenderer(Elements.PropertyParser.LightDarkColorMatch)));
+    assert.isNull(match, text);
+  });
 });

@@ -702,6 +702,30 @@ export class ColorMatcher extends MatcherBase<typeof ColorMatch> {
   }
 }
 
+export abstract class LightDarkColorMatch implements Match {
+  readonly type = 'light-dark';
+  constructor(readonly text: string, readonly light: CodeMirror.SyntaxNode[], readonly dark: CodeMirror.SyntaxNode[]) {
+  }
+  abstract render(node: CodeMirror.SyntaxNode, context: RenderingContext): Node[];
+}
+
+export class LightDarkColorMatcher extends MatcherBase<typeof LightDarkColorMatch> {
+  override accepts(propertyName: string): boolean {
+    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'light-dark') {
+      return null;
+    }
+    const args = ASTUtils.callArgs(node);
+    if (args.length !== 2 || args[0].length === 0 || args[1].length === 0) {
+      return null;
+    }
+    return this.createMatch(matching.ast.text(node), args[0], args[1]);
+  }
+}
+
 export const enum LinkableNameProperties {
   Animation = 'animation',
   AnimationName = 'animation-name',

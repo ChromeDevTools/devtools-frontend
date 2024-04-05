@@ -56,6 +56,11 @@ import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
 
+export const enum ColorScheme {
+  Light = 'light',
+  Dark = 'dark',
+}
+
 export class CSSModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.CSSApi;
   readonly #domModel: DOMModel;
@@ -74,6 +79,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   #isEnabled: boolean;
   #isRuleUsageTrackingEnabled: boolean;
   #isTrackingRequestPending: boolean;
+  #colorScheme: ColorScheme|undefined;
 
   constructor(target: Target) {
     super(target);
@@ -112,6 +118,17 @@ export class CSSModel extends SDKModel<EventTypes> {
     Common.Settings.Settings.instance()
         .moduleSetting('css-source-maps-enabled')
         .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
+  }
+
+  async colorScheme(): Promise<ColorScheme|undefined> {
+    if (!this.#colorScheme) {
+      const colorSchemeResponse = await this.domModel()?.target().runtimeAgent().invoke_evaluate(
+          {expression: 'window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches'});
+      if (colorSchemeResponse && !colorSchemeResponse.exceptionDetails && !colorSchemeResponse.getError()) {
+        this.#colorScheme = colorSchemeResponse.result.value ? ColorScheme.Dark : ColorScheme.Light;
+      }
+    }
+    return this.#colorScheme;
   }
 
   headersForSourceURL(sourceURL: Platform.DevToolsPath.UrlString): CSSStyleSheetHeader[] {
@@ -574,6 +591,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   mediaQueryResultChanged(): void {
+    this.#colorScheme = undefined;
     this.dispatchEventToListeners(Events.MediaQueryResultChanged);
   }
 

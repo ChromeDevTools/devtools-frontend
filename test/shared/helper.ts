@@ -442,6 +442,10 @@ export const setDevToolsSettings = async (settings: Record<string, string>) => {
   await reloadDevTools();
 };
 
+export function goToHtml(html: string): Promise<void> {
+  return goTo(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
+}
+
 export const goTo = async (url: string, options: puppeteer.WaitForOptions = {}) => {
   const {target} = getBrowserAndPages();
   await target.goto(url, options);

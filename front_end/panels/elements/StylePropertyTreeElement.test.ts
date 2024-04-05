@@ -1074,4 +1074,94 @@ describeWithRealConnection('StylePropertyTreeElement', () => {
       assert.deepStrictEqual(properties.map(p => p.source), [null, null, null, null]);
     });
   });
+
+  describe('LightDarkColorRenderer', () => {
+    it('renders light-dark correctly', async () => {
+      const colorSchemeSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+
+      async function check(colorScheme: SDK.CSSModel.ColorScheme, lightText: string, darkText: string) {
+        const lightDark = `light-dark(${lightText}, ${darkText})`;
+        const stylePropertyTreeElement = getTreeElement('color', lightDark);
+        stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', colorScheme]]));
+        stylePropertyTreeElement.updateTitle();
+        await Promise.all(colorSchemeSpy.returnValues);
+
+        const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+        assertNotNullOrUndefined(swatch);
+        assert.strictEqual(swatch?.textContent, lightDark);
+        const activeColor = colorScheme === SDK.CSSModel.ColorScheme.Light ? lightText : darkText;
+        assert.strictEqual(swatch.getColor()?.getAuthoredText(), mockVariableMap[activeColor] ?? activeColor);
+        const [light, dark] = swatch.querySelectorAll('devtools-color-swatch');
+        assertNotNullOrUndefined(light);
+        assertNotNullOrUndefined(dark);
+        const active = colorScheme === SDK.CSSModel.ColorScheme.Light ? light : dark;
+        const inactive = colorScheme === SDK.CSSModel.ColorScheme.Light ? dark : light;
+        assert.strictEqual(inactive.parentElement?.style.textDecoration, 'line-through');
+        assert.strictEqual(active.parentElement?.style.textDecoration, '');
+      }
+
+      await check(SDK.CSSModel.ColorScheme.Light, 'red', 'blue');
+      await check(SDK.CSSModel.ColorScheme.Dark, 'red', 'blue');
+      await check(SDK.CSSModel.ColorScheme.Light, 'red', 'var(--blue)');
+      await check(SDK.CSSModel.ColorScheme.Dark, 'red', 'var(--blue)');
+      await check(SDK.CSSModel.ColorScheme.Light, 'var(--blue)', 'red');
+      await check(SDK.CSSModel.ColorScheme.Dark, 'var(--blue)', 'red');
+    });
+
+    it('renders light-dark correctly if the color scheme cannot be resolved', async () => {
+      const lightDark = 'light-dark(red, blue)';
+      const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
+      sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
+      cssModel.colorScheme.resolves(undefined);
+      const stylePropertyTreeElement = getTreeElement('color', lightDark);
+      stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', 'light dark']]));
+      const colorSchemeSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      stylePropertyTreeElement.updateTitle();
+      await Promise.all(colorSchemeSpy.returnValues);
+
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.lengthOf(swatches, 3);
+      assert.isNull(swatches[0].getColor());
+      assert.strictEqual(swatches[0].textContent, 'light-dark(red, blue)');
+      assert.strictEqual(swatches[1].textContent, 'red');
+      assert.strictEqual(swatches[2].textContent, 'blue');
+    });
+
+    it('renders light-dark without color-scheme correctly', async () => {
+      const lightDark = 'light-dark(red, blue)';
+      const stylePropertyTreeElement = getTreeElement('color', lightDark);
+      // leave color-scheme unset
+      const colorSchemeSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      stylePropertyTreeElement.updateTitle();
+      await Promise.all(colorSchemeSpy.returnValues);
+
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.lengthOf(swatches, 3);
+      assert.strictEqual(swatches[0].getText(), 'red');
+      assert.strictEqual(swatches[0].textContent, 'light-dark(red, blue)');
+      assert.strictEqual(swatches[1].textContent, 'red');
+      assert.strictEqual(swatches[2].textContent, 'blue');
+    });
+
+    it('renders light-dark with undefined vars correctly', async () => {
+      const lightDark = 'light-dark(red, var(--undefined))';
+      const stylePropertyTreeElement = getTreeElement('color', lightDark);
+      stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', 'light dark']]));
+      const colorSchemeSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      stylePropertyTreeElement.updateTitle();
+      await Promise.all(colorSchemeSpy.returnValues);
+
+      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch');
+      assertNotNullOrUndefined(swatches);
+      assert.lengthOf(swatches, 1);
+      assert.strictEqual(swatches[0].textContent, 'red');
+      assert.strictEqual(swatches[0].parentElement?.style.textDecoration, '');
+    });
+  });
 });

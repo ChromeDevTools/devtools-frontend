@@ -64,7 +64,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineModelImpl {
-  private isGenericTraceInternal!: boolean;
   private tracksInternal!: Track[];
   private namedTracks!: Map<TrackType, Track>;
   private inspectedTargetEventsInternal!: TraceEngine.Legacy.Event[];
@@ -280,7 +279,6 @@ export class TimelineModelImpl {
       // The next line is for loading legacy traces recorded before M67.
       // TODO(alph): Drop the support at some point.
       const metadataEvents = this.processMetadataEvents(tracingModel);
-      this.isGenericTraceInternal = !metadataEvents;
       if (metadataEvents) {
         this.processMetadataAndThreads(tracingModel, metadataEvents);
       } else {
@@ -967,7 +965,6 @@ export class TimelineModelImpl {
   }
 
   private reset(): void {
-    this.isGenericTraceInternal = false;
     this.tracksInternal = [];
     this.namedTracks = new Map();
     this.inspectedTargetEventsInternal = [];
@@ -979,10 +976,6 @@ export class TimelineModelImpl {
 
     this.minimumRecordTimeInternal = 0;
     this.maximumRecordTimeInternal = 0;
-  }
-
-  isGenericTrace(): boolean {
-    return this.isGenericTraceInternal;
   }
 
   tracingModel(): TraceEngine.Legacy.TracingModel|null {

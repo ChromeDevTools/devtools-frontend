@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
-// This is what was SDK.TracingModel moved into models/trace to avoid circular dependency issues. Our ultimate goal is to remove this model entirely once the migration to the new model is done
+// This is what was SDK.TracingModel moved into models/trace to avoid circular
+// dependency issues. Our ultimate goal is to remove this model entirely once
+// the migration to the new model is done
 
 import * as Common from '../../core/common/common.js';
 

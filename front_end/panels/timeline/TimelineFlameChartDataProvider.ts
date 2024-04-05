@@ -986,7 +986,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const entryType = this.entryType(entryIndex);
     if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
-      if (this.legacyTimelineModel.isGenericTrace()) {
+
+      if (this.traceEngineData && this.traceEngineData.Meta.traceIsGeneric) {
         return this.genericTraceEventColor(event);
       }
       if (this.legacyPerformanceModel.timelineModel().isMarkerEvent(event)) {

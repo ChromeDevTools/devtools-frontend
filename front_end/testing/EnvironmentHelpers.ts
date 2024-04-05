@@ -199,6 +199,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'show-whitespaces-in-editor', 'none'),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-autocompletion', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-auto-detect-indent', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-bracket-closing', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-bracket-matching', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-code-folding', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-indent', '    '),

@@ -143,7 +143,7 @@ export class CodeBlock extends HTMLElement {
     if (!editor) {
       return;
     }
-    let language = CodeMirror.html.html();
+    let language = CodeMirror.html.html({autoCloseTags: false, selfClosingTags: true});
     switch (this.#codeLang) {
       case 'js':
         language = CodeMirror.javascript.javascript();

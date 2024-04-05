@@ -1124,9 +1124,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           },
         ]),
         TextEditor.Config.baseConfiguration(initialValue),
-        TextEditor.Config.closeBrackets,
+        TextEditor.Config.closeBrackets.instance(),
         TextEditor.Config.autocompletion.instance(),
-        CodeMirror.html.html(),
+        CodeMirror.html.html({autoCloseTags: false, selfClosingTags: true}),
         TextEditor.Config.domWordWrap.instance(),
         CodeMirror.EditorView.theme({
           '&.cm-editor': {maxHeight: '300px'},

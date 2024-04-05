@@ -301,6 +301,18 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Sources category in Settings
    */
+  bracketClosing: 'Auto closing brackets',
+  /**
+   *@description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  enableBracketClosing: 'Enable auto closing brackets',
+  /**
+   *@description Title of a setting under the Sources category that can be invoked through the Command Menu
+   */
+  disableBracketClosing: 'Disable auto closing brackets',
+  /**
+   *@description Title of a setting under the Sources category in Settings
+   */
   bracketMatching: 'Bracket matching',
   /**
    *@description Title of a setting under the Sources category that can be invoked through the Command Menu
@@ -1581,6 +1593,25 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.disableAutocompletion),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.SOURCES,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.bracketClosing),
+  settingName: 'text-editor-bracket-closing',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableBracketClosing),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableBracketClosing),
     },
   ],
 });

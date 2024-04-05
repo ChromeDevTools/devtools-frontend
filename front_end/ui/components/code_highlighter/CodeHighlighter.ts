@@ -100,7 +100,7 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
       return CodeMirror.css.css();
 
     case 'text/html':
-      return CodeMirror.html.html({selfClosingTags: true});
+      return CodeMirror.html.html({autoCloseTags: false, selfClosingTags: true});
 
     case 'application/xml':
     case 'application/xhtml+xml':

@@ -352,10 +352,11 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
   ];
 }
 
-export const closeBrackets: CM.Extension = [
+export const closeBrackets = DynamicSetting.bool('text-editor-bracket-closing', [
+  CM.html.autoCloseTags,
   CM.closeBrackets(),
   CM.keymap.of(CM.closeBracketsKeymap),
-];
+]);
 
 // Root editor tooltips at the top of the document, creating a special
 // element with the editor styles mounted in it for them. This is
@@ -408,8 +409,10 @@ class CompletionHint extends CM.WidgetType {
 }
 
 export const showCompletionHint = CM.ViewPlugin.fromClass(class {
-  decorations: CM.DecorationSet = CM.Decoration.none;
-  currentHint: string|null = null;
+decorations:
+  CM.DecorationSet = CM.Decoration.none;
+currentHint:
+  string|null = null;
 
   update(update: CM.ViewUpdate): void {
     const top = this.currentHint = this.topCompletion(update.state);

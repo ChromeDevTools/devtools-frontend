@@ -88,7 +88,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const editorConfig = [
       CodeMirror.javascript.javascriptLanguage,
       TextEditor.Config.baseConfiguration(oldCondition || ''),
-      TextEditor.Config.closeBrackets,
+      TextEditor.Config.closeBrackets.instance(),
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.EditorView.lineWrapping,
       TextEditor.Config.showCompletionHint,

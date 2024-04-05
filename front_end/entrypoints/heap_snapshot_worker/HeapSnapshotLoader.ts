@@ -217,7 +217,7 @@ export class HeapSnapshotLoader {
     const nodes = await this.#parseArray(
         '"nodes"', 'Loading nodes… {PH1}%',
         this.#snapshot.snapshot.meta.node_fields.length * this.#snapshot.snapshot.node_count);
-    this.#snapshot.nodes = nodes.asUint32ArrayOrFail();
+    this.#snapshot.nodes = nodes;
 
     const edges = await this.#parseArray(
         '"edges"', 'Loading edges… {PH1}%',

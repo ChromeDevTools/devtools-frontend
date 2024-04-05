@@ -40,7 +40,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       createEdge: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot.prototype.createEdge,
       createRetainingEdge: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot.prototype.createRetainingEdge
     };
-    result.containmentEdges.getValue = function(i) {
+    result.nodes.getValue = result.containmentEdges.getValue = function(i) {
       return this[i];
     };
     return result;
@@ -82,7 +82,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   HeapProfilerTestRunner.postprocessHeapSnapshotMock = function(mock) {
     mock.nodes = new Uint32Array(mock.nodes);
     mock.edges = new Uint32Array(mock.edges);
-    mock.edges.getValue = function(i) {
+    mock.nodes.getValue = mock.edges.getValue = function(i) {
       return this[i];
     };
     return mock;

@@ -31,7 +31,20 @@ if (!Array.isArray(entrypoints)) {
 
 const templateContent = fs.readFileSync(template, 'utf-8');
 
+const REACT_NATIVE_ENTRYPOINT_TO_TITLE = new Map([
+  ['rn_inspector', 'DevTools (React Native)'],
+  ['rn_fusebox', 'React Native DevTools (Fusebox ⚡)']
+]);
+
 for (const entrypoint of entrypoints) {
-  const rewrittenTemplateContent = templateContent.replace(new RegExp('%ENTRYPOINT_NAME%', 'g'), entrypoint);
+  let rewrittenTemplateContent = templateContent.replace(new RegExp('%ENTRYPOINT_NAME%', 'g'), entrypoint);
+  if (REACT_NATIVE_ENTRYPOINT_TO_TITLE.has(entrypoint)) {
+    const rewrittenTitle = REACT_NATIVE_ENTRYPOINT_TO_TITLE.get(entrypoint);
+    rewrittenTemplateContent = rewrittenTemplateContent.replace(
+      new RegExp('(?<=<title>)(.*)(?=</title>)', 'g'),
+      rewrittenTitle
+    );
+  }
+
   writeIfChanged(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
 }

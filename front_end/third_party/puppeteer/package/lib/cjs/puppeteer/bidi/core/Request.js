@@ -148,6 +148,16 @@ let Request = (() => {
         get redirect() {
             return this.#redirect;
         }
+        get lastRedirect() {
+            let redirect = this.#redirect;
+            while (redirect) {
+                if (redirect && !redirect.#redirect) {
+                    return redirect;
+                }
+                redirect = redirect.#redirect;
+            }
+            return redirect;
+        }
         get response() {
             return this.#response;
         }

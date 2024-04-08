@@ -184,6 +184,7 @@ let BidiFrame = (() => {
                 request.once('error', () => {
                     this.page().trustedEmitter.emit("requestfailed" /* PageEvent.RequestFailed */, httpRequest);
                 });
+                void httpRequest.finalizeInterceptions();
             });
             this.browsingContext.on('navigation', ({ navigation }) => {
                 navigation.once('fragment', () => {
@@ -373,9 +374,9 @@ let BidiFrame = (() => {
                 if (!request) {
                     return null;
                 }
-                const httpRequest = requests.get(request);
-                const lastRedirect = httpRequest.redirectChain().at(-1);
-                return (lastRedirect !== undefined ? lastRedirect : httpRequest).response();
+                const lastRequest = request.lastRedirect ?? request;
+                const httpRequest = requests.get(lastRequest);
+                return httpRequest.response();
             }), raceWith(timeout(ms), this.#detached$().pipe(map(() => {
                 throw new TargetCloseError('Frame detached.');
             })))));

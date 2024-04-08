@@ -42,7 +42,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Navigation = void 0;
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const decorators_js_1 = require("../../util/decorators.js");
-const Deferred_js_1 = require("../../util/Deferred.js");
 const disposable_js_1 = require("../../util/disposable.js");
 /**
  * @internal
@@ -68,7 +67,7 @@ let Navigation = (() => {
         #navigation;
         #browsingContext;
         #disposables = new disposable_js_1.DisposableStack();
-        #id = new Deferred_js_1.Deferred();
+        #id;
         // keep-sorted end
         constructor(context) {
             super();
@@ -87,7 +86,6 @@ let Navigation = (() => {
             });
             browsingContextEmitter.on('request', ({ request }) => {
                 if (request.navigation === undefined ||
-                    this.#request !== undefined ||
                     // If a request with a navigation ID comes in, then the navigation ID is
                     // for this navigation.
                     !this.#matches(request.navigation)) {
@@ -95,6 +93,10 @@ let Navigation = (() => {
                 }
                 this.#request = request;
                 this.emit('request', request);
+                const requestEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.#request));
+                requestEmitter.on('redirect', request => {
+                    this.#request = request;
+                });
             });
             const sessionEmitter = this.#disposables.use(new EventEmitter_js_1.EventEmitter(this.#session));
             sessionEmitter.on('browsingContext.navigationStarted', info => {
@@ -141,11 +143,11 @@ let Navigation = (() => {
             if (this.#navigation !== undefined && !this.#navigation.disposed) {
                 return false;
             }
-            if (!this.#id.resolved()) {
-                this.#id.resolve(navigation);
+            if (this.#id === undefined) {
+                this.#id = navigation;
                 return true;
             }
-            return this.#id.value() === navigation;
+            return this.#id === navigation;
         }
         // keep-sorted start block=yes
         get #session() {

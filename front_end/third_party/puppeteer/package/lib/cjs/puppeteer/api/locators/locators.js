@@ -101,14 +101,17 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 })).pipe((0, rxjs_js_1.defaultIfEmpty)(handle));
             });
         },
-        retryAndRaceWithSignalAndTimer: (signal) => {
+        retryAndRaceWithSignalAndTimer: (signal, cause) => {
             const candidates = [];
             if (signal) {
                 candidates.push((0, rxjs_js_1.fromEvent)(signal, 'abort').pipe((0, rxjs_js_1.map)(() => {
+                    if (signal.reason instanceof Error) {
+                        signal.reason.cause = cause;
+                    }
                     throw signal.reason;
                 })));
             }
-            candidates.push((0, util_js_1.timeout)(this._timeout));
+            candidates.push((0, util_js_1.timeout)(this._timeout, cause));
             return (0, rxjs_js_1.pipe)((0, rxjs_js_1.retry)({ delay: exports.RETRY_DELAY }), (0, rxjs_js_1.raceWith)(...candidates));
         },
     };
@@ -238,6 +241,7 @@ class Locator extends EventEmitter_js_1.EventEmitter {
     };
     #click(options) {
         const signal = options?.signal;
+        const cause = new Error('Locator.click');
         return this._wait(options).pipe(this.operators.conditions([
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
@@ -249,10 +253,11 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 void handle.dispose().catch(util_js_1.debugError);
                 throw err;
             }));
-        }), this.operators.retryAndRaceWithSignalAndTimer(signal));
+        }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
     }
     #fill(value, options) {
         const signal = options?.signal;
+        const cause = new Error('Locator.fill');
         return this._wait(options).pipe(this.operators.conditions([
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
@@ -344,10 +349,11 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 void handle.dispose().catch(util_js_1.debugError);
                 throw err;
             }));
-        }), this.operators.retryAndRaceWithSignalAndTimer(signal));
+        }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
     }
     #hover(options) {
         const signal = options?.signal;
+        const cause = new Error('Locator.hover');
         return this._wait(options).pipe(this.operators.conditions([
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
@@ -358,10 +364,11 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 void handle.dispose().catch(util_js_1.debugError);
                 throw err;
             }));
-        }), this.operators.retryAndRaceWithSignalAndTimer(signal));
+        }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
     }
     #scroll(options) {
         const signal = options?.signal;
+        const cause = new Error('Locator.scroll');
         return this._wait(options).pipe(this.operators.conditions([
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
@@ -379,7 +386,7 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 void handle.dispose().catch(util_js_1.debugError);
                 throw err;
             }));
-        }), this.operators.retryAndRaceWithSignalAndTimer(signal));
+        }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
     }
     /**
      * Clones the locator.
@@ -393,7 +400,8 @@ class Locator extends EventEmitter_js_1.EventEmitter {
      * @public
      */
     async waitHandle(options) {
-        return await (0, rxjs_js_1.firstValueFrom)(this._wait(options).pipe(this.operators.retryAndRaceWithSignalAndTimer(options?.signal)));
+        const cause = new Error('Locator.waitHandle');
+        return await (0, rxjs_js_1.firstValueFrom)(this._wait(options).pipe(this.operators.retryAndRaceWithSignalAndTimer(options?.signal, cause)));
     }
     /**
      * Waits for the locator to get the serialized value from the page.

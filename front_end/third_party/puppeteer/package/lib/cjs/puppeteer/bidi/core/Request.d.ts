@@ -29,6 +29,7 @@ export declare class Request extends EventEmitter<{
     get method(): string;
     get navigation(): string | undefined;
     get redirect(): Request | undefined;
+    get lastRedirect(): Request | undefined;
     get response(): Bidi.Network.ResponseData | undefined;
     get url(): string;
     get isBlocked(): boolean;

@@ -15,8 +15,8 @@ class PuppeteerError extends Error {
     /**
      * @internal
      */
-    constructor(message) {
-        super(message);
+    constructor(message, options) {
+        super(message, options);
         this.name = this.constructor.name;
     }
     /**

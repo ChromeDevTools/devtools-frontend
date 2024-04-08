@@ -181,8 +181,7 @@ let UserContext = (() => {
                 origin,
                 descriptor,
                 state,
-                // @ts-expect-error not standard implementation.
-                'goog:userContext': this.#id,
+                userContext: this.#id,
             });
         }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _createBrowsingContext_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {

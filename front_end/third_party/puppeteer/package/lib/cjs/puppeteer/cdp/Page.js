@@ -821,6 +821,11 @@ class CdpPage extends Page_js_1.Page {
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }
+        await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.from)(this.mainFrame()
+            .isolatedRealm()
+            .evaluate(() => {
+            return document.fonts.ready;
+        })).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms))));
         const printCommandPromise = this.#primaryTargetClient.send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
             landscape,

@@ -243,11 +243,11 @@ export function validateDialogType(type) {
 /**
  * @internal
  */
-export function timeout(ms) {
+export function timeout(ms, cause) {
     return ms === 0
         ? NEVER
         : timer(ms).pipe(map(() => {
-            throw new TimeoutError(`Timed out after waiting ${ms}ms`);
+            throw new TimeoutError(`Timed out after waiting ${ms}ms`, { cause });
         }));
 }
 /**

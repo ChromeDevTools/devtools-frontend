@@ -111,6 +111,18 @@ export declare abstract class HTTPRequest {
      */
     _redirectChain: HTTPRequest[];
     /**
+     * @internal
+     */
+    protected interception: {
+        enabled: boolean;
+        handled: boolean;
+        handlers: Array<() => void | PromiseLike<any>>;
+        resolutionState: InterceptResolutionState;
+        requestOverrides: ContinueRequestOverrides;
+        response: Partial<ResponseForRequest> | null;
+        abortReason: Protocol.Network.ErrorReason | null;
+    };
+    /**
      * Warning! Using this client can break Puppeteer. Use with caution.
      *
      * @experimental
@@ -129,16 +141,16 @@ export declare abstract class HTTPRequest {
      * if the interception is allowed to continue (ie, `abort()` and
      * `respond()` aren't called).
      */
-    abstract continueRequestOverrides(): ContinueRequestOverrides;
+    continueRequestOverrides(): ContinueRequestOverrides;
     /**
      * The `ResponseForRequest` that gets used if the
      * interception is allowed to respond (ie, `abort()` is not called).
      */
-    abstract responseForRequest(): Partial<ResponseForRequest> | null;
+    responseForRequest(): Partial<ResponseForRequest> | null;
     /**
      * The most recent reason for aborting the request
      */
-    abstract abortErrorReason(): Protocol.Network.ErrorReason | null;
+    abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * An InterceptResolutionState object describing the current resolution
      * action and priority.
@@ -150,24 +162,36 @@ export declare abstract class HTTPRequest {
      * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
      * `disabled`, `none`, or `already-handled`.
      */
-    abstract interceptResolutionState(): InterceptResolutionState;
+    interceptResolutionState(): InterceptResolutionState;
     /**
      * Is `true` if the intercept resolution has already been handled,
      * `false` otherwise.
      */
-    abstract isInterceptResolutionHandled(): boolean;
+    isInterceptResolutionHandled(): boolean;
     /**
      * Adds an async request handler to the processing queue.
      * Deferred handlers are not guaranteed to execute in any particular order,
      * but they are guaranteed to resolve before the request interception
      * is finalized.
      */
-    abstract enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
+    enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
+    /**
+     * @internal
+     */
+    abstract _abort(errorReason: Protocol.Network.ErrorReason | null): Promise<void>;
+    /**
+     * @internal
+     */
+    abstract _respond(response: Partial<ResponseForRequest>): Promise<void>;
+    /**
+     * @internal
+     */
+    abstract _continue(overrides: ContinueRequestOverrides): Promise<void>;
     /**
      * Awaits pending interception handlers and then decides how to fulfill
      * the request interception.
      */
-    abstract finalizeInterceptions(): Promise<void>;
+    finalizeInterceptions(): Promise<void>;
     /**
      * Contains the request's resource type as it was perceived by the rendering
      * engine.
@@ -294,7 +318,7 @@ export declare abstract class HTTPRequest {
      *
      * Exception is immediately thrown if the request interception is not enabled.
      */
-    abstract continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
+    continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
     /**
      * Fulfills a request with the given response.
      *
@@ -327,7 +351,7 @@ export declare abstract class HTTPRequest {
      *
      * Exception is immediately thrown if the request interception is not enabled.
      */
-    abstract respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
+    respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
     /**
      * Aborts a request.
      *
@@ -342,7 +366,7 @@ export declare abstract class HTTPRequest {
      * {@link Page.setRequestInterception}. If it is not enabled, this method will
      * throw an exception immediately.
      */
-    abstract abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
+    abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
 }
 /**
  * @public

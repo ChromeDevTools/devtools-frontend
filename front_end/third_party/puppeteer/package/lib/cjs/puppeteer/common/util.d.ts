@@ -90,7 +90,7 @@ export declare function validateDialogType(type: string): 'alert' | 'confirm' | 
 /**
  * @internal
  */
-export declare function timeout(ms: number): Observable<never>;
+export declare function timeout(ms: number, cause?: Error): Observable<never>;
 /**
  * @internal
  */

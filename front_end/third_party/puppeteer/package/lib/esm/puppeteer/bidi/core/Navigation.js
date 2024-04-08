@@ -39,7 +39,6 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 };
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed } from '../../util/decorators.js';
-import { Deferred } from '../../util/Deferred.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
 /**
  * @internal
@@ -65,7 +64,7 @@ let Navigation = (() => {
         #navigation;
         #browsingContext;
         #disposables = new DisposableStack();
-        #id = new Deferred();
+        #id;
         // keep-sorted end
         constructor(context) {
             super();
@@ -84,7 +83,6 @@ let Navigation = (() => {
             });
             browsingContextEmitter.on('request', ({ request }) => {
                 if (request.navigation === undefined ||
-                    this.#request !== undefined ||
                     // If a request with a navigation ID comes in, then the navigation ID is
                     // for this navigation.
                     !this.#matches(request.navigation)) {
@@ -92,6 +90,10 @@ let Navigation = (() => {
                 }
                 this.#request = request;
                 this.emit('request', request);
+                const requestEmitter = this.#disposables.use(new EventEmitter(this.#request));
+                requestEmitter.on('redirect', request => {
+                    this.#request = request;
+                });
             });
             const sessionEmitter = this.#disposables.use(new EventEmitter(this.#session));
             sessionEmitter.on('browsingContext.navigationStarted', info => {
@@ -138,11 +140,11 @@ let Navigation = (() => {
             if (this.#navigation !== undefined && !this.#navigation.disposed) {
                 return false;
             }
-            if (!this.#id.resolved()) {
-                this.#id.resolve(navigation);
+            if (this.#id === undefined) {
+                this.#id = navigation;
                 return true;
             }
-            return this.#id.value() === navigation;
+            return this.#id === navigation;
         }
         // keep-sorted start block=yes
         get #session() {

@@ -12,7 +12,7 @@ export declare class PuppeteerError extends Error {
     /**
      * @internal
      */
-    constructor(message?: string);
+    constructor(message?: string, options?: ErrorOptions);
     /**
      * @internal
      */

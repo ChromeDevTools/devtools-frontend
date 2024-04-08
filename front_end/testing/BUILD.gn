@@ -26,6 +26,7 @@ ts_library("testing") {
     "MutationHelpers.ts",
     "OverridesHelpers.ts",
     "PersistenceHelpers.ts",
+    "PropertyParser.ts",
     "RealConnection.ts",
     "SourceMapEncoder.test.ts",
     "SourceMapEncoder.ts",

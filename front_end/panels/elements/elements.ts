@@ -54,6 +54,7 @@ import * as NodeStackTraceWidget from './NodeStackTraceWidget.js';
 import * as PlatformFontsWidget from './PlatformFontsWidget.js';
 import * as PropertiesWidget from './PropertiesWidget.js';
 import * as PropertyParser from './PropertyParser.js';
+import * as PropertyRenderer from './PropertyRenderer.js';
 import * as StyleEditorWidget from './StyleEditorWidget.js';
 import * as StylePropertiesSection from './StylePropertiesSection.js';
 import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
@@ -88,6 +89,7 @@ export {
   PlatformFontsWidget,
   PropertiesWidget,
   PropertyParser,
+  PropertyRenderer,
   StyleEditorWidget,
   StylePropertiesSection,
   StylePropertyHighlighter,

@@ -64,12 +64,6 @@ export class ReactDevToolsPlaceholderImpl extends UI.Widget.VBox {
                 >npx react-devtools</code
               >
             </div>
-            <a
-              class="devtools-link rn-devtools-placeholder-link"
-              href="https://fburl.com/workplace/og7mt427"
-              target="_blank"
-              >https://fburl.com/workplace/og7mt427</a
-            >
           </div>
         </div>
       `,

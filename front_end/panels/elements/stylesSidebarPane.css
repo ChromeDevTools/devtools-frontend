@@ -57,6 +57,12 @@
     color: var(--sys-color-token-meta);
   }
 
+  .ancestor-rule-list,
+  .styles-section-title {
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
   .ancestor-rule-list devtools-css-query {
     display: block;
   }
@@ -92,13 +98,6 @@
 
 .sidebar-pane-closing-brace {
   clear: both;
-}
-
-.styles-section-title {
-  background-origin: padding;
-  background-clip: padding;
-  word-wrap: break-word;
-  white-space: normal;
 }
 
 .styles-section-subtitle {

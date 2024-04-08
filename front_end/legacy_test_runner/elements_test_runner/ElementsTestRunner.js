@@ -525,7 +525,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
       section.titleElement.querySelector('.selector') || section.titleElement.querySelector('.keyframe-key');
   let selectorText = (includeSelectorGroupMarks ? buildMarkedSelectors(selector) : text(selector));
   selectorText += text(selector.nextSibling);
-  const anchor = section.titleElement.querySelector('.styles-section-subtitle');
+  const anchor = section.element.querySelector('.styles-section-subtitle');
 
   if (anchor) {
     const anchorText = await extractLinkText(anchor);

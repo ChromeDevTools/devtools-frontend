@@ -158,8 +158,8 @@ export class StylePropertiesSection {
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string>|null,
-      parentsComputedStyles: Map<string, string>|null, headerText?: string) {
-    this.#customHeaderText = headerText;
+      parentsComputedStyles: Map<string, string>|null, customHeaderText?: string) {
+    this.#customHeaderText = customHeaderText;
     this.parentPane = parentPane;
     this.sectionIdx = sectionIdx;
     this.styleInternal = style;
@@ -173,6 +173,7 @@ export class StylePropertiesSection {
     this.originalPropertiesCount = style.leadingProperties().length;
 
     const rule = style.parentRule;
+    const headerText = this.headerText();
     this.element = document.createElement('div');
     this.element.classList.add('styles-section');
     this.element.classList.add('matched-styles');
@@ -180,7 +181,7 @@ export class StylePropertiesSection {
     this.element.setAttribute('jslog', `${VisualLogging.section('style-properties').track({
                                 keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space',
                               })}`);
-    UI.ARIAUtils.setLabel(this.element, `${this.headerText()}, css selector`);
+    UI.ARIAUtils.setLabel(this.element, `${headerText}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsListitem(this.element);
     this.element.addEventListener('keydown', this.onKeyDown.bind(this), false);
@@ -217,19 +218,23 @@ export class StylePropertiesSection {
     this.selectorElement = document.createElement('span');
     UI.ARIAUtils.setLabel(this.selectorElement, i18nString(UIStrings.cssSelector));
     this.selectorElement.classList.add('selector');
-    this.selectorElement.textContent = this.headerText();
+    this.selectorElement.textContent = headerText;
     selectorContainer.appendChild(this.selectorElement);
     this.selectorElement.addEventListener('mouseenter', this.onMouseEnterSelector.bind(this), false);
     this.selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
 
-    const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
-    openBrace.textContent = ' {';
+    if (headerText.length > 0) {
+      const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
+      openBrace.textContent = ' {';
 
-    const closeBrace = this.#styleRuleElement.createChild('div', 'sidebar-pane-closing-brace');
-    closeBrace.createChild('span', 'styles-clipboard-only').textContent = indent.repeat(this.nestingLevel);
-    closeBrace.createChild('span').textContent = '}';
+      const closeBrace = this.#styleRuleElement.createChild('div', 'sidebar-pane-closing-brace');
+      closeBrace.createChild('span', 'styles-clipboard-only').textContent = indent.repeat(this.nestingLevel);
+      closeBrace.createChild('span').textContent = '}';
+    } else {
+      this.titleElement.classList.add('hidden');
+    }
 
-    if (this.styleInternal.parentRule) {
+    if (rule) {
       const newRuleButton = new UI.Toolbar.ToolbarButton(
           i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onNewRuleClick, this);
@@ -290,7 +295,9 @@ export class StylePropertiesSection {
       }
     }
 
-    this.selectorRefElement = this.titleElement.createChild('div', 'styles-section-subtitle');
+    this.selectorRefElement = document.createElement('div');
+    this.selectorRefElement.classList.add('styles-section-subtitle');
+    this.element.prepend(this.selectorRefElement);
     this.updateRuleOrigin();
     this.titleElement.appendChild(selectorContainer);
 
@@ -791,6 +798,11 @@ export class StylePropertiesSection {
       }
     }
 
+    if (this.headerText().length === 0) {
+      // We reduce one level since no selector means one less pair of braces are added for declarations.
+      this.nestingLevel--;
+    }
+
     let curNestingLevel = 0;
     for (const element of this.#ancestorRuleListElement.children) {
       const indentElement = document.createElement('span');
@@ -1003,7 +1015,9 @@ export class StylePropertiesSection {
   }
 
   update(full: boolean): void {
-    this.selectorElement.textContent = this.headerText();
+    const headerText = this.headerText();
+    this.selectorElement.textContent = headerText;
+    this.titleElement.classList.toggle('hidden', headerText.length === 0);
     this.markSelectorMatches();
     if (full) {
       this.onpopulate();

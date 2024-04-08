@@ -396,7 +396,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView);
   }
 
-  private updateSelectedRangeStats(startTime: number, endTime: number): void {
+  private updateSelectedRangeStats(
+      startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
     if (!this.model || !this.#selectedEvents) {
       return;
     }

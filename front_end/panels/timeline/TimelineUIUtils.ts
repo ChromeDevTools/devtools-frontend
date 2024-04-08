@@ -1675,7 +1675,9 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static statsForTimeRange(events: TraceEngine.Legacy.CompatibleTraceEvent[], startTime: number, endTime: number): {
+  static statsForTimeRange(
+      events: TraceEngine.Legacy.CompatibleTraceEvent[], startTime: TraceEngine.Types.Timing.MilliSeconds,
+      endTime: TraceEngine.Types.Timing.MilliSeconds): {
     [x: string]: number,
   } {
     if (!events.length) {

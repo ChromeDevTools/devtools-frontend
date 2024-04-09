@@ -75,48 +75,6 @@ describeWithMockConnection('CookieModel', () => {
     assert.strictEqual(cookies[0].partitionKey(), 'https://example.net');
   });
 
-  it('can retrieve blocked cookies without returning them twice', async () => {
-    const blockedProtocolCookie = {
-      domain: '.thirdparty.com',
-      name: 'third',
-      path: '/path',
-      size: 25,
-      value: 'blocked',
-      expires: 43,
-      httpOnly: false,
-      secure: false,
-      session: true,
-      sameParty: false,
-      priority: Protocol.Network.CookiePriority.Medium,
-      sourcePort: 80,
-      sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
-      sameSite: Protocol.Network.CookieSameSite.Lax,
-    };
-    setMockConnectionResponseHandler('Network.getCookies', () => {
-      return {
-        cookies: [PROTOCOL_COOKIE, blockedProtocolCookie],
-      };
-    });
-
-    const target = createTarget();
-    const model = new SDK.CookieModel.CookieModel(target);
-    const blockedCookie = SDK.Cookie.Cookie.fromProtocolCookie(blockedProtocolCookie);
-    model.addBlockedCookie(blockedCookie, [
-      {
-        attribute: SDK.Cookie.Attribute.SameSite,
-        uiString:
-            'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
-      },
-    ]);
-    const cookies = await model.getCookies(['https://www.google.com']);
-    assert.isArray(cookies);
-    assert.lengthOf(cookies, 2);
-    assert.strictEqual(cookies[0].domain(), '.example.com');
-    assert.strictEqual(cookies[0].name(), 'name');
-    assert.strictEqual(cookies[1].domain(), '.thirdparty.com');
-    assert.strictEqual(cookies[1].name(), 'third');
-  });
-
   it('clears stored blocked cookies on primary page change', async () => {
     const target = createTarget();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);

@@ -4,9 +4,6 @@
 
 const {assert} = chai;
 
-import * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
-import * as SDK from './sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {expectCookie} from '../../testing/Cookies.js';
@@ -15,6 +12,9 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
+import * as SDK from './sdk.js';
 
 describe('NetworkRequest', () => {
   it('can parse statusText from the first line of responseReceivedExtraInfo\'s headersText', () => {
@@ -245,14 +245,12 @@ describeWithMockConnection('NetworkRequest', () => {
   let networkManagerForRequestStub: sinon.SinonStub;
   let cookie: SDK.Cookie.Cookie;
   let addBlockedCookieSpy: sinon.SinonSpy;
-  let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
   let target: SDK.Target.Target;
 
   beforeEach(() => {
     target = createTarget();
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assertNotNullOrUndefined(networkManager);
-    networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
     networkManagerForRequestStub = sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
     cookie = new SDK.Cookie.Cookie('name', 'value');
     addBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'addBlockedCookie');
@@ -307,29 +305,6 @@ describeWithMockConnection('NetworkRequest', () => {
     });
     assert.isTrue(removeBlockedCookieSpy.calledOnceWith(cookie));
     assert.isEmpty(await cookieModel.getCookies([url]));
-  });
-
-  it('adds blocked request cookies to cookieModel', () => {
-    const requestWillBeSentEvent = {requestId: 'requestId', request: {url: 'example.com'}} as
-        Protocol.Network.RequestWillBeSentEvent;
-    networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
-
-    networkDispatcher.requestForId('requestId')!.addExtraRequestInfo({
-      blockedRequestCookies: [{blockedReasons: [Protocol.Network.CookieBlockedReason.SameSiteLax], cookie}],
-      requestHeaders: [],
-      includedRequestCookies: [],
-      connectTiming: {requestTime: 42},
-    });
-
-    networkDispatcher.loadingFinished(
-        {requestId: 'requestId' as Protocol.Network.RequestId, timestamp: 42, encodedDataLength: 42});
-    assert.isTrue(addBlockedCookieSpy.calledOnceWith(cookie, [
-      {
-        attribute: SDK.Cookie.Attribute.SameSite,
-        uiString:
-            'This cookie was blocked because it had the "SameSite=Lax" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
-      },
-    ]));
   });
 });
 

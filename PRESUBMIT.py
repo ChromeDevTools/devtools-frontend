@@ -538,7 +538,7 @@ def _CheckObsoleteScreenshotGoldens(input_api, output_api):
                                              'scripts', 'test',
                                              'check_obsolete_goldens.js')
 
-        script_args = ["--interaction-test-root", interaction_test_root_path]
+        script_args = []
         errors_from_script = _checkWithNodeScript(input_api, output_api,
                                                   script_path, script_args)
         results.extend(errors_from_script)

@@ -4,21 +4,22 @@
 
 import {assert} from 'chai';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'fs';
-import {basename, dirname, extname, join, normalize} from 'path';
+import {dirname, format, join, parse, relative} from 'path';
 
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 
+const TARGET = getTestRunnerConfigSetting<string>('target', '');
 const CWD = getTestRunnerConfigSetting<string>('cwd', '');
-const TEST_SUITE_SOURCE_DIR = getTestRunnerConfigSetting<string>('test-suite-source-dir', '');
 const TEST_SUITE_PATH = getTestRunnerConfigSetting<string>('test-suite-path', '');
-if (!CWD || !TEST_SUITE_SOURCE_DIR) {
-  throw new Error('--cwd and --test-suite-source-dir must be provided when running the snapshot tests.');
+if (!TARGET) {
+  throw new Error('Unknown target');
+}
+if (!CWD) {
+  throw new Error('--cwd must be provided when running the snapshot tests.');
 }
 if (!TEST_SUITE_PATH) {
   throw new Error('--test-suite-path must be specified');
 }
-
-const SNAPSHOTS_DIR = join(CWD, TEST_SUITE_SOURCE_DIR, 'snapshots');
 
 const UPDATE_SNAPSHOTS = Boolean(process.env['UPDATE_SNAPSHOTS']);
 
@@ -45,7 +46,7 @@ beforeEach(function() {
       currentTestTitle = currentTestTitle.slice(0, -match[1].length);
     }
 
-    currentTestPath = testPath && normalize(testPath.trim());
+    currentTestPath = this.currentTest.file;
 
     snapshotIndex = 0;
   }
@@ -78,7 +79,10 @@ const restoreSnapshots = () => {
 };
 
 const getSnapshotPath = (testPath: string) => {
-  return join(SNAPSHOTS_DIR, dirname(testPath), `${basename(testPath, extname(testPath))}.json`);
+  const relativeTestPath = parse(relative(join(CWD, 'out', TARGET, 'gen'), testPath));
+  relativeTestPath.ext = '.json';
+  relativeTestPath.base = `${relativeTestPath.name}.json`;
+  return join(CWD, format(relativeTestPath));
 };
 
 const getOrUpdateSnapshot = (value: unknown, options: SnapshotOptions) => {

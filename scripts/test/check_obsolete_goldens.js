@@ -10,14 +10,13 @@ const exec = util.promisify(childProcess.exec);
 
 const yargsObject =
     require('yargs')
-        .option('interaction-test-root', {type: 'string', desc: 'file path of the interaction test root directory.'})
         .option(
             'remove-files', {type: 'boolean', desc: 'Set to true to have obsolete goldens removed.', default: false})
         .argv;
 
 const shouldRemoveFiles = yargsObject['remove-files'] === true;
-const interactionTestRoot = yargsObject['interaction-test-root'];
-
+const SOURCE_ROOT = path.resolve(__dirname, path.join('..', '..'));
+const interactionTestRoot = path.join(SOURCE_ROOT, 'test', 'interactions');
 const GOLDENS_LOCATION = path.join(interactionTestRoot, 'goldens');
 
 function findScreenshotsToCheck(folder) {

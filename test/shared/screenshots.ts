@@ -27,11 +27,10 @@ import {ScreenshotError} from '../shared/screenshot-error.js';
  * goldens from there.
  */
 const testRunnerCWD = getTestRunnerConfigSetting<string>('cwd', '');
-const testSuiteSourceDir = getTestRunnerConfigSetting<string>('test-suite-source-dir', '');
-if (!testRunnerCWD || !testSuiteSourceDir) {
+if (!testRunnerCWD) {
   throw new Error('--cwd and --test-suite-source-dir must be provided when running the screenshot tests.');
 }
-const GOLDENS_FOLDER = path.join(testRunnerCWD, testSuiteSourceDir, 'goldens', platform);
+const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'interactions', 'goldens', platform);
 
 /**
  * It's assumed that the image_diff binaries are in CWD/third_party/image_diff/{platform}/image_diff

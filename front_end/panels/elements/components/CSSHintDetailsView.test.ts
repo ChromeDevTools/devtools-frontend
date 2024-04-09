@@ -8,8 +8,6 @@ import * as Elements from '../elements.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('CSSHintDetailsView', () => {
   it('renders every section', async () => {
     const hintMessage = new Elements.CSSRuleValidator.Hint(

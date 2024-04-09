@@ -14,8 +14,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
-const {assert} = chai;
-
 // Same as in IgnoreListManager.ts.
 const UIStrings = {
   removeFromIgnoreList: 'Remove from ignore list',

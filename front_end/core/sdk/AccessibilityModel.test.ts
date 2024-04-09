@@ -7,8 +7,6 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('AccessibilityModel', () => {
   it('can be instantiated', () => {
     assert.doesNotThrow(() => {

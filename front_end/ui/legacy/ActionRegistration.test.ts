@@ -14,8 +14,6 @@ import {
 import * as QuickOpen from './components/quick_open/quick_open.js';
 import * as UI from './legacy.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('ActionRegistration', () => {
   it('toggling settings affects registered actions', () => {
     Common.Settings.registerSettingExtension({

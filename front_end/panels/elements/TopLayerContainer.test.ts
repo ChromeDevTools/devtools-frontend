@@ -10,8 +10,6 @@ import * as Adorners from '../../ui/components/adorners/adorners.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 const stubTopLayerDOMNode = (nodeName: string, backendNodeId: number, ownerDocument: SDK.DOMModel.DOMDocument) => {
   return {
     nodeName: () => nodeName,

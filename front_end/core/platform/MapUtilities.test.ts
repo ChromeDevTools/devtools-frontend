@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('MapUtilities', () => {
   describe('inverse', () => {
     it('inverts the map returning a multimap with the map\'s values as keys and the map\'s keys as values', () => {

@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import * as Host from '../host/host.js';
 
 import * as ProtocolClient from './protocol_client.js';
-import * as Host from '../host/host.js';
 
 describe('NodeURL', () => {
   describe('platform detection for paths', () => {

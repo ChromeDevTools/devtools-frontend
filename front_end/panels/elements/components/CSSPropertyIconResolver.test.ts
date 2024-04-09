@@ -4,8 +4,6 @@
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describe('CSSPropertyIconResolver', () => {
   function mapFromStyle(style: {[key: string]: string|undefined}) {
     const result = new Map();

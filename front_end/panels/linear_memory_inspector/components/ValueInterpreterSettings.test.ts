@@ -12,8 +12,6 @@ import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
-const {assert} = chai;
-
 const SETTINGS_INPUT_SELECTOR = '[data-input]';
 const SETTINGS_TITLE_SELECTOR = '[data-title]';
 const SETTINGS_LABEL_SELECTOR = '.type-label';

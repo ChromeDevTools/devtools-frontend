@@ -8,8 +8,6 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('CheckFormsIssuesTrigger', () => {
   it('should call `checkFormsIssues` on devtools open.', async () => {
     const parentTarget = createTarget();

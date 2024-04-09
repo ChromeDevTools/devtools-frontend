@@ -32,8 +32,6 @@ import * as Persistence from '../persistence/persistence.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('BreakpointManager', () => {
   const URL_HTML = 'http://site/index.html' as Platform.DevToolsPath.UrlString;
   const INLINE_SCRIPT_START = 41;

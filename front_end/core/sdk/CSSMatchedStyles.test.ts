@@ -9,8 +9,6 @@ import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 function ruleMatch(
     selector: string, cssProperties: Protocol.CSS.CSSProperty[], range?: Protocol.CSS.SourceRange,
     styleSheetId = '0' as Protocol.CSS.StyleSheetId): Protocol.CSS.RuleMatch {

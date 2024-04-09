@@ -14,8 +14,6 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 describe('StylesSidebarPane', () => {
   describeWithRealConnection('StylesSidebarPane', () => {
     it('unescapes CSS strings', () => {

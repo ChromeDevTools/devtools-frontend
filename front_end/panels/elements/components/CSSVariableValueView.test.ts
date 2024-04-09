@@ -7,8 +7,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('CSSVariableValueView', () => {
   it('renders right tooltip', () => {
     const popupComponent = new ElementsComponents.CSSVariableValueView.CSSVariableValueView({

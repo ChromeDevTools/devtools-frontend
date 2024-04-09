@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('NumberUtilities', () => {
   describe('clamp', () => {
     it('takes the lower bound if the number is smaller', () => {

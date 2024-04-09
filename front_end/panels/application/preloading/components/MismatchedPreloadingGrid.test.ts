@@ -20,8 +20,6 @@ import * as Coordinator from '../../../../ui/components/render_coordinator/rende
 
 import * as PreloadingComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {

@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as LitHtml from './lit-html.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as i18nRaw from '../../third_party/i18n/i18n.js';
+
+import * as LitHtml from './lit-html.js';
 
 const templateArray = (value: string[]) => {
   // We assume here it's okay to lose the `raw` value from the TemplateStringsArray

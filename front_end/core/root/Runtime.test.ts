@@ -4,8 +4,6 @@
 
 import * as Root from './root.js';
 
-const {assert} = chai;
-
 describe('Runtime', () => {
   beforeEach(() => {
     Root.Runtime.experiments.clearForTest();

@@ -10,8 +10,6 @@ import type * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 type PersistentHighlightSettingItem = SDK.OverlayPersistentHighlighter.PersistentHighlightSettingItem;
 type PersistentHighlighterCallbacks = SDK.OverlayPersistentHighlighter.PersistentHighlighterCallbacks;
 

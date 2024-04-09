@@ -16,8 +16,6 @@ import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ElementsPanel', () => {
   let target: SDK.Target.Target;
 

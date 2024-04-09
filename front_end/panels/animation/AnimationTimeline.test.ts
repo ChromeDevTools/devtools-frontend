@@ -15,8 +15,6 @@ import * as Elements from '../elements/elements.js';
 
 import * as Animation from './animation.js';
 
-const {assert} = chai;
-
 class ManualPromise {
   #waitPromise: Promise<void>;
   #resolveFn!: Function;

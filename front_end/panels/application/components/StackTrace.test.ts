@@ -20,8 +20,6 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 
 import * as ApplicationComponents from './components.js';
 
-const {assert} = chai;
-
 const makeFrame = (overrides: Partial<SDK.ResourceTreeModel.ResourceTreeFrame> = {}) => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
     resourceTreeModel: () => ({

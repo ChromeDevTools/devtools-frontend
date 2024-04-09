@@ -7,8 +7,6 @@ import {MockIssuesManager} from '../../testing/MockIssuesManager.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-const {assert} = chai;
-
 describe('IssueResolver', () => {
   const issueId1 = 'foo' as Protocol.Audits.IssueId;
 

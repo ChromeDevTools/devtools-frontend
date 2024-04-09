@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('DateUtilities', () => {
   describe('isValid', () => {
     it('returns true for a valid date', () => {

@@ -4,8 +4,6 @@
 
 import * as TextUtils from './text_utils.js';
 
-const {assert} = chai;
-
 interface ExpectedTextRange {
   startLine: number;
   startColumn: number;

@@ -14,8 +14,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ResourceMapping', () => {
   let debuggerModel: SDK.DebuggerModel.DebuggerModel;
   let resourceMapping: Bindings.ResourceMapping.ResourceMapping;

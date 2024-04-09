@@ -9,8 +9,6 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import * as MarkdownView from './markdown_view.js';
 
-const {assert} = chai;
-
 type TestToken = {
   type: string,
   tokens?: Marked.Marked.Token[],

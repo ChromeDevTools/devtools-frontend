@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import type * as Common from '../common/common.js';
-import * as SDK from './sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import type * as Common from '../common/common.js';
+
+import * as SDK from './sdk.js';
+
 import BucketEvents = SDK.StorageBucketsModel.Events;
 
 class StorageBucketModelListener {

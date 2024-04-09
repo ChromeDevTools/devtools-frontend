@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as TraceEngine from '../trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import * as TraceEngine from '../trace.js';
+
 describeWithEnvironment('Trace Metadata', () => {
   it('returns the associated metadata', async () => {
     const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});

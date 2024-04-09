@@ -32,8 +32,6 @@ import * as NetworkComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 const enum HeaderAttribute {
   HeaderName = 'HeaderName',
   HeaderValue = 'HeaderValue',

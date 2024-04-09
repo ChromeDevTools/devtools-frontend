@@ -16,8 +16,6 @@ import * as NetworkComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderRequestHeaderSection(request: SDK.NetworkRequest.NetworkRequest):
     Promise<NetworkComponents.RequestHeaderSection.RequestHeaderSection> {
   const component = new NetworkComponents.RequestHeaderSection.RequestHeaderSection();

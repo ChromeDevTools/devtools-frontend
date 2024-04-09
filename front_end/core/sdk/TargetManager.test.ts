@@ -2,21 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SDK from './sdk.js';
-import * as Host from '../host/host.js';
-
-import type * as Platform from '../platform/platform.js';
-
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-
+import {
+  describeWithMockConnection,
+} from '../../testing/MockConnection.js';
+import * as Host from '../host/host.js';
+import type * as Platform from '../platform/platform.js';
 import {assertNotNullOrUndefined} from '../platform/platform.js';
+
+import * as SDK from './sdk.js';
 
 describeWithMockConnection('TargetManager', () => {
   let targetManager: SDK.TargetManager.TargetManager;

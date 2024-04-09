@@ -14,8 +14,6 @@ import * as RootCauses from './RootCauses.js';
 type TraceParseData = TraceEngine.Handlers.Types.TraceParseData;
 type TraceParseDataMutable = TraceEngine.Handlers.Types.TraceParseDataMutable;
 
-const {assert} = chai;
-
 function assertArrayHasNoNulls<T>(inputArray: Array<T|null>): asserts inputArray is T[] {
   inputArray.forEach((item, index) => {
     if (item === null) {

@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Recorder from './models.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
+
+import * as Recorder from './models.js';
 
 describeWithEnvironment('RecordingStorage', () => {
   beforeEach(() => {

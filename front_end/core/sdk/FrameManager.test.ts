@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import type * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
-import * as Common from '../common/common.js';
-import type * as Protocol from '../../generated/protocol.js';
 
 class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper<SDK.ResourceTreeModel.EventTypes> {
   private targetId: Protocol.Target.TargetID|'main';

@@ -6,8 +6,6 @@ import {assertNodeTextContent, renderElementIntoDOM} from '../../../testing/DOMH
 
 import * as NodeText from './node_text.js';
 
-const {assert} = chai;
-
 describe('NodeText', () => {
   const NodeTextComponent = NodeText.NodeText.NodeText;
 

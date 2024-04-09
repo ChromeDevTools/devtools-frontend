@@ -13,8 +13,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as MarkdownView from './markdown_view.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('CodeBlock', () => {
   it('copies the code to clipboard', () => {
     const component = new MarkdownView.CodeBlock.CodeBlock();

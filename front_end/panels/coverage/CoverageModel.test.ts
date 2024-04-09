@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
+
 import * as Coverage from './coverage.js';
 
 describe('CoverageModel', () => {

@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TraceModel from '../trace/trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TraceProcessor', function() {
   it('can use a trace processor', async function() {
     const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();

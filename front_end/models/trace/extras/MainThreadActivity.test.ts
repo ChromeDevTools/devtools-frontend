@@ -8,8 +8,6 @@ import {
 } from '../../../testing/TraceHelpers.js';
 import * as TraceEngine from '../trace.js';
 
-const {assert} = chai;
-
 const DEVTOOLS_CATEGORY = 'disabled-by-default-devtools.timeline';
 function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
   return TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(x));

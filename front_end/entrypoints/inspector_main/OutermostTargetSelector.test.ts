@@ -2,18 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as InspectorMain from './inspector_main.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as InspectorMain from './inspector_main.js';
 
 describeWithMockConnection('OutermostTargetSelector', () => {
   let tabTarget: SDK.Target.Target;

@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Dialogs from './dialogs.js';
+import * as Platform from '../../../core/platform/platform.js';
+import type * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
-import type * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
-import * as Platform from '../../../core/platform/platform.js';
+
+import * as Dialogs from './dialogs.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 class DialogExampleWindowBoundsServiceFactory implements WindowBoundsService.WindowBoundsService.WindowBoundsService {

@@ -8,8 +8,6 @@ import * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 const nodeAttributes = new Map([
   ['id', 'container'],
   ['class', 'class-1 class-2'],

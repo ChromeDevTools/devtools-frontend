@@ -8,7 +8,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as LinearMemoryInspectorComponents from './components/components.js';
 import * as LinearMemoryInspector from './linear_memory_inspector.js';
 
-const {assert} = chai;
 const {LinearMemoryInspectorController} = LinearMemoryInspector;
 const {ValueInterpreterDisplayUtils} = LinearMemoryInspectorComponents;
 

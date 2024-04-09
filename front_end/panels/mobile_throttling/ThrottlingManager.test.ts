@@ -8,8 +8,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('ThrottlingManager', () => {
   describe('OfflineToolbarCheckbox', () => {
     it('has initial checked state which depends on throttling setting', () => {

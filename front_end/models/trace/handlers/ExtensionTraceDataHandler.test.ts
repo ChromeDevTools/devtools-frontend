@@ -5,8 +5,6 @@
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 describe('ExtensionTraceDataHandler', function() {
   let extensionData: TraceModel.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData;
   async function getExtensionDataFromEvents(events: readonly TraceModel.Types.TraceEvents.TraceEventData[]):

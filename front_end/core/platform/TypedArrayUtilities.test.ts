@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('TypedArrayUtilities', () => {
   describe('BigUint32Array', () => {
     it('can be expandable', () => {

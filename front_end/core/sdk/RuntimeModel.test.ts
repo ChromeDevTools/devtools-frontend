@@ -2,19 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import {assertNotNullOrUndefined} from '../platform/platform.js';
-import * as SDK from './sdk.js';
-
 import type * as Protocol from '../../generated/protocol.js';
-import type * as Platform from '../platform/platform.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithMockConnection,
+} from '../../testing/MockConnection.js';
+import type * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
+
+import * as SDK from './sdk.js';
 
 describeWithMockConnection('ExecutionContext', () => {
   function createExecutionContext(target: SDK.Target.Target, name?: string, isDefault?: boolean) {

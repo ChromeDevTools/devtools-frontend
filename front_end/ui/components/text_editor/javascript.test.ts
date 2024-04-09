@@ -4,8 +4,6 @@
 
 import * as TextEditor from './text_editor.js';
 
-const {assert} = chai;
-
 describe('argumentsList', () => {
   const {argumentsList} = TextEditor.JavaScript;
 

@@ -8,8 +8,6 @@ import {dispatchClickEvent, renderElementIntoDOM} from '../../../testing/DOMHelp
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Explain from '../explain.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('ConsoleInsight', () => {
   function getTestAidaClient() {
     return {

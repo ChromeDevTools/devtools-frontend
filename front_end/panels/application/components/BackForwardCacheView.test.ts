@@ -21,8 +21,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 interface NodeData {
   text: string;
   iconName?: string;

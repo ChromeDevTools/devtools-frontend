@@ -2,10 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithDevtoolsExtension,
+  getExtensionOrigin,
+} from '../../testing/ExtensionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Extensions from '../extensions/extensions.js';
@@ -13,15 +19,6 @@ import type * as HAR from '../har/har.js';
 import * as Logs from '../logs/logs.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
-
-const {assert} = chai;
-
-import {
-  describeWithDevtoolsExtension,
-  getExtensionOrigin,
-} from '../../testing/ExtensionHelpers.js';
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 
 describeWithDevtoolsExtension('Extensions', {}, context => {
   it('are initialized after the target is initialized and navigated to a non-privileged URL', async () => {

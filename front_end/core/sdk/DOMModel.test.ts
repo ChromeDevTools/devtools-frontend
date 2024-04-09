@@ -9,8 +9,6 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('DOMModel', () => {
   it('updates the document on an documentUpdate event if there already is a previous document', async () => {
     const parentTarget = createTarget();

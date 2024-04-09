@@ -15,8 +15,6 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ConsoleMessage', () => {
   const scriptId1 = '1' as Protocol.Runtime.ScriptId;
   const scriptId2 = '2' as Protocol.Runtime.ScriptId;

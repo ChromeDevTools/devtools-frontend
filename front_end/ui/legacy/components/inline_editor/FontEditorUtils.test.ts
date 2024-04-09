@@ -4,8 +4,6 @@
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 describe('FontEditorUtils', () => {
   it('getRoundingPrecision rounds units as expected', () => {
     let roundingPrecisionValue = InlineEditor.FontEditorUtils.getRoundingPrecision(1);

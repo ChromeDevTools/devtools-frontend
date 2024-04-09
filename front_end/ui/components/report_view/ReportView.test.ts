@@ -7,8 +7,6 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import * as ReportView from './report_view.js';
 
-const {assert} = chai;
-
 describe('ReportView', () => {
   describe('header', () => {
     it('shows the provided report title', () => {

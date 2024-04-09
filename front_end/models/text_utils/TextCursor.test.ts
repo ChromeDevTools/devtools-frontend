@@ -4,8 +4,6 @@
 
 import * as TextUtils from './text_utils.js';
 
-const {assert} = chai;
-
 describe('TextCursor', () => {
   it('can be instantiated successfully', () => {
     const cursor = new TextUtils.TextCursor.TextCursor([0, 5, 10, 15]);

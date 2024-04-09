@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('FilmStrip', function() {
   it('identifies the frames from a trace', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');

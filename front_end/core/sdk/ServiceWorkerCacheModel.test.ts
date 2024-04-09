@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SDK from './sdk.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
+  clearMockConnectionResponseHandler,
   describeWithMockConnection,
   setMockConnectionResponseHandler,
-  clearMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+
+import * as SDK from './sdk.js';
 
 describeWithMockConnection('ServiceWorkerCacheModel', () => {
   let cacheStorageModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;

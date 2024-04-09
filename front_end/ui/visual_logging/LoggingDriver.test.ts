@@ -10,8 +10,6 @@ import {stabilizeEvent, stabilizeImpressions} from '../../testing/VisualLoggingH
 
 import * as VisualLoggingTesting from './visual_logging-testing.js';
 
-const {assert} = chai;
-
 describe('LoggingDriver', () => {
   let recordImpression: sinon.SinonStub;
   let throttler: Common.Throttler.Throttler;

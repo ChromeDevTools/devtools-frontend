@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as Console from './console.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Console from './console.js';
 
 describeWithMockConnection('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;

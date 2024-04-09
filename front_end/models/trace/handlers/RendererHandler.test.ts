@@ -17,8 +17,6 @@ import {
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 const MAIN_FRAME_PID = 2154214;
 const SUB_FRAME_PID = 2236065;
 const SUB_FRAME_PID_2 = 2236084;

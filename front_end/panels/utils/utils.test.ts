@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as PanelUtils from './utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 
-const {assert} = chai;
+import * as PanelUtils from './utils.js';
 
 describe('panels/utils', () => {
   it('formats CSS changes from diff arrays', async () => {

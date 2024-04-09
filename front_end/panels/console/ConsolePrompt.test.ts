@@ -2,25 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Common from '../../core/common/common.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as Console from './console.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {
   createTarget,
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
-
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Console from './console.js';
 
 describeWithMockConnection('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;

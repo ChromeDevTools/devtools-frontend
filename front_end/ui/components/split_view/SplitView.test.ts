@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SplitView from './split_view.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import * as SplitView from './split_view.js';
 
 const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 

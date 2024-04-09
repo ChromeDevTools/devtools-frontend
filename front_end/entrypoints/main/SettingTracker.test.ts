@@ -8,8 +8,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Main from './main.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('SettingTracker', () => {
   it('resets console-insights-onboarding-finished if console-insights-enabled becomes true', async () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(true);

@@ -7,8 +7,6 @@ import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
 
-const {assert} = chai;
-
 const {MilliSeconds} = TraceEngine.Types.Timing;
 
 describeWithLocale('TimelineOverviewCalculator', () => {

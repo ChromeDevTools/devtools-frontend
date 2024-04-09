@@ -4,8 +4,6 @@
 
 import * as VisualLogging from './visual_logging-testing.js';
 
-const {assert} = chai;
-
 describe('LoggingDriver', () => {
   it('marks loggable elements for debugging', async () => {
     // @ts-ignore

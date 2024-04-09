@@ -18,8 +18,6 @@ import * as Autofill from './autofill.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 const addressFormFilledEvent = {
   addressUi: {
     addressFields: [

@@ -11,8 +11,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TimelineHistoryManager', function() {
   let historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager;
   beforeEach(() => {

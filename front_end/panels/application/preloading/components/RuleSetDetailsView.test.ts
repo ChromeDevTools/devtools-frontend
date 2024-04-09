@@ -13,8 +13,6 @@ import type * as TextEditor from '../../../../ui/components/text_editor/text_edi
 
 import * as PreloadingComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData):

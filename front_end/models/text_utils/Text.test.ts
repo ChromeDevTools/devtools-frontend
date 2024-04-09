@@ -4,8 +4,6 @@
 
 import * as TextUtils from './text_utils.js';
 
-const {assert} = chai;
-
 describe('Text', () => {
   it('can be instantiated successfully', () => {
     const testVal = 'Test Value';

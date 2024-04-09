@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IssuesManager from '../issues_manager/issues_manager.js';
-
+import * as Protocol from '../../generated/protocol.js';
 import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {
@@ -14,8 +12,7 @@ import {
   StubIssue,
   ThirdPartyStubIssue,
 } from '../../testing/StubIssue.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-import * as Protocol from '../../generated/protocol.js';
+import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 describeWithMockConnection('IssuesManager', () => {
   let target: SDK.Target.Target;

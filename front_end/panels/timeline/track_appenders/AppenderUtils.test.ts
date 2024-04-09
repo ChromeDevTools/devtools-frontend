@@ -8,8 +8,6 @@ import {defaultTraceEvent} from '../../../testing/TraceHelpers.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('AppenderUtils', () => {
   const defaultGroupStyle = {
     padding: 4,

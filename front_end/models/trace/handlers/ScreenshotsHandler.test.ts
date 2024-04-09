@@ -6,8 +6,6 @@ import {defaultTraceEvent} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 describe('ScreenshotsHandler', function() {
   const baseEvent = {
     ...defaultTraceEvent,

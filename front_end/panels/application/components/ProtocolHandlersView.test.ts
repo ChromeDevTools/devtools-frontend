@@ -13,8 +13,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ApplicationComponents from './components.js';
 
-const {assert} = chai;
-
 async function renderProtocolHandlersComponent(
     manifestLink: Platform.DevToolsPath.UrlString,
     protocolHandlers: ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]) {

@@ -17,8 +17,6 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-const {assert} = chai;
-
 describeWithLocale('Linkifier', () => {
   it('renders a link when given a URL', async () => {
     const component = new Linkifier.Linkifier.Linkifier();

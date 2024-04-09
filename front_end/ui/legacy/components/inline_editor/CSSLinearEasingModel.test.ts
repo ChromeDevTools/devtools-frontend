@@ -4,8 +4,6 @@
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 function testValidCase(input: string, output: string): void {
   const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse(input);
   assert.strictEqual(model!.asCSSText(), output, `Parsing is invalid for case "${input}"`);

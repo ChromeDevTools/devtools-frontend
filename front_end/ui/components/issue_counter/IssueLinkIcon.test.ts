@@ -16,8 +16,6 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as IssueCounter from './issue_counter.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIconData): Promise<{

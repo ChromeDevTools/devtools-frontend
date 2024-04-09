@@ -11,7 +11,6 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 
 import * as TextEditor from './text_editor.js';
 
-const {assert} = chai;
 const {Direction} = TextEditor.TextEditorHistory;
 
 function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {

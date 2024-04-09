@@ -5,8 +5,6 @@
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 describe('UserTimingsHandler', function() {
   let timingsData: TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {

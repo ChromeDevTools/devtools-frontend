@@ -6,8 +6,6 @@ import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHel
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 const initialData = {
   lengthText: '42px',
   overloaded: false,

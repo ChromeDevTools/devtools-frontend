@@ -4,8 +4,6 @@
 
 import * as i18n from './i18n.js';
 
-const {assert} = chai;
-
 describe('i18n', () => {
   let i18nInstance: i18n.I18n.I18n;
   beforeEach(() => {

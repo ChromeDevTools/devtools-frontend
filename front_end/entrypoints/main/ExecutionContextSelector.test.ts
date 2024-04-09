@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Main from './main.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
-
 import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Main from './main.js';
 
 describeWithMockConnection('ExecutionContextSelector', () => {
   it('switches to the default context once available', () => {

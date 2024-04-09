@@ -6,8 +6,6 @@ import * as Protocol from '../../generated/protocol.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describe('CSSStyleSheetHeader', () => {
   describe('createPageResourceLoadInitiator', () => {
     const frameId = 'Frame#123' as Protocol.Page.FrameId;

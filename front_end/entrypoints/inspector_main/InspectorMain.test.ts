@@ -2,23 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import type * as Protocol from '../../generated/protocol.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
-import type * as UI from '../../ui/legacy/legacy.js';
-import * as InspectorMain from './inspector_main.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
-
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import type * as UI from '../../ui/legacy/legacy.js';
+
+import * as InspectorMain from './inspector_main.js';
 
 describeWithMockConnection('FocusDebuggeeActionDelegate', () => {
   it('uses main frame without tab tatget', async () => {

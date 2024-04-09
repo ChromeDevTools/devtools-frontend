@@ -19,8 +19,6 @@ import {
 
 import * as Timeline from './timeline.js';
 
-const {assert} = chai;
-
 const MINIFIED_FUNCTION_NAME = 'minified';
 const AUTHORED_FUNCTION_NAME = 'someFunction';
 

@@ -2,24 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-import * as ProtocolMonitor from '../protocol_monitor.js';
+import * as Host from '../../../core/host/host.js';
 import {
-  getEventPromise,
+  dispatchClickEvent,
   dispatchKeyDownEvent,
   dispatchMouseMoveEvent,
-  dispatchClickEvent,
-  renderElementIntoDOM,
+  getEventPromise,
   raf,
+  renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import * as ProtocolComponents from './components.js';
-import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Host from '../../../core/host/host.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as ProtocolMonitor from '../protocol_monitor.js';
+
+import * as ProtocolComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

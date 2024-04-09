@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import * as Protocol from '../../generated/protocol.js';
+import {type CookieExpectation, expectCookie} from '../../testing/Cookies.js';
 
 import * as SDK from './sdk.js';
-import * as Protocol from '../../generated/protocol.js';
-
-import {expectCookie, type CookieExpectation} from '../../testing/Cookies.js';
 
 function ensureCookiesExistOrFailTest(cookies: SDK.Cookie.Cookie[]|null): cookies is SDK.Cookie.Cookie[] {
   if (!cookies) {

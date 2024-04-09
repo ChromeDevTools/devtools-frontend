@@ -7,8 +7,6 @@ import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 function assertVarSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected: {
   valueTooltip: string|null,
   linkTooltip: string,

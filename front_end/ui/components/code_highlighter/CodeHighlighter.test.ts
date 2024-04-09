@@ -4,8 +4,6 @@
 
 import * as CodeHighlighter from './code_highlighter.js';
 
-const {assert} = chai;
-
 function parseTokens(code: string): [string, string][] {
   const token = /\[(\S+) ([^\]]+)\]/g, tokens: [string, string][] = [];
   for (let pos = 0;;) {

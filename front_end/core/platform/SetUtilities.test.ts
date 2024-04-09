@@ -4,8 +4,6 @@
 
 import * as Plaform from './platform.js';
 
-const {assert} = chai;
-
 describe('SetUtilities', () => {
   describe('addAll', () => {
     it('adds all items in the iterable to the set', () => {

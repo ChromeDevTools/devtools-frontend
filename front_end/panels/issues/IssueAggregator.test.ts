@@ -18,8 +18,6 @@ import {StubIssue} from '../../testing/StubIssue.js';
 
 import * as Issues from './issues.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('AggregatedIssue', () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {

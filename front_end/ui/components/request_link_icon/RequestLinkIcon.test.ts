@@ -16,8 +16,6 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as RequestLinkIcon from './request_link_icon.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const renderRequestLinkIcon = async(data: RequestLinkIcon.RequestLinkIcon.RequestLinkIconData): Promise<{

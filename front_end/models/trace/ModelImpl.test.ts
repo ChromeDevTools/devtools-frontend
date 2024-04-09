@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TraceModel from '../trace/trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TraceModel', function() {
   it('dispatches an end event when the trace is done', async function() {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();

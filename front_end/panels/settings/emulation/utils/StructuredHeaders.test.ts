@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
 import * as EmulationUtils from './utils.js';
+
 import StructuredHeaders = EmulationUtils.StructuredHeaders;
 
 function assertItemError(result: StructuredHeaders.Item|StructuredHeaders.Error): void {

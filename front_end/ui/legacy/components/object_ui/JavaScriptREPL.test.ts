@@ -4,8 +4,6 @@
 
 import * as ObjectUI from './object_ui.js';
 
-const {assert} = chai;
-
 describe('JavaScriptREPL', () => {
   describe('wrapObjectLiteral', () => {
     const {wrapObjectLiteral} = ObjectUI.JavaScriptREPL.JavaScriptREPL;

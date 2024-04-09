@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as UI from './legacy.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+
+import * as UI from './legacy.js';
 
 describe('View', () => {
   describeWithEnvironment('TabbedViewLocation', () => {

@@ -12,8 +12,6 @@ import * as UI from '../../legacy/legacy.js';
 
 import * as MarkdownView from './markdown_view.js';
 
-const {assert} = chai;
-
 describe('MarkdownLink', () => {
   before(async () => {
     MarkdownView.MarkdownLinksMap.markdownLinks.set('test-link', 'http://exampleLink');

@@ -14,8 +14,6 @@ import {
 
 import * as PerfUI from './perf_ui.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('FlameChart', () => {
   it('sorts decorations, putting candy striping before warning triangles', async () => {
     const decorations: PerfUI.FlameChart.FlameChartDecoration[] = [

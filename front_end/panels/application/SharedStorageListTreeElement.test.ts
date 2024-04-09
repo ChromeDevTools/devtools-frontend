@@ -15,8 +15,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('SharedStorageListTreeElement', function() {
   const tests = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;

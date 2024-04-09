@@ -17,8 +17,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-const {assert} = chai;
-
 class SharedStorageTreeElementListener {
   #sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar;
   #originsAdded: Array<String> = new Array<String>();

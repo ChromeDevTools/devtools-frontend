@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-import * as EmulationUtils from './utils.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+
+import * as EmulationUtils from './utils.js';
+
 const UserAgentMetadata = EmulationUtils.UserAgentMetadata;
 
 const errParse = 'syntax error';

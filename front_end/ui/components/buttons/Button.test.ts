@@ -9,8 +9,6 @@ import * as Buttons from './buttons.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 describe('Button', () => {
   const iconUrl = new URL('../../../Images/file-image.svg', import.meta.url).toString();
 

@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('KeyboardUtilities', () => {
   describe('#keyIsArrowKey', () => {
     it('returns true for ArrowUp, ArrowDown, ArrowLeft and ArrowRight', () => {

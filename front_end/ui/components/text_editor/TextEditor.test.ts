@@ -21,8 +21,6 @@ import * as UI from '../../legacy/legacy.js';
 
 import * as TextEditor from './text_editor.js';
 
-const {assert} = chai;
-
 function makeState(doc: string, extensions: CodeMirror.Extension = []) {
   return CodeMirror.EditorState.create({
     doc,

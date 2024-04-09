@@ -15,8 +15,6 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('OverlayModel', () => {
   const DOCUMENT_URL_FOR_TEST = 'https://example.com/' as Platform.DevToolsPath.UrlString;
 

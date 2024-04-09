@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 describe('StringUtilities', () => {
   describe('escapeCharacters', () => {
     it('escapes the given characters', () => {

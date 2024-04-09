@@ -13,8 +13,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 describe('StylePropertiesSection', () => {
   it('contains specificity information', async () => {
     const specificity = {a: 0, b: 1, c: 0};

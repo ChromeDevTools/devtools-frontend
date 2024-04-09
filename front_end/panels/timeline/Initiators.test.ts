@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+
 import * as Timeline from './timeline.js';
 
 describe('Initiators', () => {
@@ -127,7 +126,6 @@ describe('Initiators', () => {
          // Ensure the modified entry is marked as hidden
          assert.strictEqual(initiatorData.isInitiatorHidden, true);
        }
-
      });
 
   it('will return the closest modified ancestor as an initiated event in a pair if the event itself is hidden',

@@ -18,8 +18,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderInterestGroupAccessGrid(events: Protocol.Storage.InterestGroupAccessedEvent[]):
     Promise<ApplicationComponents.InterestGroupAccessGrid.InterestGroupAccessGrid> {
   const component = new ApplicationComponents.InterestGroupAccessGrid.InterestGroupAccessGrid();

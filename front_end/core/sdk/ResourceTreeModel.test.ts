@@ -13,8 +13,6 @@ import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 function navigateFrameWithMockConnection(
     storageKey: string, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null) {
   setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({storageKey}));

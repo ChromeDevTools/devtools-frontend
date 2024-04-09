@@ -2,14 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Common from '../../../../core/common/common.js';
-import * as ObjectUI from './object_ui.js';
-import * as UI from '../../legacy.js';
-
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import {dispatchClickEvent} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {someMutations} from '../../../../testing/MutationHelpers.js';
@@ -17,6 +12,9 @@ import {
   describeWithRealConnection,
   getExecutionContext,
 } from '../../../../testing/RealConnection.js';
+import * as UI from '../../legacy.js';
+
+import * as ObjectUI from './object_ui.js';
 
 describe('ObjectPropertiesSection', () => {
   describeWithRealConnection('ObjectPropertiesSection', () => {

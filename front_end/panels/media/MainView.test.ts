@@ -13,8 +13,6 @@ import * as Coordinator from '../../ui/components/render_coordinator/render_coor
 
 import * as Media from './media.js';
 
-const {assert} = chai;
-
 const PLAYER_ID = 'PLAYER_ID' as Protocol.Media.PlayerId;
 
 describeWithMockConnection('MediaMainView', () => {

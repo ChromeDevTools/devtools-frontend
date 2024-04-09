@@ -10,8 +10,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';
 
-const {assert} = chai;
-
 describeWithRealConnection('IssueView', () => {
   it('records metrics when an issue is expanded', () => {
     const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;

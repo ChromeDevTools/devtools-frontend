@@ -8,8 +8,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from './components/quick_open/quick_open.js';
 import * as UI from './legacy.js';
 
-const {assert} = chai;
-
 class MockView extends UI.Widget.Widget implements UI.View.ViewLocationResolver {
   resolveLocation(_location: string) {
     return UI.ViewManager.ViewManager.instance().createStackLocation();

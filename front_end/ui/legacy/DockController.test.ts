@@ -12,8 +12,6 @@ import {
 
 import * as LegacyUI from './legacy.js';
 
-const {assert} = chai;
-
 async function registerDockingSettings(currentValue: string) {
   Common.Settings.registerSettingsForTest([{
     category: Common.Settings.SettingCategory.GLOBAL,

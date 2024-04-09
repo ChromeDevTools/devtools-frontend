@@ -14,8 +14,6 @@ import {
 
 import * as UI from './legacy.js';
 
-const {assert} = chai;
-
 describe('Infobar', () => {
   before(async () => {
     await initializeGlobalVars();

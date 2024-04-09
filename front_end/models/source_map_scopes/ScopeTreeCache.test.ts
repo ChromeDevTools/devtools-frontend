@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
-import * as Formatter from '../formatter/formatter.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Formatter from '../formatter/formatter.js';
+import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
 
 describe('ScopeTreeCache', () => {
   describe('scopeTreeForScript', () => {

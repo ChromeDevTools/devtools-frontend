@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import type * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../persistence/persistence.js';
 

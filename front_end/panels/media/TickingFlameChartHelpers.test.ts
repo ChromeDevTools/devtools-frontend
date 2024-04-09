@@ -4,8 +4,6 @@
 
 import * as Media from './media.js';
 
-const {assert} = chai;
-
 function assertParameters(
     bounds: Media.TickingFlameChartHelpers.Bounds, low: number, high: number, min: number, max: number, range: number) {
   assert.closeTo(bounds.low, low, 0.01);

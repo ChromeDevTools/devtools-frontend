@@ -10,8 +10,6 @@ import {
 
 import * as IconButton from './icon_button.js';
 
-const {assert} = chai;
-
 function getSpanElement(icon: IconButton.Icon.Icon): HTMLSpanElement {
   const {shadowRoot} = icon;
   assertShadowRoot(shadowRoot);

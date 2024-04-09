@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
 import type * as Protocol from '../../generated/protocol.js';
-import * as CPUProfile from '../cpu_profile/cpu_profile.js';
-
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as CPUProfile from '../cpu_profile/cpu_profile.js';
 
 function makeCallFrame(functionName: string): Protocol.Runtime.CallFrame {
   return {

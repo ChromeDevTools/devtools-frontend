@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as Diff from '../../../third_party/diff/diff.js';
 
 import * as DiffView from './diff_view.js';
-import * as Diff from '../../../third_party/diff/diff.js';
-import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 function buildDiff(original: string, updated: string): Promise<DocumentFragment> {
   const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), updated.split('\n'));

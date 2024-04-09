@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-import * as TraceEngine from '../trace.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as TraceEngine from '../trace.js';
 
 async function processTrace(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
   // The FramesHandler depends on a few other handlers, so we run all of them as part of these tests.

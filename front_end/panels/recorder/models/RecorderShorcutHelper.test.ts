@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import * as Host from '../../../core/host/host.js';
+
 import * as Models from './models.js';
 
 describe('RecorderShortcutHelper', () => {

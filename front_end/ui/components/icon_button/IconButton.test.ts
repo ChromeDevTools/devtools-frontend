@@ -11,8 +11,6 @@ import {
 
 import * as IconButton from './icon_button.js';
 
-const {assert} = chai;
-
 const renderIconButton = (data: IconButton.IconButton.IconButtonData):
     {component: IconButton.IconButton.IconButton, shadowRoot: ShadowRoot} => {
       const component = new IconButton.IconButton.IconButton();

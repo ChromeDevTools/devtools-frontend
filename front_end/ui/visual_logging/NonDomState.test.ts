@@ -4,8 +4,6 @@
 
 import * as VisualLogging from './visual_logging-testing.js';
 
-const {assert} = chai;
-
 describe('NonDomState', () => {
   it('registers, unregisters and returns loggables', () => {
     const parent = {};

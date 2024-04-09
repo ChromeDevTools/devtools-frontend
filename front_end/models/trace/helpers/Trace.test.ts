@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TraceModel helpers', function() {
   describe('extractOriginFromTrace', () => {
     it('extracts the origin of a parsed trace correctly', async function() {

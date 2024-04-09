@@ -11,8 +11,6 @@ import * as i18n from '../i18n/i18n.js';
 
 import * as Common from './common.js';
 
-const {assert} = chai;
-
 const settingName = 'mock-setting';
 const settingTitle = 'Mock setting';
 const enableTitle = 'Enable mock setting';

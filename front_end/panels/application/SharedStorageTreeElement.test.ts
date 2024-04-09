@@ -16,8 +16,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-const {assert} = chai;
-
 class SharedStorageItemsListener {
   #dispatcher:
       Common.ObjectWrapper.ObjectWrapper<Application.SharedStorageItemsView.SharedStorageItemsDispatcher.EventTypes>;

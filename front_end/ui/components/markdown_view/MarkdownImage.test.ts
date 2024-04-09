@@ -14,8 +14,6 @@ import * as MarkdownView from './markdown_view.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
   before(async () => {

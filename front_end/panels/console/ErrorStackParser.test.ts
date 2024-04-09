@@ -9,7 +9,6 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import * as Console from './console.js';
 
-const {assert} = chai;
 const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
 
 describe('ErrorStackParser', () => {

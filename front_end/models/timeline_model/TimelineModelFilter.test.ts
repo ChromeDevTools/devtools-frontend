@@ -2,14 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as TraceEngine from '../trace/trace.js';
-import * as TimelineModel from '../timeline_model/timeline_model.js';
 import {
   DevToolsTimelineCategory,
   makeFakeSDKEventFromPayload,
 } from '../../testing/TraceHelpers.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as TraceEngine from '../trace/trace.js';
 
 const consoleEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console],

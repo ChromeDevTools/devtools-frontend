@@ -13,8 +13,6 @@ import * as UI from '../../legacy.js';
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 function assertSwatch(
     swatch: InlineEditor.ColorSwatch.ColorSwatch,
     expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {

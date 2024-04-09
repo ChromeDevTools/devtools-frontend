@@ -9,8 +9,6 @@ import {describeWithMockConnection} from '../../../../testing/MockConnection.js'
 
 import * as Components from './utils.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('JSPresentationUtils', () => {
   function setUpEnvironment() {
     const target = createTarget();

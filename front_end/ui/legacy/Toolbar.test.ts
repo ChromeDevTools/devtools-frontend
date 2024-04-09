@@ -10,8 +10,6 @@ import {
 
 import * as UI from './legacy.js';
 
-const {assert} = chai;
-
 describe('Toolbar', () => {
   describe('ToolbarInput', () => {
     it('sets a title on the clear button', () => {

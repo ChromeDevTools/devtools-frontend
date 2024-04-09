@@ -5,8 +5,6 @@
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Explain from '../explain.js';
 
-const {assert} = chai;
-
 describe('Markdown renderer', () => {
   it('renders link as an x-link', () => {
     const renderer = new Explain.MarkdownRenderer();

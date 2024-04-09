@@ -2,26 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Models from '../models/models.js';
-import * as Components from './components.js';
-import * as Converters from '../converters/converters.js';
-import type * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Host from '../../../core/host/host.js';
-
-import {
-  describeWithEnvironment,
-  setupActionRegistry,
-} from '../../../testing/EnvironmentHelpers.js';
 import {
   dispatchClickEvent,
   dispatchMouseOverEvent,
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import {
+  describeWithEnvironment,
+  setupActionRegistry,
+} from '../../../testing/EnvironmentHelpers.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import type * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
+import * as Converters from '../converters/converters.js';
+import * as Models from '../models/models.js';
+
+import * as Components from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

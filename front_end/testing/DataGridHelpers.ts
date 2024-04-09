@@ -15,8 +15,6 @@ import {
 } from './DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-const {assert} = chai;
-
 export const getFocusableCell = (shadowRoot: ShadowRoot) => {
   // We only expect one here, but we qSA so we can assert on only one.
   // Can't use td as it may be a th if the user has focused a column header.

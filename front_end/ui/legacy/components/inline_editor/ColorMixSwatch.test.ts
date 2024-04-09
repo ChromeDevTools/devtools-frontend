@@ -9,8 +9,6 @@ import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 function createSwatch(text: string, firstColor: string, secondColor: string) {
   const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
   renderElementIntoDOM(swatch);

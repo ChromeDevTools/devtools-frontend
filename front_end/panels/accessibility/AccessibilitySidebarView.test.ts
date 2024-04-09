@@ -11,8 +11,6 @@ import {describeWithMockConnection, setMockConnectionResponseHandler} from '../.
 
 import * as Accessibility from './accessibility.js';
 
-const {assert} = chai;
-
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
 describeWithMockConnection('AccessibilitySidebarView', () => {

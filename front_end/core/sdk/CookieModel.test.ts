@@ -11,8 +11,6 @@ import {
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('CookieModel', () => {
   const PROTOCOL_COOKIE = {
     domain: '.example.com',

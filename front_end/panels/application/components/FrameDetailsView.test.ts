@@ -21,8 +21,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 const makeFrame = () => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
     url: 'https://www.example.com/path/page.html',

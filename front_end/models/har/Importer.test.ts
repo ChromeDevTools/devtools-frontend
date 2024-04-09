@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as HAR from '../har/har.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as HAR from '../har/har.js';
 
 const exampleLog = new HAR.HARFormat.HARLog({
   version: '1.2',

@@ -2,18 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
+import {type AreaBounds, type Bounds} from '../common.js';
 import {
-  normalizePositionData,
-  drawGridAreaNames,
-  drawGridLineNumbers,
-  drawGridLineNames,
   type CanvasSize,
+  drawGridAreaNames,
+  drawGridLineNames,
+  drawGridLineNumbers,
   type GridPositionNormalizedDataWithNames,
+  normalizePositionData,
   type NormalizePositionDataConfig,
 } from '../css_grid_label_helpers.js';
-import {type AreaBounds, type Bounds} from '../common.js';
 import {gridStyle} from '../highlight_grid_common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';

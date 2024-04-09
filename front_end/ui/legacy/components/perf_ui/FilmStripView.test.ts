@@ -15,8 +15,6 @@ import {TraceLoader} from '../../../../testing/TraceLoader.js';
 
 import * as PerfUI from './perf_ui.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('FilmStripView', function() {
   async function renderView(filmStripData: TraceEngine.Extras.FilmStrip.Data):
       Promise<PerfUI.FilmStripView.FilmStripView> {

@@ -7,8 +7,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('CSSPropertyDocsView', () => {
   it('renders every section', async () => {
     const cssProperty = {

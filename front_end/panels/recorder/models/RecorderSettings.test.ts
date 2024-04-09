@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Models from './models.js';
 import * as Common from '../../../core/common/common.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
+
+import * as Models from './models.js';
 
 describeWithEnvironment('RecorderSettings', () => {
   let recorderSettings: Models.RecorderSettings.RecorderSettings;

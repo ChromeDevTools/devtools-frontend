@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from './helpers.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
+import * as ComponentHelpers from './helpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -34,8 +35,6 @@ const TestElement = class extends HTMLElement {
   }
 };
 customElements.define('x-devtools-test-element', TestElement);
-
-const {assert} = chai;
 
 describe('ComponentHelpers', () => {
   describe('Directives', () => {

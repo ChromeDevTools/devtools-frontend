@@ -18,8 +18,6 @@ import * as ReportView from '../../../../ui/components/report_view/report_view.j
 
 import * as PreloadingComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const zip2 = <T, S>(xs: T[], ys: S[]) => {

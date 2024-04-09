@@ -23,8 +23,6 @@ import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter.test.js';
 import {VIEWER_BYTE_CELL_SELECTOR} from './LinearMemoryViewer.test.js';
 import {DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR} from './ValueInterpreterDisplay.test.js';
 
-const {assert} = chai;
-
 const NAVIGATOR_SELECTOR = 'devtools-linear-memory-inspector-navigator';
 const VIEWER_SELECTOR = 'devtools-linear-memory-inspector-viewer';
 const INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';

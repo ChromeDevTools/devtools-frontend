@@ -6,8 +6,6 @@ import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describe('ComputedStyleTrace', () => {
   it('renders ComputedStyleTrace selector correctly', () => {
     const component = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();

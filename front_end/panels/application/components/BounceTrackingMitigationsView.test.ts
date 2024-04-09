@@ -22,8 +22,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderBounceTrackingMitigationsView():
     Promise<ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView> {
   const component = new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView();

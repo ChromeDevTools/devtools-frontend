@@ -10,8 +10,6 @@ import type * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 const content = JSON.stringify({
   'version': 3,
   'file': '/script.js',

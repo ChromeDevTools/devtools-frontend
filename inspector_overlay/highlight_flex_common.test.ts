@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
+import {type PathCommands, type Position, type Quad} from './common.js';
 import {
   distance,
   getColinearPointAtDistance,
   getGapQuadBetweenQuads,
-  getLinesAndItemsQuads,
   getGapQuads,
+  getLinesAndItemsQuads,
   growQuadToEdgesOf,
   intersectSegments,
   segmentContains,
   uniteQuads,
 } from './highlight_flex_common.js';
-import {type PathCommands, type Position, type Quad} from './common.js';
 
 function createPathCommands(...points: number[]): PathCommands {
   if (points.length !== 8) {

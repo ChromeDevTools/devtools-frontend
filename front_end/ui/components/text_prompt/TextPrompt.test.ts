@@ -6,8 +6,6 @@ import {assertElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.
 
 import * as TextPrompt from './text_prompt.js';
 
-const {assert} = chai;
-
 const renderTextPrompt = (data: TextPrompt.TextPrompt.TextPromptData) => {
   const component = new TextPrompt.TextPrompt.TextPrompt();
   component.data = data;

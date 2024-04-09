@@ -6,8 +6,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 import * as Console from './console.js';
 
-const {assert} = chai;
-
 describe('ConsoleFormat', () => {
   describe('format', () => {
     it('deals with empty format string', () => {

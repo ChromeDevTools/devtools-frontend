@@ -10,8 +10,6 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Application from './application.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ServiceWorkersView', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;

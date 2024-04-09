@@ -23,8 +23,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderTrustTokensView(): Promise<ApplicationComponents.TrustTokensView.TrustTokensView> {
   const component = new ApplicationComponents.TrustTokensView.TrustTokensView();
   renderElementIntoDOM(component);

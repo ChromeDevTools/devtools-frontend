@@ -10,8 +10,6 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ElementsTreeElementHighlighter', () => {
   let target: SDK.Target.Target;
   let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;

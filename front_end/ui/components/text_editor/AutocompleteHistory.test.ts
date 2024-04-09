@@ -10,8 +10,6 @@ import {
 
 import * as TextEditor from './text_editor.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('AutocompleteHistory', () => {
   let setting: Common.Settings.Setting<string[]>;
   let history: TextEditor.AutocompleteHistory.AutocompleteHistory;

@@ -4,8 +4,6 @@
 
 import * as Extensions from '../extensions/extensions.js';
 
-const {assert} = chai;
-
 describe('RecorderPluginManager', () => {
   it('emits events when the plugin list is modified', async () => {
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();

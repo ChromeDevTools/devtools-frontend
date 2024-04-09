@@ -14,8 +14,6 @@ import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 import * as NetworkComponents from './components.js';
 
-const {assert} = chai;
-
 describeWithLocale('RequestTrustTokensView', () => {
   const mockId = 'mockId' as Protocol.Network.RequestId;
 

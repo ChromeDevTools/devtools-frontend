@@ -8,8 +8,6 @@ import type * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('StorageKeyManager', () => {
   let manager: SDK.StorageKeyManager.StorageKeyManager;
   beforeEach(() => {

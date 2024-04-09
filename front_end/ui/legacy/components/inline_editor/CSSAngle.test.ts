@@ -6,8 +6,6 @@ import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHel
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 const assertPopoverOpen = (root: ShadowRoot) => {
   const popover = root.querySelector('.popover');
   assert.exists(popover);

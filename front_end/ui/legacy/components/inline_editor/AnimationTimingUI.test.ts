@@ -6,8 +6,6 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 
 import * as InlineEditor from './inline_editor.js';
 
-const {assert} = chai;
-
 describe('AnimationTimingUI', () => {
   it('can be instantiated successfully', () => {
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse('linear(0, 1)') as

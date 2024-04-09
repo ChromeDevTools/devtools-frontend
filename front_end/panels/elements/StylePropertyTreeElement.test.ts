@@ -17,8 +17,6 @@ import type * as LegacyUI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 describeWithRealConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;

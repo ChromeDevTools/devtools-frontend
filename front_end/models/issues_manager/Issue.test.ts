@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as IssueManager from '../issues_manager/issues_manager.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import {StubIssue} from '../../testing/StubIssue.js';
+import * as IssueManager from '../issues_manager/issues_manager.js';
 
 describe('Issue', () => {
   it('should store the code', () => {

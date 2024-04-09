@@ -12,8 +12,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('LighthouseReportRenderer', () => {
   const linkifyNodeDetails = (targetFactory: () => SDK.Target.Target) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention

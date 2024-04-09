@@ -35,8 +35,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Timeline from './timeline.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('TimelineUIUtils', function() {
   let tracingModel: TraceEngine.Legacy.TracingModel;
   let process: TraceEngine.Legacy.Process;

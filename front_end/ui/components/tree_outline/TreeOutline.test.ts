@@ -20,8 +20,6 @@ import * as TreeOutline from './tree_outline.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderTreeOutline<TreeNodeDataType>({
   tree,
   defaultRenderer,

@@ -2,24 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import {
-  drawGridAreaNamesAndAssertLabels,
-  drawGridLineNumbersAndAssertLabels,
-  drawMultipleGridLineNumbersAndAssertLabels,
-  getGridLineNumberLabelContainer,
-  getGridTrackSizesLabelContainer,
-  initFrameForGridLabels,
-  initFrameForMultipleGridLabels,
-  drawGridLineNamesAndAssertLabels,
-} from './testing/InspectorOverlayHelpers.js';
 import {
   drawGridLineNumbers,
   drawGridTrackSizes,
   generateLegibleTextColor,
   normalizePositionData,
 } from './css_grid_label_helpers.js';
+import {
+  drawGridAreaNamesAndAssertLabels,
+  drawGridLineNamesAndAssertLabels,
+  drawGridLineNumbersAndAssertLabels,
+  drawMultipleGridLineNumbersAndAssertLabels,
+  getGridLineNumberLabelContainer,
+  getGridTrackSizesLabelContainer,
+  initFrameForGridLabels,
+  initFrameForMultipleGridLabels,
+} from './testing/InspectorOverlayHelpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);

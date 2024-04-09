@@ -12,8 +12,6 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Network from './network.js';
 
-const {assert} = chai;
-
 function renderCookiesView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestCookiesView.RequestCookiesView {
   const component = new Network.RequestCookiesView.RequestCookiesView(request);
   const div = document.createElement('div');

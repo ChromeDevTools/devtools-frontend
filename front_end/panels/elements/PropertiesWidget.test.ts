@@ -17,8 +17,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
 describeWithMockConnection('PropertiesWidget', () => {

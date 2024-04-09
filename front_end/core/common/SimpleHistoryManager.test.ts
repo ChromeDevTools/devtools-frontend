@@ -4,7 +4,6 @@
 
 import * as Common from './common.js';
 
-const {assert} = chai;
 const SimpleHistoryManager = Common.SimpleHistoryManager.SimpleHistoryManager;
 
 class Entry implements Common.SimpleHistoryManager.HistoryEntry {

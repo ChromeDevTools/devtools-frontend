@@ -14,8 +14,6 @@ import * as Coordinator from '../../../ui/components/render_coordinator/render_c
 
 import * as ApplicationComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const renderEndpointsGrid = async (data?: ApplicationComponents.EndpointsGrid.EndpointsGridData|null) => {

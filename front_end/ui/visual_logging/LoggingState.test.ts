@@ -6,8 +6,6 @@ import {stabilizeState} from '../../testing/VisualLoggingHelpers.js';
 
 import * as VisualLogging from './visual_logging-testing.js';
 
-const {assert} = chai;
-
 describe('LoggingState', () => {
   let parent: Element;
   let element: Element;

@@ -15,8 +15,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ConsoleView', () => {
   let consoleView: Console.ConsoleView.ConsoleView;
 

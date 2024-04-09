@@ -20,8 +20,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function makeView(
     storageKeyOrBucketInfo: string|Protocol.Storage.StorageBucketInfo,
     storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel) {

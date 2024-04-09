@@ -12,8 +12,6 @@
 import type * as NodeText from '../ui/components/node_text/node_text.js';
 import * as UI from '../ui/legacy/legacy.js';
 
-const {assert} = chai;
-
 const TEST_CONTAINER_ID = '__devtools-test-container-id';
 
 interface RenderOptions {
@@ -52,10 +50,10 @@ function removeChildren(node: Node): void {
       widget.detach();
       continue;
     }
-      // For regular children, recursively remove their children, since some of them
-      // might be widgets, and only afterwards remove the child from the current node.
-      removeChildren(firstChild);
-      node.removeChild(firstChild);
+    // For regular children, recursively remove their children, since some of them
+    // might be widgets, and only afterwards remove the child from the current node.
+    removeChildren(firstChild);
+    node.removeChild(firstChild);
   }
 }
 /**

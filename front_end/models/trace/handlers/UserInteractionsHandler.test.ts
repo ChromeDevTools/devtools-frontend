@@ -5,8 +5,6 @@
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
-const {assert} = chai;
-
 async function processTrace(context: Mocha.Suite|Mocha.Context|null, path: string): Promise<void> {
   const traceEvents = await TraceLoader.rawEvents(context, path);
   TraceModel.Handlers.ModelHandlers.Meta.reset();

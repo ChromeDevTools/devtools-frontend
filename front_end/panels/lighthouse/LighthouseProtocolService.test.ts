@@ -10,8 +10,6 @@ import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConne
 
 import type * as LighthouseModule from './lighthouse.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('LighthouseProtocolService', () => {
   const attachDetach = (targetFactory: () => {rootTarget: SDK.Target.Target, primaryTarget: SDK.Target.Target}) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention

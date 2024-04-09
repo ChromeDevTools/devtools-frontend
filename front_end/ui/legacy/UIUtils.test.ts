@@ -6,8 +6,6 @@ import type * as Platform from '../../core/platform/platform.js';
 
 import * as UI from './legacy.js';
 
-const {assert} = chai;
-
 describe('UIUtils', () => {
   describe('addReferrerToURL', () => {
     it('correctly adds referrer info to URLs', () => {

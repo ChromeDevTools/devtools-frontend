@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
 import * as Common from './common.js';
 
 function assertAlmostEqual(array1: number[], array2: number[], delta = 0.01) {

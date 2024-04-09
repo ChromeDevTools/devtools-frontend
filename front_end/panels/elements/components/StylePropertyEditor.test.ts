@@ -11,8 +11,6 @@ import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 describeWithLocale('StylePropertyEditor', () => {
   function assertValues(component: HTMLElement, values: string[]) {
     const propertyElements = component.shadowRoot!.querySelectorAll('.property');

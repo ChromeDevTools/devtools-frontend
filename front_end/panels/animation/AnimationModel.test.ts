@@ -7,8 +7,6 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Animation from './animation.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('AnimationModel', () => {
   it('can be instantiated', () => {
     assert.doesNotThrow(() => {

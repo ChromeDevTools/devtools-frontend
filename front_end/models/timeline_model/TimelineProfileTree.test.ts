@@ -14,8 +14,6 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TimelineProfileTree', () => {
   describe('TopDownRootNode', () => {
     it('builds the root node and its children properly from an event tree', () => {

@@ -22,8 +22,6 @@ import {
 
 import * as Explain from './explain.js';
 
-const {assert} = chai;
-
 describeWithLocale('PromptBuilder', () => {
   describe('allowHeader', () => {
     it('disallows cookie headers', () => {

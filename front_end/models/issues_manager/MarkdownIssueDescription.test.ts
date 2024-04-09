@@ -4,8 +4,6 @@
 
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-const {assert} = chai;
-
 describe('createIssueDescriptionFromMarkdown', () => {
   it('only accepts Markdown where the first AST element is a heading, describing the title', () => {
     const emptyMarkdownDescription = {

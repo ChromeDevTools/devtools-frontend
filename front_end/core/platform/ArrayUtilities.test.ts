@@ -4,8 +4,6 @@
 
 import * as Platform from './platform.js';
 
-const {assert} = chai;
-
 function comparator(a: number, b: number): number {
   return a < b ? -1 : (a > b ? 1 : 0);
 }

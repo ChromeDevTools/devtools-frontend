@@ -22,8 +22,6 @@ import * as UI from '../../legacy.js';
 
 import * as Components from './utils.js';
 
-const {assert} = chai;
-
 const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 const executionContextId = 1234 as Protocol.Runtime.ExecutionContextId;

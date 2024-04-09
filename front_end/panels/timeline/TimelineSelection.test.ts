@@ -10,8 +10,6 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TimelineSelection', function() {
   it('can be created with a frame', function() {
     const frame = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame(

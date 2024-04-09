@@ -18,8 +18,6 @@ import * as Coordinator from '../../../ui/components/render_coordinator/render_c
 
 import * as ElementsComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('LayoutPane', () => {

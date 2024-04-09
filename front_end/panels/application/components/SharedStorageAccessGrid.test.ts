@@ -18,8 +18,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderSharedStorageAccessGrid(events: Protocol.Storage.SharedStorageAccessedEvent[]):
     Promise<ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid> {
   const component = new ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid();

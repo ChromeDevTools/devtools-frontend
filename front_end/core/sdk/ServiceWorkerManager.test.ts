@@ -6,8 +6,6 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import * as SDK from './sdk.js';
 
-const {assert} = chai;
-
 describe('ServiceWorkerVersion', () => {
   const REGISTRATION_PAYLOAD = {registrationId: 'foo', scopeURL: 'https://example.com', isDeleted: false} as
       Protocol.ServiceWorker.ServiceWorkerRegistration;

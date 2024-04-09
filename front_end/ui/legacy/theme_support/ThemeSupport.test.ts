@@ -8,8 +8,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ThemeSupport from './theme_support.js';
 
-const {assert} = chai;
-
 describe('ThemeSupport', () => {
   describe('fetchColors', () => {
     it('fetchColors updates color node url', () => {

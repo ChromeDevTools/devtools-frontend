@@ -11,8 +11,6 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Logs from '../logs/logs.js';
 
-const {assert} = chai;
-
 function url(input: string): Platform.DevToolsPath.UrlString {
   return input as unknown as Platform.DevToolsPath.UrlString;
 }

@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Common from './common.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import type * as Platform from '../platform/platform.js';
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Common from './common.js';
 
 const ResourceType = Common.ResourceType.ResourceType;
 const ResourceCategory = Common.ResourceType.ResourceCategory;

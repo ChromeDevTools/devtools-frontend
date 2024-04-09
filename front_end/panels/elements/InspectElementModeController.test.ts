@@ -16,8 +16,6 @@ import {
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
 describeWithMockConnection('InspectElementModeController', () => {

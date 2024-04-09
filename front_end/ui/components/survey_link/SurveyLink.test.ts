@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as SurveyLink from './survey_link.js';
 import * as Common from '../../../core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+
+import * as SurveyLink from './survey_link.js';
 
 function canShowSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: true});

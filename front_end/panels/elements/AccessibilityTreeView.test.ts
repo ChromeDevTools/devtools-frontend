@@ -10,8 +10,6 @@ import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 import * as Elements from './elements.js';
 
-const {assert} = chai;
-
 const MAIN_FRAME_ID = 'MAIN_FRAME_ID' as Protocol.Page.FrameId;
 
 describeWithMockConnection('AccessibilityTreeView', () => {

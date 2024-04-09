@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from './host.js';
 import * as Root from '../root/root.js';
 
-const {assert} = chai;
+import * as Host from './host.js';
 
 const TEST_MODEL_ID = 'testModelId';
 

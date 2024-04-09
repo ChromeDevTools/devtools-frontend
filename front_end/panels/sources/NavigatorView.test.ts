@@ -14,16 +14,13 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
-
-import * as Sources from './sources.js';
-
-const {assert} = chai;
-
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Sources from './sources.js';
 
 describeWithMockConnection('NavigatorView', () => {
   let target: SDK.Target.Target;

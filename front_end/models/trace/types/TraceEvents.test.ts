@@ -6,8 +6,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace.js';
 
-const {assert} = chai;
-
 describeWithEnvironment('TraceEvent types', function() {
   const {Phase, isNestableAsyncPhase, isAsyncPhase, isFlowPhase} = TraceEngine.Types.TraceEvents;
   it('is able to determine if a phase is a nestable async phase', function() {

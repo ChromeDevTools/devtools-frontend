@@ -8,8 +8,6 @@ import {stabilizeEvent, stabilizeImpressions} from '../../testing/VisualLoggingH
 
 import * as VisualLogging from './visual_logging-testing.js';
 
-const {assert} = chai;
-
 describe('LoggingEvents', () => {
   let parent: Element;
   let element: Element;

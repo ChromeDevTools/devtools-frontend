@@ -2,29 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Bindings from '../../models/bindings/bindings.js';
-import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Common from '../../core/common/common.js';
-import * as Persistence from '../../models/persistence/persistence.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import * as Sources from './sources.js';
-import * as SourcesComponents from './components/components.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   createTarget,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  createFileSystemUISourceCode,
-  createContentProviderUISourceCodes,
-} from '../../testing/UISourceCodeHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {
+  createContentProviderUISourceCodes,
+  createFileSystemUISourceCode,
+} from '../../testing/UISourceCodeHelpers.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as UI from '../../ui/legacy/legacy.js';
+
+import * as SourcesComponents from './components/components.js';
+import * as Sources from './sources.js';
 
 describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {

@@ -17,8 +17,6 @@ import * as ApplicationComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const {assert} = chai;
-
 async function renderOriginTrialTreeView(
     data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
     ): Promise<{

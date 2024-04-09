@@ -13,8 +13,6 @@ import * as Coordinator from '../../../../ui/components/render_coordinator/rende
 
 import * as PreloadingComponents from './components.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function assertRenderResult(

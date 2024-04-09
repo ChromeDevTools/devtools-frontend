@@ -16,8 +16,6 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 import * as IssueCounter from './issue_counter.js';
 
-const {assert} = chai;
-
 const renderIssueCounter = (data: IssueCounter.IssueCounter.IssueCounterData):
     {component: IssueCounter.IssueCounter.IssueCounter, shadowRoot: ShadowRoot} => {
       const component = new IssueCounter.IssueCounter.IssueCounter();

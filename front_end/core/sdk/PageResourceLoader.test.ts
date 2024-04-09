@@ -2,12 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
-
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as SDK from './sdk.js';
-import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
@@ -18,6 +12,11 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
+
+import * as SDK from './sdk.js';
 
 interface LoadResult {
   success: boolean;

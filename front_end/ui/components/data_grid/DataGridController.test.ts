@@ -19,8 +19,6 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as DataGrid from './data_grid.js';
 
-const {assert} = chai;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.DataGridController) => {

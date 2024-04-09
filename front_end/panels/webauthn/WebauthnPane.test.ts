@@ -12,8 +12,6 @@ import {
 
 import type * as WebauthnModule from './webauthn.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('WebAuthn pane', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   let Webauthn: typeof WebauthnModule;

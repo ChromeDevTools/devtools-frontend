@@ -10,8 +10,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
-const {assert} = chai;
-
 describeWithMockConnection('ResourceUtils', () => {
   const displayNameForURL = (targetFactory: () => SDK.Target.Target) => {
     const INSPECTED_URL_SCHEME = 'http://';

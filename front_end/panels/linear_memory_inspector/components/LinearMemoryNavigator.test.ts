@@ -15,8 +15,6 @@ import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
-const {assert} = chai;
-
 export const NAVIGATOR_ADDRESS_SELECTOR = '[data-input]';
 export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=pagenavigation]';
 export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historynavigation]';

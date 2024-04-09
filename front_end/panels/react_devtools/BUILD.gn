@@ -1,5 +1,5 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
-# Copyright 2020 The Chromium Authors. All rights reserved.
+# Copyright 2024 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -16,30 +16,31 @@ devtools_module("react_devtools_placeholder") {
   sources = [ "ReactDevToolsPlaceholder.ts" ]
 
   deps = [
-    "../../core/host:bundle",
+    ":css_files",
     "../../core/i18n:bundle",
-    "../../core/protocol_client:bundle",
-    "../../core/sdk:bundle",
-    "../../models/text_utils:bundle",
-    "../../ui/components/data_grid:bundle",
-    "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit-html:bundle",
   ]
 }
 
-devtools_entrypoint("bundle") {
-  entrypoint = "react_devtools_placeholder.ts"
+devtools_module("react_devtools") {
+  sources = [ "ReactDevToolsView.ts" ]
 
   deps = [
-    ":css_files",
+    "../../ui/legacy:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "react_devtools.ts"
+
+  deps = [
     ":react_devtools_placeholder",
+    ":react_devtools",
   ]
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    # "../../../test/unittests/front_end/panels/react_devtools_placeholder/*",
     "../../entrypoints/*",
   ]
 
@@ -47,7 +48,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  entrypoint = "react_devtools_placeholder-meta.ts"
+  entrypoint = "react_devtools-meta.ts"
 
   deps = [ ":bundle" ]
 

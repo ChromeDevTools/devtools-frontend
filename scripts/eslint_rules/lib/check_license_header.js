@@ -71,8 +71,9 @@ const META_CODE_PATHS = [
   'entrypoints/rn_inspector',
   'global_typings/react_native.d.ts',
   'models/react_native',
-  'panels/react_devtools_placeholder',
+  'panels/react_devtools',
   'panels/rn_welcome',
+  'models/react_native'
 ];
 
 const OTHER_LICENSE_HEADERS = [

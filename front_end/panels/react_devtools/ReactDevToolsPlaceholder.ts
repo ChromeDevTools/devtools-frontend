@@ -1,5 +1,5 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -15,7 +15,7 @@ const UIStrings = {
 };
 const {render, html} = LitHtml;
 
-const str_ = i18n.i18n.registerUIStrings('panels/react_devtools_placeholder/ReactDevToolsPlaceholder.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/react_devtools/ReactDevToolsPlaceholder.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let instance: ReactDevToolsPlaceholderImpl;

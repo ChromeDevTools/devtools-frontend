@@ -1,3 +1,7 @@
+// Copyright 2024 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -12,7 +16,7 @@ import '../../panels/issues/issues-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/network/network-meta.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
-import '../../panels/react_devtools_placeholder/react_devtools_placeholder-meta.js';
+import '../../panels/react_devtools/react_devtools-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
@@ -59,7 +63,7 @@ Root.Runtime.experiments.register(
 
 Root.Runtime.experiments.register(
   Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-  'Enable React DevTools panel',
+  'Enable React DevTools',
   /* unstable */ true,
 );
 

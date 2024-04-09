@@ -38,6 +38,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.title),
   commandPrompt: i18nLazyString(UIStrings.command),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  order: 1000,
   async loadView() {
     const Module = await loadModule();
 

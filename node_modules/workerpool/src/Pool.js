@@ -23,12 +23,15 @@ function Pool(script, options) {
 
   options = options || {};
 
-  this.forkArgs = options.forkArgs || [];
-  this.forkOpts = options.forkOpts || {};
+  this.forkArgs = Object.freeze(options.forkArgs || []);
+  this.forkOpts = Object.freeze(options.forkOpts || {});
   this.debugPortStart = (options.debugPortStart || 43210);
   this.nodeWorker = options.nodeWorker;
   this.workerType = options.workerType || options.nodeWorker || 'auto'
   this.maxQueueSize = options.maxQueueSize || Infinity;
+
+  this.onCreateWorker = options.onCreateWorker || (() => null);
+  this.onTerminateWorker = options.onTerminateWorker || (() => null);
 
   // configuration
   if (options && 'maxWorkers' in options) {
@@ -265,6 +268,8 @@ Pool.prototype._getWorker = function() {
  * @protected
  */
 Pool.prototype._removeWorker = function(worker) {
+  var me = this;
+
   DEBUG_PORT_ALLOCATOR.releasePort(worker.debugPort);
   // _removeWorker will call this, but we need it to be removed synchronously
   this._removeWorkerFromList(worker);
@@ -273,6 +278,11 @@ Pool.prototype._removeWorker = function(worker) {
   // terminate the worker (if not already terminated)
   return new Promise(function(resolve, reject) {
     worker.terminate(false, function(err) {
+      me.onTerminateWorker({
+        forkArgs: worker.forkArgs,
+        forkOpts: worker.forkOpts,
+        script: worker.script
+      });
       if (err) {
         reject(err);
       } else {
@@ -306,6 +316,8 @@ Pool.prototype._removeWorkerFromList = function(worker) {
  * @return {Promise.<void, Error>}
  */
 Pool.prototype.terminate = function (force, timeout) {
+  var me = this;
+
   // cancel any pending tasks
   this.tasks.forEach(function (task) {
     task.resolver.reject(new Error('Pool terminated'));
@@ -321,7 +333,14 @@ Pool.prototype.terminate = function (force, timeout) {
   var workers = this.workers.slice();
   workers.forEach(function (worker) {
     var termPromise = worker.terminateAndNotify(force, timeout)
-      .then(removeWorker);
+      .then(removeWorker)
+      .always(function() {
+        me.onTerminateWorker({
+          forkArgs: worker.forkArgs,
+          forkOpts: worker.forkOpts,
+          script: worker.script
+        });
+      });
     promises.push(termPromise);
   });
   return Promise.all(promises);
@@ -365,9 +384,15 @@ Pool.prototype._ensureMinWorkers = function() {
  * @private
  */
 Pool.prototype._createWorkerHandler = function () {
-  return new WorkerHandler(this.script, {
+  const overridenParams = this.onCreateWorker({
     forkArgs: this.forkArgs,
     forkOpts: this.forkOpts,
+    script: this.script
+  }) || {};
+
+  return new WorkerHandler(overridenParams.script || this.script, {
+    forkArgs: overridenParams.forkArgs || this.forkArgs,
+    forkOpts: overridenParams.forkOpts || this.forkOpts,
     debugPort: DEBUG_PORT_ALLOCATOR.nextAvailableStartingAt(this.debugPortStart),
     workerType: this.workerType
   });

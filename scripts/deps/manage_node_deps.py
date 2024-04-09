@@ -140,6 +140,7 @@ def install_missing_deps():
                     'npm',
                     'install',
                     '--save-dev',
+                    '--save-exact',
                 ] + ADDITIONAL_NPM_ARGS
                 cmd.extend(new_deps)
                 return exec_command(cmd)

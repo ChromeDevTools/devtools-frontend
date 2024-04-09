@@ -6,7 +6,8 @@
  * @property {'auto' | 'web' | 'process' | 'thread'} [workerType]
  * @property {*} [forkArgs]
  * @property {*} [forkOpts]
- * @property {number} [debugPortStart]
+ * @property {Function} [onCreateWorker]
+ * @property {Function} [onTerminateWorker]
  */
 
 /**

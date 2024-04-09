@@ -39,6 +39,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       const bottomNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
       assert.strictEqual(bottomNode.event?.name, 'second console time');
     });
+
     it('shows instant events as nodes', async function() {
       const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
@@ -52,7 +53,26 @@ describeWithEnvironment('TimelineTreeView', function() {
       const secondNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
       assert.strictEqual(secondNode.event?.name, 'mark3');
     });
+
+    it('can filter events by text', async function() {
+      const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
+      const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
+      const consoleTimings = [...data.traceParsedData.UserTimings.performanceMarks];
+      eventTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
+      let tree = eventTreeView.buildTree();
+      const topLevelChildren = Array.from(tree.children().values(), childNode => {
+        return childNode.event?.name || 'NO_EVENT_FOR_NODE';
+      });
+      assert.deepEqual(topLevelChildren, ['mark1', 'mark3']);
+      eventTreeView.textFilterUI?.setValue('mark1', true);
+      tree = eventTreeView.buildTree();
+      const newTopLevelChildren = Array.from(tree.children().values(), childNode => {
+        return childNode.event?.name || 'NO_EVENT_FOR_NODE';
+      });
+      assert.deepEqual(newTopLevelChildren, ['mark1']);
+    });
   });
+
   describe('BottomUpTimelineTreeView', function() {
     it('Creates a bottom up tree from nestable events', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
@@ -79,6 +99,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(childNode.event?.name, 'first console time');
     });
   });
+
   describe('CallTreeTimelineTreeView', function() {
     it('Creates a call tree from nestable events', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
@@ -102,6 +123,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(childNode.event?.name, 'second console time');
     });
   });
+
   describe('event groupping', function() {
     it('groups events by category in the Call Tree view', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');

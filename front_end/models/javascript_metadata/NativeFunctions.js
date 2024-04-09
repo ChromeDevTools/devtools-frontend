@@ -6537,6 +6537,10 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
+    name: "InterestEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
     name: "InvokeEvent",
     signatures: [["type","?eventInitDict"]]
   },

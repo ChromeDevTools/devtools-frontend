@@ -3637,6 +3637,8 @@ export namespace DOM {
     GrammarError = 'grammar-error',
     Highlight = 'highlight',
     FirstLineInherited = 'first-line-inherited',
+    ScrollMarker = 'scroll-marker',
+    ScrollMarkers = 'scroll-markers',
     Scrollbar = 'scrollbar',
     ScrollbarThumb = 'scrollbar-thumb',
     ScrollbarButton = 'scrollbar-button',

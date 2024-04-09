@@ -67,11 +67,12 @@ const EXCLUDED_FILES = [
 ];
 
 const META_CODE_PATHS = [
+  'core/host/RNPerfMetrics.ts',
   'entrypoints/rn_inspector',
+  'global_typings/react_native.d.ts',
+  'models/react_native',
   'panels/react_devtools_placeholder',
   'panels/rn_welcome',
-  'core/host/RNPerfMetrics.ts',
-  'global_typings/react_native.d.ts',
 ];
 
 const OTHER_LICENSE_HEADERS = [

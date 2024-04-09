@@ -205,11 +205,7 @@ describe('NetworkDispatcher', () => {
     const resourceUrlsFoo = ['foo'] as Platform.DevToolsPath.UrlString[];
 
     beforeEach(() => {
-      const networkManager: Common.ObjectWrapper.ObjectWrapper<unknown>&{target?: () => void} =
-          new Common.ObjectWrapper.ObjectWrapper();
-      networkManager.target = () => ({
-        model: () => null,
-      });
+      const networkManager = new Common.ObjectWrapper.ObjectWrapper();
       networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);
     });
 

@@ -2195,8 +2195,7 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
-   "-internal-user-margin"
+   "auto"
   ],
   "name": "margin-bottom"
  },
@@ -2221,22 +2220,19 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
-   "-internal-user-margin"
+   "auto"
   ],
   "name": "margin-left"
  },
  {
   "keywords": [
-   "auto",
-   "-internal-user-margin"
+   "auto"
   ],
   "name": "margin-right"
  },
  {
   "keywords": [
-   "auto",
-   "-internal-user-margin"
+   "auto"
   ],
   "name": "margin-top"
  },

@@ -101,4 +101,37 @@ describeWithEnvironment('TraceModel', function() {
     ];
     assert.deepEqual(model.getRecordingsAvailable(), expectedResults);
   });
+
+  it('supports overriding annotations in metadata', async function() {
+    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const file1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
+    await model.parse(file1);
+
+    // Make sure there are no annotations before any are added
+    assert.isUndefined(model.metadata(0)?.annotations);
+
+    const initialBreadcrumb = {
+      window: {
+        max: 0 as TraceModel.Types.Timing.MicroSeconds,
+        min: 10 as TraceModel.Types.Timing.MicroSeconds,
+        range: 10 as TraceModel.Types.Timing.MicroSeconds,
+      },
+      child: null,
+    };
+
+    const entriesFilterAnnotations = {
+      hiddenEntriesIndexes: [1, 2, 3],
+      modifiedEntriesIndexes: [4],
+    };
+
+    const annotations = {
+      entriesFilterAnnotations,
+      initialBreadcrumb,
+    };
+
+    model.overrideAnnotations(0, annotations);
+    // Make sure metadata contains overwritten annotations
+    assert.strictEqual(model.metadata(0)?.annotations, annotations);
+  });
+
 });

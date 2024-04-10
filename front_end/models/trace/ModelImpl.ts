@@ -178,6 +178,12 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#traces[index].metadata;
   }
 
+  overrideAnnotations(index: number, newAnnotations: Types.File.Annotations): void {
+    if (this.#traces[index]) {
+      this.#traces[index].metadata.annotations = newAnnotations;
+    }
+  }
+
   traceEvents(index: number): readonly Types.TraceEvents.TraceEventData[]|null {
     if (!this.#traces[index]) {
       return null;

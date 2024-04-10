@@ -48,7 +48,7 @@ const UIStrings = {
   /**
    * @description  Message shown to the user if the feature roll out is currently happening.
    */
-  rolloutRestricted: 'This feature is currently being rolled out. Please try again later.',
+  rolloutRestricted: 'This feature is currently being rolled out. Stay tuned.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

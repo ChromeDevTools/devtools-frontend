@@ -27,8 +27,8 @@ describe('CookieIssue', () => {
 
     it('returns false when no cookieUrl is available or cookieUrl is invalid', () => {
       const resourceTreeFrame = mockResourceTreeFrame('example.com');
-      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, undefined));
-      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, '~~really an invalid URL'));
+      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, undefined, 'http://www.example.com'));
+      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, '~~really an invalid URL', 'http://www.example.com'));
     });
 
     it('returns true for third-party cookieUrls', () => {
@@ -42,8 +42,15 @@ describe('CookieIssue', () => {
 
     it('returns false for first-party cookieUrls', () => {
       const resourceTreeFrame = mockResourceTreeFrame('example.com');
-      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, 'http://www.example.com/index.html'));
-      assert.isFalse(isCausedByThirdParty(resourceTreeFrame, 'http://sub.domain.example.com/should-work.php'));
+      assert.isFalse(
+          isCausedByThirdParty(resourceTreeFrame, 'http://www.example.com/index.html', 'http://www.example.com'));
+      assert.isFalse(isCausedByThirdParty(
+          resourceTreeFrame, 'http://sub.domain.example.com/should-work.php', 'http://www.example.com'));
+    });
+    it('returns true for first-party cookieUrls in a third-party context', () => {
+      const resourceTreeFrame = mockResourceTreeFrame('example.com');
+      assert.isTrue(isCausedByThirdParty(resourceTreeFrame, 'http://www.example.com/index.html'));
+      assert.isTrue(isCausedByThirdParty(resourceTreeFrame, 'http://sub.domain.example.com/should-work.php'));
     });
   });
 });

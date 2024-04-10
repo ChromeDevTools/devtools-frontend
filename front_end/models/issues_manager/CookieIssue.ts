@@ -223,7 +223,7 @@ export class CookieIssue extends Issue {
 
   override isCausedByThirdParty(): boolean {
     const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
-    return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl);
+    return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl, this.#issueDetails.siteForCookies);
   }
 
   getKind(): IssueKind {
@@ -259,11 +259,17 @@ export class CookieIssue extends Issue {
  * Exported for unit test.
  */
 export function isCausedByThirdParty(
-    outermostFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null, cookieUrl?: string): boolean {
+    outermostFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null, cookieUrl?: string,
+    siteForCookies?: string): boolean {
   if (!outermostFrame) {
     // The outermost frame is not yet available. Consider this issue as a third-party issue
     // until the outermost frame is available. This will prevent the issue from being visible
     // for only just a split second.
+    return true;
+  }
+  // The value that should be consulted for the third-partiness as defined in
+  // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cookie-same-site#section-2.1.1
+  if (!siteForCookies) {
     return true;
   }
 

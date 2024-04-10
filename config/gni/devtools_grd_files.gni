@@ -834,6 +834,7 @@ grd_files_debug_sources = [
   "front_end/entrypoints/node_app/NodeConnectionsPanel.js",
   "front_end/entrypoints/node_app/NodeMain.js",
   "front_end/entrypoints/node_app/nodeConnectionsPanel.css.js",
+  "front_end/entrypoints/shell/browser_compatibility_guard.js",
   "front_end/entrypoints/wasmparser_worker/WasmParserWorker.js",
   "front_end/entrypoints/worker_app/WorkerMain.js",
   "front_end/generated/ARIAProperties.js",

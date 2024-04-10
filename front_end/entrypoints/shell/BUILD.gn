@@ -2,8 +2,15 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
+
+devtools_module("shell_utils") {
+  sources = [
+    "browser_compatibility_guard.ts",
+  ]
+}
 
 devtools_entrypoint("shell") {
   entrypoint = "shell.ts"
@@ -30,6 +37,7 @@ devtools_entrypoint("shell") {
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
+    ":shell_utils",
   ]
 
   visibility = [

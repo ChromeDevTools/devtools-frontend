@@ -66,6 +66,7 @@ inspectorBackend.registerEnum("Animation.AnimationType", {CSSTransition: "CSSTra
 inspectorBackend.registerEvent("Animation.animationCanceled", ["id"]);
 inspectorBackend.registerEvent("Animation.animationCreated", ["id"]);
 inspectorBackend.registerEvent("Animation.animationStarted", ["animation"]);
+inspectorBackend.registerEvent("Animation.animationUpdated", ["animation"]);
 inspectorBackend.registerCommand("Animation.disable", [], [], "Disables animation domain notifications.");
 inspectorBackend.registerCommand("Animation.enable", [], [], "Enables animation domain notifications.");
 inspectorBackend.registerCommand("Animation.getCurrentTime", [{"name": "id", "type": "string", "optional": false, "description": "Id of animation.", "typeRef": null}], ["currentTime"], "Returns the current time of the an animation.");

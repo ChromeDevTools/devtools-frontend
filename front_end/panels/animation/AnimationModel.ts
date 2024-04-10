@@ -726,6 +726,9 @@ export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher
   animationStarted({animation}: Protocol.Animation.AnimationStartedEvent): void {
     void this.#animationModel.animationStarted(animation);
   }
+
+  animationUpdated(_params: Protocol.Animation.AnimationUpdatedEvent): void {
+  }
 }
 
 export class ScreenshotCapture {

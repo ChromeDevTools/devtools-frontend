@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as fs from 'fs';
 import * as Mocha from 'mocha';
+import * as path from 'path';
 
 import {
   ScreenshotError,
@@ -49,12 +51,24 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
   // the rest of the HTML formatting (e.g. <pre> and </pre>).
   static readonly SUMMARY_LENGTH_CUTOFF = 3985;
   private suitePrefix?: string;
+  htmlResult: fs.WriteStream|undefined;
+
+  localResultsPath() {
+    return !ResultsDb.available() && this.suitePrefix ? path.join(__dirname, '..', this.suitePrefix, 'results.html') :
+                                                        undefined;
+  }
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
     super(runner, options);
     // `reportOptions` doesn't work with .mocharc.js (configurig via exports).
     // BUT, every module.exports is forwarded onto the options object.
     this.suitePrefix = (options as {suiteName: string} | undefined)?.suiteName;
+
+    const localResults = this.localResultsPath();
+
+    if (localResults) {
+      this.htmlResult = fs.createWriteStream(localResults, {});
+    }
 
     runner.on(EVENT_TEST_PASS, this.onTestPass.bind(this));
     runner.on(EVENT_TEST_FAIL, this.onTestFail.bind(this));
@@ -78,6 +92,16 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     } else {
       testResult.summaryHtml = `<pre>${getErrorMessage(error).slice(0, ResultsDbReporter.SUMMARY_LENGTH_CUTOFF)}</pre>`;
     }
+    if (this.htmlResult) {
+      this.htmlResult.write(testResult.summaryHtml);
+      if (testResult.artifacts) {
+        for (const screenshot in testResult.artifacts) {
+          this.htmlResult.write(`<details><summary>${screenshot} screenshot:</summary><p><img src="${
+              testResult.artifacts[screenshot].filePath}"></img></p></details>`);
+        }
+      }
+      this.htmlResult.write('<hr>');
+    }
     ResultsDb.sendTestResult(testResult);
   }
 
@@ -97,6 +121,14 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
       duration: `${test.duration || 0}ms`,
       tags: [{key: 'run', 'value': String(testRetry.currentRetry() + 1)}],
     };
+  }
+
+  override epilogue() {
+    super.epilogue();
+    const localResults = this.localResultsPath();
+    if (this.failures.length > 0 && localResults) {
+      console.error(`Results have been written to file://${localResults}`);
+    }
   }
 }
 

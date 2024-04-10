@@ -32,16 +32,6 @@ export async function takeScreenshots(): Promise<{target?: string, frontend?: st
   }
 }
 
-async function takeScreenshotsForError(): Promise<{target?: string, frontend?: string}> {
-  if (getEnvVar('LUCI_CONTEXT')) {
-    const screenshots = await takeScreenshots();
-    console.error('Screenshots will be uploaded to luci-milo invocation.');
-    return screenshots;
-  }
-  console.error('Screenshots skipped because we are not running under rdb; did you run `npm run auto-e2etest-rdb`?');
-  return {};
-}
-
 function wrapSuiteFunction(fn: (this: Mocha.Suite) => void) {
   return function(this: Mocha.Suite): void {
     const hookCreationHook = (hook: Mocha.Hook) => {
@@ -144,7 +134,7 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
     }
   }
   if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError)) {
-    const {target, frontend} = await takeScreenshotsForError();
+    const {target, frontend} = await takeScreenshots();
     err = ScreenshotError.fromBase64Images(err, target, frontend);
   }
   if (done) {
@@ -227,7 +217,7 @@ function wrapMochaCall(
       async function onError(this: unknown, err?: unknown) {
         const isTimeoutError = err instanceof Error && err.message?.includes(TIMEOUT_ERROR_MESSAGE);
         if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError) && !isTimeoutError) {
-          const {target, frontend} = await takeScreenshotsForError();
+          const {target, frontend} = await takeScreenshots();
           err = ScreenshotError.fromBase64Images(err, target, frontend);
         }
         done.call(this, err);

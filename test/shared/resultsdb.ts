@@ -64,6 +64,11 @@ function getSinkData(): SinkData {
   return resolvedSinkData;
 }
 
+export function available() {
+  const sinkData = getSinkData();
+  return sinkData.url !== undefined;
+}
+
 // Call at the end of a test suite. Will send all `TestResult`s collected via
 // `recordTestResult` to the ResultSink endpoint (only if available).
 export function sendTestResult(results: TestResult): void {

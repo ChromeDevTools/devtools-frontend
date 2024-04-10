@@ -20,7 +20,13 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 
 describeWithEnvironment('TimelineTreeView', function() {
   const mockViewDelegate = new MockViewDelegate();
+
   describe('EventsTimelineTreeView', function() {
+    afterEach(() => {
+      // One of the unit tests changes this, so ensure it gets set back after the test.
+      Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.hidden = false;
+    });
+
     it('Creates a tree from nestable async events', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
@@ -68,6 +74,26 @@ describeWithEnvironment('TimelineTreeView', function() {
         return childNode.event?.name || 'NO_EVENT_FOR_NODE';
       });
       assert.deepEqual(newTopLevelChildren, ['mark1']);
+    });
+
+    it('can filter and hide entire categories', async function() {
+      const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
+      const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
+      const performanceTimingEvents = [...data.traceParsedData.UserTimings.performanceMeasures];
+      eventTreeView.setModelWithEvents(data.performanceModel, performanceTimingEvents, data.traceParsedData);
+      let tree = eventTreeView.buildTree();
+      const topLevelChildren = Array.from(tree.children().values(), childNode => {
+        return childNode.event?.name || 'NO_EVENT_FOR_NODE';
+      });
+      assert.deepEqual(topLevelChildren, ['first measure', 'third measure']);
+      // Now make the scripting category hidden and tell the treeview to re-render.
+      Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.hidden = true;
+      eventTreeView.refreshTree();
+      tree = eventTreeView.buildTree();
+      const newTopLevelChildren = Array.from(tree.children().values(), childNode => {
+        return childNode.event?.name || 'NO_EVENT_FOR_NODE';
+      });
+      assert.deepEqual(newTopLevelChildren, []);
     });
   });
 

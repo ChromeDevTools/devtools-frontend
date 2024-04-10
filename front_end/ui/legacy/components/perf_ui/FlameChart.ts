@@ -2255,11 +2255,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         // +-+---+
 
         // The vertical stroke
-        context.fillRect(iconsWidth, offset - lineWidth, lineWidth, groupHeight - group.style.padding + 2 * lineWidth);
+        context.fillRect(0, offset - lineWidth, lineWidth, groupHeight - group.style.padding + 2 * lineWidth);
         // The top horizontal stroke
-        context.fillRect(iconsWidth, offset - lineWidth, bracketLength, lineWidth);
+        context.fillRect(0, offset - lineWidth, bracketLength, lineWidth);
         // The top horizontal stroke
-        context.fillRect(iconsWidth, offset + groupHeight - group.style.padding, bracketLength, lineWidth);
+        context.fillRect(0, offset + groupHeight - group.style.padding, bracketLength, lineWidth);
       }
     });
 

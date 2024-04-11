@@ -339,6 +339,132 @@ export const y = "";
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
 
+    it('trims a very long network request', async () => {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const REQUEST_ID = '29.1' as Protocol.Network.RequestId;
+      const messageDetails = {
+        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+        affectedResources: {
+          requestId: REQUEST_ID,
+        },
+      };
+      const NETWORK_REQUEST = {
+        url() {
+          return 'https://example.com' as Platform.DevToolsPath.UrlString;
+        },
+        requestHeaders() {
+          return Array(100).fill({
+            name: 'Origin',
+            value: 'https://example.com',
+          });
+        },
+        statusCode: 404,
+        statusText: 'Not found',
+        responseHeaders: Array(100).fill({
+          name: 'Origin',
+          value: 'https://example.com',
+        }),
+      } as SDK.NetworkRequest.NetworkRequest;
+      sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requestsForId').withArgs(REQUEST_ID).returns([
+        NETWORK_REQUEST,
+      ]);
+      const RELATED_REQUEST = [
+        'Request: https://example.com',
+        '',
+        'Request headers:',
+        'Origin: https://example.com\n'.repeat(35),
+        'Response headers:',
+        'Origin: https://example.com\n'.repeat(35),
+        'Response status: 404 Not found',
+      ].join('\n');
+      const ERROR_MESSAGE = 'kaboom!';
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          messageDetails);
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const promptBuilder = new Explain.PromptBuilder(message);
+      const {prompt, sources} = await promptBuilder.buildPrompt();
+      assert.strictEqual(prompt, [
+        PREAMBLE,
+        ERROR_MESSAGE,
+        RELATED_NETWORK_REQUEST_PREFIX,
+        '',
+        '```',
+        RELATED_REQUEST,
+        '```',
+      ].join('\n'));
+
+      assert.deepStrictEqual(
+          sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
+    });
+
+    it('trims a very long console message', async () => {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const messageDetails = {
+        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+      };
+      const ERROR_MESSAGE = 'a'.repeat(2000);
+      const TRIMMED_ERROR_MESSAGE = 'a'.repeat(1000);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
+          messageDetails);
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const promptBuilder = new Explain.PromptBuilder(message);
+      const {prompt, sources} = await promptBuilder.buildPrompt();
+      assert.strictEqual(prompt, [
+        PREAMBLE,
+        TRIMMED_ERROR_MESSAGE,
+      ].join('\n'));
+      assert.deepStrictEqual(sources, [{type: 'message', value: TRIMMED_ERROR_MESSAGE}]);
+    });
+
+    it('trims a very long stack trace', async () => {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const SCRIPT_ID = '1' as Protocol.Runtime.ScriptId;
+      const LINE_NUMBER = 0;
+      const URL = `http://example.com/${'a'.repeat(100)}.js` as Platform.DevToolsPath.UrlString;
+      const STACK_FRAME = `${SCRIPT_ID}::userNestedFunction::${URL}::${LINE_NUMBER}::15`;
+      const stackTrace = createStackTrace(Array(80).fill(STACK_FRAME));
+      const STACK_TRACE = 'userNestedFunction @ \n'.repeat(45).trim();
+      const messageDetails = {
+        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+        stackTrace,
+      };
+      const RELATED_CODE = 'console.error(\'kaboom!\')';
+      const {uiSourceCode, project} =
+          createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
+      debuggerWorkspaceBinding.addSourceMapping(mapping);
+      const ERROR_MESSAGE = 'kaboom!';
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          ERROR_MESSAGE, messageDetails);
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const promptBuilder = new Explain.PromptBuilder(message);
+      const {prompt, sources} = await promptBuilder.buildPrompt();
+      assert.strictEqual(prompt, [
+        PREAMBLE,
+        ERROR_MESSAGE,
+        STACK_TRACE,
+        RELATED_CODE_PREFIX,
+        '',
+        '```',
+        RELATED_CODE.trim(),
+        '```',
+      ].join('\n'));
+
+      assert.deepStrictEqual(sources, [
+        {type: 'message', value: ERROR_MESSAGE},
+        {type: 'stacktrace', value: STACK_TRACE},
+        {type: 'relatedCode', value: RELATED_CODE.trim()},
+      ]);
+
+      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+    });
+
     it('builds a prompt with related request', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const REQUEST_ID = '29.1' as Protocol.Network.RequestId;
@@ -382,6 +508,7 @@ export const y = "";
       assert.deepStrictEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
     });
+
   });
 
   describeWithMockConnection('getSearchQuery', () => {

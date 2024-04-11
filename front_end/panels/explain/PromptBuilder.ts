@@ -74,7 +74,7 @@ export class PromptBuilder {
   }
 
   async buildPrompt(sourcesTypes: SourceType[] = Object.values(SourceType)):
-      Promise<{prompt: string, sources: Source[]}> {
+      Promise<{prompt: string, sources: Source[], isPageReloadRecommended: boolean}> {
     const [sourceCode, request] = await Promise.all([
       sourcesTypes.includes(SourceType.RELATED_CODE) ? this.getMessageSourceCode() : undefined,
       sourcesTypes.includes(SourceType.NETWORK_REQUEST) ? this.getNetworkRequest() : undefined,
@@ -123,6 +123,8 @@ export class PromptBuilder {
     return {
       prompt,
       sources,
+      isPageReloadRecommended: sourcesTypes.includes(SourceType.NETWORK_REQUEST) &&
+          Boolean(this.#consoleMessage.consoleMessage().getAffectedResources()?.requestId) && !relatedRequest,
     };
   }
 

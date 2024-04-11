@@ -29,6 +29,7 @@ describeWithEnvironment('ConsoleInsight', () => {
               value: 'error message',
             },
           ],
+          isPageReloadRecommended: true,
         };
       },
       getSearchQuery() {

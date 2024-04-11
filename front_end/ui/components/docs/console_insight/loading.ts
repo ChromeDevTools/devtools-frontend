@@ -17,7 +17,7 @@ const component = new ConsoleInsight(
         return '';
       },
       async buildPrompt() {
-        return {prompt: '', sources: []};
+        return {prompt: '', sources: [], isPageReloadRecommended: false};
       },
     },
     {

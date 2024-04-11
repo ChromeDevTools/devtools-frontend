@@ -104,6 +104,7 @@ function main() {
 
   const testKinds = [
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),
+    new MochaTests(path.join(GEN_DIR, 'test/e2e')),
   ];
 
   if (!options['skip-ninja']) {
@@ -123,7 +124,7 @@ function main() {
 
     const suite = testKinds.find(kind => isContainedInDirectory(repoPath.buildPath, kind.suite.buildPath));
     if (suite === undefined) {
-      console.error(`Unknown test suite for '${t}'`);
+      console.error(`Unknown test suite for '${repoPath.sourcePath}'`);
       continue;
     }
 

@@ -8,6 +8,7 @@ import("../../third_party/typescript/typescript.gni")
 group("e2e") {
   deps = [
     ":config",
+    ":test_inputs",
     ":tests",
     "resources",
   ]
@@ -48,6 +49,7 @@ node_ts_library("tests") {
     "targets",
     "webaudio",
   ]
+  sources = [ "mocharc.ts" ]
 }
 
 copy_to_gen("config") {
@@ -55,4 +57,12 @@ copy_to_gen("config") {
     ".mocharc.js",
     "test-runner-config.json",
   ]
+}
+
+generated_file("test_inputs") {
+  outputs = [ "$target_gen_dir/tests.txt" ]
+  data_keys = [ "tests" ]
+  rebase = target_gen_dir
+
+  deps = [ ":tests" ]
 }

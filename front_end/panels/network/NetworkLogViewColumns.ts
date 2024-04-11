@@ -562,7 +562,6 @@ export class NetworkLogViewColumns {
       return;
     }
     this.gridMode = gridMode;
-    this.networkLogView.element.classList.toggle('grid-mode', gridMode);
     this.updateColumns();
     this.updateRowsSize();
   }
@@ -579,6 +578,7 @@ export class NetworkLogViewColumns {
     if (!this.splitWidget) {
       return;
     }
+    this.networkLogView.element.classList.toggle('has-waterfall', visible);
     if (visible) {
       this.splitWidget.showBoth();
       this.activeScroller = this.waterfallScroller;

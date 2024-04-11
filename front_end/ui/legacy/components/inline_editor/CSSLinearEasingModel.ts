@@ -108,7 +108,7 @@ const KeywordToValue: Record<string, string> = {
 export class CSSLinearEasingModel {
   #points: Point[];
 
-  private constructor(points: Point[]) {
+  constructor(points: Point[]) {
     this.#points = points;
   }
 

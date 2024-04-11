@@ -429,7 +429,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assertNotNullOrUndefined(modelBreakpoint);
 
     // Make sure that we do not have a linked script yet.
-    assert.isNull(modelBreakpoint.currentState);
+    assert.strictEqual(modelBreakpoint.currentState, null);
 
     // Now await restoring the breakpoint.
     // A successful restore should update the ModelBreakpoint of the DebuggerModel

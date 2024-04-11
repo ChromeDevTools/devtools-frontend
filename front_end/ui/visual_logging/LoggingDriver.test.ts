@@ -348,7 +348,7 @@ describe('LoggingDriver', () => {
 
     element.dispatchEvent(new KeyboardEvent('keydown', {'code': 'KeyC'}));
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.notExists(keyboardLogThrottler.process);
+    assert.strictEqual(keyboardLogThrottler.process, null);
 
     element.dispatchEvent(new KeyboardEvent('keydown', {'code': 'KeyA'}));
     await new Promise(resolve => setTimeout(resolve, 0));

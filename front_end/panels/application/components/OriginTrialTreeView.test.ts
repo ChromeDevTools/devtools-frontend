@@ -397,8 +397,7 @@ describeWithLocale('OriginTrialTreeView', () => {
     if (trialNameNode.children === undefined) {
       return;
     }
-    for (let i = 0; i < trialNameNode.children.length; i++) {
-      const tokenWithStatusNode = trialNameNode.children[i];
+    for (const tokenWithStatusNode of trialNameNode.children) {
       assert.isDefined(tokenWithStatusNode.children);
       const badges = extractBadgeTextFromTreeNode(tokenWithStatusNode.nodeElement);
       assert.lengthOf(badges, 0);

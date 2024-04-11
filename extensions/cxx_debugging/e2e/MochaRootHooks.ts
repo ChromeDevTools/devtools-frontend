@@ -14,6 +14,7 @@ import {
   setTestServerPort,
 } from 'test/conductor/puppeteer-state.js';
 import {click} from 'test/shared/helper';
+import {TestConfig} from 'test/TestConfig';
 
 const EXTENSION_DIR = path.join(__dirname, '..', '..', '..', 'DevTools_CXX_Debugging.stage2', 'gen');
 const DEVTOOLS_DIR = path.join(__dirname, '..', '..', '..', 'devtools-frontend', 'gen');
@@ -30,9 +31,9 @@ async function beforeAll() {
   };
 
   const browser = await puppeteer.launch({
-    headless: !Boolean(process.env['DEBUG_TEST']),
+    headless: !Boolean(process.env['DEBUG_TEST']) && !TestConfig.debug,
     devtools: true,
-    dumpio: !process.env['DEBUG_TEST'],
+    dumpio: !process.env['DEBUG_TEST'] && !TestConfig.debug,
     executablePath,
     defaultViewport,
     args: [

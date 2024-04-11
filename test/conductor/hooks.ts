@@ -29,6 +29,7 @@ import {
   setupBrowserProcessIO,
 } from './events.js';
 import {TargetTab} from './target_tab.js';
+import {TestConfig} from './test_config.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer-core' {
@@ -48,20 +49,21 @@ const viewportHeight = 720;
 const windowWidth = viewportWidth + 50;
 const windowHeight = viewportHeight + 200;
 
-const headless = !process.env['DEBUG_TEST'];
+const headless = !process.env['DEBUG_TEST'] && !TestConfig.debug;
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
     ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
     0;
 
-const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
+const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', TestConfig.serverType);
 
 let browser: puppeteer.Browser;
 let frontendTab: DevToolsFrontendTab;
 let targetTab: TargetTab;
 
-const envChromeBinary = getTestRunnerConfigSetting<string>('chrome-binary-path', process.env['CHROME_BIN'] || '');
+const envChromeBinary =
+    getTestRunnerConfigSetting<string>('chrome-binary-path', process.env['CHROME_BIN'] || TestConfig.chromeBinary);
 const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', process.env['CHROME_FEATURES'] || '');
 
 export async function watchForHang<T>(

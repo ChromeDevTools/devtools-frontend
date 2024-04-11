@@ -3,10 +3,12 @@
 # found in the LICENSE file.
 
 import("../scripts/build/ninja/copy.gni")
+import("../third_party/typescript/typescript.gni")
 
 group("test") {
   deps = [
     ":config",
+    ":run",
     ":unittests",
     "e2e",
     "interactions",
@@ -30,3 +32,13 @@ copy_to_gen("config") {
     "karma.conf.js",
   ]
 }
+
+node_ts_library("run") {
+  sources = [ "run.ts" ]
+
+  deps = [ "shared" ]
+}
+
+source_root = rebase_path("//$devtools_location", "$target_gen_dir")
+write_file("$target_gen_dir/build.js",
+           "module.exports = {SOURCE_ROOT: '$source_root'};")

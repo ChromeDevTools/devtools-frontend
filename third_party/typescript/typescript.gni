@@ -252,6 +252,11 @@ template("ts_library") {
 
     metadata = {
       typescript_files = ts_files
+      tests = filter_include(output_files,
+                             [
+                               "*.test.js",
+                               "*_test.js",
+                             ])
     }
 
     if (is_debug) {

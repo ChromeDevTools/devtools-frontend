@@ -18,6 +18,8 @@ import {
   unregisterAllServiceWorkers,
   watchForHang,
 } from './hooks.js';
+import {SOURCE_ROOT} from './paths.js';
+import {TestConfig} from './test_config.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
@@ -25,7 +27,7 @@ import {startServer, stopServer} from './test_server.js';
 
 process.on('SIGINT', postFileTeardown);
 
-const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
+const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', TestConfig.serverType);
 
 if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs' && TEST_SERVER_TYPE !== 'none') {
   throw new Error(`Invalid test server type: ${TEST_SERVER_TYPE}`);
@@ -65,10 +67,10 @@ export function mochaGlobalTeardown() {
 
 const testSuiteCoverageMap = createCoverageMap();
 
-const testsRunWithCoverageEnvSet = Boolean(process.env.COVERAGE || process.env.COVERAGE_FOLDERS);
+const testsRunWithCoverageEnvSet = Boolean(process.env.COVERAGE || process.env.COVERAGE_FOLDERS || TestConfig.coverage);
 
 const SHOULD_GATHER_COVERAGE_INFORMATION = testsRunWithCoverageEnvSet && DERIVED_SERVER_TYPE === 'component-docs';
-const INTERACTIONS_COVERAGE_LOCATION = path.join(process.cwd(), 'interactions-coverage/');
+const INTERACTIONS_COVERAGE_LOCATION = path.join(SOURCE_ROOT, 'interactions-coverage/');
 
 let didPauseAtBeginning = false;
 
@@ -129,7 +131,7 @@ export const mochaHooks = {
     // We need to pause after `resetPagesBetweenTests`, otherwise the DevTools
     // and target tab are not available to us to set breakpoints in.
     // We still only want to pause once, so we remember that we did pause.
-    if (process.env['DEBUG_TEST'] && !didPauseAtBeginning) {
+    if ((process.env['DEBUG_TEST'] || TestConfig.debug) && !didPauseAtBeginning) {
       this.timeout(0);
       didPauseAtBeginning = true;
 

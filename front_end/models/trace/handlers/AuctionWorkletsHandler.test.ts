@@ -112,8 +112,8 @@ describe('AuctionWorkletsHandler', function() {
     assert.strictEqual(data.worklets.size, 3);
 
     for (const worklet of data.worklets.values()) {
-      assert.isDefined(worklet.args.data.runningInProcessEvent);
-      assert.isDefined(worklet.args.data.doneWithProcessEvent);
+      assert.exists(worklet.args.data.runningInProcessEvent);
+      assert.exists(worklet.args.data.doneWithProcessEvent);
     }
   });
 

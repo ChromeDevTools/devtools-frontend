@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {
   createTarget,
@@ -46,9 +45,9 @@ describeWithMockConnection('ConsoleContextSelector', () => {
       },
     });
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    assertNotNullOrUndefined(runtimeModel);
+    assert.exists(runtimeModel);
     const executionContext = runtimeModel.executionContext(id);
-    assertNotNullOrUndefined(executionContext);
+    assert.exists(executionContext);
     return executionContext;
   }
 

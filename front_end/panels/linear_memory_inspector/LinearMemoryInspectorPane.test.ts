@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as LinearMemoryInspector from './linear_memory_inspector.js';
@@ -39,7 +38,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     instance.create(scriptId, title, arrayWrapper, 10);
 
     const tabbedPane = instance.contentElement.querySelector('.tabbed-pane');
-    assertNotNullOrUndefined(tabbedPane);
+    assert.exists(tabbedPane);
     const inspector = tabbedPane.querySelector('devtools-linear-memory-inspector-inspector');
     assert.notInstanceOf(inspector, HTMLSpanElement);
   });

@@ -10,14 +10,13 @@ import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 describeWithMockConnection('ExecutionContext', () => {
   function createExecutionContext(target: SDK.Target.Target, name?: string, isDefault?: boolean) {
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    assertNotNullOrUndefined(runtimeModel);
+    assert.exists(runtimeModel);
     return new SDK.RuntimeModel.ExecutionContext(
         runtimeModel, 42 as Protocol.Runtime.ExecutionContextId, 'uniqueId', name ?? 'name',
         'http://www.example.com' as Platform.DevToolsPath.UrlString, Boolean(isDefault));

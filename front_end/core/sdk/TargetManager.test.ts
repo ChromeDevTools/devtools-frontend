@@ -10,7 +10,6 @@ import {
 } from '../../testing/MockConnection.js';
 import * as Host from '../host/host.js';
 import type * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -23,7 +22,7 @@ describeWithMockConnection('TargetManager', () => {
 
   function resourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {
     const model = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assertNotNullOrUndefined(model);
+    assert.exists(model);
     return model;
   }
 

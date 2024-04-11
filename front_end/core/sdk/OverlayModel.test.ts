@@ -11,7 +11,6 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -50,7 +49,7 @@ describeWithMockConnection('OverlayModel', () => {
     const target = createTarget({url: DOCUMENT_URL_FOR_TEST});
     overlayModel = target.model(SDK.OverlayModel.OverlayModel);
     cssModel = target.model(SDK.CSSModel.CSSModel);
-    assertNotNullOrUndefined(cssModel);
+    assert.exists(cssModel);
     windowControls = new SDK.OverlayModel.WindowControls(cssModel);
 
     // Set up mock response handler to get the default style sheet
@@ -60,7 +59,7 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('toggles controls toolbar', async () => {
-    assertNotNullOrUndefined(overlayModel);
+    assert.exists(overlayModel);
     let config;
 
     // Set up mock response handler to set the configuration
@@ -80,8 +79,8 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('initializes the style sheet text', async () => {
-    assertNotNullOrUndefined(cssModel);
-    assertNotNullOrUndefined(windowControls);
+    assert.exists(cssModel);
+    assert.exists(windowControls);
 
     // Verify the style sheet is not initialized when no styles are present
     const checkStyleSheet = await windowControls.initializeStyleSheetText(DOCUMENT_URL_FOR_TEST);
@@ -99,8 +98,8 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('toggles the emulated overlay', async () => {
-    assertNotNullOrUndefined(cssModel);
-    assertNotNullOrUndefined(windowControls);
+    assert.exists(cssModel);
+    assert.exists(windowControls);
     let styleSheet;
 
     // Set up mock response handler to set the style sheet
@@ -139,7 +138,7 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('parses styles and replaces variables for style sheet correctly', () => {
-    assertNotNullOrUndefined(windowControls);
+    assert.exists(windowControls);
 
     const x = 85;
     const y = 0;

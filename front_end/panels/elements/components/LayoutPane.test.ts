@@ -4,12 +4,9 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {
-  assertElement,
-  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -28,10 +25,10 @@ describeWithMockConnection('LayoutPane', () => {
   beforeEach(() => {
     target = createTarget();
     domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-    assertNotNullOrUndefined(domModel);
+    assert.exists(domModel);
     getNodesByStyle = sinon.stub(domModel, 'getNodesByStyle').resolves([]);
     overlayModel = target.model(SDK.OverlayModel.OverlayModel) as SDK.OverlayModel.OverlayModel;
-    assertNotNullOrUndefined(overlayModel);
+    assert.exists(overlayModel);
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.registerSettingExtension({
       settingName: 'show-ua-shadow-dom',
@@ -55,10 +52,10 @@ describeWithMockConnection('LayoutPane', () => {
   }
 
   function queryLabels(component: HTMLElement, selector: string) {
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {
       const input = label.querySelector('[data-input]');
-      assertElement(input, HTMLElement);
+      assert.instanceOf(input, HTMLElement);
 
       return {
         label: label.getAttribute('title'),
@@ -81,10 +78,10 @@ describeWithMockConnection('LayoutPane', () => {
   it('stores a setting when changed', async () => {
     const component = await renderComponent();
 
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     assert.isTrue(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
     const input = component.shadowRoot.querySelector('[data-boolean-setting] [data-input]');
-    assertElement(input, HTMLInputElement);
+    assert.instanceOf(input, HTMLInputElement);
 
     input.click();
 
@@ -123,7 +120,7 @@ describeWithMockConnection('LayoutPane', () => {
         .returns(makeNode(ID_2));
 
     const component = await renderComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
   });
@@ -143,7 +140,7 @@ describeWithMockConnection('LayoutPane', () => {
         .returns(makeNode(ID_3));
 
     const component = await renderComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
   });
@@ -156,10 +153,10 @@ describeWithMockConnection('LayoutPane', () => {
     const highlightGrid = sinon.spy(overlayModel, 'highlightGridInPersistentOverlay');
 
     const component = await renderComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     const input = component.shadowRoot.querySelector('[data-element] [data-input]');
-    assertElement(input, HTMLInputElement);
+    assert.instanceOf(input, HTMLInputElement);
     input.click();
     assert.isTrue(highlightGrid.calledOnceWith(ID_1));
   });
@@ -173,21 +170,21 @@ describeWithMockConnection('LayoutPane', () => {
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
 
     const component = await renderComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     const button = component.shadowRoot.querySelector('.show-element');
-    assertElement(button, HTMLElement);
+    assert.instanceOf(button, HTMLElement);
     button.click();
     assert.isTrue(reveal.calledOnceWith(node, false));
   });
 
   it('expands/collapses <details> using ArrowLeft/ArrowRight keys', async () => {
     const component = await renderComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const details = component.shadowRoot.querySelector('details');
-    assertElement(details, HTMLDetailsElement);
+    assert.instanceOf(details, HTMLDetailsElement);
     const summary = details.querySelector('summary');
-    assertElement(summary, HTMLElement);
+    assert.instanceOf(summary, HTMLElement);
     assert(details.open, 'The first details were not expanded by default');
     summary.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: 'ArrowLeft'}));
     assert(!details.open, 'The details were not collapsed after sending ArrowLeft');

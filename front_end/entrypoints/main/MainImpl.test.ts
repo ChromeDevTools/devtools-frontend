@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
@@ -37,7 +36,7 @@ describeWithMockConnection('MainMenuItem', () => {
       UI.DockController.DockController.instance().setDockSide(UI.DockController.DockState.UNDOCKED);
 
       const item = Main.MainImpl.MainMenuItem.instance({forceNew: true}).item() as UI.Toolbar.ToolbarMenuButton;
-      assertNotNullOrUndefined(item);
+      assert.exists(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
       item.clicked(new MouseEvent('click', {
@@ -54,7 +53,7 @@ describeWithMockConnection('MainMenuItem', () => {
       UI.DockController.DockController.instance().setDockSide(UI.DockController.DockState.BOTTOM);
 
       const item = Main.MainImpl.MainMenuItem.instance({forceNew: true}).item() as UI.Toolbar.ToolbarMenuButton;
-      assertNotNullOrUndefined(item);
+      assert.exists(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
       item.clicked(new MouseEvent('click', {

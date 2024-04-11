@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -184,7 +183,7 @@ describeWithMockConnection('NameResolver', () => {
       const parsedScopeChain =
           await SourceMapScopes.NamesResolver.findScopeChainForDebuggerScope(callFrame.scopeChain()[0]);
       const scope = parsedScopeChain.pop();
-      assertNotNullOrUndefined(scope);
+      assert.exists(scope);
       const identifiers =
           await SourceMapScopes.NamesResolver.scopeIdentifiers(callFrame.script, scope, parsedScopeChain);
       const boundIdentifiers = identifiers?.boundVariables ?? [];
@@ -513,7 +512,7 @@ function mulWithOffset(param1, param2, offset) {
 
     it('has the right mapping on a function scope without shadowing', async () => {
       const location = script.rawLocation(0, 30);  // Beginning of function scope.
-      assertNotNullOrUndefined(location);
+      assert.exists(location);
 
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
 
@@ -526,7 +525,7 @@ function mulWithOffset(param1, param2, offset) {
 
     it('has the right mapping in a block scope with shadowing in the authored code', async () => {
       const location = script.rawLocation(0, 70);  // Beginning of block scope.
-      assertNotNullOrUndefined(location);
+      assert.exists(location);
 
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
 
@@ -536,7 +535,7 @@ function mulWithOffset(param1, param2, offset) {
 
     it('has the right mapping in a block scope with shadowing in the compiled code', async () => {
       const location = script.rawLocation(0, 70);  // Beginning of block scope.
-      assertNotNullOrUndefined(location);
+      assert.exists(location);
 
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
 

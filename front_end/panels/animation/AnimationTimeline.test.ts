@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {
@@ -100,7 +99,7 @@ describeWithMockConnection('AnimationTimeline', () => {
   const updatesUiOnEvent = (inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const model = target.model(Animation.AnimationModel.AnimationModel);
-    assertNotNullOrUndefined(model);
+    assert.exists(model);
 
     view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
     view.markAsRoot();
@@ -143,7 +142,7 @@ describeWithMockConnection('AnimationTimeline', () => {
       await new Promise<void>(resolve => setTimeout(resolve, 0));
 
       const resizer = view.contentElement.querySelector('.timeline-controls-resizer');
-      assertNotNullOrUndefined(resizer);
+      assert.exists(resizer);
 
       const initialWidth = view.element.style.getPropertyValue('--timeline-controls-width');
       assert.strictEqual(initialWidth, '150px');
@@ -190,11 +189,11 @@ describeWithMockConnection('AnimationTimeline', () => {
       });
 
       const model = target.model(Animation.AnimationModel.AnimationModel);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
       animationModel = model;
 
       const modelForDom = target.model(SDK.DOMModel.DOMModel);
-      assertNotNullOrUndefined(modelForDom);
+      assert.exists(modelForDom);
       domModel = modelForDom;
 
       contentDocument = SDK.DOMModel.DOMDocument.create(domModel, null, false, {
@@ -239,25 +238,25 @@ describeWithMockConnection('AnimationTimeline', () => {
         sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(domNode);
 
         const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-        assertNotNullOrUndefined(preview);
+        assert.exists(preview);
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
 
         const gridHeader = view.element.shadowRoot?.querySelector('.animation-grid-header');
-        assertNotNullOrUndefined(gridHeader);
+        assert.exists(gridHeader);
         assert.isTrue(gridHeader.classList.contains('scrubber-enabled'));
 
         const scrubber = view.element.shadowRoot?.querySelector('.animation-scrubber');
-        assertNotNullOrUndefined(scrubber);
+        assert.exists(scrubber);
         assert.isFalse(scrubber.classList.contains('hidden'));
 
         const controlButton = view.element.shadowRoot?.querySelector('.animation-controls-toolbar')
                                   ?.shadowRoot?.querySelector('.toolbar-button') as HTMLButtonElement;
-        assertNotNullOrUndefined(controlButton);
+        assert.exists(controlButton);
         assert.isFalse(controlButton.disabled);
 
         const currentTime = view.element.shadowRoot?.querySelector('.animation-timeline-current-time');
-        assertNotNullOrUndefined(currentTime);
+        assert.exists(currentTime);
 
         domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: domNode, parent: contentDocument});
         assert.isFalse(gridHeader.classList.contains('scrubber-enabled'));
@@ -278,17 +277,17 @@ describeWithMockConnection('AnimationTimeline', () => {
         sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(domNode);
 
         const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-        assertNotNullOrUndefined(preview);
+        assert.exists(preview);
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
 
         // Wait for the animation group to be fully selected and scrubber enabled.
         const gridHeader = view.element.shadowRoot?.querySelector('.animation-grid-header');
-        assertNotNullOrUndefined(gridHeader);
+        assert.exists(gridHeader);
         assert.isTrue(gridHeader.classList.contains('scrubber-enabled'));
 
         const animationNodeRow = view.element.shadowRoot?.querySelector('.animation-node-row') as HTMLElement;
-        assertNotNullOrUndefined(animationNodeRow);
+        assert.exists(animationNodeRow);
         assert.isFalse(animationNodeRow.classList.contains('animation-node-removed'));
 
         domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: domNode, parent: contentDocument});
@@ -310,25 +309,25 @@ describeWithMockConnection('AnimationTimeline', () => {
         sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(domNode);
 
         const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-        assertNotNullOrUndefined(preview);
+        assert.exists(preview);
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
 
         const gridHeader = view.element.shadowRoot?.querySelector('.animation-grid-header');
-        assertNotNullOrUndefined(gridHeader);
+        assert.exists(gridHeader);
         assert.isFalse(gridHeader.classList.contains('scrubber-enabled'));
 
         const scrubber = view.element.shadowRoot?.querySelector('.animation-scrubber');
-        assertNotNullOrUndefined(scrubber);
+        assert.exists(scrubber);
         assert.isTrue(scrubber.classList.contains('hidden'));
 
         const controlButton = view.element.shadowRoot?.querySelector('.animation-controls-toolbar')
                                   ?.shadowRoot?.querySelector('.toolbar-button') as HTMLButtonElement;
-        assertNotNullOrUndefined(controlButton);
+        assert.exists(controlButton);
         assert.isTrue(controlButton.disabled);
 
         const currentTime = view.element.shadowRoot?.querySelector('.animation-timeline-current-time');
-        assertNotNullOrUndefined(currentTime);
+        assert.exists(currentTime);
         assert.isTrue(currentTime.textContent === '');
       });
     });
@@ -357,11 +356,11 @@ describeWithMockConnection('AnimationTimeline', () => {
       });
 
       const model = target.model(Animation.AnimationModel.AnimationModel);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
       animationModel = model;
 
       const modelForDom = target.model(SDK.DOMModel.DOMModel);
-      assertNotNullOrUndefined(modelForDom);
+      assert.exists(modelForDom);
       domModel = modelForDom;
 
       contentDocument = SDK.DOMModel.DOMDocument.create(domModel, null, false, {
@@ -411,7 +410,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
     it('should disable global controls after a scroll driven animation is selected', async () => {
       const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-      assertNotNullOrUndefined(preview);
+      assert.exists(preview);
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 
@@ -422,16 +421,16 @@ describeWithMockConnection('AnimationTimeline', () => {
 
       const timelineToolbar = view.element.shadowRoot?.querySelector('.animation-timeline-toolbar')!;
       const pauseAllButton = timelineToolbar.shadowRoot?.querySelector('[aria-label=\'Pause all\']');
-      assertNotNullOrUndefined(pauseAllButton?.getAttribute('disabled'), 'Pause all button is disabled');
+      assert.exists(pauseAllButton?.getAttribute('disabled'), 'Pause all button is disabled');
 
       const controlsToolbar = view.element.shadowRoot?.querySelector('.animation-controls-toolbar')!;
       const replayButton = controlsToolbar.shadowRoot?.querySelector('[aria-label=\'Replay timeline\']');
-      assertNotNullOrUndefined(replayButton?.getAttribute('disabled'), 'Replay button is disabled');
+      assert.exists(replayButton?.getAttribute('disabled'), 'Replay button is disabled');
     });
 
     it('should show current time text in pixels', async () => {
       const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-      assertNotNullOrUndefined(preview);
+      assert.exists(preview);
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 
@@ -441,7 +440,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
     it('should show timeline grid values in pixels', async () => {
       const preview = view.element.shadowRoot?.querySelector('.animation-buffer-preview') as HTMLElement;
-      assertNotNullOrUndefined(preview);
+      assert.exists(preview);
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 

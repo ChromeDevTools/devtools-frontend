@@ -62,7 +62,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
       const gpuEvents = traceParsedData.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         const index = entryData.indexOf(event);
-        assert.isDefined(index);
+        assert.exists(index);
         assert.strictEqual(
             flameChartData.entryStartTimes[index], TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts));
       }
@@ -72,7 +72,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
       const gpuEvents = traceParsedData.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         const index = entryData.indexOf(event);
-        assert.isDefined(index);
+        assert.exists(index);
         if (TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[index]);
           continue;

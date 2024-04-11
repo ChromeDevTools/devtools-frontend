@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -16,7 +15,7 @@ describeWithMockConnection('ScreencastApp', () => {
       screencastApp.presentUI(document);
       const target = targetFactory();
       const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
-      assertNotNullOrUndefined(screenCaptureModel);
+      assert.exists(screenCaptureModel);
       await new Promise<void>(
           resolve => sinon.stub(screenCaptureModel, 'startScreencast').callsFake((..._args: unknown[]) => {
             resolve();

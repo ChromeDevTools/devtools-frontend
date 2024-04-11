@@ -4,7 +4,6 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
@@ -38,7 +37,7 @@ describeWithMockConnection('PropertiesWidget', () => {
       event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const model = target.model(SDK.DOMModel.DOMModel);
-    assertNotNullOrUndefined(model);
+    assert.exists(model);
 
     const node = new SDK.DOMModel.DOMNode(model);
     sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves({

@@ -5,7 +5,6 @@
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import {
-  assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -27,7 +26,7 @@ describeWithLocale('Feedback button', () => {
     renderElementIntoDOM(component);
     await coordinator.done();
     const button = component.shadowRoot!.querySelector('devtools-button');
-    assertElement(button, HTMLElement);
+    assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.strictEqual(openInNewTabStub.callCount, 1);
     assert.isTrue(

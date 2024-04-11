@@ -4,10 +4,9 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {assertElement, getCleanTextContentFromElements} from '../../testing/DOMHelpers.js';
+import {getCleanTextContentFromElements} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -39,7 +38,7 @@ describeWithMockConnection('AppManifestView', () => {
 
     it('shows report view once manifest available', async () => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
 
       const URL = 'http://example.com' as Platform.DevToolsPath.UrlString;
       const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
@@ -68,7 +67,7 @@ describeWithMockConnection('AppManifestView', () => {
 
     it('shows pwa wco if available', async () => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
 
       const URL = 'https://www.example.com' as Platform.DevToolsPath.UrlString;
       const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
@@ -113,7 +112,7 @@ describeWithMockConnection('AppManifestView', () => {
 
     async function renderWithWarnings(manifest: string): Promise<string[]> {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
 
       const URL = window.location.origin as Platform.DevToolsPath.UrlString;
       const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
@@ -131,9 +130,9 @@ describeWithMockConnection('AppManifestView', () => {
       });
 
       const warningSection = reportView.element.shadowRoot?.querySelector('.report-section');
-      assertNotNullOrUndefined(warningSection);
+      assert.exists(warningSection);
       const warnings = warningSection.querySelectorAll<HTMLDivElement>('.report-row');
-      assertNotNullOrUndefined(warnings);
+      assert.exists(warnings);
       return Array.from(warnings).map(warning => warning.textContent || '');
     }
 
@@ -304,7 +303,7 @@ describeWithMockConnection('AppManifestView', () => {
 
       const screenshotSection =
           reportView.element.shadowRoot?.querySelectorAll<HTMLDivElement>('.report-section')[7] || null;
-      assertElement(screenshotSection, HTMLDivElement);
+      assert.instanceOf(screenshotSection, HTMLDivElement);
       assert.deepStrictEqual(
           getCleanTextContentFromElements(screenshotSection, '.report-field-name').slice(0, 3),
           ['Form factor', 'Label', 'Platform']);

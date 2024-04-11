@@ -4,8 +4,6 @@
 
 import * as Root from '../../../core/root/root.js';
 import {
-  assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -36,9 +34,9 @@ describeWithLocale('Preview toggle', () => {
     renderElementIntoDOM(component);
     await coordinator.done();
 
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const input = component.shadowRoot.querySelector('input');
-    assertElement(input, HTMLElement);
+    assert.instanceOf(input, HTMLElement);
     dispatchClickEvent(input);
     assert.strictEqual(setEnabledStub.callCount, 1);
     assert.isTrue(
@@ -68,7 +66,7 @@ describeWithLocale('Preview toggle', () => {
     await coordinator.done();
 
     const input = component.shadowRoot!.querySelector('input');
-    assertElement(input, HTMLElement);
+    assert.instanceOf(input, HTMLElement);
     dispatchClickEvent(input);
     assert.strictEqual(setEnabledStub.callCount, 1);
     assert.isTrue(

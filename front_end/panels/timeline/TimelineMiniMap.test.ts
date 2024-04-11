@@ -31,9 +31,9 @@ describeWithEnvironment('TimelineMiniMap', function() {
     });
 
     await raf();
-    assert.isDefined(container.querySelector('#timeline-overview-responsiveness'));
-    assert.isDefined(container.querySelector('#timeline-overview-cpu-activity'));
-    assert.isDefined(container.querySelector('#timeline-overview-network'));
+    assert.exists(container.querySelector('#timeline-overview-responsiveness'));
+    assert.exists(container.querySelector('#timeline-overview-cpu-activity'));
+    assert.exists(container.querySelector('#timeline-overview-network'));
     assert.isNull(container.querySelector('#timeline-overview-filmstrip'));
     assert.isNull(container.querySelector('#timeline-overview-memory'));
     minimap.detach();
@@ -58,11 +58,11 @@ describeWithEnvironment('TimelineMiniMap', function() {
     });
 
     await raf();
-    assert.isDefined(container.querySelector('#timeline-overview-responsiveness'));
-    assert.isDefined(container.querySelector('#timeline-overview-cpu-activity'));
-    assert.isDefined(container.querySelector('#timeline-overview-network'));
-    assert.isDefined(container.querySelector('#timeline-overview-filmstrip'));
-    assert.isDefined(container.querySelector('#timeline-overview-memory'));
+    assert.exists(container.querySelector('#timeline-overview-responsiveness'));
+    assert.exists(container.querySelector('#timeline-overview-cpu-activity'));
+    assert.exists(container.querySelector('#timeline-overview-network'));
+    assert.exists(container.querySelector('#timeline-overview-filmstrip'));
+    assert.exists(container.querySelector('#timeline-overview-memory'));
     minimap.detach();
   });
 

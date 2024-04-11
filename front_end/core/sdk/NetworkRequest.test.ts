@@ -11,7 +11,6 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -249,7 +248,7 @@ describeWithMockConnection('NetworkRequest', () => {
   beforeEach(() => {
     target = createTarget();
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(networkManager);
+    assert.exists(networkManager);
     networkManagerForRequestStub = sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
     cookie = new SDK.Cookie.Cookie('name', 'value');
     addBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'addBlockedCookie');
@@ -263,7 +262,7 @@ describeWithMockConnection('NetworkRequest', () => {
     const removeBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'removeBlockedCookie');
     setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: []}));
     const cookieModel = target.model(SDK.CookieModel.CookieModel);
-    assertNotNullOrUndefined(cookieModel);
+    assert.exists(cookieModel);
     const url = 'url' as Platform.DevToolsPath.UrlString;
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, url, 'documentURL' as Platform.DevToolsPath.UrlString, null, null,

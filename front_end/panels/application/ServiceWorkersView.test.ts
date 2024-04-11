@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -28,9 +27,9 @@ describeWithMockConnection('ServiceWorkersView', () => {
       view.markAsRoot();
       view.show(document.body);
       const serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
-      assertNotNullOrUndefined(serviceWorkersManager);
+      assert.exists(serviceWorkersManager);
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-      assertNotNullOrUndefined(securityOriginManager);
+      assert.exists(securityOriginManager);
       const ORIGIN = 'example.com';
       sinon.stub(securityOriginManager, 'securityOrigins').returns([ORIGIN]);
       const SCOPE_URL = 'SCOPE_URL';
@@ -42,7 +41,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
       } as SDK.ServiceWorkerManager.ServiceWorkerRegistration);
 
       const sectionTitle = view.currentWorkersView.contentElement.querySelector('.report-section-title');
-      assertNotNullOrUndefined(sectionTitle);
+      assert.exists(sectionTitle);
       assert.strictEqual(sectionTitle.textContent, SCOPE_URL);
     });
 
@@ -76,10 +75,10 @@ describeWithMockConnection('ServiceWorkersView', () => {
         view.show(document.body);
 
         serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
-        assertNotNullOrUndefined(serviceWorkersManager);
+        assert.exists(serviceWorkersManager);
 
         const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-        assertNotNullOrUndefined(securityOriginManager);
+        assert.exists(securityOriginManager);
         sinon.stub(securityOriginManager, 'securityOrigins').returns([origin]);
       });
 

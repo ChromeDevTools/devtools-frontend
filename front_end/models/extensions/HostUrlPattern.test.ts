@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Extensions from '../extensions/extensions.js';
 
 // The test expectations are from //extensions/common/url_pattern_unittest.cc but leave out tests for the unsupported
@@ -54,7 +54,7 @@ describe('HostUrlPattern', () => {
     for (const {pattern, success, port} of testPatterns) {
       const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
       if (success) {
-        Platform.assertNotNullOrUndefined(parsedPattern);
+        assert.exists(parsedPattern);
         assert.strictEqual(parsedPattern.port, port);
       } else {
         assert.isUndefined(parsedPattern);
@@ -71,7 +71,7 @@ describe('HostUrlPattern', () => {
 
     for (const {pattern, host, port} of successTestPatterns) {
       const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
-      Platform.assertNotNullOrUndefined(parsedPattern);
+      assert.exists(parsedPattern);
       assert.strictEqual(parsedPattern.host, host);
       assert.strictEqual(parsedPattern.port, port);
     }
@@ -95,7 +95,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches all pages for a given scheme', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://*/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -108,7 +108,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches all domains', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('https://*/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('https', pattern.scheme);
     assert.strictEqual('*', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -120,7 +120,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches subdomains', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://*.google.com/');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*.google.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -134,7 +134,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches ip addresses', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://127.0.0.1/');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('127.0.0.1', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -143,7 +143,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches subdomain matching with ip addresses', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://*.0.0.1/');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*.0.0.0.1', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -152,7 +152,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches chrome://', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('chrome://favicon/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('chrome', pattern.scheme);
     assert.strictEqual('favicon', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -163,7 +163,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches *://', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://*/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isTrue(pattern.matchesScheme('http'));
     assert.isTrue(pattern.matchesScheme('https'));
     assert.isFalse(pattern.matchesScheme('chrome'));
@@ -178,7 +178,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches <all_urls>', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('<all_urls>');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isTrue(pattern.matchesScheme('chrome'));
     assert.isTrue(pattern.matchesScheme('http'));
     assert.isTrue(pattern.matchesScheme('https'));
@@ -193,7 +193,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches SCHEME_ALL matches all schemes.', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('<all_urls>');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isTrue(pattern.matchesScheme('chrome'));
     assert.isTrue(pattern.matchesScheme('http'));
     assert.isTrue(pattern.matchesScheme('https'));
@@ -216,7 +216,7 @@ describe('HostUrlPattern', () => {
 
   it('Doesn\'t Match Invalid', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('<all_urls>');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isFalse(pattern.matchesUrl('http:' as Platform.DevToolsPath.UrlString));
   });
 
@@ -227,14 +227,14 @@ describe('HostUrlPattern', () => {
 
     for (const {pattern, matches} of urlPatternTestCases) {
       const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
-      Platform.assertNotNullOrUndefined(parsedPattern);
+      assert.exists(parsedPattern);
       assert.isTrue(parsedPattern.matchesUrl(matches as Platform.DevToolsPath.UrlString));
     }
   });
 
   it('Matches Specific port', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://www.example.com:80/');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('www.example.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -246,7 +246,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches Explicit port wildcard', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://www.example.com:*/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('www.example.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -258,7 +258,7 @@ describe('HostUrlPattern', () => {
 
   it('Matches chrome-extension://', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('chrome-extension://ftw/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.strictEqual('chrome-extension', pattern.scheme);
     assert.strictEqual('ftw', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
@@ -270,7 +270,7 @@ describe('HostUrlPattern', () => {
 
   it('Ignore Ports', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://www.example.com:8080/');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
 
     assert.isFalse(pattern.matchesUrl('http://www.example.com:1234/foo' as Platform.DevToolsPath.UrlString));
   });
@@ -280,25 +280,25 @@ describe('HostUrlPattern', () => {
     const trailingDotDomain = 'http://example.com./' as Platform.DevToolsPath.UrlString;
 
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://example.com/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isTrue(pattern.matchesUrl(normalDomain));
     assert.isTrue(pattern.matchesUrl(trailingDotDomain));
 
     const trailingPattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://example.com./*');
-    Platform.assertNotNullOrUndefined(trailingPattern);
+    assert.exists(trailingPattern);
     assert.isTrue(trailingPattern.matchesUrl(normalDomain));
     assert.isTrue(trailingPattern.matchesUrl(trailingDotDomain));
   });
 
   it('URLPattern properly canonicalizes uncanonicalized hosts', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://*.gOoGle.com/*');
-    Platform.assertNotNullOrUndefined(pattern);
+    assert.exists(pattern);
     assert.isTrue(pattern.matchesUrl('https://google.com' as Platform.DevToolsPath.UrlString));
     assert.isTrue(pattern.matchesUrl('https://maps.google.com' as Platform.DevToolsPath.UrlString));
     assert.isFalse(pattern.matchesUrl('https://example.com' as Platform.DevToolsPath.UrlString));
 
     const pattern2 = Extensions.HostUrlPattern.HostUrlPattern.parse('https://*.ɡoogle.com/*');
-    Platform.assertNotNullOrUndefined(pattern2);
+    assert.exists(pattern2);
     const canonicalizedHost = 'xn--oogle-qmc.com';
     assert.strictEqual(`*.${canonicalizedHost}`, pattern2.host);
     assert.isFalse(pattern2.matchesUrl('https://google.com' as Platform.DevToolsPath.UrlString));

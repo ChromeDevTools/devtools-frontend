@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../testing/DataGridHelpers.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -99,7 +98,7 @@ describeWithMockConnection('AutofillView', () => {
     target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const maybeAutofillModel = target.model(SDK.AutofillModel.AutofillModel);
-    assertNotNullOrUndefined(maybeAutofillModel);
+    assert.exists(maybeAutofillModel);
     autofillModel = maybeAutofillModel;
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.AUTOFILL_VIEW);
     showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
@@ -119,7 +118,7 @@ describeWithMockConnection('AutofillView', () => {
   };
 
   const assertViewShowsEventData = (view: Autofill.AutofillView.AutofillView) => {
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
     const addressSpans = view.shadowRoot.querySelectorAll('.address span');
     const addressText = [...addressSpans].map(div => div.textContent);
     assert.deepStrictEqual(
@@ -137,7 +136,7 @@ describeWithMockConnection('AutofillView', () => {
   it('renders autofilled address and filled fields and clears content on navigation', async () => {
     const expectedPlaceholder = 'To start debugging autofill, use Chrome\'s autofill menu to fill an address form.';
     const view = await renderAutofillView();
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
     let placeholderText = view.shadowRoot.querySelector('.placeholder div')?.textContent?.trim();
     assert.strictEqual(placeholderText, expectedPlaceholder);
 
@@ -146,7 +145,7 @@ describeWithMockConnection('AutofillView', () => {
     assertViewShowsEventData(view);
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel);
+    assert.exists(resourceTreeModel);
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
       type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
       frame: {} as SDK.ResourceTreeModel.ResourceTreeFrame,
@@ -161,21 +160,21 @@ describeWithMockConnection('AutofillView', () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
     await coordinator.done();
   });
 
   it('auto-open can be turned off/on', async () => {
     const view = await renderAutofillView();
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     showViewStub.reset();
 
     const checkbox = view.shadowRoot.querySelector('input');
-    assertElement(checkbox, HTMLInputElement);
+    assert.instanceOf(checkbox, HTMLInputElement);
     assert.isTrue(checkbox.checked);
     checkbox.checked = false;
     let event = new Event('change');
@@ -199,7 +198,7 @@ describeWithMockConnection('AutofillView', () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
 
     const addressSpans = view.shadowRoot.querySelectorAll('.address span');
@@ -207,7 +206,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.strictEqual(crocodileSpan.textContent, 'Crocodile');
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
     const grid = getDataGrid(view);
-    assertShadowRoot(grid.shadowRoot);
+    assert.isNotNull(grid.shadowRoot);
     const firstGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 1);
     let styles = firstGridRow.getAttribute('style') || '';
     assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
@@ -240,12 +239,12 @@ describeWithMockConnection('AutofillView', () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
-    assertShadowRoot(view.shadowRoot);
+    assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
 
     const domModel = target.model(SDK.DOMModel.DOMModel);
     const overlayModel = domModel?.overlayModel();
-    assertNotNullOrUndefined(overlayModel);
+    assert.exists(overlayModel);
     const overlaySpy = sinon.spy(overlayModel, 'highlightInOverlay');
     const hideOverlaySpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
 
@@ -254,7 +253,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.strictEqual(zipCodeSpan.textContent, '12345');
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
     const grid = getDataGrid(view);
-    assertShadowRoot(grid.shadowRoot);
+    assert.isNotNull(grid.shadowRoot);
     const fourthGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 4);
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
     await coordinator.done({waitForWork: true});

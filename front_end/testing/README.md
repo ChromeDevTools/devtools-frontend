@@ -17,18 +17,18 @@ When trying to read a component's shadow DOM, TypeScript will ask that you check
 component.shadowRoot.querySelector('.foo') // TS will error here: shadowRoot may be `null`.
 ```
 
-The `assertShadowRoot` helper will do this for you and fail the test if the shadow root is not present:
+The `assert.isNotNull` method will do this for you and fail the test if the shadow root is not present:
 
 ```
-assertShadowRoot(component.shadowRoot);
+assert.isNotNull(component.shadowRoot);
 component.shadowRoot.querySelector('.foo') // TS is happy!
 ```
 
-When you query elements from the DOM, you can use `assertElement` or `assertElements` to check that an element is the expected type. This will ensure the test fails if the DOM is not as expected, and satisfy TypeScript:
+When you query elements from the DOM, you can use `assert.instanceOf` or `assertElements` to check that an element is the expected type. This will ensure the test fails if the DOM is not as expected, and satisfy TypeScript:
 
 ```
 const button = component.shadowRoot.querySelector('button.foo');
-assertElement(button, HTMLButtonElement);
+assert.instanceOf(button, HTMLButtonElement);
 
 const allDivs = component.shadowRoot.querySelectorAll('div');
 assertElements(allDivs, HTMLDivElement);

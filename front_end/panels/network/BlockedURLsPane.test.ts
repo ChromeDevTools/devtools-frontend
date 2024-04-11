@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
@@ -25,7 +24,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
       const blockedURLsPane = new Network.BlockedURLsPane.BlockedURLsPane();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-      assertNotNullOrUndefined(networkManager);
+      assert.exists(networkManager);
       const updateStub = sinon.stub(blockedURLsPane, 'update');
 
       const request = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {

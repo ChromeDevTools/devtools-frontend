@@ -6,7 +6,6 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import type * as Platform from '../platform/platform.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -102,7 +101,7 @@ describeWithEnvironment('SourceMap', () => {
   function assertMapping(
       actual: SDK.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
       expectedSourceLineNumber: number|undefined, expectedSourceColumnNumber: number|undefined) {
-    assertNotNullOrUndefined(actual);
+    assert.exists(actual);
     assert.strictEqual(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
     assert.strictEqual(actual.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
     assert.strictEqual(actual.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
@@ -111,7 +110,7 @@ describeWithEnvironment('SourceMap', () => {
   function assertReverseMapping(
       actual: SDK.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
       expectedCompiledColumnNumber: number) {
-    assertNotNullOrUndefined(actual);
+    assert.exists(actual);
     assert.strictEqual(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
     assert.strictEqual(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
@@ -273,7 +272,7 @@ describeWithEnvironment('SourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
 
     const emptyEntry = sourceMap.findEntry(0, 1);
-    assertNotNullOrUndefined(emptyEntry);
+    assert.exists(emptyEntry);
     assert.isUndefined(emptyEntry.sourceURL, 'unexpected url present for empty segment');
     assert.isUndefined(emptyEntry.sourceLineNumber, 'unexpected source line number for empty segment');
     assert.isUndefined(emptyEntry.sourceColumnNumber, 'unexpected source line number for empty segment');

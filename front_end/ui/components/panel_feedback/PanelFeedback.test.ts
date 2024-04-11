@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
@@ -27,7 +27,7 @@ describeWithLocale('Panel Feedback', () => {
 
   it('uses the correct href for the feedback x-link', async () => {
     const component = await renderFeedbackComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     // Note that whilst they aren't HTMLAnchorElements, it is good enough for
     // this test as all we need is a type that has an `href` attribute.
     const allXLinks = Array.from(component.shadowRoot.querySelectorAll<HTMLAnchorElement>('x-link'));
@@ -37,7 +37,7 @@ describeWithLocale('Panel Feedback', () => {
 
   it('uses the correct href for the quick start x-link', async () => {
     const component = await renderFeedbackComponent();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     // Note that whilst they aren't HTMLAnchorElements, it is good enough for
     // this test as all we need is a type that has an `href` attribute.
     const allXLinks = Array.from(component.shadowRoot.querySelectorAll<HTMLAnchorElement>('x-link'));

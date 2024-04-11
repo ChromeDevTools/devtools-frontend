@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -50,7 +49,7 @@ describeWithEnvironment('AggregatedIssue', () => {
 function createModel() {
   const target = createTarget();
   const model = target.model(SDK.IssuesModel.IssuesModel);
-  assertNotNullOrUndefined(model);
+  assert.exists(model);
   return model;
 }
 

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -85,7 +84,7 @@ function setUpStyles(
 describeWithMockConnection('StylesPropertySection', () => {
   it('displays the proper sourceURL origin for constructed stylesheets', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
-    Platform.assertNotNullOrUndefined(cssModel);
+    assert.exists(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, endLine: 1, startColumn: 0, endColumn: 0};
@@ -114,7 +113,7 @@ describeWithMockConnection('StylesPropertySection', () => {
 
   it('displays the proper sourceMappingURL origin for constructed stylesheets', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
-    Platform.assertNotNullOrUndefined(cssModel);
+    assert.exists(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, endLine: 1, startColumn: 0, endColumn: 0};
@@ -141,9 +140,9 @@ describeWithMockConnection('StylesPropertySection', () => {
     const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, header, {matchedPayload});
 
     const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
-    Platform.assertNotNullOrUndefined(styleSheetHeader);
+    assert.exists(styleSheetHeader);
     const sourceMap = await cssModel.sourceMapManager().sourceMapForClientPromise(styleSheetHeader);
-    Platform.assertNotNullOrUndefined(sourceMap);
+    assert.exists(sourceMap);
 
     const rule = matchedStyles.nodeStyles()[0].parentRule;
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
@@ -161,7 +160,7 @@ describeWithMockConnection('StylesPropertySection', () => {
   it('properly renders ancestor rules', async () => {
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
-    Platform.assertNotNullOrUndefined(cssModel);
+    assert.exists(cssModel);
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
@@ -183,7 +182,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       }];
       const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, {...range}, {matchedPayload});
       const declaration = matchedStyles.nodeStyles()[0];
-      Platform.assertNotNullOrUndefined(declaration);
+      assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
           stylesSidebarPane, matchedStyles, declaration, 0, null, null);
       assert.strictEqual(section.element.textContent, 'div {  & ul {    body {      div {      }    }  }}');
@@ -205,7 +204,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       }];
       const matchedStyles = await setUpStyles(cssModel, origin, styleSheetId, {...range}, {matchedPayload});
       const declaration = matchedStyles.nodeStyles()[0];
-      Platform.assertNotNullOrUndefined(declaration);
+      assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
           stylesSidebarPane, matchedStyles, declaration, 0, null, null);
       assert.strictEqual(section.element.textContent, 'div {  body {    }}');
@@ -214,7 +213,7 @@ describeWithMockConnection('StylesPropertySection', () => {
 
   it('updates property rule property names', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
-    Platform.assertNotNullOrUndefined(cssModel);
+    assert.exists(cssModel);
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
@@ -251,7 +250,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       assert.instanceOf(rule, SDK.CSSRule.CSSPropertyRule);
     }
     const declaration = matchedStyles.getRegisteredProperty(propertyName.text)?.style();
-    Platform.assertNotNullOrUndefined(declaration);
+    assert.exists(declaration);
     const rule = declaration.parentRule;
     assertIsPropertyRule(rule);
     const section = new Elements.StylePropertiesSection.RegisteredPropertiesSection(

@@ -3,11 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import {assertElement} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -56,9 +54,9 @@ describeWithMockConnection('NetworkPanel', () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
       const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
-      assertNotNullOrUndefined(tracingManager);
+      assert.exists(tracingManager);
       const tracingStart = sinon.spy(tracingManager, 'start');
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
       assert.strictEqual(tracingStart.called, inScope);
@@ -68,9 +66,9 @@ describeWithMockConnection('NetworkPanel', () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
       const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
-      assertNotNullOrUndefined(tracingManager);
+      assert.exists(tracingManager);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
 
@@ -118,7 +116,7 @@ describeWithMockConnection('NetworkPanel', () => {
     const networkLogResetSpy = sinon.spy(Logs.NetworkLog.NetworkLog.instance(), 'reset');
     const toolbar = networkPanel.element.querySelector('.network-toolbar-container .toolbar');
     const button = toolbar!.shadowRoot!.querySelector('[aria-label="Clear network log"]');
-    assertElement(button, HTMLButtonElement);
+    assert.instanceOf(button, HTMLButtonElement);
     button.click();
     await coordinator.done({waitForWork: true});
     assert.isTrue(networkLogResetSpy.called);

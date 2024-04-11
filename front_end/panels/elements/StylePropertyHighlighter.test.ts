@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {describeWithRealConnection} from '../../testing/RealConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -16,9 +15,9 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
   }> {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    assertNotNullOrUndefined(target);
+    assert.exists(target);
     const domModel = target.model(SDK.DOMModel.DOMModel);
-    assertNotNullOrUndefined(domModel);
+    assert.exists(domModel);
     await domModel.requestDocument();
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, domModel.existingDocument());
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
@@ -92,7 +91,7 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
     highlighter.findAndHighlightSectionBlock('dontcare');
 
     const firstChild = section.propertiesTreeOutline.firstChild();
-    assertNotNullOrUndefined(firstChild);
+    assert.exists(firstChild);
     assert.deepEqual((firstChild as Elements.StylePropertyTreeElement.StylePropertyTreeElement).property, property);
 
     assert.isTrue(highlightSpy.calledOnceWithExactly(block.titleElement() as HTMLElement));
@@ -142,7 +141,7 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
     assert.isFalse(block1ExpandSpy.called);
     assert.isTrue(block2ExpandSpy.called);
     const element = block2.sections[1].propertiesTreeOutline.firstChild()?.listItemElement;
-    assertNotNullOrUndefined(element);
+    assert.exists(element);
     assert.isTrue(highlightSpy.calledOnceWithExactly(element));
   });
 });

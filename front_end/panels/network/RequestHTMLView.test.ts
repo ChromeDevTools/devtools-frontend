@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import * as Network from './network.js';
@@ -12,13 +11,13 @@ describe('RequestHTMLView', () => {
     const content = '<body><p>octothorp: #</p><p>hello world!<p>%3Cp%3EURI%20encoded%20tag!%3C%2Fp%3E</body>';
     const contentData = new TextUtils.ContentData.ContentData(content, false, 'text/html');
     const htmlView = Network.RequestHTMLView.RequestHTMLView.create(contentData);
-    assertNotNullOrUndefined(htmlView);
+    assert.exists(htmlView);
     htmlView.markAsRoot();
     const div = document.createElement('div');
     htmlView.show(div);
 
     const iframe = htmlView.contentElement.querySelector('iframe');
-    assertNotNullOrUndefined(iframe);
+    assert.exists(iframe);
 
     assert.strictEqual(iframe.src, contentData.asDataUrl());
     assert.strictEqual(decodeURIComponent(iframe.src), 'data:text/html,' + content);

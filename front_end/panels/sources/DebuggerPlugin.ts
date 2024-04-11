@@ -316,8 +316,7 @@ export class DebuggerPlugin extends Plugin {
       }),
       CodeMirror.lineNumbers({
         domEventHandlers: {
-          mousedown: (view, block, event) =>
-              this.handleGutterClick(view.state.doc.lineAt(block.from), event as MouseEvent),
+          click: (view, block, event) => this.handleGutterClick(view.state.doc.lineAt(block.from), event as MouseEvent),
         },
       }),
       infobarState,

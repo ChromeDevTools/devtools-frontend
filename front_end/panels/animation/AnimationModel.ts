@@ -43,7 +43,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ModelReset);
   }
 
-  private async devicePixelRatio(): Promise<number> {
+  async devicePixelRatio(): Promise<number> {
     const evaluateResult = await this.target().runtimeAgent().invoke_evaluate({expression: 'window.devicePixelRatio'});
     if (evaluateResult?.result.type === 'number') {
       return evaluateResult?.result.value as number ?? 1;
@@ -61,25 +61,32 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.flushPendingAnimationsIfNeeded();
   }
 
+  async animationUpdated(payload: Protocol.Animation.Animation): Promise<void> {
+    let foundAnimationGroup: AnimationGroup|undefined;
+    let foundAnimation: AnimationImpl|undefined;
+    for (const animationGroup of this.animationGroups.values()) {
+      foundAnimation = animationGroup.animations().find(animation => animation.id() === payload.id);
+      if (foundAnimation) {
+        foundAnimationGroup = animationGroup;
+        break;
+      }
+    }
+
+    if (!foundAnimation || !foundAnimationGroup) {
+      return;
+    }
+
+    await foundAnimation.setPayload(payload);
+    this.dispatchEventToListeners(Events.AnimationGroupUpdated, foundAnimationGroup);
+  }
+
   async animationStarted(payload: Protocol.Animation.Animation): Promise<void> {
     // We are not interested in animations without effect or target.
     if (!payload.source || !payload.source.backendNodeId) {
       return;
     }
 
-    // TODO(b/40929569): Remove normalizing by devicePixelRatio after the attached bug is resolved.
-    if (payload.viewOrScrollTimeline) {
-      const devicePixelRatio = await this.devicePixelRatio();
-      if (payload.viewOrScrollTimeline.startOffset) {
-        payload.viewOrScrollTimeline.startOffset /= devicePixelRatio;
-      }
-
-      if (payload.viewOrScrollTimeline.endOffset) {
-        payload.viewOrScrollTimeline.endOffset /= devicePixelRatio;
-      }
-    }
-
-    const animation = AnimationImpl.parsePayload(this, payload);
+    const animation = await AnimationImpl.parsePayload(this, payload);
     if (!animation) {
       return;
     }
@@ -203,28 +210,54 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
 export enum Events {
   AnimationGroupStarted = 'AnimationGroupStarted',
+  AnimationGroupUpdated = 'AnimationGroupUpdated',
   ModelReset = 'ModelReset',
 }
 
 export type EventTypes = {
   [Events.AnimationGroupStarted]: AnimationGroup,
+  [Events.AnimationGroupUpdated]: AnimationGroup,
   [Events.ModelReset]: void,
 };
 
 export class AnimationImpl {
   readonly #animationModel: AnimationModel;
-  readonly #payloadInternal: Protocol.Animation.Animation;
-  #sourceInternal: AnimationEffect;
+  #payloadInternal!: Protocol.Animation
+      .Animation;  // Assertion is safe because only way to create `AnimationImpl` is to use `parsePayload` which calls `setPayload` and sets the value.
+  #sourceInternal!:
+      AnimationEffect;  // Assertion is safe because only way to create `AnimationImpl` is to use `parsePayload` which calls `setPayload` and sets the value.
   #playStateInternal?: string;
-  constructor(animationModel: AnimationModel, payload: Protocol.Animation.Animation) {
+
+  private constructor(animationModel: AnimationModel) {
     this.#animationModel = animationModel;
-    this.#payloadInternal = payload;
-    this.#sourceInternal =
-        new AnimationEffect(animationModel, (this.#payloadInternal.source as Protocol.Animation.AnimationEffect));
   }
 
-  static parsePayload(animationModel: AnimationModel, payload: Protocol.Animation.Animation): AnimationImpl {
-    return new AnimationImpl(animationModel, payload);
+  static async parsePayload(animationModel: AnimationModel, payload: Protocol.Animation.Animation):
+      Promise<AnimationImpl> {
+    const animation = new AnimationImpl(animationModel);
+    await animation.setPayload(payload);
+    return animation;
+  }
+
+  async setPayload(payload: Protocol.Animation.Animation): Promise<void> {
+    // TODO(b/40929569): Remove normalizing by devicePixelRatio after the attached bug is resolved.
+    if (payload.viewOrScrollTimeline) {
+      const devicePixelRatio = await this.#animationModel.devicePixelRatio();
+      if (payload.viewOrScrollTimeline.startOffset) {
+        payload.viewOrScrollTimeline.startOffset /= devicePixelRatio;
+      }
+
+      if (payload.viewOrScrollTimeline.endOffset) {
+        payload.viewOrScrollTimeline.endOffset /= devicePixelRatio;
+      }
+    }
+
+    this.#payloadInternal = payload;
+    if (this.#sourceInternal && payload.source) {
+      this.#sourceInternal.setPayload(payload.source);
+    } else if (!this.#sourceInternal && payload.source) {
+      this.#sourceInternal = new AnimationEffect(this.#animationModel, payload.source);
+    }
   }
 
   // `startTime` and `duration` is represented as the
@@ -248,10 +281,6 @@ export class AnimationImpl {
 
   viewOrScrollTimeline(): Protocol.Animation.ViewOrScrollTimeline|undefined {
     return this.#payloadInternal.viewOrScrollTimeline;
-  }
-
-  payload(): Protocol.Animation.Animation {
-    return this.#payloadInternal;
   }
 
   id(): string {
@@ -417,19 +446,27 @@ export class AnimationImpl {
 
 export class AnimationEffect {
   #animationModel: AnimationModel;
-  readonly #payload: Protocol.Animation.AnimationEffect;
-  readonly #keyframesRuleInternal: KeyframesRule|undefined;
-  delayInternal: number;
-  durationInternal: number;
+  #payload!: Protocol.Animation
+      .AnimationEffect;       // Assertion is safe because `setPayload` call in `constructor` sets the value.
+  delayInternal!: number;     // Assertion is safe because `setPayload` call in `constructor` sets the value.
+  durationInternal!: number;  // Assertion is safe because `setPayload` call in `constructor` sets the value.
+  #keyframesRuleInternal: KeyframesRule|undefined;
   #deferredNodeInternal?: SDK.DOMModel.DeferredDOMNode;
   constructor(animationModel: AnimationModel, payload: Protocol.Animation.AnimationEffect) {
     this.#animationModel = animationModel;
+    this.setPayload(payload);
+  }
+
+  setPayload(payload: Protocol.Animation.AnimationEffect): void {
     this.#payload = payload;
-    if (payload.keyframesRule) {
+    if (!this.#keyframesRuleInternal && payload.keyframesRule) {
       this.#keyframesRuleInternal = new KeyframesRule(payload.keyframesRule);
+    } else if (this.#keyframesRuleInternal && payload.keyframesRule) {
+      this.#keyframesRuleInternal.setPayload(payload.keyframesRule);
     }
-    this.delayInternal = this.#payload.delay;
-    this.durationInternal = this.#payload.duration;
+
+    this.delayInternal = payload.delay;
+    this.durationInternal = payload.duration;
   }
 
   delay(): number {
@@ -438,10 +475,6 @@ export class AnimationEffect {
 
   endDelay(): number {
     return this.#payload.endDelay;
-  }
-
-  iterationStart(): number {
-    return this.#payload.iterationStart;
   }
 
   iterations(): number {
@@ -490,19 +523,23 @@ export class AnimationEffect {
 }
 
 export class KeyframesRule {
-  readonly #payload: Protocol.Animation.KeyframesRule;
-  #keyframesInternal: KeyframeStyle[];
+  #payload!: Protocol.Animation
+      .KeyframesRule;  // Assertion is safe because `setPayload` call in `constructor` sets the value.;
+  #keyframesInternal!:
+      KeyframeStyle[];  // Assertion is safe because `setPayload` call in `constructor` sets the value.;
   constructor(payload: Protocol.Animation.KeyframesRule) {
-    this.#payload = payload;
-    this.#keyframesInternal = this.#payload.keyframes.map(function(keyframeStyle) {
-      return new KeyframeStyle(keyframeStyle);
-    });
+    this.setPayload(payload);
   }
 
-  private setKeyframesPayload(payload: Protocol.Animation.KeyframeStyle[]): void {
-    this.#keyframesInternal = payload.map(function(keyframeStyle) {
-      return new KeyframeStyle(keyframeStyle);
-    });
+  setPayload(payload: Protocol.Animation.KeyframesRule): void {
+    this.#payload = payload;
+    if (!this.#keyframesInternal) {
+      this.#keyframesInternal = this.#payload.keyframes.map(keyframeStyle => new KeyframeStyle(keyframeStyle));
+    } else {
+      this.#payload.keyframes.forEach((keyframeStyle, index) => {
+        this.#keyframesInternal[index]?.setPayload(keyframeStyle);
+      });
+    }
   }
 
   name(): string|undefined {
@@ -515,11 +552,16 @@ export class KeyframesRule {
 }
 
 export class KeyframeStyle {
-  readonly #payload: Protocol.Animation.KeyframeStyle;
-  #offsetInternal: string;
+  #payload!:
+      Protocol.Animation.KeyframeStyle;  // Assertion is safe because `setPayload` call in `constructor` sets the value.
+  #offsetInternal!: string;              // Assertion is safe because `setPayload` call in `constructor` sets the value.
   constructor(payload: Protocol.Animation.KeyframeStyle) {
+    this.setPayload(payload);
+  }
+
+  setPayload(payload: Protocol.Animation.KeyframeStyle): void {
     this.#payload = payload;
-    this.#offsetInternal = this.#payload.offset;
+    this.#offsetInternal = payload.offset;
   }
 
   offset(): string {
@@ -727,7 +769,8 @@ export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher
     void this.#animationModel.animationStarted(animation);
   }
 
-  animationUpdated(_params: Protocol.Animation.AnimationUpdatedEvent): void {
+  animationUpdated({animation}: Protocol.Animation.AnimationUpdatedEvent): void {
+    void this.#animationModel.animationUpdated(animation);
   }
 }
 

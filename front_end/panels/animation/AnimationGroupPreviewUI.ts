@@ -66,7 +66,7 @@ export class AnimationGroupPreviewUI {
         {duration: 200, easing: 'cubic-bezier(0, 0, 0.2, 1)'});
   }
 
-  private render(): void {
+  render(): void {
     this.#svg.removeChildren();
     const maxToShow = 10;
     const numberOfAnimations = Math.min(this.#model.animations().length, maxToShow);

@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../panels/react_devtools/*"
   ]
 
   visibility += devtools_models_visibility

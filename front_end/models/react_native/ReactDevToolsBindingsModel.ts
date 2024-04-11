@@ -13,6 +13,14 @@ type BindingCalledEventTargetEvent = Common.EventTarget.EventTargetEvent<SDK.Run
 
 const RUNTIME_GLOBAL = '__FUSEBOX_REACT_DEVTOOLS_DISPATCHER__';
 
+export const enum Events {
+  Initialized = 'Initialized',
+}
+
+export type EventTypes = {
+  [Events.Initialized]: void,
+};
+
 export class ReactDevToolsBindingsModel extends SDK.SDKModel.SDKModel {
   private readonly domainToListeners: Map<DomainName, Set<DomainMessageListener>> = new Map();
 
@@ -29,7 +37,11 @@ export class ReactDevToolsBindingsModel extends SDK.SDKModel.SDKModel {
     }
 
     runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
-    void this.enable(target);
+    void this.enable(target).then(() => this.onInitialization());
+  }
+
+  private onInitialization(): void {
+    this.dispatchEventToListeners(Events.Initialized);
   }
 
   private bindingCalled(event: BindingCalledEventTargetEvent): void {

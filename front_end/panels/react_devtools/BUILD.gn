@@ -24,9 +24,10 @@ devtools_module("react_devtools_placeholder") {
 }
 
 devtools_module("react_devtools") {
-  sources = [ "ReactDevToolsView.ts" ]
+  sources = [ "ReactDevToolsView.ts", "ReactDevToolsModel.ts" ]
 
   deps = [
+    "../../models/react_native:bundle",
     "../../ui/legacy:bundle",
   ]
 }

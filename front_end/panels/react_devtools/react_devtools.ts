@@ -5,5 +5,6 @@
 
 import * as ReactDevToolsView from './ReactDevToolsView.js';
 import * as ReactDevToolsPlaceholder from './ReactDevToolsPlaceholder.js';
+import * as ReactDevToolsModel from './ReactDevToolsModel.js';
 
-export {ReactDevToolsView, ReactDevToolsPlaceholder};
+export {ReactDevToolsView, ReactDevToolsPlaceholder, ReactDevToolsModel};

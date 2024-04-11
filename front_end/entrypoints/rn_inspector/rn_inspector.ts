@@ -19,35 +19,20 @@ import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Sources from '../../panels/sources/sources.js';
+import * as RNExperiments from '../main/rn_experiments.js';
 
-// Legacy JavaScript Profiler - we support this until Hermes can support the
-// modern Performance panel.
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
-  'Enable JavaScript Profiler (legacy)',
-  /* unstable */ false,
-);
-
-// Heap Profiler (Memory panel) - supported, but disabled in rn_fusebox.
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
-  'Enable Heap Profiler',
-  /* unstable */ false,
-);
-
-Root.Runtime.experiments.register(
-    Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
-    'Show React Native-specific UI',
-    /* unstable */ false,
-    /* docLink */ globalThis.reactNativeDocLink ?? 'https://reactnative.dev/docs/debugging',
-    /* feedbackLink */ globalThis.FB_ONLY__reactNativeFeedbackLink,
-);
-
-Root.Runtime.experiments.enableExperimentsByDefault([
+RNExperiments.setIsReactNativeEntryPoint(true);
+RNExperiments.RNExperiments.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
+RNExperiments.RNExperiments.setNonConfigurableExperiments(
+  [
+    // RDT support is Fusebox-only
+    Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
+  ],
+);
 
 const UIStrings = {
   /**
@@ -88,4 +73,3 @@ UI.ViewManager.registerViewExtension({
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});
 new Main.MainImpl.MainImpl();
-

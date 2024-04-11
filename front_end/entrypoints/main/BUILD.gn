@@ -11,6 +11,7 @@ devtools_module("main") {
     "ExecutionContextSelector.ts",
     "MainImpl.ts",
     "SimpleApp.ts",
+    "rn_experiments.ts",
   ]
 
   deps = [

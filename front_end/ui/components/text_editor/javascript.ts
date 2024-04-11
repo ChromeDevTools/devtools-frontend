@@ -450,11 +450,11 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
   }
 
   const baseCompletionsForTarget = Root.Runtime.experiments.isEnabled(
-    Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI
+    Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
   )
     ? reactNativeBaseCompletions
     : baseCompletions;
-  
+
   const context = getExecutionContext();
   if (!context) {
     return baseCompletionsForTarget;

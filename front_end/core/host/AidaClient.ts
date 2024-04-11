@@ -79,7 +79,9 @@ export class AidaClient {
     let chunk;
     const text = [];
     let inCodeChunk = false;
+    const metadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
+      let textUpdated = false;
       // The AIDA response is a JSON array of objects, split at the object
       // boundary. Therefore each chunk may start with `[` or `,` and possibly
       // followed by `]`. Each chunk may include one or more objects, so we
@@ -105,28 +107,35 @@ export class AidaClient {
       }
       const CODE_CHUNK_SEPARATOR = '\n`````\n';
       for (const result of results) {
+        if ('metadata' in result) {
+          metadata.rpcGlobalId = result.metadata.rpcGlobalId;
+        }
         if ('textChunk' in result) {
           if (inCodeChunk) {
             text.push(CODE_CHUNK_SEPARATOR);
             inCodeChunk = false;
           }
           text.push(result.textChunk.text);
+          textUpdated = true;
         } else if ('codeChunk' in result) {
           if (!inCodeChunk) {
             text.push(CODE_CHUNK_SEPARATOR);
             inCodeChunk = true;
           }
           text.push(result.codeChunk.code);
+          textUpdated = true;
         } else if ('error' in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
           throw new Error('Unknown chunk result');
         }
       }
-      yield {
-        explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
-        metadata: {rpcGlobalId: results[0]?.metadata?.rpcGlobalId},
-      };
+      if (textUpdated) {
+        yield {
+          explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
+          metadata,
+        };
+      }
     }
   }
 }

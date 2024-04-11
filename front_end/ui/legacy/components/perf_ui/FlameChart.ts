@@ -692,6 +692,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             this.moveGroupDown(groupIndex);
             return;
           case EditButtonType.HIDE:
+            if (this.groupIsLastVisibleTopLevel(this.rawTimelineData?.groups[groupIndex])) {
+              // If this is the last visible top-level group, we will not allow you hiding the track.
+              return;
+            }
             this.#toggleGroupHiddenState(groupIndex, !this.rawTimelineData?.groups[groupIndex].hidden);
             return;
           case EditButtonType.SAVE:
@@ -1680,10 +1684,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const canvasWidth = this.offsetWidth;
     const canvasHeight = this.offsetHeight;
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+
     context.save();
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
+    // Clear the canvas area by drawing a white square first
     context.fillStyle = 'rgba(0, 0, 0, 0)';
     context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.translate(0, -top);
@@ -2213,8 +2219,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             drawIcon(UP_ICON_LEFT, offset, moveUpIconPath, iconColor);
             drawIcon(DOWN_ICON_LEFT, offset, moveDownIconPath, iconColor);
           }
-          drawIcon(HIDE_ICON_LEFT, offset, group.hidden ? showIconPath : hideIconPath, iconColor);
-
+          // If this is the last visible top-level group, we will disable the hide action.
+          drawIcon(
+              HIDE_ICON_LEFT, offset, group.hidden ? showIconPath : hideIconPath,
+              this.groupIsLastVisibleTopLevel(group) ? '--sys-color-state-disabled' : iconColor);
           drawIcon(
               HEADER_LEFT_PADDING + EDITION_MODE_INDENT + this.labelWidthForGroup(context, group), offset, saveIconPath,
               iconColor);
@@ -3158,6 +3166,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // For groups that only have one line and share header line, pretend these are not collapsible
     // unless the itemsHeight does not match the headerHeight
     return style.height !== style.itemsHeight;
+  }
+
+  groupIsLastVisibleTopLevel(group?: Group): boolean {
+    if (!group) {
+      return true;
+    }
+    const visibleTopLevelGroupNumber =
+        this.#groupTreeRoot?.children.filter(track => !this.rawTimelineData?.groups[track.index].hidden).length;
+    return visibleTopLevelGroupNumber === 1 && group.style.nestingLevel === 0 && !group.hidden;
   }
 
   setSelectedEntry(entryIndex: number): void {

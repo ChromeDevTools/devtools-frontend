@@ -8,12 +8,6 @@ import {dirname} from 'path';
 
 import {GEN_DIR, rebase, SOURCE_ROOT} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
-import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
-
-const CWD = getTestRunnerConfigSetting<string>('cwd', SOURCE_ROOT);
-if (!CWD) {
-  throw new Error('--cwd must be provided when running the snapshot tests.');
-}
 
 const UPDATE_SNAPSHOTS = Boolean(process.env['UPDATE_SNAPSHOTS']) || TestConfig.onDiff.update;
 

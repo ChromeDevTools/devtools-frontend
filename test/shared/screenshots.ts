@@ -13,7 +13,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {SOURCE_ROOT} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
-import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 import {
   getBrowserAndPages,
   platform,
@@ -28,7 +27,7 @@ import {ScreenshotError} from '../shared/screenshot-error.js';
  * flags from the test runner config to locate the source directory and read our
  * goldens from there.
  */
-const testRunnerCWD = getTestRunnerConfigSetting<string>('cwd', SOURCE_ROOT);
+const testRunnerCWD = SOURCE_ROOT;
 const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'interactions', 'goldens', platform);
 
 /**

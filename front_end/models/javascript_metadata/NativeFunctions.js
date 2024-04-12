@@ -6407,6 +6407,10 @@ export const NativeFunctions = [
     signatures: [["root","node","?init"]]
   },
   {
+    name: "moveBefore",
+    signatures: [["node","child"]]
+  },
+  {
     name: "Observable",
     signatures: [["callback"]]
   },

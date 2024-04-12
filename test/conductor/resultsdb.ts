@@ -64,7 +64,7 @@ function getSinkData(): SinkData {
   return resolvedSinkData;
 }
 
-export function available() {
+export function available(): boolean {
   const sinkData = getSinkData();
   return sinkData.url !== undefined;
 }

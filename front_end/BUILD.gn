@@ -236,3 +236,14 @@ group("unittests") {
     "ui/visual_logging:unittests",
   ]
 }
+
+generated_file("test_inputs") {
+  outputs = [ "$target_gen_dir/tests.txt" ]
+  data_keys = [ "tests" ]
+  rebase = target_gen_dir
+
+  deps = [
+    ":unittests",
+    "../inspector_overlay:unittests",
+  ]
+}

@@ -58,21 +58,31 @@ function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
   return {status, output};
 }
 
-class MochaTests {
+class Tests {
   readonly suite: PathPair;
-  constructor(suite: string) {
+  readonly extraPaths: PathPair[];
+  constructor(suite: string, ...extraSuites: string[]) {
     const suitePath = PathPair.get(suite);
     if (!suitePath) {
       throw new Error(`Could not locate the test suite '${suite}'`);
     }
     this.suite = suitePath;
+    const extraPaths = extraSuites.map(p => [p, PathPair.get(p)]);
+    const failures = extraPaths.filter(p => p[1] === null);
+    if (failures.length > 0) {
+      throw new Error(`Could not resolve extra paths for ${failures.map(p => p[0]).join()}`);
+    }
+    this.extraPaths = extraPaths.filter((p): p is[string, PathPair] => p[1] !== null).map(p => p[1]);
   }
 
-  run(tests: PathPair[]) {
+  match(path: PathPair) {
+    return [this.suite, ...this.extraPaths].some(
+        pathToCheck => isContainedInDirectory(path.buildPath, pathToCheck.buildPath));
+  }
+
+  protected run(tests: PathPair[], args: string[]) {
     const argumentsForNode = [
-      path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
-      '--config',
-      path.join(this.suite.buildPath, 'mocharc.js'),
+      ...args,
       '--',
       ...tests.map(t => t.buildPath),
       ...forwardOptions(),
@@ -88,15 +98,31 @@ class MochaTests {
   }
 }
 
-// TODO
-// - e2e
-// - unit
+class MochaTests extends Tests {
+  override run(tests: PathPair[]) {
+    return super.run(tests, [
+      path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+      '--config',
+      path.join(this.suite.buildPath, 'mocharc.js'),
+    ]);
+  }
+}
+
+class KarmaTests extends Tests {
+  override run(tests: PathPair[]) {
+    return super.run(tests, [
+      path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'), 'start',
+      path.join(GEN_DIR, 'test', 'unit', 'karma.conf.js'), '--log-level',
+      'info',  // TODO(333423685) make configurable?
+    ]);
+  }
+}
+
+// TODO(333423685)
 // - perf
-// - debug
 // - screenshots
 // - iterations
 // - expanded-reporting
-// - shuffle
 // - watch
 // - layout?
 function main() {
@@ -105,6 +131,7 @@ function main() {
   const testKinds = [
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
+    new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
   ];
 
   if (!options['skip-ninja']) {
@@ -122,7 +149,7 @@ function main() {
       continue;
     }
 
-    const suite = testKinds.find(kind => isContainedInDirectory(repoPath.buildPath, kind.suite.buildPath));
+    const suite = testKinds.find(kind => kind.match(repoPath));
     if (suite === undefined) {
       console.error(`Unknown test suite for '${repoPath.sourcePath}'`);
       continue;

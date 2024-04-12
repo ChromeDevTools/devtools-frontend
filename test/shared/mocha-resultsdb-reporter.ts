@@ -6,11 +6,11 @@ import * as fs from 'fs';
 import * as Mocha from 'mocha';
 import * as path from 'path';
 
+// eslint-disable-next-line  rulesdir/es_modules_import
+import * as ResultsDb from '../conductor/resultsdb.js';
 import {
   ScreenshotError,
 } from '../shared/screenshot-error.js';
-
-import * as ResultsDb from './resultsdb.js';
 
 const {
   EVENT_TEST_FAIL,

@@ -20,9 +20,11 @@ group("test") {
 group("unittests") {
   deps = [
     ":config",
+    "../front_end:test_inputs",
     "../front_end:unittests",
     "../inspector_overlay:unittests",
     "shared",
+    "unit:karma",
   ]
 }
 

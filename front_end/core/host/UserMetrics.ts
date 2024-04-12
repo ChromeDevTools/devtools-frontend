@@ -1055,7 +1055,6 @@ export enum DevtoolsExperiments {
   'css-type-component-length-deprecate' = 85,
   'timeline-show-postmessage-events' = 86,
   'save-and-load-trace-with-annotations' = 87,
-  'timeline-track-configuration' = 88,
   'timeline-extensions' = 89,
 
   // Increment this when new experiments are added.

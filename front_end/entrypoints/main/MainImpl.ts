@@ -286,9 +286,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('timeline-show-all-events', 'Timeline: show all events', true);
     Root.Runtime.experiments.register(
         'timeline-v8-runtime-call-stats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
-    Root.Runtime.experiments.register(
-        'timeline-track-configuration',
-        'Timeline: Enable track configuration feature that can reorder or hide a track in the flame chart', true);
     Root.Runtime.experiments.register('timeline-extensions', 'Timeline: Enable User Timings based extensions', true);
 
     // Sources

@@ -127,7 +127,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE,
   Root.Runtime.ExperimentName.AUTOFILL_VIEW,
   Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS,
-  Root.Runtime.ExperimentName.TIMELINE_TRACK_CONFIGURATION,
   Root.Runtime.ExperimentName.TIMELINE_EXTENSIONS,
 ];
 

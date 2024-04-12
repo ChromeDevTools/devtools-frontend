@@ -292,7 +292,6 @@ export const enum ExperimentName {
   INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
   SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS = 'save-and-load-trace-with-annotations',
-  TIMELINE_TRACK_CONFIGURATION = 'timeline-track-configuration',
   TIMELINE_EXTENSIONS = 'timeline-extensions',
 }
 

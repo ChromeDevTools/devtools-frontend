@@ -32,7 +32,7 @@ import type {HTTPResponse} from '../api/HTTPResponse.js';
 import type {Accessibility} from '../cdp/Accessibility.js';
 import type {Coverage} from '../cdp/Coverage.js';
 import type {DeviceRequestPrompt} from '../cdp/DeviceRequestPrompt.js';
-import type {Credentials, NetworkConditions} from '../cdp/NetworkManager.js';
+import type {NetworkConditions} from '../cdp/NetworkManager.js';
 import type {Tracing} from '../cdp/Tracing.js';
 import type {ConsoleMessage} from '../common/ConsoleMessage.js';
 import type {
@@ -129,6 +129,14 @@ export interface Metrics {
   TaskDuration?: number;
   JSHeapUsedSize?: number;
   JSHeapTotalSize?: number;
+}
+
+/**
+ * @public
+ */
+export interface Credentials {
+  username: string;
+  password: string;
 }
 
 /**
@@ -644,7 +652,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @deprecated We no longer support intercepting drag payloads. Use the new
    * drag APIs found on {@link ElementHandle} to drag (or just use the
-   * {@link Page | Page.mouse}).
+   * {@link Page.mouse}).
    */
   abstract isDragInterceptionEnabled(): boolean;
 
@@ -875,7 +883,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @deprecated We no longer support intercepting drag payloads. Use the new
    * drag APIs found on {@link ElementHandle} to drag (or just use the
-   * {@link Page | Page.mouse}).
+   * {@link Page.mouse}).
    */
   abstract setDragInterception(enabled: boolean): Promise<void>;
 
@@ -2116,7 +2124,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * This is either the viewport set with the previous {@link Page.setViewport}
    * call or the default viewport set via
-   * {@link BrowserConnectOptions | BrowserConnectOptions.defaultViewport}.
+   * {@link BrowserConnectOptions.defaultViewport |
+   * BrowserConnectOptions.defaultViewport}.
    */
   abstract viewport(): Viewport | null;
 
@@ -2609,7 +2618,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * This method fetches an element with `selector`, scrolls it into view if
-   * needed, and then uses {@link Page | Page.mouse} to click in the center of the
+   * needed, and then uses {@link Page.mouse} to click in the center of the
    * element. If there's no element matching `selector`, the method throws an
    * error.
    *
@@ -2660,7 +2669,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * This method fetches an element with `selector`, scrolls it into view if
-   * needed, and then uses {@link Page | Page.mouse}
+   * needed, and then uses {@link Page.mouse}
    * to hover over the center of the element.
    * If there's no element matching `selector`, the method throws an error.
    * @param selector - A
@@ -2709,7 +2718,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * This method fetches an element with `selector`, scrolls it into view if
-   * needed, and then uses {@link Page | Page.touchscreen}
+   * needed, and then uses {@link Page.touchscreen}
    * to tap in the center of the element.
    * If there's no element matching `selector`, the method throws an error.
    * @param selector - A

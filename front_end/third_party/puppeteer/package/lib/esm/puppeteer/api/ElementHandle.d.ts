@@ -338,13 +338,13 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     clickablePoint(offset?: Offset): Promise<Point>;
     /**
      * This method scrolls element into view if needed, and then
-     * uses {@link Page} to hover over the center of the element.
+     * uses {@link Page.mouse} to hover over the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     hover(this: ElementHandle<Element>): Promise<void>;
     /**
      * This method scrolls element into view if needed, and then
-     * uses {@link Page | Page.mouse} to click in the center of the element.
+     * uses {@link Page.mouse} to click in the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;

@@ -37,6 +37,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         this.#request.once('success', data => {
             this.#response = BidiHTTPResponse.from(data, this);
         });
+        this.#request.on('authenticate', this.#handleAuthentication);
         this.#frame?.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
     }
     url() {
@@ -169,6 +170,29 @@ export class BidiHTTPRequest extends HTTPRequest {
             throw error;
         });
     }
+    #authenticationHandled = false;
+    #handleAuthentication = async () => {
+        if (!this.#frame) {
+            return;
+        }
+        const credentials = this.#frame.page()._credentials;
+        if (credentials && !this.#authenticationHandled) {
+            this.#authenticationHandled = true;
+            void this.#request.continueWithAuth({
+                action: 'provideCredentials',
+                credentials: {
+                    type: 'password',
+                    username: credentials.username,
+                    password: credentials.password,
+                },
+            });
+        }
+        else {
+            void this.#request.continueWithAuth({
+                action: 'cancel',
+            });
+        }
+    };
 }
 _a = BidiHTTPRequest;
 function getBidiHeaders(rawHeaders) {

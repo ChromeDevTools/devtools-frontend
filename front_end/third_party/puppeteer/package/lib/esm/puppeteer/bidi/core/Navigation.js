@@ -59,18 +59,14 @@ let Navigation = (() => {
             navigation.#initialize();
             return navigation;
         }
-        // keep-sorted start
         #request = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #navigation;
         #browsingContext;
         #disposables = new DisposableStack();
         #id;
-        // keep-sorted end
         constructor(context) {
             super();
-            // keep-sorted start
             this.#browsingContext = context;
-            // keep-sorted end
         }
         #initialize() {
             const browsingContextEmitter = this.#disposables.use(new EventEmitter(this.#browsingContext));
@@ -146,7 +142,6 @@ let Navigation = (() => {
             }
             return this.#id === navigation;
         }
-        // keep-sorted start block=yes
         get #session() {
             return this.#browsingContext.userContext.browser.session;
         }
@@ -159,7 +154,6 @@ let Navigation = (() => {
         get navigation() {
             return this.#navigation;
         }
-        // keep-sorted end
         dispose() {
             this[disposeSymbol]();
         }

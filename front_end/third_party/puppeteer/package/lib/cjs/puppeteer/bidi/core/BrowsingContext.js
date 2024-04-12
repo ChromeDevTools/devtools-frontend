@@ -112,7 +112,6 @@ let BrowsingContext = (() => {
             browsingContext.#initialize();
             return browsingContext;
         }
-        // keep-sorted start
         #navigation = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #reason;
         #url;
@@ -124,15 +123,12 @@ let BrowsingContext = (() => {
         id;
         parent;
         userContext;
-        // keep-sorted end
         constructor(context, parent, id, url) {
             super();
-            // keep-sorted start
             this.#url = url;
             this.id = id;
             this.parent = parent;
             this.userContext = context;
-            // keep-sorted end
             this.defaultRealm = this.#createWindowRealm();
         }
         #initialize() {
@@ -226,7 +222,6 @@ let BrowsingContext = (() => {
                 this.emit('userprompt', { userPrompt });
             });
         }
-        // keep-sorted start block=yes
         get #session() {
             return this.userContext.browser.session;
         }
@@ -257,7 +252,6 @@ let BrowsingContext = (() => {
         get url() {
             return this.#url;
         }
-        // keep-sorted end
         #createWindowRealm(sandbox) {
             const realm = Realm_js_1.WindowRealm.from(this, sandbox);
             realm.on('worker', realm => {

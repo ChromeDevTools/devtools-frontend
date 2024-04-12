@@ -18,6 +18,7 @@ export class FrameTree {
     // frameID -> childFrameIDs
     #childIds = new Map();
     #mainFrame;
+    #isMainFrameStale = false;
     #waitRequests = new Map();
     getMainFrame() {
         return this.#mainFrame;
@@ -51,8 +52,9 @@ export class FrameTree {
             }
             this.#childIds.get(frame._parentId).add(frame._id);
         }
-        else if (!this.#mainFrame) {
+        else if (!this.#mainFrame || this.#isMainFrameStale) {
             this.#mainFrame = frame;
+            this.#isMainFrameStale = false;
         }
         this.#waitRequests.get(frame._id)?.forEach(request => {
             return request.resolve(frame);
@@ -65,7 +67,7 @@ export class FrameTree {
             this.#childIds.get(frame._parentId)?.delete(frame._id);
         }
         else {
-            this.#mainFrame = undefined;
+            this.#isMainFrameStale = true;
         }
     }
     childFrames(frameId) {

@@ -1121,7 +1121,7 @@ let Page = (() => {
         }
         /**
          * This method fetches an element with `selector`, scrolls it into view if
-         * needed, and then uses {@link Page | Page.mouse} to click in the center of the
+         * needed, and then uses {@link Page.mouse} to click in the center of the
          * element. If there's no element matching `selector`, the method throws an
          * error.
          *
@@ -1170,7 +1170,7 @@ let Page = (() => {
         }
         /**
          * This method fetches an element with `selector`, scrolls it into view if
-         * needed, and then uses {@link Page | Page.mouse}
+         * needed, and then uses {@link Page.mouse}
          * to hover over the center of the element.
          * If there's no element matching `selector`, the method throws an error.
          * @param selector - A
@@ -1217,7 +1217,7 @@ let Page = (() => {
         }
         /**
          * This method fetches an element with `selector`, scrolls it into view if
-         * needed, and then uses {@link Page | Page.touchscreen}
+         * needed, and then uses {@link Page.touchscreen}
          * to tap in the center of the element.
          * If there's no element matching `selector`, the method throws an error.
          * @param selector - A

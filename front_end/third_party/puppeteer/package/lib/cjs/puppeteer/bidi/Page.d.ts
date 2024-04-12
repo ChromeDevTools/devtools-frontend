@@ -8,7 +8,7 @@ import type Protocol from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
-import type { GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
+import type { Credentials, GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -90,6 +90,11 @@ export declare class BidiPage extends Page {
     waitForFileChooser(): never;
     workers(): BidiWebWorker[];
     setRequestInterception(enable: boolean): Promise<void>;
+    /**
+     * @internal
+     */
+    _credentials: Credentials | null;
+    authenticate(credentials: Credentials | null): Promise<void>;
     setDragInterception(): never;
     setBypassServiceWorker(): never;
     setOfflineMode(): never;
@@ -97,7 +102,6 @@ export declare class BidiPage extends Page {
     setCookie(...cookies: CookieParam[]): Promise<void>;
     deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;
-    authenticate(): never;
     setExtraHTTPHeaders(): never;
     metrics(): never;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;

@@ -6,15 +6,9 @@
 import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
+import type { Credentials } from '../api/Page.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
-/**
- * @public
- */
-export interface Credentials {
-    username: string;
-    password: string;
-}
 /**
  * @public
  */

@@ -47,6 +47,7 @@ import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError, fromEmitterEvent, timeout } from '../common/util.js';
+import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiCdpSession } from './CDPSession.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiDialog } from './Dialog.js';
@@ -178,7 +179,6 @@ let BidiFrame = (() => {
             this.browsingContext.on('request', ({ request }) => {
                 const httpRequest = BidiHTTPRequest.from(request, this);
                 request.once('success', () => {
-                    // SAFETY: BidiHTTPRequest will create this before here.
                     this.page().trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
                 });
                 request.once('error', () => {
@@ -316,7 +316,15 @@ let BidiFrame = (() => {
                 // readiness=interactive.
                 //
                 // Related: https://bugzilla.mozilla.org/show_bug.cgi?id=1846601
-                this.browsingContext.navigate(url, "interactive" /* Bidi.BrowsingContext.ReadinessState.Interactive */),
+                this.browsingContext
+                    .navigate(url, "interactive" /* Bidi.BrowsingContext.ReadinessState.Interactive */)
+                    .catch(error => {
+                    if (isErrorLike(error) &&
+                        error.message.includes('net::ERR_HTTP_RESPONSE_CODE_FAILURE')) {
+                        return;
+                    }
+                    throw error;
+                }),
             ]).catch(rewriteNavigationError(url, options.timeout ?? this.timeoutSettings.navigationTimeout()));
             return response;
         }
@@ -341,9 +349,7 @@ let BidiFrame = (() => {
                             return of(undefined);
                         }
                         return combineLatest(frames);
-                    }), raceWith(fromEmitterEvent(navigation, 'fragment'), fromEmitterEvent(navigation, 'failed').pipe(map(({ url }) => {
-                        throw new Error(`Navigation failed: ${url}`);
-                    })), fromEmitterEvent(navigation, 'aborted').pipe(map(({ url }) => {
+                    }), raceWith(fromEmitterEvent(navigation, 'fragment'), fromEmitterEvent(navigation, 'failed'), fromEmitterEvent(navigation, 'aborted').pipe(map(({ url }) => {
                         throw new Error(`Navigation aborted: ${url}`);
                     }))), switchMap(() => {
                         if (navigation.request) {

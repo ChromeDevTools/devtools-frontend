@@ -115,19 +115,15 @@ let Browser = (() => {
             await browser.#initialize();
             return browser;
         }
-        // keep-sorted start
         #closed = (__runInitializers(this, _instanceExtraInitializers), false);
         #reason;
         #disposables = new DisposableStack();
         #userContexts = new Map();
         session;
         #sharedWorkers = new Map();
-        // keep-sorted end
         constructor(session) {
             super();
-            // keep-sorted start
             this.session = session;
-            // keep-sorted end
         }
         async #initialize() {
             const sessionEmitter = this.#disposables.use(new EventEmitter(this.session));
@@ -192,7 +188,6 @@ let Browser = (() => {
             });
             return userContext;
         }
-        // keep-sorted start block=yes
         get closed() {
             return this.#closed;
         }
@@ -209,7 +204,6 @@ let Browser = (() => {
         get userContexts() {
             return this.#userContexts.values();
         }
-        // keep-sorted end
         dispose(reason, closed = false) {
             this.#closed = closed;
             this.#reason = reason;

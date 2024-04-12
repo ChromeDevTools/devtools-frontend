@@ -116,7 +116,6 @@ let Session = (() => {
             await session.#initialize();
             return session;
         }
-        // keep-sorted start
         #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #disposables = new disposable_js_1.DisposableStack();
         #info;
@@ -124,13 +123,10 @@ let Session = (() => {
         #connection_accessor_storage = __runInitializers(this, _connection_initializers, void 0);
         get connection() { return this.#connection_accessor_storage; }
         set connection(value) { this.#connection_accessor_storage = value; }
-        // keep-sorted end
         constructor(connection, info) {
             super();
-            // keep-sorted start
             this.#info = info;
             this.connection = connection;
-            // keep-sorted end
         }
         async #initialize() {
             // SAFETY: We use `any` to allow assignment of the readonly property.
@@ -152,7 +148,6 @@ let Session = (() => {
                 this.emit('browsingContext.fragmentNavigated', info);
             });
         }
-        // keep-sorted start block=yes
         get capabilities() {
             return this.#info.capabilities;
         }
@@ -165,7 +160,6 @@ let Session = (() => {
         get id() {
             return this.#info.sessionId;
         }
-        // keep-sorted end
         dispose(reason) {
             this.#reason = reason;
             this[disposable_js_1.disposeSymbol]();

@@ -450,16 +450,30 @@ let BidiPage = (() => {
         async setRequestInterception(enable) {
             if (enable && !this.#interception) {
                 this.#interception = await this.#frame.browsingContext.addIntercept({
-                    phases: [
-                        "beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */,
-                        "authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */,
-                    ],
+                    phases: ["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */],
                 });
             }
             else if (!enable && this.#interception) {
                 await this.#frame.browsingContext.userContext.browser.removeIntercept(this.#interception);
                 this.#interception = undefined;
             }
+        }
+        /**
+         * @internal
+         */
+        _credentials = null;
+        #authInterception;
+        async authenticate(credentials) {
+            if (credentials && !this.#authInterception) {
+                this.#authInterception = await this.#frame.browsingContext.addIntercept({
+                    phases: ["authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */],
+                });
+            }
+            else if (!credentials && this.#authInterception) {
+                await this.#frame.browsingContext.userContext.browser.removeIntercept(this.#authInterception);
+                this.#authInterception = undefined;
+            }
+            this._credentials = credentials;
         }
         setDragInterception() {
             throw new Errors_js_1.UnsupportedOperation();
@@ -533,9 +547,6 @@ let BidiPage = (() => {
         }
         async removeExposedFunction(name) {
             await this.#frame.removeExposedFunction(name);
-        }
-        authenticate() {
-            throw new Errors_js_1.UnsupportedOperation();
         }
         setExtraHTTPHeaders() {
             throw new Errors_js_1.UnsupportedOperation();

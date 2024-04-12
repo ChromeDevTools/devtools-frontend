@@ -3032,8 +3032,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // If |shareHeaderLine| is false, we add the height of one more level to
       // the current offset, which will be used for the start level of current
       // group.
-      // If it's in edit mode, all the groups are shown.
-      if (this.#editMode ||
+      // For edit mode, we will show all the groups whose name are not empty.
+      if ((this.#editMode && groups[groupNode.index].name) ||
           (!groups[groupNode.index].hidden && parentGroupIsVisible && !groups[groupNode.index].style.shareHeaderLine)) {
         currentOffset += groups[groupNode.index].style.height;
       }
@@ -3110,7 +3110,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     for (const child of groupNode.children) {
       // If the child is not the first child, we will add a padding top.
-      if (this.#editMode ||
+      // For edit mode, we will show all the groups whose name are not empty.
+      if ((this.#editMode && groups[child.index].name) ||
           (thisGroupLevelsAreVisible && !groups[child.index]?.hidden && child !== groupNode.children[0])) {
         currentOffset += (groups[child.index].style.padding ?? 0);
       }

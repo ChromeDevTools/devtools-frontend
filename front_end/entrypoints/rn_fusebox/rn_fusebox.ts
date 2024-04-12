@@ -28,6 +28,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Sources from '../../panels/sources/sources.js';
+import * as RNExperiments from '../main/rn_experiments.js';
+
+RNExperiments.setIsReactNativeEntryPoint(true);
+RNExperiments.RNExperiments.enableExperimentsByDefault([
+  Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
+]);
 
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
@@ -39,37 +45,6 @@ SDK.TargetManager.TargetManager.instance().addModelListener(
     SDK.DebuggerModel.Events.DebuggerIsReadyToPause,
     () => Host.rnPerfMetrics.debuggerReadyToPause(),
 );
-
-// Legacy JavaScript Profiler - disabled until we have complete support.
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
-  'Enable JavaScript Profiler (legacy)',
-  /* unstable */ false,
-);
-
-// Heap Profiler (Memory panel) - disabled until we have complete support.
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
-  'Enable Heap Profiler',
-  /* unstable */ false,
-);
-
-Root.Runtime.experiments.register(
-    Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
-    'Show React Native-specific UI',
-    /* unstable */ false,
-    /* docLink */ globalThis.reactNativeDocLink ?? 'https://reactnative.dev/docs/debugging',
-);
-
-Root.Runtime.experiments.register(
-  Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
-  'Enable React DevTools',
-  /* unstable */ true,
-);
-
-Root.Runtime.experiments.enableExperimentsByDefault([
-  Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
-]);
 
 class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
   constructor(target: SDK.Target.Target) {

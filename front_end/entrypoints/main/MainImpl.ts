@@ -55,6 +55,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
+import { RNExperiments } from './rn_experiments.js';
 
 const UIStrings = {
   /**
@@ -313,6 +314,12 @@ export class MainImpl {
         'timelineAsConsoleProfileResultPanel', 'View console.profile() results in the Performance panel for Node.js',
         true);
 
+    // JS Profiler
+    Root.Runtime.experiments.register(
+      'jsProfilerTemporarilyEnable', 'Enable JavaScript Profiler temporarily', /* unstable= */ false,
+      'https://developer.chrome.com/blog/js-profiler-deprecation/',
+      'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548');
+
     // Debugging
     Root.Runtime.experiments.register(
         'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,
@@ -419,6 +426,10 @@ export class MainImpl {
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
       Root.Runtime.ExperimentName.HEADER_OVERRIDES,
     ]);
+
+    // React Native experiments need to be registered for all entry points so
+    // that they can be checked everywhere.
+    RNExperiments.copyInto(Root.Runtime.experiments, '[React Native] ');
 
     Root.Runtime.experiments.setNonConfigurableExperiments([
       ...(!('EyeDropper' in window) ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),

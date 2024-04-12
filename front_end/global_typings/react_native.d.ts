@@ -9,7 +9,6 @@ declare global {
   namespace globalThis {
     var enableReactNativePerfMetrics: boolean|undefined;
     var enableReactNativePerfMetricsGlobalPostMessage: boolean|undefined;
-    var reactNativeDocLink: string|undefined;
     var FB_ONLY__reactNativeFeedbackLink: string|undefined;
   }
 }

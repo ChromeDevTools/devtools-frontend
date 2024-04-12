@@ -285,6 +285,14 @@ export class Experiment {
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
 
+// React Native-specific experiments, see rn_experiments.ts
+// eslint-disable-next-line rulesdir/const_enum
+export enum RNExperimentName {
+  REACT_NATIVE_SPECIFIC_UI = 'reactNativeSpecificUI',
+  ENABLE_REACT_DEVTOOLS_PANEL = 'enableReactDevToolsPanel',
+  JS_HEAP_PROFILER_ENABLE = 'jsHeapProfilerEnable',
+}
+
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum ExperimentName {
@@ -310,12 +318,14 @@ export enum ExperimentName {
   DISABLE_COLOR_FORMAT_SETTING = 'disableColorFormatSetting',
   TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timelineAsConsoleProfileResultPanel',
   OUTERMOST_TARGET_SELECTOR = 'outermostTargetSelector',
-  JS_HEAP_PROFILER_ENABLE = 'jsHeapProfilerEnable',
   JS_PROFILER_TEMP_ENABLE = 'jsProfilerTemporarilyEnable',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlightErrorsElementsPanel',
   SET_ALL_BREAKPOINTS_EAGERLY = 'setAllBreakpointsEagerly',
-  REACT_NATIVE_SPECIFIC_UI = 'reactNativeSpecificUI',
-  ENABLE_REACT_DEVTOOLS_PANEL = 'enableReactDevToolsPanel',
+
+  // React Native-specific experiments - must mirror RNExperimentName above
+  JS_HEAP_PROFILER_ENABLE = RNExperimentName.JS_HEAP_PROFILER_ENABLE,
+  REACT_NATIVE_SPECIFIC_UI = RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
+  ENABLE_REACT_DEVTOOLS_PANEL = RNExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

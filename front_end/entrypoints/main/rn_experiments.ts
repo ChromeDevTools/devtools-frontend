@@ -232,7 +232,6 @@ RNExperiments.register({
   name: RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
   title: 'Show React Native-specific UI',
   unstable: false,
-  docLink: 'https://reactnative.dev/docs/debugging',
   enabledByDefault: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
   configurable: false,
 });

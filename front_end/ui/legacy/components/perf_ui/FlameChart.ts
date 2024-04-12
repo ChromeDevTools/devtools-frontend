@@ -1636,7 +1636,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.labelWidthForGroup(context, groups[groupIndex]);
     context.restore();
 
-    if (this.#editMode) {
+    const mouseInHeaderRow =
+        y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[groupIndex] + groups[groupIndex].style.height;
+    if (this.#editMode && mouseInHeaderRow) {
       if (UP_ICON_LEFT <= x && x < UP_ICON_LEFT + EDIT_BUTTON_SIZE) {
         return {groupIndex, editButtonType: EditButtonType.UP};
       }
@@ -1649,7 +1651,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       if (saveIconLeft <= x && x < saveIconLeft + EDIT_BUTTON_SIZE) {
         return {groupIndex, editButtonType: EditButtonType.SAVE};
       }
-    } else {
+    } else if (mouseInHeaderRow) {
       if (EDIT_ICON_LEFT <= x && x < EDIT_ICON_LEFT + EDIT_BUTTON_SIZE) {
         return {groupIndex, editButtonType: EditButtonType.EDIT};
       }

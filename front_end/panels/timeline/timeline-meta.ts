@@ -125,6 +125,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.performance),
   commandPrompt: i18nLazyString(UIStrings.showPerformance),
   order: 50,
+  experiment: Root.Runtime.ExperimentName.ENABLE_PERFORMANCE_PANEL,
   async loadView() {
     const Timeline = await loadTimelineModule();
     return Timeline.TimelinePanel.TimelinePanel.instance();
@@ -136,7 +137,7 @@ UI.ViewManager.registerViewExtension({
   id: 'js_profiler',
   title: i18nLazyString(UIStrings.javascriptProfiler),
   commandPrompt: i18nLazyString(UIStrings.showJavascriptProfiler),
-  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   order: 65,
   experiment: Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   async loadView() {

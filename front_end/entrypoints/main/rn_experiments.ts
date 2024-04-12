@@ -235,3 +235,11 @@ RNExperiments.register({
   enabledByDefault: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
   configurable: false,
 });
+
+RNExperiments.register({
+  name: RNExperimentName.ENABLE_PERFORMANCE_PANEL,
+  title: 'Enable Performance panel',
+  unstable: true,
+  enabledByDefault: ({ isReactNativeEntryPoint }) => !isReactNativeEntryPoint,
+  configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
+});

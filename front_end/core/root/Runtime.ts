@@ -291,6 +291,7 @@ export enum RNExperimentName {
   REACT_NATIVE_SPECIFIC_UI = 'reactNativeSpecificUI',
   ENABLE_REACT_DEVTOOLS_PANEL = 'enableReactDevToolsPanel',
   JS_HEAP_PROFILER_ENABLE = 'jsHeapProfilerEnable',
+  ENABLE_PERFORMANCE_PANEL = 'enablePerformancePanel',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -326,6 +327,7 @@ export enum ExperimentName {
   JS_HEAP_PROFILER_ENABLE = RNExperimentName.JS_HEAP_PROFILER_ENABLE,
   REACT_NATIVE_SPECIFIC_UI = RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
   ENABLE_REACT_DEVTOOLS_PANEL = RNExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
+  ENABLE_PERFORMANCE_PANEL = RNExperimentName.ENABLE_PERFORMANCE_PANEL,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

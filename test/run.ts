@@ -7,20 +7,20 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-/* eslint-disable rulesdir/es_modules_import */
+import {commandLineArgs} from './conductor/commandline.js';
 import {GEN_DIR, isContainedInDirectory, PathPair, SOURCE_ROOT} from './conductor/paths.js';
-import * as TestConfig from './conductor/test_config.js';
 
 const yargs = require('yargs');
 const unparse = require('yargs-unparser');
-const options = TestConfig.commandLineArgs(yargs(process.argv.slice(2)))
+const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('skip-ninja', {type: 'boolean', desc: 'Skip rebuilding'})
-                    .boolean('debug-driver')
+                    .options('debug-driver', {type: 'boolean', hidden: true})
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
                       normalize: true,
-                      default: ['front_end', 'test/e2e', 'test/interactions'].map(f => path.join(SOURCE_ROOT, f)),
+                      default: ['front_end', 'test/e2e', 'test/interactions'].map(
+                          f => path.relative(process.cwd(), path.join(SOURCE_ROOT, f))),
                     })
                     .strict()
                     .argv;

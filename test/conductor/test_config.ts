@@ -2,58 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
+import {asArray, commandLineArgs, DiffBehaviors} from './commandline.js';
 import {SOURCE_ROOT} from './paths.js';
-
-export enum DiffBehaviors {
-  Update = 'update',
-  Throw = 'throw',
-  NoThrow = 'no-throw',
-  NoUpdate = 'no-update',
-}
 
 const yargs = require('yargs');
 const options = commandLineArgs(yargs(yargs.argv['_'])).argv;
-
-function asArray(value: undefined|string|string[]) {
-  if (!value) {
-    return [];
-  }
-  if (Array.isArray(value)) {
-    return value;
-  }
-  return [value];
-}
-
-function validateDiffBehaviors(args: undefined|string|string[]) {
-  const failed = [];
-  for (const arg of asArray(args)) {
-    if (Object.values(DiffBehaviors).includes(arg as DiffBehaviors)) {
-      continue;
-    }
-    if (!arg.startsWith(`${DiffBehaviors.Update}=`)) {
-      failed.push(arg);
-    }
-  }
-  if (failed.length > 0) {
-    throw new Error(`Invalid options for --on-diff: ${failed}`);
-  }
-  return asArray(args);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function commandLineArgs(yargs: any) {
-  return yargs.parserConfiguration({'camel-case-expansion': false})
-      .command('$0 [tests..]')
-      .option('debug', {type: 'boolean'})
-      .option('coverage', {type: 'boolean'})
-      .option('chrome-binary', {type: 'string'})
-      .option('repeat', {type: 'number', default: 1})
-      .option('on-diff', {type: 'string', coerce: validateDiffBehaviors})
-      .strict();
-}
 
 function chromePath() {
   const paths = {
@@ -78,6 +35,8 @@ interface Config {
   coverage: boolean;
   repetitions: number;
   onDiff: {update: boolean|string[], throw: boolean};
+  shuffle: boolean;
+  mochaGrep: {invert?: boolean, grep?: string}|{invert?: boolean, fgrep?: string};
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -100,6 +59,19 @@ const diffUpdateFilters =
 const onDiffUpdateAll = onDiffUpdate.length > 0 && diffUpdateFilters.length === 0;
 const onDiffUpdateSelected = onDiffUpdate.length > 0 ? diffUpdateFilters : false;
 
+function mochaGrep(): Config['mochaGrep'] {
+  if (!(options['grep'] ?? options['fgrep'])) {
+    return {};
+  }
+  const isFixed = Boolean(options['fgrep']);
+  const grep: Config['mochaGrep'] = isFixed ? {fgrep: options['fgrep']} : {grep: options['grep']};
+
+  if (options['invert']) {
+    grep.invert = true;
+  }
+  return grep;
+}
+
 export const TestConfig: Config = {
   tests: options['tests'],
   chromeBinary: options['chrome-binary'] ?? chromePath(),
@@ -111,4 +83,23 @@ export const TestConfig: Config = {
     update: onDiffUpdateAll || onDiffUpdateSelected,
     throw: onDiffThrow,
   },
+  shuffle: options['shuffle'],
+  mochaGrep: mochaGrep(),
 };
+
+export function loadTests(testDirectory: string) {
+  const tests = fs.readFileSync(path.join(testDirectory, 'tests.txt'))
+                    .toString()
+                    .split('\n')
+                    .map(t => t.trim())
+                    .filter(t => t.length > 0)
+                    .map(t => path.normalize(path.join(testDirectory, t)))
+                    .filter(t => TestConfig.tests.some((spec: string) => t.startsWith(spec)));
+  if (TestConfig.shuffle) {
+    for (let i = tests.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tests[i], tests[j]] = [tests[j], tests[i]];
+    }
+  }
+  return tests;
+}

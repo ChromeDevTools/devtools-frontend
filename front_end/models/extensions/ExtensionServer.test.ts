@@ -4,7 +4,7 @@
 
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
@@ -329,7 +329,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const target = createTarget({type: SDK.Target.Type.Frame});
     target.setInspectedURL('http://example.com2' as Platform.DevToolsPath.UrlString);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assert.exists(networkManager);
+    Platform.assertNotNullOrUndefined(networkManager);
     const frameId = 'frame-id' as Protocol.Page.FrameId;
     createRequest(networkManager, frameId, 'blocked-url-request-id' as Protocol.Network.RequestId, blockedUrl);
     createRequest(networkManager, frameId, 'allowed-url-request-id' as Protocol.Network.RequestId, allowedUrl);
@@ -351,7 +351,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const parentTarget = parentFrame?.resourceTreeModel()?.target();
     const target = createTarget({id: `${name}-target-id` as Protocol.Target.TargetID, parentTarget});
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
+    Platform.assertNotNullOrUndefined(resourceTreeModel);
 
     const id = `${name}-frame-id` as Protocol.Page.FrameId;
     resourceTreeModel.frameNavigated(
@@ -372,7 +372,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     if (executionContextOrigin) {
       executionContextOrigin = new URL(executionContextOrigin).origin as Platform.DevToolsPath.UrlString;
       const parentRuntimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(parentRuntimeModel);
+      Platform.assertNotNullOrUndefined(parentRuntimeModel);
       parentRuntimeModel.executionContextCreated({
         id: 0 as Protocol.Runtime.ExecutionContextId,
         origin: executionContextOrigin,
@@ -383,7 +383,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     }
 
     const frame = resourceTreeModel.frameForId(id);
-    assert.exists(frame);
+    Platform.assertNotNullOrUndefined(frame);
     return frame;
   }
 
@@ -413,7 +413,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     // Create a fake content script execution context, i.e., a non-default context with the extension's (== window's)
     // origin.
     const runtimeModel = childFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
-    assert.exists(runtimeModel);
+    Platform.assertNotNullOrUndefined(runtimeModel);
     runtimeModel.executionContextCreated({
       id: 1 as Protocol.Runtime.ExecutionContextId,
       origin: window.location.origin,
@@ -422,7 +422,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
       auxData: {frameId: childFrame.id, isDefault: false},
     });
     const contentScriptExecutionContext = runtimeModel.executionContext(1);
-    assert.exists(contentScriptExecutionContext);
+    Platform.assertNotNullOrUndefined(contentScriptExecutionContext);
     sinon.stub(contentScriptExecutionContext, 'evaluate').returns(Promise.resolve({
       object: SDK.RemoteObject.RemoteObject.fromLocalObject(4),
     }));
@@ -445,7 +445,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     // Create a non-default context with a blocked origin.
     const childExeContextOrigin = blockedUrl;
     const runtimeModel = childFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
-    assert.exists(runtimeModel);
+    Platform.assertNotNullOrUndefined(runtimeModel);
     runtimeModel.executionContextCreated({
       id: 1 as Protocol.Runtime.ExecutionContextId,
       origin: childExeContextOrigin,
@@ -502,7 +502,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await createUISourceCode(project, blockedUrl);
     await createUISourceCode(project, allowedUrl);
 
-    assert.exists(context.chrome.devtools);
+    Platform.assertNotNullOrUndefined(context.chrome.devtools);
     const resources =
         await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
     assert.deepStrictEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
@@ -546,7 +546,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
             Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
 
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assert.exists(networkManager);
+    Platform.assertNotNullOrUndefined(networkManager);
     createRequest(networkManager, frameId, 'blocked-url-request-id' as Protocol.Network.RequestId, blockedUrl);
     createRequest(networkManager, frameId, 'allowed-url-request-id' as Protocol.Network.RequestId, allowedUrl);
 
@@ -567,7 +567,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await createUISourceCode(project, blockedUrl);
     await createUISourceCode(project, allowedUrl);
 
-    assert.exists(context.chrome.devtools);
+    Platform.assertNotNullOrUndefined(context.chrome.devtools);
     const resources =
         await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
     assert.deepStrictEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);

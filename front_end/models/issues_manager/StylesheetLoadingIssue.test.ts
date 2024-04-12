@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Issues from '../../panels/issues/issues.js';
@@ -132,7 +133,7 @@ describeWithLocale('StylesheetLoadingIssue', () => {
         [issueDetails[2].sourceCodeLocation, issueDetails[3].sourceCodeLocation]);
     assert.deepStrictEqual(Array.from(aggregatedIssues[0].requests()), []);
     const {url, requestId} = issueDetails[3].failedRequestInfo as Protocol.Audits.FailedRequestInfo;
-    assert.exists(requestId);
+    Platform.assertNotNullOrUndefined(requestId);
     assert.deepStrictEqual(Array.from(aggregatedIssues[1].requests()), [{url, requestId}]);
   });
 });

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -63,7 +64,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       target = targetFactory();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       model = target.model(SDK.WebAuthnModel.WebAuthnModel) as SDK.WebAuthnModel.WebAuthnModel;
-      assert.exists(model);
+      assertNotNullOrUndefined(model);
       panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
     });
 

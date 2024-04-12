@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -55,7 +55,7 @@ describe('CSSAngle', () => {
     renderElementIntoDOM(component);
     component.data = initialData;
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertPopoverClosed(component.shadowRoot);
     togglePopover(component.shadowRoot);
@@ -75,7 +75,7 @@ describe('CSSAngle', () => {
       isPopoverOpen = popoverToggledEvent.data.open;
     });
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertPopoverClosed(component.shadowRoot);
     togglePopover(component.shadowRoot);
@@ -91,7 +91,7 @@ describe('CSSAngle', () => {
     renderElementIntoDOM(component);
     component.data = initialData;
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let cssAngleText = initialData.angleText;
     component.addEventListener('unitchanged', (event: Event) => {
@@ -113,7 +113,7 @@ describe('CSSAngle', () => {
     renderElementIntoDOM(component);
     component.data = initialData;
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let cssAngleText = initialData.angleText;
     component.addEventListener('valuechanged', (event: Event) => {
@@ -148,7 +148,7 @@ describe('CSSAngle', () => {
         assert.strictEqual(popoverEvent.data.open, shouldPopoverEventBeOpen);
       });
 
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       assertPopoverClosed(component.shadowRoot);
       shouldPopoverEventBeOpen = true;

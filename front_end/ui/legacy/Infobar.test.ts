@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -26,11 +27,11 @@ describe('Infobar', () => {
     renderElementIntoDOM(component.element);
 
     const infobar = component.element.shadowRoot!.querySelector('.infobar');
-    assert.instanceOf(infobar, HTMLDivElement);
+    assertElement(infobar, HTMLDivElement);
     const learnMoreButton = infobar.querySelector('button.text-button');
-    assert.instanceOf(learnMoreButton, HTMLButtonElement);
+    assertElement(learnMoreButton, HTMLButtonElement);
     const detailsRow = infobar.querySelector('.infobar-details-rows');
-    assert.instanceOf(detailsRow, HTMLDivElement);
+    assertElement(detailsRow, HTMLDivElement);
 
     assert.isTrue(detailsRow.classList.contains('hidden'), 'Details row should initially be hidden');
     assert.strictEqual(detailsRow.textContent, messageText);

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -304,7 +305,7 @@ describeWithMockConnection('NetworkLog', () => {
 
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       const frame = {
         url: 'http://example.com/',
         backForwardCacheDetails: {},
@@ -338,7 +339,7 @@ describeWithMockConnection('NetworkLog', () => {
       Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').set(false);
       const target = createTarget();
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-      assert.exists(networkManager);
+      assertNotNullOrUndefined(networkManager);
       networkLog = Logs.NetworkLog.NetworkLog.instance();
       const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
 
@@ -360,7 +361,7 @@ describeWithMockConnection('NetworkLog', () => {
     });
 
     it('discards requests with mismatched loaderId on navigation', () => {
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged,
           {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
@@ -368,7 +369,7 @@ describeWithMockConnection('NetworkLog', () => {
     });
 
     it('does not discard requests on prerender activation', () => {
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged,
           {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});

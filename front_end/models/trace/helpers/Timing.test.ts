@@ -138,7 +138,7 @@ describeWithEnvironment('Timing helpers', () => {
         throw new Error('Could not find LCP event');
       }
       // Ensure we are testing the navigationID path!
-      assert.exists(lcpEvent.args.data?.navigationId);
+      assert.isDefined(lcpEvent.args.data?.navigationId);
       const adjustedTime = TraceModel.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           lcpEvent,
           traceParsedData.Meta.traceBounds,

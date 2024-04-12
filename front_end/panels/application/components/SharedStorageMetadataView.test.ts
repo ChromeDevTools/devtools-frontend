@@ -4,6 +4,8 @@
 
 import type * as Protocol from '../../../generated/protocol.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -36,7 +38,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     });
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
@@ -53,7 +55,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     });
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
@@ -79,7 +81,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const component = makeView('', {} as Protocol.Storage.SharedStorageMetadata);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
@@ -116,7 +118,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     await coordinator.done({waitForWork: true});
 
     const resetButtonComponent = component.shadowRoot!.querySelector('devtools-button');
-    assert.instanceOf(resetButtonComponent, HTMLElement);
+    assertElement(resetButtonComponent, HTMLElement);
     dispatchClickEvent(resetButtonComponent);
 
     assert.isTrue(resetBudgetHandlerSpy.calledOnce);

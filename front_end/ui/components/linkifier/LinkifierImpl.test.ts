@@ -11,6 +11,8 @@ import * as Linkifier from './linkifier.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   getEventPromise,
   renderElementIntoDOM,
@@ -23,9 +25,9 @@ describeWithLocale('Linkifier', () => {
     };
     renderElementIntoDOM(component);
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
-    assert.instanceOf(link, HTMLAnchorElement);
+    assertElement(link, HTMLAnchorElement);
     assert.strictEqual(link.innerText, 'example.com');
   });
 
@@ -45,9 +47,9 @@ describeWithLocale('Linkifier', () => {
     };
     renderElementIntoDOM(component);
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
-    assert.instanceOf(link, HTMLAnchorElement);
+    assertElement(link, HTMLAnchorElement);
     assert.strictEqual(link.innerText, 'example.com:2');
   });
 
@@ -66,9 +68,9 @@ describeWithLocale('Linkifier', () => {
     });
     renderElementIntoDOM(component);
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
-    assert.instanceOf(link, HTMLAnchorElement);
+    assertElement(link, HTMLAnchorElement);
 
     const clickEventPromise = getEventPromise<Linkifier.Linkifier.LinkifierClick>(component, 'linkifieractivated');
     dispatchClickEvent(link, {

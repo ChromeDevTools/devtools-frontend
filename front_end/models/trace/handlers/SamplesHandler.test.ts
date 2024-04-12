@@ -42,15 +42,15 @@ describeWithEnvironment('SamplesHandler', function() {
 
     const profilesFirstProcess = data.profilesInProcess.get(firstProcessId);
     assert.strictEqual(profilesFirstProcess?.size, 1);
-    assert.exists(profilesFirstProcess?.get(threadId));
+    assert.isDefined(profilesFirstProcess?.get(threadId));
 
     const profilesSecondProcess = data.profilesInProcess.get(secondProcessId);
     assert.strictEqual(profilesSecondProcess?.size, 1);
-    assert.exists(profilesSecondProcess?.get(threadId));
+    assert.isDefined(profilesSecondProcess?.get(threadId));
 
     const profilesThirdProcess = data.profilesInProcess.get(thirdProcessId);
     assert.strictEqual(profilesThirdProcess?.size, 1);
-    assert.exists(profilesThirdProcess?.get(threadId));
+    assert.isDefined(profilesThirdProcess?.get(threadId));
   });
   describe('profile calls building', () => {
     const pid = TraceModel.Types.TraceEvents.ProcessID(0);

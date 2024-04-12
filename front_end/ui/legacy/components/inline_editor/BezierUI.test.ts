@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertElement} from '../../../../testing/DOMHelpers.js';
 import * as UI from '../../legacy.js';
 
 import * as InlineEditor from './inline_editor.js';
@@ -85,7 +86,7 @@ describe('BezierUI', () => {
     assert.strictEqual(svg.getAttribute('width'), '10', 'curve SVG\'s width was not set up correctly');
     assert.strictEqual(svg.getAttribute('height'), '10', 'curve SVG\'s height was not set up correctly');
     const linearLine = svg.querySelector('.linear-line');
-    assert.instanceOf(linearLine, SVGLineElement);
+    assertElement(linearLine, SVGLineElement);
     assert.exists(linearLine, 'Bezier curve\'s linear line did not exist');
     assert.strictEqual(linearLine.getAttribute('x1'), '3', 'Bezier curve\'s linear line had wrong x1');
     assert.strictEqual(linearLine.getAttribute('y1'), '6', 'Bezier curve\'s linear line had wrong y1');
@@ -93,7 +94,7 @@ describe('BezierUI', () => {
     assert.strictEqual(linearLine.getAttribute('y2'), '4', 'Bezier curve\'s linear line had wrong y2');
 
     const path = svg.querySelector('.bezier-path');
-    assert.instanceOf(path, SVGPathElement);
+    assertElement(path, SVGPathElement);
     assert.exists(path, 'Bezier curve\'s path did not exist');
     assert.strictEqual(path.getAttribute('d'), 'M3,6 C7, 4 15, -2 7, 4', 'Bezier curve\'s path had wrong d');
 

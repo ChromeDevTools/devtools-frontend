@@ -6,6 +6,8 @@ import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchCopyEvent,
   dispatchInputEvent,
   dispatchKeyDownEvent,
@@ -32,26 +34,26 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
   assert.isTrue(scrollIntoViewSpy.notCalled);
   component.data = {header};
   await coordinator.done();
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
 
   let nameEditable: HTMLSpanElement|null = null;
   const nameEditableComponent = component.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>(
       '.header-name devtools-editable-span');
   if (nameEditableComponent) {
-    assert.instanceOf(nameEditableComponent, HTMLElement);
-    assert.isNotNull(nameEditableComponent.shadowRoot);
+    assertElement(nameEditableComponent, HTMLElement);
+    assertShadowRoot(nameEditableComponent.shadowRoot);
     nameEditable = nameEditableComponent.shadowRoot.querySelector('.editable');
-    assert.instanceOf(nameEditable, HTMLSpanElement);
+    assertElement(nameEditable, HTMLSpanElement);
   }
 
   let valueEditable: HTMLSpanElement|null = null;
   const valueEditableComponent = component.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>(
       '.header-value devtools-editable-span');
   if (valueEditableComponent) {
-    assert.instanceOf(valueEditableComponent, HTMLElement);
-    assert.isNotNull(valueEditableComponent.shadowRoot);
+    assertElement(valueEditableComponent, HTMLElement);
+    assertShadowRoot(valueEditableComponent.shadowRoot);
     valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
-    assert.instanceOf(valueEditable, HTMLSpanElement);
+    assertElement(valueEditable, HTMLSpanElement);
   }
 
   return {component, nameEditable, valueEditable, scrollIntoViewSpy};
@@ -69,12 +71,12 @@ describeWithEnvironment('HeaderSectionRow', () => {
       value: 'someHeaderValue',
     };
     const {component, scrollIntoViewSpy} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     assert.isTrue(scrollIntoViewSpy.notCalled);
 
     const spy = sinon.spy(Host.userMetrics, 'actionTaken');
     const headerValue = component.shadowRoot.querySelector('.header-value');
-    assert.instanceOf(headerValue, HTMLElement);
+    assertElement(headerValue, HTMLElement);
 
     assert.isTrue(spy.notCalled);
     dispatchCopyEvent(headerValue);
@@ -104,15 +106,15 @@ describeWithEnvironment('HeaderSectionRow', () => {
       },
     };
     const {component} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const headerName = component.shadowRoot.querySelector('.header-name');
-    assert.instanceOf(headerName, HTMLDivElement);
+    assertElement(headerName, HTMLDivElement);
     const regex = /^\s*not-set\s*cross-origin-resource-policy:\s*$/;
     assert.isTrue(regex.test(headerName.textContent || ''));
 
     const headerValue = component.shadowRoot.querySelector('.header-value');
-    assert.instanceOf(headerValue, HTMLDivElement);
+    assertElement(headerValue, HTMLDivElement);
     assert.strictEqual(headerValue.textContent?.trim(), '');
 
     assert.strictEqual(
@@ -131,14 +133,14 @@ describeWithEnvironment('HeaderSectionRow', () => {
       value: 'CJa2yQEIpLbJAQiTocsB',
     };
     const {component} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const headerName = component.shadowRoot.querySelector('.header-name');
-    assert.instanceOf(headerName, HTMLDivElement);
+    assertElement(headerName, HTMLDivElement);
     assert.strictEqual(headerName.textContent?.trim(), 'x-client-data:');
 
     const headerValue = component.shadowRoot.querySelector('.header-value');
-    assert.instanceOf(headerValue, HTMLDivElement);
+    assertElement(headerValue, HTMLDivElement);
     assert.isTrue(headerValue.classList.contains('flex-columns'));
 
     assert.isTrue(
@@ -158,18 +160,18 @@ describeWithEnvironment('HeaderSectionRow', () => {
           [Protocol.Network.SetCookieBlockedReason.SecureOnly, Protocol.Network.SetCookieBlockedReason.OverwriteSecure],
     };
     const {component} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const headerName = component.shadowRoot.querySelector('.header-name');
-    assert.instanceOf(headerName, HTMLDivElement);
+    assertElement(headerName, HTMLDivElement);
     assert.strictEqual(headerName.textContent?.trim(), 'set-cookie:');
 
     const headerValue = component.shadowRoot.querySelector('.header-value');
-    assert.instanceOf(headerValue, HTMLDivElement);
+    assertElement(headerValue, HTMLDivElement);
     assert.strictEqual(headerValue.textContent?.trim(), 'secure=only; Secure');
 
     const icon = component.shadowRoot.querySelector('devtools-icon');
-    assert.instanceOf(icon, HTMLElement);
+    assertElement(icon, HTMLElement);
 
     assert.strictEqual(
         icon.title,
@@ -186,9 +188,9 @@ describeWithEnvironment('HeaderSectionRow', () => {
       highlight: true,
     };
     const {component, scrollIntoViewSpy} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const headerRowElement = component.shadowRoot.querySelector('.row.header-highlight');
-    assert.instanceOf(headerRowElement, HTMLDivElement);
+    assertElement(headerRowElement, HTMLDivElement);
     assert.isTrue(scrollIntoViewSpy.calledOnce);
   });
 
@@ -205,7 +207,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const editedHeaderValue = 'new value for header';
 
     const {component, nameEditable, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
     let headerNameFromEvent = '';
@@ -216,7 +218,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
       headerNameFromEvent = event.headerName;
     });
 
-    assert.instanceOf(nameEditable, HTMLSpanElement);
+    assertElement(nameEditable, HTMLSpanElement);
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
     nameEditable.focus();
     nameEditable.innerText = editedHeaderName;
@@ -229,7 +231,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.strictEqual(headerValueFromEvent, originalHeaderValue);
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
-    assert.instanceOf(valueEditable, HTMLSpanElement);
+    assertElement(valueEditable, HTMLSpanElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
     dispatchInputEvent(
@@ -277,14 +279,14 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, nameEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerEditedEventCount = 0;
     component.addEventListener('headeredited', () => {
       headerEditedEventCount++;
     });
 
-    assert.instanceOf(nameEditable, HTMLElement);
+    assertElement(nameEditable, HTMLElement);
     nameEditable.focus();
     nameEditable.innerText = '';
     nameEditable.blur();
@@ -303,14 +305,14 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let eventCount = 0;
     component.addEventListener('headeredited', () => {
       eventCount++;
     });
 
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertElement(valueEditable, HTMLElement);
     assert.strictEqual(valueEditable.innerText, originalHeaderValue);
     valueEditable.focus();
     valueEditable.innerText = 'new value for header';
@@ -331,7 +333,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const editedHeaderValue = 'new value for header';
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
     let eventCount = 0;
@@ -340,7 +342,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
       eventCount++;
     });
 
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertElement(valueEditable, HTMLElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
     dispatchKeyDownEvent(valueEditable, {key: 'Enter', bubbles: true});
@@ -357,14 +359,14 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
     component.addEventListener('headeredited', event => {
       headerValueFromEvent = event.headerValue;
     });
 
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertElement(valueEditable, HTMLElement);
     valueEditable.focus();
     const dt = new DataTransfer();
     dt.setData('text/plain', 'foo\nbar');
@@ -385,8 +387,8 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertShadowRoot(component.shadowRoot);
+    assertElement(valueEditable, HTMLElement);
     const row = component.shadowRoot.querySelector('.row');
     assert.isFalse(row?.classList.contains('header-overridden'));
     assert.isTrue(row?.classList.contains('header-highlight'));
@@ -414,8 +416,8 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertShadowRoot(component.shadowRoot);
+    assertElement(valueEditable, HTMLElement);
     const row = component.shadowRoot.querySelector('.row');
     assert.isFalse(row?.classList.contains('header-overridden'));
 
@@ -440,10 +442,10 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component, nameEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
-    assert.instanceOf(nameEditable, HTMLElement);
+    assertShadowRoot(component.shadowRoot);
+    assertElement(nameEditable, HTMLElement);
     const row = component.shadowRoot.querySelector('.row');
-    assert.instanceOf(row, HTMLDivElement);
+    assertElement(row, HTMLDivElement);
     assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
@@ -451,7 +453,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     nameEditable.innerText = '*';
     dispatchInputEvent(nameEditable, {inputType: 'insertText', data: '*', bubbles: true, composed: true});
     await coordinator.done();
-    assert.instanceOf(row.querySelector('devtools-icon.disallowed-characters'), HTMLElement);
+    assertElement(row.querySelector('devtools-icon.disallowed-characters'), HTMLElement);
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
@@ -478,7 +480,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     };
 
     const {component} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
     let headerNameFromEvent = '';
@@ -511,7 +513,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const editedHeaderValue = ' new value for header ';
 
     const {component, nameEditable, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
     let headerNameFromEvent = '';
@@ -522,7 +524,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
       headerNameFromEvent = event.headerName;
     });
 
-    assert.instanceOf(nameEditable, HTMLElement);
+    assertElement(nameEditable, HTMLElement);
     nameEditable.focus();
     nameEditable.innerText = editedHeaderName;
     nameEditable.blur();
@@ -531,7 +533,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.strictEqual(headerNameFromEvent, editedHeaderName.trim());
     assert.strictEqual(headerValueFromEvent, originalHeaderValue);
 
-    assert.instanceOf(valueEditable, HTMLElement);
+    assertElement(valueEditable, HTMLElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
     valueEditable.blur();

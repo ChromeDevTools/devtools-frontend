@@ -6,6 +6,8 @@ import * as Common from '../../../core/common/common.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {
+  assertElement,
+  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
@@ -23,7 +25,7 @@ const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIcon
   const component = new IssueCounter.IssueLinkIcon.IssueLinkIcon();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
   return {component, shadowRoot: component.shadowRoot};
 };
@@ -33,9 +35,9 @@ export const extractElements = (shadowRoot: ShadowRoot): {
   button: HTMLButtonElement,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
-  assert.instanceOf(icon, IconButton.Icon.Icon);
+  assertElement(icon, IconButton.Icon.Icon);
   const button = shadowRoot.querySelector('button');
-  assert.instanceOf(button, HTMLButtonElement);
+  assertElement(button, HTMLButtonElement);
   return {icon, button};
 };
 

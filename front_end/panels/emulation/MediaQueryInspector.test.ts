@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -43,7 +44,7 @@ describeWithMockConnection('MediaQueryInspector', () => {
       assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 0);
 
       const cssModel = target.model(SDK.CSSModel.CSSModel);
-      assert.exists(cssModel);
+      assertNotNullOrUndefined(cssModel);
       const CSS_MEDIA = {
         text: 'foo',
         source: Protocol.CSS.CSSMediaSource.MediaRule,

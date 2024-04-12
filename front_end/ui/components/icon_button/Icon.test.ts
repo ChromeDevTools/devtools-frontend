@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
+  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 
@@ -10,9 +12,9 @@ import * as IconButton from './icon_button.js';
 
 function getSpanElement(icon: IconButton.Icon.Icon): HTMLSpanElement {
   const {shadowRoot} = icon;
-  assert.isNotNull(shadowRoot);
+  assertShadowRoot(shadowRoot);
   const span = shadowRoot.querySelector('span');
-  assert.instanceOf(span, HTMLSpanElement);
+  assertElement(span, HTMLSpanElement);
   return span;
 }
 

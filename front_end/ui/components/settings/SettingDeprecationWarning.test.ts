@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 
 import * as SettingComponents from './settings.js';
@@ -40,25 +41,25 @@ describe('SettingDeprecationWarning', () => {
   it('is clickable when disabled and associated with an experiment', () => {
     Root.Runtime.experiments.register(EXPERIMENT_NAME, EXPERIMENT_NAME);
     const {element} = createWarningElement({disabled: true, warning, experiment: EXPERIMENT_NAME});
-    assert.exists(element);
+    assertNotNullOrUndefined(element);
     assert.include(Array.from(element.classList.values()), 'clickable');
   });
 
   it('is not clickable when not disabled and associated with an experiment', () => {
     Root.Runtime.experiments.register(EXPERIMENT_NAME, EXPERIMENT_NAME);
     const {element} = createWarningElement({disabled: false, warning, experiment: EXPERIMENT_NAME});
-    assert.exists(element);
+    assertNotNullOrUndefined(element);
     assert.notInclude(Array.from(element.classList.values()), 'clickable');
   });
 
   it('reveals the associated experiment on click', () => {
     Root.Runtime.experiments.register(EXPERIMENT_NAME, EXPERIMENT_NAME);
     const experiment = Root.Runtime.experiments.allConfigurableExperiments().find(e => e.name === EXPERIMENT_NAME);
-    assert.exists(experiment);
+    assertNotNullOrUndefined(experiment);
     const {element} = createWarningElement({disabled: true, warning, experiment: EXPERIMENT_NAME});
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
 
-    assert.exists(element);
+    assertNotNullOrUndefined(element);
     element.click();
 
     assert.isTrue(

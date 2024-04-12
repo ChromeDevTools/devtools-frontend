@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -57,7 +58,7 @@ describeWithLocale('RequestPreviewView', () => {
     const component = renderPreviewView(request);
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
-    assert.exists(frame);
+    assertNotNullOrUndefined(frame);
 
     assert.notInclude(frame.src, 'charset=utf-8');
     assert.notInclude(frame.src, ' base64');
@@ -81,7 +82,7 @@ describeWithLocale('RequestPreviewView', () => {
     const component = renderPreviewView(request);
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
-    assert.exists(frame);
+    assertNotNullOrUndefined(frame);
 
     assert.include(frame.src, 'charset=utf-16');
     assert.include(frame.src, 'base64');

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -24,7 +24,7 @@ describeWithLocale('AccessibilityTreeNode', () => {
     };
 
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assert.strictEqual(component.shadowRoot.textContent, 'NodeRole\xa0"NodeName"');
   });
@@ -42,7 +42,7 @@ describeWithLocale('AccessibilityTreeNode', () => {
     };
     await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assert.strictEqual(component.shadowRoot.textContent, 'Ignored');
   });

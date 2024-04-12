@@ -9,6 +9,8 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   dispatchCopyEvent,
   dispatchKeyDownEvent,
@@ -82,7 +84,7 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
 }
 
 const getTextFromRow = (row: HTMLElement) => {
-  assert.isNotNull(row.shadowRoot);
+  assertShadowRoot(row.shadowRoot);
   const headerNameElement = row.shadowRoot.querySelector('.header-name');
   const headerName = headerNameElement?.textContent?.trim() || '';
   const headerValueElement = row.shadowRoot.querySelector('.header-value');
@@ -93,8 +95,8 @@ const getTextFromRow = (row: HTMLElement) => {
 const getRowsFromCategory = (category: HTMLElement) => {
   const slot = getElementWithinComponent(category, 'slot', HTMLSlotElement);
   const section = slot.assignedElements()[0];
-  assert.instanceOf(section, HTMLElement);
-  assert.isNotNull(section.shadowRoot);
+  assertElement(section, HTMLElement);
+  assertShadowRoot(section.shadowRoot);
   const rows = section.shadowRoot.querySelectorAll('devtools-header-section-row');
   return Array.from(rows);
 };
@@ -126,10 +128,10 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('renders the General section', async () => {
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
-    assert.instanceOf(generalCategory, HTMLElement);
+    assertElement(generalCategory, HTMLElement);
 
     const names = getCleanTextContentFromElements(generalCategory, '.header-name');
     assert.deepEqual(names, [
@@ -158,7 +160,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     request.setFromMemoryCache();
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const statusCodeSection = component.shadowRoot.querySelector('.status-with-comment');
     assert.strictEqual('200 OK (from memory cache)', statusCodeSection?.textContent);
@@ -166,16 +168,16 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('renders request and response headers', async () => {
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
+    assertElement(responseHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(responseHeadersCategory),
         [['age:', '0'], ['cache-control:', 'max-age=600'], ['content-encoding:', 'gzip'], ['content-length:', '661']]);
 
     const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
-    assert.instanceOf(requestHeadersCategory, HTMLElement);
+    assertElement(requestHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(requestHeadersCategory),
         [[':method:', 'GET'], ['accept-encoding:', 'gzip, deflate, br'], ['cache-control:', 'no-cache']]);
@@ -183,23 +185,23 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('renders early hints headers', async () => {
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const earlyHintsCategory = component.shadowRoot.querySelector('[aria-label="Early Hints Headers"]');
-    assert.instanceOf(earlyHintsCategory, HTMLElement);
+    assertElement(earlyHintsCategory, HTMLElement);
     assert.deepStrictEqual(getRowsTextFromCategory(earlyHintsCategory), [['link:', '<src="/script.js" as="script">']]);
   });
 
   it('emits UMA event when a header value is being copied', async () => {
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
-    assert.instanceOf(generalCategory, HTMLElement);
+    assertElement(generalCategory, HTMLElement);
 
     const spy = sinon.spy(Host.userMetrics, 'actionTaken');
     const headerValue = generalCategory.querySelector('.header-value');
-    assert.instanceOf(headerValue, HTMLElement);
+    assertElement(headerValue, HTMLElement);
 
     assert.isTrue(spy.notCalled);
     dispatchCopyEvent(headerValue);
@@ -208,17 +210,17 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('can switch between source and parsed view', async () => {
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
+    assertElement(responseHeadersCategory, HTMLElement);
 
     // Switch to viewing source view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
     await coordinator.done();
 
     const rawHeadersDiv = responseHeadersCategory.querySelector('.raw-headers');
-    assert.instanceOf(rawHeadersDiv, HTMLDivElement);
+    assertElement(rawHeadersDiv, HTMLDivElement);
     const rawTextContent = rawHeadersDiv.textContent?.replace(/ {2,}/g, '');
     assert.strictEqual(
         rawTextContent,
@@ -244,22 +246,22 @@ describeWithMockConnection('RequestHeadersView', () => {
       ...defaultRequest,
       responseHeadersText: loremIpsum.repeat(10),
     } as unknown as SDK.NetworkRequest.NetworkRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
+    assertElement(responseHeadersCategory, HTMLElement);
 
     // Switch to viewing source view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
     await coordinator.done();
 
     const rawHeadersDiv = responseHeadersCategory.querySelector('.raw-headers');
-    assert.instanceOf(rawHeadersDiv, HTMLDivElement);
+    assertElement(rawHeadersDiv, HTMLDivElement);
     const shortenedRawTextContent = rawHeadersDiv.textContent?.replace(/ {2,}/g, '');
     assert.strictEqual(shortenedRawTextContent?.length, 2896);
 
     const showMoreButton = responseHeadersCategory.querySelector('devtools-button');
-    assert.instanceOf(showMoreButton, HTMLElement);
+    assertElement(showMoreButton, HTMLElement);
     assert.strictEqual(showMoreButton.textContent, 'Show more');
     showMoreButton.click();
     await coordinator.done();
@@ -279,9 +281,9 @@ describeWithMockConnection('RequestHeadersView', () => {
     request.responseHeaders = [{name: 'originalName', value: 'originalValue'}];
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
+    assertElement(responseHeadersCategory, HTMLElement);
 
     const spy = sinon.spy(component, 'render');
     assert.isTrue(spy.notCalled);
@@ -305,10 +307,10 @@ describeWithMockConnection('RequestHeadersView', () => {
     ];
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
+    assertElement(responseHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(responseHeadersCategory),
         [['devtools:', 'rock'], ['foo:', 'bar'], ['highlightme:', 'some value']]);
@@ -331,10 +333,10 @@ describeWithMockConnection('RequestHeadersView', () => {
     ]);
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
-    assert.instanceOf(requestHeadersCategory, HTMLElement);
+    assertElement(requestHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(requestHeadersCategory),
         [['devtools:', 'rock'], ['foo:', 'bar'], ['highlightme:', 'some value']]);
@@ -355,19 +357,19 @@ describeWithMockConnection('RequestHeadersView', () => {
     await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
-    assert.isNotNull(responseHeadersCategory.shadowRoot);
+    assertElement(responseHeadersCategory, HTMLElement);
+    assertShadowRoot(responseHeadersCategory.shadowRoot);
 
     const linkElements = responseHeadersCategory.shadowRoot.querySelectorAll('x-link');
     assert.strictEqual(linkElements.length, 2);
 
-    assert.instanceOf(linkElements[0], HTMLElement);
+    assertElement(linkElements[0], HTMLElement);
     assert.strictEqual(linkElements[0].title, 'https://goo.gle/devtools-override');
 
-    assert.instanceOf(linkElements[1], HTMLElement);
+    assertElement(linkElements[1], HTMLElement);
     assert.strictEqual(linkElements[1].textContent?.trim(), Persistence.NetworkPersistenceManager.HEADERS_FILENAME);
   });
 
@@ -381,11 +383,11 @@ describeWithMockConnection('RequestHeadersView', () => {
     await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
     component = await renderHeadersComponent(defaultRequest);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assert.instanceOf(responseHeadersCategory, HTMLElement);
-    assert.isNotNull(responseHeadersCategory.shadowRoot);
+    assertElement(responseHeadersCategory, HTMLElement);
+    assertShadowRoot(responseHeadersCategory.shadowRoot);
 
     const linkElement = responseHeadersCategory.shadowRoot.querySelector('x-link');
     assert.isNull(linkElement);
@@ -410,23 +412,23 @@ describeWithMockConnection('RequestHeadersView', () => {
     ]);
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const responseHeaderSection = component.shadowRoot.querySelector('devtools-response-header-section');
-    assert.instanceOf(responseHeaderSection, HTMLElement);
-    assert.isNotNull(responseHeaderSection.shadowRoot);
+    assertElement(responseHeaderSection, HTMLElement);
+    assertShadowRoot(responseHeaderSection.shadowRoot);
     const headerRow = responseHeaderSection.shadowRoot.querySelector('devtools-header-section-row');
-    assert.instanceOf(headerRow, HTMLElement);
-    assert.isNotNull(headerRow.shadowRoot);
+    assertElement(headerRow, HTMLElement);
+    assertShadowRoot(headerRow.shadowRoot);
 
     const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean) => {
       assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
       const valueEditableComponent =
           shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-value devtools-editable-span');
       if (isEditable) {
-        assert.instanceOf(valueEditableComponent, HTMLElement);
-        assert.isNotNull(valueEditableComponent.shadowRoot);
+        assertElement(valueEditableComponent, HTMLElement);
+        assertShadowRoot(valueEditableComponent.shadowRoot);
         const valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
-        assert.instanceOf(valueEditable, HTMLSpanElement);
+        assertElement(valueEditable, HTMLSpanElement);
         assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
       } else {
         assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
@@ -437,7 +439,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     checkRow(headerRow.shadowRoot, 'foo:', 'bar', false);
 
     const pencilButton = headerRow.shadowRoot.querySelector('.enable-editing');
-    assert.instanceOf(pencilButton, HTMLElement);
+    assertElement(pencilButton, HTMLElement);
     pencilButton.click();
     await coordinator.done();
 
@@ -460,16 +462,16 @@ describeWithMockConnection('RequestHeadersView', () => {
     await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, []);
 
     component = await renderHeadersComponent(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const responseHeaderSection = component.shadowRoot.querySelector('devtools-response-header-section');
-    assert.instanceOf(responseHeaderSection, HTMLElement);
-    assert.isNotNull(responseHeaderSection.shadowRoot);
+    assertElement(responseHeaderSection, HTMLElement);
+    assertShadowRoot(responseHeaderSection.shadowRoot);
     const headerRow = responseHeaderSection.shadowRoot.querySelector('devtools-header-section-row');
-    assert.instanceOf(headerRow, HTMLElement);
-    assert.isNotNull(headerRow.shadowRoot);
+    assertElement(headerRow, HTMLElement);
+    assertShadowRoot(headerRow.shadowRoot);
 
     const pencilButton = headerRow.shadowRoot.querySelector('.enable-editing');
-    assert.instanceOf(pencilButton, HTMLElement);
+    assertElement(pencilButton, HTMLElement);
 
     assert.isFalse(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
@@ -493,7 +495,7 @@ describeWithEnvironment('RequestHeadersView\'s Category', () => {
       title: 'General' as Common.UIString.LocalizedString,
       loggingContext: 'details-general',
     };
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
 
     const details = getElementWithinComponent(component, 'details', HTMLDetailsElement);
@@ -528,7 +530,7 @@ describeWithEnvironment('RequestHeadersView\'s Category', () => {
       checked: false,
       loggingContext: 'details-response-headers',
     };
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     component.addEventListener(NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent.eventName, () => {
       eventCounter += 1;

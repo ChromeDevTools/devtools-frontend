@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -84,7 +85,7 @@ describeWithMockConnection('NavigatorView', () => {
     await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
     resourceTreeModel.frameAttached(mainFrameId, null);
     const childFrame = resourceTreeModel.frameAttached(childFrameId, mainFrameId);
-    assert.exists(childFrame);
+    assertNotNullOrUndefined(childFrame);
     const {project} = addResourceAndUISourceCode(url, childFrame, '', 'text/html', resourceTreeModel);
 
     const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});

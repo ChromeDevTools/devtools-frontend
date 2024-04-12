@@ -4,6 +4,7 @@
 
 import * as Protocol from '../../../../generated/protocol.js';
 import {
+  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
@@ -19,7 +20,7 @@ async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetail
   const component = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
 
   return component;
@@ -30,7 +31,7 @@ describeWithEnvironment('RuleSetDetailsView', () => {
     const data = null;
 
     const component = await renderRuleSetDetailsView(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     assert.strictEqual(component.shadowRoot.textContent, '');
   });
 

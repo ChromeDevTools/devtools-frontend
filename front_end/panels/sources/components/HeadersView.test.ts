@@ -6,6 +6,8 @@ import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchFocusEvent,
   dispatchFocusOutEvent,
   dispatchInputEvent,
@@ -80,7 +82,7 @@ describe('HeadersView', () => {
       } as unknown as Workspace.UISourceCode.UISourceCode,
     };
     renderElementIntoDOM(editor);
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     await coordinator.done();
     return editor;
   }
@@ -122,7 +124,7 @@ describe('HeadersView', () => {
     await coordinator.done();
     const editor = editorWrapper.getComponent();
     renderElementIntoDOM(editor);
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     await coordinator.done();
     workspace.removeProject(project);
     return editor;
@@ -142,7 +144,7 @@ describe('HeadersView', () => {
   async function pressButton(shadowRoot: ShadowRoot, rowIndex: number, selector: string): Promise<void> {
     const rowElements = shadowRoot.querySelectorAll('.row');
     const button = rowElements[rowIndex].querySelector(selector);
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await coordinator.done();
   }
@@ -190,7 +192,7 @@ describe('HeadersView', () => {
       } as Workspace.UISourceCode.UISourceCode,
     };
     renderElementIntoDOM(editor);
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     await coordinator.done();
 
     const errorHeader = editor.shadowRoot.querySelector('.error-header');
@@ -199,7 +201,7 @@ describe('HeadersView', () => {
 
   it('displays data and allows editing', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
 
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
@@ -211,11 +213,11 @@ describe('HeadersView', () => {
     ]);
 
     const addRuleButton = editor.shadowRoot.querySelector('.add-block');
-    assert.instanceOf(addRuleButton, HTMLElement);
+    assertElement(addRuleButton, HTMLElement);
     assert.strictEqual(addRuleButton.textContent?.trim(), 'Add override rule');
 
     const learnMoreLink = editor.shadowRoot.querySelector('.learn-more-row x-link');
-    assert.instanceOf(learnMoreLink, HTMLElement);
+    assertElement(learnMoreLink, HTMLElement);
     assert.strictEqual(learnMoreLink.title, 'https://goo.gle/devtools-override');
 
     const editables = editor.shadowRoot.querySelectorAll('.editable');
@@ -237,7 +239,7 @@ describe('HeadersView', () => {
 
   it('resets edited value to previous state on Escape key', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:DevTools Unit Test Server');
 
     const editables = editor.shadowRoot.querySelectorAll('.editable');
@@ -269,7 +271,7 @@ describe('HeadersView', () => {
 
   it('selects the whole content when clicking on an editable field', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
 
     let element = editables[0] as HTMLElement;
@@ -287,7 +289,7 @@ describe('HeadersView', () => {
 
   it('un-selects the content when an editable field loses focus', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
 
     const element = editables[0] as HTMLElement;
@@ -299,7 +301,7 @@ describe('HeadersView', () => {
 
   it('handles pressing \'Enter\' key by removing focus and moving it to the next field if possible', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
 
@@ -324,7 +326,7 @@ describe('HeadersView', () => {
 
   it('sets empty \'ApplyTo\' to \'*\'', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
 
@@ -342,7 +344,7 @@ describe('HeadersView', () => {
 
   it('removes the entire header when the header name is deleted', async () => {
     const editor = await renderEditorWithinWrapper();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
       'Apply to:*',
@@ -381,7 +383,7 @@ describe('HeadersView', () => {
   it('allows adding headers', async () => {
     const editor = await renderEditorWithinWrapper();
     await coordinator.done();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
 
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
@@ -425,7 +427,7 @@ describe('HeadersView', () => {
   it('allows adding "ApplyTo"-blocks', async () => {
     const editor = await renderEditorWithinWrapper();
     await coordinator.done();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
 
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
@@ -437,7 +439,7 @@ describe('HeadersView', () => {
     ]);
 
     const button = editor.shadowRoot.querySelector('.add-block');
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await coordinator.done();
 
@@ -475,7 +477,7 @@ describe('HeadersView', () => {
   it('allows removing headers', async () => {
     const editor = await renderEditorWithinWrapper();
     await coordinator.done();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
 
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
@@ -519,7 +521,7 @@ describe('HeadersView', () => {
   it('allows removing "ApplyTo"-blocks', async () => {
     const editor = await renderEditorWithinWrapper();
     await coordinator.done();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
 
     let rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
@@ -544,7 +546,7 @@ describe('HeadersView', () => {
 
   it('removes formatting for pasted content', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:*');
@@ -564,7 +566,7 @@ describe('HeadersView', () => {
 
   it('shows context menu', async () => {
     const editor = await renderEditor();
-    assert.isNotNull(editor.shadowRoot);
+    assertShadowRoot(editor.shadowRoot);
     const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     editor.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true}));
     assert.isTrue(contextMenuShow.calledOnce);

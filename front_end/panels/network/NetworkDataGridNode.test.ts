@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {assertElement} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Network from './network.js';
@@ -27,7 +28,7 @@ describeWithEnvironment('NetworkLogView', () => {
     networkRequestNode.renderCell(el, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Request headers are overridden"]');
-    assert.instanceOf(marker, HTMLDivElement);
+    assertElement(marker, HTMLDivElement);
     assert.isNotNull(tooltip);
   });
 
@@ -46,7 +47,7 @@ describeWithEnvironment('NetworkLogView', () => {
     networkRequestNode.renderCell(el, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Request content is overridden"]');
-    assert.instanceOf(marker, HTMLDivElement);
+    assertElement(marker, HTMLDivElement);
     assert.isNotNull(tooltip);
   });
 
@@ -67,7 +68,7 @@ describeWithEnvironment('NetworkLogView', () => {
     networkRequestNode.renderCell(el, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Both request content and headers are overridden"]');
-    assert.instanceOf(marker, HTMLDivElement);
+    assertElement(marker, HTMLDivElement);
     assert.isNotNull(tooltip);
   });
 

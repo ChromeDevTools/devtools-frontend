@@ -4,6 +4,8 @@
 
 import type * as SDK from '../../../core/sdk/sdk.js';
 import {
+  assertElement,
+  assertShadowRoot,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -20,8 +22,8 @@ async function renderRequestHeaderSection(request: SDK.NetworkRequest.NetworkReq
   renderElementIntoDOM(component);
   component.data = {request};
   await coordinator.done();
-  assert.instanceOf(component, HTMLElement);
-  assert.isNotNull(component.shadowRoot);
+  assertElement(component, HTMLElement);
+  assertShadowRoot(component.shadowRoot);
   return component;
 }
 
@@ -38,7 +40,7 @@ describeWithEnvironment('RequestHeaderSection', () => {
     } as unknown as SDK.NetworkRequest.NetworkRequest;
 
     const component = await renderRequestHeaderSection(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assert.strictEqual(
         getCleanTextContentFromElements(component.shadowRoot, '.call-to-action')[0],
@@ -60,11 +62,11 @@ describeWithEnvironment('RequestHeaderSection', () => {
     } as unknown as SDK.NetworkRequest.NetworkRequest;
 
     const component = await renderRequestHeaderSection(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     const sorted = Array.from(rows).map(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       return [
         row.shadowRoot.querySelector('.header-name')?.textContent?.trim() || '',
         row.shadowRoot.querySelector('.header-value')?.textContent?.trim() || '',
@@ -92,11 +94,11 @@ describeWithEnvironment('RequestHeaderSection', () => {
     } as unknown as SDK.NetworkRequest.NetworkRequest;
 
     const component = await renderRequestHeaderSection(request);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     for (const row of rows) {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       assert.isNull(row.shadowRoot.querySelector('.disallowed-characters'));
     }
   });

@@ -6,6 +6,8 @@ import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import {
+  assertElement,
+  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../../testing/EnvironmentHelpers.js';
@@ -17,10 +19,10 @@ function renderSettingCheckbox(data: Settings.SettingCheckbox.SettingCheckboxDat
   const component = new Settings.SettingCheckbox.SettingCheckbox();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
 
   const checkbox = component.shadowRoot.querySelector('input');
-  assert.instanceOf(checkbox, HTMLInputElement);
+  assertElement(checkbox, HTMLInputElement);
 
   return {component, checkbox};
 }

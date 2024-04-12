@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -88,7 +89,7 @@ describeWithMockConnection('PersistenceImpl', () => {
     const script = await backend.addScript(target, SCRIPT_DESCRIPTION, null);
     const uiSourceCode =
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForScript(script);
-    assert.exists(uiSourceCode);
+    assertNotNullOrUndefined(uiSourceCode);
 
     // Set the breakpoint response for our upcoming request to set the breakpoint on the network file.
     await backend.responderToBreakpointByUrlRequest(script.sourceURL, breakpointLine)({
@@ -157,7 +158,7 @@ describeWithMockConnection('PersistenceImpl', () => {
        // over to the file system uiSourceCode.
        const persistence = Persistence.Persistence.PersistenceImpl.instance();
        const binding = persistence.binding(fileSystemUiSourceCode);
-       assert.exists(binding);
+       assertNotNullOrUndefined(binding);
 
        // Set the breakpoint response for our upcoming request on the file system.
        const moveResponse = backend.responderToBreakpointByUrlRequest(fileSystemUiSourceCode.url(), breakpointLine)({

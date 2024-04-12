@@ -4,10 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
+import {assertElement, dispatchPasteEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -53,11 +54,11 @@ describeWithMockConnection('ConsoleView', () => {
     const target = targetFactory();
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-    assert.exists(consoleModel);
+    assertNotNullOrUndefined(consoleModel);
     consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
     consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
     const messagesElement = consoleView.element.querySelector('#console-messages');
-    assert.exists(messagesElement);
+    assertNotNullOrUndefined(messagesElement);
 
     const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     const contextMenuSetHandler = sinon.spy(UI.ContextMenu.ContextMenu.prototype, 'setHandler');
@@ -65,9 +66,9 @@ describeWithMockConnection('ConsoleView', () => {
     assert.isTrue(contextMenuShow.calledOnce);
     const saveAsItem = contextMenuShow.thisValues[0].saveSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Save as...');
-    assert.exists(saveAsItem);
+    assertNotNullOrUndefined(saveAsItem);
     const saveAsHandler = contextMenuSetHandler.getCalls().find(c => c.args[0] === saveAsItem.id());
-    assert.exists(saveAsHandler);
+    assertNotNullOrUndefined(saveAsHandler);
 
     const TIMESTAMP = 42;
     const URL_HOST = 'example.com';
@@ -98,7 +99,7 @@ describeWithMockConnection('ConsoleView', () => {
 
   async function getConsoleMessages() {
     const messagesElement = consoleView.element.querySelector('#console-messages');
-    assert.exists(messagesElement);
+    assertNotNullOrUndefined(messagesElement);
 
     await new Promise(resolve => setTimeout(resolve, 0));
     return [...messagesElement.querySelectorAll('.console-message-text')].map(e => (e as HTMLElement).innerText);
@@ -116,7 +117,7 @@ describeWithMockConnection('ConsoleView', () => {
 
     it('adds messages', async () => {
       const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-      assert.exists(consoleModel);
+      assertNotNullOrUndefined(consoleModel);
       SDK.ConsoleModel.ConsoleModel.requestClearMessages();
       consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
       consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
@@ -127,9 +128,9 @@ describeWithMockConnection('ConsoleView', () => {
 
     it('prints results', async () => {
       const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-      assert.exists(consoleModel);
+      assertNotNullOrUndefined(consoleModel);
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
+      assertNotNullOrUndefined(runtimeModel);
       SDK.ConsoleModel.ConsoleModel.requestClearMessages();
       consoleModel.dispatchEventToListeners(SDK.ConsoleModel.Events.CommandEvaluated, {
         result: new SDK.RemoteObject.RemoteObjectImpl(runtimeModel, undefined, 'number', undefined, 42),
@@ -153,12 +154,12 @@ describeWithMockConnection('ConsoleView', () => {
     consoleView.show(document.body);
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-    assert.exists(consoleModel);
+    assertNotNullOrUndefined(consoleModel);
     consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
     consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
 
     const anotherConsoleModel = anotherTarget.model(SDK.ConsoleModel.ConsoleModel);
-    assert.exists(anotherConsoleModel);
+    assertNotNullOrUndefined(anotherConsoleModel);
     anotherConsoleModel.addMessage(createConsoleMessage(anotherTarget, 'message 3'));
     assert.deepEqual(await getConsoleMessages(), ['message 1', 'message 2']);
 
@@ -186,7 +187,7 @@ describeWithMockConnection('ConsoleView', () => {
       dt.setData('text/plain', 'foo');
 
       const messagesElement = consoleView.element.querySelector('#console-messages');
-      assert.instanceOf(messagesElement, HTMLElement);
+      assertElement(messagesElement, HTMLElement);
       dispatchPasteEvent(messagesElement, {clipboardData: dt, bubbles: true});
       assert.strictEqual(
           Common.Console.Console.instance().messages()[0].text,
@@ -195,9 +196,9 @@ describeWithMockConnection('ConsoleView', () => {
 
     it('is turned off when console history reaches a length of 5', async () => {
       const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-      assert.exists(consoleModel);
+      assertNotNullOrUndefined(consoleModel);
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
+      assertNotNullOrUndefined(runtimeModel);
       SDK.ConsoleModel.ConsoleModel.requestClearMessages();
 
       const selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
@@ -220,7 +221,7 @@ describeWithMockConnection('ConsoleView', () => {
     consoleView.show(document.body);
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-    assert.exists(consoleModel);
+    assertNotNullOrUndefined(consoleModel);
     const consoleHistorySetting = Common.Settings.Settings.instance().createLocalSetting('console-history', []);
 
     consoleModel.dispatchEventToListeners(

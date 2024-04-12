@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -167,7 +168,7 @@ describeWithMockConnection('ResourceMapping', () => {
     it('correctly reports all inline <script>s when querying the whole document', () => {
       const rawLocationRanges = resourceMapping.uiLocationRangeToJSLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(0, 0, 14, 0));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, SCRIPTS.length);
       for (let i = 0; i < SCRIPTS.length; ++i) {
         let {startLine, startColumn, endLine, endColumn} = SCRIPTS[i];

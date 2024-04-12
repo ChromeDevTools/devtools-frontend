@@ -8,7 +8,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Logs from '../../../models/logs/logs.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as UI from '../../legacy/legacy.js';
 import * as IconButton from '../icon_button/icon_button.js';
@@ -25,7 +25,7 @@ const renderRequestLinkIcon = async(data: RequestLinkIcon.RequestLinkIcon.Reques
   const component = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
   return {component, shadowRoot: component.shadowRoot};
 };
@@ -36,12 +36,12 @@ export const extractElements = (shadowRoot: ShadowRoot): {
   label: HTMLSpanElement|null,
 } => {
   const icon = shadowRoot.querySelector('devtools-icon');
-  assert.instanceOf(icon, IconButton.Icon.Icon);
+  assertElement(icon, IconButton.Icon.Icon);
   const button = shadowRoot.querySelector('button');
-  assert.instanceOf(button, HTMLButtonElement);
+  assertElement(button, HTMLButtonElement);
   const label = shadowRoot.querySelector('button > span');
   if (label !== null) {
-    assert.instanceOf(label, HTMLSpanElement);
+    assertElement(label, HTMLSpanElement);
   }
   return {icon, button, label};
 };

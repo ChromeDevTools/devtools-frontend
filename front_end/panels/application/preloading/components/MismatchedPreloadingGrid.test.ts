@@ -10,6 +10,7 @@ import {
   getCellByIndexes,
 } from '../../../../testing/DataGridHelpers.js';
 import {
+  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
@@ -32,7 +33,7 @@ async function renderMismatchedPreloadingGrid(
   const component = new PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGrid();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
 
   return component;
@@ -44,7 +45,7 @@ function assertDiff(
   const controller = getElementWithinComponent(
       gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
   const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assert.isNotNull(grid.shadowRoot);
+  assertShadowRoot(grid.shadowRoot);
   const cell = getCellByIndexes(grid.shadowRoot, cellIndex);
   const spans = cell.querySelectorAll('div span');
 
@@ -74,7 +75,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     };
 
     const component = await renderMismatchedPreloadingGrid(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertGridContents(
         component,
@@ -96,7 +97,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     };
 
     const component = await renderMismatchedPreloadingGrid(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertGridContents(
         component,
@@ -124,7 +125,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     };
 
     const component = await renderMismatchedPreloadingGrid(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertGridContents(
         component,
@@ -151,7 +152,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     };
 
     const component = await renderMismatchedPreloadingGrid(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertGridContents(
         component,
@@ -178,7 +179,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     };
 
     const component = await renderMismatchedPreloadingGrid(data);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     assertGridContents(
         component,

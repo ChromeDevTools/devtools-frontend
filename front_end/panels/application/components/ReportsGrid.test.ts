@@ -6,6 +6,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {getHeaderCells, getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
+  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -23,7 +24,7 @@ const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.Report
     component.data = data;
   }
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
   if (!data) {
     return component;
@@ -31,9 +32,9 @@ const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.Report
 
   const controller = getElementWithinComponent(
       component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  assert.isNotNull(controller.shadowRoot);
+  assertShadowRoot(controller.shadowRoot);
   const datagrid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assert.isNotNull(datagrid.shadowRoot);
+  assertShadowRoot(datagrid.shadowRoot);
   return datagrid;
 };
 
@@ -75,7 +76,7 @@ describeWithEnvironment('ReportsGrid', () => {
     };
 
     const dataGrid = await renderReportsGrid(data);
-    assert.isNotNull(dataGrid.shadowRoot);
+    assertShadowRoot(dataGrid.shadowRoot);
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
     const values = Array.from(headerCells, getHeaderText);
@@ -114,7 +115,7 @@ describeWithEnvironment('ReportsGrid', () => {
     };
 
     const dataGrid = await renderReportsGrid(data);
-    assert.isNotNull(dataGrid.shadowRoot);
+    assertShadowRoot(dataGrid.shadowRoot);
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
     const values = Array.from(headerCells, getHeaderText);

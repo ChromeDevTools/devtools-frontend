@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ElementsComponents from './components.js';
@@ -15,7 +15,7 @@ describeWithEnvironment('CSSVariableValueView', () => {
     });
     renderElementIntoDOM(popupComponent);
 
-    assert.isNotNull(popupComponent.shadowRoot);
+    assertShadowRoot(popupComponent.shadowRoot);
 
     const shadowRoot = popupComponent.shadowRoot;
 

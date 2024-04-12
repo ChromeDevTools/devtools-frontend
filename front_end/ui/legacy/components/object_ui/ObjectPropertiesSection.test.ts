@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
+import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import {dispatchClickEvent} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
@@ -21,9 +22,9 @@ describe('ObjectPropertiesSection', () => {
         Promise<{object: SDK.RemoteObject.RemoteObject, properties: SDK.RemoteObject.RemoteObjectProperty[]}> {
       const targetManager = SDK.TargetManager.TargetManager.instance();
       const target = targetManager.rootTarget();
-      assert.exists(target);
+      assertNotNullOrUndefined(target);
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
+      assertNotNullOrUndefined(runtimeModel);
       const executionContext = await getExecutionContext(runtimeModel);
       UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
       const {result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
@@ -33,7 +34,7 @@ describe('ObjectPropertiesSection', () => {
       }
       const {object} = result;
       const {properties} = await object.getAllProperties(accessorPropertiesOnly, generatePreview);
-      assert.exists(properties);
+      assertNotNullOrUndefined(properties);
       return {object, properties};
     }
 
@@ -63,7 +64,7 @@ describe('ObjectPropertiesSection', () => {
 
       const calculateValueButton =
           propertiesSection.valueElement.querySelector('.object-value-calculate-value-button') as HTMLElement;
-      assert.exists(calculateValueButton);
+      assertNotNullOrUndefined(calculateValueButton);
       const mutations = someMutations(propertiesSection.listItemElement);
       calculateValueButton.click();
       await mutations;
@@ -204,7 +205,7 @@ describe('ObjectPropertiesSection', () => {
         const div = document.createElement('div');
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, object, expression);
         const icon = div.querySelector('devtools-icon');
-        assert.exists(icon);
+        assertNotNullOrUndefined(icon);
         const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
 
         dispatchClickEvent(icon);

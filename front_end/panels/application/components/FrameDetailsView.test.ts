@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
+  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementsWithinComponent,
   getElementWithinComponent,
@@ -83,7 +85,7 @@ describeWithRealConnection('FrameDetailsView', () => {
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     void component.render();
     await coordinator.done({waitForWork: true});
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
@@ -95,9 +97,9 @@ describeWithRealConnection('FrameDetailsView', () => {
   it('renders report keys and values', async () => {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.rootTarget();
-    assert.exists(target);
+    assertNotNullOrUndefined(target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assert.exists(debuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
     const debuggerId = debuggerModel.debuggerId();
 
     const frame = makeFrame();
@@ -109,7 +111,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       }),
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assert.exists(networkManager);
+    assertNotNullOrUndefined(networkManager);
     sinon.stub(networkManager, 'getSecurityIsolationStatus').resolves({
       coep: {
         value: Protocol.Network.CrossOriginEmbedderPolicyValue.None,
@@ -130,7 +132,7 @@ describeWithRealConnection('FrameDetailsView', () => {
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     void component.render();
     await coordinator.done({waitForWork: true});
 
@@ -170,24 +172,24 @@ describeWithRealConnection('FrameDetailsView', () => {
 
     const stackTrace = getElementWithinComponent(
         component, 'devtools-resources-stack-trace', ApplicationComponents.StackTrace.StackTrace);
-    assert.isNotNull(stackTrace.shadowRoot);
+    assertShadowRoot(stackTrace.shadowRoot);
     const expandableList =
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
-    assert.isNotNull(expandableList.shadowRoot);
+    assertShadowRoot(expandableList.shadowRoot);
 
     const stackTraceRows = getElementsWithinComponent(
         expandableList, 'devtools-stack-trace-row', ApplicationComponents.StackTrace.StackTraceRow);
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 
     assert.deepEqual(stackTraceText[0], 'function1\xA0@\xA0http://www.example.com/script.js:16');
 
     const adScriptLink = component.shadowRoot.querySelector('devtools-report-value.ad-script-link');
-    assert.exists(adScriptLink);
+    assertNotNullOrUndefined(adScriptLink);
     assert.strictEqual(adScriptLink.textContent, '');
   });
 });

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {stabilizeEvent, stabilizeImpressions} from '../../testing/VisualLoggingHelpers.js';
 
@@ -128,7 +129,7 @@ describe('LoggingDriver', () => {
 
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
     const iframeDocument = iframe.contentDocument;
-    assert.exists(iframeDocument);
+    assertNotNullOrUndefined(iframeDocument);
     await VisualLoggingTesting.LoggingDriver.addDocument(iframeDocument);
     iframeDocument.body.innerHTML = '<div jslog="TreeItem" style="width:300px;height:300px"></div>';
     await assertImpressionRecordedDeferred();
@@ -142,7 +143,7 @@ describe('LoggingDriver', () => {
     iframe.width = '100';
     iframe.height = '100';
     const iframeDocument = iframe.contentDocument;
-    assert.exists(iframeDocument);
+    assertNotNullOrUndefined(iframeDocument);
     iframeDocument.body.innerHTML =  // Second div should not be out of viewport and not logged
         `<div style="width:150px;height:150px"></div>
          <div jslog="TreeItem" style="width:150px;height:150px"></div>`;
@@ -272,7 +273,7 @@ describe('LoggingDriver', () => {
     recordImpression.resetHistory();
 
     const select = document.getElementById('select');
-    assert.exists(select);
+    assertNotNullOrUndefined(select);
     select.dispatchEvent(event);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.exists(throttler.process);
@@ -304,7 +305,7 @@ describe('LoggingDriver', () => {
     );
 
     const select = document.getElementById('select') as HTMLSelectElement;
-    assert.exists(select);
+    assertNotNullOrUndefined(select);
     select.selectedIndex = 1;
     select.dispatchEvent(new Event('change'));
     await new Promise(resolve => setTimeout(resolve, 0));

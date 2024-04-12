@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
+
 import * as InlineEditor from './inline_editor.js';
 
 describe('AnimationTimingUI', () => {
@@ -16,8 +18,8 @@ describe('AnimationTimingUI', () => {
     animationTimingUI.draw();
     const bezierContainer = animationTimingUI.element().querySelector('.bezier-ui-container');
     const linearEasingContainer = animationTimingUI.element().querySelector('.linear-easing-ui-container');
-    assert.exists(linearEasingContainer);
-    assert.exists(bezierContainer);
+    assertNotNullOrUndefined(linearEasingContainer);
+    assertNotNullOrUndefined(bezierContainer);
   });
 
   it('should bezier-ui-container be hidden when linear-easing function is visualized', () => {
@@ -31,8 +33,8 @@ describe('AnimationTimingUI', () => {
     animationTimingUI.draw();
     const bezierContainer = animationTimingUI.element().querySelector('.bezier-ui-container');
     const linearEasingContainer = animationTimingUI.element().querySelector('.linear-easing-ui-container');
-    assert.exists(linearEasingContainer);
-    assert.exists(bezierContainer);
+    assertNotNullOrUndefined(linearEasingContainer);
+    assertNotNullOrUndefined(bezierContainer);
 
     assert.isTrue(bezierContainer.classList.contains('hidden'));
     assert.isFalse(linearEasingContainer.classList.contains('hidden'));
@@ -49,8 +51,8 @@ describe('AnimationTimingUI', () => {
     animationTimingUI.draw();
     const bezierContainer = animationTimingUI.element().querySelector('.bezier-ui-container');
     const linearEasingContainer = animationTimingUI.element().querySelector('.linear-easing-ui-container');
-    assert.exists(linearEasingContainer);
-    assert.exists(bezierContainer);
+    assertNotNullOrUndefined(linearEasingContainer);
+    assertNotNullOrUndefined(bezierContainer);
 
     assert.isFalse(bezierContainer.classList.contains('hidden'));
     assert.isTrue(linearEasingContainer.classList.contains('hidden'));

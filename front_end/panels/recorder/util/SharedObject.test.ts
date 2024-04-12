@@ -82,7 +82,7 @@ describe('SharedObject', () => {
 
     await Promise.all(promises);
 
-    assert.exists(finalObject);
+    assert.isDefined(finalObject);
     assert.isFalse(finalObject?.value);
   });
 });

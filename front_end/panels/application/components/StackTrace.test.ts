@@ -6,6 +6,8 @@ import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   getCleanTextContentFromElements,
   getElementsWithinComponent,
@@ -85,11 +87,11 @@ describeWithLocale('StackTrace', () => {
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const expandableList =
         getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
-    assert.instanceOf(expandButton, HTMLButtonElement);
+    assertElement(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
 
     const stackTraceRows = getElementsWithinComponent(
@@ -97,7 +99,7 @@ describeWithLocale('StackTrace', () => {
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 
@@ -138,11 +140,11 @@ describeWithLocale('StackTrace', () => {
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const expandableList =
         getElementWithinComponent(component, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     const expandButton = expandableList.shadowRoot!.querySelector('button.arrow-icon-button');
-    assert.instanceOf(expandButton, HTMLButtonElement);
+    assertElement(expandButton, HTMLButtonElement);
     dispatchClickEvent(expandButton);
     await new Promise<void>(resolve => {
       setTimeout(() => {
@@ -154,7 +156,7 @@ describeWithLocale('StackTrace', () => {
     let stackTraceText: string[] = [];
 
     stackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 
@@ -166,14 +168,14 @@ describeWithLocale('StackTrace', () => {
     const stackTraceLinkButton = getElementWithinComponent(
         expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
     const showAllButton = stackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
-    assert.instanceOf(showAllButton, HTMLButtonElement);
+    assertElement(showAllButton, HTMLButtonElement);
     dispatchClickEvent(showAllButton);
 
     const openedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     let openedStackTraceText: string[] = [];
 
     openedStackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       openedStackTraceText =
           openedStackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
@@ -187,14 +189,14 @@ describeWithLocale('StackTrace', () => {
     const newStackTraceLinkButton = getElementWithinComponent(
         expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
     const showLessButton = newStackTraceLinkButton.shadowRoot!.querySelector('.stack-trace-row button.link');
-    assert.instanceOf(showLessButton, HTMLButtonElement);
+    assertElement(showLessButton, HTMLButtonElement);
     dispatchClickEvent(showLessButton);
 
     const reclosedStackTraceRows = Array.from(expandableList.shadowRoot!.querySelectorAll('[data-stack-trace-row]'));
     stackTraceText = [];
 
     reclosedStackTraceRows.forEach(row => {
-      assert.isNotNull(row.shadowRoot);
+      assertShadowRoot(row.shadowRoot);
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 

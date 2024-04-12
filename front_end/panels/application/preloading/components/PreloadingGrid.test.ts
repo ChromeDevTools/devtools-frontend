@@ -6,7 +6,7 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents, getCellByIndexes} from '../../../../testing/DataGridHelpers.js';
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -293,7 +293,7 @@ describeWithEnvironment('PreloadingGrid', () => {
         ],
     );
 
-    assert.isNotNull(grid.shadowRoot);
+    assertShadowRoot(grid.shadowRoot);
     const cell = getCellByIndexes(grid.shadowRoot, {row: 1, column: 3});
     const div = cell.querySelector('div');
     assert.strictEqual(div!.getAttribute('style'), 'color: var(--sys-color-error);');

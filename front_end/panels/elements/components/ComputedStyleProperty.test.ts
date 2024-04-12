@@ -33,6 +33,6 @@ describe('ComputedStyleProperty', () => {
     }
     goto.click();
     const event = await navigateEvent;
-    assert.exists(event);
+    assert.isDefined(event);
   });
 });

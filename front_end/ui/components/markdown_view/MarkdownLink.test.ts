@@ -4,6 +4,7 @@
 
 import type * as Platform from '../../../core/platform/platform.js';
 import {
+  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -19,7 +20,7 @@ describe('MarkdownLink', () => {
     const component = new MarkdownView.MarkdownLink.MarkdownLink();
     component.data = {key: 'test-link', title: 'Test link'};
     renderElementIntoDOM(component);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const linkComponent = getElementWithinComponent(component, 'x-link', UI.XLink.XLink);
     assert.isNotNull(linkComponent);
     assert.strictEqual(linkComponent.textContent, 'Test link');

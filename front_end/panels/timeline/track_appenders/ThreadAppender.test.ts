@@ -532,8 +532,8 @@ describeWithEnvironment('ThreadAppender', function() {
         return event.name === bizarreName;
       });
       assert.isAbove(unknownEventIndex, -1);
-      assert.exists(finalFlamechartData.entryStartTimes);
-      assert.exists(finalFlamechartData.entryTotalTimes);
+      assert.isDefined(finalFlamechartData.entryStartTimes);
+      assert.isDefined(finalFlamechartData.entryTotalTimes);
       Root.Runtime.experiments.disableForTest('timeline-show-all-events');
     });
   });

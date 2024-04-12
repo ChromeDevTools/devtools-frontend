@@ -11,6 +11,7 @@ import {
 } from '../../testing/MockConnection.js';
 import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -101,7 +102,7 @@ describeWithMockConnection('ConsoleMessage', () => {
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
       const frame = {url: 'http://example.com/', backForwardCacheDetails: {}} as
           SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -130,7 +131,7 @@ describeWithMockConnection('ConsoleMessage', () => {
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
     const navigateTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
       const frame = {url: 'http://example.com/', backForwardCacheDetails: {restoredFromCache: true}} as
           SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -155,11 +156,11 @@ describeWithMockConnection('ConsoleMessage', () => {
   it('discards duplicate console messages with identical timestamps', async () => {
     const target = createTarget({type: SDK.Target.Type.Frame});
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    assert.exists(runtimeModel);
+    assertNotNullOrUndefined(runtimeModel);
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
-    assert.exists(consoleModel);
+    assertNotNullOrUndefined(consoleModel);
     const addMessage = sinon.spy(consoleModel, 'addMessage');
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
 
@@ -191,11 +192,11 @@ describeWithMockConnection('ConsoleMessage', () => {
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
     const clearGlobalObjectOnTarget = (target: SDK.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
 
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      assert.exists(debuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
       debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.GlobalObjectCleared, debuggerModel);
     };
 

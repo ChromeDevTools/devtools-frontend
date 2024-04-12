@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
@@ -62,7 +63,7 @@ describeWithLocale('RequestTrustTokensView', () => {
     }));
 
     const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
-    assert.exists(simpleText);
+    assertNotNullOrUndefined(simpleText);
     assert.strictEqual(simpleText.textContent, 'Success');
   });
 
@@ -74,7 +75,7 @@ describeWithLocale('RequestTrustTokensView', () => {
     }));
 
     const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
-    assert.exists(simpleText);
+    assertNotNullOrUndefined(simpleText);
     assert.strictEqual(simpleText.textContent, 'Failure');
   });
 });

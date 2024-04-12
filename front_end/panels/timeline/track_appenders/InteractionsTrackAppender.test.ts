@@ -79,7 +79,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
       const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
-        assert.exists(markerIndex);
+        assert.isDefined(markerIndex);
         assert.strictEqual(
             flameChartData.entryStartTimes[markerIndex],
             TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts));
@@ -92,7 +92,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
       const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
-        assert.exists(markerIndex);
+        assert.isDefined(markerIndex);
         const expectedTotalTimeForEvent = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
             (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
         assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], expectedTotalTimeForEvent);

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -31,7 +32,7 @@ describeWithMockConnection('RequestCookiesView', () => {
         null, null, null);
     const component = renderCookiesView(request);
     const message = component.element.querySelector('.site-has-cookies-in-other-partition');
-    assert.exists(message);
+    assertNotNullOrUndefined(message);
     assert.isTrue(message.classList.contains('hidden'));
     request.addExtraRequestInfo({
       siteHasCookieInOtherPartition: true,

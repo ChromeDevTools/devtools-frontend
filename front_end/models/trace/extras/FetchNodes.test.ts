@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
@@ -29,7 +30,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       // Create a mock target, dom model, document and node.
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       const documentNode = {nodeId: nodeId(1)};
       const domNode = new SDK.DOMModel.DOMNode(domModel);
       domNode.id = nodeId(2);
@@ -57,7 +58,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       // Create a mock target, dom model, document and node.
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       const documentNode = {nodeId: nodeId(1)};
       const domNode = new SDK.DOMModel.DOMNode(domModel);
       domNode.id = nodeId(2);
@@ -85,7 +86,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       // Create a mock target, dom model, document and node.
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       const documentNode = {nodeId: nodeId(1)};
       const domNodeId2 = new SDK.DOMModel.DOMNode(domModel);
       domNodeId2.id = nodeId(2);
@@ -118,7 +119,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       // Create a mock target, dom model, document and node.
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
       const domNode = new SDK.DOMModel.DOMNode(domModel);
       domNode.id = 2 as Protocol.DOM.NodeId;

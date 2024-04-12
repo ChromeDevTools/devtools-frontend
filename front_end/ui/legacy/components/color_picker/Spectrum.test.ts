@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import {
   createTarget,
@@ -53,7 +54,7 @@ describeWithMockConnection('PaletteGenerator', () => {
     createTarget();
     const [model] = SDK.TargetManager.TargetManager.instance().models(SDK.CSSModel.CSSModel);
 
-    assert.exists(model);
+    Platform.assertNotNullOrUndefined(model);
     const stylesheet = sinon.createStubInstance(SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     sinon.stub(model, 'allStyleSheets').returns([stylesheet]);
     const content = `

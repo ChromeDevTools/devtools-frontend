@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   dispatchKeyDownEvent,
   dispatchMouseOutEvent,
@@ -40,7 +42,7 @@ async function renderTreeOutline<TreeNodeDataType>({
   };
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
   return {
     component,
@@ -283,7 +285,7 @@ describe('TreeOutline', () => {
     });
     const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     const arrowIcon = rootNode.querySelector<HTMLSpanElement>('.arrow-icon');
-    assert.instanceOf(arrowIcon, HTMLSpanElement);
+    assertElement(arrowIcon, HTMLSpanElement);
     dispatchClickEvent(arrowIcon);
     await waitForRenderedTreeNodeCount(shadowRoot, 3);
     const visibleTree = visibleNodesToTree(shadowRoot);
@@ -329,7 +331,7 @@ describe('TreeOutline', () => {
       });
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const key = rootNode.querySelector('[data-node-key]');
-      assert.instanceOf(key, HTMLElement);
+      assertElement(key, HTMLElement);
       const whiteSpaceValue = window.getComputedStyle(key).getPropertyValue('white-space');
       assert.strictEqual(whiteSpaceValue, 'normal');
     });
@@ -341,7 +343,7 @@ describe('TreeOutline', () => {
       component.setAttribute('nowrap', '');
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const key = rootNode.querySelector('[data-node-key]');
-      assert.instanceOf(key, HTMLElement);
+      assertElement(key, HTMLElement);
       const whiteSpaceValue = window.getComputedStyle(key).getPropertyValue('white-space');
       assert.strictEqual(whiteSpaceValue, 'nowrap');
     });
@@ -649,7 +651,7 @@ describe('TreeOutline', () => {
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
     const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     const key = officeNode.querySelector('[data-node-key]');
-    assert.instanceOf(key, HTMLElement);
+    assertElement(key, HTMLElement);
     const renderedKey = stripLitHtmlCommentNodes(key.innerHTML);
     assert.strictEqual(renderedKey, '<h2 class="top-node">OFFICES</h2>');
   });
@@ -682,7 +684,7 @@ describe('TreeOutline', () => {
 
     const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     const key = officeNode.querySelector('[data-node-key]');
-    assert.instanceOf(key, HTMLElement);
+    assertElement(key, HTMLElement);
     let renderedKey = stripLitHtmlCommentNodes(key.innerHTML);
     assert.strictEqual(renderedKey, '<h2 class="top-node">OFFICES. Expanded: false</h2>');
     await component.expandRecursively(Number.POSITIVE_INFINITY);
@@ -802,7 +804,7 @@ describe('TreeOutline', () => {
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         // Expand the Offices part of the tree
         const arrowIcon = officeNode.querySelector<HTMLSpanElement>('.arrow-icon');
-        assert.instanceOf(arrowIcon, HTMLSpanElement);
+        assertElement(arrowIcon, HTMLSpanElement);
         dispatchClickEvent(arrowIcon);
         await waitForRenderedTreeNodeCount(shadowRoot, 3);
 
@@ -1175,7 +1177,7 @@ describe('TreeOutline', () => {
       });
       const rootNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
       const arrowIcon = rootNode.querySelector<HTMLSpanElement>('.arrow-icon');
-      assert.instanceOf(arrowIcon, HTMLSpanElement);
+      assertElement(arrowIcon, HTMLSpanElement);
       dispatchClickEvent(arrowIcon);
       await coordinator.done();
       assert.strictEqual(rootNode.getAttribute('aria-expanded'), 'true');
@@ -1231,7 +1233,7 @@ describe('TreeOutline', () => {
         });
         await coordinator.done();
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices').querySelector('.arrow-and-key-wrapper');
-        assert.instanceOf(officeNode, HTMLSpanElement);
+        assertElement(officeNode, HTMLSpanElement);
         const itemMouseOverEvent =
             getEventPromise<TreeOutline.TreeOutline.ItemMouseOverEvent<string>>(component, 'itemmouseover');
         dispatchMouseOverEvent(officeNode);
@@ -1247,7 +1249,7 @@ describe('TreeOutline', () => {
         });
         await coordinator.done();
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices').querySelector('.arrow-and-key-wrapper');
-        assert.instanceOf(officeNode, HTMLSpanElement);
+        assertElement(officeNode, HTMLSpanElement);
         dispatchMouseOverEvent(officeNode);
         const itemMouseOutEvent =
             getEventPromise<TreeOutline.TreeOutline.ItemMouseOutEvent<string>>(component, 'itemmouseout');

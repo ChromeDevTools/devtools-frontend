@@ -9,6 +9,7 @@ import {
   dispatchEvent,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -108,7 +109,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.isEmpty(resourceTreeModel?.frames());
     const manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
-    assert.exists(manager);
+    assertNotNullOrUndefined(manager);
     const storageKeyAddedPromise = new Promise<void>(resolve => {
       manager.addEventListener(SDK.StorageKeyManager.Events.StorageKeyAdded, () => {
         resolve();
@@ -136,7 +137,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
   function getResourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
     return resourceTreeModel;
   }
 
@@ -187,7 +188,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
   it('emits PrimaryPageChanged event upon prerender activation', async () => {
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const childTargetManager = tabTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-    assert.exists(childTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
 
     const targetId = 'target_id' as Protocol.Target.TargetID;
     const targetInfo = {
@@ -204,9 +205,9 @@ describeWithMockConnection('ResourceTreeModel', () => {
         {sessionId: 'session_id' as Protocol.Target.SessionID, targetInfo, waitingForDebugger: false});
 
     const prerenderTarget = SDK.TargetManager.TargetManager.instance().targetById(targetId);
-    assert.exists(prerenderTarget);
+    assertNotNullOrUndefined(prerenderTarget);
     const resourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
 
     const primaryPageChangedEvents:
         {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}[] = [];

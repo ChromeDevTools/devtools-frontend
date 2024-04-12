@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+
 import * as FormatterWorker from './formatter_worker.js';
 
 describe('ScopeParser', () => {
@@ -56,7 +58,7 @@ describe('ScopeParser', () => {
       const source = 'let {x: y} = {}';
       const scopes = parseScopes(source);
 
-      assert.exists(scopes);
+      assertNotNullOrUndefined(scopes);
       assert.isEmpty(scopes.children);
       assert.strictEqual(scopes.variables.size, 1);
       const [[name, {uses}]] = scopes.variables;
@@ -69,7 +71,7 @@ describe('ScopeParser', () => {
       const source = 'let {x: y = 42} = {}';
       const scopes = parseScopes(source);
 
-      assert.exists(scopes);
+      assertNotNullOrUndefined(scopes);
       assert.isEmpty(scopes.children);
       assert.strictEqual(scopes.variables.size, 1);
       const [[name, {uses}]] = scopes.variables;
@@ -82,7 +84,7 @@ describe('ScopeParser', () => {
       const source = 'let {x} = {}';
       const scopes = parseScopes(source);
 
-      assert.exists(scopes);
+      assertNotNullOrUndefined(scopes);
       assert.isEmpty(scopes.children);
       assert.strictEqual(scopes.variables.size, 1);
       const [[name, {uses}]] = scopes.variables;
@@ -95,7 +97,7 @@ describe('ScopeParser', () => {
       const source = 'let {x = 42} = {}';
       const scopes = parseScopes(source);
 
-      assert.exists(scopes);
+      assertNotNullOrUndefined(scopes);
       assert.isEmpty(scopes.children);
       assert.strictEqual(scopes.variables.size, 1);
       const [[name, {uses}]] = scopes.variables;
@@ -108,7 +110,7 @@ describe('ScopeParser', () => {
       const source = 'import * as Foo from "./foo.js"; Foo.foo();';
       const scopes = parseScopes(source, 'module');
 
-      assert.exists(scopes);
+      assertNotNullOrUndefined(scopes);
       assert.isEmpty(scopes.children);
       assert.strictEqual(scopes.variables.size, 1);
       const [[name, {uses}]] = scopes.variables;

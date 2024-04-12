@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -36,7 +37,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
       sourceElement.innerHTML = LH_NODE_HTML(PATH, SNIPPET);
 
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       sinon.stub(domModel, 'pushNodeByPathToFrontend').withArgs(PATH).returns(Promise.resolve(NODE_ID));
       sinon.stub(domModel, 'nodeForId').withArgs(NODE_ID).returns(NODE);
       sinon.stub(Common.Linkifier.Linkifier, 'linkify')
@@ -50,7 +51,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
 
     it('handles multiple nodes', async () => {
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       const pushNodeByPathToFrontend = sinon.stub(domModel, 'pushNodeByPathToFrontend');
       const nodeForId = sinon.stub(domModel, 'nodeForId');
       const linkify = sinon.stub(Common.Linkifier.Linkifier, 'linkify');
@@ -76,7 +77,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
       sourceElement.innerHTML = LH_NODE_HTML(PATH, SNIPPET);
 
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       sinon.stub(domModel, 'pushNodeByPathToFrontend').returns(Promise.resolve(NODE_ID));
       sinon.stub(domModel, 'nodeForId').returns(NODE);
       sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(linkElement));
@@ -89,11 +90,11 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
 
     it('only keeps link and screenshot', async () => {
       sourceElement.innerHTML = LH_NODE_HTML(PATH, SNIPPET);
-      assert.exists(sourceElement.firstElementChild);
+      assertNotNullOrUndefined(sourceElement.firstElementChild);
       sourceElement.firstElementChild.innerHTML = 'foo<div class="lh-element-screenshot"></div>bar';
 
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       sinon.stub(domModel, 'pushNodeByPathToFrontend').returns(Promise.resolve(NODE_ID));
       sinon.stub(domModel, 'nodeForId').returns(NODE);
       sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(linkElement));
@@ -111,7 +112,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
         LH_NODE_HTML('PATH_WIHTOUT_NODE', SNIPPET),
       ].join('');
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+      assertNotNullOrUndefined(domModel);
       sinon.stub(domModel, 'pushNodeByPathToFrontend').withArgs('PATH_WIHTOUT_NODE').returns(Promise.resolve(NODE_ID));
       sourceElement.innerHTML = originalHtml;
 

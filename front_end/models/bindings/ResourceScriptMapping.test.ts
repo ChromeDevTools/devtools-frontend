@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -47,11 +48,11 @@ describeWithMockConnection('ResourceScriptMapping', () => {
       const script =
           await backend.addScript(target, {content: contentWithoutSourceUrl, url, hasSourceURL: false}, null);
       const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = resourceScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(0, 1, 0, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 0);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 1);
@@ -63,11 +64,11 @@ describeWithMockConnection('ResourceScriptMapping', () => {
       const script =
           await backend.addScript(target, {content: contentWithoutSourceUrl, url, hasSourceURL: false}, null);
       const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = resourceScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(1, 2, 2, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 1);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 2);
@@ -78,11 +79,11 @@ describeWithMockConnection('ResourceScriptMapping', () => {
     it('maps UI locations in inline scripts with sourceURL', async () => {
       const script = await backend.addScript(target, {content: contentWithSourceUrl, url, hasSourceURL: true}, null);
       const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = resourceScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(4, 2, 4, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 4);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 2);

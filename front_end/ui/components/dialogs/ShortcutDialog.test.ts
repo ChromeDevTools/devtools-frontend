@@ -23,12 +23,12 @@ describeWithLocale('ShortcutDialog', () => {
   }
 
   function getDialogFromShortcutDialog(shortcutDialog: Dialogs.ShortcutDialog.ShortcutDialog) {
-    assert.isNotNull(shortcutDialog.shadowRoot);
+    Helpers.assertShadowRoot(shortcutDialog.shadowRoot);
     const dialog = shortcutDialog.shadowRoot.querySelector('devtools-dialog');
     if (!dialog) {
       assert.fail('devtools-dialog not found');
     }
-    assert.instanceOf(dialog, HTMLElement);
+    Helpers.assertElement(dialog, HTMLElement);
     return dialog;
   }
 

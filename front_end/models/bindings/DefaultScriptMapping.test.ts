@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -85,7 +86,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithoutSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: false}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 0, 1);
       assert.strictEqual(rawLocations.length, 1);
@@ -97,7 +98,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithoutSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: false}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 1, 2);
       assert.strictEqual(rawLocations.length, 1);
@@ -109,7 +110,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: true}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 4, 2);
       assert.strictEqual(rawLocations.length, 1);
@@ -123,11 +124,11 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithoutSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: false}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = defaultScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(0, 1, 0, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 3);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 9);
@@ -139,11 +140,11 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithoutSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: false}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = defaultScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(1, 2, 2, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 4);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 2);
@@ -155,11 +156,11 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       const script = await backend.addScript(
           target, {content: contentWithSourceUrl, url, startLine: 3, startColumn: 8, hasSourceURL: true}, null);
       const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-      assert.exists(uiSourceCode);
+      assertNotNullOrUndefined(uiSourceCode);
 
       const rawLocationRanges = defaultScriptMapping.uiLocationRangeToRawLocationRanges(
           uiSourceCode, new TextUtils.TextRange.TextRange(4, 2, 4, 4));
-      assert.exists(rawLocationRanges);
+      assertNotNullOrUndefined(rawLocationRanges);
       assert.lengthOf(rawLocationRanges, 1);
       assert.strictEqual(rawLocationRanges[0].start.lineNumber, 4);
       assert.strictEqual(rawLocationRanges[0].start.columnNumber, 2);
@@ -173,7 +174,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
     const script = await backend.addScript(
         target, {content, url: SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL, hasSourceURL: true}, null);
     const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-    assert.exists(uiSourceCode);
+    assertNotNullOrUndefined(uiSourceCode);
 
     assert.isTrue(uiSourceCode.isUnconditionallyIgnoreListed());
   });
@@ -183,7 +184,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
     const script = await backend.addScript(
         target, {content, url: SDK.DebuggerModel.LOGPOINT_SOURCE_URL, hasSourceURL: true}, null);
     const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
-    assert.exists(uiSourceCode);
+    assertNotNullOrUndefined(uiSourceCode);
 
     assert.isTrue(uiSourceCode.isUnconditionallyIgnoreListed());
   });

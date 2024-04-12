@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -79,7 +80,7 @@ describeWithLocale('StylePropertyEditor', () => {
       const eventPromise =
           getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
       const flexDirectionColumnButton = component.shadowRoot!.querySelector('.row .buttons .button:nth-child(2)');
-      assert.instanceOf(flexDirectionColumnButton, HTMLButtonElement);
+      assertElement(flexDirectionColumnButton, HTMLButtonElement);
       flexDirectionColumnButton.click();
       const event = await eventPromise;
       assert.deepEqual(event.data, {name: 'flex-direction', value: 'column'});
@@ -99,7 +100,7 @@ describeWithLocale('StylePropertyEditor', () => {
       const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
           component, 'propertydeselected');
       const flexDirectionColumnButton = component.shadowRoot!.querySelector('.row .buttons .button:nth-child(2)');
-      assert.instanceOf(flexDirectionColumnButton, HTMLButtonElement);
+      assertElement(flexDirectionColumnButton, HTMLButtonElement);
       flexDirectionColumnButton.click();
       const event = await eventPromise;
       assert.deepEqual(event.data, {name: 'flex-direction', value: 'column'});
@@ -160,7 +161,7 @@ describeWithLocale('StylePropertyEditor', () => {
       const eventPromise =
           getEventPromise<ElementsComponents.StylePropertyEditor.PropertySelectedEvent>(component, 'propertyselected');
       const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
-      assert.instanceOf(justifyItemsButton, HTMLButtonElement);
+      assertElement(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;
       assert.deepEqual(event.data, {name: 'justify-items', value: 'center'});
@@ -179,7 +180,7 @@ describeWithLocale('StylePropertyEditor', () => {
       const eventPromise = getEventPromise<ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent>(
           component, 'propertydeselected');
       const justifyItemsButton = component.shadowRoot!.querySelector('.row:nth-child(4) .buttons .button:nth-child(1)');
-      assert.instanceOf(justifyItemsButton, HTMLButtonElement);
+      assertElement(justifyItemsButton, HTMLButtonElement);
       justifyItemsButton.click();
       const event = await eventPromise;
       assert.deepEqual(event.data, {name: 'justify-items', value: 'center'});

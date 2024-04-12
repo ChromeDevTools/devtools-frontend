@@ -4,6 +4,8 @@
 
 import {getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
+  assertElement,
+  assertShadowRoot,
   dispatchClickEvent,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -37,7 +39,7 @@ function getInternalDataGridShadowRoot(
   const dataGridController = getElementWithinComponent(
       component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
   const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assert.isNotNull(dataGrid.shadowRoot);
+  assertShadowRoot(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }
 
@@ -91,7 +93,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     await coordinator.done();
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
-    assert.instanceOf(forceRunButton, HTMLElement);
+    assertElement(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
     await coordinator.done();
@@ -120,7 +122,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     await coordinator.done();
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
-    assert.instanceOf(forceRunButton, HTMLElement);
+    assertElement(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
     await coordinator.done({waitForWork: true});

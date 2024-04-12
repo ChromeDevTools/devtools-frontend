@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
@@ -60,9 +61,9 @@ describeWithMockConnection('ConsoleContextSelector', () => {
       },
     });
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    assert.exists(runtimeModel);
+    assertNotNullOrUndefined(runtimeModel);
     const executionContext = runtimeModel.executionContext(id);
-    assert.exists(executionContext);
+    assertNotNullOrUndefined(executionContext);
     return executionContext;
   }
 

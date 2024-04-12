@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -95,7 +96,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     });
 
     it('shows view on select', async () => {
-      assert.exists(sharedStorageModel);
+      assertNotNullOrUndefined(sharedStorageModel);
       sinon.stub(sharedStorageModel, 'enable').resolves();
 
       const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
@@ -118,7 +119,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     });
 
     it('adds events', async () => {
-      assert.exists(sharedStorageModel);
+      assertNotNullOrUndefined(sharedStorageModel);
       sinon.stub(sharedStorageModel, 'enable').resolves();
 
       const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
@@ -136,7 +137,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     });
 
     it('clears events upon main frame navigation', async () => {
-      assert.exists(sharedStorageModel);
+      assertNotNullOrUndefined(sharedStorageModel);
       sinon.stub(sharedStorageModel, 'enable').resolves();
 
       const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
@@ -151,7 +152,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
       assert.deepEqual(view.getEventsForTesting(), EVENTS);
 
       // Events are cleared on main frame navigation.
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged,
           {frame: MOCK_MAIN_FRAME, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});

@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
@@ -58,7 +58,7 @@ describeWithMockConnection('AdvancedApp', () => {
 
   it('updates colors node link on ColorThemeChanged', async () => {
     const advancedApp = Emulation.AdvancedApp.AdvancedApp.instance();
-    assert.exists(advancedApp);
+    Platform.assertNotNullOrUndefined(advancedApp);
 
     const fetchColorsSpy = sinon.spy(ThemeSupport.ThemeSupport, 'fetchColors');
 

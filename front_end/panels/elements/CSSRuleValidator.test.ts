@@ -434,7 +434,7 @@ describeWithEnvironment('CSSRuleValidator', () => {
           test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles, test.nodeName,
           test.fontFaces);
       if (test.hintExpected) {
-        assert.exists(actualResult);
+        assert.isDefined(actualResult);
       } else {
         assert.isUndefined(actualResult);
       }

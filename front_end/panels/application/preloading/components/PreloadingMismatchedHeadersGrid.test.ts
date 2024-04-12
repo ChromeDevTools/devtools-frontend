@@ -7,6 +7,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents} from '../../../../testing/DataGridHelpers.js';
 import {
+  assertShadowRoot,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
@@ -20,7 +21,7 @@ async function renderPreloadingMismatchedHeadersGrid(data: SDK.PreloadingModel.P
   const component = new PreloadingComponents.PreloadingMismatchedHeadersGrid.PreloadingMismatchedHeadersGrid();
   component.data = data;
   renderElementIntoDOM(component);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   await coordinator.done();
 
   return component;
@@ -44,7 +45,7 @@ async function testPreloadingMismatchedHeadersGrid(
   };
 
   const component = await renderPreloadingMismatchedHeadersGrid(data);
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
 
   assertGridContents(
       component,

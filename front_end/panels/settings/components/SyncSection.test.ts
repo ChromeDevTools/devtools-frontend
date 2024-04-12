@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../ui/components/settings/settings.js';
@@ -15,7 +15,7 @@ async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionDa
   renderElementIntoDOM(section);
   section.data = data;
   await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
-  assert.isNotNull(section.shadowRoot);
+  assertShadowRoot(section.shadowRoot);
   return {section, shadowRoot: section.shadowRoot};
 }
 
@@ -24,7 +24,7 @@ describeWithLocale('SyncSection', () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});
     const warning = shadowRoot.querySelector('.warning');
-    assert.instanceOf(warning, HTMLElement);
+    assertElement(warning, HTMLElement);
     assert.include(warning.innerText, 'To turn this setting on');
   });
 
@@ -34,7 +34,7 @@ describeWithLocale('SyncSection', () => {
         await renderSyncSection({syncInfo: {isSyncActive: true, arePreferencesSynced: false}, syncSetting});
 
     const warning = shadowRoot.querySelector('.warning');
-    assert.instanceOf(warning, HTMLElement);
+    assertElement(warning, HTMLElement);
 
     assert.include(warning.innerText, 'To turn this setting on');
   });
@@ -44,11 +44,11 @@ describeWithLocale('SyncSection', () => {
     const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});
 
     const settingCheckbox = shadowRoot.querySelector('setting-checkbox');
-    assert.instanceOf(settingCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
-    assert.isNotNull(settingCheckbox.shadowRoot);
+    assertElement(settingCheckbox, SettingComponents.SettingCheckbox.SettingCheckbox);
+    assertShadowRoot(settingCheckbox.shadowRoot);
 
     const checkbox = settingCheckbox.shadowRoot.querySelector('input');
-    assert.instanceOf(checkbox, HTMLInputElement);
+    assertElement(checkbox, HTMLInputElement);
 
     assert.isTrue(checkbox.disabled);
   });
@@ -66,10 +66,10 @@ describeWithLocale('SyncSection', () => {
     });
 
     const image = shadowRoot.querySelector('img');
-    assert.instanceOf(image, HTMLImageElement);
+    assertElement(image, HTMLImageElement);
 
     const email = shadowRoot.querySelector('.account-email');
-    assert.instanceOf(email, HTMLElement);
+    assertElement(email, HTMLElement);
 
     assert.include(email.innerText, 'user@gmail.com');
   });

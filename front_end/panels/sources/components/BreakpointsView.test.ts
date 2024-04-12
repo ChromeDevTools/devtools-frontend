@@ -4,13 +4,16 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
+  assertElement,
   assertElements,
+  assertShadowRoot,
   dispatchClickEvent,
   dispatchKeyDownEvent,
   renderElementIntoDOM,
@@ -300,7 +303,7 @@ function extractBreakpointItems(data: SourcesComponents.BreakpointsView.Breakpoi
 function checkCodeSnippet(
     renderedBreakpointItem: HTMLDivElement, breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): void {
   const snippetElement = renderedBreakpointItem.querySelector(CODE_SNIPPET_SELECTOR);
-  assert.instanceOf(snippetElement, HTMLSpanElement);
+  assertElement(snippetElement, HTMLSpanElement);
   assert.strictEqual(snippetElement.textContent, breakpointItem.codeSnippet);
 }
 
@@ -321,15 +324,15 @@ function checkGroupNames(
   assert.lengthOf(renderedGroupElements, breakpointGroups.length);
   for (let i = 0; i < renderedGroupElements.length; ++i) {
     const renderedGroup = renderedGroupElements[i];
-    assert.instanceOf(renderedGroup, HTMLDetailsElement);
+    assertElement(renderedGroup, HTMLDetailsElement);
     const titleElement = renderedGroup.querySelector(GROUP_NAME_SELECTOR);
-    assert.instanceOf(titleElement, HTMLSpanElement);
+    assertElement(titleElement, HTMLSpanElement);
     assert.strictEqual(titleElement.textContent, breakpointGroups[i].name);
   }
 }
 
 function hover(component: SourcesComponents.BreakpointsView.BreakpointsView, selector: string): Promise<void> {
-  assert.isNotNull(component.shadowRoot);
+  assertShadowRoot(component.shadowRoot);
   // Dispatch a mouse over.
   component.shadowRoot.querySelector(selector)?.dispatchEvent(new Event('mouseover'));
   // Wait until the re-rendering has happened.
@@ -767,7 +770,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add one breakpoint and collapse the tree.
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
-    assert.exists(b1);
+    assertNotNullOrUndefined(b1);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -778,7 +781,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add a new breakpoint and check if it's expanded as expected.
     const b2 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 3, ...DEFAULT_BREAKPOINT);
-    assert.exists(b2);
+    assertNotNullOrUndefined(b2);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -802,7 +805,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add one breakpoint and collapse the tree.
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
-    assert.exists(b1);
+    assertNotNullOrUndefined(b1);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -815,7 +818,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
     const b2 = await breakpointManager.setBreakpoint(
         uiSourceCode, 0, 3, Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, true, false,
         Breakpoints.BreakpointManager.BreakpointOrigin.OTHER);
-    assert.exists(b2);
+    assertNotNullOrUndefined(b2);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -851,7 +854,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
         uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, ...DEFAULT_BREAKPOINT);
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance(
         {forceNew: true, breakpointManager, settings: Common.Settings.Settings.instance()});
-    assert.exists(b1);
+    assertNotNullOrUndefined(b1);
     controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
 
     // Double check that the group is collapsed.
@@ -920,7 +923,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('correctly expands breakpoint groups', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const expandedGroups = data.groups.filter(group => group.expanded);
     assert.isAbove(expandedGroups.length, 0);
@@ -933,7 +936,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('correctly collapses breakpoint groups', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const collapsedGroups = data.groups.filter(group => !group.expanded);
     assert.isAbove(collapsedGroups.length, 0);
@@ -945,7 +948,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('renders the group names', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedGroupNames = component.shadowRoot.querySelectorAll(GROUP_NAME_SELECTOR);
     assertElements(renderedGroupNames, HTMLSpanElement);
@@ -960,7 +963,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('renders the breakpoints with their checkboxes', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
@@ -969,17 +972,17 @@ describeWithMockConnection('BreakpointsView', () => {
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {
       const renderedItem = renderedBreakpointItems[i];
-      assert.instanceOf(renderedItem, HTMLDivElement);
+      assertElement(renderedItem, HTMLDivElement);
 
       const inputElement = renderedItem.querySelector('input');
-      assert.instanceOf(inputElement, HTMLInputElement);
+      assertElement(inputElement, HTMLInputElement);
       checkCheckboxState(inputElement, breakpointItems[i]);
     }
   });
 
   it('renders breakpoints with their code snippet', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
@@ -988,7 +991,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {
       const renderedBreakpointItem = renderedBreakpointItems[i];
-      assert.instanceOf(renderedBreakpointItem, HTMLDivElement);
+      assertElement(renderedBreakpointItem, HTMLDivElement);
       checkCodeSnippet(renderedBreakpointItem, breakpointItems[i]);
     }
   });
@@ -1033,11 +1036,11 @@ describeWithMockConnection('BreakpointsView', () => {
     component.data = data;
     await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const groupSummaries = Array.from(component.shadowRoot.querySelectorAll(SUMMARY_SELECTOR));
     const differentiatingPath = groupSummaries.map(group => {
       const differentiatorElement = group.querySelector(GROUP_DIFFERENTIATOR_SELECTOR);
-      assert.instanceOf(differentiatorElement, HTMLSpanElement);
+      assertElement(differentiatorElement, HTMLSpanElement);
       return differentiatorElement.textContent;
     });
     assert.deepEqual(differentiatingPath, ['lib/', 'src/']);
@@ -1045,7 +1048,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('renders breakpoints with a differentiating path', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
@@ -1054,10 +1057,10 @@ describeWithMockConnection('BreakpointsView', () => {
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {
       const renderedBreakpointItem = renderedBreakpointItems[i];
-      assert.instanceOf(renderedBreakpointItem, HTMLDivElement);
+      assertElement(renderedBreakpointItem, HTMLDivElement);
 
       const locationElement = renderedBreakpointItem.querySelector(BREAKPOINT_LOCATION_SELECTOR);
-      assert.instanceOf(locationElement, HTMLSpanElement);
+      assertElement(locationElement, HTMLSpanElement);
 
       const actualLocation = locationElement.textContent;
       const expectedLocation = breakpointItems[i].location;
@@ -1068,13 +1071,13 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('triggers an event on clicking the checkbox of a breakpoint', async () => {
     const {component, data} = await renderSingleBreakpoint();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedItem = component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR);
-    assert.instanceOf(renderedItem, HTMLDivElement);
+    assertElement(renderedItem, HTMLDivElement);
 
     const checkbox = renderedItem.querySelector('input');
-    assert.instanceOf(checkbox, HTMLInputElement);
+    assertElement(checkbox, HTMLInputElement);
     const checked = checkbox.checked;
 
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1086,10 +1089,10 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('triggers an event on clicking on the snippet text', async () => {
     const {component, data} = await renderSingleBreakpoint();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const snippet = component.shadowRoot.querySelector(CODE_SNIPPET_SELECTOR);
-    assert.instanceOf(snippet, HTMLSpanElement);
+    assertElement(snippet, HTMLSpanElement);
 
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
     const jumpToSource = sinon.stub(controller, 'jumpToSource');
@@ -1100,10 +1103,10 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('triggers an event on expanding/unexpanding', async () => {
     const {component, data} = await renderSingleBreakpoint();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedGroupName = component.shadowRoot.querySelector(GROUP_NAME_SELECTOR);
-    assert.instanceOf(renderedGroupName, HTMLSpanElement);
+    assertElement(renderedGroupName, HTMLSpanElement);
 
     const expandedInitialValue = data.groups[0].expanded;
 
@@ -1119,20 +1122,20 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('highlights breakpoint if it is set to be hit', async () => {
     const {component} = await renderSingleBreakpoint();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const renderedBreakpointItem = component.shadowRoot.querySelector(HIT_BREAKPOINT_SELECTOR);
-    assert.instanceOf(renderedBreakpointItem, HTMLDivElement);
+    assertElement(renderedBreakpointItem, HTMLDivElement);
   });
 
   it('triggers an event on removing file breakpoints', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     await hover(component, SUMMARY_SELECTOR);
 
     const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_FILE_BREAKPOINTS_SELECTOR);
-    assert.instanceOf(removeFileBreakpointsButton, HTMLButtonElement);
+    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
 
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
     const breakpointsRemoved = sinon.stub(controller, 'breakpointsRemoved');
@@ -1143,12 +1146,12 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('triggers an event on removing one breakpoint', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
     const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_SINGLE_BREAKPOINT_SELECTOR);
-    assert.instanceOf(removeFileBreakpointsButton, HTMLButtonElement);
+    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
 
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
     const breakpointsRemoved = sinon.stub(controller, 'breakpointsRemoved');
@@ -1160,12 +1163,12 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('triggers an event on editing one breakpoint', async () => {
     const {component, data} = await renderMultipleBreakpoints();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
     const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-    assert.instanceOf(editBreakpointButton, HTMLButtonElement);
+    assertElement(editBreakpointButton, HTMLButtonElement);
 
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
     const breakpointEdited = sinon.stub(controller, 'breakpointEdited');
@@ -1176,12 +1179,12 @@ describeWithMockConnection('BreakpointsView', () => {
 
   it('shows a tooltip with edit condition on regular breakpoints', async () => {
     const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
     const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-    assert.instanceOf(editBreakpointButton, HTMLButtonElement);
+    assertElement(editBreakpointButton, HTMLButtonElement);
 
     assert.strictEqual(editBreakpointButton.title, 'Edit condition');
   });
@@ -1211,11 +1214,11 @@ describeWithMockConnection('BreakpointsView', () => {
 
       await hover(component, SUMMARY_SELECTOR);
 
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
       const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-      assert.exists(firstGroupSummary);
+      assertNotNullOrUndefined(firstGroupSummary);
       const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      assertElement(groupCheckbox, HTMLInputElement);
 
       assert.isTrue(groupCheckbox.checked);
     });
@@ -1234,11 +1237,11 @@ describeWithMockConnection('BreakpointsView', () => {
 
       await hover(component, SUMMARY_SELECTOR);
 
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
       const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-      assert.exists(firstGroupSummary);
+      assertNotNullOrUndefined(firstGroupSummary);
       const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      assertElement(groupCheckbox, HTMLInputElement);
 
       assert.isFalse(groupCheckbox.checked);
     });
@@ -1259,11 +1262,11 @@ describeWithMockConnection('BreakpointsView', () => {
       await hover(component, SUMMARY_SELECTOR);
 
       // Uncheck the group checkbox.
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
       const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-      assert.exists(firstGroupSummary);
+      assertNotNullOrUndefined(firstGroupSummary);
       const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      assertElement(groupCheckbox, HTMLInputElement);
 
       // Wait until we receive all events fired that notify us of disabled breakpoints.
       const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(component, numBreakpointItems, false);
@@ -1288,11 +1291,11 @@ describeWithMockConnection('BreakpointsView', () => {
       await hover(component, SUMMARY_SELECTOR);
 
       // Uncheck the group checkbox.
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
       const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-      assert.exists(firstGroupSummary);
+      assertNotNullOrUndefined(firstGroupSummary);
       const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      assertElement(groupCheckbox, HTMLInputElement);
 
       // Wait until we receive all events fired that notify us of enabled breakpoints.
       const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(component, numBreakpointItems, true);
@@ -1332,7 +1335,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
     component.data = data;
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
@@ -1354,8 +1357,8 @@ describeWithMockConnection('BreakpointsView', () => {
       const {component} =
           await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
       const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
-      assert.exists(breakpointItem);
-      assert.instanceOf(breakpointItem, HTMLDivElement);
+      assertNotNullOrUndefined(breakpointItem);
+      assertElement(breakpointItem, HTMLDivElement);
       assert.isTrue(breakpointItem.classList.contains('conditional-breakpoint'));
     });
 
@@ -1363,20 +1366,20 @@ describeWithMockConnection('BreakpointsView', () => {
       const {component} =
           await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
       const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
-      assert.exists(codeSnippet);
-      assert.instanceOf(codeSnippet, HTMLSpanElement);
+      assertNotNullOrUndefined(codeSnippet);
+      assertElement(codeSnippet, HTMLSpanElement);
       assert.strictEqual(codeSnippet.title, `Condition: ${breakpointDetails}`);
     });
 
     it('show a tooltip on editing the condition', async () => {
       const {component} =
           await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
       const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-      assert.instanceOf(editBreakpointButton, HTMLButtonElement);
+      assertElement(editBreakpointButton, HTMLButtonElement);
 
       assert.strictEqual(editBreakpointButton.title, 'Edit condition');
     });
@@ -1388,27 +1391,27 @@ describeWithMockConnection('BreakpointsView', () => {
     it('are rendered', async () => {
       const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
       const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
-      assert.exists(breakpointItem);
-      assert.instanceOf(breakpointItem, HTMLDivElement);
+      assertNotNullOrUndefined(breakpointItem);
+      assertElement(breakpointItem, HTMLDivElement);
       assert.isTrue(breakpointItem.classList.contains('logpoint'));
     });
 
     it('show a tooltip', async () => {
       const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
       const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
-      assert.exists(codeSnippet);
-      assert.instanceOf(codeSnippet, HTMLSpanElement);
+      assertNotNullOrUndefined(codeSnippet);
+      assertElement(codeSnippet, HTMLSpanElement);
       assert.strictEqual(codeSnippet.title, `Logpoint: ${breakpointDetails}`);
     });
 
     it('show a tooltip on editing the logpoint', async () => {
       const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
       const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-      assert.instanceOf(editBreakpointButton, HTMLButtonElement);
+      assertElement(editBreakpointButton, HTMLButtonElement);
 
       assert.strictEqual(editBreakpointButton.title, 'Edit logpoint');
     });
@@ -1418,106 +1421,106 @@ describeWithMockConnection('BreakpointsView', () => {
     it('state is rendered correctly when disabled', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: false, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnUncaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
       const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
       assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnCaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
       const pauseOnCaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
       assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
     it('state is rendered correctly when pausing on uncaught exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnUncaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
       const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
       assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnCaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
       const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnCaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsCheckbox);
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
       assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
     it('state is rendered correctly when pausing on all exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: true, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnUncaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
       const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
       assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnCaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
       const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnCaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsCheckbox);
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
       assert.isTrue(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
     it('state is rendered correctly when toggles are dependent and only pausing on uncaught exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: false});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnUncaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
       const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
       assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnCaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
       const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
       assert.isFalse(pauseOnCaughtExceptionsCheckbox.disabled);
     });
 
     it('state is rendered correctly when toggles are dependent and not pausing on uncaught exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: false, independentPauseToggles: false});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnUncaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
       const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
       assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(pauseOnCaughtExceptionsItem);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
       const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
       assert.isTrue(pauseOnCaughtExceptionsCheckbox.disabled);
     });
 
@@ -1525,32 +1528,32 @@ describeWithMockConnection('BreakpointsView', () => {
        async () => {
          const component = await renderNoBreakpoints(
              {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: true, independentPauseToggles: false});
-         assert.isNotNull(component.shadowRoot);
+         assertShadowRoot(component.shadowRoot);
 
          const pauseOnUncaughtExceptionsItem =
              component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-         assert.instanceOf(pauseOnUncaughtExceptionsItem, HTMLDivElement);
+         assertElement(pauseOnUncaughtExceptionsItem, HTMLDivElement);
 
          {
            // Click on the pause on exceptions checkbox to uncheck.
            const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-           assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+           assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
            dispatchClickEvent(pauseOnUncaughtExceptionsCheckbox);
            await coordinator.done();
          }
          {
            // Check that clicking on it actually unchecked.
            const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-           assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+           assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
            assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
          }
 
          // Check if the pause on caught exception checkbox is unchecked and disabled as a result.
          const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-         assert.exists(pauseOnCaughtExceptionsItem);
+         assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
 
          const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
-         assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+         assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
          assert.isTrue(pauseOnCaughtExceptionsCheckbox.disabled);
          assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
        });
@@ -1558,13 +1561,13 @@ describeWithMockConnection('BreakpointsView', () => {
     it('triggers an event when disabling pausing on all exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const item = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(item);
+      assertNotNullOrUndefined(item);
 
       const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      assertElement(checkbox, HTMLInputElement);
       const {checked} = checkbox;
 
       const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1578,13 +1581,13 @@ describeWithMockConnection('BreakpointsView', () => {
     it('triggers an event when enabling pausing on caught exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const item = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(item);
+      assertNotNullOrUndefined(item);
 
       const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      assertElement(checkbox, HTMLInputElement);
       const {checked} = checkbox;
 
       const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1598,13 +1601,13 @@ describeWithMockConnection('BreakpointsView', () => {
     it('triggers an event when enabling pausing on uncaught exceptions', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: true, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const item = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.exists(item);
+      assertNotNullOrUndefined(item);
 
       const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      assertElement(checkbox, HTMLInputElement);
       const {checked} = checkbox;
 
       const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1688,22 +1691,24 @@ describeWithMockConnection('BreakpointsView', () => {
     it('pause on exceptions is tabbable', async () => {
       const component = await renderNoBreakpoints(
           {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
-      assert.isNotNull(component.shadowRoot);
+      assertShadowRoot(component.shadowRoot);
 
       const focusableElements = component.shadowRoot.querySelectorAll(TABBABLE_SELECTOR);
+      assertElements(focusableElements, HTMLElement);
       assert.lengthOf(focusableElements, 1);
 
       const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-      assert.deepEqual(focusableElements[0], pauseOnUncaughtExceptions);
+
+      assert.deepEqual(focusableElements.item(0), pauseOnUncaughtExceptions);
     });
 
     describe('pressing the HOME key', () => {
       it('takes the user to the pause-on-exceptions line', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const secondGroupsSummary =
             component.shadowRoot.querySelector(`${DETAILS_SELECTOR}:nth-of-type(2) > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(secondGroupsSummary, HTMLElement);
+        assertElement(secondGroupsSummary, HTMLElement);
 
         // Focus on second group by clicking on it, then press Home button.
         dispatchClickEvent(secondGroupsSummary);
@@ -1711,9 +1716,9 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
         const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-        assert.instanceOf(pauseOnUncaughtExceptions, HTMLElement);
+        assertElement(pauseOnUncaughtExceptions, HTMLElement);
         assert.strictEqual(selected, pauseOnUncaughtExceptions);
       });
     });
@@ -1721,9 +1726,9 @@ describeWithMockConnection('BreakpointsView', () => {
     describe('pressing the END key', () => {
       it('takes the user to the summary node of the last group (if last group is collapsed)', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
-        assert.instanceOf(pauseOnUncaughtExceptions, HTMLElement);
+        assertElement(pauseOnUncaughtExceptions, HTMLElement);
 
         // Focus on the pause-on-exceptions line by clicking on it, then press End key.
         dispatchClickEvent(pauseOnUncaughtExceptions);
@@ -1731,11 +1736,11 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const lastGroupSummary =
             component.shadowRoot.querySelector(`${DETAILS_SELECTOR}:nth-of-type(2) > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(lastGroupSummary, HTMLElement);
+        assertElement(lastGroupSummary, HTMLElement);
         assert.strictEqual(selected, lastGroupSummary);
       });
 
@@ -1746,9 +1751,9 @@ describeWithMockConnection('BreakpointsView', () => {
         component.data = data;
         await coordinator.done();
 
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-        assert.instanceOf(firstGroupSummary, HTMLElement);
+        assertElement(firstGroupSummary, HTMLElement);
 
         // First focus on the first group by clicking on it, then press the End button.
         dispatchClickEvent(firstGroupSummary);
@@ -1756,7 +1761,7 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const breakpointItems = component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR);
         assertElements(breakpointItems, HTMLDivElement);
@@ -1770,10 +1775,10 @@ describeWithMockConnection('BreakpointsView', () => {
       it('on the pause-on-uncaught-exception takes the user to the summary node of the top most details element',
          async () => {
            const {component} = await renderBreakpointsForKeyboardNavigation();
-           assert.isNotNull(component.shadowRoot);
+           assertShadowRoot(component.shadowRoot);
 
            const pauseOnCaughtException = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-           assert.instanceOf(pauseOnCaughtException, HTMLElement);
+           assertElement(pauseOnCaughtException, HTMLElement);
 
            // Focus on the pause on exception, and navigate one down.
            dispatchClickEvent(pauseOnCaughtException);
@@ -1782,19 +1787,19 @@ describeWithMockConnection('BreakpointsView', () => {
 
            const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
            const firstSummary = component.shadowRoot.querySelector(`${DETAILS_SELECTOR} > ${SUMMARY_SELECTOR}`);
-           assert.instanceOf(firstSummary, HTMLElement);
+           assertElement(firstSummary, HTMLElement);
            assert.strictEqual(selected, firstSummary);
          });
 
       it('on the summary node of an expanded group takes the user to the top most breakpoint item of that group',
          async () => {
            const {component} = await renderBreakpointsForKeyboardNavigation();
-           assert.isNotNull(component.shadowRoot);
+           assertShadowRoot(component.shadowRoot);
            const collapsedDetailsElement = component.shadowRoot.querySelector(COLLAPSED_GROUPS_SELECTOR);
-           assert.instanceOf(collapsedDetailsElement, HTMLDetailsElement);
+           assertElement(collapsedDetailsElement, HTMLDetailsElement);
 
            const collapsedGroupSummary = collapsedDetailsElement.querySelector(SUMMARY_SELECTOR);
-           assert.instanceOf(collapsedGroupSummary, HTMLElement);
+           assertElement(collapsedGroupSummary, HTMLElement);
 
            // Focus on the collapsed group and collapse it by clicking on it. Then navigate down.
            dispatchClickEvent(collapsedGroupSummary);
@@ -1802,21 +1807,21 @@ describeWithMockConnection('BreakpointsView', () => {
            await coordinator.done();
 
            const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-           assert.instanceOf(selected, HTMLElement);
+           assertElement(selected, HTMLElement);
 
            const firstBreakpointItem = collapsedDetailsElement.querySelector(BREAKPOINT_ITEM_SELECTOR);
-           assert.instanceOf(firstBreakpointItem, HTMLDivElement);
+           assertElement(firstBreakpointItem, HTMLDivElement);
 
            assert.strictEqual(selected, firstBreakpointItem);
          });
 
       it('on the summary node of a collapsed group takes the user to the summary node of the next group', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
 
         const firstGroupSummary =
             component.shadowRoot.querySelector(`${DETAILS_SELECTOR}:nth-of-type(1) > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(firstGroupSummary, HTMLElement);
+        assertElement(firstGroupSummary, HTMLElement);
 
         // Focus on the expanded group and collapse it by clicking on it. Then navigate down.
         dispatchClickEvent(firstGroupSummary);
@@ -1824,22 +1829,22 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const secondGroupSummary =
             component.shadowRoot.querySelector(`${DETAILS_SELECTOR}:nth-of-type(2) > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(secondGroupSummary, HTMLElement);
+        assertElement(secondGroupSummary, HTMLElement);
         assert.strictEqual(selected, secondGroupSummary);
       });
 
       it('on a breakpoint item takes the user to the next breakpoint item', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
 
         const firstDetailsElement = component.shadowRoot.querySelector('details');
-        assert.instanceOf(firstDetailsElement, HTMLDetailsElement);
+        assertElement(firstDetailsElement, HTMLDetailsElement);
         const firstBreakpointItem = firstDetailsElement.querySelector(BREAKPOINT_ITEM_SELECTOR);
-        assert.instanceOf(firstBreakpointItem, HTMLDivElement);
+        assertElement(firstBreakpointItem, HTMLDivElement);
 
         // Focus on the first breakpoint item. Then navigate up.
         dispatchClickEvent(firstBreakpointItem);
@@ -1847,10 +1852,10 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const secondBreakpointItem = firstDetailsElement.querySelector(`${BREAKPOINT_ITEM_SELECTOR}:nth-of-type(2)`);
-        assert.instanceOf(secondBreakpointItem, HTMLDivElement);
+        assertElement(secondBreakpointItem, HTMLDivElement);
 
         assert.strictEqual(selected, secondBreakpointItem);
       });
@@ -1859,9 +1864,9 @@ describeWithMockConnection('BreakpointsView', () => {
     describe('pressing the ArrowUp key', () => {
       it('on the first summary takes a user to the pause on exceptions', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const firstSummary = component.shadowRoot.querySelector(`${DETAILS_SELECTOR} > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(firstSummary, HTMLElement);
+        assertElement(firstSummary, HTMLElement);
 
         // Focus on the summary element.
         dispatchClickEvent(firstSummary);
@@ -1870,19 +1875,19 @@ describeWithMockConnection('BreakpointsView', () => {
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-        assert.instanceOf(pauseOnUncaughtExceptions, HTMLDivElement);
+        assertElement(pauseOnUncaughtExceptions, HTMLDivElement);
 
         assert.strictEqual(selected, pauseOnUncaughtExceptions);
       });
 
       it('on the first breakpoint item in an expanded group takes the user to the summary node', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const expandedDetails = component.shadowRoot.querySelector(EXPANDED_GROUPS_SELECTOR);
-        assert.instanceOf(expandedDetails, HTMLDetailsElement);
+        assertElement(expandedDetails, HTMLDetailsElement);
 
         const firstBreakpointItem = expandedDetails.querySelector(BREAKPOINT_ITEM_SELECTOR);
-        assert.instanceOf(firstBreakpointItem, HTMLDivElement);
+        assertElement(firstBreakpointItem, HTMLDivElement);
 
         // Focus on first breakpoint item. Then navigate up.
         dispatchClickEvent(firstBreakpointItem);
@@ -1890,19 +1895,19 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const summary = expandedDetails.querySelector(SUMMARY_SELECTOR);
-        assert.instanceOf(summary, HTMLElement);
+        assertElement(summary, HTMLElement);
 
         assert.strictEqual(selected, summary);
       });
 
       it('on a breakpoint item in an expanded group takes the user to the previous breakpoint item', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const expandedDetails = component.shadowRoot.querySelector(EXPANDED_GROUPS_SELECTOR);
-        assert.instanceOf(expandedDetails, HTMLDetailsElement);
+        assertElement(expandedDetails, HTMLDetailsElement);
 
         const breakpointItems = expandedDetails.querySelectorAll(BREAKPOINT_ITEM_SELECTOR);
         assert.isAbove(breakpointItems.length, 1);
@@ -1914,19 +1919,19 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const nextToLastBreakpointItem = breakpointItems.item(breakpointItems.length - 2);
-        assert.instanceOf(nextToLastBreakpointItem, HTMLDivElement);
+        assertElement(nextToLastBreakpointItem, HTMLDivElement);
         assert.strictEqual(selected, nextToLastBreakpointItem);
       });
 
       it('on a summary node takes the user to the last breakpoint item of the previous group', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
-        assert.isNotNull(component.shadowRoot);
+        assertShadowRoot(component.shadowRoot);
         const secondGroupSummary =
             component.shadowRoot.querySelector(`${DETAILS_SELECTOR}:nth-of-type(2) > ${SUMMARY_SELECTOR}`);
-        assert.instanceOf(secondGroupSummary, HTMLElement);
+        assertElement(secondGroupSummary, HTMLElement);
 
         // Focus on the group. Then navigate up.
         dispatchClickEvent(secondGroupSummary);
@@ -1934,12 +1939,12 @@ describeWithMockConnection('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        assert.instanceOf(selected, HTMLElement);
+        assertElement(selected, HTMLElement);
 
         const firstDetailsElement = component.shadowRoot.querySelector(DETAILS_SELECTOR);
-        assert.exists(firstDetailsElement);
+        assertNotNullOrUndefined(firstDetailsElement);
         const lastBreakpointItem = firstDetailsElement.querySelector(`${BREAKPOINT_ITEM_SELECTOR}:last-child`);
-        assert.instanceOf(lastBreakpointItem, HTMLDivElement);
+        assertElement(lastBreakpointItem, HTMLDivElement);
 
         assert.strictEqual(selected, lastBreakpointItem);
       });

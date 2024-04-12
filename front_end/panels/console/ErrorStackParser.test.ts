@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -49,7 +50,7 @@ describe('ErrorStackParser', () => {
         not a valid line
         at file:///testing.js:42:5`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.strictEqual(frames[1].line, '        not a valid line');
     assert.isUndefined(frames[1].link);
   });
@@ -74,7 +75,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at foo (<anonymous>:10:3)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.strictEqual(frames[1].line, '        at foo (<anonymous>:10:3)');
     assert.isUndefined(frames[1].link);
   });
@@ -83,7 +84,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at foo (file:///testing.js:10:3)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: fileTestingUrl,
       prefix: '        at foo (',
@@ -98,7 +99,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at foo (file:///testing.js)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: fileTestingUrl,
       prefix: '        at foo (',
@@ -113,7 +114,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at file:///testing.js:42:3`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: fileTestingUrl,
       prefix: '        at ',
@@ -128,7 +129,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at async file:///testing.js:42:3`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: fileTestingUrl,
       prefix: '        at async ',
@@ -146,7 +147,7 @@ describe('ErrorStackParser', () => {
         at load (${url}:33:5)
         at ${url}:1:1`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.lengthOf(frames, 3);
     assert.deepStrictEqual(frames[1].link, {
       url,
@@ -171,7 +172,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: MyError
     at eval (eval at <anonymous> (${url}:42:1), <anonymous>:1:1)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.lengthOf(frames, 2);
     assert.deepStrictEqual(frames[1].link, {
       url,
@@ -187,7 +188,7 @@ describe('ErrorStackParser', () => {
     const frames = parseErrorStack(`Error: standard error
         at foo (testing.js:10:3)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js' as Platform.DevToolsPath.UrlString);
   });
 
@@ -196,7 +197,7 @@ describe('ErrorStackParser', () => {
     at Object.func (test.js:26:25)
     at eval (eval at testFunction (inspected-page.html:29:11), <anonymous>:1:10)`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.lengthOf(frames, 3);
     assert.deepStrictEqual(frames[2].link, {
       url: 'http://www.example.org/inspected-page.html' as Platform.DevToolsPath.UrlString,
@@ -214,7 +215,7 @@ describe('ErrorStackParser', () => {
         at async bar (/(abc)/foo.js:1:2)
         at /(abc)/foo.js:10:20`);
 
-    assert.exists(frames);
+    assertNotNullOrUndefined(frames);
     assert.lengthOf(frames, 4);
     assert.deepStrictEqual(frames[1].link, {
       url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
@@ -249,7 +250,7 @@ describe('ErrorStackParser', () => {
       const parsedFrames = parseErrorStack(`Error: some error
           at foo (http://example.com/a.js:6:3)
           at bar (http://example.com/b.js:43:14)`);
-      assert.exists(parsedFrames);
+      assertNotNullOrUndefined(parsedFrames);
       const protocolFrames: Protocol.Runtime.CallFrame[] = [
         {
           url: 'http://example.com/a.js',
@@ -276,7 +277,7 @@ describe('ErrorStackParser', () => {
     it('omits the scriptId for non-matching frames', () => {
       const parsedFrames = parseErrorStack(`Error: some error
         at http://example.com/a.js:6:3`);
-      assert.exists(parsedFrames);
+      assertNotNullOrUndefined(parsedFrames);
       const protocolFrames: Protocol.Runtime.CallFrame[] = [{
         url: 'http://example.com/a.js',
         scriptId: sid('25'),
@@ -287,7 +288,7 @@ describe('ErrorStackParser', () => {
 
       Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
 
-      assert.exists(parsedFrames[1].link);
+      assertNotNullOrUndefined(parsedFrames[1].link);
       assert.isUndefined(parsedFrames[1].link.scriptId);
     });
 
@@ -296,7 +297,7 @@ describe('ErrorStackParser', () => {
         at foo (http://example.com/a.js:6:3)
         at Array.forEach (<anonymous>)
         at bar (http://example.com/b.js:43:14)`);
-      assert.exists(parsedFrames);
+      assertNotNullOrUndefined(parsedFrames);
       const protocolFrames: Protocol.Runtime.CallFrame[] = [
         {
           url: 'http://example.com/a.js',

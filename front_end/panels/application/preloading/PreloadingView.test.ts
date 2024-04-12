@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {assertGridContents} from '../../../testing/DataGridHelpers.js';
 import {
+  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -60,7 +62,7 @@ class NavigationEmulator {
     });
 
     const target = SDK.TargetManager.TargetManager.instance().targetById(targetInfo.targetId);
-    assert.exists(target);
+    assertNotNullOrUndefined(target);
 
     return target;
   }
@@ -109,15 +111,15 @@ class NavigationEmulator {
   async activateAndDispatchEvents(path: string): Promise<void> {
     const url = 'https://example.com/' + path;
 
-    assert.exists(this.prerenderTarget);
+    assertNotNullOrUndefined(this.prerenderTarget);
     assert.isTrue(url === this.prerenderTarget.targetInfo()?.url);
-    assert.exists(this.prerenderStatusUpdatedEvent);
+    assertNotNullOrUndefined(this.prerenderStatusUpdatedEvent);
 
     this.seq++;
     this.loaderId = this.prerenderStatusUpdatedEvent.key.loaderId;
 
     const targetInfo = this.prerenderTarget.targetInfo();
-    assert.exists(targetInfo);
+    assertNotNullOrUndefined(targetInfo);
 
     // This also emits ResourceTreeModel.Events.PrimaryPageChanged.
     dispatchEvent(this.tabTarget, 'Target.targetInfoChanged', {
@@ -242,7 +244,7 @@ class NavigationEmulator {
 
 function createRuleSetView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingRuleSetView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
-  assert.exists(model);
+  assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingRuleSetView(model);
   const container = new UI.Widget.VBox();
   const div = document.createElement('div');
@@ -258,7 +260,7 @@ function createRuleSetView(target: SDK.Target.Target): Resources.PreloadingView.
 
 function createAttemptView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingAttemptView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
-  assert.exists(model);
+  assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingAttemptView(model);
   const container = new UI.Widget.VBox();
   const div = document.createElement('div');
@@ -274,7 +276,7 @@ function createAttemptView(target: SDK.Target.Target): Resources.PreloadingView.
 
 function createSummaryView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingSummaryView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
-  assert.exists(model);
+  assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingSummaryView(model);
   const container = new UI.Widget.VBox();
   const div = document.createElement('div');
@@ -323,7 +325,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await coordinator.done();
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -350,9 +352,9 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await coordinator.done();
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
     const ruleSetDetailsComponent = view.getRuleSetDetailsForTest();
-    assert.isNotNull(ruleSetDetailsComponent.shadowRoot);
+    assertShadowRoot(ruleSetDetailsComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -402,7 +404,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await coordinator.done();
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -432,7 +434,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await coordinator.done();
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -468,7 +470,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
       canAccessOpener: false,
     };
     const childTargetManager = emulator.primaryTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-    assert.exists(childTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
 
     dispatchEvent(emulator.primaryTarget, 'Target.targetCreated', {targetInfo});
 
@@ -481,7 +483,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     await coordinator.done();
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assert.isNotNull(ruleSetGridComponent.shadowRoot);
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -514,9 +516,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await coordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         preloadingGridComponent,
@@ -563,7 +565,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
       canAccessOpener: false,
     };
     const childTargetManager = emulator.primaryTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-    assert.exists(childTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
 
     dispatchEvent(emulator.primaryTarget, 'Target.targetCreated', {targetInfo});
 
@@ -576,9 +578,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await coordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         preloadingGridComponent,
@@ -653,7 +655,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
 
     assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
@@ -743,9 +745,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     await coordinator.done();
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         preloadingGridComponent,
@@ -812,9 +814,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     });
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     await coordinator.done();
 
@@ -891,9 +893,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     prerenderTarget?.dispose('test');
 
     const preloadingGridComponent = view.getPreloadingGridForTest();
-    assert.isNotNull(preloadingGridComponent.shadowRoot);
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
     const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assert.isNotNull(preloadingDetailsComponent.shadowRoot);
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     await coordinator.done();
 
@@ -962,7 +964,7 @@ describeWithMockConnection('PreloadingSummaryView', () => {
     await coordinator.done();
 
     const usedPreloadingComponent = view.getUsedPreloadingForTest();
-    assert.isNotNull(usedPreloadingComponent.shadowRoot);
+    assertShadowRoot(usedPreloadingComponent.shadowRoot);
 
     assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was successfully prerendered.');
   });
@@ -975,7 +977,7 @@ async function testWarnings(
 
   const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
     model.addEventListener(SDK.PreloadingModel.Events.WarningsUpdated, _ => resolve());
   });
 
@@ -989,8 +991,8 @@ async function testWarnings(
 
   const infobarContainer = view.getInfobarContainerForTest();
   const infobar = infobarContainer.querySelector('devtools-resources-preloading-disabled-infobar');
-  assert.exists(infobar);
-  assert.isNotNull(infobar.shadowRoot);
+  assertNotNullOrUndefined(infobar);
+  assertShadowRoot(infobar.shadowRoot);
   const headerGot = infobar.shadowRoot.querySelector('#header');
   assert.strictEqual(headerGot?.textContent?.trim() || null, headerExpected);
 

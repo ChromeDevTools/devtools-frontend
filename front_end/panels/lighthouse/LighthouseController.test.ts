@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -24,7 +25,7 @@ describeWithMockConnection('LighthouseController', () => {
       const controller = new Lighthouse.LighthouseController.LighthouseController(
           sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService));
       const serviceWorkerManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
-      assert.exists(serviceWorkerManager);
+      assertNotNullOrUndefined(serviceWorkerManager);
       const pageAuditabilityChange = controller.once(Lighthouse.LighthouseController.Events.PageAuditabilityChanged);
       serviceWorkerManager.dispatchEventToListeners(
           SDK.ServiceWorkerManager.Events.RegistrationUpdated,

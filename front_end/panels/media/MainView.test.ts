@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -31,7 +32,7 @@ describeWithMockConnection('MediaMainView', () => {
     mainView.markAsRoot();
     mainView.show(document.body);
     const model = target.model(Media.MediaModel.MediaModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
     model.dispatchEventToListeners(Media.MediaModel.Events.PlayersCreated, [PLAYER_ID]);
     const field = [{name: 'kResolution', value: '{}', data: {}, stack: [], cause: []}];
     const data = {playerId: PLAYER_ID, properties: field, events: field, messages: field, errors: field};

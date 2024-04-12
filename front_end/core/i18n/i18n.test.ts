@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertElement} from '../../testing/DOMHelpers.js';
 import * as i18nRaw from '../../third_party/i18n/i18n.js';
 
 import * as i18n from './i18n.js';
@@ -89,7 +90,7 @@ describe('getFormatLocalizedString', () => {
 
     const messageElement = i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.simple, {});
 
-    assert.instanceOf(messageElement, HTMLElement);
+    assertElement(messageElement, HTMLElement);
     assert.strictEqual(messageElement.innerText, 'a simple message');
   });
 
@@ -102,7 +103,7 @@ describe('getFormatLocalizedString', () => {
     const messageElement =
         i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: placeholder});
 
-    assert.instanceOf(messageElement, HTMLElement);
+    assertElement(messageElement, HTMLElement);
     assert.strictEqual(messageElement.innerHTML, 'a message with a <span>very pretty</span> placeholder');
   });
 
@@ -113,7 +114,7 @@ describe('getFormatLocalizedString', () => {
     const messageElement =
         i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: 'somewhat nice'});
 
-    assert.instanceOf(messageElement, HTMLElement);
+    assertElement(messageElement, HTMLElement);
     assert.strictEqual(messageElement.innerHTML, 'a message with a somewhat nice placeholder');
   });
 });

@@ -9,6 +9,7 @@ import {
   dispatchEvent,
 } from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -16,7 +17,7 @@ describeWithMockConnection('PreloadingModel', () => {
   it('adds and deletes rule sets and preloeading attempts', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
 
     assert.deepEqual(model.getAllRuleSets(), []);
 
@@ -326,7 +327,7 @@ describeWithMockConnection('PreloadingModel', () => {
   it('registers preloeading attempt with status NotTriggered', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
 
     assert.deepEqual(model.getAllRuleSets(), []);
 
@@ -399,7 +400,7 @@ describeWithMockConnection('PreloadingModel', () => {
   it('clears rule sets and preloading attempts for previous pages', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
 
     assert.deepEqual(model.getAllRuleSets(), []);
     assert.deepEqual(model.getPreloadingAttempts(null), []);
@@ -553,7 +554,7 @@ describeWithMockConnection('PreloadingModel', () => {
   it('filters preloading attempts by rule set id', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
-    assert.exists(model);
+    assertNotNullOrUndefined(model);
 
     assert.deepEqual(model.getAllRuleSets(), []);
     assert.deepEqual(model.getPreloadingAttempts(null), []);

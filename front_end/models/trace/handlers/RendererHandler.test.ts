@@ -1020,7 +1020,7 @@ describeWithEnvironment('RendererHandler', function() {
     assert.strictEqual(AuctionWorklets.worklets.size, 3);
     for (const [pid] of AuctionWorklets.worklets) {
       const process = Renderer.processes.get(pid);
-      assert.exists(process);
+      assert.isDefined(process);
       // Ensure that the URL was set properly based on the AuctionWorklets metadata event.
       assert.isTrue(process?.url?.includes('fledge-demo.glitch.me'));
     }

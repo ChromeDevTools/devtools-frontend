@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -15,7 +16,7 @@ describe('Toolbar', () => {
       const input = new UI.Toolbar.ToolbarInput('placeholder');
       renderElementIntoDOM(input.element);
       const clearButton = input.element.querySelector('.toolbar-input-clear-button');
-      assert.instanceOf(clearButton, HTMLElement);
+      assertElement(clearButton, HTMLElement);
       assert.strictEqual(clearButton.title, 'Clear input');
     });
 
@@ -23,7 +24,7 @@ describe('Toolbar', () => {
       const input = new UI.Toolbar.ToolbarInput('placeholder');
       renderElementIntoDOM(input.element);
       const clearButton = input.element.querySelector('.toolbar-input-clear-button');
-      assert.instanceOf(clearButton, HTMLElement);
+      assertElement(clearButton, HTMLElement);
       input.setValue('test value');
       dispatchClickEvent(clearButton);
       assert.strictEqual(input.value(), '');

@@ -5,6 +5,8 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
+  assertElement,
+  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -43,7 +45,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -63,7 +65,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, ['Origin', 'Top-level site', 'Is third-party']);
@@ -81,7 +83,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, ['Origin', 'Top-level site', 'Is third-party', 'Is opaque']);
@@ -102,7 +104,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, ['Origin', 'Is third-party', 'Is opaque']);
@@ -118,7 +120,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, ['Origin', 'Is third-party']);
@@ -141,7 +143,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
     assert.strictEqual(textContent, 'https://example.com');
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(
@@ -197,7 +199,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     assert.strictEqual(buttons.length, 1);
 
     const [deleteButton] = buttons;
-    assert.instanceOf(deleteButton, HTMLElement);
+    assertElement(deleteButton, HTMLElement);
     assert.strictEqual(deleteButton.textContent!.trim(), 'Delete bucket');
 
     const showDialog = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);

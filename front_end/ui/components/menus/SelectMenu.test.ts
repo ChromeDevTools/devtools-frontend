@@ -62,13 +62,13 @@ describeWithLocale('SelectMenu', () => {
     menu.buttonTitle = 'Override Title';
     Helpers.renderElementIntoDOM(menu);
     await coordinator.done();
-    assert.isNotNull(menu.shadowRoot);
+    Helpers.assertShadowRoot(menu.shadowRoot);
     const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
     if (!button) {
       assert.fail('devtools-select-menu-button not found');
       return;
     }
-    assert.instanceOf(button, HTMLElement);
+    Helpers.assertElement(button, HTMLElement);
     assert.strictEqual(button.innerText, 'Override Title');
   });
 
@@ -83,13 +83,13 @@ describeWithLocale('SelectMenu', () => {
     menu.buttonTitle = () => LitHtml.html`Override Title`;
     Helpers.renderElementIntoDOM(menu);
     await coordinator.done();
-    assert.isNotNull(menu.shadowRoot);
+    Helpers.assertShadowRoot(menu.shadowRoot);
     const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
     if (!button) {
       assert.fail('devtools-select-menu-button not found');
       return;
     }
-    assert.instanceOf(button, HTMLElement);
+    Helpers.assertElement(button, HTMLElement);
     assert.strictEqual(button.innerText, 'Override Title');
   });
 
@@ -98,7 +98,7 @@ describeWithLocale('SelectMenu', () => {
     Helpers.renderElementIntoDOM(selectMenu);
     [...selectMenu.querySelectorAll('devtools-menu-item')][0].selected = true;
     [...selectMenu.querySelectorAll('devtools-menu-item')][1].selected = true;
-    assert.isNotNull(selectMenu.shadowRoot);
+    Helpers.assertShadowRoot(selectMenu.shadowRoot);
     const devtoolsMenu = selectMenu.shadowRoot.querySelector('devtools-menu');
     const devtoolsDialog = devtoolsMenu?.shadowRoot?.querySelector('devtools-dialog');
     await devtoolsDialog?.setDialogVisible(true);

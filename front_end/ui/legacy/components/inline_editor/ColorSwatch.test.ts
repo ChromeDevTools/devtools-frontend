@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import {
+  assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
@@ -16,11 +17,11 @@ function assertSwatch(
     swatch: InlineEditor.ColorSwatch.ColorSwatch,
     expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
   const swatchEl = swatch.shadowRoot!.querySelector('.color-swatch');
-  assert.instanceOf(swatchEl, HTMLElement);
+  assertElement(swatchEl, HTMLElement);
   const swatchInnerEl = swatch.shadowRoot!.querySelector('.color-swatch-inner');
-  assert.instanceOf(swatchInnerEl, HTMLElement);
+  assertElement(swatchInnerEl, HTMLElement);
   const slotEl = swatch.shadowRoot!.querySelector('slot');
-  assert.instanceOf(slotEl, HTMLElement);
+  assertElement(slotEl, HTMLElement);
 
   if (expected.backgroundColor) {
     assert.strictEqual(

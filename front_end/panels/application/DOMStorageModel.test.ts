@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -32,13 +33,13 @@ describeWithMockConnection('DOMStorageModel', () => {
 
     domStorageModel.enable();
     const manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
-    assert.exists(manager);
+    assertNotNullOrUndefined(manager);
 
     assert.isEmpty(domStorageModel.storages());
     manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
-    assert.exists(domStorageModel.storageForId(testId));
+    assertNotNullOrUndefined(domStorageModel.storageForId(testId));
 
-    assert.exists(domStorageModel.storageForId(testId));
+    assertNotNullOrUndefined(domStorageModel.storageForId(testId));
     manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyRemoved, testKey);
     assert.isUndefined(domStorageModel.storageForId(testId));
   });

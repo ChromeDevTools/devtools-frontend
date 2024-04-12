@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
+  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -36,10 +38,10 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-    assert.isNotNull(report.shadowRoot);
+    assertShadowRoot(report.shadowRoot);
 
     const titleElement = report.shadowRoot.querySelector('.report-title');
     assert.strictEqual(titleElement?.textContent, 'My Database');
@@ -74,10 +76,10 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-    assert.isNotNull(report.shadowRoot);
+    assertShadowRoot(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, ['Origin', 'Is third-party', 'Is opaque', 'Version', 'Object stores']);
@@ -109,10 +111,10 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-    assert.isNotNull(report.shadowRoot);
+    assertShadowRoot(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -163,12 +165,12 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
         model as unknown as Application.IndexedDBModel.IndexedDBModel, database);
     renderElementIntoDOM(component);
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
 
     const buttons = component.shadowRoot.querySelectorAll('devtools-button');
     assert.strictEqual(buttons.length, 2);
-    assert.instanceOf(buttons[0], HTMLElement);
+    assertElement(buttons[0], HTMLElement);
     assert.strictEqual(buttons[0].textContent?.trim(), 'Delete database');
     const showDialog = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);
     buttons[0].click();
@@ -176,7 +178,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(model.deleteDatabase.calledOnceWithExactly(databaseId));
 
-    assert.instanceOf(buttons[1], HTMLElement);
+    assertElement(buttons[1], HTMLElement);
     assert.strictEqual(buttons[1].textContent?.trim(), 'Refresh database');
     buttons[1].click();
     assert.isTrue(model.refreshDatabase.calledOnceWithExactly(databaseId));

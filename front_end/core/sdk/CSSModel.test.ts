@@ -6,6 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -83,8 +84,8 @@ describeWithMockConnection('CSSModel', () => {
     });
 
     it('resets on navigation', () => {
-      assert.exists(cssModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(cssModel);
+      assertNotNullOrUndefined(resourceTreeModel);
 
       cssModel.styleSheetAdded(header);
       let styleSheetIds =
@@ -100,8 +101,8 @@ describeWithMockConnection('CSSModel', () => {
     });
 
     it('does not reset on prerender activation', () => {
-      assert.exists(cssModel);
-      assert.exists(resourceTreeModel);
+      assertNotNullOrUndefined(cssModel);
+      assertNotNullOrUndefined(resourceTreeModel);
 
       cssModel.styleSheetAdded(header);
       let styleSheetIds =

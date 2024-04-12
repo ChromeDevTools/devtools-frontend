@@ -48,6 +48,10 @@ type Constructor<T> = {
   new (...args: unknown[]): T,
 };
 
+function assertElement<T extends Element>(element: Element|null, elementClass: Constructor<T>): asserts element is T {
+  assert.instanceOf(element, elementClass);
+}
+
 function assertElements<T extends Element>(
     nodeList: NodeListOf<Element>, elementClass: Constructor<T>): asserts nodeList is NodeListOf<T> {
   nodeList.forEach(e => assert.instanceOf(e, elementClass));
@@ -89,14 +93,14 @@ export function createGridLabelContainer(layerId?: number) {
 
 export function getMainGridLabelContainer(): HTMLElement {
   const el = document.getElementById(GRID_LABEL_CONTAINER_ID);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 
 export function getGridLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el = document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)}`);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 
@@ -104,7 +108,7 @@ export function getGridLineNumberLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el = document.querySelector(
       `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NUMBER_LABEL_CONTAINER_CLASS}`);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 
@@ -112,7 +116,7 @@ export function getGridLineNameLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el =
       document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_NAME_LABEL_CONTAINER_CLASS}`);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 
@@ -120,7 +124,7 @@ export function getGridTrackSizesLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el = document.querySelector(
       `#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_TRACK_SIZES_LABEL_CONTAINER_CLASS}`);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 
@@ -128,7 +132,7 @@ export function getGridAreaNameLabelContainer(layerId?: number): HTMLElement {
   const id = layerId ? `grid-${layerId}-labels` : DEFAULT_GRID_LABEL_LAYER_ID;
   const el =
       document.querySelector(`#${GRID_LABEL_CONTAINER_ID} #${CSS.escape(id)} .${GRID_LINE_AREA_LABEL_CONTAINER_CLASS}`);
-  assert.instanceOf(el, HTMLElement);
+  assertElement(el, HTMLElement);
   return el;
 }
 

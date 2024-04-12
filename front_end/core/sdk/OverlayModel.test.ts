@@ -11,6 +11,7 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import type * as Platform from '../platform/platform.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -49,7 +50,7 @@ describeWithMockConnection('OverlayModel', () => {
     const target = createTarget({url: DOCUMENT_URL_FOR_TEST});
     overlayModel = target.model(SDK.OverlayModel.OverlayModel);
     cssModel = target.model(SDK.CSSModel.CSSModel);
-    assert.exists(cssModel);
+    assertNotNullOrUndefined(cssModel);
     windowControls = new SDK.OverlayModel.WindowControls(cssModel);
 
     // Set up mock response handler to get the default style sheet
@@ -59,7 +60,7 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('toggles controls toolbar', async () => {
-    assert.exists(overlayModel);
+    assertNotNullOrUndefined(overlayModel);
     let config;
 
     // Set up mock response handler to set the configuration
@@ -79,8 +80,8 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('initializes the style sheet text', async () => {
-    assert.exists(cssModel);
-    assert.exists(windowControls);
+    assertNotNullOrUndefined(cssModel);
+    assertNotNullOrUndefined(windowControls);
 
     // Verify the style sheet is not initialized when no styles are present
     const checkStyleSheet = await windowControls.initializeStyleSheetText(DOCUMENT_URL_FOR_TEST);
@@ -98,8 +99,8 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('toggles the emulated overlay', async () => {
-    assert.exists(cssModel);
-    assert.exists(windowControls);
+    assertNotNullOrUndefined(cssModel);
+    assertNotNullOrUndefined(windowControls);
     let styleSheet;
 
     // Set up mock response handler to set the style sheet
@@ -138,7 +139,7 @@ describeWithMockConnection('OverlayModel', () => {
   });
 
   it('parses styles and replaces variables for style sheet correctly', () => {
-    assert.exists(windowControls);
+    assertNotNullOrUndefined(windowControls);
 
     const x = 85;
     const y = 0;

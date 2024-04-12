@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  assertElement,
   dispatchKeyDownEvent,
   getEventPromise,
   renderElementIntoDOM,
@@ -77,7 +78,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `devtools-button.add-row[data-attribute="${attribute}"]`,
     );
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await triggerMicroTaskQueue();
     await editor.updateComplete;
@@ -90,7 +91,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `devtools-button.delete-row[data-attribute="${attribute}"]`,
     );
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await triggerMicroTaskQueue();
     await editor.updateComplete;
@@ -103,7 +104,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `.attribute[data-attribute="frame"] devtools-button${className}`,
     );
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await editor.updateComplete;
   }
@@ -116,7 +117,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `[data-selector-path="${path.join('.')}"] devtools-button${className}`,
     );
-    assert.instanceOf(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await editor.updateComplete;
   }

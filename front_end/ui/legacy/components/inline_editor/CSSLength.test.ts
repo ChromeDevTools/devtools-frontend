@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -17,7 +17,7 @@ describe('CSSLength', () => {
     renderElementIntoDOM(component);
     component.data = initialData;
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
     const valueElement = component.shadowRoot.querySelector('.value');
     const unitElement = component.shadowRoot.querySelector('.unit');
     if (!valueElement || !unitElement) {
@@ -33,7 +33,7 @@ describe('CSSLength', () => {
     renderElementIntoDOM(component);
     component.data = initialData;
 
-    assert.isNotNull(component.shadowRoot);
+    assertShadowRoot(component.shadowRoot);
 
     let lengthText = initialData.lengthText;
     component.addEventListener('valuechanged', (event: Event) => {

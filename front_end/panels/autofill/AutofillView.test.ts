@@ -118,8 +118,7 @@ describeWithMockConnection('AutofillView', () => {
   };
 
   const assertViewShowsEventData = (view: Autofill.AutofillView.AutofillView) => {
-    assert.isNotNull(view.shadowRoot);
-    const addressSpans = view.shadowRoot.querySelectorAll('.address span');
+    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
     const addressText = [...addressSpans].map(div => div.textContent);
     assert.deepStrictEqual(
         addressText, ['Crocodile', ' Middle ', 'Dundee', 'Uluru ToursOutback Road 1Bundaberg Queensland ', '12345']);
@@ -136,8 +135,7 @@ describeWithMockConnection('AutofillView', () => {
   it('renders autofilled address and filled fields and clears content on navigation', async () => {
     const expectedPlaceholder = 'To start debugging autofill, use Chrome\'s autofill menu to fill an address form.';
     const view = await renderAutofillView();
-    assert.isNotNull(view.shadowRoot);
-    let placeholderText = view.shadowRoot.querySelector('.placeholder div')?.textContent?.trim();
+    let placeholderText = view.shadowRoot!.querySelector('.placeholder div')!.textContent!.trim();
     assert.strictEqual(placeholderText, expectedPlaceholder);
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
@@ -152,7 +150,7 @@ describeWithMockConnection('AutofillView', () => {
     });
 
     await coordinator.done();
-    placeholderText = view.shadowRoot.querySelector('.placeholder div')?.textContent?.trim();
+    placeholderText = view.shadowRoot!.querySelector('.placeholder div')!.textContent!.trim();
     assert.strictEqual(placeholderText, expectedPlaceholder);
   });
 
@@ -167,14 +165,13 @@ describeWithMockConnection('AutofillView', () => {
 
   it('auto-open can be turned off/on', async () => {
     const view = await renderAutofillView();
-    assert.isNotNull(view.shadowRoot);
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     showViewStub.reset();
 
-    const checkbox = view.shadowRoot.querySelector('input');
-    assert.instanceOf(checkbox, HTMLInputElement);
+    const checkbox = view.shadowRoot!.querySelector('input');
+    assert.isNotNull(checkbox);
     assert.isTrue(checkbox.checked);
     checkbox.checked = false;
     let event = new Event('change');
@@ -198,10 +195,9 @@ describeWithMockConnection('AutofillView', () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
-    assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
 
-    const addressSpans = view.shadowRoot.querySelectorAll('.address span');
+    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
     const crocodileSpan = addressSpans[0];
     assert.strictEqual(crocodileSpan.textContent, 'Crocodile');
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
@@ -239,7 +235,6 @@ describeWithMockConnection('AutofillView', () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
     const view = await renderAutofillView();
-    assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
 
     const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -248,7 +243,7 @@ describeWithMockConnection('AutofillView', () => {
     const overlaySpy = sinon.spy(overlayModel, 'highlightInOverlay');
     const hideOverlaySpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
 
-    const addressSpans = view.shadowRoot.querySelectorAll('.address span');
+    const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
     const zipCodeSpan = addressSpans[4];
     assert.strictEqual(zipCodeSpan.textContent, '12345');
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));

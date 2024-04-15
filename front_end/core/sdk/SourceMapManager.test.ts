@@ -40,10 +40,6 @@ describeWithMockConnection('SourceMapManager', () => {
 
     const debuggerModel = workerTarget.model(SDK.DebuggerModel.DebuggerModel);
     assert.isNotNull(debuggerModel);
-    if (debuggerModel === null) {
-      return;
-    }
-
     const sourceMapManager = debuggerModel.sourceMapManager();
 
     const script = new SDK.Script.Script(
@@ -74,10 +70,6 @@ describeWithMockConnection('SourceMapManager', () => {
 
     const debuggerModel = mainTarget.model(SDK.DebuggerModel.DebuggerModel);
     assert.isNotNull(debuggerModel);
-    if (debuggerModel === null) {
-      return;
-    }
-
     const sourceMapManager = debuggerModel.sourceMapManager();
 
     const script = new SDK.Script.Script(

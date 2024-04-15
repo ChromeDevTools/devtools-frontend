@@ -26,14 +26,7 @@ describeWithEnvironment('CSSPropertyDocsView', () => {
     const popupComponent = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
     renderElementIntoDOM(popupComponent);
 
-    assert.isNotNull(popupComponent.shadowRoot);
-
-    const shadowRoot = popupComponent.shadowRoot;
-
-    const popupDescriptionRendered = shadowRoot.querySelector('#description') !== null;
-    const popupLearnMoreRendered = shadowRoot.querySelector('#learn-more') !== null;
-
-    assert.isTrue(popupDescriptionRendered);
-    assert.isTrue(popupLearnMoreRendered);
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#description'));
+    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
   });
 });

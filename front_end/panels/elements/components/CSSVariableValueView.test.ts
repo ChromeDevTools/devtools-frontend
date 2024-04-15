@@ -9,20 +9,12 @@ import * as ElementsComponents from './components.js';
 
 describeWithEnvironment('CSSVariableValueView', () => {
   it('renders right tooltip', () => {
-    const popupComponent = new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
+    const view = new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
       variableName: '--var-name',
       value: 'pink',
     });
-    renderElementIntoDOM(popupComponent);
+    renderElementIntoDOM(view);
 
-    assert.isNotNull(popupComponent.shadowRoot);
-
-    const shadowRoot = popupComponent.shadowRoot;
-
-    const popupContentRendered = shadowRoot.querySelector('.variable-value-popup-wrapper') !== null;
-    assert.isTrue(popupContentRendered);
-
-    const popupContent = shadowRoot.querySelector('.variable-value-popup-wrapper')?.textContent?.trim();
-    assert.strictEqual(popupContent, 'pink');
+    assert.strictEqual(view.shadowRoot!.querySelector('.variable-value-popup-wrapper')!.textContent!.trim(), 'pink');
   });
 });

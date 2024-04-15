@@ -24,9 +24,8 @@ describeWithLocale('AccessibilityTreeNode', () => {
     };
 
     await coordinator.done();
-    assert.isNotNull(component.shadowRoot);
 
-    assert.strictEqual(component.shadowRoot.textContent, 'NodeRole\xa0"NodeName"');
+    assert.strictEqual(component.shadowRoot!.textContent, 'NodeRole\xa0"NodeName"');
   });
 
   it('renders ignored nodes as "ignored"', async () => {
@@ -42,8 +41,6 @@ describeWithLocale('AccessibilityTreeNode', () => {
     };
     await coordinator.done();
 
-    assert.isNotNull(component.shadowRoot);
-
-    assert.strictEqual(component.shadowRoot.textContent, 'Ignored');
+    assert.strictEqual(component.shadowRoot!.textContent, 'Ignored');
   });
 });

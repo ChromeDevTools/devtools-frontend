@@ -9,7 +9,7 @@ const Color = Common.Color;
 const parseAndAssertNotNull = (value: string) => {
   const result = Color.parse(value);
   assert.isNotNull(result, `failed to parse '${value} as color`);
-  return result!.asLegacyColor();
+  return result.asLegacyColor();
 };
 
 const deepCloseTo = (actual: number[], expected: number[], delta: number, message?: string) => {

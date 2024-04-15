@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -15,7 +15,7 @@ describe('CSSQuery', () => {
       queryText: '(min-width: 10px)',
     };
 
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     const queryElement = component.shadowRoot.querySelector<HTMLElement>('.query');
     if (!queryElement) {
@@ -43,7 +43,7 @@ describe('CSSQuery', () => {
       onQueryTextClick: clickListener,
     };
 
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
 
     const queryElement = component.shadowRoot.querySelector<HTMLElement>('.query');
     if (!queryElement) {

@@ -5,8 +5,6 @@
 import * as Protocol from '../../../generated/protocol.js';
 import {getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
-  assertElement,
-  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -36,7 +34,7 @@ function getInternalDataGridShadowRoot(
   const dataGridController = getElementWithinComponent(
       component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
   const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assertShadowRoot(dataGrid.shadowRoot);
+  assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }
 
@@ -79,6 +77,6 @@ describeWithLocale('SharedStorageAccessGrid', () => {
     assert.isNull(nullGridElement);
 
     const noEventsElement = component.shadowRoot!.querySelector('div.no-events-message');
-    assertElement(noEventsElement, HTMLDivElement);
+    assert.instanceOf(noEventsElement, HTMLDivElement);
   });
 });

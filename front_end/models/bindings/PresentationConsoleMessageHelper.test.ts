@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -59,7 +59,7 @@ async function addScript(
   const uiSourceCode =
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForScript(script);
 
-  Platform.assertNotNullOrUndefined(uiSourceCode);
+  assert.exists(uiSourceCode);
   return uiSourceCode;
 }
 
@@ -91,7 +91,7 @@ async function addStyleSheet(
   await Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
 
   const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
-  Platform.assertNotNullOrUndefined(uiSourceCode);
+  assert.exists(uiSourceCode);
   return uiSourceCode;
 }
 
@@ -104,13 +104,13 @@ describeWithMockConnection('PresentationConsoleMessageHelper', () => {
   beforeEach(() => {
     executionContext = new MockExecutionContext(createTarget());
     const {debuggerModel} = executionContext;
-    Platform.assertNotNullOrUndefined(debuggerModel);
+    assert.exists(debuggerModel);
     helper = new Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper();
     helper.setDebuggerModel(debuggerModel);
 
     const target = executionContext.target();
     const targetCSSModel = target.model(SDK.CSSModel.CSSModel);
-    Platform.assertNotNullOrUndefined(targetCSSModel);
+    assert.exists(targetCSSModel);
     cssModel = targetCSSModel;
     helper.setCSSModel(cssModel);
 

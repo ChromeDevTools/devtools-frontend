@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertElement, dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
+import {dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -32,11 +31,11 @@ describeWithMockConnection('StorageView', () => {
     it('emits correct events on clear', () => {
       const testId = {storageKey: testKey, isLocalStorage: true} as Protocol.DOMStorage.StorageId;
 
-      assertNotNullOrUndefined(domStorageModel);
+      assert.exists(domStorageModel);
       assert.isEmpty(domStorageModel.storages());
-      assertNotNullOrUndefined(storageKeyManager);
+      assert.exists(storageKeyManager);
       storageKeyManager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
-      assertNotNullOrUndefined(domStorageModel.storageForId(testId));
+      assert.exists(domStorageModel.storageForId(testId));
 
       const dispatcherSpy = sinon.spy(domStorageModel, 'dispatchEventToListeners');
       const spyClearDataForStorageKey = sinon.stub(target.storageAgent(), 'invoke_clearDataForStorageKey');
@@ -51,8 +50,8 @@ describeWithMockConnection('StorageView', () => {
     });
 
     it('changes subtitle on MainStorageKeyChanged event', () => {
-      assertNotNullOrUndefined(domStorageModel);
-      assertNotNullOrUndefined(storageKeyManager);
+      assert.exists(domStorageModel);
+      assert.exists(storageKeyManager);
       const view = new Resources.StorageView.StorageView();
 
       storageKeyManager.dispatchEventToListeners(
@@ -63,26 +62,26 @@ describeWithMockConnection('StorageView', () => {
     });
 
     it('shows a warning message when entering a too big custom quota', async () => {
-      assertNotNullOrUndefined(domStorageModel);
-      assertNotNullOrUndefined(storageKeyManager);
+      assert.exists(domStorageModel);
+      assert.exists(storageKeyManager);
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-      assertNotNullOrUndefined(securityOriginManager);
+      assert.exists(securityOriginManager);
       sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(testOrigin);
 
       const view = new Resources.StorageView.StorageView();
       const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-      assertElement(container, HTMLDivElement);
+      assert.instanceOf(container, HTMLDivElement);
       const customQuotaCheckbox =
           container.shadowRoot!.querySelector('.quota-override-row span')!.shadowRoot!.querySelector(
               '[title="Simulate custom storage quota"]');
-      assertElement(customQuotaCheckbox, HTMLInputElement);
+      assert.instanceOf(customQuotaCheckbox, HTMLInputElement);
       customQuotaCheckbox.checked = true;
       const errorDiv = container.shadowRoot!.querySelector('.quota-override-error');
-      assertElement(errorDiv, HTMLDivElement);
+      assert.instanceOf(errorDiv, HTMLDivElement);
       assert.strictEqual(errorDiv.textContent, '');
 
       const editor = container.shadowRoot!.querySelector('.quota-override-notification-editor');
-      assertElement(editor, HTMLInputElement);
+      assert.instanceOf(editor, HTMLInputElement);
       editor.value = '9999999999999';
       dispatchFocusOutEvent(editor);
       await coordinator.done();
@@ -102,10 +101,10 @@ describeWithMockConnection('StorageView', () => {
 
     it('clears cache on clear', async () => {
       const cacheStorageModel = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
-      assertNotNullOrUndefined(cacheStorageModel);
+      assert.exists(cacheStorageModel);
 
       const storageBucketModel = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
-      assertNotNullOrUndefined(storageBucketModel);
+      assert.exists(storageBucketModel);
 
       const testStorageBucket = {
         storageKey: testKey,

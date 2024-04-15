@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 import * as VisualLogging from './visual_logging-testing.js';
@@ -85,7 +84,7 @@ describe('DomState', () => {
       <iframe id="iframe"></iframe>`;
     const iframe = el('iframe') as HTMLIFrameElement;
     const iframeDocument = iframe.contentDocument;
-    assertNotNullOrUndefined(iframeDocument);
+    assert.exists(iframeDocument);
     iframeDocument.body.innerHTML = `
       <div jslog="TreeItem" id="2"></div>`;
     const {loggables} = VisualLogging.DomState.getDomState([document, iframeDocument]);

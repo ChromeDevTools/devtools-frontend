@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  assertElement,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -28,7 +27,7 @@ describeWithLocale('Elements tree expand button', () => {
     await coordinator.done();
 
     const button = component.shadowRoot!.querySelector('.expand-button');
-    assertElement(button, HTMLElement);
+    assert.instanceOf(button, HTMLElement);
 
     dispatchClickEvent(button);
     assert.strictEqual(clicks, 1);
@@ -46,7 +45,7 @@ describeWithLocale('Elements tree expand button', () => {
     await coordinator.done();
 
     const button = component.shadowRoot!.querySelector('.expand-button');
-    assertElement(button, HTMLElement);
+    assert.instanceOf(button, HTMLElement);
 
     assert.strictEqual(button.innerText, '');
   });

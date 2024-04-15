@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Buttons from './buttons.js';
@@ -40,7 +40,7 @@ describe('Button', () => {
     button.onclick = () => clicks++;
 
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
-    assertElement(innerButton, HTMLButtonElement);
+    assert.instanceOf(innerButton, HTMLButtonElement);
 
     innerButton.click();
     dispatchKeyDownEvent(innerButton, {

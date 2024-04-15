@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -31,7 +30,7 @@ describeWithMockConnection('ElementsTreeElementHighlighter', () => {
     new Elements.ElementsTreeElementHighlighter.ElementsTreeElementHighlighter(treeOutline, throttler);
 
     const model = target.model(SDK.OverlayModel.OverlayModel);
-    assertNotNullOrUndefined(model);
+    assert.exists(model);
     const node = new SDK.DOMModel.DOMNode(target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel);
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, /* isClosingTag=*/ true);
     sinon.stub(treeOutline, 'createTreeElementFor').withArgs(node).returns(treeElement);

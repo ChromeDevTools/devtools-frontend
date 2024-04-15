@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {Printer} from '../../testing/PropertyParser.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -56,7 +55,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const property = '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)';
       const rule = `*{--property: ${property};}`;
       const tree = cssParser.parse(rule).topNode.firstChild?.firstChild?.nextSibling?.firstChild?.nextSibling;
-      Platform.assertNotNullOrUndefined(tree);
+      assert.exists(tree);
       const ast = new Elements.PropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = Elements.PropertyParser.BottomUpTreeMatching.walk(ast, []);
       const context = new Elements.PropertyRenderer.RenderingContext(ast, new Map(), matchedResult);

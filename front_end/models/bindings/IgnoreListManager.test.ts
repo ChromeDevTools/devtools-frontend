@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -42,7 +41,7 @@ const sourceMap = {
 };
 
 function notNull<T>(val: T|null|undefined): T {
-  assertNotNullOrUndefined(val);
+  assert.exists(val);
   return val;
 }
 

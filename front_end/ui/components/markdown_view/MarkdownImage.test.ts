@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -35,7 +34,7 @@ describe('MarkdownImage', () => {
     component.data = {key: 'test-icon', title: 'Test icon'};
     renderElementIntoDOM(component);
     await coordinator.done();
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const iconComponent = getElementWithinComponent(component, 'devtools-icon', IconButton.Icon.Icon);
     assert.isNotNull(iconComponent);
     const boundingClient = iconComponent.getBoundingClientRect();
@@ -48,7 +47,7 @@ describe('MarkdownImage', () => {
     const markdownImageKey = 'test-image';
     component.data = {key: markdownImageKey, title: markdownImageTitle};
     renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const imageComponent = getElementWithinComponent(component, 'img', HTMLImageElement);
     assert.isNotNull(imageComponent);
     assert.include(imageComponent.src, imageSource);

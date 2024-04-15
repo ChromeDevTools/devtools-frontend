@@ -56,7 +56,7 @@ it('outputs the user name onto the screen', async () => {
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
   await coordinator.done();
-  assertShadowRoot(component.shadowRoot); // Check that the Shadow Root exists.
+  assert.isNotNull(component.shadowRoot); // Check that the Shadow Root exists.
 })
 ```
 
@@ -68,7 +68,7 @@ it('outputs the user name onto the screen', async () => {
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
   await coordinator.done();
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
 })
 ```
@@ -77,7 +77,7 @@ Note that by default TypeScript will type the result as `Element|null`. Sometime
 
 ## Ensuring queries returned elements
 
-Any DOM querying API could return back `null` if the element was not found. You can use the `assertElement` method from `DOMHelpers.js` to ensure that if the element was not found, the test fails. This also satisfies TypeScript and (much like with the shadow root check earlier) avoids you having to continually code against the element not being found.
+Any DOM querying API could return back `null` if the element was not found. You can use the `assert.instanceOf` method from Chai to ensure that if the element was not found, the test fails. This also satisfies TypeScript and (much like with the shadow root check earlier) avoids you having to continually code against the element not being found.
 
 
 ```ts
@@ -86,9 +86,9 @@ it('outputs the user name onto the screen', async () => {
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
   await coordinator.done();
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
-  assertElement(name, HTMLSpanElement);
+  assert.instanceOf(name, HTMLSpanElement);
 })
 ```
 
@@ -102,9 +102,9 @@ it('outputs the user name onto the screen', async () => {
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
   await coordinator.done();
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
-  assertElement(name, HTMLSpanElement);
+  assert.instanceOf(name, HTMLSpanElement);
   assert.strictEqual(name.innerText, 'Jack');
 })
 ```

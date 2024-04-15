@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../core/platform/platform.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 
 import * as Highlighting from './highlighting.js';
@@ -28,9 +27,9 @@ describe('HighlightManager', () => {
   }
 
   function toText(range: Range|null): string {
-    Platform.assertNotNullOrUndefined(range);
+    assert.exists(range);
     const text = range.cloneContents()?.textContent;
-    Platform.assertNotNullOrUndefined(text);
+    assert.exists(text);
     return text;
   }
 

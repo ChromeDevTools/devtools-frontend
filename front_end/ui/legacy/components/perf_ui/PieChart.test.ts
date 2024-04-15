@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertShadowRoot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
@@ -32,7 +32,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const root = chart.shadowRoot.querySelector('[aria-label="Contents of a Pie"]');
       assert.isTrue(root!.classList.contains('root'));
@@ -43,7 +43,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const slices = chart.shadowRoot.querySelectorAll('path');
       assert.strictEqual(slices.length, 2);
@@ -54,7 +54,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
       assert.strictEqual(legendRows.length, 3);
@@ -65,7 +65,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-size');
       assert.strictEqual(legendRows[0].textContent?.trim(), '75 f');
@@ -77,7 +77,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
       assert.isNotNull(total);
@@ -88,7 +88,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
       assert.strictEqual(total!.textContent!.trim(), '100 f');
@@ -99,7 +99,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
       assert.strictEqual(legendRows.length, 3);
@@ -122,7 +122,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const slice = chart.shadowRoot.querySelector('path');
       assert.strictEqual(slice!.tabIndex, -1);
@@ -133,7 +133,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendName = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-name');
       legendName!.click();
@@ -158,7 +158,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const slice = chart.shadowRoot.querySelector<SVGPathElement>('[aria-label="Filling"');
       slice!.dispatchEvent(new Event('click'));
@@ -183,7 +183,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendName = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-name');
       legendName!.click();
@@ -197,7 +197,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const root = chart.shadowRoot.querySelector<HTMLDivElement>('.root');
       root!.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
@@ -213,7 +213,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartNoLegendData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
       assert.strictEqual(legendRows.length, 0);
@@ -224,7 +224,7 @@ describeWithLocale('PieChart', () => {
       renderElementIntoDOM(chart);
 
       chart.data = testChartNoLegendData;
-      assertShadowRoot(chart.shadowRoot);
+      assert.isNotNull(chart.shadowRoot);
 
       // This is different in no-legend mode!
       const total = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-total');

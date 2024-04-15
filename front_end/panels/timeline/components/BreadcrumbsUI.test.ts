@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../../models/trace/trace.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
@@ -18,7 +18,7 @@ describe('BreadcrumbsUI', () => {
   const {BreadcrumbsUI} = TimelineComponents.BreadcrumbsUI;
 
   function queryBreadcrumbs(component: HTMLElement): (string)[] {
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const breadcrumbsRanges = component.shadowRoot.querySelectorAll<HTMLElement>('.range');
     return Array.from(breadcrumbsRanges).map(row => {
       return row.textContent?.trim() || '';

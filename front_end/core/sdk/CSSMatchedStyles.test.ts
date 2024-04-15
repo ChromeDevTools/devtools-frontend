@@ -5,7 +5,6 @@
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -214,10 +213,10 @@ describe('CSSMatchedStyles', () => {
       const styleFoo2 = styles.find(style => style.allProperties().find(p => p.value === 'foo2'));
       const styleFoo3 = styles.find(style => style.allProperties().find(p => p.value === 'foo3'));
       const styleBaz = styles.find(style => style.allProperties().find(p => p.value === 'baz'));
-      Platform.assertNotNullOrUndefined(styleFoo1);
-      Platform.assertNotNullOrUndefined(styleFoo2);
-      Platform.assertNotNullOrUndefined(styleFoo3);
-      Platform.assertNotNullOrUndefined(styleBaz);
+      assert.exists(styleFoo1);
+      assert.exists(styleFoo2);
+      assert.exists(styleFoo3);
+      assert.exists(styleBaz);
 
       testComputedVariableValueEquals('--foo', styleFoo1, 'foo1', styleFoo1.leadingProperties()[0]);
       testComputedVariableValueEquals('--bar', styleFoo1, 'bar', styleFoo2.leadingProperties()[0]);

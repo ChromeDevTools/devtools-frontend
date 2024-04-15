@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -36,7 +35,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
       shortcutsForAction: () => [new UI.KeyboardShortcut.KeyboardShortcut(
           [{key: 0, name: ''}], '', UI.KeyboardShortcut.Type.DefaultShortcut)],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-    assertNotNullOrUndefined(backgroundServiceModel);
+    assert.exists(backgroundServiceModel);
     view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
   });
 
@@ -45,8 +44,8 @@ describeWithMockConnection('BackgroundServiceView', () => {
   });
 
   it('updates event list when main storage key changes', () => {
-    assertNotNullOrUndefined(backgroundServiceModel);
-    assertNotNullOrUndefined(manager);
+    assert.exists(backgroundServiceModel);
+    assert.exists(manager);
     backgroundServiceModel.backgroundServiceEventReceived({
       backgroundServiceEvent: {
         timestamp: 1556889085,  // 2019-05-03 14:11:25.000.

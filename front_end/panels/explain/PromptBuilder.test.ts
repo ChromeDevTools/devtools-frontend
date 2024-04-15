@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -261,7 +260,7 @@ export const y = "";
       const {uiSourceCode, project} =
           createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      assertNotNullOrUndefined(debuggerModel);
+      assert.exists(debuggerModel);
       const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
@@ -308,7 +307,7 @@ export const y = "";
       const {uiSourceCode, project} =
           createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      assertNotNullOrUndefined(debuggerModel);
+      assert.exists(debuggerModel);
       const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
@@ -434,7 +433,7 @@ export const y = "";
       const {uiSourceCode, project} =
           createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      assertNotNullOrUndefined(debuggerModel);
+      assert.isNotNull(debuggerModel);
       const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
       debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';

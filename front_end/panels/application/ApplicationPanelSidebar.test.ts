@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -119,7 +118,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
       sinon.stub(resourceTreeModel, 'frames').returns([
         {
           url: 'http://www.example.com/',
@@ -148,7 +147,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     // Flaking on windows + subsequence test failing
     it.skip('[crbug.com/1472651] shows shared storages and events for origins using shared storage', async () => {
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-      assertNotNullOrUndefined(securityOriginManager);
+      assert.exists(securityOriginManager);
       sinon.stub(securityOriginManager, 'securityOrigins').returns([
         TEST_ORIGIN_A,
         TEST_ORIGIN_B,
@@ -156,7 +155,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       ]);
 
       const sharedStorageModel = target.model(Application.SharedStorageModel.SharedStorageModel);
-      assertNotNullOrUndefined(sharedStorageModel);
+      assert.exists(sharedStorageModel);
       const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
         getError: () => undefined,
       });
@@ -168,7 +167,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const addedPromise = listener.waitForElementsAdded(3);
 
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
       await addedPromise;
 
@@ -196,7 +195,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       assert.strictEqual(components.length, 2);
       // @ts-ignore
       const object = sidebar[components[0]];
-      assertNotNullOrUndefined(object);
+      assert.exists(object);
       return sinon.spy(object, components[1]);
     }
 
@@ -212,7 +211,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const expectedCall = await getExpectedCall(expectedCallString);
       const model = target.model(modelClass);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
       const data = [{...MOCK_EVENT_ITEM, model}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
       model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);
       await new Promise(resolve => setTimeout(resolve, 0));
@@ -265,7 +264,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
       const expectedCall = await getExpectedCall(expectedCallString);
       const model = target.model(modelClass);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
       sinon.stub(model, getter).returns([MOCK_GETTER_ITEM]);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       await new Promise(resolve => setTimeout(resolve, 0));
@@ -302,7 +301,7 @@ describeWithMockConnection('IDBDatabaseTreeElement', () => {
   it('only becomes selectable after database is updated', () => {
     const target = createTarget();
     const model = target.model(Application.IndexedDBModel.IndexedDBModel);
-    assertNotNullOrUndefined(model);
+    assert.exists(model);
     const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const databaseId = new Application.IndexedDBModel.DatabaseId({storageKey: ''}, '');
     const treeElement = new Application.ApplicationPanelSidebar.IDBDatabaseTreeElement(panel, model, databaseId);
@@ -333,11 +332,11 @@ describeWithMockConnection('ResourcesSection', () => {
       new Application.ApplicationPanelSidebar.ResourcesSection(panel, treeElement);
 
       const model = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
 
       assert.strictEqual(treeElement.childCount(), 0);
       const frame = model.frameAttached(FRAME_ID, null);
-      assertNotNullOrUndefined(frame);
+      assert.exists(frame);
       assert.strictEqual(treeElement.childCount(), inScope ? 1 : 0);
 
       const mimeType = 'text/html';
@@ -357,10 +356,10 @@ describeWithMockConnection('ResourcesSection', () => {
       new Application.ApplicationPanelSidebar.ResourcesSection(panel, treeElement);
 
       const model = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(model);
+      assert.exists(model);
 
       const frame = model.frameAttached(FRAME_ID, null);
-      assertNotNullOrUndefined(frame);
+      assert.exists(frame);
 
       const mimeType = 'text/html';
       const url = 'http://example.com' as Platform.DevToolsPath.UrlString;

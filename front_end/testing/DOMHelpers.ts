@@ -102,7 +102,7 @@ export function assertElements<T extends Element>(
 
 export function getElementWithinComponent<T extends HTMLElement, V extends Element>(
     component: T, selector: string, elementClass: Constructor<V>) {
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const element = component.shadowRoot.querySelector(selector);
   assertElement(element, elementClass);
   return element;
@@ -110,7 +110,7 @@ export function getElementWithinComponent<T extends HTMLElement, V extends Eleme
 
 export function getElementsWithinComponent<T extends HTMLElement, V extends Element>(
     component: T, selector: string, elementClass: Constructor<V>) {
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const elements = component.shadowRoot.querySelectorAll(selector);
   assertElements(elements, elementClass);
   return elements;
@@ -278,7 +278,7 @@ export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, sele
 }
 
 export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string) {
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');
   assert.strictEqual(content, expectedContent);
 }

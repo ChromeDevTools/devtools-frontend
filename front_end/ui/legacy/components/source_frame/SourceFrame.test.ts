@@ -5,8 +5,6 @@
 import * as Common from '../../../../core/common/common.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
-  assertElement,
-  assertShadowRoot,
   dispatchInputEvent,
   dispatchPasteEvent,
 } from '../../../../testing/DOMHelpers.js';
@@ -73,7 +71,7 @@ describeWithEnvironment('SourceFrame', () => {
     const sourceFrame = await createSourceFrame('Example');
     const codeMirror =
         sourceFrame.element.querySelector('devtools-text-editor')?.shadowRoot?.querySelector('.cm-content') || null;
-    assertElement(codeMirror, HTMLDivElement);
+    assert.instanceOf(codeMirror, HTMLDivElement);
 
     const dt = new DataTransfer();
     dt.setData('text/plain', 'foo');
@@ -84,19 +82,19 @@ describeWithEnvironment('SourceFrame', () => {
                                  ?.shadowRoot?.querySelector('.widget')
                                  ?.shadowRoot ||
         null;
-    assertShadowRoot(dialogShadowRoot);
+    assert.isNotNull(dialogShadowRoot);
 
     const title = dialogShadowRoot.querySelector('.title');
-    assertElement(title, HTMLDivElement);
+    assert.instanceOf(title, HTMLDivElement);
     assert.strictEqual(title.textContent, 'Do you trust this code?');
 
     const input = dialogShadowRoot.querySelector('input');
-    assertElement(input, HTMLInputElement);
+    assert.instanceOf(input, HTMLInputElement);
     input.value = 'allow pasting';
     dispatchInputEvent(input, {inputType: 'insertText', data: 'allow pasting', bubbles: true, composed: true});
 
     const allowButton = dialogShadowRoot.querySelector('.primary-button');
-    assertElement(allowButton, HTMLButtonElement);
+    assert.instanceOf(allowButton, HTMLButtonElement);
     allowButton.click();
     await new Promise(resolve => setTimeout(resolve, 0));
 

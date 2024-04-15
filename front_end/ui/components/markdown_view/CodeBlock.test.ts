@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import {
   dispatchClickEvent,
   renderElementIntoDOM,
@@ -19,7 +18,7 @@ describeWithEnvironment('CodeBlock', () => {
     component.code = 'test';
     renderElementIntoDOM(component);
     const button = component.shadowRoot!.querySelector('.copy-button');
-    assertNotNullOrUndefined(button);
+    assert.exists(button);
     const clock = sinon.useFakeTimers();
     try {
       assert.strictEqual(button.querySelector('span')?.innerText, 'Copy code');
@@ -63,7 +62,7 @@ describeWithEnvironment('CodeBlock', () => {
       component.displayNotice = true;
       renderElementIntoDOM(component);
       const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
-      assertNotNullOrUndefined(notice);
+      assert.exists(notice);
       assert.strictEqual(notice!.innerText, 'Use code snippets with caution');
     } finally {
       resetTestDOM();

@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -636,7 +635,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     it('renders the details for a layout shift properly', async function() {
       // Set related CDP methods responses to return our mock document and node.
       const domModel = target.model(SDK.DOMModel.DOMModel);
-      assertNotNullOrUndefined(domModel);
+      assert.exists(domModel);
       const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
       const docc = new SDK.DOMModel.DOMNode(domModel) as SDK.DOMModel.DOMDocument;
       const domNode2 = new SDK.DOMModel.DOMNode(domModel);

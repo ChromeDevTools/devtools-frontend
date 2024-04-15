@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {assertElement} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Sources from './sources.js';
@@ -38,9 +36,9 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
 
   function getPausedMessageFromDOM(): {main: string, sub?: string} {
     const mainElement = pausedMessage.element().shadowRoot?.querySelector('.status-main') ?? null;
-    assertElement(mainElement, HTMLDivElement);
+    assert.instanceOf(mainElement, HTMLDivElement);
     const main = mainElement.textContent;
-    assertNotNullOrUndefined(main);
+    assert.exists(main);
     const sub = pausedMessage.element().shadowRoot?.querySelector('.status-sub')?.textContent ?? undefined;
     return {main, sub};
   }

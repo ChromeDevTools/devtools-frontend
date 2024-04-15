@@ -3,12 +3,9 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {
-  assertElement,
-  assertShadowRoot,
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -35,7 +32,7 @@ async function renderBackForwardCacheView(): Promise<ApplicationComponents.BackF
   const component = new ApplicationComponents.BackForwardCacheView.BackForwardCacheView();
   renderElementIntoDOM(component);
   await component.render();
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   await coordinator.done();
   return component;
 }
@@ -58,7 +55,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
       target = targetFactory();
       resourceTreeModel =
           target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
-      assertNotNullOrUndefined(resourceTreeModel);
+      assert.exists(resourceTreeModel);
       resourceTreeModel.mainFrame = {
         url: 'https://www.example.com/' as Platform.DevToolsPath.UrlString,
         backForwardCacheDetails: {
@@ -70,8 +67,8 @@ describeWithMockConnection('BackForwardCacheView', () => {
 
     it('updates BFCacheView on main frame navigation', async () => {
       await renderBackForwardCacheView();
-      assertNotNullOrUndefined(resourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+      assert.exists(resourceTreeModel);
+      assert.exists(resourceTreeModel.mainFrame);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged,
           {frame: resourceTreeModel.mainFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
@@ -81,8 +78,8 @@ describeWithMockConnection('BackForwardCacheView', () => {
 
     it('updates BFCacheView on BFCache detail update', async () => {
       await renderBackForwardCacheView();
-      assertNotNullOrUndefined(resourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+      assert.exists(resourceTreeModel);
+      assert.exists(resourceTreeModel.mainFrame);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, resourceTreeModel.mainFrame);
 
@@ -175,8 +172,8 @@ describeWithMockConnection('BackForwardCacheView', () => {
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
       const treeOutline = component.shadowRoot!.querySelector('devtools-tree-outline');
-      assertElement(treeOutline, TreeOutline.TreeOutline.TreeOutline);
-      assertShadowRoot(treeOutline.shadowRoot);
+      assert.instanceOf(treeOutline, TreeOutline.TreeOutline.TreeOutline);
+      assert.isNotNull(treeOutline.shadowRoot);
 
       const treeData = await Promise.all(
           treeOutline.data.tree.map(node => unpromisify(node as TreeOutline.TreeOutlineUtils.TreeNode<NodeData>)));
@@ -305,7 +302,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const component = await renderBackForwardCacheView();
       const button = component.shadowRoot!.querySelector('[aria-label="Test back/forward cache"]');
-      assertElement(button, HTMLElement);
+      assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
 
       await new Promise<void>(resolve => {

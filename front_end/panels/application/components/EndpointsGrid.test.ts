@@ -4,7 +4,6 @@
 
 import {getHeaderCells, getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
-  assertShadowRoot,
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -22,7 +21,7 @@ const renderEndpointsGrid = async (data?: ApplicationComponents.EndpointsGrid.En
     component.data = data;
   }
   renderElementIntoDOM(component);
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   await coordinator.done();
   if (!data) {
     return component;
@@ -30,9 +29,9 @@ const renderEndpointsGrid = async (data?: ApplicationComponents.EndpointsGrid.En
 
   const controller = getElementWithinComponent(
       component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  assertShadowRoot(controller.shadowRoot);
+  assert.isNotNull(controller.shadowRoot);
   const datagrid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assertShadowRoot(datagrid.shadowRoot);
+  assert.isNotNull(datagrid.shadowRoot);
   return datagrid;
 };
 
@@ -65,7 +64,7 @@ describeWithLocale('EndpointsGrid', () => {
     const data = {endpoints};
 
     const dataGrid = await renderEndpointsGrid(data);
-    assertShadowRoot(dataGrid.shadowRoot);
+    assert.isNotNull(dataGrid.shadowRoot);
 
     const header = getHeaderCells(dataGrid.shadowRoot).map(({textContent}) => textContent!.trim());
     assert.deepEqual(header, ['Origin', 'Name', 'URL']);

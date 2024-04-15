@@ -72,7 +72,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
         const markerTimeMs = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceMarker.ts);
         const flameChartMarker =
             flameChartData.markers.find(flameChartMarker => flameChartMarker.startTime() === markerTimeMs);
-        assert.isDefined(flameChartMarker);
+        assert.exists(flameChartMarker);
       }
       assert.strictEqual(flameChartData.markers.length, traceMarkers.length);
     });
@@ -86,7 +86,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
                of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
                    ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
-        assert.isDefined(markerIndex);
+        assert.exists(markerIndex);
         assert.strictEqual(
             flameChartData.entryStartTimes[markerIndex],
             TraceModel.Helpers.Timing.microSecondsToMilliseconds(event.ts));
@@ -102,7 +102,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
                of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
                    ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
-        assert.isDefined(markerIndex);
+        assert.exists(markerIndex);
         if (TraceModel.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[markerIndex]);
           continue;
@@ -298,7 +298,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
         const markerTimeMs = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceMarker.ts);
         const flameChartMarker =
             flameChartData.markers.find(flameChartMarker => flameChartMarker.startTime() === markerTimeMs);
-        assert.isDefined(flameChartMarker);
+        assert.exists(flameChartMarker);
       }
     });
 

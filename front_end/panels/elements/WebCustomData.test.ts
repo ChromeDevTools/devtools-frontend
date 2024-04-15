@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-
 import * as Elements from './elements.js';
 
 describe('WebCustomData', () => {
@@ -40,7 +38,7 @@ describe('WebCustomData', () => {
 
       const property = webCustomData.findCssProperty('display');
 
-      assertNotNullOrUndefined(property);
+      assert.exists(property);
       assert.strictEqual(property.name, 'display');
       assert.strictEqual(property.description, 'In combiniation with \'float\' ...');
     });

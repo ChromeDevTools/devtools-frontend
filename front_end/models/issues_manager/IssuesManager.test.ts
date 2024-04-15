@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -21,7 +20,7 @@ describeWithMockConnection('IssuesManager', () => {
   beforeEach(() => {
     target = createTarget();
     const maybeModel = target.model(SDK.IssuesModel.IssuesModel);
-    assertNotNullOrUndefined(maybeModel);
+    assert.exists(maybeModel);
     model = maybeModel;
   });
 
@@ -61,7 +60,7 @@ describeWithMockConnection('IssuesManager', () => {
         SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
     const prerenderTarget = createTarget({subtype: 'prerender'});
     const prerenderModel = prerenderTarget.model(SDK.IssuesModel.IssuesModel);
-    assertNotNullOrUndefined(prerenderModel);
+    assert.exists(prerenderModel);
     prerenderModel.dispatchEventToListeners(
         SDK.IssuesModel.Events.IssueAdded, {issuesModel: prerenderModel, inspectorIssue: mkInspectorCspIssue('url2')});
 
@@ -83,7 +82,7 @@ describeWithMockConnection('IssuesManager', () => {
     const {issuesManager, prerenderTarget} = assertOutOfScopeIssuesAreFiltered();
 
     const resourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel);
+    assert.exists(resourceTreeModel);
     const frame = {url: 'http://example.com/', resourceTreeModel: () => resourceTreeModel} as
         SDK.ResourceTreeModel.ResourceTreeFrame;
 

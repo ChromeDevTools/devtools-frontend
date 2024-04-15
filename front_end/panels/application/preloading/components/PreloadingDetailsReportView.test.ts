@@ -7,7 +7,6 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import type * as Logs from '../../../../models/logs/logs.js';
 import {
-  assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -31,7 +30,7 @@ const renderPreloadingDetailsReportView =
   const component = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   component.data = data;
   renderElementIntoDOM(component);
-  assertShadowRoot(component.shadowRoot);
+  assert.isNotNull(component.shadowRoot);
   await coordinator.done();
 
   return component;
@@ -44,7 +43,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     const data = null;
 
     const component = await renderPreloadingDetailsReportView(data);
-    assertShadowRoot(component.shadowRoot);
+    assert.isNotNull(component.shadowRoot);
     const placeholder = component.shadowRoot.querySelector('.preloading-noselected');
 
     assert.include(placeholder?.textContent, 'Select an element for more details');

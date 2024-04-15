@@ -46,7 +46,7 @@ UI.ViewManager.registerViewExtension({
       experiment: Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
       condition: null,
     })) {
-      return Module.ReactDevToolsView.ReactDevToolsViewImpl.instance();
+      return new Module.ReactDevToolsView.ReactDevToolsViewImpl();
     }
 
     return Module.ReactDevToolsPlaceholder.ReactDevToolsPlaceholderImpl.instance();

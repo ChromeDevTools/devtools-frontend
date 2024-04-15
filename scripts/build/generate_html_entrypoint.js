@@ -46,5 +46,21 @@ for (const entrypoint of entrypoints) {
     );
   }
 
+  // React DevTools uses Web Workers API for parsing hook names and uploading large tracing files
+  // https://github.com/facebook/react/blob/fd35655fae9f88284e01754cadb0707abaca795b/packages/react-devtools-shared/src/hooks/parseHookNames/loadSourceAndMetadata.js
+  // Here we update the CSP header to allow workers from self
+  if (entrypoint === 'rn_fusebox') {
+    const cspHeaderRegex = /(?<=<meta http-equiv="Content-Security-Policy" content=")(.*)(?=">)/;
+    const cspHeaderMatch = rewrittenTemplateContent.match(cspHeaderRegex);
+    if (cspHeaderMatch === null) {
+      throw new Error('Couldn\'t find CSP header for rn_fusebox entrypoint: this can break React DevTools panel');
+    }
+
+    rewrittenTemplateContent = rewrittenTemplateContent.replace(
+      cspHeaderRegex,
+      '$1; worker-src \'self\' blob:'
+    );
+  }
+
   writeIfChanged(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
 }

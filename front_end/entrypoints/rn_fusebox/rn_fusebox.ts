@@ -19,12 +19,13 @@ import '../../panels/react_devtools/react_devtools-meta.js';
 import '../../panels/rn_welcome/rn_welcome-meta.js';
 import '../../panels/timeline/timeline-meta.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Main from '../main/main.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Main from '../main/main.js';
+
 import type * as InspectorBackend from '../../core/protocol_client/InspectorBackend.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Sources from '../../panels/sources/sources.js';
@@ -38,13 +39,7 @@ RNExperiments.RNExperiments.enableExperimentsByDefault([
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 
 Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
-Host.rnPerfMetrics.entryPointLoadingStarted();
-
-SDK.TargetManager.TargetManager.instance().addModelListener(
-    SDK.DebuggerModel.DebuggerModel,
-    SDK.DebuggerModel.Events.DebuggerIsReadyToPause,
-    () => Host.rnPerfMetrics.debuggerReadyToPause(),
-);
+Host.rnPerfMetrics.entryPointLoadingStarted('rn_fusebox');
 
 class FuseboxClientMetadataModel extends SDK.SDKModel.SDKModel<void> {
   constructor(target: SDK.Target.Target) {
@@ -150,3 +145,5 @@ if (globalThis.FB_ONLY__reactNativeFeedbackLink) {
     showLabel: true,
   });
 }
+
+Host.rnPerfMetrics.entryPointLoadingFinished('rn_fusebox');

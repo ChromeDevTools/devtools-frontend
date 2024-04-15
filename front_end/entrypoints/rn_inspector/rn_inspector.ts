@@ -16,10 +16,17 @@ import '../../panels/rn_welcome/rn_welcome-meta.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as Main from '../main/main.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Main from '../main/main.js';
+
 import type * as Sources from '../../panels/sources/sources.js';
 import * as RNExperiments from '../main/rn_experiments.js';
+import * as Host from '../../core/host/host.js';
+
+Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
+
+Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
+Host.rnPerfMetrics.entryPointLoadingStarted('rn_inspector');
 
 RNExperiments.setIsReactNativeEntryPoint(true);
 RNExperiments.RNExperiments.enableExperimentsByDefault([
@@ -73,3 +80,5 @@ UI.ViewManager.registerViewExtension({
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});
 new Main.MainImpl.MainImpl();
+
+Host.rnPerfMetrics.entryPointLoadingFinished('rn_inspector');

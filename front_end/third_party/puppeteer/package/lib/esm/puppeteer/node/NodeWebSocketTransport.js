@@ -32,14 +32,18 @@ export class NodeWebSocketTransport {
     constructor(ws) {
         this.#ws = ws;
         this.#ws.addEventListener('message', event => {
-            if (this.onmessage) {
-                this.onmessage.call(null, event.data);
-            }
+            setImmediate(() => {
+                if (this.onmessage) {
+                    this.onmessage.call(null, event.data);
+                }
+            });
         });
         this.#ws.addEventListener('close', () => {
-            if (this.onclose) {
-                this.onclose.call(null);
-            }
+            setImmediate(() => {
+                if (this.onclose) {
+                    this.onclose.call(null);
+                }
+            });
         });
         // Silently ignore all errors - we don't know what to do with them.
         this.#ws.addEventListener('error', () => { });

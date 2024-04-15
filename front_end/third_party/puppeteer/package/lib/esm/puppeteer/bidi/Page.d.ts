@@ -93,6 +93,11 @@ export declare class BidiPage extends Page {
     /**
      * @internal
      */
+    _extraHTTPHeaders: Record<string, string>;
+    setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+    /**
+     * @internal
+     */
     _credentials: Credentials | null;
     authenticate(credentials: Credentials | null): Promise<void>;
     setDragInterception(): never;
@@ -102,7 +107,6 @@ export declare class BidiPage extends Page {
     setCookie(...cookies: CookieParam[]): Promise<void>;
     deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;
-    setExtraHTTPHeaders(): never;
     metrics(): never;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;

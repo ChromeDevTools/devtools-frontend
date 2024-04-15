@@ -30,7 +30,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         this.id = request.id;
     }
     get client() {
-        throw new Errors_js_1.UnsupportedOperation();
+        return this.#frame.client;
     }
     #initialize() {
         this.#request.on('redirect', request => {
@@ -41,7 +41,14 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             this.#response = HTTPResponse_js_1.BidiHTTPResponse.from(data, this);
         });
         this.#request.on('authenticate', this.#handleAuthentication);
-        this.#frame?.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+        this.#frame.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+        if (Object.keys(this.#extraHTTPHeaders).length) {
+            this.interception.handlers.push(async () => {
+                await this.continue({
+                    headers: this.headers(),
+                }, 0);
+            });
+        }
     }
     url() {
         return this.#request.url;
@@ -61,12 +68,18 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     async fetchPostData() {
         throw new Errors_js_1.UnsupportedOperation();
     }
+    get #extraHTTPHeaders() {
+        return this.#frame?.page()._extraHTTPHeaders ?? {};
+    }
     headers() {
         const headers = {};
         for (const header of this.#request.headers) {
             headers[header.name.toLowerCase()] = header.value.value;
         }
-        return headers;
+        return {
+            ...headers,
+            ...this.#extraHTTPHeaders,
+        };
     }
     response() {
         return this.#response;
@@ -96,7 +109,15 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         return redirects;
     }
     frame() {
-        return this.#frame ?? null;
+        return this.#frame;
+    }
+    async continue(overrides, priority) {
+        return await super.continue({
+            headers: Object.keys(this.#extraHTTPHeaders).length
+                ? this.headers()
+                : undefined,
+            ...overrides,
+        }, priority);
     }
     async _continue(overrides = {}) {
         const headers = getBidiHeaders(overrides.headers);

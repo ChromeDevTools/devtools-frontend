@@ -446,17 +446,23 @@ let BidiPage = (() => {
         workers() {
             return [...this.#workers];
         }
-        #interception;
+        #userInterception;
         async setRequestInterception(enable) {
-            if (enable && !this.#interception) {
-                this.#interception = await this.#frame.browsingContext.addIntercept({
-                    phases: ["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */],
-                });
+            this.#userInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#userInterception, enable);
+        }
+        /**
+         * @internal
+         */
+        _extraHTTPHeaders = {};
+        #extraHeadersInterception;
+        async setExtraHTTPHeaders(headers) {
+            const extraHTTPHeaders = {};
+            for (const [key, value] of Object.entries(headers)) {
+                (0, assert_js_1.assert)((0, util_js_1.isString)(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+                extraHTTPHeaders[key.toLowerCase()] = value;
             }
-            else if (!enable && this.#interception) {
-                await this.#frame.browsingContext.userContext.browser.removeIntercept(this.#interception);
-                this.#interception = undefined;
-            }
+            this._extraHTTPHeaders = extraHTTPHeaders;
+            this.#extraHeadersInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#extraHeadersInterception, Boolean(Object.keys(this._extraHTTPHeaders).length));
         }
         /**
          * @internal
@@ -464,16 +470,20 @@ let BidiPage = (() => {
         _credentials = null;
         #authInterception;
         async authenticate(credentials) {
-            if (credentials && !this.#authInterception) {
-                this.#authInterception = await this.#frame.browsingContext.addIntercept({
-                    phases: ["authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */],
+            this.#authInterception = await this.#toggleInterception(["authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */], this.#authInterception, Boolean(credentials));
+            this._credentials = credentials;
+        }
+        async #toggleInterception(phases, interception, expected) {
+            if (expected && !interception) {
+                return await this.#frame.browsingContext.addIntercept({
+                    phases,
                 });
             }
-            else if (!credentials && this.#authInterception) {
-                await this.#frame.browsingContext.userContext.browser.removeIntercept(this.#authInterception);
-                this.#authInterception = undefined;
+            else if (!expected && interception) {
+                await this.#frame.browsingContext.userContext.browser.removeIntercept(interception);
+                return;
             }
-            this._credentials = credentials;
+            return interception;
         }
         setDragInterception() {
             throw new Errors_js_1.UnsupportedOperation();
@@ -547,9 +557,6 @@ let BidiPage = (() => {
         }
         async removeExposedFunction(name) {
             await this.#frame.removeExposedFunction(name);
-        }
-        setExtraHTTPHeaders() {
-            throw new Errors_js_1.UnsupportedOperation();
         }
         metrics() {
             throw new Errors_js_1.UnsupportedOperation();

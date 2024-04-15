@@ -38,7 +38,12 @@ import {UnsupportedOperation} from '../common/Errors.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
 import type {Awaitable} from '../common/types.js';
-import {evaluationString, parsePDFOptions, timeout} from '../common/util.js';
+import {
+  evaluationString,
+  isString,
+  parsePDFOptions,
+  timeout,
+} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {assert} from '../util/assert.js';
 import {bubble} from '../util/decorators.js';
@@ -511,18 +516,38 @@ export class BidiPage extends Page {
     return [...this.#workers];
   }
 
-  #interception?: string;
+  #userInterception?: string;
   override async setRequestInterception(enable: boolean): Promise<void> {
-    if (enable && !this.#interception) {
-      this.#interception = await this.#frame.browsingContext.addIntercept({
-        phases: [Bidi.Network.InterceptPhase.BeforeRequestSent],
-      });
-    } else if (!enable && this.#interception) {
-      await this.#frame.browsingContext.userContext.browser.removeIntercept(
-        this.#interception
+    this.#userInterception = await this.#toggleInterception(
+      [Bidi.Network.InterceptPhase.BeforeRequestSent],
+      this.#userInterception,
+      enable
+    );
+  }
+
+  /**
+   * @internal
+   */
+  _extraHTTPHeaders: Record<string, string> = {};
+  #extraHeadersInterception?: string;
+  override async setExtraHTTPHeaders(
+    headers: Record<string, string>
+  ): Promise<void> {
+    const extraHTTPHeaders: Record<string, string> = {};
+    for (const [key, value] of Object.entries(headers)) {
+      assert(
+        isString(value),
+        `Expected value of header "${key}" to be String, but "${typeof value}" is found.`
       );
-      this.#interception = undefined;
+      extraHTTPHeaders[key.toLowerCase()] = value;
     }
+    this._extraHTTPHeaders = extraHTTPHeaders;
+
+    this.#extraHeadersInterception = await this.#toggleInterception(
+      [Bidi.Network.InterceptPhase.BeforeRequestSent],
+      this.#extraHeadersInterception,
+      Boolean(Object.keys(this._extraHTTPHeaders).length)
+    );
   }
 
   /**
@@ -531,17 +556,31 @@ export class BidiPage extends Page {
   _credentials: Credentials | null = null;
   #authInterception?: string;
   override async authenticate(credentials: Credentials | null): Promise<void> {
-    if (credentials && !this.#authInterception) {
-      this.#authInterception = await this.#frame.browsingContext.addIntercept({
-        phases: [Bidi.Network.InterceptPhase.AuthRequired],
-      });
-    } else if (!credentials && this.#authInterception) {
-      await this.#frame.browsingContext.userContext.browser.removeIntercept(
-        this.#authInterception
-      );
-      this.#authInterception = undefined;
-    }
+    this.#authInterception = await this.#toggleInterception(
+      [Bidi.Network.InterceptPhase.AuthRequired],
+      this.#authInterception,
+      Boolean(credentials)
+    );
+
     this._credentials = credentials;
+  }
+
+  async #toggleInterception(
+    phases: [Bidi.Network.InterceptPhase, ...Bidi.Network.InterceptPhase[]],
+    interception: string | undefined,
+    expected: boolean
+  ): Promise<string | undefined> {
+    if (expected && !interception) {
+      return await this.#frame.browsingContext.addIntercept({
+        phases,
+      });
+    } else if (!expected && interception) {
+      await this.#frame.browsingContext.userContext.browser.removeIntercept(
+        interception
+      );
+      return;
+    }
+    return interception;
   }
 
   override setDragInterception(): never {
@@ -652,10 +691,6 @@ export class BidiPage extends Page {
 
   override async removeExposedFunction(name: string): Promise<void> {
     await this.#frame.removeExposedFunction(name);
-  }
-
-  override setExtraHTTPHeaders(): never {
-    throw new UnsupportedOperation();
   }
 
   override metrics(): never {

@@ -31,7 +31,7 @@ export const requests = new WeakMap<Request, BidiHTTPRequest>();
 export class BidiHTTPRequest extends HTTPRequest {
   static from(
     bidiRequest: Request,
-    frame: BidiFrame | undefined,
+    frame: BidiFrame,
     redirect?: BidiHTTPRequest
   ): BidiHTTPRequest {
     const request = new BidiHTTPRequest(bidiRequest, frame, redirect);
@@ -41,12 +41,12 @@ export class BidiHTTPRequest extends HTTPRequest {
   #redirectBy: BidiHTTPRequest | undefined;
   #response: BidiHTTPResponse | null = null;
   override readonly id: string;
-  readonly #frame: BidiFrame | undefined;
+  readonly #frame: BidiFrame;
   readonly #request: Request;
 
   private constructor(
     request: Request,
-    frame: BidiFrame | undefined,
+    frame: BidiFrame,
     redirectBy?: BidiHTTPRequest
   ) {
     super();
@@ -61,7 +61,7 @@ export class BidiHTTPRequest extends HTTPRequest {
   }
 
   override get client(): CDPSession {
-    throw new UnsupportedOperation();
+    return this.#frame.client;
   }
 
   #initialize() {
@@ -74,7 +74,18 @@ export class BidiHTTPRequest extends HTTPRequest {
     });
     this.#request.on('authenticate', this.#handleAuthentication);
 
-    this.#frame?.page().trustedEmitter.emit(PageEvent.Request, this);
+    this.#frame.page().trustedEmitter.emit(PageEvent.Request, this);
+
+    if (Object.keys(this.#extraHTTPHeaders).length) {
+      this.interception.handlers.push(async () => {
+        await this.continue(
+          {
+            headers: this.headers(),
+          },
+          0
+        );
+      });
+    }
   }
 
   override url(): string {
@@ -101,12 +112,19 @@ export class BidiHTTPRequest extends HTTPRequest {
     throw new UnsupportedOperation();
   }
 
+  get #extraHTTPHeaders(): Record<string, string> {
+    return this.#frame?.page()._extraHTTPHeaders ?? {};
+  }
+
   override headers(): Record<string, string> {
     const headers: Record<string, string> = {};
     for (const header of this.#request.headers) {
       headers[header.name.toLowerCase()] = header.value.value;
     }
-    return headers;
+    return {
+      ...headers,
+      ...this.#extraHTTPHeaders,
+    };
   }
 
   override response(): BidiHTTPResponse | null {
@@ -141,8 +159,23 @@ export class BidiHTTPRequest extends HTTPRequest {
     return redirects;
   }
 
-  override frame(): BidiFrame | null {
-    return this.#frame ?? null;
+  override frame(): BidiFrame {
+    return this.#frame;
+  }
+
+  override async continue(
+    overrides?: ContinueRequestOverrides,
+    priority?: number | undefined
+  ): Promise<void> {
+    return await super.continue(
+      {
+        headers: Object.keys(this.#extraHTTPHeaders).length
+          ? this.headers()
+          : undefined,
+        ...overrides,
+      },
+      priority
+    );
   }
 
   override async _continue(

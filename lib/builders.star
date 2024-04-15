@@ -160,7 +160,6 @@ def builder_descriptor(
 def bucket(name, acls):
     luci.bucket(
         name = name,
-        shadows = name,
         acls = acls,
         bindings = [
             luci.binding(

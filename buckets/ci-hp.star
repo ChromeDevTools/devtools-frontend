@@ -6,6 +6,7 @@ load(
     "//lib/builders.star",
     "AUTOROLLER_ACCOUNT",
     "acls",
+    "bucket",
     "default_timeout",
     "defaults",
     "dimensions",
@@ -14,7 +15,7 @@ load(
 
 ROLL_BUILDER_NAME = "Roll deps and chromium pin into devtools-frontend"
 
-luci.bucket(
+bucket(
     name = "ci-hp",
     acls = [
         acls.readers,

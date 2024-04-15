@@ -1,6 +1,7 @@
 load(
     "//lib/builders.star",
     "acls",
+    "bucket",
     "builder",
     "builder_coverage",
     "cq_acls",
@@ -13,7 +14,7 @@ load(
 BUCKET_NAME = "try"
 SERVICE_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com"
 
-luci.bucket(
+bucket(
     name = BUCKET_NAME,
     acls = [
         acls.readers,

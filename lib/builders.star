@@ -157,6 +157,19 @@ def builder_descriptor(
         description_html = description_html,
     )
 
+def bucket(name, acls):
+    luci.bucket(
+        name = name,
+        shadows = name,
+        acls = acls,
+        bindings = [
+            luci.binding(
+                roles = "role/buildbucket.creator",
+                groups = ["mdb/v8-infra"],
+            ),
+        ],
+    )
+
 def generate_ci_configs(configurations, builders):
     # Generate full configuration for ci builders:
     #   bucket, builders, console, scheduler.
@@ -166,7 +179,7 @@ def generate_ci_configs(configurations, builders):
 
     SERVICE_ACCOUNT = "devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com"
 
-    luci.bucket(
+    bucket(
         name = "ci",
         acls = [
             acls.readers,

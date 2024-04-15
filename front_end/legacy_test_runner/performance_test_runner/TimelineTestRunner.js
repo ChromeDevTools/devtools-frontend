@@ -114,6 +114,13 @@ PerformanceTestRunner.performanceModel = function() {
   return Timeline.TimelinePanel.TimelinePanel.instance().performanceModel;
 };
 
+PerformanceTestRunner.traceEngineParsedData = function() {
+  return Timeline.TimelinePanel.TimelinePanel.instance().getTraceEngineDataForLayoutTests();
+};
+PerformanceTestRunner.traceEngineRawEvents = function() {
+  return Timeline.TimelinePanel.TimelinePanel.instance().getTraceEngineRawTraceEventsForLayoutTests();
+};
+
 PerformanceTestRunner.timelineModel = function() {
   return PerformanceTestRunner.performanceModel().timelineModel();
 };

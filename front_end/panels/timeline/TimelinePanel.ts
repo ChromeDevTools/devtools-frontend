@@ -509,6 +509,34 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return this.#minimapComponent;
   }
 
+  /**
+   * NOTE: this method only exists to enable some layout tests to be migrated to the new engine.
+   * DO NOT use this method within DevTools. It is marked as deprecated so
+   * within DevTools you are warned when using the method.
+   * @deprecated
+   **/
+  getTraceEngineDataForLayoutTests(): TraceEngine.Handlers.Types.TraceParseData {
+    const data = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+    if (data === null) {
+      throw new Error('No trace engine data found.');
+    }
+    return data;
+  }
+
+  /**
+   * NOTE: this method only exists to enable some layout tests to be migrated to the new engine.
+   * DO NOT use this method within DevTools. It is marked as deprecated so
+   * within DevTools you are warned when using the method.
+   * @deprecated
+   **/
+  getTraceEngineRawTraceEventsForLayoutTests(): readonly TraceEngine.Types.TraceEvents.TraceEventData[] {
+    const data = this.#traceEngineModel.traceEvents(this.#traceEngineActiveTraceIndex);
+    if (data === null) {
+      throw new Error('No trace engine data found.');
+    }
+    return data;
+  }
+
   #onChartPlayableStateChange(event: Common.EventTarget.EventTargetEvent<boolean, unknown>): void {
     if (event.data) {
       const dateObj = new Date();

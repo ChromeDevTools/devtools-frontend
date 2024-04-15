@@ -8,7 +8,12 @@ import * as path from 'path';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
-const argv = yargs(process.argv.slice(2)).command('$0 [script]').option('target', {alias: 't', type: 'string', default: 'Default'}).argv;
+const argv = yargs(process.argv.slice(2))
+                 .command('$0 [script]')
+                 .option('target', {alias: 't', type: 'string', default: 'Default'})
+                 .help(false)
+                 .version(false)
+                 .argv;
 
 const target = argv['target'];
 const script = argv['script'];

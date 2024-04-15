@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type * as puppeteer from 'puppeteer-core';
 
-import {requireTestRunnerConfigSetting} from '../../conductor/test_runner_config.js';
+import {GEN_DIR} from '../../conductor/paths.js';
 import {
   $,
   $$,
@@ -761,9 +761,7 @@ export class WasmLocationLabels {
   }
 
   static load(source: string, wasm: string): WasmLocationLabels {
-    const testSuitePath = requireTestRunnerConfigSetting<string>('test-suite-path');
-    const target = requireTestRunnerConfigSetting<string>('target');
-    const mapFileName = path.join('out', target, testSuitePath, 'resources', `${wasm}.map.json`);
+    const mapFileName = path.join(GEN_DIR, 'test', 'e2e', 'resources', `${wasm}.map.json`);
     const mapFile = JSON.parse(fs.readFileSync(mapFileName, {encoding: 'utf-8'})) as Array<{
                       source: string,
                       generatedLine: number,
@@ -772,7 +770,7 @@ export class WasmLocationLabels {
                       originalLine: number,
                       originalColumn: number,
                     }>;
-    const sourceFileName = path.join('out', target, testSuitePath, 'resources', source);
+    const sourceFileName = path.join(GEN_DIR, 'test', 'e2e', 'resources', source);
     const sourceFile = fs.readFileSync(sourceFileName, {encoding: 'utf-8'});
     const labels = new Map<string, number>();
     for (const [index, line] of sourceFile.split('\n').entries()) {

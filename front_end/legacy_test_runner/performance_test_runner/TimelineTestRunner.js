@@ -121,6 +121,17 @@ PerformanceTestRunner.traceEngineRawEvents = function() {
   return Timeline.TimelinePanel.TimelinePanel.instance().getTraceEngineRawTraceEventsForLayoutTests();
 };
 
+// NOTE: if you are here and trying to use this method, please think first if
+// you can instead add a unit test to the DevTools repository. That is
+// preferred to layout tests, if possible.
+PerformanceTestRunner.createTraceEngineDataFromEvents = async function(events) {
+  const model = Trace.TraceModel.Model.createWithAllHandlers(Trace.Types.Configuration.DEFAULT);
+  await model.parse(events);
+  // Model only has one trace, so we can hardcode 0 here to get the latest
+  // result.
+  return model.traceParsedData(0);
+};
+
 PerformanceTestRunner.timelineModel = function() {
   return PerformanceTestRunner.performanceModel().timelineModel();
 };

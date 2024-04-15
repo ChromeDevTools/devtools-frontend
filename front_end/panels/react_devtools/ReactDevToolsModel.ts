@@ -6,7 +6,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ReactNativeModels from '../../models/react_native/react_native.js';
 
-type JSONValue = null | string | number | boolean | {[key: string]: JSONValue} | JSONValue[];
+import type * as ReactDevToolsTypes from '../../third_party/react-devtools/react-devtools.js';
 
 export const enum Events {
   Initialized = 'Initialized',
@@ -15,7 +15,7 @@ export const enum Events {
 
 export type EventTypes = {
   [Events.Initialized]: void,
-  [Events.MessageReceived]: JSONValue,
+  [Events.MessageReceived]: ReactDevToolsTypes.Message,
 };
 
 export class ReactDevToolsModel extends SDK.SDKModel.SDKModel<EventTypes> {
@@ -42,7 +42,7 @@ export class ReactDevToolsModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
     rdtModel.subscribeToDomainMessages(
       ReactDevToolsModel.FUSEBOX_BINDING_NAMESPACE,
-        message => this.onMessage(message),
+        message => this.onMessage(message as ReactDevToolsTypes.Message),
     );
     void rdtModel.initializeDomain(ReactDevToolsModel.FUSEBOX_BINDING_NAMESPACE).then(() => this.onInitialization());
   }
@@ -51,7 +51,7 @@ export class ReactDevToolsModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.Initialized);
   }
 
-  async sendMessage(message: JSONValue): Promise<void> {
+  async sendMessage(message: ReactDevToolsTypes.Message): Promise<void> {
     const rdtModel = this.rdtModel;
     if (!rdtModel) {
       throw new Error('Failed to send message from ReactDevToolsModel: ReactDevToolsBindingsModel was null');
@@ -60,7 +60,7 @@ export class ReactDevToolsModel extends SDK.SDKModel.SDKModel<EventTypes> {
     await rdtModel.sendMessage(ReactDevToolsModel.FUSEBOX_BINDING_NAMESPACE, message);
   }
 
-  onMessage(message: JSONValue): void {
+  onMessage(message: ReactDevToolsTypes.Message): void {
     this.dispatchEventToListeners(Events.MessageReceived, message);
   }
 }

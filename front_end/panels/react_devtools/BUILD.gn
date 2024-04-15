@@ -27,7 +27,9 @@ devtools_module("react_devtools") {
   sources = [ "ReactDevToolsView.ts", "ReactDevToolsModel.ts" ]
 
   deps = [
+    "../../core/sdk:bundle",
     "../../models/react_native:bundle",
+    "../../third_party/react-devtools:bundle",
     "../../ui/legacy:bundle",
   ]
 }

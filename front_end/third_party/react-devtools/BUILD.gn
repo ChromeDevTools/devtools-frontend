@@ -1,0 +1,36 @@
+# Copyright 2019 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../scripts/build/ninja/vars.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "package/frontend.css" ]
+}
+
+devtools_pre_built("react-devtools") {
+  sources_are_release = false
+
+  sources = [
+    "react-devtools-tsconfig.json",
+    "package/frontend.d.ts",
+    "package/frontend.js",
+    "package/importFile.worker.worker.js"
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "react-devtools.ts"
+
+  deps = [
+    ":css_files",
+    ":react-devtools",
+  ]
+
+  visibility = [ "../../panels/react_devtools/*" ]
+  visibility += devtools_third_party_visibility
+}

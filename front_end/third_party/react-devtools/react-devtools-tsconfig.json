@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "package/frontend.js",
+    "package/importFile.worker.worker.js"
+  ]
+}

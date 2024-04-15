@@ -16,7 +16,7 @@ jobs:
       run: |
         gclient config --unmanaged src --name src
         gclient sync --no-history
-    - name: Build DevTools frontend
+    - name: Build DevTools frontend (debug)
       run: |
         cd src
         gn gen out/Default
@@ -25,3 +25,14 @@ jobs:
       with:
         name: dist-front_end
         path: src/out/Default/gen/front_end
+    - name: Build DevTools frontend (release)
+      run: |
+        cd src
+        mkdir -p out/Release
+        echo 'is_official_build=true' > out/Release/args.gn
+        gn gen out/Release
+        autoninja -C out/Release
+    - uses: ./src/.github/actions/upload-artifact
+      with:
+        name: dist-Release-front_end
+        path: src/out/Release/gen/front_end

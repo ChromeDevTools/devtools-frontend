@@ -73,24 +73,9 @@ export const resetTestDOM = () => {
   document.body.appendChild(newContainer);
 };
 
-/**
- * An easy way to assert the component's shadowRoot exists so you're able to assert on its contents.
- */
-export function assertShadowRoot(shadowRoot: ShadowRoot|null): asserts shadowRoot is ShadowRoot {
-  assert.instanceOf(shadowRoot, ShadowRoot);
-}
-
 type Constructor<T> = {
   new (...args: unknown[]): T,
 };
-
-/**
- * Asserts that `element` is of type `T`.
- */
-export function assertElement<T extends Element>(
-    element: Element|null, elementClass: Constructor<T>): asserts element is T {
-  assert.instanceOf(element, elementClass);
-}
 
 /**
  * Asserts that all emenents of `nodeList` are at least of type `T`.
@@ -104,7 +89,7 @@ export function getElementWithinComponent<T extends HTMLElement, V extends Eleme
     component: T, selector: string, elementClass: Constructor<V>) {
   assert.isNotNull(component.shadowRoot);
   const element = component.shadowRoot.querySelector(selector);
-  assertElement(element, elementClass);
+  assert.instanceOf(element, elementClass);
   return element;
 }
 

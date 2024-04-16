@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -210,6 +211,9 @@ const enum Punctuation {
 
 const resolveDebuggerScope = async(scope: SDK.DebuggerModel.ScopeChainEntry):
     Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
+      if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+        return {variableMapping: new Map(), thisMapping: null};
+      }
       const script = scope.callFrame().script;
       const scopeChain = await findScopeChainForDebuggerScope(scope);
       return resolveScope(script, scopeChain);
@@ -398,6 +402,9 @@ export const resolveScopeChain =
  */
 export const allVariablesInCallFrame =
     async(callFrame: SDK.DebuggerModel.CallFrame): Promise<Map<string, string|null>> => {
+  if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+    return new Map<string, string|null>();
+  }
   const cachedMap = cachedMapByCallFrame.get(callFrame);
   if (cachedMap) {
     return cachedMap;
@@ -431,6 +438,9 @@ export const allVariablesInCallFrame =
 export const allVariablesAtPosition =
     async(location: SDK.DebuggerModel.Location): Promise<Map<string, string|null>> => {
   const reverseMapping = new Map<string, string|null>();
+  if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+    return reverseMapping;
+  }
   const script = location.script();
   if (!script) {
     return reverseMapping;

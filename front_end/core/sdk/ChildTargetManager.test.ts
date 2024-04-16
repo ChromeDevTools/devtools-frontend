@@ -221,4 +221,23 @@ describeWithMockConnection('ChildTargetManager', () => {
     assert.strictEqual(attachCallback.secondCall.firstArg.target.id(), OTHER_TARGET_ID);
     assert.isTrue(attachCallback.secondCall.firstArg.waitingForDebugger);
   });
+
+  it('disposes of the target if it crashes', async () => {
+    const parentTarget = createTarget();
+    const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo('child-target-id'),
+      waitingForDebugger: false,
+    });
+    const target = childTargetManager.childTargets().at(0);
+    assert.isDefined(target);
+    assert.strictEqual(target.id(), 'child-target-id');
+    const disposeSpy = sinon.spy(target, 'dispose');
+    childTargetManager.targetCrashed(
+        {targetId: target.id() as Protocol.Target.TargetID, status: 'crashed', errorCode: 1});
+
+    // Ensure that the target has been disposed after it crashed.
+    assert.isTrue(disposeSpy.calledOnce);
+  });
 });

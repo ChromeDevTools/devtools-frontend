@@ -4,9 +4,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
-Helper to manage DEPS. Use this script to update node_modules instead of
+Use this script to update node_modules instead of
 running npm install manually. To upgrade a dependency, change the version
-number in DEPS below and run this script, which can be done with `npm run
+number in package.json below and run this script, which can be done with `npm run
 install-deps` locally.
 """
 
@@ -55,13 +55,6 @@ DEPS = {}
 pkg_file = path.join(devtools_paths.root_path(), 'package.json')
 with open(pkg_file, 'r+') as pkg_file:
     DEPS = load_json_file(pkg_file)["devDependencies"]
-
-ADDITIONAL_NPM_ARGS = [
-    # This is to avoid downloading esbuild-* package.
-    '--omit',
-    'optional',
-    '--ignore-scripts'
-]
 
 
 def exec_command(cmd):
@@ -116,38 +109,6 @@ def strip_private_fields():
             except:
                 print('Unable to fix: %s, %s' % (pkg, sys.exc_info()))
                 return True
-
-    return False
-
-
-# Required to keep the package-lock.json in sync with the package.json dependencies
-def install_missing_deps():
-    with open(devtools_paths.package_lock_json_path(), 'r+') as pkg_lock_file:
-        try:
-            pkg_lock_data = load_json_file(pkg_lock_file)
-            existing_deps = pkg_lock_data['dependencies']
-            new_deps = []
-
-            # Find any new DEPS and add them in.
-            for dep, version in DEPS.items():
-                if not dep in existing_deps or not existing_deps[dep][
-                        'version'] == version:
-                    new_deps.append("%s@%s" % (dep, version))
-
-            # Now install.
-            if len(new_deps) > 0:
-                cmd = [
-                    'npm',
-                    'install',
-                    '--save-dev',
-                    '--save-exact',
-                ] + ADDITIONAL_NPM_ARGS
-                cmd.extend(new_deps)
-                return exec_command(cmd)
-
-        except Exception as exception:
-            print('Unable to install: %s' % exception)
-            return True
 
     return False
 
@@ -211,7 +172,7 @@ def addChromiumReadme():
     return False
 
 
-def run_npm_command(npm_command_args=None):
+def run_npm_command():
     for (name, version) in DEPS.items():
         if (version.find('^') == 0):
             print(
@@ -219,40 +180,21 @@ def run_npm_command(npm_command_args=None):
             )
             return True
 
-    run_custom_command = npm_command_args is not None
-
-    if install_missing_deps():
+    # Modern npm versions do not cause extra updates so it is not necessary to run clean install.
+    if exec_command([
+            'npm',
+            'install',
+    ]):
         return True
 
-    runs_analysis_command = False
-
-    if run_custom_command:
-        runs_analysis_command = npm_command_args[:1] == [
-            'outdated'
-        ] or npm_command_args[:1] == ['audit'
-                                      ] or npm_command_args[:1] == ['ls']
-
-    # By default, run the CI version of npm, which prevents updates to the versions of modules.
-    # However, when we are analyzing the installed NPM dependencies, we don't need to run
-    # the installation process again.
-    if not runs_analysis_command:
-        if exec_command([
-                'npm',
-                'ci',
-        ] + ADDITIONAL_NPM_ARGS):
-            return True
-
-        # To minimize disk usage for Chrome DevTools node_modules, always try to dedupe dependencies.
-        # We need to perform this every time, as the order of dependencies added could lead to a
-        # non-optimal dependency tree, resulting in unnecessary disk usage.
-        if exec_command([
-                'npm',
-                'dedupe',
-        ] + ADDITIONAL_NPM_ARGS):
-            return True
-
-    if run_custom_command:
-        custom_command_result = exec_command(['npm'] + npm_command_args)
+    # To minimize disk usage for Chrome DevTools node_modules, always try to dedupe dependencies.
+    # We need to perform this every time, as the order of dependencies added could lead to a
+    # non-optimal dependency tree, resulting in unnecessary disk usage.
+    if exec_command([
+            'npm',
+            'dedupe',
+    ]):
+        return True
 
     if remove_package_json_entries():
         return True
@@ -269,18 +211,10 @@ def run_npm_command(npm_command_args=None):
     if addChromiumReadme():
         return True
 
-    if run_custom_command:
-        return custom_command_result
-
     return ensure_licenses()
 
 
-npm_args = None
-
-if (len(sys.argv[1:]) > 0):
-    npm_args = sys.argv[1:]
-
-npm_errors_found = run_npm_command(npm_args)
+npm_errors_found = run_npm_command()
 
 if npm_errors_found:
     print('npm command failed')

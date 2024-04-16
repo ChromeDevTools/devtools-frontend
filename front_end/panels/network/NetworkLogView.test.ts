@@ -9,13 +9,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import {
   dispatchClickEvent,
   dispatchMouseUpEvent,
   raf,
 } from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -187,11 +187,7 @@ describeWithMockConnection('NetworkLogView', () => {
         const harWriterWrite = sinon.stub(HAR.Writer.Writer, 'write').resolves();
         const URL_HOST = 'example.com';
         target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
-        const FILENAME = `${URL_HOST}.har` as Platform.DevToolsPath.RawPathString;
-        const fileManager = Workspace.FileManager.FileManager.instance();
-        const fileManagerSave =
-            sinon.stub(fileManager, 'save').withArgs(FILENAME, '', true).resolves({fileSystemPath: FILENAME});
-        const fileManagerClose = sinon.stub(fileManager, 'close');
+        const fileManager = stubFileManager();
 
         const FINISHED_REQUEST_1 = createNetworkRequest('http://example.com/', {finished: true});
         const FINISHED_REQUEST_2 = createNetworkRequest('http://example.com/favicon.ico', {finished: true});
@@ -206,12 +202,12 @@ describeWithMockConnection('NetworkLogView', () => {
         if (inScope) {
           assert.isTrue(harWriterWrite.calledOnceWith(
               sinon.match.any, [FINISHED_REQUEST_1, FINISHED_REQUEST_2], sinon.match.any));
-          assert.isTrue(fileManagerSave.calledOnce);
-          assert.isTrue(fileManagerClose.calledOnce);
+          assert.isTrue(fileManager.save.calledOnce);
+          assert.isTrue(fileManager.close.calledOnce);
         } else {
           assert.isFalse(harWriterWrite.called);
-          assert.isFalse(fileManagerSave.called);
-          assert.isFalse(fileManagerClose.called);
+          assert.isFalse(fileManager.save.called);
+          assert.isFalse(fileManager.close.called);
         }
       });
 

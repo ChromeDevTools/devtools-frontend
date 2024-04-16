@@ -6,10 +6,10 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -75,18 +75,12 @@ describeWithMockConnection('ConsoleView', () => {
     sinon.stub(Date, 'now').returns(TIMESTAMP);
     target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
     const FILENAME = `${URL_HOST}-${TIMESTAMP}.log` as Platform.DevToolsPath.RawPathString;
-    const fileManager = Workspace.FileManager.FileManager.instance();
-    const fileManagerSave = sinon.stub(fileManager, 'save').resolves({fileSystemPath: FILENAME});
-    const fileManagerAppendCall = expectCall(sinon.stub(fileManager, 'append'), (file, content) => {
-      assert.strictEqual(FILENAME, file);
-      assert.include(content, 'message 1\nmessage 2\n');
-    });
-    const fileManagerCloseCall = expectCall(sinon.stub(fileManager, 'close'));
+    const fileManager = stubFileManager();
+    const fileManagerCloseCall = expectCall(fileManager.close);
     saveAsHandler.args[1]();
-    assert.isTrue(fileManagerSave.calledOnceWith(FILENAME, '', true));
-    await fileManagerAppendCall;
-    fileManager.dispatchEventToListeners(Workspace.FileManager.Events.AppendedToURL, FILENAME);
+    assert.isTrue(fileManager.save.calledOnceWith(FILENAME, '', true));
     await fileManagerCloseCall;
+    assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('message 1\nmessage 2\n')));
   }
 
   it('can save to file without tab target', () => canSaveToFile(() => createTarget()));

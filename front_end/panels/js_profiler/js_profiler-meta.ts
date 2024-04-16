@@ -19,14 +19,6 @@ const UIStrings = {
    */
   showProfiler: 'Show Profiler',
   /**
-   *@description Text for the performance of something
-   */
-  performance: 'Performance',
-  /**
-   *@description Command for showing the 'Performance' tool
-   */
-  showPerformance: 'Show Performance',
-  /**
    *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
    */
   startStopRecording: 'Start/stop recording',

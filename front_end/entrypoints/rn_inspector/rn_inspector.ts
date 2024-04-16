@@ -1,5 +1,5 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -20,7 +20,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Main from '../main/main.js';
 
 import type * as Sources from '../../panels/sources/sources.js';
-import * as RNExperiments from '../main/rn_experiments.js';
+import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 import * as Host from '../../core/host/host.js';
 
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
@@ -28,13 +28,13 @@ Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();
 Host.rnPerfMetrics.setLaunchId(Root.Runtime.Runtime.queryParam('launchId'));
 Host.rnPerfMetrics.entryPointLoadingStarted('rn_inspector');
 
-RNExperiments.setIsReactNativeEntryPoint(true);
-RNExperiments.RNExperiments.enableExperimentsByDefault([
+RNExperiments.RNExperimentsImpl.setIsReactNativeEntryPoint(true);
+RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.JS_HEAP_PROFILER_ENABLE,
   Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
 ]);
-RNExperiments.RNExperiments.setNonConfigurableExperiments(
+RNExperiments.RNExperimentsImpl.Instance.setNonConfigurableExperiments(
   [
     // RDT support is Fusebox-only
     Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,

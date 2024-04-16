@@ -11,7 +11,6 @@ devtools_module("main") {
     "ExecutionContextSelector.ts",
     "MainImpl.ts",
     "SimpleApp.ts",
-    "rn_experiments.ts",
   ]
 
   deps = [
@@ -20,6 +19,7 @@ devtools_module("main") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
+    "../../core/rn_experiments:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/bindings:bundle",

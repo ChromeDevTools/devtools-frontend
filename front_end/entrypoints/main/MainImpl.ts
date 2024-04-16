@@ -53,9 +53,9 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
-import { RNExperiments } from './rn_experiments.js';
 
 const UIStrings = {
   /**
@@ -429,7 +429,7 @@ export class MainImpl {
 
     // React Native experiments need to be registered for all entry points so
     // that they can be checked everywhere.
-    RNExperiments.copyInto(Root.Runtime.experiments, '[React Native] ');
+    RNExperiments.RNExperimentsImpl.Instance.copyInto(Root.Runtime.experiments, '[React Native] ');
 
     Root.Runtime.experiments.setNonConfigurableExperiments([
       ...(!('EyeDropper' in window) ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),

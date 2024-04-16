@@ -1,0 +1,31 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+
+devtools_module("rn_experiments") {
+  sources = [
+    "experimentsImpl.ts"
+  ]
+
+  deps = [
+    "../../core/root:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "rn_experiments.ts"
+
+  deps = [
+    ":rn_experiments"
+  ]
+
+  visibility = [
+    "../../entrypoints/rn_fusebox:*",
+    "../../entrypoints/rn_inspector:*",
+    "../../entrypoints/main:*",
+  ]
+}

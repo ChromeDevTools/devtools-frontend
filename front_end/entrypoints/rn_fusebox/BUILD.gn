@@ -9,6 +9,7 @@ devtools_entrypoint("entrypoint") {
   entrypoint = "rn_fusebox.ts"
 
   deps = [
+    "../../core/rn_experiments:bundle",
     "../../entrypoints/inspector_main:meta",
     "../../panels/accessibility:meta",
     "../../panels/animation:meta",

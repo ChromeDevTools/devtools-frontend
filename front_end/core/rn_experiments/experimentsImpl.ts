@@ -1,8 +1,7 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 // Chrome DevTools has an experiment system integrated deeply with its panel
 // framework and settings UI. We add some React Native-specific experiments,
@@ -46,10 +45,10 @@ const state = {
  * Set whether the current entry point is a React Native entry point.
  * This must be called before constructing MainImpl.
  */
-export function setIsReactNativeEntryPoint(value: boolean) {
+export function setIsReactNativeEntryPoint(value: boolean): void {
   if (state.didInitializeExperiments) {
     throw new Error(
-      'setIsReactNativeEntryPoint must be called before constructing MainImpl'
+      'setIsReactNativeEntryPoint must be called before constructing MainImpl',
     );
   }
   state.isReactNativeEntryPoint = value;
@@ -58,16 +57,16 @@ export function setIsReactNativeEntryPoint(value: boolean) {
 type RNExperimentPredicate = ({
   isReactNativeEntryPoint,
 }: {
-  isReactNativeEntryPoint: boolean;
+  isReactNativeEntryPoint: boolean,
 }) => boolean;
 type RNExperimentSpec = {
-  name: RNExperimentName;
-  title: string;
-  unstable: boolean;
-  docLink?: string;
-  feedbackLink?: string;
-  enabledByDefault?: boolean | RNExperimentPredicate;
-  configurable?: boolean | RNExperimentPredicate;
+  name: RNExperimentName,
+  title: string,
+  unstable: boolean,
+  docLink?: string,
+  feedbackLink?: string,
+  enabledByDefault?: boolean | RNExperimentPredicate,
+  configurable?: boolean | RNExperimentPredicate,
 };
 
 class RNExperiment {
@@ -92,9 +91,9 @@ class RNExperiment {
 
 function normalizePredicate(
   pred: boolean | null | undefined | RNExperimentPredicate,
-  defaultValue: boolean
+  defaultValue: boolean,
 ): RNExperimentPredicate {
-  if (pred == null) {
+  if (pred === null || pred === undefined) {
     return () => defaultValue;
   }
   if (typeof pred === 'boolean') {
@@ -111,7 +110,7 @@ class RNExperimentsSupport {
   register(spec: RNExperimentSpec): void {
     if (state.didInitializeExperiments) {
       throw new Error(
-        'Experiments must be registered before constructing MainImpl'
+        'Experiments must be registered before constructing MainImpl',
       );
     }
     const { name } = spec;
@@ -124,24 +123,24 @@ class RNExperimentsSupport {
   /**
    * Enable the given (RN-specific or core) experiments by default.
    */
-  enableExperimentsByDefault(names: Root.Runtime.ExperimentName[]) {
+  enableExperimentsByDefault(names: Root.Runtime.ExperimentName[]): void {
     if (state.didInitializeExperiments) {
       throw new Error(
-        'Experiments must be configured before constructing MainImpl'
+        'Experiments must be configured before constructing MainImpl',
       );
     }
     for (const name of names) {
       if (Object.prototype.hasOwnProperty.call(RNExperimentName, name)) {
         const experiment = this.#experiments.get(
-          name as unknown as RNExperimentName
+          name as unknown as RNExperimentName,
         );
         if (!experiment) {
           throw new Error(`React Native Experiment ${name} is not registered`);
         }
-        experiment.enabledByDefault = () => true;
+        experiment.enabledByDefault = (): boolean => true;
       } else {
         this.#defaultEnabledCoreExperiments.add(
-          name as Root.Runtime.ExperimentName
+          name as Root.Runtime.ExperimentName,
         );
       }
     }
@@ -150,24 +149,24 @@ class RNExperimentsSupport {
   /**
    * Set the given (RN-specific or core) experiments to be non-configurable.
    */
-  setNonConfigurableExperiments(names: Root.Runtime.ExperimentName[]) {
+  setNonConfigurableExperiments(names: Root.Runtime.ExperimentName[]): void {
     if (state.didInitializeExperiments) {
       throw new Error(
-        'Experiments must be configured before constructing MainImpl'
+        'Experiments must be configured before constructing MainImpl',
       );
     }
     for (const name of names) {
       if (Object.prototype.hasOwnProperty.call(RNExperimentName, name)) {
         const experiment = this.#experiments.get(
-          name as unknown as RNExperimentName
+          name as unknown as RNExperimentName,
         );
         if (!experiment) {
           throw new Error(`React Native Experiment ${name} is not registered`);
         }
-        experiment.configurable = () => false;
+        experiment.configurable = (): boolean => false;
       } else {
         this.#nonConfigurableCoreExperiments.add(
-          name as Root.Runtime.ExperimentName
+          name as Root.Runtime.ExperimentName,
         );
       }
     }
@@ -180,7 +179,7 @@ class RNExperimentsSupport {
         titlePrefix + spec.title,
         spec.unstable,
         spec.docLink,
-        spec.feedbackLink
+        spec.feedbackLink,
       );
       if (
         spec.enabledByDefault({
@@ -210,9 +209,9 @@ class RNExperimentsSupport {
 // Early registration for React Native-specific experiments. Only use this
 // *before* constructing MainImpl; afterwards read from Root.Runtime.experiments
 // as normal.
-export const RNExperiments = new RNExperimentsSupport();
+export const Instance = new RNExperimentsSupport();
 
-RNExperiments.register({
+Instance.register({
   name: RNExperimentName.JS_HEAP_PROFILER_ENABLE,
   title: 'Enable Heap Profiler',
   unstable: false,
@@ -220,7 +219,7 @@ RNExperiments.register({
   configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
 });
 
-RNExperiments.register({
+Instance.register({
   name: RNExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
   title: 'Enable React DevTools panel',
   unstable: true,
@@ -228,7 +227,7 @@ RNExperiments.register({
   configurable: ({ isReactNativeEntryPoint }) => isReactNativeEntryPoint,
 });
 
-RNExperiments.register({
+Instance.register({
   name: RNExperimentName.REACT_NATIVE_SPECIFIC_UI,
   title: 'Show React Native-specific UI',
   unstable: false,
@@ -236,7 +235,7 @@ RNExperiments.register({
   configurable: false,
 });
 
-RNExperiments.register({
+Instance.register({
   name: RNExperimentName.ENABLE_PERFORMANCE_PANEL,
   title: 'Enable Performance panel',
   unstable: true,

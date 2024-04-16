@@ -1,5 +1,5 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -50,7 +50,7 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
 
   render(): void {
     const welcomeIconUrl = new URL(
-      "../../Images/react_native/welcomeIcon.png",
+      '../../Images/react_native/welcomeIcon.png',
       import.meta.url,
     ).toString();
     render(html`

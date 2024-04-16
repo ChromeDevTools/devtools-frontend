@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Screencast from './screencast.js';
@@ -16,10 +17,7 @@ describeWithMockConnection('ScreencastApp', () => {
       const target = targetFactory();
       const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
       assert.exists(screenCaptureModel);
-      await new Promise<void>(
-          resolve => sinon.stub(screenCaptureModel, 'startScreencast').callsFake((..._args: unknown[]) => {
-            resolve();
-          }));
+      await expectCall(sinon.stub(screenCaptureModel, 'startScreencast'));
       screencastApp.rootView?.detach();
     });
   };

@@ -10,6 +10,7 @@ import {
   createTarget,
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
@@ -126,7 +127,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
 
     const debuggerPause = sinon.stub();
     setMockConnectionResponseHandler('Debugger.pause', debuggerPause);
-    const debuggerPauseCalled = new Promise<void>(resolve => debuggerPause.callsFake(resolve));
+    const debuggerPauseCalled = expectCall(debuggerPause);
 
     let debuggerEnable = (_: Protocol.Debugger.EnableResponse) => {};
     setMockConnectionResponseHandler('Debugger.enable', () => new Promise<Protocol.Debugger.EnableResponse>(resolve => {

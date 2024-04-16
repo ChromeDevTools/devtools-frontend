@@ -9,6 +9,7 @@ import {
   createTarget,
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Elements from '../elements/elements.js';
 
@@ -185,7 +186,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
 
     if (inScope) {
-      await new Promise<void>(r => sinon.stub(view, 'previewsCreatedForTest').callsFake(r));
+      await expectCall(sinon.stub(view, 'previewsCreatedForTest'));
     }
     assert.strictEqual(previewContainer.querySelectorAll('.animation-buffer-preview').length, inScope ? 1 : 0);
   };

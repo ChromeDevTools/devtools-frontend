@@ -13,6 +13,7 @@ import {
   describeWithEnvironment,
   setupActionRegistry,
 } from '../../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../../testing/ExpectStubCall.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
@@ -163,24 +164,17 @@ describeWithEnvironment('RecordingView', () => {
   it('should copy the recording to clipboard via copy event', async () => {
     await renderView();
     const clipboardData = new DataTransfer();
-    const isCalled = sinon.promise();
-    const copyText = sinon
-                         .stub(
-                             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-                             'copyText',
-                             )
-                         .callsFake(() => {
-                           void isCalled.resolve(true);
-                         });
+    const copyText = expectCall(sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'copyText',
+        ));
     const event = new ClipboardEvent('copy', {clipboardData, bubbles: true});
 
     document.body.dispatchEvent(event);
 
-    await isCalled;
+    const [text] = await copyText;
 
-    assert.isTrue(
-        copyText.calledWith(JSON.stringify(userFlow, null, 2) + '\n'),
-    );
+    assert.strictEqual(JSON.stringify(userFlow, null, 2) + '\n', text);
   });
 
   it('should copy a step to clipboard via copy event', async () => {

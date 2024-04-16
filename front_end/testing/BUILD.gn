@@ -13,6 +13,7 @@ ts_library("testing") {
     "DOMHelpers.ts",
     "DataGridHelpers.ts",
     "EnvironmentHelpers.ts",
+    "ExpectStubCall.ts",
     "ExtensionHelpers.ts",
     "LanguagePluginHelpers.ts",
     "MockConnection.ts",

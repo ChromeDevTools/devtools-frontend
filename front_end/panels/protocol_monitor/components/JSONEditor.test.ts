@@ -12,6 +12,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../../testing/ExpectStubCall.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
@@ -1183,24 +1184,19 @@ describeWithEnvironment('JSONEditor', () => {
       },
     ];
     await jsonEditor.updateComplete;
-    const isCalled = sinon.promise();
-    const copyText = sinon
-                         .stub(
-                             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-                             'copyText',
-                             )
-                         .callsFake(() => {
-                           void isCalled.resolve(true);
-                         });
+    const copyText = expectCall(sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'copyText',
+        ));
     const toolbar = jsonEditor.renderRoot.querySelector('devtools-pm-toolbar');
     if (!toolbar) {
       throw Error('No toolbar found !');
     }
     const event = new ProtocolComponents.Toolbar.CopyCommandEvent();
     toolbar.dispatchEvent(event);
-    await isCalled;
+    const [text] = await copyText;
 
-    assert.isTrue(copyText.calledWith(JSON.stringify({command: 'Test.test', parameters: {'test': 'test'}})));
+    assert.strictEqual(JSON.stringify({command: 'Test.test', parameters: {'test': 'test'}}), text);
   });
 
   it('should display the correct parameters with a command with array nested inside object', async () => {

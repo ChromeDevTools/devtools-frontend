@@ -7,6 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockExecutionContext} from '../../testing/MockExecutionContext.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -29,7 +30,7 @@ async function addUISourceCode(
     helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const uiSourceCodeAddedSpy = sinon.stub(helper, 'uiSourceCodeAddedForTest');
-  const uiSourceCodeAddedDonePromise = new Promise<void>(r => uiSourceCodeAddedSpy.callsFake(r));
+  const uiSourceCodeAddedDonePromise = expectCall(uiSourceCodeAddedSpy);
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
       workspace, 'test-project', Workspace.Workspace.projectTypes.Network, 'test-project', false);
@@ -47,7 +48,7 @@ async function addScript(
     debuggerModel: SDK.DebuggerModel.DebuggerModel, executionContext: SDK.RuntimeModel.ExecutionContext,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const scriptParsedSpy = sinon.stub(helper, 'parsedScriptSourceForTest');
-  const parsedScriptSourceDonePromise = new Promise<void>(r => scriptParsedSpy.callsFake(r));
+  const parsedScriptSourceDonePromise = expectCall(scriptParsedSpy);
   const script = debuggerModel.parsedScriptSource(
       'scriptId' as Protocol.Runtime.ScriptId, url, 0, 0, 3, 3, executionContext.id, '', undefined, false, undefined,
       false, false, 0, false, null, null, null, null, null);
@@ -68,7 +69,7 @@ async function addStyleSheet(
     cssModel: SDK.CSSModel.CSSModel,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const styleSheetAddedSpy = sinon.stub(helper, 'styleSheetAddedForTest');
-  const styleSheetAddedDonePromise = new Promise<void>(r => styleSheetAddedSpy.callsFake(r));
+  const styleSheetAddedDonePromise = expectCall(styleSheetAddedSpy);
   const header: Protocol.CSS.CSSStyleSheetHeader = {
     styleSheetId: 'styleSheet' as Protocol.CSS.StyleSheetId,
     frameId: 'frameId' as Protocol.Page.FrameId,

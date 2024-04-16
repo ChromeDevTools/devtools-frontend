@@ -4,6 +4,7 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
@@ -118,9 +119,7 @@ describeWithMockConnection('InterestGroupStorageView', () => {
         {columnId: 'event-group-owner', value: 'https://owner1.com'},
         {columnId: 'event-group-name', value: 'cars'},
       ];
-      const sideBarUpdateDone = new Promise<void>(resolve => {
-        sinon.stub(view, 'sidebarUpdatedForTesting').callsFake(resolve);
-      });
+      const sideBarUpdateDone = expectCall(sinon.stub(view, 'sidebarUpdatedForTesting'));
       const spy = sinon.spy(view, 'setSidebarWidget');
       assert.isTrue(spy.notCalled);
       grid.dispatchEvent(

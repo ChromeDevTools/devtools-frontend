@@ -551,72 +551,29 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     progressIndicator.setWorked(1);
     const deferredContent = await deferredContentPromise;
 
-    let error, content;
+    let error;
     if (deferredContent.content === null) {
       error = deferredContent.error;
       this.rawContent = deferredContent.error;
-    } else {
-      content = deferredContent.content;
-      if (deferredContent.isEncoded) {
-        const view = new DataView(Common.Base64.decode(deferredContent.content));
-        const decoder = new TextDecoder();
-        this.rawContent = decoder.decode(view, {stream: true});
-      } else if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
-        const {wasmDisassemblyInfo} = deferredContent;
-        this.rawContent = CodeMirror.Text.of(wasmDisassemblyInfo.lines);
-        this.wasmDisassemblyInternal = wasmDisassemblyInfo;
-      } else {
-        this.rawContent = content;
-        this.wasmDisassemblyInternal = null;
-      }
-    }
-
-    // If the input is wasm but v8-based wasm disassembly failed, fall back to wasmparser for backwards compatibility.
-    if (content && this.contentType === 'application/wasm' && !this.wasmDisassemblyInternal) {
-      const worker = Common.Worker.WorkerWrapper.fromURL(
-          new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
-      const promise = new Promise<{
-        lines: string[],
-        offsets: number[],
-        functionBodyOffsets: {
-          start: number,
-          end: number,
-        }[],
-      }>((resolve, reject) => {
-        worker.onmessage =
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ({data}: MessageEvent<any>) => {
-              if ('event' in data) {
-                switch (data.event) {
-                  case 'progress':
-                    progressIndicator?.setWorked(data.params.percentage);
-                    break;
-                }
-              } else if ('method' in data) {
-                switch (data.method) {
-                  case 'disassemble':
-                    if ('error' in data) {
-                      reject(data.error);
-                    } else if ('result' in data) {
-                      resolve(data.result);
-                    }
-                    break;
-                }
-              }
-            };
-        worker.onerror = reject;
-      });
-      worker.postMessage({method: 'disassemble', params: {content}});
+    } else if (deferredContent.isEncoded) {
+      const view = new DataView(Common.Base64.decode(deferredContent.content));
+      const decoder = new TextDecoder();
+      this.rawContent = decoder.decode(view, {stream: true});
+    } else if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
+      const {wasmDisassemblyInfo} = deferredContent;
+      this.rawContent = CodeMirror.Text.of(wasmDisassemblyInfo.lines);
+      this.wasmDisassemblyInternal = wasmDisassemblyInfo;
+    } else if (this.contentType === 'application/wasm') {
+      // If the input is wasm but v8-based wasm disassembly failed, fall back to wasmparser for backwards compatibility.
       try {
-        const {lines, offsets, functionBodyOffsets} = await promise;
-        this.rawContent = content = CodeMirror.Text.of(lines);
-        this.wasmDisassemblyInternal = new Common.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets);
+        this.wasmDisassemblyInternal = await disassembleWasm(deferredContent.content, progressIndicator);
+        this.rawContent = CodeMirror.Text.of(this.wasmDisassemblyInternal.lines);
       } catch (e) {
-        this.rawContent = content = error = e.message;
-      } finally {
-        worker.terminate();
+        this.rawContent = error = e.message;
       }
+    } else {
+      this.rawContent = deferredContent.content;
+      this.wasmDisassemblyInternal = null;
     }
 
     progressIndicator.setWorked(100);
@@ -630,7 +587,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.textEditor.state = this.placeholderEditorState(error);
       this.prettyToggle.setEnabled(false);
     } else {
-      if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content || '')) {
+      if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(deferredContent.content || '')) {
         await this.setPretty(true);
       } else {
         await this.setContent(this.rawContent || '');
@@ -1310,6 +1267,42 @@ function markNonBreakableLines(disassembly: Common.WasmDisassembly.WasmDisassemb
   });
 }
 
+async function disassembleWasm(content: string, progressIndicator: UI.ProgressIndicator.ProgressIndicator):
+    Promise<Common.WasmDisassembly.WasmDisassembly> {
+  const worker = Common.Worker.WorkerWrapper.fromURL(
+      new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
+  const promise = new Promise<Common.WasmDisassembly.WasmDisassembly>((resolve, reject) => {
+    worker.onmessage = ({data}: MessageEvent) => {
+      if ('event' in data) {
+        switch (data.event) {
+          case 'progress':
+            progressIndicator.setWorked(data.params.percentage);
+            break;
+        }
+      } else if ('method' in data) {
+        switch (data.method) {
+          case 'disassemble':
+            if ('error' in data) {
+              reject(data.error);
+            } else if ('result' in data) {
+              const {lines, offsets, functionBodyOffsets} = data.result;
+              resolve(new Common.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+            }
+            break;
+        }
+      }
+    };
+    worker.onerror = reject;
+  });
+
+  worker.postMessage({method: 'disassemble', params: {content}});
+
+  try {
+    return await promise;  // The await is important here or we terminate the worker too early.
+  } finally {
+    worker.terminate();
+  }
+}
 const sourceFrameTheme = CodeMirror.EditorView.theme({
   '&.cm-editor': {height: '100%'},
   '.cm-scroller': {overflow: 'auto'},

@@ -116,7 +116,14 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     this.dispatchEventToListeners(Events.TargetDestroyed, targetId);
   }
 
-  targetCrashed(_event: Protocol.Target.TargetCrashedEvent): void {
+  targetCrashed({targetId}: Protocol.Target.TargetCrashedEvent): void {
+    this.#targetInfosInternal.delete(targetId);
+    const target = this.#childTargetsById.get(targetId);
+    if (target) {
+      target.dispose('targetCrashed event from CDP');
+    }
+    this.fireAvailableTargetsChanged();
+    this.dispatchEventToListeners(Events.TargetDestroyed, targetId);
   }
 
   private fireAvailableTargetsChanged(): void {

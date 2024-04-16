@@ -551,33 +551,38 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     progressIndicator.setWorked(1);
     const deferredContent = await deferredContentPromise;
 
-    let error;
+    let error, content;
     if (deferredContent.content === null) {
       error = deferredContent.error;
-      this.rawContent = deferredContent.error;
+      content = deferredContent.error;
     } else if (deferredContent.isEncoded) {
       const view = new DataView(Common.Base64.decode(deferredContent.content));
       const decoder = new TextDecoder();
-      this.rawContent = decoder.decode(view, {stream: true});
+      content = decoder.decode(view, {stream: true});
     } else if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
       const {wasmDisassemblyInfo} = deferredContent;
-      this.rawContent = CodeMirror.Text.of(wasmDisassemblyInfo.lines);
+      content = CodeMirror.Text.of(wasmDisassemblyInfo.lines);
       this.wasmDisassemblyInternal = wasmDisassemblyInfo;
     } else if (this.contentType === 'application/wasm') {
       // If the input is wasm but v8-based wasm disassembly failed, fall back to wasmparser for backwards compatibility.
       try {
         this.wasmDisassemblyInternal = await disassembleWasm(deferredContent.content, progressIndicator);
-        this.rawContent = CodeMirror.Text.of(this.wasmDisassemblyInternal.lines);
+        content = CodeMirror.Text.of(this.wasmDisassemblyInternal.lines);
       } catch (e) {
-        this.rawContent = error = e.message;
+        content = error = e.message;
       }
     } else {
-      this.rawContent = deferredContent.content;
+      content = deferredContent.content;
       this.wasmDisassemblyInternal = null;
     }
 
     progressIndicator.setWorked(100);
     progressIndicator.done();
+
+    if (this.rawContent === content) {
+      return;
+    }
+    this.rawContent = content;
 
     this.formattedMap = null;
     this.prettyToggle.setEnabled(true);

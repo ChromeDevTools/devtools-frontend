@@ -1167,6 +1167,8 @@ export namespace Audits {
     SilentMediationFailure = 'SilentMediationFailure',
     ThirdPartyCookiesBlocked = 'ThirdPartyCookiesBlocked',
     NotSignedInWithIdp = 'NotSignedInWithIdp',
+    MissingTransientUserActivation = 'MissingTransientUserActivation',
+    ReplacedByButtonMode = 'ReplacedByButtonMode',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -11838,6 +11840,136 @@ export namespace Page {
     eager?: boolean;
   }
 
+  export interface FileFilter {
+    name?: string;
+    accepts?: string[];
+  }
+
+  export interface FileHandler {
+    action: string;
+    name: string;
+    icons?: ImageResource[];
+    /**
+     * Mimic a map, name is the key, accepts is the value.
+     */
+    accepts?: FileFilter[];
+    /**
+     * Won't repeat the enums, using string for easy comparison. Same as the
+     * other enums below.
+     */
+    launchType: string;
+  }
+
+  /**
+   * The image definition used in both icon and screenshot.
+   */
+  export interface ImageResource {
+    /**
+     * The src field in the definition, but changing to url in favor of
+     * consistency.
+     */
+    url: string;
+    sizes?: string;
+    type?: string;
+  }
+
+  export interface LaunchHandler {
+    clientMode: string;
+  }
+
+  export interface ProtocolHandler {
+    protocol: string;
+    url: string;
+  }
+
+  export interface RelatedApplication {
+    id?: string;
+    url: string;
+  }
+
+  export interface ScopeExtension {
+    /**
+     * Instead of using tuple, this field always returns the serialized string
+     * for easy understanding and comparison.
+     */
+    origin: string;
+    hasOriginWildcard: boolean;
+  }
+
+  export interface Screenshot {
+    image: ImageResource;
+    formFactor: string;
+    label?: string;
+  }
+
+  export interface ShareTarget {
+    action: string;
+    method: string;
+    enctype: string;
+    /**
+     * Embed the ShareTargetParams
+     */
+    title?: string;
+    text?: string;
+    url?: string;
+    files?: FileFilter[];
+  }
+
+  export interface Shortcut {
+    name: string;
+    url: string;
+  }
+
+  export interface WebAppManifest {
+    backgroundColor?: string;
+    /**
+     * The extra description provided by the manifest.
+     */
+    description?: string;
+    dir?: string;
+    display?: string;
+    /**
+     * The overrided display mode controlled by the user.
+     */
+    displayOverrides?: string[];
+    /**
+     * The handlers to open files.
+     */
+    fileHandlers?: FileHandler[];
+    icons?: ImageResource[];
+    id?: string;
+    lang?: string;
+    /**
+     * TODO(crbug.com/1231886): This field is non-standard and part of a Chrome
+     * experiment. See:
+     * https://github.com/WICG/web-app-launch/blob/main/launch_handler.md
+     */
+    launchHandler?: LaunchHandler;
+    name?: string;
+    orientation?: string;
+    preferRelatedApplications?: boolean;
+    /**
+     * The handlers to open protocols.
+     */
+    protocolHandlers?: ProtocolHandler[];
+    relatedApplications?: RelatedApplication[];
+    scope?: string;
+    /**
+     * Non-standard, see
+     * https://github.com/WICG/manifest-incubations/blob/gh-pages/scope_extensions-explainer.md
+     */
+    scopeExtensions?: ScopeExtension[];
+    /**
+     * The screenshots used by chromium.
+     */
+    screenshots?: Screenshot[];
+    shareTarget?: ShareTarget;
+    shortName?: string;
+    shortcuts?: Shortcut[];
+    startUrl?: string;
+    themeColor?: string;
+  }
+
   /**
    * Enum of possible auto-response for permission / prompt dialogs.
    */
@@ -12185,6 +12317,10 @@ export namespace Page {
     url: string;
   }
 
+  export interface GetAppManifestRequest {
+    manifestId?: string;
+  }
+
   export interface GetAppManifestResponse extends ProtocolResponseWithError {
     /**
      * Manifest location.
@@ -12196,9 +12332,10 @@ export namespace Page {
      */
     data?: string;
     /**
-     * Parsed manifest properties
+     * Parsed manifest properties. Deprecated, use manifest instead.
      */
     parsed?: AppManifestParsedProperties;
+    manifest: WebAppManifest;
   }
 
   export interface GetInstallabilityErrorsResponse extends ProtocolResponseWithError {

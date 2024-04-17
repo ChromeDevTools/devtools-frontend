@@ -1716,7 +1716,9 @@
                         "RpPageNotVisible",
                         "SilentMediationFailure",
                         "ThirdPartyCookiesBlocked",
-                        "NotSignedInWithIdp"
+                        "NotSignedInWithIdp",
+                        "MissingTransientUserActivation",
+                        "ReplacedByButtonMode"
                     ]
                 },
                 {
@@ -17478,6 +17480,375 @@
                     ]
                 },
                 {
+                    "id": "FileFilter",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "accepts",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "FileHandler",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "action",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "icons",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageResource"
+                            }
+                        },
+                        {
+                            "name": "accepts",
+                            "description": "Mimic a map, name is the key, accepts is the value.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "FileFilter"
+                            }
+                        },
+                        {
+                            "name": "launchType",
+                            "description": "Won't repeat the enums, using string for easy comparison. Same as the\nother enums below.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "ImageResource",
+                    "description": "The image definition used in both icon and screenshot.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "description": "The src field in the definition, but changing to url in favor of\nconsistency.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "sizes",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "LaunchHandler",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "clientMode",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "ProtocolHandler",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "protocol",
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "RelatedApplication",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "id",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "ScopeExtension",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "origin",
+                            "description": "Instead of using tuple, this field always returns the serialized string\nfor easy understanding and comparison.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "hasOriginWildcard",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "Screenshot",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "image",
+                            "$ref": "ImageResource"
+                        },
+                        {
+                            "name": "formFactor",
+                            "type": "string"
+                        },
+                        {
+                            "name": "label",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "ShareTarget",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "action",
+                            "type": "string"
+                        },
+                        {
+                            "name": "method",
+                            "type": "string"
+                        },
+                        {
+                            "name": "enctype",
+                            "type": "string"
+                        },
+                        {
+                            "name": "title",
+                            "description": "Embed the ShareTargetParams",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "text",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "files",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "FileFilter"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "Shortcut",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "WebAppManifest",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "backgroundColor",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "description",
+                            "description": "The extra description provided by the manifest.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "dir",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "display",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "displayOverrides",
+                            "description": "The overrided display mode controlled by the user.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "fileHandlers",
+                            "description": "The handlers to open files.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "FileHandler"
+                            }
+                        },
+                        {
+                            "name": "icons",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageResource"
+                            }
+                        },
+                        {
+                            "name": "id",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "lang",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "launchHandler",
+                            "description": "TODO(crbug.com/1231886): This field is non-standard and part of a Chrome\nexperiment. See:\nhttps://github.com/WICG/web-app-launch/blob/main/launch_handler.md",
+                            "optional": true,
+                            "$ref": "LaunchHandler"
+                        },
+                        {
+                            "name": "name",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "orientation",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "preferRelatedApplications",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "protocolHandlers",
+                            "description": "The handlers to open protocols.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ProtocolHandler"
+                            }
+                        },
+                        {
+                            "name": "relatedApplications",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "RelatedApplication"
+                            }
+                        },
+                        {
+                            "name": "scope",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "scopeExtensions",
+                            "description": "Non-standard, see\nhttps://github.com/WICG/manifest-incubations/blob/gh-pages/scope_extensions-explainer.md",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ScopeExtension"
+                            }
+                        },
+                        {
+                            "name": "screenshots",
+                            "description": "The screenshots used by chromium.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Screenshot"
+                            }
+                        },
+                        {
+                            "name": "shareTarget",
+                            "optional": true,
+                            "$ref": "ShareTarget"
+                        },
+                        {
+                            "name": "shortName",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "shortcuts",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Shortcut"
+                            }
+                        },
+                        {
+                            "name": "startUrl",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "themeColor",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "AutoResponseMode",
                     "description": "Enum of possible auto-response for permission / prompt dialogs.",
                     "experimental": true,
@@ -17960,6 +18331,14 @@
                 },
                 {
                     "name": "getAppManifest",
+                    "description": "Gets the processed manifest for this current document.\n  This API always waits for the manifest to be loaded.\n  If manifestId is provided, and it does not match the manifest of the\n    current document, this API errors out.\n  If there is not a loaded page, this API errors out immediately.",
+                    "parameters": [
+                        {
+                            "name": "manifestId",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
                     "returns": [
                         {
                             "name": "url",
@@ -17981,10 +18360,16 @@
                         },
                         {
                             "name": "parsed",
-                            "description": "Parsed manifest properties",
+                            "description": "Parsed manifest properties. Deprecated, use manifest instead.",
                             "experimental": true,
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "AppManifestParsedProperties"
+                        },
+                        {
+                            "name": "manifest",
+                            "experimental": true,
+                            "$ref": "WebAppManifest"
                         }
                     ]
                 },

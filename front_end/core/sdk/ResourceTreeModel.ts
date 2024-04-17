@@ -32,25 +32,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
-import {DOMModel, type DeferredDOMNode, type DOMNode} from './DOMModel.js';
-
+import {type DeferredDOMNode, DOMModel, type DOMNode} from './DOMModel.js';
+import {FrameManager} from './FrameManager.js';
 import {Events as NetworkManagerEvents, NetworkManager, type RequestUpdateDroppedEventData} from './NetworkManager.js';
 import {type NetworkRequest} from './NetworkRequest.js';
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
-
-import {Capability, Type, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 import {StorageKeyManager} from './StorageKeyManager.js';
-import {FrameManager} from './FrameManager.js';
+import {Capability, type Target, Type} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export class ResourceTreeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.PageApi;
@@ -464,7 +462,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     data: string|null,
     errors: Array<Protocol.Page.AppManifestError>,
   }> {
-    const response = await this.agent.invoke_getAppManifest();
+    const response = await this.agent.invoke_getAppManifest({});
     if (response.getError()) {
       return {url: response.url as Platform.DevToolsPath.UrlString, data: null, errors: []};
     }

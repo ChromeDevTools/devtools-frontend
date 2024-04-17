@@ -2771,12 +2771,6 @@ export const generatedProperties = [
   "name": "position-anchor"
  },
  {
-  "keywords": [
-   "normal"
-  ],
-  "name": "position-fallback-bounds"
- },
- {
   "longhands": [
    "position-try-order",
    "position-try-options"
@@ -5227,11 +5221,6 @@ export const generatedPropertyValues = {
  "position-anchor": {
   "values": [
    "implicit"
-  ]
- },
- "position-fallback-bounds": {
-  "values": [
-   "normal"
   ]
  },
  "position-try-options": {

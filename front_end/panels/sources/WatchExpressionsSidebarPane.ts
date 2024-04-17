@@ -475,6 +475,11 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     deleteButton.size = Buttons.Button.Size.SMALL;
     UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteWatchExpression));
     deleteButton.addEventListener('click', this.deleteWatchExpression.bind(this), false);
+    deleteButton.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        this.deleteWatchExpression(event);
+      }
+    });
 
     const titleElement = headerElement.createChild('div', 'watch-expression-title tree-element-title');
     titleElement.appendChild(deleteButton);

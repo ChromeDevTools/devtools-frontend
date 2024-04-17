@@ -17,7 +17,7 @@ describe('Rasterizer tracks', function() {
 
   // Times here are so that we zoom into the panel a bit rather than have a screenshot with loads of whitespace.
   const urlForTest =
-      'performance_panel/track_example.html?track=Raster&fileName=web-dev&windowStart=1020034883.047&windowEnd=1020035150.961';
+      'performance_panel/track_example.html?track=Thread&trackFilter=Raster&fileName=web-dev&windowStart=1020034883.047&windowEnd=1020035150.961';
 
   itScreenshot('renders all the tracks correctly expanded', async () => {
     await loadComponentDocExample(`${urlForTest}&expanded=true`);

@@ -308,24 +308,6 @@ PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(even
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 };
 
-PerformanceTestRunner.mainTrack = function() {
-  let mainTrack;
-  for (const track of PerformanceTestRunner.timelineModel().tracks()) {
-    if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
-      mainTrack = track;
-    }
-  }
-  return mainTrack;
-};
-
-PerformanceTestRunner.mainTrackEvents = function() {
-  return PerformanceTestRunner.mainTrack().events;
-};
-
-PerformanceTestRunner.findTimelineEvent = function(name, index) {
-  return PerformanceTestRunner.mainTrackEvents().filter(e => e.name === name)[index || 0];
-};
-
 PerformanceTestRunner.findChildEvent = function(events, parentIndex, name) {
   const endTime = events[parentIndex].endTime;
 
@@ -367,14 +349,6 @@ PerformanceTestRunner.dumpFrame = function(frame) {
   }
 
   TestRunner.addObject(formatFields(frame));
-};
-
-PerformanceTestRunner.dumpInvalidations = function(recordType, index, comment) {
-  const event = PerformanceTestRunner.findTimelineEvent(recordType, index || 0);
-
-  TestRunner.addArray(
-      TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) || [],
-      PerformanceTestRunner.InvalidationFormatters, '', comment);
 };
 
 PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups) {

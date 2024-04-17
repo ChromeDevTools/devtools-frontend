@@ -52,6 +52,9 @@ export class ReactDevToolsViewImpl extends UI.View.SimpleView {
     this.bridge = ReactDevTools.createBridge(this.wall);
     this.store = ReactDevTools.createStore(this.bridge);
 
+    // Notify backend if Chrome DevTools was closed, marking frontend as disconnected
+    window.addEventListener('beforeunload', () => this.bridge.shutdown());
+
     SDK.TargetManager.TargetManager.instance().addModelListener(
       ReactDevToolsModel,
       ReactDevToolsModelEvents.MessageReceived,

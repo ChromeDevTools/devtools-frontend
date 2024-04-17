@@ -7,7 +7,9 @@ export type Wall = {
   send: (event: string, payload?: MessagePayload) => void,
 };
 
-export type Bridge = Object;
+export type Bridge = {
+  shutdown: () => void,
+};
 export type Store = Object;
 export type BrowserTheme = 'dark' | 'light';
 

@@ -429,7 +429,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         ${isShortened ? html`
           <${Buttons.Button.Button.litTagName}
             .size=${Buttons.Button.Size.SMALL}
-            .variant=${Buttons.Button.Variant.SECONDARY}
+            .variant=${Buttons.Button.Variant.OUTLINED}
             @click=${showMore}
             jslog=${VisualLogging.action('raw-headers-show-more').track({click: true})}
           >${i18nString(UIStrings.showMore)}</${Buttons.Button.Button.litTagName}>

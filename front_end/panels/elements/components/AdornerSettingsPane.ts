@@ -113,7 +113,7 @@ export class AdornerSettingsPane extends HTMLElement {
                                              .iconName=${'cross'}
                                              .size=${Buttons.Button.Size.SMALL}
                                              .title=${i18nString(UIStrings.closeButton)}
-                                             .variant=${Buttons.Button.Variant.ROUND}
+                                             .variant=${Buttons.Button.Variant.ICON}
                                              jslog=${VisualLogging.close().track({click: true})}
                                              @click=${this.hide}></${Buttons.Button.Button.litTagName}>
       </div>

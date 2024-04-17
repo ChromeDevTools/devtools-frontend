@@ -272,7 +272,7 @@ export class CreateRecordingView extends HTMLElement {
               jslog=${VisualLogging.close().track({click: true})}
               .data=${
                 {
-                  variant: Buttons.Button.Variant.ROUND,
+                  variant: Buttons.Button.Variant.ICON,
                   size: Buttons.Button.Size.SMALL,
                   iconName: 'cross',
                 } as Buttons.Button.ButtonData

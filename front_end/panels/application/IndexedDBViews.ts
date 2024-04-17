@@ -181,7 +181,7 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
       <${ReportView.ReportView.ReportSection.litTagName}>
       <${Buttons.Button.Button.litTagName}
           aria-label=${i18nString(UIStrings.deleteDatabase)}
-          .variant=${Buttons.Button.Variant.SECONDARY}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           @click=${this.deleteDatabase}
           jslog=${VisualLogging.action('delete-database').track({
       click: true,
@@ -190,7 +190,7 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
       </${Buttons.Button.Button.litTagName}>&nbsp;
       <${Buttons.Button.Button.litTagName}
           aria-label=${i18nString(UIStrings.refreshDatabase)}
-          .variant=${Buttons.Button.Variant.SECONDARY}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           @click=${this.refreshDatabaseButtonClicked}
           jslog=${VisualLogging.action('refresh-database').track({
       click: true,

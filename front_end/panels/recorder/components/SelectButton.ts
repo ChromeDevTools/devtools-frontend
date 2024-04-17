@@ -16,7 +16,7 @@ import selectButtonStyles from './selectButton.css.js';
 
 export const enum Variant {
   PRIMARY = 'primary',
-  SECONDARY = 'secondary',
+  OUTLINED = 'outlined',
 }
 
 type SelectMenuGroup = {
@@ -197,11 +197,11 @@ export class SelectButton extends HTMLElement {
 
     const classes = {
       primary: this.#props.variant === Variant.PRIMARY,
-      secondary: this.#props.variant === Variant.SECONDARY,
+      secondary: this.#props.variant === Variant.OUTLINED,
     };
 
     const buttonVariant =
-        this.#props.variant === Variant.SECONDARY ? Buttons.Button.Variant.SECONDARY : Buttons.Button.Variant.PRIMARY;
+        this.#props.variant === Variant.OUTLINED ? Buttons.Button.Variant.OUTLINED : Buttons.Button.Variant.PRIMARY;
     const label = selectedItem.buttonLabel ? selectedItem.buttonLabel() : selectedItem.label();
 
     // clang-format off
@@ -210,19 +210,19 @@ export class SelectButton extends HTMLElement {
       <div class="select-button" title=${
         this.#getTitle(label) || LitHtml.nothing
       }>
-        ${
-          selectedItem
-            ? LitHtml.html`
-        <${Buttons.Button.Button.litTagName}
-            .disabled=${this.#props.disabled}
-            .variant=${buttonVariant}
-            .iconName=${selectedItem.buttonIconName}
-            @click=${this.#handleClick}>
-            ${label}
-        </${Buttons.Button.Button.litTagName}>`
-            : ''
-        }
-        <${Menus.SelectMenu.SelectMenu.litTagName}
+      ${
+        selectedItem
+          ? LitHtml.html`
+      <${Buttons.Button.Button.litTagName}
+          .disabled=${this.#props.disabled}
+          .variant=${buttonVariant}
+          .iconName=${selectedItem.buttonIconName}
+          @click=${this.#handleClick}>
+          ${label}
+      </${Buttons.Button.Button.litTagName}>`
+          : ''
+      }
+      <${Menus.SelectMenu.SelectMenu.litTagName}
           class=${LitHtml.Directives.classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
           ?disabled=${this.#props.disabled}

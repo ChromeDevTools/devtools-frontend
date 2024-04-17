@@ -496,7 +496,7 @@ class RecorderSelectorPickerButton extends LitElement {
       .size=${Buttons.Button.Size.SMALL}
       .iconName=${'select-element'}
       .active=${this.#picker.active}
-      .variant=${Buttons.Button.Variant.SECONDARY}
+      .variant=${Buttons.Button.Variant.ICON}
       jslog=${VisualLogging.toggle('selector-picker').track({
       click: true,
     })}
@@ -662,7 +662,7 @@ export class StepEditor extends LitElement {
         title=${opts.title}
         .size=${Buttons.Button.Size.SMALL}
         .iconName=${opts.iconName}
-        .variant=${Buttons.Button.Variant.SECONDARY}
+        .variant=${Buttons.Button.Variant.ICON}
         jslog=${VisualLogging.action(opts.class).track({
       click: true,
     })}
@@ -687,7 +687,7 @@ export class StepEditor extends LitElement {
     return html`<devtools-button
       .size=${Buttons.Button.Size.SMALL}
       .iconName=${'bin'}
-      .variant=${Buttons.Button.Variant.SECONDARY}
+      .variant=${Buttons.Button.Variant.ICON}
       .title=${i18nString(UIStrings.deleteRow)}
       class="inline-button delete-row"
       data-attribute=${attribute}
@@ -1138,7 +1138,7 @@ export class StepEditor extends LitElement {
     return [...attributes.optional].filter(attr => this.state[attr] === undefined).map(attr => {
       // clang-format off
         return html`<devtools-button
-          .variant=${Buttons.Button.Variant.SECONDARY}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           class="add-row"
           data-attribute=${attr}
           jslog=${VisualLogging.action(`add-${Platform.StringUtilities.toKebabCase(attr)}`)}

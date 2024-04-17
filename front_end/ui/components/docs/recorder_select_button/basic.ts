@@ -67,12 +67,12 @@ litRender(LitHtml.html`
     items[0].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);
 litRender(LitHtml.html`
     <${RecorderComponents.SelectButton.SelectButton.litTagName}
-    .variant=${RecorderComponents.SelectButton.Variant.SECONDARY}
+    .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
     .items=${replayItems}
     .value=${replayItems[0].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);
 litRender(LitHtml.html`
     <${RecorderComponents.SelectButton.SelectButton.litTagName}
     .disabled=${true}
-    .variant=${RecorderComponents.SelectButton.Variant.SECONDARY}
+    .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
     .items=${replayItems}
     .value=${replayItems[2].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);

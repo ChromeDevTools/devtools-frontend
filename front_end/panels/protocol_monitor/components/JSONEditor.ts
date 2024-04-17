@@ -873,7 +873,7 @@ export class JSONEditor extends LitElement {
             title=${opts.title}
             .size=${Buttons.Button.Size.SMALL}
             .iconName=${opts.iconName}
-            .variant=${Buttons.Button.Variant.ROUND}
+            .variant=${Buttons.Button.Variant.ICON}
             class=${classMap(opts.classMap)}
             @click=${opts.onClick}
             .jslogContext=${opts.jslogContext}

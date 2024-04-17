@@ -30,11 +30,11 @@
   --sys-shape-corner-full: 9999px;
 
   /* weight size/line-height */
-  --sys-typescale-body1-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body1-size)/var(--sys-typescale-body1-line-height);
-  --sys-typescale-body2-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body2-size)/var(--sys-typescale-body2-line-height);
-  --sys-typescale-body3-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body3-size)/var(--sys-typescale-body3-line-height);
-  --sys-typescale-body4-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body4-size)/var(--sys-typescale-body4-line-height);
-  --sys-typescale-body5-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body5-size)/var(--sys-typescale-body5-line-height);
+  --sys-typescale-body1-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body1-size)/var(--sys-typescale-body1-line-height) var(--default-font-family);
+  --sys-typescale-body2-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body2-size)/var(--sys-typescale-body2-line-height) var(--default-font-family);
+  --sys-typescale-body3-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body3-size)/var(--sys-typescale-body3-line-height) var(--default-font-family);
+  --sys-typescale-body4-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body4-size)/var(--sys-typescale-body4-line-height) var(--default-font-family);
+  --sys-typescale-body5-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body5-size)/var(--sys-typescale-body5-line-height) var(--default-font-family);
   --sys-typescale-headline1-size: 24px;
   --sys-typescale-headline2-size: 20px;
   --sys-typescale-headline3-size: 18px;

@@ -372,7 +372,7 @@ export class HeadersViewComponent extends HTMLElement {
         `,
       )}
       <${Buttons.Button.Button.litTagName}
-          .variant=${Buttons.Button.Variant.SECONDARY}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'headers-view.add-override-rule'}
           class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
@@ -415,7 +415,7 @@ export class HeadersViewComponent extends HTMLElement {
         .iconUrl=${trashIconUrl}
         .iconWidth=${'14px'}
         .iconHeight=${'14px'}
-        .variant=${Buttons.Button.Variant.ROUND}
+        .variant=${Buttons.Button.Variant.ICON}
         .jslogContext=${'headers-view.remove-apply-to-section'}
         class="remove-block inline-button"
       ></${Buttons.Button.Button.litTagName}>
@@ -437,7 +437,7 @@ export class HeadersViewComponent extends HTMLElement {
           title=${i18nString(UIStrings.addHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
-          .variant=${Buttons.Button.Variant.ROUND}
+          .variant=${Buttons.Button.Variant.ICON}
           .jslogContext=${'headers-view.add-header'}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
@@ -445,7 +445,7 @@ export class HeadersViewComponent extends HTMLElement {
           title=${i18nString(UIStrings.removeHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${trashIconUrl}
-          .variant=${Buttons.Button.Variant.ROUND}
+          .variant=${Buttons.Button.Variant.ICON}
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
           .jslogContext=${'headers-view.remove-header'}
           class="remove-header inline-button"

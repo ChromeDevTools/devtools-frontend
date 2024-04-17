@@ -20,7 +20,7 @@ describe('Button', () => {
     const button = new Buttons.Button.Button();
     button.data = data;
     // Toolbar and round buttons do not take text, and error if you try to set any.
-    if (data.variant !== Buttons.Button.Variant.TOOLBAR && data.variant !== Buttons.Button.Variant.ROUND) {
+    if (data.variant !== Buttons.Button.Variant.TOOLBAR && data.variant !== Buttons.Button.Variant.ICON) {
       button.innerText = text;
     }
     renderElementIntoDOM(button);
@@ -67,14 +67,14 @@ describe('Button', () => {
 
   it('secondary button can be clicked', async () => {
     await testClick({
-      variant: Buttons.Button.Variant.SECONDARY,
+      variant: Buttons.Button.Variant.OUTLINED,
     });
   });
 
   it('disabled secondary button cannot be clicked', async () => {
     await testClick(
         {
-          variant: Buttons.Button.Variant.SECONDARY,
+          variant: Buttons.Button.Variant.OUTLINED,
           disabled: true,
         },
         0);

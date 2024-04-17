@@ -750,7 +750,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     // clang-format off
     const submitButton = this.#showSubmitButton ? LitHtml.html`
       <${Buttons.Button.Button.litTagName}
-        .variant=${Buttons.Button.Variant.SECONDARY}
+        .variant=${Buttons.Button.Variant.OUTLINED}
         .type=${'submit'}
       >
         ${i18nString(UIStrings.update)}

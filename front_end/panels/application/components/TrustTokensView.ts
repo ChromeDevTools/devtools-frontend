@@ -162,7 +162,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                                            .jslogContext=${'delete-all'}
                                            .size=${Buttons.Button.Size.SMALL}
                                            .title=${i18nString(UIStrings.deleteTrustTokens, {PH1: issuer as string})}
-                                           .variant=${Buttons.Button.Variant.ROUND}
+                                           .variant=${Buttons.Button.Variant.ICON}
                                            @click=${this.#deleteClickHandler.bind(this, issuer as string)}></${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on

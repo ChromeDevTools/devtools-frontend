@@ -118,7 +118,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
                                            .jslogContext=${'reset-entropy-budget'}
                                            .size=${Buttons.Button.Size.SMALL}
                                            .title=${i18nString(UIStrings.resetBudget)}
-                                           .variant=${Buttons.Button.Variant.ROUND}
+                                           .variant=${Buttons.Button.Variant.ICON}
                                            @click=${this.#resetBudget.bind(this)}></${Buttons.Button.Button.litTagName}>
     `;
     // clang-format on

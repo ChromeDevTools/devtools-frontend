@@ -27,99 +27,76 @@
 :host {
   display: inline-flex;
   flex-direction: row;
+  align-items: center;
 }
 
 button {
-  /*
-    --override-button-no-right-border-radius decides
-    whether button has border radius on the right or not.
-
-    It works as a boolean variable:
-    * If it is 1, `--button-has-right-border-radius` becomes a 0 multiplier
-    for the border-radius-top-right and border-radius-bottom-right properties.
-    * If it is not set or 0, it becomes a 1 multiplier
-    for the same properties which means they'll continue to have the given
-    border radius.
-  */
-  --button-has-right-border-radius: calc(1 - var(--override-button-no-right-border-radius, 0));
+  --hover-layer-color: var(--sys-color-state-hover-on-subtle);
+  --active-layer-color: var(--sys-color-state-ripple-neutral-on-subtle);
   --button-border-size: 1px;
-  --button-height: 24px;
-  --button-width: 100%;
+  --button-height: var(--sys-size-11);
+  --button-width: fit-content;
 
   align-items: center;
   background: transparent;
-  border-radius: 12px calc(var(--button-has-right-border-radius) * 12px) calc(var(--button-has-right-border-radius) * 12px) 12px;
+  border-radius: var(--sys-shape-corner-full);
   display: inline-flex;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 500;
+  position: relative;
+  font-size: var(--sys-typescale-body4-size);
+  font-weight: var(--ref-typeface-weight-medium);
+  line-height: var(--sys-typescale-body4-line-height);
   height: var(--button-height);
   justify-content: center;
-  line-height: 14px;
-  padding: 0;
+  padding: 0 var(--sys-size-6);
   white-space: nowrap;
   width: var(--button-width);
 
   devtools-icon {
-    width: calc(var(--button-width) - 4px);
-    height: calc(var(--button-height) - 4px);
+    width: var(--icon-size);
+    height: var(--icon-size);
   }
 
   &.small {
     --button-height: 20px;
-
-    border-radius: 2px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
   }
 
   &.toolbar,
-  &.round {
-    --button-height: 24px;
-    --button-width: 24px;
+  &.icon,
+  &.only-icon {
+    --button-height: 26px;
+    --button-width: 26px;
+    --icon-size: var(--sys-size-9);
 
     border: none;
     overflow: hidden;
 
     &.small {
-      --button-height: 20px;
-      --button-width: 20px;
+      --button-height: var(--sys-size-11);
+      --button-width: var(--sys-size-11);
+      --icon-size: var(--sys-size-8);
     }
   }
 
-  &.toolbar {
-    border-radius: 2px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
-  }
-
-  &.round {
-    border-radius: 100%;
-  }
-
   &.primary {
+    --hover-layer-color: var(--sys-color-state-hover-on-prominent);
+    --active-layer-color: var(--sys-color-state-ripple-primary);
+
     border: var(--button-border-size) solid var(--sys-color-primary);
     background: var(--sys-color-primary);
     color: var(--sys-color-on-primary);
 
     devtools-icon {
-      color: var(--sys-color-cdt-base-container);
+      color: var(--sys-color-on-primary);
     }
   }
 
   &.tonal {
-    border: var(--button-border-size) solid transparent;
+    border: none;
     background: var(--sys-color-tonal-container);
     color: var(--sys-color-on-tonal-container);
 
     devtools-icon {
       color: var(--sys-color-on-tonal-container);
-    }
-  }
-
-  &.secondary {
-    border: var(--button-border-size) solid var(--sys-color-tonal-outline);
-    background: var(--sys-color-cdt-base-container);
-    color: var(--sys-color-primary);
-
-    devtools-icon {
-      color: var(--icon-primary);
     }
   }
 
@@ -129,58 +106,129 @@ button {
     }
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: 2px;
+  &.text {
+    border: none;
+    color: var(--sys-color-primary);
 
-    &.toolbar,
-    &.round {
-      background-color: var(--sys-color-tonal-container);
-      outline: none;
-    }
-  }
-
-  &:disabled {
     devtools-icon {
-      color: var(--icon-disabled);
+      color: var(--icon-primary);
     }
   }
 
   &.text-with-icon {
-    padding: 0 calc(12px - var(--button-border-size)) 0 calc(8px - var(--button-border-size));
+    padding-left: var(--sys-size-4);
 
     devtools-icon {
-      width: 16px;
-      height: 16px;
-      margin-right: 4px;
+      width: var(--sys-size-9);
+      height: var(--sys-size-9);
+      margin-right: var(--sys-size-2);
     }
+  }
+
+  /* This specific nesting is incompatible with what stylelint requires as ordering of the rules. */
+  /* stylelint-disable no-descending-specificity */
+  &.outlined {
+    border: var(--button-border-size) solid var(--sys-color-tonal-outline);
+    background: transparent;
+    color: var(--sys-color-primary);
+
+    devtools-icon {
+      color: var(--icon-primary);
+    }
+
+    &.micro {
+      --button-height: var(--sys-size-7);
+
+      padding: 0 var(--sys-size-5);
+      font-size: var(--sys-typescale-body4-size);
+      font-weight: var(--ref-typeface-weight-medium);
+      line-height: var(--sys-typescale-body4-line-height);
+
+      &:not(.icon):has(devtools-icon) {
+        padding-left: var(--sys-size-3);
+      }
+
+      &:not(.icon) devtools-icon {
+        height: var(--sys-size-6);
+        width: var(--sys-size-6);
+      }
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+
+    &.primary {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      background: var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.tonal {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      background: var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.outlined {
+      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+      color: var(--sys-color-state-disabled);
+    }
+
+    &.toolbar,
+    &.icon {
+      background: transparent;
+      color: var(--sys-color-state-disabled);
+    }
+
+    devtools-icon {
+      color: var(--icon-disabled);
+    }
+  }
+  /* stylelint-enable no-descending-specificity */
+
+  &:not(.icon):not(.toolbar).only-icon {
+    width: 100%;
+    padding: 0;
 
     &.small {
-      padding: 0 calc(9px - var(--button-border-size)) 0 calc(3px - var(--button-border-size));
+      width: var(--button-height);
     }
   }
 
-  &.only-text {
-    padding: 5px 12px;
+  &:focus-visible {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline-offset: 2px;
+    z-index: 999;
+
+    &.toolbar,
+    &.icon {
+      outline-offset: -1px;
+    }
   }
 
-  &:hover {
+  &:has(.spinner) {
+    padding-left: var(--sys-size-4);
+  }
+
+  /* This specific nesting is incompatible with what stylelint requires as ordering of the rules. */
+  /* stylelint-disable no-descending-specificity */
+  &:hover::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--hover-layer-color); /* stylelint-disable-line plugin/use_theme_colors */
+
     &.primary {
-      background: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
       border: var(--button-border-size) solid color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
     }
 
     &.tonal {
       background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-hover-on-subtle));
-    }
-
-    &.secondary {
-      background: var(--sys-color-state-hover-on-subtle);
-    }
-
-    &.toolbar,
-    &.round {
-      background-color: var(--sys-color-state-hover-on-subtle);
     }
 
     &.toobar {
@@ -190,24 +238,23 @@ button {
     }
   }
 
-  &:active,
-  &.active {
+  &:active::before,
+  &.active::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--active-layer-color); /* stylelint-disable-line plugin/use_theme_colors */
+
     &.primary {
-      background: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
       border: var(--button-border-size) solid color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
     }
 
     &.tonal {
-      background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-ripple-primary));
-    }
-
-    &.secondary {
-      background-color: var(--sys-color-surface-variant);
-    }
-
-    &.toolbar,
-    &.round {
-      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+      background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-ripple-primary) 50%);
     }
 
     &.toolbar {
@@ -216,32 +263,7 @@ button {
       }
     }
   }
-
-  &:disabled,
-  &:disabled:hover {
-    &.primary {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.tonal {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      background: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.secondary {
-      border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-    }
-
-    &.toolbar,
-    &.round {
-      background: var(--sys-color-cdt-base-container);
-      color: var(--sys-color-state-disabled);
-    }
-  }
+  /* stylelint-enable no-descending-specificity */
 }
 
 .spinner {
@@ -254,7 +276,7 @@ button {
   border-right-color: transparent;
   margin-right: 4px;
 
-  &.secondary {
+  &.outlined {
     border: 2px solid var(--sys-color-primary);
     border-right-color: transparent;
   }

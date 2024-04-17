@@ -27,10 +27,6 @@ const UIStrings = {
    */
   performance: 'Performance',
   /**
-   *@description Text to filter result items
-   */
-  filter: 'Filter',
-  /**
    *@description Time of a single activity, as opposed to the total time
    */
   selfTime: 'Self Time',
@@ -114,14 +110,6 @@ const UIStrings = {
    *@description Aria-label for grouping combo box in Timeline Details View
    */
   groupBy: 'Group by',
-  /**
-   *@description Aria-label for filter bar in Call Tree view
-   */
-  filterCallTree: 'Filter call tree',
-  /**
-   *@description Aria-label for the filter bar in Bottom-Up view
-   */
-  filterBottomup: 'Filter bottom-up',
   /**
    * @description Title of the sidebar pane in the Performance panel which shows the stack (call
    * stack) where the program spent the most time (out of all the call stacks) while executing.
@@ -231,10 +219,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.setModelWithEvents(model, track?.eventsForTreeView() || null);
   }
 
-  getToolbarInputAccessiblePlaceHolder(): string {
-    return '';
-  }
-
   model(): PerformanceModel|null {
     return this.modelInternal;
   }
@@ -338,8 +322,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }, this);
     toolbar.appendToolbarItem(this.matchWholeWord);
 
-    const textFilterUI =
-        new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), this.getToolbarInputAccessiblePlaceHolder());
+    const textFilterUI = new UI.Toolbar.ToolbarFilter();
     this.textFilterUI = textFilterUI;
     textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.#filterChanged, this);
     toolbar.appendToolbarItem(textFilterUI);
@@ -1047,10 +1030,6 @@ export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
     this.dataGrid.markColumnAsSortedBy('total', DataGrid.DataGrid.Order.Descending);
   }
 
-  override getToolbarInputAccessiblePlaceHolder(): string {
-    return i18nString(UIStrings.filterCallTree);
-  }
-
   override buildTree(): TimelineModel.TimelineProfileTree.Node {
     const grouping = this.groupBySetting.get();
     return this.buildTopDownTree(false, this.groupingFunction(grouping));
@@ -1061,10 +1040,6 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   constructor() {
     super();
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
-  }
-
-  override getToolbarInputAccessiblePlaceHolder(): string {
-    return i18nString(UIStrings.filterBottomup);
   }
 
   override buildTree(): TimelineModel.TimelineProfileTree.Node {

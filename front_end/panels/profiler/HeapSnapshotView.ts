@@ -101,10 +101,9 @@ const UIStrings = {
    */
   filter: 'Filter',
   /**
-   * @description Filter label text in the Memory tool to filter by JavaScript class names for a heap
-   * snapshot.
+   *@description Placeholder text in the filter bar to filter by JavaScript class names for a heap
    */
-  classFilter: 'Class filter',
+  filterByClass: 'Filter by class',
   /**
    *@description Text in Heap Snapshot View of a profiler tool
    */
@@ -438,7 +437,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.filterSelect.setVisible(false);
     this.updateFilterOptions();
 
-    this.classNameFilter = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.classFilter));
+    this.classNameFilter = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByClass));
     this.classNameFilter.setVisible(false);
     this.constructorsDataGrid.setNameFilter(this.classNameFilter);
     this.diffDataGrid.setNameFilter(this.classNameFilter);

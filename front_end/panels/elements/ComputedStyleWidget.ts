@@ -53,16 +53,6 @@ import {StylePropertiesSection} from './StylePropertiesSection.js';
 
 const UIStrings = {
   /**
-   * @description Placeholder text for a text input used to filter which CSS properties show up in
-   * the list of computed properties. In the Computed Style Widget of the Elements panel.
-   */
-  filter: 'Filter',
-  /**
-   * @description ARIA accessible name for the text input used to filter which CSS properties show up
-   * in the list of computed properties. In the Computed Style Widget of the Elements panel.
-   */
-  filterComputedStyles: 'Filter Computed Styles',
-  /**
    * @description Text for a checkbox setting that controls whether the user-supplied filter text
    * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
    * Widget of the Elements panel
@@ -264,8 +254,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
-    const filterInput = new UI.Toolbar.ToolbarInput(
-        i18nString(UIStrings.filter), i18nString(UIStrings.filterComputedStyles), 1, 1, undefined, undefined, false);
+    const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
     toolbar.appendToolbarItem(filterInput);
     this.input = filterInput;

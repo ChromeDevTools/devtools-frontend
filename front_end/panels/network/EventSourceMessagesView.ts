@@ -44,7 +44,7 @@ const UIStrings = {
   /**
    *@description Example for placeholder text
    */
-  enterRegex: 'Enter regex, for example: https?',
+  filterByRegex: 'Filter using regex (example: https?)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -72,8 +72,8 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearMessages, this);
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
 
-    const placeholder = i18nString(UIStrings.enterRegex);
-    this.filterTextInput = new UI.Toolbar.ToolbarInput(placeholder, '', 0.4);
+    const placeholder = i18nString(UIStrings.filterByRegex);
+    this.filterTextInput = new UI.Toolbar.ToolbarFilter(placeholder, 0.4);
     this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateFilterSetting, this);
     const filter = this.messageFilterSetting.get();
     this.filterRegex = null;

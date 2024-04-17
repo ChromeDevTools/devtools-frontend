@@ -135,7 +135,7 @@ const UIStrings = {
   /**
    *@description Example for placeholder text
    */
-  enterRegex: 'Enter regex, for example: (web)?socket',
+  filterUsingRegex: 'Filter using regex (example: (web)?socket)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -221,8 +221,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this.mainToolbar.appendToolbarItem(this.filterTypeCombobox);
     this.filterType = null;
 
-    const placeholder = i18nString(UIStrings.enterRegex);
-    this.filterTextInput = new UI.Toolbar.ToolbarInput(placeholder, '', 0.4);
+    const placeholder = i18nString(UIStrings.filterUsingRegex);
+    this.filterTextInput = new UI.Toolbar.ToolbarFilter(placeholder, 0.4);
     this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateFilterSetting, this);
     const filter = this.messageFilterSetting.get();
     if (filter) {

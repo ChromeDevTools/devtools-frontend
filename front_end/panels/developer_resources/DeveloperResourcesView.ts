@@ -16,7 +16,7 @@ const UIStrings = {
   /**
    *@description Placeholder for a search field in a toolbar
    */
-  enterTextToSearchTheUrlAndError: 'Enter text to search the URL and Error columns',
+  filterByText: 'Filter by URL and error',
   /**
    * @description Tooltip for a checkbox in the toolbar of the developer resources view. The
    * inspected target is the webpage that DevTools is debugging/inspecting/attached to.
@@ -76,9 +76,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);
 
     this.textFilterRegExp = null;
-    const accessiblePlaceholder = '';  // Indicates that ToobarInput should use the placeholder as ARIA label.
-    this.filterInput =
-        new UI.Toolbar.ToolbarInput(i18nString(UIStrings.enterTextToSearchTheUrlAndError), accessiblePlaceholder, 1);
+    this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByText), 1);
     this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
     toolbar.appendToolbarItem(this.filterInput);
 

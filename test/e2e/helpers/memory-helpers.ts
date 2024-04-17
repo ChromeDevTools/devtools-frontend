@@ -24,7 +24,7 @@ const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
 const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
 export const MEMORY_TAB_ID = '#tab-heap-profiler';
-const CLASS_FILTER_INPUT = 'div[aria-placeholder="Class filter"]';
+const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
 const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
 export async function navigateToMemoryTab() {

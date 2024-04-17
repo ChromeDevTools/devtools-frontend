@@ -127,7 +127,7 @@ const UIStrings = {
   /**
    *@description Text in Indexed DBViews of the Application panel
    */
-  startFromKey: 'Start from key',
+  filterByKey: 'Filter by key (show keys greater or equal to)',
   /**
    *@description Text in Context menu for expanding objects in IndexedDB tables
    */
@@ -437,7 +437,7 @@ export class IDBDataView extends UI.View.SimpleView {
     this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageForwardButton);
 
-    this.keyInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.startFromKey), '', 0.5);
+    this.keyInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByKey), 0.5);
     this.keyInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this.keyInput);
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());

@@ -279,7 +279,7 @@ describe('The Network Request view', () => {
     let messages = await waitForMessages(messagesView, 3);
     await assertBaseState(messagesView);
 
-    const inputSelector = '[aria-placeholder="Enter regex, for example: https?';
+    const inputSelector = '[aria-placeholder="Filter using regex (example: https?)';
 
     const filterInput = await waitFor(inputSelector, messagesView);
 
@@ -348,7 +348,7 @@ describe('The Network Request view', () => {
     let messages = await waitForMessages(4);
 
     const filterInput =
-        await waitFor('[aria-label="Enter regex, for example: (web)?socket"][role=textbox]', messagesView);
+        await waitFor('[aria-label="Filter using regex (example: (web)?socket)"][role=textbox]', messagesView);
     await filterInput.focus();
     await typeText('ping');
 

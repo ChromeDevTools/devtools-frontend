@@ -46,7 +46,7 @@ const UIStrings = {
   /**
    *@description Default text for user-text-entry for searching log messages.
    */
-  filterLogMessages: 'Filter log messages',
+  filterByLogMessages: 'Filter by log messages',
   /**
    *@description The label for the group name that this error belongs to.
    */
@@ -292,7 +292,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   private createFilterInput(): UI.Toolbar.ToolbarInput {
-    const filterInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filterLogMessages));
+    const filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByLogMessages), 1, 1);
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, (data: {data: string}) => {
       this.filterByString(data as {
         data: string,

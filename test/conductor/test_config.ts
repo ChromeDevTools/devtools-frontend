@@ -29,6 +29,7 @@ export const enum ServerType {
 
 interface Config {
   tests: string[];
+  artifactsDir: string;
   chromeBinary: string;
   serverType: ServerType;
   debug: boolean;
@@ -74,6 +75,7 @@ function mochaGrep(): Config['mochaGrep'] {
 
 export const TestConfig: Config = {
   tests: options['tests'],
+  artifactsDir: options['artifacts-dir'] || SOURCE_ROOT,
   chromeBinary: options['chrome-binary'] ?? chromePath(),
   serverType: ServerType.HostedMode,
   debug: options['debug'],

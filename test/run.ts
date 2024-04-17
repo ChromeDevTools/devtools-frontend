@@ -14,7 +14,7 @@ const yargs = require('yargs');
 const unparse = require('yargs-unparser');
 const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('skip-ninja', {type: 'boolean', desc: 'Skip rebuilding'})
-                    .options('debug-driver', {type: 'boolean', hidden: true})
+                    .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',

@@ -108,7 +108,7 @@ module.exports = function(config: any) {
     },
 
     coverageReporter: {
-      dir: path.join(GEN_DIR, COVERAGE_OUTPUT_DIRECTORY),
+      dir: path.join(TestConfig.artifactsDir, COVERAGE_OUTPUT_DIRECTORY),
       subdir: '.',
       reporters: [
         {type: 'json-summary'},

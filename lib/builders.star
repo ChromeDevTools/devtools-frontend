@@ -3,6 +3,8 @@
 # found in the LICENSE file.
 
 AUTOROLLER_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
+CI_ACCOUNT = "devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com"
+TRY_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com"
 
 defaults = struct(
     cipd_package = "infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build",
@@ -157,7 +159,7 @@ def builder_descriptor(
         description_html = description_html,
     )
 
-def bucket(name, acls):
+def bucket(name, acls, led_service_accounts):
     luci.bucket(
         name = name,
         acls = acls,
@@ -167,6 +169,11 @@ def bucket(name, acls):
                 groups = ["mdb/v8-infra"],
             ),
         ],
+        shadows = name,
+        constraints = luci.bucket_constraints(
+            service_accounts = led_service_accounts,
+            pools = ["pool/%s" % name],
+        ),
     )
 
 def generate_ci_configs(configurations, builders):
@@ -176,8 +183,6 @@ def generate_ci_configs(configurations, builders):
     #   - configurations: [] of config_section
     #   - builders: [] of builder_descriptor
 
-    SERVICE_ACCOUNT = "devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com"
-
     bucket(
         name = "ci",
         acls = [
@@ -185,11 +190,12 @@ def generate_ci_configs(configurations, builders):
             acl.entry(
                 roles = acl.BUILDBUCKET_TRIGGERER,
                 users = [
-                    SERVICE_ACCOUNT,
+                    CI_ACCOUNT,
                     "luci-scheduler@appspot.gserviceaccount.com",
                 ],
             ),
         ],
+        led_service_accounts = [CI_ACCOUNT],
     )
 
     all_builder_refs = []
@@ -206,7 +212,7 @@ def generate_ci_configs(configurations, builders):
             builder(
                 bucket = "ci",
                 builder_group = c.builder_group,
-                service_account = SERVICE_ACCOUNT,
+                service_account = CI_ACCOUNT,
                 schedule = "triggered",
                 properties = properties,
                 **kwargs

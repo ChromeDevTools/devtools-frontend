@@ -27,6 +27,7 @@ bucket(
             ],
         ),
     ],
+    led_service_accounts = [AUTOROLLER_ACCOUNT],
 )
 
 # Roll all dependencies (except of excluded ones) into devtools-frontend

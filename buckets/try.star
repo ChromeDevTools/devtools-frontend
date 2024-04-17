@@ -1,5 +1,6 @@
 load(
     "//lib/builders.star",
+    "TRY_ACCOUNT",
     "acls",
     "bucket",
     "builder",
@@ -12,7 +13,6 @@ load(
 )
 
 BUCKET_NAME = "try"
-SERVICE_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com"
 
 bucket(
     name = BUCKET_NAME,
@@ -26,6 +26,7 @@ bucket(
             ],
         ),
     ],
+    led_service_accounts = [TRY_ACCOUNT],
 )
 
 try_builders = []
@@ -39,7 +40,7 @@ def try_builder(properties = None, **kwargs):
     builder(
         bucket = BUCKET_NAME,
         builder_group = "tryserver.devtools-frontend",
-        service_account = SERVICE_ACCOUNT,
+        service_account = TRY_ACCOUNT,
         properties = properties,
         **kwargs
     )

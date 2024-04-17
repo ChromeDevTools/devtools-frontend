@@ -20,6 +20,6 @@ export declare class BidiElementHandle<ElementType extends Node = Element> exten
     remoteValue(): Bidi.Script.RemoteValue;
     autofill(data: AutofillData): Promise<void>;
     contentFrame(this: BidiElementHandle<HTMLIFrameElement>): Promise<BidiFrame>;
-    uploadFile(this: ElementHandle<HTMLInputElement>): never;
+    uploadFile(this: BidiElementHandle<HTMLInputElement>, ...files: string[]): Promise<void>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

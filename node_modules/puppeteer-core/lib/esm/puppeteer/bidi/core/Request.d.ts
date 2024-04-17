@@ -14,6 +14,8 @@ export declare class Request extends EventEmitter<{
     /** Emitted when the request is redirected. */
     redirect: Request;
     /** Emitted when the request succeeds. */
+    authenticate: void;
+    /** Emitted when the request succeeds. */
     success: Bidi.Network.ResponseData;
     /** Emitted when the request fails. */
     error: string;
@@ -29,8 +31,14 @@ export declare class Request extends EventEmitter<{
     get method(): string;
     get navigation(): string | undefined;
     get redirect(): Request | undefined;
+    get lastRedirect(): Request | undefined;
     get response(): Bidi.Network.ResponseData | undefined;
     get url(): string;
+    get isBlocked(): boolean;
+    continueRequest({ url, method, headers, cookies, body, }: Omit<Bidi.Network.ContinueRequestParameters, 'request'>): Promise<void>;
+    failRequest(): Promise<void>;
+    provideResponse({ statusCode, reasonPhrase, headers, body, }: Omit<Bidi.Network.ProvideResponseParameters, 'request'>): Promise<void>;
+    continueWithAuth(parameters: Bidi.Network.ContinueWithAuthCredentials | Bidi.Network.ContinueWithAuthNoCredentials): Promise<void>;
     private dispose;
     [disposeSymbol](): void;
 }

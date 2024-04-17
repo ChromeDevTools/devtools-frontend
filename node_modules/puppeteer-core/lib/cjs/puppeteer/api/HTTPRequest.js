@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATUS_TEXTS = exports.headersArray = exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
+exports.handleError = exports.STATUS_TEXTS = exports.headersArray = exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
+const util_js_1 = require("../common/util.js");
+const assert_js_1 = require("../util/assert.js");
 /**
  * The default cooperative request interception resolution priority
  *
@@ -62,7 +64,255 @@ class HTTPRequest {
     /**
      * @internal
      */
+    interception = {
+        enabled: false,
+        handled: false,
+        handlers: [],
+        resolutionState: {
+            action: InterceptResolutionAction.None,
+        },
+        requestOverrides: {},
+        response: null,
+        abortReason: null,
+    };
+    /**
+     * @internal
+     */
     constructor() { }
+    /**
+     * The `ContinueRequestOverrides` that will be used
+     * if the interception is allowed to continue (ie, `abort()` and
+     * `respond()` aren't called).
+     */
+    continueRequestOverrides() {
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        return this.interception.requestOverrides;
+    }
+    /**
+     * The `ResponseForRequest` that gets used if the
+     * interception is allowed to respond (ie, `abort()` is not called).
+     */
+    responseForRequest() {
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        return this.interception.response;
+    }
+    /**
+     * The most recent reason for aborting the request
+     */
+    abortErrorReason() {
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        return this.interception.abortReason;
+    }
+    /**
+     * An InterceptResolutionState object describing the current resolution
+     * action and priority.
+     *
+     * InterceptResolutionState contains:
+     * action: InterceptResolutionAction
+     * priority?: number
+     *
+     * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
+     * `disabled`, `none`, or `already-handled`.
+     */
+    interceptResolutionState() {
+        if (!this.interception.enabled) {
+            return { action: InterceptResolutionAction.Disabled };
+        }
+        if (this.interception.handled) {
+            return { action: InterceptResolutionAction.AlreadyHandled };
+        }
+        return { ...this.interception.resolutionState };
+    }
+    /**
+     * Is `true` if the intercept resolution has already been handled,
+     * `false` otherwise.
+     */
+    isInterceptResolutionHandled() {
+        return this.interception.handled;
+    }
+    /**
+     * Adds an async request handler to the processing queue.
+     * Deferred handlers are not guaranteed to execute in any particular order,
+     * but they are guaranteed to resolve before the request interception
+     * is finalized.
+     */
+    enqueueInterceptAction(pendingHandler) {
+        this.interception.handlers.push(pendingHandler);
+    }
+    /**
+     * Awaits pending interception handlers and then decides how to fulfill
+     * the request interception.
+     */
+    async finalizeInterceptions() {
+        await this.interception.handlers.reduce((promiseChain, interceptAction) => {
+            return promiseChain.then(interceptAction);
+        }, Promise.resolve());
+        this.interception.handlers = []; // TODO: verify this is correct top let gc run
+        const { action } = this.interceptResolutionState();
+        switch (action) {
+            case 'abort':
+                return await this._abort(this.interception.abortReason);
+            case 'respond':
+                if (this.interception.response === null) {
+                    throw new Error('Response is missing for the interception');
+                }
+                return await this._respond(this.interception.response);
+            case 'continue':
+                return await this._continue(this.interception.requestOverrides);
+        }
+    }
+    /**
+     * Continues request with optional request overrides.
+     *
+     * @example
+     *
+     * ```ts
+     * await page.setRequestInterception(true);
+     * page.on('request', request => {
+     *   // Override headers
+     *   const headers = Object.assign({}, request.headers(), {
+     *     foo: 'bar', // set "foo" header
+     *     origin: undefined, // remove "origin" header
+     *   });
+     *   request.continue({headers});
+     * });
+     * ```
+     *
+     * @param overrides - optional overrides to apply to the request.
+     * @param priority - If provided, intercept is resolved using cooperative
+     * handling rules. Otherwise, intercept is resolved immediately.
+     *
+     * @remarks
+     *
+     * To use this, request interception should be enabled with
+     * {@link Page.setRequestInterception}.
+     *
+     * Exception is immediately thrown if the request interception is not enabled.
+     */
+    async continue(overrides = {}, priority) {
+        // Request interception is not supported for data: urls.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
+        if (priority === undefined) {
+            return await this._continue(overrides);
+        }
+        this.interception.requestOverrides = overrides;
+        if (this.interception.resolutionState.priority === undefined ||
+            priority > this.interception.resolutionState.priority) {
+            this.interception.resolutionState = {
+                action: InterceptResolutionAction.Continue,
+                priority,
+            };
+            return;
+        }
+        if (priority === this.interception.resolutionState.priority) {
+            if (this.interception.resolutionState.action === 'abort' ||
+                this.interception.resolutionState.action === 'respond') {
+                return;
+            }
+            this.interception.resolutionState.action =
+                InterceptResolutionAction.Continue;
+        }
+        return;
+    }
+    /**
+     * Fulfills a request with the given response.
+     *
+     * @example
+     * An example of fulfilling all requests with 404 responses:
+     *
+     * ```ts
+     * await page.setRequestInterception(true);
+     * page.on('request', request => {
+     *   request.respond({
+     *     status: 404,
+     *     contentType: 'text/plain',
+     *     body: 'Not Found!',
+     *   });
+     * });
+     * ```
+     *
+     * NOTE: Mocking responses for dataURL requests is not supported.
+     * Calling `request.respond` for a dataURL request is a noop.
+     *
+     * @param response - the response to fulfill the request with.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
+     *
+     * @remarks
+     *
+     * To use this, request
+     * interception should be enabled with {@link Page.setRequestInterception}.
+     *
+     * Exception is immediately thrown if the request interception is not enabled.
+     */
+    async respond(response, priority) {
+        // Mocking responses for dataURL requests is not currently supported.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
+        if (priority === undefined) {
+            return await this._respond(response);
+        }
+        this.interception.response = response;
+        if (this.interception.resolutionState.priority === undefined ||
+            priority > this.interception.resolutionState.priority) {
+            this.interception.resolutionState = {
+                action: InterceptResolutionAction.Respond,
+                priority,
+            };
+            return;
+        }
+        if (priority === this.interception.resolutionState.priority) {
+            if (this.interception.resolutionState.action === 'abort') {
+                return;
+            }
+            this.interception.resolutionState.action =
+                InterceptResolutionAction.Respond;
+        }
+    }
+    /**
+     * Aborts a request.
+     *
+     * @param errorCode - optional error code to provide.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
+     *
+     * @remarks
+     *
+     * To use this, request interception should be enabled with
+     * {@link Page.setRequestInterception}. If it is not enabled, this method will
+     * throw an exception immediately.
+     */
+    async abort(errorCode = 'failed', priority) {
+        // Request interception is not supported for data: urls.
+        if (this.url().startsWith('data:')) {
+            return;
+        }
+        const errorReason = errorReasons[errorCode];
+        (0, assert_js_1.assert)(errorReason, 'Unknown error code: ' + errorCode);
+        (0, assert_js_1.assert)(this.interception.enabled, 'Request Interception is not enabled!');
+        (0, assert_js_1.assert)(!this.interception.handled, 'Request is already handled!');
+        if (priority === undefined) {
+            return await this._abort(errorReason);
+        }
+        this.interception.abortReason = errorReason;
+        if (this.interception.resolutionState.priority === undefined ||
+            priority >= this.interception.resolutionState.priority) {
+            this.interception.resolutionState = {
+                action: InterceptResolutionAction.Abort,
+                priority,
+            };
+            return;
+        }
+    }
 }
 exports.HTTPRequest = HTTPRequest;
 /**
@@ -166,4 +416,33 @@ exports.STATUS_TEXTS = {
     '510': 'Not Extended',
     '511': 'Network Authentication Required',
 };
+const errorReasons = {
+    aborted: 'Aborted',
+    accessdenied: 'AccessDenied',
+    addressunreachable: 'AddressUnreachable',
+    blockedbyclient: 'BlockedByClient',
+    blockedbyresponse: 'BlockedByResponse',
+    connectionaborted: 'ConnectionAborted',
+    connectionclosed: 'ConnectionClosed',
+    connectionfailed: 'ConnectionFailed',
+    connectionrefused: 'ConnectionRefused',
+    connectionreset: 'ConnectionReset',
+    internetdisconnected: 'InternetDisconnected',
+    namenotresolved: 'NameNotResolved',
+    timedout: 'TimedOut',
+    failed: 'Failed',
+};
+/**
+ * @internal
+ */
+function handleError(error) {
+    if (error.originalMessage.includes('Invalid header')) {
+        throw error;
+    }
+    // In certain cases, protocol will return error if the request was
+    // already canceled or the page was closed. We should tolerate these
+    // errors.
+    (0, util_js_1.debugError)(error);
+}
+exports.handleError = handleError;
 //# sourceMappingURL=HTTPRequest.js.map

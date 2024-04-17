@@ -48,6 +48,7 @@ export declare class Browser extends EventEmitter<{
     dispose(reason?: string, closed?: boolean): void;
     close(): Promise<void>;
     addPreloadScript(functionDeclaration: string, options?: AddPreloadScriptOptions): Promise<string>;
+    removeIntercept(intercept: Bidi.Network.Intercept): Promise<void>;
     removePreloadScript(script: string): Promise<void>;
     createUserContext(): Promise<UserContext>;
     [disposeSymbol](): void;

@@ -26,7 +26,7 @@ class HTTPResponse {
         return status === 0 || (status >= 200 && status <= 299);
     }
     /**
-     * Promise which resolves to a text representation of response body.
+     * Promise which resolves to a text (utf8) representation of response body.
      */
     async text() {
         const content = await this.buffer();

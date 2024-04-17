@@ -42,7 +42,6 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { Browser, } from '../api/Browser.js';
-import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { bubble } from '../util/decorators.js';
@@ -138,8 +137,8 @@ let BidiBrowser = (() => {
         get cdpSupported() {
             return !this.#browserName.toLocaleLowerCase().includes('firefox');
         }
-        userAgent() {
-            throw new UnsupportedOperation();
+        async userAgent() {
+            return this.#browserCore.session.capabilities.userAgent;
         }
         #createBrowserContext(userContext) {
             const browserContext = BidiBrowserContext.from(this, userContext, {

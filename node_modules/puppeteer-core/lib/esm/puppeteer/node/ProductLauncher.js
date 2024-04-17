@@ -42,6 +42,9 @@ export class ProductLauncher {
     async launch(options = {}) {
         const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, protocol, } = options;
         const launchArgs = await this.computeLaunchArguments(options);
+        if (!existsSync(launchArgs.executablePath)) {
+            throw new Error(`Browser was not found at the configured executablePath (${launchArgs.executablePath})`);
+        }
         const usePipe = launchArgs.args.includes('--remote-debugging-pipe');
         const onProcessExit = async () => {
             await this.cleanUserDataDir(launchArgs.userDataDir, {

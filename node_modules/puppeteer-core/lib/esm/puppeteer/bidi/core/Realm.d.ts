@@ -36,6 +36,7 @@ export declare abstract class Realm extends EventEmitter<{
     protected readonly disposables: DisposableStack;
     readonly id: string;
     readonly origin: string;
+    protected executionContextId?: number;
     protected constructor(id: string, origin: string);
     get disposed(): boolean;
     protected abstract get session(): Session;
@@ -44,6 +45,7 @@ export declare abstract class Realm extends EventEmitter<{
     disown(handles: string[]): Promise<void>;
     callFunction(functionDeclaration: string, awaitPromise: boolean, options?: CallFunctionOptions): Promise<Bidi.Script.EvaluateResult>;
     evaluate(expression: string, awaitPromise: boolean, options?: EvaluateOptions): Promise<Bidi.Script.EvaluateResult>;
+    resolveExecutionContextId(): Promise<number>;
     [disposeSymbol](): void;
 }
 /**

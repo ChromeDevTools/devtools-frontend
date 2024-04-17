@@ -54,6 +54,7 @@ let Realm = (() => {
     let _disown_decorators;
     let _callFunction_decorators;
     let _evaluate_decorators;
+    let _resolveExecutionContextId_decorators;
     return class Realm extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -61,29 +62,25 @@ let Realm = (() => {
             __esDecorate(this, null, _disown_decorators, { kind: "method", name: "disown", static: false, private: false, access: { has: obj => "disown" in obj, get: obj => obj.disown }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _callFunction_decorators, { kind: "method", name: "callFunction", static: false, private: false, access: { has: obj => "callFunction" in obj, get: obj => obj.callFunction }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _evaluate_decorators, { kind: "method", name: "evaluate", static: false, private: false, access: { has: obj => "evaluate" in obj, get: obj => obj.evaluate }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _resolveExecutionContextId_decorators, { kind: "method", name: "resolveExecutionContextId", static: false, private: false, access: { has: obj => "resolveExecutionContextId" in obj, get: obj => obj.resolveExecutionContextId }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
-        // keep-sorted start
         #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
         disposables = new disposable_js_1.DisposableStack();
         id;
         origin;
-        // keep-sorted end
+        executionContextId;
         constructor(id, origin) {
             super();
-            // keep-sorted start
             this.id = id;
             this.origin = origin;
-            // keep-sorted end
         }
-        // keep-sorted start block=yes
         get disposed() {
             return this.#reason !== undefined;
         }
         get target() {
             return { realm: this.id };
         }
-        // keep-sorted end
         dispose(reason) {
             this.#reason = reason;
             this[disposable_js_1.disposeSymbol]();
@@ -112,6 +109,13 @@ let Realm = (() => {
             });
             return result;
         }
+        async resolveExecutionContextId() {
+            if (!this.executionContextId) {
+                const { result } = await this.session.connection.send('cdp.resolveRealm', { realm: this.id });
+                this.executionContextId = result.executionContextId;
+            }
+            return this.executionContextId;
+        }
         [(_dispose_decorators = [decorators_js_1.inertIfDisposed], _disown_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
@@ -119,6 +123,9 @@ let Realm = (() => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
             })], _evaluate_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
+                // SAFETY: Disposal implies this exists.
+                return realm.#reason;
+            })], _resolveExecutionContextId_decorators = [(0, decorators_js_1.throwIfDisposed)(realm => {
                 // SAFETY: Disposal implies this exists.
                 return realm.#reason;
             })], disposable_js_1.disposeSymbol)]() {
@@ -140,17 +147,13 @@ class WindowRealm extends Realm {
         realm.#initialize();
         return realm;
     }
-    // keep-sorted start
     browsingContext;
     sandbox;
-    // keep-sorted end
     #workers = new Map();
     constructor(context, sandbox) {
         super('', '');
-        // keep-sorted start
         this.browsingContext = context;
         this.sandbox = sandbox;
-        // keep-sorted end
     }
     #initialize() {
         const browsingContextEmitter = this.disposables.use(new EventEmitter_js_1.EventEmitter(this.browsingContext));
@@ -166,6 +169,7 @@ class WindowRealm extends Realm {
             }
             this.id = info.realm;
             this.origin = info.origin;
+            this.executionContextId = undefined;
             this.emit('updated', this);
         });
         sessionEmitter.on('script.realmCreated', info => {
@@ -202,10 +206,8 @@ class DedicatedWorkerRealm extends Realm {
         realm.#initialize();
         return realm;
     }
-    // keep-sorted start
     #workers = new Map();
     owners;
-    // keep-sorted end
     constructor(owner, id, origin) {
         super(id, origin);
         this.owners = new Set([owner]);
@@ -250,10 +252,8 @@ class SharedWorkerRealm extends Realm {
         realm.#initialize();
         return realm;
     }
-    // keep-sorted start
     #workers = new Map();
     browser;
-    // keep-sorted end
     constructor(browser, id, origin) {
         super(id, origin);
         this.browser = browser;

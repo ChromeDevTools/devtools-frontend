@@ -16,7 +16,7 @@ export declare const requests: WeakMap<Request, BidiHTTPRequest>;
  */
 export declare class BidiHTTPRequest extends HTTPRequest {
     #private;
-    static from(bidiRequest: Request, frame: BidiFrame | undefined): BidiHTTPRequest;
+    static from(bidiRequest: Request, frame: BidiFrame, redirect?: BidiHTTPRequest): BidiHTTPRequest;
     readonly id: string;
     private constructor();
     get client(): CDPSession;
@@ -34,16 +34,10 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     isNavigationRequest(): boolean;
     initiator(): Bidi.Network.Initiator;
     redirectChain(): BidiHTTPRequest[];
-    enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
-    frame(): BidiFrame | null;
-    continueRequestOverrides(): never;
-    continue(_overrides?: ContinueRequestOverrides): never;
-    responseForRequest(): never;
-    abortErrorReason(): never;
-    interceptResolutionState(): never;
-    isInterceptResolutionHandled(): never;
-    finalizeInterceptions(): never;
-    abort(): never;
-    respond(_response: Partial<ResponseForRequest>, _priority?: number): never;
+    frame(): BidiFrame;
+    continue(overrides?: ContinueRequestOverrides, priority?: number | undefined): Promise<void>;
+    _continue(overrides?: ContinueRequestOverrides): Promise<void>;
+    _abort(): Promise<void>;
+    _respond(response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

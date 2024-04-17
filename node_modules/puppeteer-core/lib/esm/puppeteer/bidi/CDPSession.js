@@ -42,7 +42,7 @@ export class BidiCdpSession extends CDPSession {
     connection() {
         return undefined;
     }
-    async send(method, params) {
+    async send(method, params, options) {
         if (this.#connection === undefined) {
             throw new UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');
         }
@@ -54,7 +54,7 @@ export class BidiCdpSession extends CDPSession {
             method: method,
             params: params,
             session,
-        });
+        }, options?.timeout);
         return result.result;
     }
     async detach() {

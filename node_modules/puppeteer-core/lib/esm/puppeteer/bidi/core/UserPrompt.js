@@ -60,19 +60,15 @@ let UserPrompt = (() => {
             userPrompt.#initialize();
             return userPrompt;
         }
-        // keep-sorted start
         #reason = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #result;
         #disposables = new DisposableStack();
         browsingContext;
         info;
-        // keep-sorted end
         constructor(context, info) {
             super();
-            // keep-sorted start
             this.browsingContext = context;
             this.info = info;
-            // keep-sorted end
         }
         #initialize() {
             const browserContextEmitter = this.#disposables.use(new EventEmitter(this.browsingContext));
@@ -89,7 +85,6 @@ let UserPrompt = (() => {
                 this.dispose('User prompt already handled.');
             });
         }
-        // keep-sorted start block=yes
         get #session() {
             return this.browsingContext.userContext.browser.session;
         }
@@ -105,7 +100,6 @@ let UserPrompt = (() => {
         get result() {
             return this.#result;
         }
-        // keep-sorted end
         dispose(reason) {
             this.#reason = reason;
             this[disposeSymbol]();

@@ -1,5 +1,5 @@
 var _a;
-import { HTTPRequest } from '../api/HTTPRequest.js';
+import { HTTPRequest, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
 export const requests = new WeakMap();
@@ -7,40 +7,51 @@ export const requests = new WeakMap();
  * @internal
  */
 export class BidiHTTPRequest extends HTTPRequest {
-    static from(bidiRequest, frame) {
-        const request = new _a(bidiRequest, frame);
+    static from(bidiRequest, frame, redirect) {
+        const request = new _a(bidiRequest, frame, redirect);
         request.#initialize();
         return request;
     }
-    #redirect;
+    #redirectBy;
     #response = null;
     id;
     #frame;
     #request;
-    constructor(request, frame) {
+    constructor(request, frame, redirectBy) {
         super();
         requests.set(request, this);
+        this.interception.enabled = request.isBlocked;
         this.#request = request;
         this.#frame = frame;
+        this.#redirectBy = redirectBy;
         this.id = request.id;
     }
     get client() {
-        throw new UnsupportedOperation();
+        return this.#frame.client;
     }
     #initialize() {
         this.#request.on('redirect', request => {
-            this.#redirect = _a.from(request, this.#frame);
+            const httpRequest = _a.from(request, this.#frame, this);
+            void httpRequest.finalizeInterceptions();
         });
         this.#request.once('success', data => {
             this.#response = BidiHTTPResponse.from(data, this);
         });
-        this.#frame?.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+        this.#request.on('authenticate', this.#handleAuthentication);
+        this.#frame.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+        if (Object.keys(this.#extraHTTPHeaders).length) {
+            this.interception.handlers.push(async () => {
+                await this.continue({
+                    headers: this.headers(),
+                }, 0);
+            });
+        }
     }
     url() {
         return this.#request.url;
     }
     resourceType() {
-        return this.initiator().type.toLowerCase();
+        throw new UnsupportedOperation();
     }
     method() {
         return this.#request.method;
@@ -54,12 +65,18 @@ export class BidiHTTPRequest extends HTTPRequest {
     async fetchPostData() {
         throw new UnsupportedOperation();
     }
+    get #extraHTTPHeaders() {
+        return this.#frame?.page()._extraHTTPHeaders ?? {};
+    }
     headers() {
         const headers = {};
         for (const header of this.#request.headers) {
             headers[header.name.toLowerCase()] = header.value.value;
         }
-        return headers;
+        return {
+            ...headers,
+            ...this.#extraHTTPHeaders,
+        };
     }
     response() {
         return this.#response;
@@ -77,51 +94,144 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#request.initiator;
     }
     redirectChain() {
-        if (this.#redirect === undefined) {
+        if (this.#redirectBy === undefined) {
             return [];
         }
-        const redirects = [this.#redirect];
+        const redirects = [this.#redirectBy];
         for (const redirect of redirects) {
-            if (redirect.#redirect !== undefined) {
-                redirects.push(redirect.#redirect);
+            if (redirect.#redirectBy !== undefined) {
+                redirects.push(redirect.#redirectBy);
             }
         }
         return redirects;
     }
-    enqueueInterceptAction(pendingHandler) {
-        // Execute the handler when interception is not supported
-        void pendingHandler();
-    }
     frame() {
-        return this.#frame ?? null;
+        return this.#frame;
     }
-    continueRequestOverrides() {
-        throw new UnsupportedOperation();
+    async continue(overrides, priority) {
+        return await super.continue({
+            headers: Object.keys(this.#extraHTTPHeaders).length
+                ? this.headers()
+                : undefined,
+            ...overrides,
+        }, priority);
     }
-    continue(_overrides = {}) {
-        throw new UnsupportedOperation();
+    async _continue(overrides = {}) {
+        const headers = getBidiHeaders(overrides.headers);
+        this.interception.handled = true;
+        return await this.#request
+            .continueRequest({
+            url: overrides.url,
+            method: overrides.method,
+            body: overrides.postData
+                ? {
+                    type: 'base64',
+                    value: btoa(overrides.postData),
+                }
+                : undefined,
+            headers: headers.length > 0 ? headers : undefined,
+        })
+            .catch(error => {
+            this.interception.handled = false;
+            return handleError(error);
+        });
     }
-    responseForRequest() {
-        throw new UnsupportedOperation();
+    async _abort() {
+        this.interception.handled = true;
+        return await this.#request.failRequest().catch(error => {
+            this.interception.handled = false;
+            throw error;
+        });
     }
-    abortErrorReason() {
-        throw new UnsupportedOperation();
+    async _respond(response, _priority) {
+        this.interception.handled = true;
+        const responseBody = response.body && response.body instanceof Uint8Array
+            ? response.body.toString('base64')
+            : response.body
+                ? btoa(response.body)
+                : undefined;
+        const headers = getBidiHeaders(response.headers);
+        const hasContentLength = headers.some(header => {
+            return header.name === 'content-length';
+        });
+        if (response.contentType) {
+            headers.push({
+                name: 'content-type',
+                value: {
+                    type: 'string',
+                    value: response.contentType,
+                },
+            });
+        }
+        if (responseBody && !hasContentLength) {
+            const encoder = new TextEncoder();
+            headers.push({
+                name: 'content-length',
+                value: {
+                    type: 'string',
+                    value: String(encoder.encode(responseBody).byteLength),
+                },
+            });
+        }
+        const status = response.status || 200;
+        return await this.#request
+            .provideResponse({
+            statusCode: status,
+            headers: headers.length > 0 ? headers : undefined,
+            reasonPhrase: STATUS_TEXTS[status],
+            body: responseBody
+                ? {
+                    type: 'base64',
+                    value: responseBody,
+                }
+                : undefined,
+        })
+            .catch(error => {
+            this.interception.handled = false;
+            throw error;
+        });
     }
-    interceptResolutionState() {
-        throw new UnsupportedOperation();
-    }
-    isInterceptResolutionHandled() {
-        throw new UnsupportedOperation();
-    }
-    finalizeInterceptions() {
-        throw new UnsupportedOperation();
-    }
-    abort() {
-        throw new UnsupportedOperation();
-    }
-    respond(_response, _priority) {
-        throw new UnsupportedOperation();
-    }
+    #authenticationHandled = false;
+    #handleAuthentication = async () => {
+        if (!this.#frame) {
+            return;
+        }
+        const credentials = this.#frame.page()._credentials;
+        if (credentials && !this.#authenticationHandled) {
+            this.#authenticationHandled = true;
+            void this.#request.continueWithAuth({
+                action: 'provideCredentials',
+                credentials: {
+                    type: 'password',
+                    username: credentials.username,
+                    password: credentials.password,
+                },
+            });
+        }
+        else {
+            void this.#request.continueWithAuth({
+                action: 'cancel',
+            });
+        }
+    };
 }
 _a = BidiHTTPRequest;
+function getBidiHeaders(rawHeaders) {
+    const headers = [];
+    for (const [name, value] of Object.entries(rawHeaders ?? [])) {
+        if (!Object.is(value, undefined)) {
+            const values = Array.isArray(value) ? value : [value];
+            for (const value of values) {
+                headers.push({
+                    name: name.toLowerCase(),
+                    value: {
+                        type: 'string',
+                        value: String(value),
+                    },
+                });
+            }
+        }
+    }
+    return headers;
+}
 //# sourceMappingURL=HTTPRequest.js.map

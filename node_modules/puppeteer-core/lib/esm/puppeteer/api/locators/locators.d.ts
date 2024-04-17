@@ -117,7 +117,7 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      */
     protected operators: {
         conditions: (conditions: Array<Action<T, never>>, signal?: AbortSignal) => OperatorFunction<HandleFor<T>, HandleFor<T>>;
-        retryAndRaceWithSignalAndTimer: <T_1>(signal?: AbortSignal) => OperatorFunction<T_1, T_1>;
+        retryAndRaceWithSignalAndTimer: <T_1>(signal?: AbortSignal, cause?: Error) => OperatorFunction<T_1, T_1>;
     };
     get timeout(): number;
     setTimeout(timeout: number): Locator<T>;

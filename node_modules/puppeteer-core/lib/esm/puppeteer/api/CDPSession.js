@@ -35,7 +35,7 @@ export var CDPSessionEvent;
  * @example
  *
  * ```ts
- * const client = await page.target().createCDPSession();
+ * const client = await page.createCDPSession();
  * await client.send('Animation.enable');
  * client.on('Animation.animationCreated', () =>
  *   console.log('Animation created!')

@@ -29,12 +29,12 @@ export interface BidiBrowserOptions {
 export declare class BidiBrowser extends Browser {
     #private;
     readonly protocol = "webDriverBiDi";
-    static readonly subscribeModules: string[];
+    static readonly subscribeModules: [string, ...string[]];
     static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
     private constructor();
     get cdpSupported(): boolean;
-    userAgent(): never;
+    userAgent(): Promise<string>;
     get connection(): BidiConnection;
     wsEndpoint(): string;
     close(): Promise<void>;

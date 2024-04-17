@@ -9,6 +9,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import {EventEmitter} from '../../common/EventEmitter.js';
 import {inertIfDisposed, throwIfDisposed} from '../../util/decorators.js';
 import {DisposableStack, disposeSymbol} from '../../util/disposable.js';
+import type {BidiConnection} from '../Connection.js';
 
 import type {Browser} from './Browser.js';
 import type {BrowsingContext} from './BrowsingContext.js';
@@ -43,22 +44,19 @@ export abstract class Realm extends EventEmitter<{
   /** Emitted when a shared worker is created in the realm. */
   sharedworker: SharedWorkerRealm;
 }> {
-  // keep-sorted start
   #reason?: string;
   protected readonly disposables = new DisposableStack();
   readonly id: string;
   readonly origin: string;
-  // keep-sorted end
+  protected executionContextId?: number;
 
   protected constructor(id: string, origin: string) {
     super();
-    // keep-sorted start
+
     this.id = id;
     this.origin = origin;
-    // keep-sorted end
   }
 
-  // keep-sorted start block=yes
   get disposed(): boolean {
     return this.#reason !== undefined;
   }
@@ -66,7 +64,6 @@ export abstract class Realm extends EventEmitter<{
   get target(): Bidi.Script.Target {
     return {realm: this.id};
   }
-  // keep-sorted end
 
   @inertIfDisposed
   protected dispose(reason?: string): void {
@@ -121,6 +118,22 @@ export abstract class Realm extends EventEmitter<{
     return result;
   }
 
+  @throwIfDisposed<Realm>(realm => {
+    // SAFETY: Disposal implies this exists.
+    return realm.#reason!;
+  })
+  async resolveExecutionContextId(): Promise<number> {
+    if (!this.executionContextId) {
+      const {result} = await (this.session.connection as BidiConnection).send(
+        'cdp.resolveRealm',
+        {realm: this.id}
+      );
+      this.executionContextId = result.executionContextId;
+    }
+
+    return this.executionContextId;
+  }
+
   [disposeSymbol](): void {
     this.#reason ??=
       'Realm already destroyed, probably because all associated browsing contexts closed.';
@@ -141,19 +154,16 @@ export class WindowRealm extends Realm {
     return realm;
   }
 
-  // keep-sorted start
   readonly browsingContext: BrowsingContext;
   readonly sandbox?: string;
-  // keep-sorted end
 
   readonly #workers = new Map<string, DedicatedWorkerRealm>();
 
   private constructor(context: BrowsingContext, sandbox?: string) {
     super('', '');
-    // keep-sorted start
+
     this.browsingContext = context;
     this.sandbox = sandbox;
-    // keep-sorted end
   }
 
   #initialize(): void {
@@ -175,6 +185,7 @@ export class WindowRealm extends Realm {
       }
       (this as any).id = info.realm;
       (this as any).origin = info.origin;
+      this.executionContextId = undefined;
       this.emit('updated', this);
     });
     sessionEmitter.on('script.realmCreated', info => {
@@ -229,10 +240,8 @@ export class DedicatedWorkerRealm extends Realm {
     return realm;
   }
 
-  // keep-sorted start
   readonly #workers = new Map<string, DedicatedWorkerRealm>();
   readonly owners: Set<DedicatedWorkerOwnerRealm>;
-  // keep-sorted end
 
   private constructor(
     owner: DedicatedWorkerOwnerRealm,
@@ -287,10 +296,8 @@ export class SharedWorkerRealm extends Realm {
     return realm;
   }
 
-  // keep-sorted start
   readonly #workers = new Map<string, DedicatedWorkerRealm>();
   readonly browser: Browser;
-  // keep-sorted end
 
   private constructor(browser: Browser, id: string, origin: string) {
     super(id, origin);

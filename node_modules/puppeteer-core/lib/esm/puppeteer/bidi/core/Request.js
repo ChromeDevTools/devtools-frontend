@@ -59,20 +59,16 @@ let Request = (() => {
             request.#initialize();
             return request;
         }
-        // keep-sorted start
         #error = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #redirect;
         #response;
         #browsingContext;
         #disposables = new DisposableStack();
         #event;
-        // keep-sorted end
         constructor(browsingContext, event) {
             super();
-            // keep-sorted start
             this.#browsingContext = browsingContext;
             this.#event = event;
-            // keep-sorted end
         }
         #initialize() {
             const browsingContextEmitter = this.#disposables.use(new EventEmitter(this.#browsingContext));
@@ -91,6 +87,15 @@ let Request = (() => {
                 this.#redirect = Request.from(this.#browsingContext, event);
                 this.emit('redirect', this.#redirect);
                 this.dispose();
+            });
+            sessionEmitter.on('network.authRequired', event => {
+                if (event.context !== this.#browsingContext.id ||
+                    event.request.request !== this.id ||
+                    // Don't try to authenticate for events that are not blocked
+                    !event.isBlocked) {
+                    return;
+                }
+                this.emit('authenticate', undefined);
             });
             sessionEmitter.on('network.fetchError', event => {
                 if (event.context !== this.#browsingContext.id ||
@@ -117,7 +122,6 @@ let Request = (() => {
                 this.dispose();
             });
         }
-        // keep-sorted start block=yes
         get #session() {
             return this.#browsingContext.userContext.browser.session;
         }
@@ -145,13 +149,64 @@ let Request = (() => {
         get redirect() {
             return this.#redirect;
         }
+        get lastRedirect() {
+            let redirect = this.#redirect;
+            while (redirect) {
+                if (redirect && !redirect.#redirect) {
+                    return redirect;
+                }
+                redirect = redirect.#redirect;
+            }
+            return redirect;
+        }
         get response() {
             return this.#response;
         }
         get url() {
             return this.#event.request.url;
         }
-        // keep-sorted end
+        get isBlocked() {
+            return this.#event.isBlocked;
+        }
+        async continueRequest({ url, method, headers, cookies, body, }) {
+            await this.#session.send('network.continueRequest', {
+                request: this.id,
+                url,
+                method,
+                headers,
+                body,
+                cookies,
+            });
+        }
+        async failRequest() {
+            await this.#session.send('network.failRequest', {
+                request: this.id,
+            });
+        }
+        async provideResponse({ statusCode, reasonPhrase, headers, body, }) {
+            await this.#session.send('network.provideResponse', {
+                request: this.id,
+                statusCode,
+                reasonPhrase,
+                headers,
+                body,
+            });
+        }
+        async continueWithAuth(parameters) {
+            if (parameters.action === 'provideCredentials') {
+                await this.#session.send('network.continueWithAuth', {
+                    request: this.id,
+                    action: parameters.action,
+                    credentials: parameters.credentials,
+                });
+            }
+            else {
+                await this.#session.send('network.continueWithAuth', {
+                    request: this.id,
+                    action: parameters.action,
+                });
+            }
+        }
         dispose() {
             this[disposeSymbol]();
         }

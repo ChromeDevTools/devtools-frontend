@@ -41,6 +41,7 @@ export declare class BidiFrameRealm extends BidiRealm {
     static from(realm: WindowRealm, frame: BidiFrame): BidiFrameRealm;
     readonly realm: WindowRealm;
     private constructor();
+    get puppeteerUtil(): Promise<BidiJSHandle<PuppeteerUtil>>;
     get sandbox(): string | undefined;
     get environment(): BidiFrame;
     adoptBackendNode(backendNodeId?: number | undefined): Promise<JSHandle<Node>>;

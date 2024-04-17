@@ -11,6 +11,7 @@ import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, NodeFor } from '../common/types.js';
 import { BidiCdpSession } from './CDPSession.js';
 import type { BrowsingContext } from './core/BrowsingContext.js';
+import type { BidiElementHandle } from './ElementHandle.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
 import type { BidiPage } from './Page.js';
 import type { BidiRealm } from './Realm.js';
@@ -41,7 +42,9 @@ export declare class BidiFrame extends Frame {
     waitForDevicePrompt(): never;
     get detached(): boolean;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
+    removeExposedFunction(name: string): Promise<void>;
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     createCDPSession(): Promise<CDPSession>;
+    setFiles(element: BidiElementHandle, files: string[]): Promise<void>;
 }
 //# sourceMappingURL=Frame.d.ts.map

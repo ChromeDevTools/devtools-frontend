@@ -83,7 +83,6 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { ElementHandle } from '../api/ElementHandle.js';
-import { UnsupportedOperation } from '../common/Errors.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { BidiJSHandle } from './JSHandle.js';
 /**
@@ -163,8 +162,28 @@ let BidiElementHandle = (() => {
                 __disposeResources(env_1);
             }
         }
-        uploadFile() {
-            throw new UnsupportedOperation();
+        async uploadFile(...files) {
+            // Locate all files and confirm that they exist.
+            // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+            let path;
+            try {
+                path = await import('path');
+            }
+            catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error(`JSHandle#uploadFile can only be used in Node-like environments.`);
+                }
+                throw error;
+            }
+            files = files.map(file => {
+                if (path.win32.isAbsolute(file) || path.posix.isAbsolute(file)) {
+                    return file;
+                }
+                else {
+                    return path.resolve(file);
+                }
+            });
+            await this.frame.setFiles(this, files);
         }
     };
 })();

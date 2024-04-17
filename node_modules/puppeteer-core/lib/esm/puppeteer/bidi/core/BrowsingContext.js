@@ -65,12 +65,21 @@ let BrowsingContext = (() => {
     let _releaseActions_decorators;
     let _createWindowRealm_decorators;
     let _addPreloadScript_decorators;
+    let _addIntercept_decorators;
     let _removePreloadScript_decorators;
     let _getCookies_decorators;
     let _setCookie_decorators;
+    let _setFiles_decorators;
+    let _subscribe_decorators;
+    let _addInterception_decorators;
+    let _deleteCookie_decorators;
     return class BrowsingContext extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            _deleteCookie_decorators = [throwIfDisposed(context => {
+                    // SAFETY: Disposal implies this exists.
+                    return context.#reason;
+                })];
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _activate_decorators, { kind: "method", name: "activate", static: false, private: false, access: { has: obj => "activate" in obj, get: obj => obj.activate }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _captureScreenshot_decorators, { kind: "method", name: "captureScreenshot", static: false, private: false, access: { has: obj => "captureScreenshot" in obj, get: obj => obj.captureScreenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -85,9 +94,14 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _releaseActions_decorators, { kind: "method", name: "releaseActions", static: false, private: false, access: { has: obj => "releaseActions" in obj, get: obj => obj.releaseActions }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createWindowRealm_decorators, { kind: "method", name: "createWindowRealm", static: false, private: false, access: { has: obj => "createWindowRealm" in obj, get: obj => obj.createWindowRealm }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _addPreloadScript_decorators, { kind: "method", name: "addPreloadScript", static: false, private: false, access: { has: obj => "addPreloadScript" in obj, get: obj => obj.addPreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _addIntercept_decorators, { kind: "method", name: "addIntercept", static: false, private: false, access: { has: obj => "addIntercept" in obj, get: obj => obj.addIntercept }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setFiles_decorators, { kind: "method", name: "setFiles", static: false, private: false, access: { has: obj => "setFiles" in obj, get: obj => obj.setFiles }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _subscribe_decorators, { kind: "method", name: "subscribe", static: false, private: false, access: { has: obj => "subscribe" in obj, get: obj => obj.subscribe }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _addInterception_decorators, { kind: "method", name: "addInterception", static: false, private: false, access: { has: obj => "addInterception" in obj, get: obj => obj.addInterception }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _deleteCookie_decorators, { kind: "method", name: "deleteCookie", static: false, private: false, access: { has: obj => "deleteCookie" in obj, get: obj => obj.deleteCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static from(userContext, parent, id, url) {
@@ -95,7 +109,6 @@ let BrowsingContext = (() => {
             browsingContext.#initialize();
             return browsingContext;
         }
-        // keep-sorted start
         #navigation = (__runInitializers(this, _instanceExtraInitializers), void 0);
         #reason;
         #url;
@@ -107,15 +120,12 @@ let BrowsingContext = (() => {
         id;
         parent;
         userContext;
-        // keep-sorted end
         constructor(context, parent, id, url) {
             super();
-            // keep-sorted start
             this.#url = url;
             this.id = id;
             this.parent = parent;
             this.userContext = context;
-            // keep-sorted end
             this.defaultRealm = this.#createWindowRealm();
         }
         #initialize() {
@@ -209,7 +219,6 @@ let BrowsingContext = (() => {
                 this.emit('userprompt', { userPrompt });
             });
         }
-        // keep-sorted start block=yes
         get #session() {
             return this.userContext.browser.session;
         }
@@ -240,7 +249,6 @@ let BrowsingContext = (() => {
         get url() {
             return this.#url;
         }
-        // keep-sorted end
         #createWindowRealm(sandbox) {
             const realm = WindowRealm.from(this, sandbox);
             realm.on('worker', realm => {
@@ -328,8 +336,15 @@ let BrowsingContext = (() => {
         async addPreloadScript(functionDeclaration, options = {}) {
             return await this.userContext.browser.addPreloadScript(functionDeclaration, {
                 ...options,
-                contexts: [this, ...(options.contexts ?? [])],
+                contexts: [this],
             });
+        }
+        async addIntercept(options) {
+            const { result: { intercept }, } = await this.userContext.browser.session.send('network.addIntercept', {
+                ...options,
+                contexts: [this.id],
+            });
+            return intercept;
         }
         async removePreloadScript(script) {
             await this.userContext.browser.removePreloadScript(script);
@@ -352,6 +367,19 @@ let BrowsingContext = (() => {
                     context: this.id,
                 },
             });
+        }
+        async setFiles(element, files) {
+            await this.#session.send('input.setFiles', {
+                context: this.id,
+                element,
+                files,
+            });
+        }
+        async subscribe(events) {
+            await this.#session.subscribe(events, [this.id]);
+        }
+        async addInterception(events) {
+            await this.#session.subscribe(events, [this.id]);
         }
         [(_dispose_decorators = [inertIfDisposed], _activate_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
@@ -392,6 +420,9 @@ let BrowsingContext = (() => {
             })], _addPreloadScript_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
+            })], _addIntercept_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
             })], _removePreloadScript_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
@@ -401,12 +432,32 @@ let BrowsingContext = (() => {
             })], _setCookie_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
+            })], _setFiles_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _subscribe_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _addInterception_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
             })], disposeSymbol)]() {
             this.#reason ??=
                 'Browsing context already closed, probably because the user context closed.';
             this.emit('closed', { reason: this.#reason });
             this.#disposables.dispose();
             super[disposeSymbol]();
+        }
+        async deleteCookie(...cookieFilters) {
+            await Promise.all(cookieFilters.map(async (filter) => {
+                await this.#session.send('storage.deleteCookies', {
+                    filter: filter,
+                    partition: {
+                        type: 'context',
+                        context: this.id,
+                    },
+                });
+            }));
         }
     };
 })();

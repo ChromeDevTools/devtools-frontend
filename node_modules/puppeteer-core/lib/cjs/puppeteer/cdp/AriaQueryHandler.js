@@ -17,7 +17,16 @@ const queryAXTree = async (client, element, accessibleName, role) => {
         role,
     });
     return nodes.filter((node) => {
-        return !node.role || !NON_ELEMENT_NODE_ROLES.has(node.role.value);
+        if (node.ignored) {
+            return false;
+        }
+        if (!node.role) {
+            return false;
+        }
+        if (NON_ELEMENT_NODE_ROLES.has(node.role.value)) {
+            return false;
+        }
+        return true;
     });
 };
 const isKnownAttribute = (attribute) => {

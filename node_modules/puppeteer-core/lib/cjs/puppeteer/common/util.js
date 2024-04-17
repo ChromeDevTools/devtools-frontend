@@ -282,11 +282,11 @@ exports.validateDialogType = validateDialogType;
 /**
  * @internal
  */
-function timeout(ms) {
+function timeout(ms, cause) {
     return ms === 0
         ? rxjs_js_1.NEVER
         : (0, rxjs_js_1.timer)(ms).pipe((0, rxjs_js_1.map)(() => {
-            throw new Errors_js_1.TimeoutError(`Timed out after waiting ${ms}ms`);
+            throw new Errors_js_1.TimeoutError(`Timed out after waiting ${ms}ms`, { cause });
         }));
 }
 exports.timeout = timeout;

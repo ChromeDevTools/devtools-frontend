@@ -85,6 +85,11 @@ const JSHandle_js_1 = require("./JSHandle.js");
  * @internal
  */
 class ExposeableFunction {
+    static async from(frame, name, apply, isolate = false) {
+        const func = new ExposeableFunction(frame, name, apply, isolate);
+        await func.#initialize();
+        return func;
+    }
     #frame;
     name;
     #apply;
@@ -99,7 +104,7 @@ class ExposeableFunction {
         this.#isolate = isolate;
         this.#channel = `__puppeteer__${this.#frame._id}_page_exposeFunction_${this.name}`;
     }
-    async expose() {
+    async #initialize() {
         const connection = this.#connection;
         const channel = {
             type: 'channel',
@@ -126,23 +131,16 @@ class ExposeableFunction {
         await Promise.all(frames.map(async (frame) => {
             const realm = this.#isolate ? frame.isolatedRealm() : frame.mainRealm();
             try {
-                this.#scripts.push([
-                    frame,
-                    await frame.browsingContext.addPreloadScript(functionDeclaration, {
+                const [script] = await Promise.all([
+                    frame.browsingContext.addPreloadScript(functionDeclaration, {
                         arguments: [channel],
                         sandbox: realm.sandbox,
                     }),
+                    realm.realm.callFunction(functionDeclaration, false, {
+                        arguments: [channel],
+                    }),
                 ]);
-            }
-            catch (error) {
-                // If it errors, the frame probably doesn't support adding preload
-                // scripts. We fail gracefully.
-                (0, util_js_1.debugError)(error);
-            }
-            try {
-                await realm.realm.callFunction(functionDeclaration, false, {
-                    arguments: [channel],
-                });
+                this.#scripts.push([frame, script]);
             }
             catch (error) {
                 // If it errors, the frame probably doesn't support call function. We
@@ -250,7 +248,18 @@ class ExposeableFunction {
     async [Symbol.asyncDispose]() {
         this.#disposables.dispose();
         await Promise.all(this.#scripts.map(async ([frame, script]) => {
-            await frame.browsingContext.removePreloadScript(script);
+            const realm = this.#isolate ? frame.isolatedRealm() : frame.mainRealm();
+            try {
+                await Promise.all([
+                    realm.evaluate(name => {
+                        delete globalThis[name];
+                    }, this.name),
+                    frame.browsingContext.removePreloadScript(script),
+                ]);
+            }
+            catch (error) {
+                (0, util_js_1.debugError)(error);
+            }
         }));
     }
 }

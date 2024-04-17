@@ -216,7 +216,7 @@ describe('Overrides panel', function() {
       await setCacheDisabled(false);
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
-      const iconTitleElement = await icons[0].$('aria/Requests may be overridden locally, see the Sources panel');
+      const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
 
       assert.strictEqual(icons.length, 1);
       assert.isNotNull(iconTitleElement);
@@ -245,7 +245,7 @@ describe('Overrides panel', function() {
       await setCacheDisabled(false);
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
-      const iconTitleElement = await icons[0].$('aria/Requests may be overridden locally, see the Sources panel');
+      const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
 
       assert.strictEqual(icons.length, 1);
       assert.isNotNull(iconTitleElement);

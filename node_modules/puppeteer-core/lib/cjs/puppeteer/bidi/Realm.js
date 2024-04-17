@@ -1,13 +1,61 @@
 "use strict";
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiWorkerRealm = exports.BidiFrameRealm = exports.BidiRealm = void 0;
 const Realm_js_1 = require("../api/Realm.js");
+const AriaQueryHandler_js_1 = require("../cdp/AriaQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");
+const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const Function_js_1 = require("../util/Function.js");
 const Deserializer_js_1 = require("./Deserializer.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
+const ExposedFunction_js_1 = require("./ExposedFunction.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const Serializer_js_1 = require("./Serializer.js");
 const util_js_2 = require("./util.js");
@@ -173,11 +221,31 @@ class BidiFrameRealm extends BidiRealm {
         this.#frame = frame;
     }
     #initialize() {
+        super.initialize();
         // This should run first.
         this.realm.on('updated', () => {
             this.environment.clearDocumentHandle();
+            this.#bindingsInstalled = false;
         });
-        super.initialize();
+    }
+    #bindingsInstalled = false;
+    get puppeteerUtil() {
+        let promise = Promise.resolve();
+        if (!this.#bindingsInstalled) {
+            promise = Promise.all([
+                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, !!this.sandbox),
+                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
+                    const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
+                    return await element.realm.evaluateHandle((...elements) => {
+                        return elements;
+                    }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
+                }, !!this.sandbox),
+            ]);
+            this.#bindingsInstalled = true;
+        }
+        return promise.then(() => {
+            return super.puppeteerUtil;
+        });
     }
     get sandbox() {
         return this.realm.sandbox;
@@ -186,13 +254,28 @@ class BidiFrameRealm extends BidiRealm {
         return this.#frame;
     }
     async adoptBackendNode(backendNodeId) {
-        const { object } = await this.#frame.client.send('DOM.resolveNode', {
-            backendNodeId,
-        });
-        return ElementHandle_js_1.BidiElementHandle.from({
-            handle: object.objectId,
-            type: 'node',
-        }, this);
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            const { object } = await this.#frame.client.send('DOM.resolveNode', {
+                backendNodeId,
+                executionContextId: await this.realm.resolveExecutionContextId(),
+            });
+            const handle = __addDisposableResource(env_1, ElementHandle_js_1.BidiElementHandle.from({
+                handle: object.objectId,
+                type: 'node',
+            }, this), false);
+            // We need the sharedId, so we perform the following to obtain it.
+            return await handle.evaluateHandle(element => {
+                return element;
+            });
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
+        }
     }
 }
 exports.BidiFrameRealm = BidiFrameRealm;

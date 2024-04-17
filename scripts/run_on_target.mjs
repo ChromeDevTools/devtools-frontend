@@ -25,12 +25,23 @@ delete argv['script'];
 const sourceRoot = path.dirname(path.dirname(argv['$0']));
 const cwd = path.join(sourceRoot, 'out', target);
 
-if (!fs.existsSync(cwd)) {
-  throw new Error(`Target directory ${cwd} does not exist`);
+if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory()) {
+  console.error(
+      `Target path ${cwd} does not exist or is not a directory. Please run 'gn gen out/${target}' first.`);
+  process.exit(1);
 }
-if (!fs.statSync(cwd).isDirectory()) {
-  throw new Error(`Target path ${cwd} is not a  directory`);
+const scriptPath = path.resolve(cwd, script)
+if (!fs.existsSync(scriptPath)) {
+  console.error(`Script path ${scriptPath} does not exist, trying ninja...`);
+  const {error, status} = childProcess.spawnSync('autoninja', {stdio: 'inherit', cwd});
+  if (error) {
+    throw error;
+  }
+  if (status) {
+    process.exit(status);
+  }
 }
 
 const {argv0} = process;
-childProcess.spawnSync(argv0, [path.resolve(cwd, script), ...unparse(argv)], {stdio: 'inherit'});
+const {status} = childProcess.spawnSync(argv0, [scriptPath, ...unparse(argv)], {stdio: 'inherit'});
+process.exit(status);

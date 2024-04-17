@@ -27,6 +27,20 @@ function* reporters() {
   }
 }
 
+const CustomChrome = function(this: unknown, _baseBrowserDecorator: unknown, _args: unknown, _config: unknown) {
+  require('karma-chrome-launcher')['launcher:Chrome'][1].apply(this, arguments);
+};
+
+CustomChrome.prototype = {
+  name: 'ChromeLauncher',
+
+  DEFAULT_CMD: {
+    [process.platform]: TestConfig.chromeBinary,
+  },
+  ENV_CMD: 'CHROME_BIN',
+};
+CustomChrome.$inject = ['baseBrowserDecorator', 'args', 'config'];
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
@@ -60,7 +74,7 @@ module.exports = function(config: any) {
     browsers: ['BrowserWithArgs'],
     customLaunchers: {
       'BrowserWithArgs': {
-        base: 'Chrome',
+        base: CustomChrome.prototype.name,
         flags: [
           '--remote-allow-origins=*',
           `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
@@ -84,7 +98,7 @@ module.exports = function(config: any) {
     },
 
     plugins: [
-      require('karma-chrome-launcher'),
+      {[`launcher:${CustomChrome.prototype.name}`]: ['type', CustomChrome]},
       require('karma-mocha'),
       require('karma-mocha-reporter'),
       require('karma-chai'),

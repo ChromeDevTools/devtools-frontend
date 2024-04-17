@@ -423,12 +423,20 @@
 }
 
 :root.baseline-default {
+  --sys-color-surface5: color-mix(in sRGB, #6991d6 14%, var(--ref-palette-neutral100));
   --sys-color-surface4: color-mix(in sRGB, #6991d6 12%, var(--ref-palette-neutral100));
+  --sys-color-surface3: color-mix(in sRGB, #6991d6 11%, var(--ref-palette-neutral100));
+  --sys-color-surface2: color-mix(in sRGB, #6991d6 8%, var(--ref-palette-neutral100));
+  --sys-color-surface1: color-mix(in sRGB, #6991d6 5%, var(--ref-palette-neutral100));
 }
 
 :root.baseline-grayscale {
   --sys-color-divider: var(--ref-palette-neutral90);
-  --app-color-toolbar-background: var(--ref-palette-neutral94);
+  --sys-color-surface5: color-mix(in sRGB, var(--ref-palette-neutral40) 14%, var(--ref-palette-neutral100));
+  --sys-color-surface4: color-mix(in sRGB, var(--ref-palette-neutral40) 12%, var(--ref-palette-neutral100));
+  --sys-color-surface3: color-mix(in sRGB, var(--ref-palette-neutral40) 11%, var(--ref-palette-neutral100));
+  --sys-color-surface2: color-mix(in sRGB, var(--ref-palette-neutral40) 8%, var(--ref-palette-neutral100));
+  --sys-color-surface1: color-mix(in sRGB, var(--ref-palette-neutral40) 5%, var(--ref-palette-neutral100));
 }
 
 :root.baseline-default,
@@ -436,9 +444,12 @@
   --sys-color-base: var(--ref-palette-neutral100);
 
   &.-theme-with-dark-background {
+    --sys-color-surface5: color-mix(in sRGB, #d1e1ff 14%, var(--ref-palette-neutral10));
     --sys-color-surface4: color-mix(in sRGB, #d1e1ff 12%, var(--ref-palette-neutral10));
+    --sys-color-surface3: color-mix(in sRGB, #d1e1ff 11%, var(--ref-palette-neutral10));
+    --sys-color-surface2: color-mix(in sRGB, #d1e1ff 8%, var(--ref-palette-neutral10));
+    --sys-color-surface1: color-mix(in sRGB, #d1e1ff 5%, var(--ref-palette-neutral10));
     --sys-color-divider: var(--ref-palette-neutral40);
-    --app-color-toolbar-background: var(--sys-color-base);
     --sys-color-base: var(--ref-palette-neutral25);
   }
 }
@@ -670,7 +681,7 @@
   /* States */
 
   --sys-color-state-hover-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral10) 6%, transparent);
-  --sys-color-state-hover-on-subtle: color-mix(in sRGB, var(--ref-plette-neutral99) 10%, transparent);
+  --sys-color-state-hover-on-subtle: color-mix(in sRGB, var(--ref-palette-neutral99) 10%, transparent);
   --sys-color-state-hover-dim-blend-protection: rgb(31 31 31 / 10%);
   --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 16%);
   --sys-color-state-ripple-neutral-on-prominent: color-mix(in sRGB, var(--ref-palette-neutral10) 12%, transparent);

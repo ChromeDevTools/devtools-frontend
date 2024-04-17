@@ -290,7 +290,7 @@ describe('The Network Request view', () => {
     assertMessage(messages[0], knownMessages[0]);
 
     // clear
-    await click('[title="Clear input"]', {
+    await click('[title="Clear"]', {
       root: messagesView,
     });
     await assertBaseState(messagesView);

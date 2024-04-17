@@ -53,7 +53,7 @@ export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
   await waitFor('.console-main-toolbar');
   const main = await $('.console-main-toolbar');
   await frontend.evaluate(n => {
-    const deleteButton = n.shadowRoot?.querySelector('.search-cancel-button') as HTMLElement;
+    const deleteButton = n.shadowRoot?.querySelector('.toolbar-input-clear-button') as HTMLElement;
     if (deleteButton) {
       deleteButton.click();
     }

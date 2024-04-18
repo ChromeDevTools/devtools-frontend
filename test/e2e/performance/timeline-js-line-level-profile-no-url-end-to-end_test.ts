@@ -9,8 +9,7 @@ import {navigateToPerformanceTab, startRecording, stopRecording} from '../helper
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Performance panel', () => {
-  // Test is failing on all platforms.
-  it.skip('[crbug.com/1428866] can collect a line-level CPU profile and show it in the text editor', async () => {
+  it('can collect a line-level CPU profile and show it in the text editor', async () => {
     const {target} = getBrowserAndPages();
     await navigateToPerformanceTab();
     await startRecording();
@@ -27,10 +26,11 @@ describe('The Performance panel', () => {
     await stopRecording();
     await openSourcesPanel();
     const elements = await waitForMany('.navigator-file-tree-item', 2);
-    for (const element of elements) {
-      const button = await element.$('.tree-element-title');
-      await button!.click();
-    }
-    await waitForMany('.cm-performanceGutter .cm-gutterElement', 2);
+    // The first one will be `data:text/html,<!DOCTYPE html>`
+    // And the second file is the code we evaluated before (Line 16), and it's the one we want to open.
+    const button = await elements[1].$('.tree-element-title');
+    // Add some offsets so we won't click on the edge of the element
+    await button?.click({offset: {x: 3, y: 3}});
+    await waitForMany('.cm-performanceGutter .cm-gutterElement', 3);
   });
 });

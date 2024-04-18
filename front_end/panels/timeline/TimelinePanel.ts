@@ -1058,6 +1058,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private async startRecording(): Promise<void> {
+    this.#saveAnnotationsForActiveTrace();
     console.assert(!this.statusPane, 'Status pane is already opened.');
     this.setState(State.StartPending);
     this.showRecordingStarted();
@@ -1269,8 +1270,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         entryToNodeMap: samplesAndRendererEventsEntryToNodeMap,
         wholeTraceBounds: traceBounds?.micro.entireTraceBounds,
       });
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SAVE_AND_LOAD_TRACE_WITH_ANNOTATIONS) &&
-          annotations) {
+      if (annotations) {
         AnnotationsManager.AnnotationsManager.AnnotationsManager.maybeInstance()?.applyAnnotations(annotations);
       }
 

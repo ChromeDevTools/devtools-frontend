@@ -220,7 +220,7 @@ describe('The Sources Tab', function() {
     assert.strictEqual(lines.length, 2);
   });
 
-  it('correctly highlights execution line and token in large pretty printed scripts', async () => {
+  it('shows execution position and inline variables in large pretty-printed minified code', async () => {
     const {target} = getBrowserAndPages();
     await openFileInSourcesPanel('minified-sourcecode-2.html');
 
@@ -228,13 +228,15 @@ describe('The Sources Tab', function() {
     const evalPromise = target.evaluate('handleClick();');
     await waitFor('[aria-label="minified-sourcecode-2.min.js"][aria-selected="true"]');
 
-    // At some point, both execution line and token highlights should appear.
-    const [executionLine, executionToken] = await Promise.all([
+    // At some point execution position highlights and variable decorations should appear.
+    const [executionLine, executionToken, variableValues] = await Promise.all([
       waitFor('.cm-executionLine').then(el => el.evaluate(n => n.textContent)),
       waitFor('.cm-executionToken').then(el => el.evaluate(n => n.textContent)),
+      waitFor('.cm-variableValues').then(el => el.evaluate(n => n.textContent)),
     ]);
     assert.strictEqual(executionLine, '    debugger ;');
     assert.strictEqual(executionToken, 'debugger');
+    assert.strictEqual(variableValues, 'y = 40999');
 
     await Promise.all([
       click(RESUME_BUTTON),

@@ -1044,6 +1044,11 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
+    while (CodeMirror.syntaxParserRunning(this.editor.editor)) {
+      await new Promise(resolve => window.requestIdleCallback(resolve));
+      CodeMirror.ensureSyntaxTree(this.editor.state, executionOffset, 16);
+    }
+
     const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset);
     if (variableNames.length === 0) {
       return null;
@@ -2078,11 +2083,7 @@ export function getVariableNamesByLine(
   const fromLine = editorState.doc.lineAt(fromPos);
   fromPos = Math.min(fromLine.to, fromPos);
   toPos = editorState.doc.lineAt(toPos).from;
-
-  const tree = CodeMirror.ensureSyntaxTree(editorState, toPos, 100);
-  if (!tree) {
-    return [];
-  }
+  const tree = CodeMirror.syntaxTree(editorState);
 
   // Sibling scope is a scope that does not contain the current position.
   // We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).

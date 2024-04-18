@@ -145,79 +145,80 @@ export class JavaScriptFormatter {
       return 'tn';
     }
     const token = (tokenOrComment as Acorn.Token);
-    if (node.type === 'ContinueStatement' || node.type === 'BreakStatement') {
+    const nodeType = node.type;
+    if (nodeType === 'ContinueStatement' || nodeType === 'BreakStatement') {
       return node.label && AT.keyword(token) ? 'ts' : 't';
     }
-    if (node.type === 'Identifier') {
+    if (nodeType === 'Identifier') {
       return 't';
     }
-    if (node.type === 'PrivateIdentifier') {
+    if (nodeType === 'PrivateIdentifier') {
       return 't';
     }
-    if (node.type === 'ReturnStatement') {
+    if (nodeType === 'ReturnStatement') {
       if (AT.punctuator(token, ';')) {
         return 't';
       }
       return node.argument ? 'ts' : 't';
     }
-    if (node.type === 'AwaitExpression') {
+    if (nodeType === 'AwaitExpression') {
       if (AT.punctuator(token, ';')) {
         return 't';
       }
       return node.argument ? 'ts' : 't';
     }
-    if (node.type === 'Property') {
+    if (nodeType === 'Property') {
       if (AT.punctuator(token, ':')) {
         return 'ts';
       }
       return 't';
     }
-    if (node.type === 'ArrayExpression') {
+    if (nodeType === 'ArrayExpression') {
       if (AT.punctuator(token, ',')) {
         return 'ts';
       }
       return 't';
     }
-    if (node.type === 'LabeledStatement') {
+    if (nodeType === 'LabeledStatement') {
       if (AT.punctuator(token, ':')) {
         return 'ts';
       }
     } else if (
-        node.type === 'LogicalExpression' || node.type === 'AssignmentExpression' || node.type === 'BinaryExpression') {
+        nodeType === 'LogicalExpression' || nodeType === 'AssignmentExpression' || nodeType === 'BinaryExpression') {
       if (AT.punctuator(token) && !AT.punctuator(token, '()')) {
         return 'sts';
       }
-    } else if (node.type === 'ConditionalExpression') {
+    } else if (nodeType === 'ConditionalExpression') {
       if (AT.punctuator(token, '?:')) {
         return 'sts';
       }
-    } else if (node.type === 'VariableDeclarator') {
+    } else if (nodeType === 'VariableDeclarator') {
       if (AT.punctuator(token, '=')) {
         return 'sts';
       }
-    } else if (node.type === 'ObjectPattern') {
+    } else if (nodeType === 'ObjectPattern') {
       if (node.parent && node.parent.type === 'VariableDeclarator' && AT.punctuator(token, '{')) {
         return 'st';
       }
       if (AT.punctuator(token, ',')) {
         return 'ts';
       }
-    } else if (node.type === 'FunctionDeclaration') {
+    } else if (nodeType === 'FunctionDeclaration') {
       if (AT.punctuator(token, ',)')) {
         return 'ts';
       }
-    } else if (node.type === 'FunctionExpression') {
+    } else if (nodeType === 'FunctionExpression') {
       if (AT.punctuator(token, ',)')) {
         return 'ts';
       }
       if (AT.keyword(token, 'function')) {
         return node.id ? 'ts' : 't';
       }
-    } else if (node.type === 'WithStatement') {
+    } else if (nodeType === 'WithStatement') {
       if (AT.punctuator(token, ')')) {
         return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
       }
-    } else if (node.type === 'SwitchStatement') {
+    } else if (nodeType === 'SwitchStatement') {
       if (AT.punctuator(token, '{')) {
         return 'tn>';
       }
@@ -227,7 +228,7 @@ export class JavaScriptFormatter {
       if (AT.punctuator(token, ')')) {
         return 'ts';
       }
-    } else if (node.type === 'SwitchCase') {
+    } else if (nodeType === 'SwitchCase') {
       if (AT.keyword(token, 'case')) {
         return 'n<ts';
       }
@@ -237,7 +238,7 @@ export class JavaScriptFormatter {
       if (AT.punctuator(token, ':')) {
         return 'tn>';
       }
-    } else if (node.type === 'VariableDeclaration') {
+    } else if (nodeType === 'VariableDeclaration') {
       if (AT.punctuator(token, ',')) {
         let allVariablesInitialized = true;
         const declarations = (node.declarations as Acorn.ESTree.Node[]);
@@ -248,25 +249,25 @@ export class JavaScriptFormatter {
         }
         return !this.#inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
-    } else if (node.type === 'PropertyDefinition') {
+    } else if (nodeType === 'PropertyDefinition') {
       if (AT.punctuator(token, '=')) {
         return 'sts';
       }
       if (AT.punctuator(token, ';')) {
         return 'tn';
       }
-    } else if (node.type === 'BlockStatement') {
+    } else if (nodeType === 'BlockStatement') {
       if (AT.punctuator(token, '{')) {
         return node.body.length ? 'tn>' : 't';
       }
       if (AT.punctuator(token, '}')) {
         return node.body.length ? 'n<t' : 't';
       }
-    } else if (node.type === 'CatchClause') {
+    } else if (nodeType === 'CatchClause') {
       if (AT.punctuator(token, ')')) {
         return 'ts';
       }
-    } else if (node.type === 'ObjectExpression') {
+    } else if (nodeType === 'ObjectExpression') {
       if (!node.properties.length) {
         return 't';
       }
@@ -279,7 +280,7 @@ export class JavaScriptFormatter {
       if (AT.punctuator(token, ',')) {
         return 'tn';
       }
-    } else if (node.type === 'IfStatement') {
+    } else if (nodeType === 'IfStatement') {
       if (AT.punctuator(token, ')')) {
         return node.consequent && node.consequent.type === 'BlockStatement' ? 'ts' : 'tn>';
       }
@@ -292,13 +293,13 @@ export class JavaScriptFormatter {
         }
         return preFormat + postFormat;
       }
-    } else if (node.type === 'CallExpression') {
+    } else if (nodeType === 'CallExpression') {
       if (AT.punctuator(token, ',')) {
         return 'ts';
       }
-    } else if (node.type === 'SequenceExpression' && AT.punctuator(token, ',')) {
+    } else if (nodeType === 'SequenceExpression' && AT.punctuator(token, ',')) {
       return node.parent && node.parent.type === 'SwitchCase' ? 'ts' : 'tn';
-    } else if (node.type === 'ForStatement' || node.type === 'ForOfStatement' || node.type === 'ForInStatement') {
+    } else if (nodeType === 'ForStatement' || nodeType === 'ForOfStatement' || nodeType === 'ForInStatement') {
       if (AT.punctuator(token, ';')) {
         return 'ts';
       }
@@ -309,11 +310,11 @@ export class JavaScriptFormatter {
       if (AT.punctuator(token, ')')) {
         return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
       }
-    } else if (node.type === 'WhileStatement') {
+    } else if (nodeType === 'WhileStatement') {
       if (AT.punctuator(token, ')')) {
         return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
       }
-    } else if (node.type === 'DoWhileStatement') {
+    } else if (nodeType === 'DoWhileStatement') {
       const blockBody = node.body && node.body.type === 'BlockStatement';
       if (AT.keyword(token, 'do')) {
         return blockBody ? 'ts' : 'tn>';
@@ -324,7 +325,7 @@ export class JavaScriptFormatter {
       if (AT.punctuator(token, ';')) {
         return 'tn';
       }
-    } else if (node.type === 'ClassBody') {
+    } else if (nodeType === 'ClassBody') {
       if (AT.punctuator(token, '{')) {
         return 'stn>';
       }
@@ -332,18 +333,18 @@ export class JavaScriptFormatter {
         return '<ntn';
       }
       return 't';
-    } else if (node.type === 'YieldExpression') {
+    } else if (nodeType === 'YieldExpression') {
       return 't';
-    } else if (node.type === 'Super') {
+    } else if (nodeType === 'Super') {
       return 't';
-    } else if (node.type === 'ImportExpression') {
+    } else if (nodeType === 'ImportExpression') {
       return 't';
-    } else if (node.type === 'ExportAllDeclaration') {
+    } else if (nodeType === 'ExportAllDeclaration') {
       if (AT.punctuator(token, '*')) {
         return 'sts';
       }
       return 't';
-    } else if (node.type === 'ExportNamedDeclaration' || node.type === 'ImportDeclaration') {
+    } else if (nodeType === 'ExportNamedDeclaration' || nodeType === 'ImportDeclaration') {
       if (AT.punctuator(token, '{')) {
         return 'st';
       }
@@ -362,19 +363,20 @@ export class JavaScriptFormatter {
   }
 
   #finishNode(node: Acorn.ESTree.Node): string {
-    if (node.type === 'WithStatement') {
+    const nodeType = node.type;
+    if (nodeType === 'WithStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
       }
-    } else if (node.type === 'VariableDeclaration') {
+    } else if (nodeType === 'VariableDeclaration') {
       if (!this.#inForLoopHeader(node)) {
         return 'n';
       }
-    } else if (node.type === 'ForStatement' || node.type === 'ForOfStatement' || node.type === 'ForInStatement') {
+    } else if (nodeType === 'ForStatement' || nodeType === 'ForOfStatement' || nodeType === 'ForInStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
       }
-    } else if (node.type === 'BlockStatement') {
+    } else if (nodeType === 'BlockStatement') {
       if (node.parent && node.parent.type === 'IfStatement') {
         const parentNode = (node.parent as Acorn.ESTree.IfStatement);
         if (parentNode.alternate && parentNode.consequent === node) {
@@ -411,11 +413,11 @@ export class JavaScriptFormatter {
         }
       }
       return 'n';
-    } else if (node.type === 'WhileStatement') {
+    } else if (nodeType === 'WhileStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
       }
-    } else if (node.type === 'IfStatement') {
+    } else if (nodeType === 'IfStatement') {
       if (node.alternate) {
         if (node.alternate.type !== 'BlockStatement' && node.alternate.type !== 'IfStatement') {
           return '<';
@@ -426,12 +428,12 @@ export class JavaScriptFormatter {
         }
       }
     } else if (
-        node.type === 'BreakStatement' || node.type === 'ContinueStatement' || node.type === 'ThrowStatement' ||
-        node.type === 'ReturnStatement' || node.type === 'ExpressionStatement') {
+        nodeType === 'BreakStatement' || nodeType === 'ContinueStatement' || nodeType === 'ThrowStatement' ||
+        nodeType === 'ReturnStatement' || nodeType === 'ExpressionStatement') {
       return 'n';
     } else if (
-        node.type === 'ImportDeclaration' || node.type === 'ExportAllDeclaration' ||
-        node.type === 'ExportDefaultDeclaration' || node.type === 'ExportNamedDeclaration') {
+        nodeType === 'ImportDeclaration' || nodeType === 'ExportAllDeclaration' ||
+        nodeType === 'ExportDefaultDeclaration' || nodeType === 'ExportNamedDeclaration') {
       return 'n';
     }
     return '';

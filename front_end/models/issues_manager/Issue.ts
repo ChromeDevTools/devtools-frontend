@@ -208,6 +208,10 @@ export abstract class Issue<IssueCode extends string = string> {
   setHidden(hidden: boolean): void {
     this.#hidden = hidden;
   }
+
+  maybeCreateConsoleMessage(): SDK.ConsoleModel.ConsoleMessage|undefined {
+    return;
+  }
 }
 
 export function toZeroBasedLocation(location: Protocol.Audits.SourceCodeLocation|undefined): {

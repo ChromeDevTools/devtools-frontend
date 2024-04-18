@@ -15,4 +15,5 @@ export enum FrontendMessageType {
 export enum FrontendMessageSource {
   CSS = 'css',
   ConsoleAPI = 'console-api',
+  IssuePanel = 'issue-panel',
 }

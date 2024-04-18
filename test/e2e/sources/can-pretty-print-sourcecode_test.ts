@@ -21,7 +21,9 @@ import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   isPrettyPrinted,
+  openFileInSourcesPanel,
   openSourceCodeEditorForFile,
+  RESUME_BUTTON,
   retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
   waitForHighlightedLine,
@@ -216,5 +218,27 @@ describe('The Sources Tab', function() {
     await openSourceCodeEditorForFile('minified-sourcecode-1.js', 'minified-sourcecode-1.html');
     const lines = await retrieveCodeMirrorEditorContent();
     assert.strictEqual(lines.length, 2);
+  });
+
+  it('correctly highlights execution line and token in large pretty printed scripts', async () => {
+    const {target} = getBrowserAndPages();
+    await openFileInSourcesPanel('minified-sourcecode-2.html');
+
+    // Emulate the button click and wait for the script to open in the Sources panel.
+    const evalPromise = target.evaluate('handleClick();');
+    await waitFor('[aria-label="minified-sourcecode-2.min.js"][aria-selected="true"]');
+
+    // At some point, both execution line and token highlights should appear.
+    const [executionLine, executionToken] = await Promise.all([
+      waitFor('.cm-executionLine').then(el => el.evaluate(n => n.textContent)),
+      waitFor('.cm-executionToken').then(el => el.evaluate(n => n.textContent)),
+    ]);
+    assert.strictEqual(executionLine, '    debugger ;');
+    assert.strictEqual(executionToken, 'debugger');
+
+    await Promise.all([
+      click(RESUME_BUTTON),
+      evalPromise,
+    ]);
   });
 });

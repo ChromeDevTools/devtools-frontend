@@ -56,6 +56,8 @@ copy_to_gen("sources") {
     "minified-errors.js",
     "minified-sourcecode-1.html",
     "minified-sourcecode-1.min.js",
+    "minified-sourcecode-2.html",
+    "minified-sourcecode-2.min.js",
     "minified-sourcecode.html",
     "minified-sourcecode.js",
     "multi-files-mycode.js",

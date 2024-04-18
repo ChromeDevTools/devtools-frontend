@@ -33,7 +33,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
 
@@ -209,23 +209,6 @@ export class TimelineModelImpl {
   static eventFrameId(event: TraceEngine.Legacy.Event): Protocol.Page.FrameId|null {
     const data = event.args['data'] || event.args['beginData'];
     return data && data['frame'] || null;
-  }
-
-  targetByEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): SDK.Target.Target|null {
-    let thread;
-    if (event instanceof TraceEngine.Legacy.Event) {
-      thread = event.thread;
-    } else {
-      const process = this.tracingModelInternal?.getProcessById(event.pid);
-      thread = process?.threadById(event.tid);
-    }
-    if (!thread) {
-      return null;
-    }
-    // FIXME: Consider returning null for loaded traces.
-    const workerId = this.workerIdByThread.get(thread);
-    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    return workerId ? SDK.TargetManager.TargetManager.instance().targetById(workerId) : primaryPageTarget;
   }
 
   isFreshRecording(): boolean {

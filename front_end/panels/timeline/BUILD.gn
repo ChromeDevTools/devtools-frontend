@@ -71,6 +71,7 @@ devtools_module("timeline") {
     "PerformanceModel.ts",
     "SaveFileFormatter.ts",
     "SourceMapsResolver.ts",
+    "TargetForEvent.ts",
     "ThreadAppender.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",

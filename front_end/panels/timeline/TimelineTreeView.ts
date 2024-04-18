@@ -17,6 +17,7 @@ import {ActiveFilters} from './ActiveFilters.js';
 import {getCategoryStyles, stringIsEventCategory} from './EventUICategory.js';
 import * as Extensions from './extensions/extensions.js';
 import {type PerformanceModel} from './PerformanceModel.js';
+import {targetForEvent} from './TargetForEvent.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {type TimelineSelection} from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -642,7 +643,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
 
       name.textContent = TimelineUIUtils.eventTitle(event);
-      const target = this.treeView.modelInternal?.timelineModel().targetByEvent(event) || null;
+      const traceData = this.treeView.traceParseData();
+      const target =
+          traceData && TraceEngine.Legacy.eventIsFromNewEngine(event) ? targetForEvent(traceData, event) : null;
       const linkifier = this.treeView.linkifier;
       const isFreshRecording = Boolean(this.treeView.modelInternal?.timelineModel().isFreshRecording());
       this.linkElement = TraceEngine.Legacy.eventIsFromNewEngine(event) ?

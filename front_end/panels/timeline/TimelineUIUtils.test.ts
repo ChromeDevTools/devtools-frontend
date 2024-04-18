@@ -422,8 +422,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       }
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
+          data.traceParsedData,
           cssRequest,
-          data.timelineModel,
           new Components.Linkifier.Linkifier(),
       );
       const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
@@ -979,8 +979,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       }
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
+          data.traceParsedData,
           cssRequest,
-          data.timelineModel,
           new Components.Linkifier.Linkifier(),
       );
 

@@ -64,6 +64,7 @@ import {
 import * as Extensions from './extensions/extensions.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
+import {targetForEvent} from './TargetForEvent.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 
@@ -1176,7 +1177,7 @@ export class TimelineUIUtils {
       // and then we can more easily change this method.
       traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null,
       ): Promise<DocumentFragment> {
-    const maybeTarget = model.targetByEvent(event);
+    const maybeTarget = maybeTargetForEvent(traceParseData, event);
     const {duration, selfTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     let relatedNodesMap: (Map<number, SDK.DOMModel.DOMNode|null>|null)|null = null;
     if (maybeTarget) {
@@ -1228,7 +1229,7 @@ export class TimelineUIUtils {
     // This message may vary per event.name;
     let relatedNodeLabel;
 
-    const contentHelper = new TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
+    const contentHelper = new TimelineDetailsContentHelper(maybeTargetForEvent(traceParseData, event), linkifier);
 
     const defaultColorForEvent = this.eventColor(event);
     const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
@@ -1311,7 +1312,7 @@ export class TimelineUIUtils {
       case recordTypes.JSSystemFrame:
       case recordTypes.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, model.targetByEvent(event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
         }
@@ -1563,7 +1564,7 @@ export class TimelineUIUtils {
 
       case recordTypes.EventTiming: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, model.targetByEvent(event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1635,7 +1636,7 @@ export class TimelineUIUtils {
 
       default: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, model.targetByEvent(event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1810,10 +1811,10 @@ export class TimelineUIUtils {
   }
 
   static async buildSyntheticNetworkRequestDetails(
+      traceParseData: TraceEngine.Handlers.Types.TraceParseData|null,
       event: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest,
-      model: TimelineModel.TimelineModel.TimelineModelImpl,
       linkifier: LegacyComponents.Linkifier.Linkifier): Promise<DocumentFragment> {
-    const maybeTarget = model.targetByEvent(event);
+    const maybeTarget = maybeTargetForEvent(traceParseData, event);
     const contentHelper = new TimelineDetailsContentHelper(maybeTarget, linkifier);
 
     const category = TimelineUIUtils.syntheticNetworkRequestCategory(event);
@@ -2672,4 +2673,25 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
       traceParsedData.Meta.navigationsByFrameId,
   );
   return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
+}
+
+// This function only exists to abstract dealing with two different event types
+// whilst we are in the middle of the migration. We are working on removing the
+// CompatibleTraceEvent type, at which point this method can be removed and we
+// can use the method in TargetForEvent.ts directly.
+function maybeTargetForEvent(
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null,
+    event: TraceEngine.Legacy.CompatibleTraceEvent,
+    ): SDK.Target.Target|null {
+  // Both these conditionals should not happen in theory; all events in the UI
+  // now are powered by the new engine. But until we fully remove the old model
+  // and its types, we need to satisfy TypeScript.
+  if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+    return null;
+  }
+  if (!traceParsedData) {
+    return null;
+  }
+
+  return targetForEvent(traceParsedData, event);
 }

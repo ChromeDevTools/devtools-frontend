@@ -271,7 +271,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     if (TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selectionObject)) {
       const event = selectionObject;
       const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
-          event, this.model.timelineModel(), this.detailsLinkifier);
+          this.#traceEngineData, event, this.detailsLinkifier);
       this.setContent(networkDetails);
     } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;

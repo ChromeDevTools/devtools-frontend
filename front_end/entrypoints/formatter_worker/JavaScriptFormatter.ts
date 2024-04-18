@@ -50,7 +50,7 @@ export class JavaScriptFormatter {
     this.#toOffset = toOffset;
     this.#content = text.substring(this.#fromOffset, this.#toOffset);
     this.#lastLineNumber = 0;
-    this.#tokenizer = new AcornTokenizer(this.#content);
+    const tokens: (Acorn.Token|Acorn.Comment)[] = [];
     const ast = Acorn.parse(this.#content, {
       ranges: false,
       preserveParens: true,
@@ -58,7 +58,10 @@ export class JavaScriptFormatter {
       allowImportExportEverywhere: true,
       ecmaVersion: ECMA_VERSION,
       allowHashBang: true,
+      onToken: tokens as Acorn.Token[],
+      onComment: tokens as Acorn.Comment[],
     });
+    this.#tokenizer = new AcornTokenizer(this.#content, tokens);
     const walker = new ESTreeWalker(this.#beforeVisit.bind(this), this.#afterVisit.bind(this));
     // @ts-ignore Technically, the acorn Node type is a subclass of Acorn.ESTree.Node.
     // However, the acorn package currently exports its type without specifying

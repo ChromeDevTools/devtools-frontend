@@ -46,7 +46,6 @@ export class TimelineModelImpl {
   private requestsFromBrowser!: Map<string, TraceEngine.Legacy.Event>;
   private mainFrame!: PageFrame;
   private minimumRecordTimeInternal: number;
-  private maximumRecordTimeInternal: number;
   private lastScheduleStyleRecalculation!: {
     [x: string]: TraceEngine.Types.TraceEvents.TraceEventData,
   };
@@ -68,7 +67,6 @@ export class TimelineModelImpl {
 
   constructor() {
     this.minimumRecordTimeInternal = 0;
-    this.maximumRecordTimeInternal = 0;
     this.reset();
     this.resetProcessingState();
 
@@ -241,7 +239,6 @@ export class TimelineModelImpl {
     this.tracingModelInternal = tracingModel;
 
     this.minimumRecordTimeInternal = tracingModel.minimumRecordTime();
-    this.maximumRecordTimeInternal = tracingModel.maximumRecordTime();
 
     this.processSyncBrowserEvents(tracingModel);
     if (this.browserFrameTracking) {
@@ -833,19 +830,10 @@ export class TimelineModelImpl {
     this.requestsFromBrowser = new Map();
 
     this.minimumRecordTimeInternal = 0;
-    this.maximumRecordTimeInternal = 0;
   }
 
   tracingModel(): TraceEngine.Legacy.TracingModel|null {
     return this.tracingModelInternal;
-  }
-
-  minimumRecordTime(): number {
-    return this.minimumRecordTimeInternal;
-  }
-
-  maximumRecordTime(): number {
-    return this.maximumRecordTimeInternal;
   }
 
   inspectedTargetEvents(): TraceEngine.Legacy.Event[] {

@@ -398,12 +398,15 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   private updateSelectedRangeStats(
       startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
-    if (!this.model || !this.#selectedEvents) {
+    if (!this.model || !this.#selectedEvents || !this.#traceEngineData) {
       return;
     }
+
+    const minBoundsMilli =
+        TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#traceEngineData.Meta.traceBounds).min;
     const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.#selectedEvents, startTime, endTime);
-    const startOffset = startTime - this.model.timelineModel().minimumRecordTime();
-    const endOffset = endTime - this.model.timelineModel().minimumRecordTime();
+    const startOffset = startTime - minBoundsMilli;
+    const endOffset = endTime - minBoundsMilli;
 
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(

@@ -228,17 +228,6 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = async function(...names)
   }
 };
 
-PerformanceTestRunner.walkTimelineEventTree = async function(callback) {
-  const view = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(
-      Timeline.TimelinePanel.TimelinePanel.instance().filters, null);
-  view.setModel(PerformanceTestRunner.performanceModel(), PerformanceTestRunner.mainTrack());
-  const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(
-      PerformanceTestRunner.timelineModel().minimumRecordTime(),
-      PerformanceTestRunner.timelineModel().maximumRecordTime());
-  view.updateContents(selection);
-  await PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, view.currentTree, 0);
-};
-
 PerformanceTestRunner.walkTimelineEventTreeUnderNode = async function(callback, root, level) {
   const event = root.event;
 

@@ -376,7 +376,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (this.traceEngineData.Meta.traceIsGeneric) {
         this.#processGenericTrace();
       } else {
-        this.processInspectorTrace();
+        this.#processInspectorTrace();
       }
     }
 
@@ -401,9 +401,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
   }
 
-  private processInspectorTrace(): void {
+  #processInspectorTrace(): void {
     if (!this.isCpuProfile) {
-      this.appendFrames();
+      // CPU Profiles do not have frames and screenshots.
+      this.#appendFramesAndScreenshotsTrack();
     }
 
     const weight = (track: {type?: string, forMainFrame?: boolean, appenderName?: TrackAppenderName}): number => {
@@ -549,19 +550,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.entryTypeByLevel[level];
   }
 
-  private appendFrames(): void {
-    if (!this.legacyPerformanceModel || !this.timelineDataInternal || !this.legacyTimelineModel ||
-        !this.traceEngineData) {
+  /**
+   * The frames and screenshots track is special cased because it is rendered
+   * differently to the rest of the tracks and not as a series of events. This
+   * is why it is not done via the appender system; we track frames &
+   * screenshots as a different EntryType to the TrackAppender entries,
+   * because then when it comes to drawing we can decorate them differently.
+   **/
+  #appendFramesAndScreenshotsTrack(): void {
+    if (!this.traceEngineData) {
       return;
     }
-
-    // TODO: Long term we want to move both the Frames track and the screenshots
-    // track into the TrackAppender system. However right now the frames track
-    // expects data in a different form to how the new engine parses frame
-    // information. Therefore we have migrated the screenshots to use the new
-    // data model in place without creating a new TrackAppender. When we can
-    // migrate the frames track to the new appender system, we can migrate the
-    // screnshots then as well.
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(this.traceEngineData);
     const hasScreenshots = filmStrip.frames.length > 0;
 
@@ -583,7 +582,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   #appendScreenshots(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
-    if (!this.timelineDataInternal || !this.legacyTimelineModel) {
+    if (!this.timelineDataInternal || !this.legacyTimelineModel || !this.traceEngineData) {
       return;
     }
     this.appendHeader('', this.screenshotsHeader, false /* selectable */);
@@ -602,9 +601,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       prevTimestamp = screenshotTimeInMilliSeconds;
     }
     if (filmStrip.frames.length && prevTimestamp !== undefined) {
+      const maxRecordTimeMillis =
+          TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.traceEngineData.Meta.traceBounds).max;
+
       // Set the total time of the final screenshot so it takes up the remainder of the trace.
-      (this.timelineDataInternal.entryTotalTimes as number[])
-          .push(this.legacyTimelineModel.maximumRecordTime() - prevTimestamp);
+      (this.timelineDataInternal.entryTotalTimes as number[]).push(maxRecordTimeMillis - prevTimestamp);
     }
     ++this.currentLevel;
   }

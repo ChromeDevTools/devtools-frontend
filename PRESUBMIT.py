@@ -36,6 +36,8 @@ import sys
 import six
 import time
 
+from pathlib import Path
+
 # Depot tools imports
 import rdb_wrapper
 
@@ -575,7 +577,7 @@ def _CommonChecks(canned_checks):
         _CheckDevToolsRunESLintTests, _CheckDevToolsRunBuildTests,
         _CheckDevToolsNonJSFileLicenseHeaders, _CheckFormat,
         _CheckESBuildVersion, _CheckEnumeratedHistograms,
-        _CheckObsoleteScreenshotGoldens
+        _CheckObsoleteScreenshotGoldens, _CheckNodeModules
     ]
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The
@@ -707,3 +709,20 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
 
     should_bail_out = len(files_to_lint) == 0 and not run_full_check
     return should_bail_out, files_to_lint
+
+
+def _CheckNodeModules(input_api, output_api):
+
+    files = ['.clang-format', 'OWNERS', 'README.chromium']
+
+    results = []
+    for file in files:
+        file_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                           'node_modules', file)
+        if not Path(file_path).is_file():
+            results.extend(
+                output_api.PresubmitError(
+                    "node_modules/%s is missing. Use npm run install-deps to re-create it."
+                    % file))
+
+    return []

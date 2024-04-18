@@ -119,6 +119,7 @@ def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kwarg
 def config_section(
         name,
         branch,
+        branch_number = None,
         view = None,
         name_suffix = None,
         builder_group = "client.devtools-frontend.integration",
@@ -131,6 +132,7 @@ def config_section(
     return struct(
         name = name,
         branch = branch,
+        branch_number = branch_number,
         repo = repo,
         view = view,
         name_suffix = name_suffix,
@@ -221,6 +223,9 @@ def generate_ci_configs(configurations, builders):
 
         for b in builders:
             if c.name in b.consoles:
+                properties = b.properties or {}
+                if c.branch_number:
+                    properties["branch_number"] = c.branch_number
                 ci_builder(
                     name = b.name + c.name_suffix,
                     recipe_name = b.recipe_name,

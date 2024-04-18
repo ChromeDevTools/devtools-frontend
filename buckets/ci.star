@@ -21,6 +21,7 @@ def branch_section(name):
     return config_section(
         name = name,
         branch = "refs/heads/chromium/%s" % versions[name],
+        branch_number = versions[name],
         notifiers = ["devtools notifier"],
         priority = 50,
     )

@@ -11,7 +11,6 @@ per-file WATCHLISTS=file://config/owner/INFRA_OWNERS
 per-file htaccess=file://config/owner/INFRA_OWNERS
 per-file package-lock.json=file://config/owner/INFRA_OWNERS
 per-file package.json=file://config/owner/INFRA_OWNERS
-per-file node_modules=file://config/owner/INFRA_OWNERS
 per-file tsconfig.json=file://config/owner/INFRA_OWNERS
 
 # git submodules

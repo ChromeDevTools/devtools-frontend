@@ -26,8 +26,8 @@ export { bracketMatching,
   codeFolding,
   bidiIsolates,
   ensureSyntaxTree, foldGutter, foldKeymap, HighlightStyle, indentOnInput, indentUnit,Language, LanguageSupport,
-  StreamLanguage, StreamParser, StringStream
-, syntaxHighlighting, syntaxTree, TagStyle} from '@codemirror/language';
+  StreamLanguage, StreamParser, StringStream,
+  syntaxHighlighting, syntaxTree, TagStyle, syntaxParserRunning, forceParsing} from '@codemirror/language';
 export { highlightSelectionMatches,selectNextOccurrence} from '@codemirror/search';
 export {
   Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,

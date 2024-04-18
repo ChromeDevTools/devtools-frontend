@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("text_editor") {
   sources = [
     "AutocompleteHistory.ts",
+    "ExecutionPositionHighlighter.ts",
     "TextEditor.ts",
     "TextEditorHistory.ts",
     "config.ts",
@@ -55,6 +56,7 @@ ts_library("unittests") {
 
   sources = [
     "AutocompleteHistory.test.ts",
+    "ExecutionPositionHighlighter.test.ts",
     "TextEditor.test.ts",
     "TextEditorHistory.test.ts",
     "javascript.test.ts",

@@ -480,41 +480,6 @@ describeWithEnvironment('Inline variable view scope value resolution', () => {
 });
 
 describe('DebuggerPlugin', () => {
-  describe('computeExecutionDecorations', () => {
-    const {computeExecutionDecorations} = Sources.DebuggerPlugin;
-    const extensions = [CodeMirror.javascript.javascript()];
-
-    it('correctly returns no decorations when line is outside of the document', () => {
-      const doc = 'console.log("Hello World!");';
-      const state = CodeMirror.EditorState.create({doc, extensions});
-      const decorations = computeExecutionDecorations(state, 1, 0);
-      assert.strictEqual(decorations.size, 0, 'Expected to have no decorations');
-    });
-
-    it('correctly returns line and token decorations', () => {
-      const doc = 'function foo() {\n  debugger;\n }';
-      const state = CodeMirror.EditorState.create({doc, extensions});
-      const decorations = computeExecutionDecorations(state, 1, 2);
-      assert.strictEqual(decorations.size, 2, 'Expected to have execution line and token decoration');
-    });
-
-    it('correctly returns line and token decorations even for long documents', () => {
-      const doc = 'console.log("Hello World!");\n'.repeat(10_000);
-      const state = CodeMirror.EditorState.create({doc, extensions});
-      const decorations = computeExecutionDecorations(state, 9_998, 0);
-      assert.strictEqual(decorations.size, 2, 'Expected to have execution line and token decoration');
-    });
-
-    it('correctly returns line decorations for documents that don\'t have syntax highlighting', () => {
-      const doc = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"></html>`;
-      const state = CodeMirror.EditorState.create({doc});
-      const decorations = computeExecutionDecorations(state, 1, 0);
-      assert.strictEqual(decorations.size, 1, 'Expected to have execution line decoration');
-    });
-  });
-
   describe('computePopoverHighlightRange', () => {
     const {computePopoverHighlightRange} = Sources.DebuggerPlugin;
 

@@ -1957,6 +1957,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/survey_link/SurveyLink.js",
   "front_end/ui/components/survey_link/surveyLink.css.js",
   "front_end/ui/components/text_editor/AutocompleteHistory.js",
+  "front_end/ui/components/text_editor/ExecutionPositionHighlighter.js",
   "front_end/ui/components/text_editor/TextEditor.js",
   "front_end/ui/components/text_editor/TextEditorHistory.js",
   "front_end/ui/components/text_editor/config.js",

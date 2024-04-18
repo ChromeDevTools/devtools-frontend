@@ -42,7 +42,7 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -321,7 +321,7 @@ export class DebuggerPlugin extends Plugin {
       }),
       infobarState,
       breakpointMarkers,
-      CodeMirror.Prec.highest(executionLine.field),
+      TextEditor.ExecutionPositionHighlighter.positionHighlighter('cm-executionLine', 'cm-executionToken'),
       CodeMirror.Prec.lowest(continueToMarkers.field),
       markIfContinueTo,
       valueDecorations.field,
@@ -1702,9 +1702,12 @@ export class DebuggerPlugin extends Plugin {
     if (executionLocation) {
       const editorLocation =
           this.transformer.uiLocationToEditorLocation(executionLocation.lineNumber, executionLocation.columnNumber);
-      const decorations =
-          computeExecutionDecorations(this.editor.state, editorLocation.lineNumber, editorLocation.columnNumber);
-      this.editor.dispatch({effects: executionLine.update.of(decorations)});
+      const editorPosition = TextEditor.Position.toOffset(this.editor.state.doc, editorLocation);
+      this.editor.dispatch({
+        effects: [
+          TextEditor.ExecutionPositionHighlighter.setHighlightedPosition.of(editorPosition),
+        ],
+      });
       void this.updateValueDecorations();
       if (this.controlDown) {
         void this.showContinueToLocations();
@@ -1712,9 +1715,9 @@ export class DebuggerPlugin extends Plugin {
     } else {
       this.editor.dispatch({
         effects: [
-          executionLine.update.of(CodeMirror.Decoration.none),
           continueToMarkers.update.of(CodeMirror.Decoration.none),
           valueDecorations.update.of(CodeMirror.Decoration.none),
+          TextEditor.ExecutionPositionHighlighter.clearHighlightedPosition.of(),
         ],
       });
     }
@@ -1986,36 +1989,6 @@ function defineStatefulDecoration(): {
     provide: field => CodeMirror.EditorView.decorations.from(field),
   });
   return {update, field};
-}
-
-// Execution line highlight
-
-const executionLineDeco = CodeMirror.Decoration.line({attributes: {class: 'cm-executionLine'}});
-const executionTokenDeco = CodeMirror.Decoration.mark({attributes: {class: 'cm-executionToken'}});
-const executionLine = defineStatefulDecoration();
-
-// Create decorations to indicate the current debugging position
-export function computeExecutionDecorations(
-    state: CodeMirror.EditorState, lineNumber: number, columnNumber: number): CodeMirror.DecorationSet {
-  const {doc} = state;
-  if (lineNumber >= doc.lines) {
-    return CodeMirror.Decoration.none;
-  }
-  const line = doc.line(lineNumber + 1);
-  const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [executionLineDeco.range(line.from)];
-  const position = Math.min(line.to, line.from + columnNumber);
-  const syntaxTree = CodeMirror.ensureSyntaxTree(state, line.to, /* timeout= */ 500);
-  if (syntaxTree !== null) {
-    let syntaxNode = syntaxTree.resolveInner(position, 1);
-    if (syntaxNode.to === syntaxNode.from - 1 && /[(.]/.test(doc.sliceString(syntaxNode.from, syntaxNode.to))) {
-      syntaxNode = syntaxNode.resolve(syntaxNode.to, 1);
-    }
-    const tokenEnd = Math.min(line.to, syntaxNode.to);
-    if (tokenEnd > position) {
-      decorations.push(executionTokenDeco.range(position, tokenEnd));
-    }
-  }
-  return CodeMirror.Decoration.set(decorations);
 }
 
 // Continue-to markers

@@ -1042,9 +1042,11 @@ export enum DevtoolsExperiments {
   'timeline-show-postmessage-events' = 86,
   'save-and-load-trace-with-annotations' = 87,
   'timeline-extensions' = 89,
+  'timeline-enhanced-traces' = 90,
+  'timeline-compiled-sources' = 91,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 90,
+  'MaxValue' = 92,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

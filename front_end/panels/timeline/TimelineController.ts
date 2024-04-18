@@ -128,6 +128,13 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     if (options.captureSelectorStats) {
       categoriesArray.push(disabledByDefault('blink.debug'));
     }
+    if (Root.Runtime.experiments.isEnabled('timeline-enhanced-traces')) {
+      categoriesArray.push(disabledByDefault('devtools.target-rundown'));
+      categoriesArray.push(disabledByDefault('devtools.v8-source-rundown'));
+    }
+    if (Root.Runtime.experiments.isEnabled('timeline-compiled-sources')) {
+      categoriesArray.push(disabledByDefault('devtools.v8-source-rundown-sources'));
+    }
 
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));

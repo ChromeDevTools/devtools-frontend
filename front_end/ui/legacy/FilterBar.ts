@@ -33,15 +33,13 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import filterStyles from './filter.css.legacy.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {type Suggestions} from './SuggestBox.js';
-import {Events, TextPrompt} from './TextPrompt.js';
-import {type ToolbarButton, ToolbarSettingToggle} from './Toolbar.js';
+import {Toolbar, type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
@@ -64,10 +62,6 @@ const UIStrings = {
    *@description Text for everything
    */
   allStrings: 'All',
-  /**
-   * @description Hover text for button to clear the filter that is applied
-   */
-  clearFilter: 'Clear input',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -209,38 +203,18 @@ export type FilterUIEventTypes = {
 
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filterElement: HTMLDivElement;
-  private readonly filterInputElement: HTMLElement;
-  private prompt: TextPrompt;
-  private readonly proxyElement: HTMLElement;
+  #filter: ToolbarFilter;
   private suggestionProvider: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestions>)|null;
   constructor() {
     super();
     this.filterElement = document.createElement('div');
-    this.filterElement.className = 'filter-text-filter';
-
-    const container = this.filterElement.createChild('div', 'filter-input-container');
-    this.filterInputElement = container.createChild('span', 'filter-input-field');
-
-    this.prompt = new TextPrompt();
-    this.prompt.initialize(this.completions.bind(this), ' ', true);
-    this.proxyElement = (this.prompt.attach(this.filterInputElement) as HTMLElement);
-    Tooltip.install(this.proxyElement, i18nString(UIStrings.egSmalldUrlacomb));
-    this.prompt.setPlaceholder(i18nString(UIStrings.filter));
-    this.prompt.addEventListener(Events.TextChanged, this.valueChanged.bind(this));
-
+    const filterToolbar = new Toolbar('text-filter', this.filterElement);
+    // Set the style directly on the element to overwrite parent css styling.
+    filterToolbar.element.style.borderBottom = 'none';
+    this.#filter = new ToolbarFilter(undefined, 1, 1, UIStrings.egSmalldUrlacomb, this.completions.bind(this));
+    filterToolbar.appendToolbarItem(this.#filter);
+    this.#filter.addEventListener(ToolbarInput.Event.TextChanged, () => this.valueChanged());
     this.suggestionProvider = null;
-
-    const clearButton = container.createChild('button', 'filter-input-clear-button');
-    Tooltip.install(clearButton, i18nString(UIStrings.clearFilter));
-    const clearIcon = new IconButton.Icon.Icon();
-    clearIcon.data = {color: 'var(--icon-default)', width: '16px', height: '16px', iconName: 'cross-circle-filled'};
-    clearButton.appendChild(clearIcon);
-    clearButton.addEventListener('click', () => {
-      this.clear();
-      this.focus();
-    });
-    clearButton.setAttribute('jslog', `${VisualLogging.action('clear-filter').track({click: true})}`);
-    this.updateEmptyStyles();
   }
 
   private completions(expression: string, prefix: string, force?: boolean): Promise<Suggestions> {
@@ -249,8 +223,9 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
     }
     return Promise.resolve([]);
   }
+
   isActive(): boolean {
-    return Boolean(this.prompt.text());
+    return Boolean(this.#filter.valueWithoutSuggestion());
   }
 
   element(): Element {
@@ -258,31 +233,26 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
   }
 
   value(): string {
-    return this.prompt.text();
+    return this.#filter.valueWithoutSuggestion();
   }
 
   setValue(value: string): void {
-    this.prompt.setText(value);
+    this.#filter.setValue(value);
     this.valueChanged();
   }
 
   focus(): void {
-    this.filterInputElement.focus();
+    this.#filter.focus();
   }
 
   setSuggestionProvider(
       suggestionProvider: (arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestions>): void {
-    this.prompt.clearAutocomplete();
+    this.#filter.clearAutocomplete();
     this.suggestionProvider = suggestionProvider;
   }
 
   private valueChanged(): void {
     this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
-    this.updateEmptyStyles();
-  }
-
-  private updateEmptyStyles(): void {
-    this.filterElement.classList.toggle('filter-text-empty', !this.prompt.text());
   }
 
   clear(): void {

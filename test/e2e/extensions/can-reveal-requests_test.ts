@@ -4,10 +4,9 @@
 
 import {assert} from 'chai';
 
-import {waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
-import {waitForNetworkTab} from '../helpers/network-helpers.js';
+import {getTextFilterContent, waitForNetworkTab} from '../helpers/network-helpers.js';
 
 describe('The Extension API', () => {
   it('can reveal network the network panel', async () => {
@@ -25,7 +24,7 @@ describe('The Extension API', () => {
 
     await waitForNetworkTab();
 
-    const filter = await waitFor<HTMLElement>('.filter-text-filter');
-    assert.strictEqual('foobar ', await filter.evaluate(f => f.innerText));
+    const textFilterContent = await getTextFilterContent();
+    assert.strictEqual('foobar ', textFilterContent);
   });
 });

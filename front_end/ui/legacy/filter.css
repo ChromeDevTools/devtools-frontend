@@ -37,14 +37,8 @@
   color: var(--sys-color-on-surface-subtle);
 }
 
-.filter-text-filter {
-  display: inline-flex;
-  margin-left: 1px;
-  margin-right: 2px;
-  min-width: 40px;
-  max-width: 200px;
-  height: 24px;
-  align-items: center;
+.text-filter {
+  width: 200px;
 }
 
 .filter-bitset-filter {
@@ -162,60 +156,6 @@
   color: var(--sys-color-on-surface-subtle);
 }
 
-.filter-input-field {
-  padding-left: 3px;
-  width: 163px;
-  height: 18px;
-  line-height: 20px;
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  cursor: auto;
-}
-
-.filter-input-container {
-  margin: 0 3px;
-  display: flex;
-  background: var(--sys-color-cdt-base-container);
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
-  width: 163px;
-
-  &:focus-within {
-    border-color: var(--sys-color-state-focus-ring);
-  }
-
-  &:hover:not(:focus-within) {
-    background: var(--sys-color-state-hover-on-subtle);
-  }
-}
-
-.filter-text-filter:not(.filter-text-empty) .filter-input-container {
-  border-color: var(--sys-color-state-focus-ring);
-}
-
-.filter-input-clear-button {
-  opacity: 70%;
-  height: 16px;
-  margin: 0;
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: 1px 2px;
-
-  devtools-icon {
-    display: block;
-  }
-
-  &:hover {
-    opacity: 99%;
-  }
-}
-
-.filter-text-empty .filter-input-clear-button {
-  display: none;
-}
-
 button.toolbar-item:focus-visible {
   background: var(--sys-color-state-hover-on-subtle);
   border-radius: 2px;
@@ -228,18 +168,5 @@ button.toolbar-item:focus-visible {
     forced-color-adjust: none;
     background: Highlight;
     color: HighlightText;
-  }
-
-  .filter-input-container {
-    forced-color-adjust: none;
-    background: ButtonFace;
-    box-shadow: var(--legacy-focus-ring-inactive-shadow);
-    color: fieldtext;
-  }
-
-  .filter-input-container:hover,
-  .filter-input-container:focus-within,
-  .filter-text-filter:not(.filter-text-empty) .filter-input-container {
-    box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 }

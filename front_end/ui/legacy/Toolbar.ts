@@ -750,6 +750,15 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
   valueWithoutSuggestion(): string {
     return this.prompt.text();
   }
+
+  clearAutocomplete(): void {
+    this.prompt.clearAutocomplete();
+  }
+
+  focus(): void {
+    this.prompt.focus();
+  }
+
   private onKeydownCallback(event: KeyboardEvent): void {
     if (event.key === 'Enter' && this.prompt.text()) {
       this.dispatchEventToListeners(ToolbarInput.Event.EnterPressed, this.prompt.text());

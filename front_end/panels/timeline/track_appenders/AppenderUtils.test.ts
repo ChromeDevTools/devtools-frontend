@@ -49,7 +49,7 @@ describeWithEnvironment('AppenderUtils', () => {
     it('builds a track header correctly', () => {
       const builtHeader = Timeline.AppenderUtils.buildTrackHeader(
           /* startLevel= */ 0, 'Header Name', Timeline.AppenderUtils.buildGroupStyle(), /* selectable= */ true,
-          /* expanded= */ true, /* track= */ null, /* showStackContextMenu= */ true);
+          /* expanded= */ true, /* showStackContextMenu= */ true);
       assert.deepEqual(builtHeader, trackHeader);
     });
   });

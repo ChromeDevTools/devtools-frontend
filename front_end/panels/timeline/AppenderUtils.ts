@@ -5,7 +5,6 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 const UIStrings = {
   /**
@@ -48,15 +47,13 @@ export function buildGroupStyle(extra?: Object): PerfUI.FlameChart.GroupStyle {
  * @param selectable if the track is selectable.
  * @param expanded if the track is expanded.
  * @param track this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
+ * @param showStackContextMenu whether menu with options to merge/collapse entries in track is shown.
  * @returns the group that built from the give data
  */
 export function buildTrackHeader(
     startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean,
-    track?: TimelineModel.TimelineModel.Track|null, showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
+    showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
   const group = ({startLevel, name, style, selectable, expanded, showStackContextMenu} as PerfUI.FlameChart.Group);
-  if (selectable && track) {
-    group.track = track;
-  }
   return group;
 }
 

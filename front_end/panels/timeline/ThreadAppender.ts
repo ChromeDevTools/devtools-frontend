@@ -280,7 +280,7 @@ export class ThreadAppender implements TrackAppender {
       style.nestingLevel = this.#headerNestingLevel;
     }
     const group = buildTrackHeader(
-        currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded, /* track= */ null,
+        currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded,
         /* showStackContextMenu= */ true);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }

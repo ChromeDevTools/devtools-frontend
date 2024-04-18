@@ -42,19 +42,6 @@ def exec_extension():
     return ".exe" if is_windows() else ""
 
 
-def get_gomacc(OPTIONS):
-    if OPTIONS.no_goma:
-        return None
-    if OPTIONS.goma:
-        return OPTIONS.goma
-    else:
-        goma_ctl = shutil.which('goma_ctl')
-        if goma_ctl:
-            depot_tools_dir = os.path.dirname(goma_ctl)
-            gomacc = os.path.join(depot_tools_dir, '.cipd_bin', 'gomacc')
-            return gomacc
-    return None
-
 
 def call(cmd, verbose=False, **kwargs):
     if verbose:
@@ -89,10 +76,6 @@ def stage1(sysroot_dir, source_dir, OPTIONS):
         cmake_args.append('-DCMAKE_C_COMPILER={}'.format(OPTIONS.cc))
     if OPTIONS.cxx:
         cmake_args.append('-DCMAKE_CXX_COMPILER={}'.format(OPTIONS.cxx))
-    gomacc = get_gomacc(OPTIONS)
-    if gomacc:
-        cmake_args.extend(('-DCMAKE_CXX_COMPILER_LAUNCHER={}'.format(gomacc),
-                           '-DCMAKE_C_COMPILER_LAUNCHER={}'.format(gomacc)))
 
     maybe_cmake(binary_dir, cmake_args, OPTIONS.verbose)
 
@@ -200,16 +183,8 @@ def stage2(source_dir, stage1_dir, OPTIONS):
 
     maybe_cmake(binary_dir, cmake_args, OPTIONS.verbose)
 
-    gomacc = get_gomacc(OPTIONS)
     num_cores = os.cpu_count()
     env = os.environ.copy()
-    if gomacc:
-        env['EM_COMPILER_WRAPPER'] = gomacc
-        # autoninja does not recognize the environment variable, so set the
-        # jobs manually
-        num_cores *= int(os.environ.get('NINJA_CORE_MULTIPLIER', '40'))
-    else:
-        num_cores += 2
 
     if not OPTIONS.no_check:
         call(['ninja', '-j%d' % num_cores, 'all', 'check-extension'],
@@ -267,9 +242,6 @@ def script_main(args):
     parser.add_argument('-cmake',
                         default=shutil.which('cmake', path=cmake_dir),
                         help='Path to the cmake configure tool.')
-    parser.add_argument('-goma',
-                        default=shutil.which('gomacc'),
-                        help='Path to the goma compiler launcher (gomacc).')
     parser.add_argument('-cc',
                         default=shutil.which('clang', path=clang_dir),
                         help='The C compiler.')
@@ -279,7 +251,6 @@ def script_main(args):
     parser.add_argument('-extension-source',
                         default=source_dir,
                         help='Path to alternate repo for source.')
-    parser.add_argument('-check', action='store_true')  # TODO(pfaffe) remove
     parser.add_argument('-verbose', action='store_true')
     parser.add_argument('-stage1', help='Path to a pre-built stage 1')
     parser.add_argument('-static',
@@ -291,10 +262,6 @@ def script_main(args):
                         default=True,
                         dest='static',
                         help='Link the first stage dynamically.')
-    parser.add_argument('-sysroot', default='')  # TODO(pfaffe) remove
-    parser.add_argument('-no-goma',
-                        action='store_true',
-                        help='Build without goma.')
     parser.add_argument('-no-sysroot',
                         action='store_true',
                         help='Disable sysroot.')
@@ -351,11 +318,6 @@ def script_main(args):
         if OPTIONS.no_sysroot:
             sys.stderr.write('-infra overrides -no-sysroot')
         OPTIONS.no_sysroot = False
-
-    if OPTIONS.sysroot:
-        sys.stderr.write('The -sysroot option is deprecated and has no effect')
-    if OPTIONS.check:
-        sys.stderr.write('The -check option is deprecated and has no effect')
 
     if OPTIONS.stage1:
         stage1_dir = OPTIONS.stage1

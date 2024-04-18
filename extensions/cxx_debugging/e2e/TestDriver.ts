@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 import {type ElementHandle, type JSHandle} from 'puppeteer-core';
-
+import {TestConfig} from 'test/conductor/test_config.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
@@ -37,9 +37,9 @@ import {
 import {describe, it} from 'test/shared/mocha-extensions.js';
 
 import {
+  type Action,
   loadTests,
   openTestSuiteResourceInSourcesPanel,
-  type Action,
 } from './cxx-debugging-extension-helpers.js';
 
 const STEP_OVER_BUTTON = '[aria-label="Step over next function call"]';
@@ -161,7 +161,7 @@ describe('CXX Debugging Extension Test Suite', function() {
         }
       } catch (e) {
         console.error(e.toString());
-        if (process.env['DEBUG_TEST']) {
+        if (TestConfig.debug) {
           await timeout(100000);
         }
         throw e;

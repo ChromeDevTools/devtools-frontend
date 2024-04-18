@@ -44,6 +44,7 @@ describeWithMockConnection('AppManifestView', () => {
       const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
       fetchAppManifest.onCall(0).resolves({url: URL, data: null, errors: []});
       fetchAppManifest.onCall(1).resolves({url: URL, data: '{}', errors: []});
+      fetchAppManifest.onCall(2).resolves({url: URL, data: '{"short_name": "example.com"}', errors: []});
       sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
       sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
 
@@ -51,6 +52,13 @@ describeWithMockConnection('AppManifestView', () => {
       view.markAsRoot();
       view.show(document.body);
 
+      await new Promise(resolve => {
+        view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
+      });
+      assert.isTrue(emptyView.isShowing());
+      assert.isFalse(reportView.isShowing());
+
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
       await new Promise(resolve => {
         view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
       });

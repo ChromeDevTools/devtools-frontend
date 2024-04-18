@@ -648,7 +648,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       appIdResponse: Protocol.Page.GetAppIdResponse): Promise<void> {
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
-    if (!data && !errors.length) {
+    if ((!data || data === '{}') && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
       this.dispatchEventToListeners(Events.ManifestDetected, false);

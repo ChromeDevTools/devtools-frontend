@@ -37,15 +37,6 @@ generate_ci_configs(
             priority = DEFAULT_PRIORITY,
         ),
         config_section(
-            name = "chromium",
-            repo = "https://chromium.googlesource.com/chromium/src",
-            branch = "refs/heads/main",
-            name_suffix = " (chromium)",
-            builder_group = "chromium.devtools-frontend",
-            notifiers = ["devtools tree closer"],
-            priority = DEFAULT_PRIORITY,
-        ),
-        config_section(
             name = "shuffled",
             branch = "refs/heads/main",
             view = "Shuffled",
@@ -60,7 +51,7 @@ generate_ci_configs(
         builder_descriptor(
             name = "DevTools Linux",
             recipe_name = "chromium_integration",
-            consoles = ["ci", "chromium"],
+            consoles = ["ci"],
             execution_timeout = 3 * time.hour,
         ),
         builder_descriptor(

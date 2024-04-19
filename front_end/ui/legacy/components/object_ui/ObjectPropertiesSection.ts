@@ -1124,7 +1124,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         event.consume();
         const invokeGetter = `
           function invokeGetter(getter) {
-            return Reflect.apply(getter, this, []);
+            return Function.prototype.apply.call(getter, this, []);
           }`;
         // @ts-ignore No way to teach TypeScript to preserve the Function-ness of `getter`.
         // Also passing a string instead of a Function to avoid coverage implementation messing with it.

@@ -198,7 +198,7 @@ export class HeaderSectionRow extends HTMLElement {
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
-              @paste=${this.#onHeaderNameEdit}
+              @paste=${this.#onHeaderNamePaste}
               .data=${{value: this.#header.name} as EditableSpanData}
             ></${EditableSpan.litTagName}>` :
             this.#header.name}:
@@ -397,6 +397,9 @@ export class HeaderSectionRow extends HTMLElement {
     // Clear selection (needed when pressing 'enter' in editable span).
     const selection = window.getSelection();
     selection?.removeAllRanges();
+
+    // Reset pasted header name
+    this.#header.originalName = '';
   }
 
   #onHeaderNameFocusOut(event: Event): void {
@@ -441,6 +444,15 @@ export class HeaderSectionRow extends HTMLElement {
       } else if (target.matches('.header-value devtools-editable-span')) {
         target.value = this.#header?.value || '';
         this.#onHeaderValueEdit(event);
+
+        if (this.#header?.originalName) {
+          const headerNameElement = this.#shadow.querySelector('.header-name devtools-editable-span') as EditableSpan;
+          headerNameElement.value = this.#header.originalName;
+          this.#header.originalName = '';
+          headerNameElement.dispatchEvent(new Event('input'));
+          headerNameElement.focus();
+          return;
+        }
       }
       target.blur();
     }
@@ -465,6 +477,40 @@ export class HeaderSectionRow extends HTMLElement {
         this.#header.highlight = false;
       }
       void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    }
+  }
+
+  #onHeaderNamePaste(event: ClipboardEvent): void {
+    if (!event.clipboardData) {
+      return;
+    }
+
+    const nameEl = event.target as EditableSpan;
+    const clipboardText = event.clipboardData.getData('text/plain') || '';
+    const separatorPosition = clipboardText.indexOf(':');
+
+    if (separatorPosition < 1) {
+      // Not processing further either case 'abc' or ':abc'
+      nameEl.value = clipboardText;
+      nameEl.dispatchEvent(new Event('input', {bubbles: true}));
+      return;
+    }
+
+    if (this.#header) {
+      this.#header.originalName = this.#header.name;
+    }
+
+    const headerValue = clipboardText.substring(separatorPosition + 1, clipboardText.length).trim();
+    const headerName = clipboardText.substring(0, separatorPosition);
+
+    nameEl.value = headerName;
+    nameEl.dispatchEvent(new Event('input'));
+
+    const valueEL = this.#shadow.querySelector<HTMLElement>('.header-value devtools-editable-span');
+    if (valueEL) {
+      valueEL.focus();
+      (valueEL as EditableSpan).value = headerValue;
+      valueEL.dispatchEvent(new Event('input'));
     }
   }
 }
@@ -508,6 +554,7 @@ export interface HeaderDetailsDescriptor {
 export interface HeaderEditorDescriptor {
   name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
+  originalName?: string|null;
   originalValue?: string|null;
   isOverride?: boolean;
   valueEditable?: boolean;

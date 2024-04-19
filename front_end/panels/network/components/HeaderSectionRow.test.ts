@@ -17,6 +17,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as NetworkComponents from './components.js';
+import {type EditableSpan} from './EditableSpan.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -458,6 +459,145 @@ describeWithEnvironment('HeaderSectionRow', () => {
     await coordinator.done();
     assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
+  });
+
+  it('split header name and value on pasted content', async () => {
+    const originalHeaderName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const originalHeaderValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: originalHeaderName,
+      value: originalHeaderValue,
+      nameEditable: true,
+      valueEditable: true,
+    };
+    const editedHeaderName = 'permissions-Policy: unload=(https://xyz.com)';
+
+    const {component, nameEditable, valueEditable} = await renderHeaderSectionRow(headerData);
+    assert.isNotNull(component.shadowRoot);
+    assert.instanceOf(nameEditable, HTMLElement);
+    assert.instanceOf(valueEditable, HTMLElement);
+
+    let headerValueFromEvent = '';
+    let headerNameFromEvent = '';
+    let headerEditedEventCount = 0;
+
+    component.addEventListener('headeredited', event => {
+      headerValueFromEvent = event.headerValue;
+      headerNameFromEvent = event.headerName;
+      headerEditedEventCount++;
+    });
+
+    const dt = new DataTransfer();
+    dt.setData('text/plain', editedHeaderName);
+
+    // update name on blur
+    nameEditable.focus();
+    dispatchPasteEvent(nameEditable, {clipboardData: dt, bubbles: true, composed: true});
+    nameEditable.blur();
+
+    await coordinator.done();
+    assert.strictEqual(headerEditedEventCount, 1);
+    assert.strictEqual(headerNameFromEvent, 'permissions-policy');
+    assert.strictEqual(headerValueFromEvent, 'someHeaderValue');
+
+    // update value on blur
+    valueEditable.blur();
+    await coordinator.done();
+    assert.strictEqual(headerEditedEventCount, 2);
+    assert.strictEqual(headerNameFromEvent, 'permissions-policy');
+    assert.strictEqual(headerValueFromEvent, 'unload=(https://xyz.com)');
+
+    // final value on UI
+    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
+    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+
+    assert.strictEqual(nameEl.value, 'Permissions-Policy');
+    assert.strictEqual(valueEl.value, 'unload=(https://xyz.com)');
+  });
+
+  it('set and revert pasted header name on escape', async () => {
+    const originalHeaderName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const originalHeaderValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: originalHeaderName,
+      value: originalHeaderValue,
+      nameEditable: true,
+      valueEditable: true,
+    };
+    const editedHeaderName = ':abc';
+
+    const {component, nameEditable, valueEditable} = await renderHeaderSectionRow(headerData);
+    assert.isNotNull(component.shadowRoot);
+    assert.instanceOf(nameEditable, HTMLElement);
+    assert.instanceOf(valueEditable, HTMLElement);
+
+    let headerEditedEventCount = 0;
+
+    component.addEventListener('headeredited', () => {
+      headerEditedEventCount++;
+    });
+
+    const dt = new DataTransfer();
+    dt.setData('text/plain', editedHeaderName);
+
+    nameEditable.focus();
+    dispatchPasteEvent(nameEditable, {clipboardData: dt, bubbles: true, composed: true});
+
+    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
+    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+
+    await coordinator.done();
+    assert.strictEqual(nameEl.value, ':Abc');
+    assert.strictEqual(valueEl.value, originalHeaderValue);
+
+    dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
+
+    await coordinator.done();
+    assert.strictEqual(headerEditedEventCount, 0);
+    assert.strictEqual(nameEl.value, 'Some-Header-Name');
+  });
+
+  it('revert pasted header name and value on escape', async () => {
+    const originalHeaderName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const originalHeaderValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: originalHeaderName,
+      value: originalHeaderValue,
+      nameEditable: true,
+      valueEditable: true,
+    };
+    const editedHeaderName = 'permissions-Policy: unload=(https://xyz.com)';
+
+    const {component, nameEditable, valueEditable} = await renderHeaderSectionRow(headerData);
+    assert.isNotNull(component.shadowRoot);
+    assert.instanceOf(nameEditable, HTMLElement);
+    assert.instanceOf(valueEditable, HTMLElement);
+
+    let headerEditedEventCount = 0;
+
+    component.addEventListener('headeredited', () => {
+      headerEditedEventCount++;
+    });
+
+    const dt = new DataTransfer();
+    dt.setData('text/plain', editedHeaderName);
+
+    nameEditable.focus();
+    dispatchPasteEvent(nameEditable, {clipboardData: dt, bubbles: true, composed: true});
+
+    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
+    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+
+    await coordinator.done();
+    assert.strictEqual(nameEl.value, 'Permissions-Policy');
+    assert.strictEqual(valueEl.value, 'unload=(https://xyz.com)');
+
+    dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
+
+    await coordinator.done();
+    assert.strictEqual(headerEditedEventCount, 0);
+    assert.strictEqual(nameEl.value, 'Some-Header-Name');
+    assert.strictEqual(valueEl.value, 'someHeaderValue');
   });
 
   it('recoginzes only alphanumeric characters, dashes, and underscores as valid in header names', () => {

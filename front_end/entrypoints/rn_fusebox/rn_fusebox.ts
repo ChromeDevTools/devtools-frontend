@@ -30,6 +30,7 @@ import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 RNExperiments.RNExperimentsImpl.setIsReactNativeEntryPoint(true);
 RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
+  Root.Runtime.ExperimentName.ENABLE_REACT_DEVTOOLS_PANEL,
 ]);
 
 Host.RNPerfMetrics.registerPerfMetricsGlobalPostMessageHandler();

@@ -1783,6 +1783,11 @@ export const NativeFunctions = [
     receivers: ["DOMMatrixReadOnly"]
   },
   {
+    name: "translate",
+    signatures: [["input"]],
+    receivers: ["LanguageTranslator"]
+  },
+  {
     name: "drawFocusIfNeeded",
     signatures: [["element"],["path","element"]]
   },
@@ -7924,6 +7929,14 @@ export const NativeFunctions = [
   {
     name: "TimestampTrigger",
     signatures: [["timestamp"]]
+  },
+  {
+    name: "canTranslate",
+    signatures: [["options"]]
+  },
+  {
+    name: "createTranslator",
+    signatures: [["options"]]
   },
   {
     name: "AbortPaymentEvent",

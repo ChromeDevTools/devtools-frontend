@@ -24,6 +24,8 @@ declare namespace ProtocolProxyApi {
 
     Audits: AuditsApi;
 
+    Extensions: ExtensionsApi;
+
     Autofill: AutofillApi;
 
     BackgroundService: BackgroundServiceApi;
@@ -126,6 +128,8 @@ declare namespace ProtocolProxyApi {
     Animation: AnimationDispatcher;
 
     Audits: AuditsDispatcher;
+
+    Extensions: ExtensionsDispatcher;
 
     Autofill: AutofillDispatcher;
 
@@ -397,6 +401,18 @@ declare namespace ProtocolProxyApi {
   export interface AuditsDispatcher {
     issueAdded(params: Protocol.Audits.IssueAddedEvent): void;
 
+  }
+
+  export interface ExtensionsApi {
+    /**
+     * Installs an unpacked extension from the filesystem similar to
+     * --load-extension CLI flags. Returns extension ID once the extension
+     * has been installed.
+     */
+    invoke_loadUnpacked(params: Protocol.Extensions.LoadUnpackedRequest): Promise<Protocol.Extensions.LoadUnpackedResponse>;
+
+  }
+  export interface ExtensionsDispatcher {
   }
 
   export interface AutofillApi {

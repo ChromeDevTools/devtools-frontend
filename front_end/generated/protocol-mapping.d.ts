@@ -944,6 +944,15 @@ export namespace ProtocolMapping {
       returnType: Protocol.Audits.CheckFormsIssuesResponse;
     };
     /**
+     * Installs an unpacked extension from the filesystem similar to
+     * --load-extension CLI flags. Returns extension ID once the extension
+     * has been installed.
+     */
+    'Extensions.loadUnpacked': {
+      paramsType: [Protocol.Extensions.LoadUnpackedRequest];
+      returnType: Protocol.Extensions.LoadUnpackedResponse;
+    };
+    /**
      * Trigger autofill on a form identified by the fieldId.
      * If the field and related form cannot be autofilled, returns an error.
      */

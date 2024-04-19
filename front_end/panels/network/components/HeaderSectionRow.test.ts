@@ -147,7 +147,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     assert.strictEqual(
         getCleanTextContentFromElements(component.shadowRoot, '.header-value code')[0],
-        'message ClientVariations {// Active client experiment variation IDs.repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
+        'message ClientVariations {// Active Google-visible variation IDs on this client. These are reported for analysis, but do not directly affect any server-side behavior.repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
     );
   });
 

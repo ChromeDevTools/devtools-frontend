@@ -2108,6 +2108,31 @@
             ]
         },
         {
+            "domain": "Extensions",
+            "description": "Defines commands and events for browser extensions. Available if the client\nis connected using the --remote-debugging-pipe flag and\nthe --enable-unsafe-extension-debugging flag is set.",
+            "experimental": true,
+            "commands": [
+                {
+                    "name": "loadUnpacked",
+                    "description": "Installs an unpacked extension from the filesystem similar to\n--load-extension CLI flags. Returns extension ID once the extension\nhas been installed.",
+                    "parameters": [
+                        {
+                            "name": "path",
+                            "description": "Absolute file path.",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "id",
+                            "description": "Extension id.",
+                            "type": "string"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Autofill",
             "description": "Defines commands and events for Autofill.",
             "experimental": true,

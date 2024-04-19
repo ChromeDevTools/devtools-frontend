@@ -4,8 +4,6 @@ Interaction tests are used to test individual pieces of DevTools in isolation - 
 
 Interaction tests are run against examples on the [Components Server](../../scripts/component_server/README.md), so your first step to writing an Interaction test is to create the required examples you want to test against.
 
-You can run the interaction tests with `npm run auto-interactionstest`. This will automatically run the components server and then the tests.
-
 When writing an interactions test, you should use the `loadComponentDocExample()` helper to instruct the test to navigate to a particular example within the component server. Any pages that you load must also be passed into the `preloadForCodeCoverage` function, which enables the coverage instrumentation.
 
 ```ts
@@ -39,10 +37,10 @@ We store and assert golden screenshots from Linux. Mac and Windows are deliberat
 
 ### Updating screenshots locally
 
-When you need to update a screenshot because you have purposefully changed the UI, you need to run the interactions tests with `FORCE_UPDATE_ALL_GOLDENS` on Linux. A cloudtop or workstation will work.
+When you need to update a screenshot because you have purposefully changed the UI:
 
 ```sh
-FORCE_UPDATE_ALL_GOLDENS=1 npm run auto-interactionstest
+npm run test -- $TESTPATH --on-diff=update
 ```
 
 This tells the test runner to update any screenshots that fail. Once you've done this, the process is identical to when you add a new screenshot:

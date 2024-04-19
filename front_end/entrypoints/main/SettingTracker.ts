@@ -11,23 +11,28 @@ const consoleInsightsEnabledSettingName = 'console-insights-enabled';
 
 export class SettingTracker {
   constructor() {
-    this.#trackConsoleInsightSettingChange();
     this.#syncConsoleInsightSettingsWithQueryParams();
+    this.#trackConsoleInsightSettingChange();
+  }
+
+  #onConsoleInsightSettingChange(): void {
+    // If setting was turned on, reset the consent.
+    if (this.#getModuleSetting(consoleInsightsEnabledSettingName)?.get()) {
+      Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(false);
+    }
+    // If console-insights-enabled was edited by the user, it becomes "sticky",
+    // which means Finch won't change the setting state.
+    Common.Settings.Settings.instance().createLocalSetting(consoleInsightsToggledSettingName, false).set(true);
   }
 
   #trackConsoleInsightSettingChange(): void {
-    const setting = this.#getModuleSetting(consoleInsightsEnabledSettingName);
-    setting?.addChangeListener(() => {
-      // If setting was turned on, reset the consent.
-      if (setting.get()) {
-        Common.Settings.Settings.instance()
-            .createLocalSetting('console-insights-onboarding-finished', false)
-            .set(false);
-      }
-      // If console-insights-enabled was edited by the user, it becomes "sticky",
-      // which means Finch won't change the setting state.
-      Common.Settings.Settings.instance().createLocalSetting(consoleInsightsToggledSettingName, false).set(true);
-    });
+    this.#getModuleSetting(consoleInsightsEnabledSettingName)
+        ?.addChangeListener(this.#onConsoleInsightSettingChange, this);
+  }
+
+  dispose(): void {
+    this.#getModuleSetting(consoleInsightsEnabledSettingName)
+        ?.removeChangeListener(this.#onConsoleInsightSettingChange, this);
   }
 
   #getModuleSetting(name: string): Common.Settings.Setting<unknown>|undefined {

@@ -20,9 +20,9 @@ const UIStrings = {
    */
   showRnWelcome: 'Show React Native Welcome panel',
   /** @description The name of the debugging product */
-  debuggerBrandName: 'React Native DevTools (Fusebox ⚡)',
+  debuggerBrandName: 'React Native JS Inspector',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/rn_welcome/rn_welcome-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/rn_welcome/rn_welcome-legacy-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedRNWelcomeModule: (typeof RNWelcome|undefined);

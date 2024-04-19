@@ -29,7 +29,7 @@ devtools_entrypoint("entrypoint") {
     "../../panels/network:meta",
     "../../panels/performance_monitor:meta",
     "../../panels/recorder:meta",
-    "../../panels/rn_welcome:meta",
+    "../../panels/rn_welcome:meta-legacy",
     "../../panels/security:meta",
     "../../panels/sensors:meta",
     "../../panels/web_audio:meta",

@@ -8,11 +8,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 import rnWelcomeStyles from './rnWelcome.css.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 const UIStrings = {
-  /** @description The name of the debugging product */
-  debuggerBrandName: 'React Native JS Inspector',
-  /** @description The name of the debugging product */
+  /** @description Label / description */
   techPreviewLabel: 'Technology Preview',
   /** @description Welcome text */
   welcomeMessage: 'Welcome to debugging in React Native',
@@ -28,17 +27,21 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let rnWelcomeImplInstance: RNWelcomeImpl;
 
+type RNWelcomeOptions = {debuggerBrandName: () => Platform.UIString.LocalizedString};
 export class RNWelcomeImpl extends UI.Widget.VBox {
-  static instance(opts: {forceNew: null|boolean} = {forceNew: null}): RNWelcomeImpl {
-    const {forceNew} = opts;
-    if (!rnWelcomeImplInstance || forceNew) {
-      rnWelcomeImplInstance = new RNWelcomeImpl();
+  private readonly options: RNWelcomeOptions;
+
+  static instance(options: RNWelcomeOptions): RNWelcomeImpl {
+    if (!rnWelcomeImplInstance) {
+      rnWelcomeImplInstance = new RNWelcomeImpl(options);
     }
     return rnWelcomeImplInstance;
   }
 
-  private constructor() {
+  private constructor(options: RNWelcomeOptions) {
     super(true, true);
+
+    this.options = options;
   }
 
   override wasShown(): void {
@@ -49,16 +52,18 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
   }
 
   render(): void {
+    const {debuggerBrandName} = this.options;
     const welcomeIconUrl = new URL(
       '../../Images/react_native/welcomeIcon.png',
       import.meta.url,
     ).toString();
+
     render(html`
       <div class="rn-welcome-panel">
         <div class="rn-welcome-header">
           <img class="rn-welcome-icon" src=${welcomeIconUrl} role="presentation" />
           <div class="rn-welcome-title">
-            ${i18nString(UIStrings.debuggerBrandName)}
+            ${debuggerBrandName()}
           </div>
           <div class="rn-welcome-title-accessory">
             ${i18nString(UIStrings.techPreviewLabel)}

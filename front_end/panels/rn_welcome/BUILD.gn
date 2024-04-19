@@ -46,10 +46,18 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
+devtools_entrypoint("meta-legacy") {
+  entrypoint = "rn_welcome-legacy-meta.ts"
+
+  deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/rn_inspector/*" ]
+}
+
 devtools_entrypoint("meta") {
   entrypoint = "rn_welcome-meta.ts"
 
   deps = [ ":bundle" ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [ "../../entrypoints/rn_fusebox/*" ]
 }

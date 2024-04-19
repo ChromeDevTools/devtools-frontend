@@ -540,6 +540,7 @@ grd_files_release_sources = [
   "front_end/panels/recorder/recorder-meta.js",
   "front_end/panels/recorder/recorder.js",
   "front_end/panels/recorder/util/util.js",
+  "front_end/panels/rn_welcome/rn_welcome-legacy-meta.js",
   "front_end/panels/rn_welcome/rn_welcome-meta.js",
   "front_end/panels/rn_welcome/rn_welcome.js",
   "front_end/panels/screencast/screencast-meta.js",

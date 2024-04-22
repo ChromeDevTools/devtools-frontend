@@ -62,6 +62,7 @@ devtools_module("timeline") {
     "EventsTimelineTreeView.ts",
     "ExtensionDataGatherer.ts",
     "ExtensionTrackAppender.ts",
+    "FreshRecording.ts",
     "GPUTrackAppender.ts",
     "Initiators.ts",
     "InteractionsTrackAppender.ts",
@@ -177,6 +178,7 @@ ts_library("unittests") {
   sources = [
     "Breadcrumbs.test.ts",
     "EventTypeHelpers.test.ts",
+    "FreshRecording.test.ts",
     "Initiators.test.ts",
     "SaveFileFormatter.test.ts",
     "SourceMapsResolver.test.ts",

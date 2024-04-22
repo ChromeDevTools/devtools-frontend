@@ -16,6 +16,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import {getCategoryStyles, stringIsEventCategory} from './EventUICategory.js';
 import * as Extensions from './extensions/extensions.js';
+import {Tracker} from './FreshRecording.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -647,7 +648,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const target =
           traceData && TraceEngine.Legacy.eventIsFromNewEngine(event) ? targetForEvent(traceData, event) : null;
       const linkifier = this.treeView.linkifier;
-      const isFreshRecording = Boolean(this.treeView.modelInternal?.timelineModel().isFreshRecording());
+      const isFreshRecording = Boolean(traceData && Tracker.instance().recordingIsFresh(traceData));
       this.linkElement = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
           TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshRecording) :
           null;

@@ -62,6 +62,7 @@ import {
   visibleTypes,
 } from './EventUICategory.js';
 import * as Extensions from './extensions/extensions.js';
+import {Tracker} from './FreshRecording.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {targetForEvent} from './TargetForEvent.js';
@@ -1306,6 +1307,8 @@ export class TimelineUIUtils {
       }
     }
 
+    const isFreshRecording = Boolean(traceParseData && Tracker.instance().recordingIsFresh(traceParseData));
+
     switch (event.name) {
       case recordTypes.GCEvent:
       case recordTypes.MajorGC:
@@ -1322,7 +1325,7 @@ export class TimelineUIUtils {
       case recordTypes.JSSystemFrame:
       case recordTypes.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
         }
@@ -1574,7 +1577,7 @@ export class TimelineUIUtils {
 
       case recordTypes.EventTiming: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1646,7 +1649,7 @@ export class TimelineUIUtils {
 
       default: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, model.isFreshRecording());
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }

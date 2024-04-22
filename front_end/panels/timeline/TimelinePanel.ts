@@ -55,6 +55,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
+import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {PerformanceModel} from './PerformanceModel.js';
@@ -1474,6 +1475,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.refreshMainFlameChart();
   }
 
+  /**
+   * This is called with we are done loading a trace from a file, or after we
+   * have recorded a fresh trace.
+   **/
   async loadingComplete(
       collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
       tracingModel: TraceEngine.Legacy.TracingModel|null,
@@ -1512,7 +1517,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       await Promise.all([
         // Calling setTracingModel now and setModel so much later, leads to several problems due to addEventListener order being unexpected
         // TODO(paulirish): Resolve this, or just wait for the death of tracingModel. :)
-        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
+        this.performanceModel.setTracingModel(tracingModel),
         this.#executeNewTraceEngine(collectedEvents, recordingIsFresh, metadata),
       ]);
 
@@ -1531,6 +1536,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {
         throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);
+      }
+      if (recordingIsFresh) {
+        Tracker.instance().registerFreshRecording(traceData);
       }
 
       // Set up SourceMapsResolver to ensure we resolve any function names in

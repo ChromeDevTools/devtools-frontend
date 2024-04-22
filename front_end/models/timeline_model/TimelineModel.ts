@@ -63,7 +63,6 @@ export class TimelineModelImpl {
   private currentTaskLayoutAndRecalcEvents: TraceEngine.Legacy.Event[];
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
   private lastRecalculateStylesEvent: TraceEngine.Legacy.Event|null;
-  #isFreshRecording = false;
 
   constructor() {
     this.minimumRecordTimeInternal = 0;
@@ -211,12 +210,7 @@ export class TimelineModelImpl {
     return data && data['frame'] || null;
   }
 
-  isFreshRecording(): boolean {
-    return this.#isFreshRecording;
-  }
-
-  setEvents(tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false): void {
-    this.#isFreshRecording = isFreshRecording;
+  setEvents(tracingModel: TraceEngine.Legacy.TracingModel): void {
     this.reset();
     this.resetProcessingState();
     this.tracingModelInternal = tracingModel;

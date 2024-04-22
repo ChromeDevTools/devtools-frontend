@@ -28,7 +28,7 @@ import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetwork
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
-import {type TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';
+import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -154,11 +154,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.boundRefresh = this.#reset.bind(this);
     this.#selectedEvents = null;
 
-    this.mainDataProvider.setEventColorMapping(TimelineUIUtils.eventColor);
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
         'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-    this.groupBySetting.addChangeListener(this.updateColorMapper, this);
-    this.updateColorMapper();
+    this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
+    this.refreshMainFlameChart();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }
@@ -216,11 +215,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return this.mainDataProvider;
   }
 
-  updateColorMapper(): void {
+  refreshMainFlameChart(): void {
     if (!this.model) {
       return;
     }
-    this.mainDataProvider.setEventColorMapping(TimelineUIUtils.eventColor);
     this.mainFlameChart.update();
   }
 
@@ -278,7 +276,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.updateSearchResults(false, false);
-    this.updateColorMapper();
+    this.refreshMainFlameChart();
     this.#updateFlameCharts();
   }
 

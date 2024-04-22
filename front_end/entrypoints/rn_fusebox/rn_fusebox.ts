@@ -27,6 +27,41 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Sources from '../../panels/sources/sources.js';
 import * as RNExperiments from '../../core/rn_experiments/rn_experiments.js';
 
+const UIStrings = {
+  /**
+   *@description Title of the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
+   */
+  networkTitle: 'React Native',
+  /**
+   *@description Command for showing the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
+   */
+  showReactNative: 'Show React Native',
+  /**
+   *@description Label of the FB-only 'send feedback' action button in the toolbar
+   */
+  sendFeedback: '[FB-only] Send feedback',
+};
+const str_ = i18n.i18n.registerUIStrings('entrypoints/rn_fusebox/rn_fusebox.ts', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+// Disable Network-related features
+UI.ViewManager.maybeRemoveViewExtension('network.blocked-urls');
+UI.ViewManager.maybeRemoveViewExtension('network.config');
+
+// Disable Performance-related features
+UI.ViewManager.maybeRemoveViewExtension('coverage');
+UI.ViewManager.maybeRemoveViewExtension('linear-memory-inspector');
+UI.ViewManager.maybeRemoveViewExtension('rendering');
+
+// Disable additional features
+UI.ViewManager.maybeRemoveViewExtension('issues-pane');
+UI.ViewManager.maybeRemoveViewExtension('sensors');
+
+// Disable Settings panels
+UI.ViewManager.maybeRemoveViewExtension('devices');
+UI.ViewManager.maybeRemoveViewExtension('emulation-locations');
+UI.ViewManager.maybeRemoveViewExtension('throttling-conditions');
+
 RNExperiments.RNExperimentsImpl.setIsReactNativeEntryPoint(true);
 RNExperiments.RNExperimentsImpl.Instance.enableExperimentsByDefault([
   Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
@@ -65,24 +100,6 @@ SDK.SDKModel.SDKModel.register(
     early: true,
   },
 );
-
-const UIStrings = {
-  /**
-   *@description Title of the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
-   */
-  networkTitle: 'React Native',
-  /**
-   *@description Command for showing the 'React Native' tool in the Network Navigator View, which is part of the Sources tool
-   */
-  showReactNative: 'Show React Native',
-  /**
-   *@description Label of the FB-only 'send feedback' action button in the toolbar
-   */
-  sendFeedback: '[FB-only] Send feedback',
-};
-
-const str_ = i18n.i18n.registerUIStrings('entrypoints/rn_fusebox/rn_fusebox.ts', UIStrings);
-const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedSourcesModule: (typeof Sources|undefined);
 

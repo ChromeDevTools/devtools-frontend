@@ -699,8 +699,6 @@ export enum PanelWithLocation {
   'sources.search-drawer' = 28,
   'security-main' = 29,
   'security-drawer' = 30,
-  'js_profiler-main' = 31,
-  'js_profiler-drawer' = 32,
   'lighthouse-main' = 33,
   'lighthouse-drawer' = 34,
   'coverage-main' = 35,

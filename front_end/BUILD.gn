@@ -164,7 +164,6 @@ group("unittests") {
     "panels/network:unittests",
     "panels/network/components:unittests",
     "panels/performance_monitor:unittests",
-    "panels/profiler:unittests",
     "panels/protocol_monitor:unittests",
     "panels/protocol_monitor/components:unittests",
     "panels/recorder:unittests",

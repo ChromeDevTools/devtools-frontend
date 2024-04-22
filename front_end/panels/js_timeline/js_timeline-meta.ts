@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Timeline from '../../panels/timeline/timeline.js';
+import type * as Timeline from '../timeline/timeline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -32,7 +32,7 @@ const UIStrings = {
    */
   startProfilingAndReloadPage: 'Start profiling and reload page',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/js_profiler/js_profiler-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/js_timeline/js_timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedTimelineModule: (typeof Timeline|undefined);

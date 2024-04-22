@@ -16,8 +16,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
-import {CPUProfileFlameChart, type ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 import {type Formatter, type ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';
+import {ProfileFlameChart, type ProfileFlameChartDataProvider} from './ProfileFlameChartDataProvider.js';
 import {type DataDisplayDelegate, ProfileHeader, type ProfileType} from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
@@ -121,9 +121,9 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   topDownProfileDataGridTree?: TopDownProfileDataGridTree|null;
   currentSearchResultIndex?: number;
   dataProvider?: ProfileFlameChartDataProvider;
-  flameChart?: CPUProfileFlameChart;
-  visibleView?: CPUProfileFlameChart|DataGrid.DataGrid.DataGridWidget<unknown>;
-  searchableElement?: ProfileDataGridTree|CPUProfileFlameChart;
+  flameChart?: ProfileFlameChart;
+  visibleView?: ProfileFlameChart|DataGrid.DataGrid.DataGridWidget<unknown>;
+  searchableElement?: ProfileDataGridTree|ProfileFlameChart;
   profileDataGridTree?: ProfileDataGridTree;
   constructor() {
     super(i18nString(UIStrings.profile));
@@ -405,7 +405,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
       return;
     }
     this.dataProvider = this.createFlameChartDataProvider();
-    this.flameChart = new CPUProfileFlameChart(this.searchableViewInternal, this.dataProvider);
+    this.flameChart = new ProfileFlameChart(this.searchableViewInternal, this.dataProvider);
     this.flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, event => {
       void this.onEntryInvoked(event);
     });

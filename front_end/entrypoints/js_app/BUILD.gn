@@ -13,7 +13,7 @@ devtools_entrypoint("entrypoint") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
-    "../../panels/js_profiler:meta",
+    "../../panels/js_timeline:meta",
     "../../panels/mobile_throttling:meta",
     "../../ui/legacy/components/utils:bundle",
     "../main:bundle",

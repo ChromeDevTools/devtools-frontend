@@ -36,7 +36,6 @@ group("legacy_test_runner-resources") {
     "bindings_test_runner:bundle",
     "console_test_runner:bundle",
     "coverage_test_runner:bundle",
-    "cpu_profiler_test_runner:bundle",
     "data_grid_test_runner:bundle",
     "device_mode_test_runner:bundle",
     "elements_test_runner:bundle",

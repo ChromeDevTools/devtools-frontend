@@ -139,7 +139,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 }
 
-export class CPUProfileFlameChart extends
+export class ProfileFlameChart extends
     Common.ObjectWrapper.eventMixin<PerfUI.FlameChart.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
         implements UI.SearchableView.Searchable {
   readonly searchableView: UI.SearchableView.SearchableView;

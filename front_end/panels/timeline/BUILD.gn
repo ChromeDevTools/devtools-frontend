@@ -147,7 +147,7 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/docs/performance_panel/*",
     "../input/*",
-    "../js_profiler/*",
+    "../js_timeline/*",
     "../lighthouse/*",
     "../recorder/*",
     "./track_appenders:unittests",

@@ -21,8 +21,6 @@ generate_css("css_files") {
 devtools_module("profiler") {
   sources = [
     "BottomUpProfileDataGrid.ts",
-    "CPUProfileFlameChart.ts",
-    "CPUProfileView.ts",
     "ChildrenProvider.ts",
     "HeapProfileView.ts",
     "HeapProfilerPanel.ts",
@@ -35,6 +33,7 @@ devtools_module("profiler") {
     "LiveHeapProfileView.ts",
     "ModuleUIStrings.ts",
     "ProfileDataGrid.ts",
+    "ProfileFlameChartDataProvider.ts",
     "ProfileHeader.ts",
     "ProfileLauncherView.ts",
     "ProfileSidebarTreeElement.ts",
@@ -75,7 +74,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/*",
-    "../js_profiler/*",
     "../timeline/*",
   ]
 
@@ -94,19 +92,4 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [ "../../entrypoints/*" ]
-}
-
-ts_library("unittests") {
-  testonly = true
-
-  sources = [ "CPUProfileView.test.ts" ]
-
-  deps = [
-    ":bundle",
-    "../../core/common:bundle",
-    "../../core/protocol_client:bundle",
-    "../../core/sdk:bundle",
-    "../../generated:protocol",
-    "../../testing",
-  ]
 }

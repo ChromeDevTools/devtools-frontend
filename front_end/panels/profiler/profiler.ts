@@ -4,8 +4,6 @@
 
 import * as BottomUpProfileDataGrid from './BottomUpProfileDataGrid.js';
 import * as ChildrenProvider from './ChildrenProvider.js';
-import * as CPUProfileFlameChart from './CPUProfileFlameChart.js';
-import * as CPUProfileView from './CPUProfileView.js';
 import * as HeapProfilerPanel from './HeapProfilerPanel.js';
 import * as HeapProfileView from './HeapProfileView.js';
 import * as HeapSnapshotDataGrids from './HeapSnapshotDataGrids.js';
@@ -16,6 +14,7 @@ import * as HeapTimelineOverview from './HeapTimelineOverview.js';
 import * as IsolateSelector from './IsolateSelector.js';
 import * as LiveHeapProfileView from './LiveHeapProfileView.js';
 import * as ProfileDataGrid from './ProfileDataGrid.js';
+import * as ProfileFlameChart from './ProfileFlameChartDataProvider.js';
 import * as ProfileHeader from './ProfileHeader.js';
 import * as ProfileLauncherView from './ProfileLauncherView.js';
 import * as ProfileSidebarTreeElement from './ProfileSidebarTreeElement.js';
@@ -27,8 +26,6 @@ import * as TopDownProfileDataGrid from './TopDownProfileDataGrid.js';
 export {
   BottomUpProfileDataGrid,
   ChildrenProvider,
-  CPUProfileFlameChart,
-  CPUProfileView,
   HeapProfilerPanel,
   HeapProfileView,
   HeapSnapshotDataGrids,
@@ -39,6 +36,7 @@ export {
   IsolateSelector,
   LiveHeapProfileView,
   ProfileDataGrid,
+  ProfileFlameChart,
   ProfileHeader,
   ProfileLauncherView,
   ProfileSidebarTreeElement,

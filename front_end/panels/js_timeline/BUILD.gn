@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("bundle") {
-  entrypoint = "js_profiler.ts"
+  entrypoint = "js_timeline.ts"
 
   deps = []
 
@@ -20,15 +20,11 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  entrypoint = "js_profiler-meta.ts"
+  entrypoint = "js_timeline-meta.ts"
 
   deps = [
     ":bundle",
-    "../../core/i18n:bundle",
-    "../../core/root:bundle",
-    "../../panels/profiler:bundle",
     "../../panels/timeline:bundle",
-    "../../ui/legacy:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

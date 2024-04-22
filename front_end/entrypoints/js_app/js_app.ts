@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../shell/shell.js';
-import '../../panels/js_profiler/js_profiler-meta.js';
+import '../../panels/js_timeline/js_timeline-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 
 import * as Common from '../../core/common/common.js';

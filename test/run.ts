@@ -104,7 +104,7 @@ class Tests {
     }
     const result = runProcess(
         process.argv[0], argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd: path.dirname(GEN_DIR)});
-    return !result.error;
+    return !result.error && (result.status ?? 1) === 0;
   }
 }
 

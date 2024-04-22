@@ -291,13 +291,13 @@ export class BottomUpRootNode extends Node {
   readonly filter: (e: TraceEngine.Legacy.CompatibleTraceEvent) => boolean;
   readonly startTime: number;
   readonly endTime: number;
-  private eventGroupIdCallback: ((arg0: TraceEngine.Legacy.Event) => string)|null;
+  private eventGroupIdCallback: ((arg0: TraceEngine.Legacy.CompatibleTraceEvent) => string)|null;
   override totalTime: number;
 
   constructor(
       events: TraceEngine.Legacy.CompatibleTraceEvent[], textFilter: TimelineModelFilter,
       filters: TimelineModelFilter[], startTime: number, endTime: number,
-      eventGroupIdCallback: ((arg0: TraceEngine.Legacy.Event) => string)|null) {
+      eventGroupIdCallback: ((arg0: TraceEngine.Legacy.CompatibleTraceEvent) => string)|null) {
     super('', null);
     this.childrenInternal = null;
     this.events = events;
@@ -388,7 +388,10 @@ export class BottomUpRootNode extends Node {
     }
     const groupNodes = new Map<string, GroupNode>();
     for (const node of flatNodes.values()) {
-      const groupId = this.eventGroupIdCallback((node.event as TraceEngine.Legacy.Event));
+      if (!node.event) {
+        continue;
+      }
+      const groupId = this.eventGroupIdCallback(node.event);
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
         groupNode = new GroupNode(groupId, this, (node.event as TraceEngine.Legacy.Event));

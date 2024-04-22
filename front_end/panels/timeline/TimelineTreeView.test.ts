@@ -148,7 +148,7 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
   });
 
-  describe('event groupping', function() {
+  describe('event grouping', function() {
     it('groups events by category in the Call Tree view', async function() {
       const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
@@ -195,6 +195,91 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(children.next().value.event.name, 'second console time');
       assert.strictEqual(children.next().value.event.name, 'first console time');
       assert.strictEqual(children.next().value.event.name, 'third console time');
+    });
+
+    it('can group entries by domain', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Domain);
+      // We pass null for PerformanceModel as we rely on the new engine data
+      // and soon the PerformanceModel will be removed. We do not need it for
+      // this test.
+      callTreeView.setModelWithEvents(null, traceParsedData.Renderer.allTraceEntries, traceParsedData);
+
+      const tree = callTreeView.buildTree();
+      const topLevelGroupNodes = Array.from(tree.children().entries());
+
+      assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
+        '',
+        'web.dev',
+        'extensions::',
+        'chrome-extension://noondiphcddnnabmjcihcjfbhfklnnep',
+        'imgix.net',
+        'googletagmanager.com',
+        'google-analytics.com',
+        'web.app',
+      ]);
+    });
+
+    it('can group entries by frame', async function() {
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'web-dev-with-commit.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Frame);
+      // TODO(crbug.com/336283309): grouping by frame relies on the legacy performance model
+      callTreeView.setModelWithEvents(performanceModel, traceParsedData.Renderer.allTraceEntries, traceParsedData);
+
+      const tree = callTreeView.buildTree();
+      const topLevelGroupNodes = Array.from(tree.children().entries());
+      topLevelGroupNodes.map(n => n[1].id);
+
+      assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
+        '',  // this represents the main frame
+             // There are then two other frame IDs
+        '25D2F12F1818C70B5BD4325CC9ACD8FF',
+        '1094B71EC09B8BD3DD48B77D091D6024',
+      ]);
+    });
+
+    it('can group entries by URL', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.URL);
+      callTreeView.setModelWithEvents(null, traceParsedData.Renderer.allTraceEntries, traceParsedData);
+
+      const tree = callTreeView.buildTree();
+      const topLevelGroupNodes = Array.from(tree.children().entries());
+
+      assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
+        '',  // Represents "Unattributed" in the UI.
+        'https://web.dev/',
+        'extensions::SafeBuiltins',
+        'chrome-extension://noondiphcddnnabmjcihcjfbhfklnnep/content_script_compiled.js',
+        'https://web-dev.imgix.net/image/kheDArv5csY6rvQUJDbWRscckLr1/4i7JstVZvgTFk9dxCe4a.svg',
+        'https://web.dev/js/home.js?v=73b0d143',
+        'https://web.dev/js/actions-f0eb5c8e.js',
+        'https://web.dev/js/app.js?v=fedf5fbe',
+        'https://web.dev/js/index-f45448ab.js',
+        'https://web.dev/js/index-7e29abb6.js',
+        'https://www.googletagmanager.com/gtm.js?id=GTM-MZWCJPP',
+        'https://www.google-analytics.com/analytics.js',
+        'https://www.google-analytics.com/j/collect?v=1&_v=j101&a=68725886&t=event&ni=1&_s=1&dl=https%3A%2F%2Fweb.dev%2F&ul=en-gb&de=UTF-8&dt=web.dev&sd=24-bit&sr=3360x1890&vp=1665x846&je=0&ec=Web%20Vitals&ea=FCP&el=v3-1696581005645-6472407333688&ev=129&_u=QACAAEABAAAAACAAIg~&jid=&gjid=&cid=1874137241.1685438100&tid=UA-126406676-2&_gid=656288571.1696581004&_slc=1&gtm=45He3a40n81MZWCJPP&cd5=15&cd6=navigate&cd7=light&cd8=dom-content-loaded&cd9=8&z=54974500',
+        'https://www.googletagmanager.com/gtag/js?id=G-18JR3Q8PJ8&l=dataLayer&cx=c',
+        'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.js',
+        'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.html',
+
+      ]);
     });
   });
 });

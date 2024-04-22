@@ -188,23 +188,6 @@ export class TimelineModelImpl {
     }
   }
 
-  isInteractiveTimeEvent(event: TraceEngine.Legacy.Event): boolean {
-    return event.name === RecordType.InteractiveTime;
-  }
-
-  isLayoutShiftEvent(event: TraceEngine.Legacy.Event): boolean {
-    return event.name === RecordType.LayoutShift;
-  }
-
-  static globalEventId(event: TraceEngine.Legacy.Event, field: string): string {
-    const data = event.args['data'] || event.args['beginData'];
-    const id = data && data[field];
-    if (!id) {
-      return '';
-    }
-    return `${event.thread.process().id()}.${id}`;
-  }
-
   static eventFrameId(event: TraceEngine.Legacy.Event): Protocol.Page.FrameId|null {
     const data = event.args['data'] || event.args['beginData'];
     return data && data['frame'] || null;

@@ -910,7 +910,9 @@ export class TimelineUIUtils {
     return detailsText;
 
     async function linkifyTopCallFrameAsText(): Promise<string|null> {
-      const frame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
+      const frame = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+          TraceEngine.Helpers.Trace.stackTraceForEvent(event)?.at(0) :
+          null;
       if (!frame) {
         return null;
       }
@@ -1907,7 +1909,9 @@ export class TimelineUIUtils {
     }
     const title = i18nString(UIStrings.initiatedBy);
 
-    const topFrame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
+    const topFrame = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+        TraceEngine.Helpers.Trace.stackTraceForEvent(event)?.at(0) :
+        null;
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
           maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});

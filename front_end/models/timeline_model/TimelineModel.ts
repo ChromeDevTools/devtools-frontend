@@ -470,24 +470,6 @@ export class TimelineModelImpl {
 
     const eventData = event.args['data'] || event.args['beginData'] || {};
     const timelineData = EventOnTimelineData.forEvent(event);
-    if (eventData['stackTrace']) {
-      timelineData.stackTrace = eventData['stackTrace'].map((callFrameOrProfileNode: Protocol.Runtime.CallFrame) => {
-        // `callFrameOrProfileNode` can also be a `SDK.ProfileTreeModel.ProfileNode` for JSSample; that class
-        // has accessors to mimic a `CallFrame`, but apparently we don't adjust stack traces in that case. Whether
-        // we should is unclear.
-        if (event.name !== RecordType.JSSample && event.name !== RecordType.JSSystemSample &&
-            event.name !== RecordType.JSIdleSample) {
-          // We need to copy the data so we can safely modify it below.
-          const frame = {...callFrameOrProfileNode};
-          // TraceEvents come with 1-based line & column numbers. The frontend code
-          // requires 0-based ones. Adjust the values.
-          --frame.lineNumber;
-          --frame.columnNumber;
-          return frame;
-        }
-        return callFrameOrProfileNode;
-      });
-    }
     let pageFrameId = TimelineModelImpl.eventFrameId(event);
     const last = eventStack[eventStack.length - 1];
     if (!pageFrameId && last) {
@@ -1107,18 +1089,12 @@ export class PageFrame {
 export class EventOnTimelineData {
   url: Platform.DevToolsPath.UrlString|null;
   backendNodeIds: Protocol.DOM.BackendNodeId[];
-  stackTrace: Protocol.Runtime.CallFrame[]|null;
   frameId: Protocol.Page.FrameId|null;
 
   constructor() {
     this.url = null;
     this.backendNodeIds = [];
-    this.stackTrace = null;
     this.frameId = null;
-  }
-
-  topFrame(): Protocol.Runtime.CallFrame|null {
-    return this.stackTrace && this.stackTrace[0] || null;
   }
 
   static forEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): EventOnTimelineData {
@@ -1134,10 +1110,6 @@ export class EventOnTimelineData {
   static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
     return getOrCreateEventData(event);
   }
-  static reset(): void {
-    eventToData = new Map<
-        TraceEngine.Legacy.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData, EventOnTimelineData>();
-  }
 }
 
 function getOrCreateEventData(event: TraceEngine.Legacy.ConstructedEvent|
@@ -1150,13 +1122,9 @@ function getOrCreateEventData(event: TraceEngine.Legacy.ConstructedEvent|
   return data;
 }
 
-let eventToData =
+const eventToData =
     new Map<TraceEngine.Legacy.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData, EventOnTimelineData>();
 
-export interface InvalidationCause {
-  reason: string;
-  stackTrace: Protocol.Runtime.CallFrame[]|null;
-}
 export interface MetadataEvents {
   page: TraceEngine.Legacy.Event[];
   workers: TraceEngine.Legacy.Event[];

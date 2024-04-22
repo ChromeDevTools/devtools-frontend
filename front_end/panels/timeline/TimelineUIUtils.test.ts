@@ -85,27 +85,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('creates top frame location text as a fallback', async function() {
-    // 'TimerInstall' is chosen such that we run into the 'default' case.
-    const event = new TraceEngine.Legacy.ConstructedEvent(
-        'devtools.timeline', 'TimerInstall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-
-    event.addArgs({
-      data: {
-        stackTrace: [
-          {
-            functionName: 'test',
-            url: 'test.js',
-            scriptId: SCRIPT_ID_STRING,
-            lineNumber: 0,
-            columnNumber: 0,
-          },
-        ],
-      },
-    });
-    const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
-    data.stackTrace = event.args.data.stackTrace;
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
+    const timerInstallEvent = events.find(TraceEngine.Types.TraceEvents.isTraceEventTimerInstall);
+    assert.isOk(timerInstallEvent);
     assert.strictEqual(
-        'test.js:1:1', await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(event));
+        'https://web.dev/js/index-7b6f3de4.js:96:533',
+        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(timerInstallEvent));
   });
 
   describe('script location as an URL', function() {

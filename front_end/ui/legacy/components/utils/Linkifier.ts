@@ -37,6 +37,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import type * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import type * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -326,16 +327,17 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   }
 
   maybeLinkifyConsoleCallFrame(
-      target: SDK.Target.Target|null, callFrame: Protocol.Runtime.CallFrame, options?: LinkifyOptions): HTMLElement
-      |null {
+      target: SDK.Target.Target|null,
+      callFrame: Protocol.Runtime.CallFrame|TraceEngine.Types.TraceEvents.TraceEventCallFrame,
+      options?: LinkifyOptions): HTMLElement|null {
     const linkifyOptions: LinkifyOptions = {
       ...options,
       columnNumber: callFrame.columnNumber,
       inlineFrameIndex: options?.inlineFrameIndex ?? 0,
     };
     return this.maybeLinkifyScriptLocation(
-        target, callFrame.scriptId, callFrame.url as Platform.DevToolsPath.UrlString, callFrame.lineNumber,
-        linkifyOptions);
+        target, String(callFrame.scriptId) as Protocol.Runtime.ScriptId,
+        callFrame.url as Platform.DevToolsPath.UrlString, callFrame.lineNumber, linkifyOptions);
   }
 
   linkifyStackTraceTopFrame(target: SDK.Target.Target|null, stackTrace: Protocol.Runtime.StackTrace): HTMLElement {

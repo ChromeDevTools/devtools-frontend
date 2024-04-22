@@ -48,6 +48,7 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../testing/*",
     "../../ui/components/docs/*",
+    "../../ui/legacy/components/utils/*",
     "../timeline_model/*",
     "./*",
   ]

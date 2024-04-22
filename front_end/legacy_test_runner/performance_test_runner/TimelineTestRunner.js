@@ -4,7 +4,6 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -275,7 +274,6 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
     data: traceEvent.args['data'] || traceEvent.args,
     endTime: traceEvent.endTime || traceEvent.startTime,
     frameId: frameId,
-    stackTrace: TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).stackTrace,
     startTime: traceEvent.startTime,
     type: traceEvent.name
   };

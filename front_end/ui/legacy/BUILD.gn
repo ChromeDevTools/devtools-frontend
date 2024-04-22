@@ -191,6 +191,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ARIAUtils.test.ts",
     "ActionRegistration.test.ts",
     "Context.test.ts",
     "ContextMenu.test.ts",

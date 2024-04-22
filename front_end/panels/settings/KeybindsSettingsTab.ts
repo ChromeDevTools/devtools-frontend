@@ -391,8 +391,8 @@ export class ShortcutListItem {
         i18nString(UIStrings.ResetShortcutsForAction), 'undo', '', 'undo', this.resetShortcutsToDefaults.bind(this)));
     this.confirmButton = this.createIconButton(
         i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button', 'confirm', () => {
-          UI.ARIAUtils.alert(UIStrings.shortcutChangesApplied);
           this.settingsTab.commitChanges(this.item, this.editedShortcuts);
+          UI.ARIAUtils.alert(UIStrings.shortcutChangesApplied);
         });
     this.element.appendChild(this.confirmButton);
     this.element.appendChild(

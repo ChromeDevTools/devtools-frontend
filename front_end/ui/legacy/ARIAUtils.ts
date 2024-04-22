@@ -4,6 +4,8 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
+import {Dialog} from './Dialog.js';
+
 let id = 0;
 
 export function nextId(prefix: string): string {
@@ -378,37 +380,48 @@ function hideFromLayout(element: HTMLElement): void {
   element.style.overflow = 'hidden';
 }
 
-let alertElementOne: HTMLElement|undefined;
-let alertElementTwo: HTMLElement|undefined;
-let alertToggle: boolean = false;
+type AlertState = {
+  one: HTMLDivElement,
+  two: HTMLDivElement,
+  alertToggle: boolean,
+};
+const alertElements = new WeakMap<HTMLElement, AlertState>();
+
+function createAlertElement(container: HTMLElement): HTMLDivElement {
+  const element = container.createChild('div');
+  hideFromLayout(element);
+  element.setAttribute('role', 'alert');
+  element.setAttribute('aria-atomic', 'true');
+  return element as HTMLDivElement;
+}
+
+export function getOrCreateAlertElements(container: HTMLElement = document.body): AlertState {
+  let state = alertElements.get(container);
+  if (!state) {
+    state = {
+      one: createAlertElement(container),
+      two: createAlertElement(container),
+      alertToggle: false,
+    };
+    alertElements.set(container, state);
+  }
+  return state;
+}
 
 /**
  * This function instantiates and switches off returning one of two offscreen alert elements.
  * We utilize two alert elements to ensure that alerts with the same string are still registered
  * as changes and trigger screen reader announcement.
  */
-export function alertElementInstance(): HTMLElement {
-  if (!alertElementOne) {
-    const element = document.body.createChild('div') as HTMLElement;
-    hideFromLayout(element);
-    element.setAttribute('role', 'alert');
-    element.setAttribute('aria-atomic', 'true');
-    alertElementOne = element;
+export function alertElementInstance(container = document.body): HTMLElement {
+  const state = getOrCreateAlertElements(container);
+  state.alertToggle = !state.alertToggle;
+  if (state.alertToggle) {
+    state.two.textContent = '';
+    return state.one;
   }
-  if (!alertElementTwo) {
-    const element = document.body.createChild('div') as HTMLElement;
-    hideFromLayout(element);
-    element.setAttribute('role', 'alert');
-    element.setAttribute('aria-atomic', 'true');
-    alertElementTwo = element;
-  }
-  alertToggle = !alertToggle;
-  if (alertToggle) {
-    alertElementTwo.textContent = '';
-    return alertElementOne;
-  }
-  alertElementOne.textContent = '';
-  return alertElementTwo;
+  state.one.textContent = '';
+  return state.two;
 }
 
 /**
@@ -416,6 +429,7 @@ export function alertElementInstance(): HTMLElement {
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
  */
 export function alert(message: string): void {
-  const element = alertElementInstance();
+  const dialog = Dialog.getInstance();
+  const element = alertElementInstance(dialog && dialog.isShowing() ? dialog.contentElement : undefined);
   element.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
 }

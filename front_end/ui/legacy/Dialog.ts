@@ -77,6 +77,10 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     return Boolean(Dialog.instance);
   }
 
+  static getInstance(): Dialog|null {
+    return Dialog.instance;
+  }
+
   override show(where?: Document|Element): void {
     const document =
         (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);

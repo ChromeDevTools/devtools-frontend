@@ -135,6 +135,34 @@ describeWithMockConnection('FetchNodes', function() {
         188,
       ]);
     });
+
+    it('identifies node ids for a Paint event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const paintEvent = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventPaint);
+      assert.isOk(paintEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, paintEvent);
+      assert.deepEqual(Array.from(nodeIds), [75]);
+    });
+
+    it('identifies node ids for a PaintImage event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const paintImageEvent =
+          traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventPaintImage);
+      assert.isOk(paintImageEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, paintImageEvent);
+      assert.deepEqual(Array.from(nodeIds), [107]);
+    });
+
+    it('identifies node ids for a ScrollLayer event', async function() {
+      // This trace chosen as it happens to have ScrollLayer events, unlike the
+      // web-dev traces used in tests above.
+      const traceData = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const scrollLayerEvent =
+          traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventScrollLayer);
+      assert.isOk(scrollLayerEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, scrollLayerEvent);
+      assert.deepEqual(Array.from(nodeIds), [4]);
+    });
   });
 
   describe('LayoutShifts', () => {

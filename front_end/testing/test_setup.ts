@@ -12,19 +12,11 @@ import * as Timeline from '../panels/timeline/timeline.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {resetTestDOM} from './DOMHelpers.js';
-import {markStaticTestsLoaded} from './RealConnection.js';
 import {
   checkForPendingActivity,
   startTrackingAsyncActivity,
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
-
-before(async function() {
-  /* Larger than normal timeout because we've seen some slowness on the bots */
-  this.timeout(10000);
-  // @ts-ignore
-  markStaticTestsLoaded({hasOnly: this.test.parent.hasOnly()});
-});
 
 beforeEach(() => {
   resetTestDOM();

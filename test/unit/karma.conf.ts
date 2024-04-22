@@ -52,6 +52,7 @@ module.exports = function(config: any) {
       // Global hooks in test_setup must go first
       {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern, type: 'module'})),
+      {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_post_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern: `${pattern}.map`, served: true, included: false, watched: true})),
       {pattern: path.join(GEN_DIR, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/core/i18n/locales/*.json'), served: true, included: false},

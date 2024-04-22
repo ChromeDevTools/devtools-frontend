@@ -131,10 +131,16 @@ const testSetupFilePattern = {
   pattern: null,
   type: 'module'
 };
+const testPostSetupFilePattern = {
+  pattern: null,
+  type: 'module'
+};
 const testFiles = [];
 for (const pattern of TEST_FILES) {
   if (pattern.endsWith('test_setup.js')) {
     testSetupFilePattern.pattern = pattern;
+  } else if (pattern.endsWith('test_post_setup.js')) {
+    testPostSetupFilePattern.pattern = pattern;
   } else {
     testFiles.push({pattern, type: 'module'});
   }
@@ -151,6 +157,7 @@ module.exports = function(config) {
       // must be set before any other hooks in order to ensure all tests get the same environment.
       testSetupFilePattern,
       ...testFiles,
+      testPostSetupFilePattern,
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false, watched: true})),
       ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false, watched: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},

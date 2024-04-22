@@ -40,6 +40,7 @@ ts_library("testing") {
     "UISourceCodeHelpers.ts",
     "UserMetricsHelpers.ts",
     "VisualLoggingHelpers.ts",
+    "test_post_setup.ts",
     "test_setup.ts",
   ]
 

@@ -11,23 +11,6 @@ import * as Main from '../entrypoints/main/main.js';
 
 import {deinitializeGlobalVars} from './EnvironmentHelpers.js';
 
-// We want to run tests with real connection after all the other tests, so that
-// we can do one time bootstrap of the CDP connection and related globals.
-// To do that, we expose a function here that is called in a before hook, thus
-// after all other tests were registered but before they got to run.
-// In describeWithRealConnection we await this promise and call real `describe`
-// only when the promise is resolved. This ensures that tests suites with real
-// connection get registered last, which makes mocha also run them last.
-export interface StaticTestsLoadedEvent {
-  hasOnly: boolean;
-}
-
-export let markStaticTestsLoaded: (event: StaticTestsLoadedEvent) => void;
-const staticTestsLoaded = new Promise<StaticTestsLoadedEvent>(resolve => {
-  markStaticTestsLoaded = resolve;
-});
-
-let hasOnly = false;
 let initialized = false;
 
 interface KarmaConfig {
@@ -86,33 +69,30 @@ function describeBody(fn: () => void) {
   });
 }
 
-export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
-  if (fn.toString().match(/(^|\s)(?:describe|it).only\(['|"][^]+['|"],.*\)/)?.length) {
-    // eslint-disable-next-line mocha/no-exclusive-tests
-    describeWithRealConnection.only(title, fn);
-    return;
-  }
-  staticTestsLoaded
-      .then(event => {
-        if (hasOnly || event.hasOnly) {
-          return;
-        }
-        describe(title, function() {
-          describeBody(fn.bind(this));
-        });
-      })
-      .catch(e => {
-        throw e;
-      });
-}
+const realConnectionSuites: {title: string, fn: ((this: Mocha.Suite) => void), only: boolean}[] = [];
 
+export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
+  realConnectionSuites.push({title, fn, only: false});
+}
+// eslint-disable-next-line mocha/no-exclusive-tests
 describeWithRealConnection.only = function(title: string, fn: (this: Mocha.Suite) => void) {
-  hasOnly = true;
-  // eslint-disable-next-line mocha/no-exclusive-tests
-  describe.only(title, function() {
-    describeBody(fn.bind(this));
-  });
+  realConnectionSuites.push({title, fn, only: true});
 };
+
+export function flushRealConnectionSuits() {
+  for (const {title, fn, only} of realConnectionSuites) {
+    if (only) {
+      // eslint-disable-next-line mocha/no-exclusive-tests
+      describe.only(title, function() {
+        describeBody(fn.bind(this));
+      });
+    } else {
+      describe(title, function() {
+        describeBody(fn.bind(this));
+      });
+    }
+  }
+}
 
 export async function getExecutionContext(runtimeModel: SDK.RuntimeModel.RuntimeModel):
     Promise<SDK.RuntimeModel.ExecutionContext> {

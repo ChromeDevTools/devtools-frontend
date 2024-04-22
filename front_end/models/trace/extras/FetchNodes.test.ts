@@ -18,7 +18,7 @@ function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: num
   return x as T;
 }
 
-describeWithMockConnection('TraceSDKServices', function() {
+describeWithMockConnection('FetchNodes', function() {
   beforeEach(async () => {
     clearAllMockConnectionResponseHandlers();
     TraceEngine.Extras.FetchNodes.clearCacheForTesting();
@@ -109,6 +109,30 @@ describeWithMockConnection('TraceSDKServices', function() {
       assert.deepEqual(entries, [
         [nodeId<Protocol.DOM.BackendNodeId>(2), domNodeId2],
         [nodeId<Protocol.DOM.BackendNodeId>(3), domNodeId3],
+      ]);
+    });
+  });
+
+  describe('nodeIdsForEvent', () => {
+    it('identifies node ids for a Layout event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const layoutEvent = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventLayout);
+      assert.isOk(layoutEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, layoutEvent);
+      assert.deepEqual(Array.from(nodeIds), [2]);
+    });
+
+    it('identifies node ids for a LayoutShift event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const layoutShiftEvent = traceData.LayoutShifts.clusters[0].events.at(0);
+      assert.isOk(layoutShiftEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, layoutShiftEvent);
+      assert.deepEqual(Array.from(nodeIds), [
+        193,
+        195,
+        178,
+        189,
+        188,
       ]);
     });
   });

@@ -533,16 +533,6 @@ export class TimelineModelImpl {
         if (!frameId) {
           break;
         }
-        // In case we have no closing Layout event, endData is not available.
-        if (event.args['endData']) {
-          if (event.args['endData']['layoutRoots']) {
-            for (let i = 0; i < event.args['endData']['layoutRoots'].length; ++i) {
-              timelineData.backendNodeIds.push(event.args['endData']['layoutRoots'][i]['nodeId']);
-            }
-          } else {
-            timelineData.backendNodeIds.push(event.args['endData']['rootNode']);
-          }
-        }
         if (this.currentScriptEvent) {
           this.currentTaskLayoutAndRecalcEvents.push(event);
         }

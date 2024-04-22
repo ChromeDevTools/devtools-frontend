@@ -49,6 +49,34 @@ export async function domNodeForBackendNodeID(
   return result;
 }
 
+const nodeIdsForEventCache = new WeakMap<Types.TraceEvents.TraceEventData, Set<Protocol.DOM.BackendNodeId>>();
+/**
+ * Extracts a set of NodeIds for a given event.
+ * NOTE: you probably don't want to call this and instead use
+ * `extractRelatedDOMNodesFromEvent`, which will fetch the nodes over CDP.
+ * This method is primarily exported so we can test the logic more easily
+ * without having to mock the CDP layer.
+ **/
+export function nodeIdsForEvent(
+    // not used currently, but we will need this for some events in the future
+    // to be able to resolve nodeIds that span multiple related events.
+    _modelData: Handlers.Types.TraceParseData,
+    event: Types.TraceEvents.TraceEventData,
+    ): Set<Protocol.DOM.BackendNodeId> {
+  const fromCache = nodeIdsForEventCache.get(event);
+  if (fromCache) {
+    return fromCache;
+  }
+  const foundIds = new Set<Protocol.DOM.BackendNodeId>();
+
+  if (Types.TraceEvents.isTraceEventLayout(event)) {
+    event.args.endData.layoutRoots.forEach(root => foundIds.add(root.nodeId));
+  } else if (Types.TraceEvents.isSyntheticLayoutShift(event) && event.args.data?.impacted_nodes) {
+    event.args.data.impacted_nodes.forEach(node => foundIds.add(node.node_id));
+  }
+  nodeIdsForEventCache.set(event, foundIds);
+  return foundIds;
+}
 /**
  * Looks up for backend node ids in different types of trace events
  * and resolves them into related DOM nodes.
@@ -58,8 +86,9 @@ export async function domNodeForBackendNodeID(
 export async function extractRelatedDOMNodesFromEvent(
     modelData: Handlers.Types.TraceParseData,
     event: Types.TraceEvents.TraceEventData): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
-  if (Types.TraceEvents.isSyntheticLayoutShift(event) && event.args.data?.impacted_nodes) {
-    return domNodesForMultipleBackendNodeIds(modelData, event.args.data.impacted_nodes.map(node => node.node_id));
+  const nodeIds = nodeIdsForEvent(modelData, event);
+  if (nodeIds.size) {
+    return domNodesForMultipleBackendNodeIds(modelData, Array.from(nodeIds));
   }
   return null;
 }

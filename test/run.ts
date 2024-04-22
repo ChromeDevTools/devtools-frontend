@@ -15,6 +15,7 @@ const unparse = require('yargs-unparser');
 const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('skip-ninja', {type: 'boolean', desc: 'Skip rebuilding'})
                     .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
+                    .options('verbose', {alias: 'v', type: 'count', desc: 'Increases the log level'})
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
@@ -24,7 +25,14 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     })
                     .strict()
                     .argv;
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver'];
+const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose'];
+
+let logLevel = 'error';
+if (options['verbose'] === 1) {
+  logLevel = 'info';
+} else if (options['verbose'] === 2) {
+  logLevel = 'debug';
+}
 
 function forwardOptions() {
   const forwardedOptions = {...options};
@@ -35,8 +43,10 @@ function forwardOptions() {
 }
 
 function runProcess(exe: string, args: string[], options: childProcess.SpawnSyncOptionsWithStringEncoding) {
-  // eslint-disable-next-line no-console
-  console.info(`Running '${exe}${args.length > 0 ? ` "${args.join('" "')}"` : ''}'`);
+  if (logLevel !== 'error') {
+    // eslint-disable-next-line no-console
+    console.info(`Running '${exe}${args.length > 0 ? ` "${args.join('" "')}"` : ''}'`);
+  }
   return childProcess.spawnSync(exe, args, options);
 }
 
@@ -111,9 +121,11 @@ class MochaTests extends Tests {
 class KarmaTests extends Tests {
   override run(tests: PathPair[]) {
     return super.run(tests, [
-      path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'), 'start',
-      path.join(GEN_DIR, 'test', 'unit', 'karma.conf.js'), '--log-level',
-      'info',  // TODO(333423685) make configurable?
+      path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'),
+      'start',
+      path.join(GEN_DIR, 'test', 'unit', 'karma.conf.js'),
+      '--log-level',
+      logLevel,
     ]);
   }
 }

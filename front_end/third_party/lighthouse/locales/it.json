@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Le chiavi di accesso consentono agli utenti di impostare rapidamente lo stato attivo su una parte della pagina. Per assicurare una navigazione corretta, ogni chiave di accesso deve essere univoca. [Scopri di più sulle chiavi di accesso](https://dequeuniversity.com/rules/axe/4.8/accesskeys)."
+    "message": "Le chiavi di accesso consentono agli utenti di impostare rapidamente lo stato attivo su una parte della pagina. Per assicurare una navigazione corretta, ogni chiave di accesso deve essere univoca. [Scopri di più sulle chiavi di accesso](https://dequeuniversity.com/rules/axe/4.9/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "I valori `[accesskey]` non sono univoci"
@@ -9,7 +9,7 @@
     "message": "I valori `[accesskey]` sono univoci"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Ogni elemento `role` ARIA supporta un determinato sottoinsieme di attributi `aria-*`. Se non dovessero corrispondere, gli attributi `aria-*` non saranno considerati validi. [Scopri come far corrispondere gli attributi ARIA ai relativi ruoli](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-attr)."
+    "message": "Ogni elemento `role` ARIA supporta un determinato sottoinsieme di attributi `aria-*`. Se non dovessero corrispondere, gli attributi `aria-*` non saranno considerati validi. [Scopri come far corrispondere gli attributi ARIA ai relativi ruoli](https://dequeuniversity.com/rules/axe/4.9/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non corrispondono ai rispettivi ruoli"
@@ -18,7 +18,7 @@
     "message": "Gli attributi `[aria-*]` corrispondono ai rispettivi ruoli"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "Gli attributi `role` ARIA consentono alle tecnologie per la disabilità di conoscere il ruolo di ogni elemento della pagina web. Se i valori `role` non vengono digitati correttamente, non sono presenti valori `role` ARIA o ruoli astratti, lo scopo dell'elemento non verrà comunicato agli utenti delle tecnologie per la disabilità. [Scopri di più sui ruoli ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-allowed-role)."
+    "message": "Gli attributi `role` ARIA consentono alle tecnologie per la disabilità di conoscere il ruolo di ogni elemento della pagina web. Se i valori `role` non vengono digitati correttamente, non sono presenti valori `role` ARIA o ruoli astratti, lo scopo dell'elemento non verrà comunicato agli utenti delle tecnologie per la disabilità. [Scopri di più sui ruoli ARIA](https://dequeuniversity.com/rules/axe/4.9/aria-allowed-role)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
     "message": "I valori assegnati a `role=\"\"` non sono ruoli ARIA validi."
@@ -27,7 +27,7 @@
     "message": "I valori assegnati a `role=\"\"` sono ruoli ARIA validi."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Quando un elemento non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili gli elementi di comando](https://dequeuniversity.com/rules/axe/4.8/aria-command-name)."
+    "message": "Quando un elemento non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili gli elementi di comando](https://dequeuniversity.com/rules/axe/4.9/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Gli elementi `button`, `link` e `menuitem` non hanno nomi accessibili"
@@ -36,7 +36,7 @@
     "message": "Gli elementi `button`, `link` e `menuitem` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-dialog-name.js | description": {
-    "message": "Gli elementi delle finestre di dialogo ARIA senza nomi accessibili potrebbero impedire agli utenti di screen reader di comprendere lo scopo di questi elementi. [Scopri come rendere più accessibili gli elementi delle finestre di dialogo ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-dialog-name)."
+    "message": "Gli elementi delle finestre di dialogo ARIA senza nomi accessibili potrebbero impedire agli utenti di screen reader di comprendere lo scopo di questi elementi. [Scopri come rendere più accessibili gli elementi delle finestre di dialogo ARIA](https://dequeuniversity.com/rules/axe/4.9/aria-dialog-name)."
   },
   "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
     "message": "Gli elementi con `role=\"dialog\"` o `role=\"alertdialog\"` non hanno nomi accessibili."
@@ -45,7 +45,7 @@
     "message": "Gli elementi con `role=\"dialog\"` o `role=\"alertdialog\"` hanno nomi accessibili."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, funzionano in modo incoerente se viene impostato il valore `aria-hidden=\"true\"` nel documento `<body>`. [Scopri in che modo `aria-hidden` influisce sul corpo del documento](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-body)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, funzionano in modo incoerente se viene impostato il valore `aria-hidden=\"true\"` nel documento `<body>`. [Scopri in che modo `aria-hidden` influisce sul corpo del documento](https://dequeuniversity.com/rules/axe/4.9/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "L'attributo `[aria-hidden=\"true\"]` è presente nel documento `<body>`"
@@ -54,7 +54,7 @@
     "message": "L'attributo `[aria-hidden=\"true\"]` non è presente nel documento `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "I discendenti attivabili all'interno di un elemento `[aria-hidden=\"true\"]` impediscono di mettere questi elementi interattivi a disposizione degli utenti che usano tecnologie per la disabilità come gli screen reader. [Scopri in che modo `aria-hidden` influisce sugli elementi attivabili](https://dequeuniversity.com/rules/axe/4.8/aria-hidden-focus)."
+    "message": "I discendenti attivabili all'interno di un elemento `[aria-hidden=\"true\"]` impediscono di mettere questi elementi interattivi a disposizione degli utenti che usano tecnologie per la disabilità come gli screen reader. [Scopri in che modo `aria-hidden` influisce sugli elementi attivabili](https://dequeuniversity.com/rules/axe/4.9/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Gli elementi `[aria-hidden=\"true\"]` contengono discendenti per cui è possibile impostare lo stato attivo"
@@ -63,7 +63,7 @@
     "message": "Gli elementi `[aria-hidden=\"true\"]` non contengono discendenti per cui è possibile impostare lo stato attivo"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Quando un campo di immissione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sulle etichette dei campi di immissione](https://dequeuniversity.com/rules/axe/4.8/aria-input-field-name)."
+    "message": "Quando un campo di immissione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sulle etichette dei campi di immissione](https://dequeuniversity.com/rules/axe/4.9/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "I campi di immissione ARIA non hanno nomi accessibili"
@@ -72,7 +72,7 @@
     "message": "I campi di immissione ARIA hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Quando un elemento meter non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `meter`](https://dequeuniversity.com/rules/axe/4.8/aria-meter-name)."
+    "message": "Quando un elemento meter non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `meter`](https://dequeuniversity.com/rules/axe/4.9/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Gli elementi ARIA `meter` non hanno nomi accessibili"
@@ -81,7 +81,7 @@
     "message": "Gli elementi ARIA `meter` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Quando un elemento `progressbar` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come etichettare gli elementi `progressbar`](https://dequeuniversity.com/rules/axe/4.8/aria-progressbar-name)."
+    "message": "Quando un elemento `progressbar` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come etichettare gli elementi `progressbar`](https://dequeuniversity.com/rules/axe/4.9/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Gli elementi ARIA `progressbar` non hanno nomi accessibili"
@@ -90,7 +90,7 @@
     "message": "Gli elementi ARIA `progressbar` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Alcuni ruoli ARIA hanno attributi obbligatori che descrivono lo stato dell'elemento agli screen reader. [Scopri di più sui ruoli e sugli attributi richiesti](https://dequeuniversity.com/rules/axe/4.8/aria-required-attr)."
+    "message": "Alcuni ruoli ARIA hanno attributi obbligatori che descrivono lo stato dell'elemento agli screen reader. [Scopri di più sui ruoli e sugli attributi richiesti](https://dequeuniversity.com/rules/axe/4.9/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Gli elementi `[role]` non hanno tutti gli attributi `[aria-*]` obbligatori"
@@ -99,7 +99,7 @@
     "message": "Gli elementi `[role]` hanno tutti gli attributi `[aria-*]` obbligatori"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Alcuni ruoli principali ARIA devono contenere specifici ruoli secondari per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli e sugli elementi secondari richiesti](https://dequeuniversity.com/rules/axe/4.8/aria-required-children)."
+    "message": "Alcuni ruoli principali ARIA devono contenere specifici ruoli secondari per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli e sugli elementi secondari richiesti](https://dequeuniversity.com/rules/axe/4.9/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Negli elementi con un ruolo ARIA `[role]` che richiedono che gli elementi secondari contengano un ruolo `[role]` specifico mancano alcuni o tutti questi elementi secondari obbligatori."
@@ -108,7 +108,7 @@
     "message": "Gli elementi con un ruolo ARIA `[role]` che richiedono che gli elementi secondari contengano un ruolo `[role]` specifico hanno tutti gli elementi secondari obbligatori."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Alcuni ruoli secondari ARIA devono essere contenuti in specifici ruoli principali per poter eseguire in modo corretto le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA e sull'elemento principale richiesto](https://dequeuniversity.com/rules/axe/4.8/aria-required-parent)."
+    "message": "Alcuni ruoli secondari ARIA devono essere contenuti in specifici ruoli principali per poter eseguire in modo corretto le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA e sull'elemento principale richiesto](https://dequeuniversity.com/rules/axe/4.9/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Gli elementi `[role]` non sono contenuti nei rispettivi elementi principali obbligatori"
@@ -117,7 +117,7 @@
     "message": "Gli elementi `[role]` sono contenuti nei rispettivi elementi principali obbligatori"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "I ruoli ARIA devono contenere valori validi per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA validi](https://dequeuniversity.com/rules/axe/4.8/aria-roles)."
+    "message": "I ruoli ARIA devono contenere valori validi per poter eseguire le funzionalità per l'accessibilità previste. [Scopri di più sui ruoli ARIA validi](https://dequeuniversity.com/rules/axe/4.9/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "I valori `[role]` non sono validi"
@@ -126,7 +126,7 @@
     "message": "I valori `[role]` sono validi"
   },
   "core/audits/accessibility/aria-text.js | description": {
-    "message": "L'aggiunta di `role=text` intorno a un nodo di testo diviso dal markup consente a VoiceOver di considerarlo come una singola frase, ma i discendenti attivabili dell'elemento non verranno annunciati. [Scopri di più sull'attributo `role=text`](https://dequeuniversity.com/rules/axe/4.8/aria-text)."
+    "message": "L'aggiunta di `role=text` intorno a un nodo di testo diviso dal markup consente a VoiceOver di considerarlo come una singola frase, ma i discendenti attivabili dell'elemento non verranno annunciati. [Scopri di più sull'attributo `role=text`](https://dequeuniversity.com/rules/axe/4.9/aria-text)."
   },
   "core/audits/accessibility/aria-text.js | failureTitle": {
     "message": "Gli elementi con l'attributo `role=text` hanno discendenti attivabili."
@@ -135,7 +135,7 @@
     "message": "Gli elementi con l'attributo `role=text` non hanno discendenti attivabili."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Quando un campo di attivazione/disattivazione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sui campi di attivazione/disattivazione](https://dequeuniversity.com/rules/axe/4.8/aria-toggle-field-name)."
+    "message": "Quando un campo di attivazione/disattivazione non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sui campi di attivazione/disattivazione](https://dequeuniversity.com/rules/axe/4.9/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "I campi di attivazione/disattivazione ARIA non hanno nomi accessibili"
@@ -144,7 +144,7 @@
     "message": "I campi di attivazione/disattivazione ARIA hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Quando un elemento tooltip non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `tooltip`](https://dequeuniversity.com/rules/axe/4.8/aria-tooltip-name)."
+    "message": "Quando un elemento tooltip non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come assegnare un nome agli elementi `tooltip`](https://dequeuniversity.com/rules/axe/4.9/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Gli elementi ARIA `tooltip` non hanno nomi accessibili"
@@ -153,7 +153,7 @@
     "message": "Gli elementi ARIA `tooltip` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Quando un elemento `treeitem` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sull'etichettatura di elementi `treeitem`](https://dequeuniversity.com/rules/axe/4.8/aria-treeitem-name)."
+    "message": "Quando un elemento `treeitem` non ha un nome accessibile, gli screen reader lo descrivono con un nome generico, rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri di più sull'etichettatura di elementi `treeitem`](https://dequeuniversity.com/rules/axe/4.9/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Gli elementi ARIA `treeitem` non hanno nomi accessibili"
@@ -162,7 +162,7 @@
     "message": "Gli elementi ARIA `treeitem` hanno nomi accessibili"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con valori non validi. [Scopri di più sui valori validi per gli attributi ARIA](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr-value)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con valori non validi. [Scopri di più sui valori validi per gli attributi ARIA](https://dequeuniversity.com/rules/axe/4.9/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non hanno valori validi"
@@ -171,7 +171,7 @@
     "message": "Gli attributi `[aria-*]` hanno valori validi"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con nomi non validi. [Scopri di più sugli attributi ARIA validi](https://dequeuniversity.com/rules/axe/4.8/aria-valid-attr)."
+    "message": "Le tecnologie per la disabilità, come gli screen reader, non sono in grado di interpretare gli attributi ARIA con nomi non validi. [Scopri di più sugli attributi ARIA validi](https://dequeuniversity.com/rules/axe/4.9/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Gli attributi `[aria-*]` non sono validi o contengono errori ortografici"
@@ -183,7 +183,7 @@
     "message": "Elementi respinti"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Quando un pulsante non ha un nome accessibile, gli screen reader lo descrivono semplicemente come \"pulsante\", rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili i pulsanti](https://dequeuniversity.com/rules/axe/4.8/button-name)."
+    "message": "Quando un pulsante non ha un nome accessibile, gli screen reader lo descrivono semplicemente come \"pulsante\", rendendolo inutilizzabile per gli utenti che si affidano agli screen reader. [Scopri come rendere più accessibili i pulsanti](https://dequeuniversity.com/rules/axe/4.9/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "I pulsanti non hanno nomi accessibili"
@@ -192,7 +192,7 @@
     "message": "I pulsanti hanno un nome accessibile"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Se aggiungi metodi per bypassare contenuti ripetitivi, la navigazione della pagina diventa più efficiente per chi usa la tastiera. [Scopri di più sui blocchi di bypass](https://dequeuniversity.com/rules/axe/4.8/bypass)."
+    "message": "Se aggiungi metodi per bypassare contenuti ripetitivi, la navigazione della pagina diventa più efficiente per chi usa la tastiera. [Scopri di più sui blocchi di bypass](https://dequeuniversity.com/rules/axe/4.9/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "La pagina non contiene alcun titolo, skip link o area di riferimento"
@@ -201,7 +201,7 @@
     "message": "La pagina contiene un titolo, uno skip link o un'area di riferimento"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. [Scopri come fornire un contrasto cromatico sufficiente](https://dequeuniversity.com/rules/axe/4.8/color-contrast)."
+    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. [Scopri come fornire un contrasto cromatico sufficiente](https://dequeuniversity.com/rules/axe/4.9/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Il rapporto di contrasto tra i colori di sfondo e primo piano non è sufficiente."
@@ -210,7 +210,7 @@
     "message": "Il rapporto di contrasto tra i colori di sfondo e primo piano è sufficiente"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Se il markup degli elenchi di definizioni non è stato eseguito in modo corretto, gli screen reader possono generare output ambigui o imprecisi. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.8/definition-list)."
+    "message": "Se il markup degli elenchi di definizioni non è stato eseguito in modo corretto, gli screen reader possono generare output ambigui o imprecisi. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.9/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Gli elementi `<dl>` non contengono solo gruppi `<dt>` e `<dd>` ed elementi `<script>`, `<template>` o `<div>` nell'ordine corretto."
@@ -219,7 +219,7 @@
     "message": "Gli elementi `<dl>` contengono solo gruppi `<dt>` e `<dd>` ed elementi `<script>`, `<template>` o `<div>` nell'ordine corretto."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Gli elementi dell'elenco di definizioni (`<dt>` e `<dd>`) devono essere aggregati in un elemento `<dl>` principale affinché gli screen reader possano descriverli correttamente. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.8/dlitem)."
+    "message": "Gli elementi dell'elenco di definizioni (`<dt>` e `<dd>`) devono essere aggregati in un elemento `<dl>` principale affinché gli screen reader possano descriverli correttamente. [Scopri come strutturare correttamente gli elenchi di definizioni](https://dequeuniversity.com/rules/axe/4.9/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Gli elementi dell'elenco di definizioni non sono aggregati negli elementi `<dl>`"
@@ -228,7 +228,7 @@
     "message": "Gli elementi dell'elenco di definizioni sono aggregati negli elementi `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Il titolo fornisce agli utenti di screen reader una panoramica della pagina, mentre per gli utenti di motori di ricerca è utile per stabilire se una pagina è pertinente alla loro ricerca. [Scopri di più sui titoli dei documenti](https://dequeuniversity.com/rules/axe/4.8/document-title)."
+    "message": "Il titolo fornisce agli utenti di screen reader una panoramica della pagina, mentre per gli utenti di motori di ricerca è utile per stabilire se una pagina è pertinente alla loro ricerca. [Scopri di più sui titoli dei documenti](https://dequeuniversity.com/rules/axe/4.9/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Il documento non ha un elemento `<title>`"
@@ -236,17 +236,8 @@
   "core/audits/accessibility/document-title.js | title": {
     "message": "Il documento ha un elemento `<title>`"
   },
-  "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Tutti gli elementi attivabili devono avere un valore `id` univoco per garantirne la visibilità alle tecnologie per la disabilità. [Scopri come correggere i valori `id` duplicati](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-active)."
-  },
-  "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
-    "message": "Gli attributi `[id]` in elementi attivi per cui è possibile impostare lo stato attivo non sono univoci"
-  },
-  "core/audits/accessibility/duplicate-id-active.js | title": {
-    "message": "Gli attributi `[id]` in elementi attivi per cui è possibile impostare lo stato attivo sono univoci"
-  },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Il valore di un ID ARIA deve essere univoco per evitare che altre istanze vengano ignorate dalle tecnologie per la disabilità. [Scopri come correggere gli ID ARIA duplicati](https://dequeuniversity.com/rules/axe/4.8/duplicate-id-aria)."
+    "message": "Il valore di un ID ARIA deve essere univoco per evitare che altre istanze vengano ignorate dalle tecnologie per la disabilità. [Scopri come correggere gli ID ARIA duplicati](https://dequeuniversity.com/rules/axe/4.9/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "Gli ID ARIA non sono univoci"
@@ -255,7 +246,7 @@
     "message": "Gli ID ARIA sono univoci"
   },
   "core/audits/accessibility/empty-heading.js | description": {
-    "message": "Un'intestazione senza contenuti o con testo inaccessibile impedisce agli utenti di screen reader di accedere alle informazioni nella struttura della pagina. [Scopri di più sulle intestazioni](https://dequeuniversity.com/rules/axe/4.8/empty-heading)."
+    "message": "Un'intestazione senza contenuti o con testo inaccessibile impedisce agli utenti di screen reader di accedere alle informazioni nella struttura della pagina. [Scopri di più sulle intestazioni](https://dequeuniversity.com/rules/axe/4.9/empty-heading)."
   },
   "core/audits/accessibility/empty-heading.js | failureTitle": {
     "message": "Gli elementi di intestazione non includono contenuti."
@@ -264,7 +255,7 @@
     "message": "Tutti gli elementi di intestazione includono contenuti."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "I campi dei moduli con più etichette potrebbero essere descritti in modo confuso dalle tecnologie per la disabilità come gli screen reader, che usano la prima etichetta, l'ultima o tutte le etichette. [Scopri come utilizzare le etichette dei moduli](https://dequeuniversity.com/rules/axe/4.8/form-field-multiple-labels)."
+    "message": "I campi dei moduli con più etichette potrebbero essere descritti in modo confuso dalle tecnologie per la disabilità come gli screen reader, che usano la prima etichetta, l'ultima o tutte le etichette. [Scopri come utilizzare le etichette dei moduli](https://dequeuniversity.com/rules/axe/4.9/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "I campi del modulo hanno più etichette"
@@ -273,7 +264,7 @@
     "message": "Nessun campo del modulo ha più etichette"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Gli utenti di screen reader si affidano ai titoli dei frame per la descrizione dei relativi contenuti. [Scopri di più sui titoli dei frame](https://dequeuniversity.com/rules/axe/4.8/frame-title)."
+    "message": "Gli utenti di screen reader si affidano ai titoli dei frame per la descrizione dei relativi contenuti. [Scopri di più sui titoli dei frame](https://dequeuniversity.com/rules/axe/4.9/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Gli elementi `<frame>` o `<iframe>` non hanno un titolo"
@@ -282,7 +273,7 @@
     "message": "Gli elementi `<frame>` o `<iframe>` hanno un titolo"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Le intestazioni nell'ordine corretto che non saltano livelli descrivono la struttura semantica della pagina, facilitando la navigazione e la comprensione quando vengono usate tecnologie per la disabilità. [Scopri di più sull'ordine delle intestazioni](https://dequeuniversity.com/rules/axe/4.8/heading-order)."
+    "message": "Le intestazioni nell'ordine corretto che non saltano livelli descrivono la struttura semantica della pagina, facilitando la navigazione e la comprensione quando vengono usate tecnologie per la disabilità. [Scopri di più sull'ordine delle intestazioni](https://dequeuniversity.com/rules/axe/4.9/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Gli elementi di intestazione non sono in ordine decrescente sequenziale"
@@ -291,7 +282,7 @@
     "message": "Gli elementi di intestazione vengono visualizzati in ordine decrescente sequenziale"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Se per una pagina non viene specificato un attributo `lang`, lo screen reader presuppone che la lingua della pagina sia quella predefinita scelta dall'utente durante la configurazione dello screen reader. Se la lingua della pagina non è effettivamente quella predefinita, lo screen reader potrebbe non pronunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-has-lang)."
+    "message": "Se per una pagina non viene specificato un attributo `lang`, lo screen reader presuppone che la lingua della pagina sia quella predefinita scelta dall'utente durante la configurazione dello screen reader. Se la lingua della pagina non è effettivamente quella predefinita, lo screen reader potrebbe non pronunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.9/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "L'elemento `<html>` non ha un attributo `[lang]`"
@@ -300,7 +291,7 @@
     "message": "L'elemento `<html>` ha un attributo `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida consente agli screen reader di pronunciare correttamente il testo. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-lang-valid)."
+    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida consente agli screen reader di pronunciare correttamente il testo. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.9/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "L'attributo `[lang]` dell'elemento `<html>` non ha un valore valido."
@@ -309,7 +300,7 @@
     "message": "L'attributo `[lang]` dell'elemento `<html>` ha un valore valido"
   },
   "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
-    "message": "Se la pagina web non specifica un linguaggio coerente, lo screen reader potrebbe non annunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/html-xml-lang-mismatch)."
+    "message": "Se la pagina web non specifica un linguaggio coerente, lo screen reader potrebbe non annunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.9/html-xml-lang-mismatch)."
   },
   "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
     "message": "L'elemento `<html>` non ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
@@ -318,7 +309,7 @@
     "message": "L'elemento `<html>` ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
   },
   "core/audits/accessibility/identical-links-same-purpose.js | description": {
-    "message": "I link con la stessa destinazione devono avere la stessa descrizione per aiutare gli utenti a comprendere lo scopo dei link e decidere se seguirli o meno. [Scopri di più sui link identici](https://dequeuniversity.com/rules/axe/4.8/identical-links-same-purpose)."
+    "message": "I link con la stessa destinazione devono avere la stessa descrizione per aiutare gli utenti a comprendere lo scopo dei link e decidere se seguirli o meno. [Scopri di più sui link identici](https://dequeuniversity.com/rules/axe/4.9/identical-links-same-purpose)."
   },
   "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
     "message": "I link identici non hanno lo stesso scopo."
@@ -327,7 +318,7 @@
     "message": "I link identici hanno lo stesso scopo."
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Gli elementi decorativi possono essere ignorati con un attributo ALT vuoto. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.8/image-alt)."
+    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Gli elementi decorativi possono essere ignorati con un attributo ALT vuoto. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.9/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Gli elementi immagine non hanno attributi `[alt]`"
@@ -336,7 +327,7 @@
     "message": "Gli elementi immagine hanno attributi `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Un testo alternativo identico a quello adiacente al link o all'immagine potrebbe creare confusione negli utenti di screen reader perché verrà letto due volte. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.8/image-redundant-alt)."
+    "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Un testo alternativo identico a quello adiacente al link o all'immagine potrebbe creare confusione negli utenti di screen reader perché verrà letto due volte. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.9/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
     "message": "Gli elementi image hanno attributi `[alt]` che rappresentano testo ridondante."
@@ -345,7 +336,7 @@
     "message": "Gli elementi image non hanno attributi `[alt]` che rappresentano testo ridondante."
   },
   "core/audits/accessibility/input-button-name.js | description": {
-    "message": "L'aggiunta di testo distinguibile e accessibile ai pulsanti di immissione può aiutare gli utenti di screen reader a comprendere lo scopo dei pulsanti. [Scopri di più sui pulsanti di immissione](https://dequeuniversity.com/rules/axe/4.8/input-button-name)."
+    "message": "L'aggiunta di testo distinguibile e accessibile ai pulsanti di immissione può aiutare gli utenti di screen reader a comprendere lo scopo dei pulsanti. [Scopri di più sui pulsanti di immissione](https://dequeuniversity.com/rules/axe/4.9/input-button-name)."
   },
   "core/audits/accessibility/input-button-name.js | failureTitle": {
     "message": "I pulsanti di immissione non hanno testo distinguibile."
@@ -354,7 +345,7 @@
     "message": "I pulsanti di immissione hanno testo distinguibile."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Quando viene utilizzata un'immagine come pulsante `<input>`, fornire un testo alternativo può aiutare gli utenti di screen reader a comprendere lo scopo del pulsante. [Scopri di più sul testo alternativo dell'immagine di input](https://dequeuniversity.com/rules/axe/4.8/input-image-alt)."
+    "message": "Quando viene utilizzata un'immagine come pulsante `<input>`, fornire un testo alternativo può aiutare gli utenti di screen reader a comprendere lo scopo del pulsante. [Scopri di più sul testo alternativo dell'immagine di input](https://dequeuniversity.com/rules/axe/4.9/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Gli elementi `<input type=\"image\">` non hanno testo `[alt]`"
@@ -363,7 +354,7 @@
     "message": "Gli elementi `<input type=\"image\">` hanno testo `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Le etichette di testo visibili che non corrispondono al nome accessibile possono generare un'esperienza confusa per gli utenti di screen reader. [Scopri di più sui nomi accessibili](https://dequeuniversity.com/rules/axe/4.8/label-content-name-mismatch)."
+    "message": "Le etichette di testo visibili che non corrispondono al nome accessibile possono generare un'esperienza confusa per gli utenti di screen reader. [Scopri di più sui nomi accessibili](https://dequeuniversity.com/rules/axe/4.9/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
     "message": "Gli elementi con etichette di testo visibili non hanno nomi accessibili corrispondenti."
@@ -372,7 +363,7 @@
     "message": "Gli elementi con etichette di testo visibili hanno nomi accessibili corrispondenti."
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "Le etichette consentono di assicurarsi che i controlli dei moduli vengano descritti in modo corretto dalle tecnologie per la disabilità, come gli screen reader. [Scopri di più sulle etichette degli elementi del modulo](https://dequeuniversity.com/rules/axe/4.8/label)."
+    "message": "Le etichette consentono di assicurarsi che i controlli dei moduli vengano descritti in modo corretto dalle tecnologie per la disabilità, come gli screen reader. [Scopri di più sulle etichette degli elementi del modulo](https://dequeuniversity.com/rules/axe/4.9/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Gli elementi del modulo non hanno le corrispondenti etichette"
@@ -381,7 +372,7 @@
     "message": "Gli elementi del modulo sono associati a etichette"
   },
   "core/audits/accessibility/landmark-one-main.js | description": {
-    "message": "Un punto di riferimento principale aiuta gli utenti di screen reader a navigare in una pagina web. [Scopri di più sui punti di riferimento](https://dequeuniversity.com/rules/axe/4.8/landmark-one-main)."
+    "message": "Un punto di riferimento principale aiuta gli utenti di screen reader a navigare in una pagina web. [Scopri di più sui punti di riferimento](https://dequeuniversity.com/rules/axe/4.9/landmark-one-main)."
   },
   "core/audits/accessibility/landmark-one-main.js | failureTitle": {
     "message": "Il documento non ha un punto di riferimento principale."
@@ -390,7 +381,7 @@
     "message": "Il documento ha un punto di riferimento principale."
   },
   "core/audits/accessibility/link-in-text-block.js | description": {
-    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. Un testo dei link distinguibile migliora l'esperienza degli utenti ipovedenti. [Scopri come rendere distinguibili i link](https://dequeuniversity.com/rules/axe/4.8/link-in-text-block)."
+    "message": "Il testo a basso contrasto è difficile, se non impossibile, da leggere per molti utenti. Un testo dei link distinguibile migliora l'esperienza degli utenti ipovedenti. [Scopri come rendere distinguibili i link](https://dequeuniversity.com/rules/axe/4.9/link-in-text-block)."
   },
   "core/audits/accessibility/link-in-text-block.js | failureTitle": {
     "message": "I link sono distinguibili in base al colore."
@@ -399,7 +390,7 @@
     "message": "I link sono distinguibili senza doversi basare sul colore."
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Un testo dei link (incluso il testo alternativo delle immagini, se come link) distinguibile, univoco e attivabile migliora l'esperienza di navigazione per gli utenti di screen reader. [Scopri come rendere accessibili i link](https://dequeuniversity.com/rules/axe/4.8/link-name)."
+    "message": "Un testo dei link (incluso il testo alternativo delle immagini, se come link) distinguibile, univoco e attivabile migliora l'esperienza di navigazione per gli utenti di screen reader. [Scopri come rendere accessibili i link](https://dequeuniversity.com/rules/axe/4.9/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Il nome dei link non è distinguibile"
@@ -408,7 +399,7 @@
     "message": "I link hanno un nome distinguibile"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Gli screen reader descrivono gli elenchi in un determinato modo. Una struttura dell'elenco corretta agevola l'output dello screen reader. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.8/list)."
+    "message": "Gli screen reader descrivono gli elenchi in un determinato modo. Una struttura dell'elenco corretta agevola l'output dello screen reader. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.9/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Gli elenchi non contengono solo elementi `<li>` ed elementi che supportano script (`<script>` e `<template>`)."
@@ -417,7 +408,7 @@
     "message": "Gli elenchi contengono solo elementi `<li>` ed elementi che supportano gli script (`<script>` e `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Gli screen reader richiedono che gli elementi dell'elenco (`<li>`) siano contenuti in un elemento `<ul>`, `<ol>` o `<menu>` principale per poterli descrivere in modo corretto. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.8/listitem)."
+    "message": "Gli screen reader richiedono che gli elementi dell'elenco (`<li>`) siano contenuti in un elemento `<ul>`, `<ol>` o `<menu>` principale per poterli descrivere in modo corretto. [Scopri di più sulla struttura dell'elenco corretta](https://dequeuniversity.com/rules/axe/4.9/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Gli elementi dell'elenco (`<li>`) non sono contenuti negli elementi principali `<ul>`, `<ol>` o `<menu>`."
@@ -426,7 +417,7 @@
     "message": "Gli elementi dell'elenco (`<li>`) sono contenuti negli elementi principali `<ul>`, `<ol>` o `<menu>`."
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "L'aggiornamento automatico della pagina è un evento imprevisto per l'utente e, una volta verificatosi, imposta di nuovo lo stato attivo sulla parte superiore della pagina. Ciò può costituire motivo di frustrazione o confusione per l'utente. [Scopri di più sul meta tag di aggiornamento](https://dequeuniversity.com/rules/axe/4.8/meta-refresh)."
+    "message": "L'aggiornamento automatico della pagina è un evento imprevisto per l'utente e, una volta verificatosi, imposta di nuovo lo stato attivo sulla parte superiore della pagina. Ciò può costituire motivo di frustrazione o confusione per l'utente. [Scopri di più sul meta tag di aggiornamento](https://dequeuniversity.com/rules/axe/4.9/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "Il documento usa `<meta http-equiv=\"refresh\">`"
@@ -435,7 +426,7 @@
     "message": "Il documento non usa `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Disattivare lo zoom è problematico per gli utenti ipovedenti che si affidano all'ingrandimento dello schermo per vedere in modo chiaro i contenuti di una pagina web. [Scopri di più sul meta tag viewport](https://dequeuniversity.com/rules/axe/4.8/meta-viewport)."
+    "message": "Disattivare lo zoom è problematico per gli utenti ipovedenti che si affidano all'ingrandimento dello schermo per vedere in modo chiaro i contenuti di una pagina web. [Scopri di più sul meta tag viewport](https://dequeuniversity.com/rules/axe/4.9/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` viene usato nell'elemento `<meta name=\"viewport\">` o l'attributo `[maximum-scale]` è inferiore a 5."
@@ -444,7 +435,7 @@
     "message": "`[user-scalable=\"no\"]` non viene usato nell'elemento `<meta name=\"viewport\">` e l'attributo `[maximum-scale]` non è inferiore a 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Gli screen reader non possono tradurre contenuti non testuali. Aggiungere testo alternativo agli elementi `<object>` aiuta gli screen reader a comunicare il significato agli utenti. [Scopri di più sul testo alternativo per gli elementi `object`](https://dequeuniversity.com/rules/axe/4.8/object-alt)."
+    "message": "Gli screen reader non possono tradurre contenuti non testuali. Aggiungere testo alternativo agli elementi `<object>` aiuta gli screen reader a comunicare il significato agli utenti. [Scopri di più sul testo alternativo per gli elementi `object`](https://dequeuniversity.com/rules/axe/4.9/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "Gli elementi `<object>` non hanno testo alternativo"
@@ -453,7 +444,7 @@
     "message": "Gli elementi `<object>` hanno testo alternativo"
   },
   "core/audits/accessibility/select-name.js | description": {
-    "message": "Gli elementi del modulo senza etichette efficaci possono creare esperienze frustranti per gli utenti di screen reader. [Scopri di più sull'elemento `select`](https://dequeuniversity.com/rules/axe/4.8/select-name)."
+    "message": "Gli elementi del modulo senza etichette efficaci possono creare esperienze frustranti per gli utenti di screen reader. [Scopri di più sull'elemento `select`](https://dequeuniversity.com/rules/axe/4.9/select-name)."
   },
   "core/audits/accessibility/select-name.js | failureTitle": {
     "message": "Alcuni elementi non hanno elementi di etichette associati."
@@ -462,7 +453,7 @@
     "message": "Alcuni elementi hanno elementi di etichette associati."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "L'inclusione di uno skip link può aiutare gli utenti a passare ai contenuti principali per risparmiare tempo. [Scopri di più sugli skip link](https://dequeuniversity.com/rules/axe/4.8/skip-link)."
+    "message": "L'inclusione di uno skip link può aiutare gli utenti a passare ai contenuti principali per risparmiare tempo. [Scopri di più sugli skip link](https://dequeuniversity.com/rules/axe/4.9/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
     "message": "Gli skip link non sono attivabili."
@@ -471,7 +462,7 @@
     "message": "Gli skip link sono attivabili."
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Un valore maggiore di 0 implica un ordine di navigazione esplicito. Sebbene sia tecnicamente valido, spesso genera un'esperienza frustrante per gli utenti che usano tecnologie per la disabilità. [Scopri di più sull'attributo `tabindex`](https://dequeuniversity.com/rules/axe/4.8/tabindex)."
+    "message": "Un valore maggiore di 0 implica un ordine di navigazione esplicito. Sebbene sia tecnicamente valido, spesso genera un'esperienza frustrante per gli utenti che usano tecnologie per la disabilità. [Scopri di più sull'attributo `tabindex`](https://dequeuniversity.com/rules/axe/4.9/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Alcuni elementi hanno un valore `[tabindex]` maggiore di 0"
@@ -480,7 +471,7 @@
     "message": "Nessun elemento ha un valore `[tabindex]` maggiore di 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "L'attributo summary deve descrivere la struttura della tabella, mentre `<caption>` deve avere il titolo sullo schermo. Il markup accurato della tabella aiuta gli utenti di screen reader. [Scopri di più su summary e caption](https://dequeuniversity.com/rules/axe/4.8/table-duplicate-name)."
+    "message": "L'attributo summary deve descrivere la struttura della tabella, mentre `<caption>` deve avere il titolo sullo schermo. Il markup accurato della tabella aiuta gli utenti di screen reader. [Scopri di più su summary e caption](https://dequeuniversity.com/rules/axe/4.9/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
     "message": "Le tabelle hanno gli stessi contenuti nell'attributo summary e in `<caption>.`"
@@ -489,7 +480,7 @@
     "message": "Le tabelle hanno contenuti diversi nell'attributo summary e in `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se nelle tabelle usi l'elemento effettivo dei sottotitoli codificati anziché le celle con l'attributo `[colspan]`, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sui sottotitoli codificati](https://dequeuniversity.com/rules/axe/4.8/table-fake-caption)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se nelle tabelle usi l'elemento effettivo dei sottotitoli codificati anziché le celle con l'attributo `[colspan]`, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sui sottotitoli codificati](https://dequeuniversity.com/rules/axe/4.9/table-fake-caption)."
   },
   "core/audits/accessibility/table-fake-caption.js | failureTitle": {
     "message": "Le tabelle non utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
@@ -498,7 +489,7 @@
     "message": "Le tabelle utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "I touch target con dimensioni e spaziatura sufficienti aiutano gli utenti che potrebbero avere difficoltà a usare i piccoli controlli ad attivare i target. [Scopri di più sui touch target](https://dequeuniversity.com/rules/axe/4.8/target-size)."
+    "message": "I touch target con dimensioni e spaziatura sufficienti aiutano gli utenti che potrebbero avere difficoltà a usare i piccoli controlli ad attivare i target. [Scopri di più sui touch target](https://dequeuniversity.com/rules/axe/4.9/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "I touch target non hanno dimensioni o spaziatura sufficienti."
@@ -507,7 +498,7 @@
     "message": "I touch target hanno dimensioni e spaziatura sufficienti."
   },
   "core/audits/accessibility/td-has-header.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se gli elementi `<td>` in una tabella di grandi dimensioni (3 o più celle in larghezza e altezza) hanno un'intestazione di tabella associata, potrebbe migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.8/td-has-header)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se gli elementi `<td>` in una tabella di grandi dimensioni (3 o più celle in larghezza e altezza) hanno un'intestazione di tabella associata, potrebbe migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.9/td-has-header)."
   },
   "core/audits/accessibility/td-has-header.js | failureTitle": {
     "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni non hanno intestazioni di tabella."
@@ -516,7 +507,7 @@
     "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni hanno una o più intestazioni di tabella."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se ti assicuri che le celle `<td>` che usano l'attributo `[headers]` facciano riferimento esclusivamente ad altre celle nella stessa tabella, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sull'attributo `headers`](https://dequeuniversity.com/rules/axe/4.8/td-headers-attr)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se ti assicuri che le celle `<td>` che usano l'attributo `[headers]` facciano riferimento esclusivamente ad altre celle nella stessa tabella, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sull'attributo `headers`](https://dequeuniversity.com/rules/axe/4.9/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Le celle in un elemento `<table>` che utilizzano l'attributo `[headers]` fanno riferimento a un elemento `id` non trovato all'interno della stessa tabella."
@@ -525,7 +516,7 @@
     "message": "Le celle in un elemento `<table>` che utilizzano l'attributo `[headers]` fanno riferimento a celle della stessa tabella."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Assicurare che le intestazioni delle tabelle facciano sempre riferimento a un insieme di celle può migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.8/th-has-data-cells)."
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Assicurare che le intestazioni delle tabelle facciano sempre riferimento a un insieme di celle può migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.9/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Gli elementi `<th>` e gli elementi con `[role=\"columnheader\"/\"rowheader\"]` non hanno le celle di dati da essi descritte."
@@ -534,7 +525,7 @@
     "message": "Gli elementi `<th>` e gli elementi con ruolo `[role=\"columnheader\"/\"rowheader\"]` hanno le celle di dati da essi descritte."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida per gli elementi consente di assicurarsi che il testo sia pronunciato correttamente dallo screen reader. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.8/valid-lang)."
+    "message": "La specifica di una [lingua BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) valida per gli elementi consente di assicurarsi che il testo sia pronunciato correttamente dallo screen reader. [Scopri come utilizzare l'attributo `lang`](https://dequeuniversity.com/rules/axe/4.9/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Gli attributi `[lang]` non hanno un valore valido"
@@ -543,7 +534,7 @@
     "message": "Gli attributi `[lang]` hanno un valore valido"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Se un video ha i sottotitoli codificati, per le persone sorde o gli utenti con problemi di udito è più facile accedere alle relative informazioni. [Scopri di più sui sottotitoli codificati dei video](https://dequeuniversity.com/rules/axe/4.8/video-caption)."
+    "message": "Se un video ha i sottotitoli codificati, per le persone sorde o gli utenti con problemi di udito è più facile accedere alle relative informazioni. [Scopri di più sui sottotitoli codificati dei video](https://dequeuniversity.com/rules/axe/4.9/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Gli elementi `<video>` non contengono un elemento `<track>` con `[kind=\"captions\"]`"
@@ -742,18 +733,6 @@
   },
   "core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Attiva la compressione del testo"
-  },
-  "core/audits/content-width.js | description": {
-    "message": "Se la larghezza dei contenuti dell'app non corrisponde a quella dell'area visibile, l'app potrebbe non essere ottimizzata per gli schermi dei dispositivi mobili. [Scopri come ridimensionare i contenuti per l'area visibile](https://developer.chrome.com/docs/lighthouse/pwa/content-width/)."
-  },
-  "core/audits/content-width.js | explanation": {
-    "message": "Le dimensioni di {innerWidth} px dell'area visibile non corrispondono alle dimensioni di {outerWidth} px della finestra."
-  },
-  "core/audits/content-width.js | failureTitle": {
-    "message": "Le dimensioni dei contenuti non sono corrette per l'area visibile"
-  },
-  "core/audits/content-width.js | title": {
-    "message": "Le dimensioni dei contenuti sono corrette per l'area visibile"
   },
   "core/audits/critical-request-chains.js | description": {
     "message": "Nella sezione Catene di richieste fondamentali indicata di seguito vengono mostrate le risorse caricate con priorità elevata. Potresti ridurre la lunghezza delle catene e le dimensioni del download delle risorse oppure rimandare il download delle risorse non necessarie per velocizzare il caricamento pagina. [Scopri come evitare di concatenare le richieste fondamentali](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains/)."
@@ -1004,102 +983,6 @@
   "core/audits/image-size-responsive.js | title": {
     "message": "Vengono pubblicate immagini con risoluzione appropriata"
   },
-  "core/audits/installable-manifest.js | already-installed": {
-    "message": "L'app è già installata"
-  },
-  "core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Impossibile scaricare un'icona richiesta dal file manifest"
-  },
-  "core/audits/installable-manifest.js | columnValue": {
-    "message": "Motivo dell'errore"
-  },
-  "core/audits/installable-manifest.js | description": {
-    "message": "Il service worker è la tecnologia che consente alla tua app di usare tante funzionalità delle app web progressive, ad esempio il funzionamento offline, l'aggiunta alla schermata Home e le notifiche push. Grazie a implementazioni adeguate del service worker e del file manifest, i browser possono chiedere proattivamente agli utenti di aggiungere la tua app alla schermata Home. Ciò potrebbe comportare un maggiore coinvolgimento. [Scopri di più sui requisiti di installabilità del file manifest](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)."
-  },
-  "core/audits/installable-manifest.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 motivo}other{# motivi}}"
-  },
-  "core/audits/installable-manifest.js | failureTitle": {
-    "message": "Il file manifest o il service worker dell'app web non soddisfano i requisiti di installabilità"
-  },
-  "core/audits/installable-manifest.js | ids-do-not-match": {
-    "message": "L'URL e l'ID dell'app nel Play Store non corrispondono"
-  },
-  "core/audits/installable-manifest.js | in-incognito": {
-    "message": "La pagina è stata caricata in una finestra di navigazione in incognito"
-  },
-  "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "La proprietà `display` del manifest deve essere `standalone`, `fullscreen` o `minimal-ui`"
-  },
-  "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
-    "message": "Il file manifest contiene il campo \"display_override\" e la prima modalità di visualizzazione supportata deve essere \"standalone\", '\"fullscreen\" o \"minimal-ui\""
-  },
-  "core/audits/installable-manifest.js | manifest-empty": {
-    "message": "Non è stato possibile recuperare il file manifest, è vuoto o non è stato possibile analizzarlo"
-  },
-  "core/audits/installable-manifest.js | manifest-location-changed": {
-    "message": "L'URL del file manifest è cambiato durante il recupero del file manifest."
-  },
-  "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Il manifest non contiene un campo `name` o `short_name`"
-  },
-  "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Il file manifest non contiene un'icona adatta, deve essere in formato PNG, SVG o WebP e avere una dimensione di almeno {value0} px. L'attributo sizes deve essere impostato e l'attributo purpose, se configurato, deve includere \"any\"."
-  },
-  "core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Nessuna delle icone fornite ha una dimensione minima di {value0} px quadrati in formato PNG, SVG o WebP, con l'attributo purpose non impostato o impostato su \"any\"."
-  },
-  "core/audits/installable-manifest.js | no-icon-available": {
-    "message": "L'icona scaricata era vuota o danneggiata"
-  },
-  "core/audits/installable-manifest.js | no-id-specified": {
-    "message": "Nessun ID Play Store fornito"
-  },
-  "core/audits/installable-manifest.js | no-manifest": {
-    "message": "La pagina non contiene URL del file manifest <link>"
-  },
-  "core/audits/installable-manifest.js | no-url-for-service-worker": {
-    "message": "Impossibile verificare il service worker se il file manifest non contiene un campo \"start_url\""
-  },
-  "core/audits/installable-manifest.js | noErrorId": {
-    "message": "L'ID errore di installabilità \"{errorId}\" non è riconosciuto"
-  },
-  "core/audits/installable-manifest.js | not-from-secure-origin": {
-    "message": "La pagina non è pubblicata da un'origine sicura"
-  },
-  "core/audits/installable-manifest.js | not-in-main-frame": {
-    "message": "La pagina non è caricata nel frame principale"
-  },
-  "core/audits/installable-manifest.js | not-offline-capable": {
-    "message": "La pagina non funziona offline"
-  },
-  "core/audits/installable-manifest.js | pipeline-restarted": {
-    "message": "La PWA è stata disinstallata e i controlli di installabilità sono in fase di reimpostazione."
-  },
-  "core/audits/installable-manifest.js | platform-not-supported-on-android": {
-    "message": "La piattaforma di applicazioni specificata non è supportata su Android"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications": {
-    "message": "Il file manifest specifica prefer_related_applications: vero"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
-    "message": "prefer_related_applications è supportato solo sui canali beta e stabili di Chrome su Android."
-  },
-  "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse non ha potuto determinare se è possibile installare la pagina. Prova a usare una versione più recente di Chrome."
-  },
-  "core/audits/installable-manifest.js | start-url-not-valid": {
-    "message": "L'URL di avvio del file manifest non è valido"
-  },
-  "core/audits/installable-manifest.js | title": {
-    "message": "Il file manifest e il service worker dell'app web soddisfano i requisiti di installabilità"
-  },
-  "core/audits/installable-manifest.js | url-not-supported-for-webapk": {
-    "message": "Un URL nel file manifest contiene uno username, una password o una porta"
-  },
-  "core/audits/installable-manifest.js | warn-not-offline-capable": {
-    "message": "La pagina non funziona offline. La pagina non sarà considerata installabile nelle versioni successive a Chrome 93, la cui versione stabile sarà rilasciata ad agosto 2021."
-  },
   "core/audits/is-on-https.js | allowed": {
     "message": "Consentito"
   },
@@ -1157,15 +1040,6 @@
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Elemento Largest Contentful Paint"
   },
-  "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Impatto della variazione del layout"
-  },
-  "core/audits/layout-shift-elements.js | description": {
-    "message": "Questi elementi DOM sono stati maggiormente interessati dalle variazioni del layout. Alcune variazioni del layout potrebbero non essere incluse nel valore della metrica CLS a causa del [windowing](https://web.dev/articles/cls#what_is_cls). [Scopri come migliorare la metrica CLS](https://web.dev/articles/optimize-cls)"
-  },
-  "core/audits/layout-shift-elements.js | title": {
-    "message": "Evita significative variazioni di layout"
-  },
   "core/audits/layout-shifts.js | columnScore": {
     "message": "Punteggio della variazione del layout"
   },
@@ -1220,33 +1094,6 @@
   "core/audits/mainthread-work-breakdown.js | title": {
     "message": "Il lavoro del thread principale è ridotto al minimo"
   },
-  "core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Per raggiungere il maggior numero di utenti, i siti dovrebbero funzionare su ogni browser più usato. [Scopri di più sulla compatibilità cross-browser](https://developer.chrome.com/docs/lighthouse/pwa/pwa-cross-browser/)."
-  },
-  "core/audits/manual/pwa-cross-browser.js | title": {
-    "message": "Il sito funziona su più browser"
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Assicurati che le singole pagine siano collegabili tramite link diretti sotto forma di URL e che gli URL siano univoci per la condivisione sui social media. [Scopri di più sull'offerta di link diretti](https://developer.chrome.com/docs/lighthouse/pwa/pwa-each-page-has-url/)."
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | title": {
-    "message": "Ogni pagina ha un URL"
-  },
-  "core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Le transizioni dovrebbero sembrare rapide mentre esegui i tocchi, anche con una rete lenta. Questa esperienza è un fattore chiave che incide sulle prestazioni percepite dall'utente. [Scopri di più sulle transizioni di pagina](https://developer.chrome.com/docs/lighthouse/pwa/pwa-page-transitions/)."
-  },
-  "core/audits/manual/pwa-page-transitions.js | title": {
-    "message": "Non sembra che le transizioni di pagina si blocchino sulla rete"
-  },
-  "core/audits/maskable-icon.js | description": {
-    "message": "Un'icona mascherabile assicura che l'immagine riempia l'intera forma senza effetto letterbox durante l'installazione dell'app su un dispositivo. [Scopri di più sulle icone manifest mascherabili](https://developer.chrome.com/docs/lighthouse/pwa/maskable-icon-audit/)."
-  },
-  "core/audits/maskable-icon.js | failureTitle": {
-    "message": "Il file manifest non contiene un'icona mascherabile"
-  },
-  "core/audits/maskable-icon.js | title": {
-    "message": "Il file manifest contiene un'icona mascherabile"
-  },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "La metrica Cumulative Layout Shift misura lo spostamento degli elementi visibili all'interno dell'area visibile. [Scopri di più sulla metrica Cumulative Layout Shift](https://web.dev/articles/cls)."
   },
@@ -1286,15 +1133,6 @@
   "core/audits/network-server-latency.js | title": {
     "message": "Latenze server backend"
   },
-  "core/audits/no-unload-listeners.js | description": {
-    "message": "L'evento `unload` non viene attivato in modo affidabile e il relativo ascolto potrebbe impedire ottimizzazioni del browser quali cache back-forward. Utilizza invece gli eventi `pagehide` o `visibilitychange`. [Scopri di più sull'unload dei listener di eventi](https://web.dev/articles/bfcache#never_use_the_unload_event)"
-  },
-  "core/audits/no-unload-listeners.js | failureTitle": {
-    "message": "Registra un listener `unload`"
-  },
-  "core/audits/no-unload-listeners.js | title": {
-    "message": "Evita i listener di eventi `unload`"
-  },
   "core/audits/non-composited-animations.js | description": {
     "message": "Le animazioni non composite possono essere scadenti e aumentare il CLS. [Scopri come evitare le animazioni non composte](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)"
   },
@@ -1321,15 +1159,6 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "L'effetto ha parametri di timing non supportati"
-  },
-  "core/audits/performance-budget.js | description": {
-    "message": "Mantieni la quantità e le dimensioni delle richieste di rete al di sotto dei target impostati tramite il budget delle prestazioni fornito. [Scopri di più sui budget delle prestazioni](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/performance-budget.js | requestCountOverBudget": {
-    "message": "{count,plural, =1{1 richiesta}other{# richieste}}"
-  },
-  "core/audits/performance-budget.js | title": {
-    "message": "Budget per le prestazioni"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Precarica caratteri `optional` per consentirne l'utilizzo ai visitatori alla prima visita. [Scopri di più sul precaricamento dei caratteri](https://web.dev/articles/preload-optional-fonts)"
@@ -1481,15 +1310,6 @@
   "core/audits/seo/meta-description.js | title": {
     "message": "Il documento ha una meta descrizione"
   },
-  "core/audits/seo/plugins.js | description": {
-    "message": "I motori di ricerca non possono indicizzare i contenuti dei plug-in e molti dispositivi limitano i plug-in o non li supportano. [Scopri di più su come evitare i plug-in](https://developer.chrome.com/docs/lighthouse/seo/plugins/)."
-  },
-  "core/audits/seo/plugins.js | failureTitle": {
-    "message": "Il documento utilizza plug-in"
-  },
-  "core/audits/seo/plugins.js | title": {
-    "message": "Il documento non fa uso di plug-in"
-  },
   "core/audits/seo/robots-txt.js | description": {
     "message": "Se il file robots.txt non è valido, i crawler potrebbero non essere in grado di capire come vuoi che il tuo sito web venga sottoposto a scansione o indicizzato. [Scopri di più sul file robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/)."
   },
@@ -1508,27 +1328,6 @@
   "core/audits/seo/robots-txt.js | title": {
     "message": "robots.txt è valido"
   },
-  "core/audits/seo/tap-targets.js | description": {
-    "message": "Gli elementi interattivi come pulsanti e link dovrebbero essere abbastanza grandi (48 x 48 px) o avere abbastanza spazio intorno a loro affinché non si sovrappongano ad altri elementi e siano facili da toccare. [Scopri di più sui target dei tocchi](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
-  },
-  "core/audits/seo/tap-targets.js | displayValue": {
-    "message": "Il {decimalProportion, number, percent} dei target dei tocchi ha dimensioni appropriate"
-  },
-  "core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
-    "message": "I target dei tocchi sono troppo piccoli perché non esiste un meta tag viewport ottimizzato per gli schermi dei dispositivi mobili"
-  },
-  "core/audits/seo/tap-targets.js | failureTitle": {
-    "message": "I target dei tocchi non sono dimensionati in modo appropriato"
-  },
-  "core/audits/seo/tap-targets.js | overlappingTargetHeader": {
-    "message": "Target sovrapposto"
-  },
-  "core/audits/seo/tap-targets.js | tapTargetHeader": {
-    "message": "Target dei tocchi"
-  },
-  "core/audits/seo/tap-targets.js | title": {
-    "message": "I target dei tocchi sono dimensionati in modo appropriato"
-  },
   "core/audits/server-response-time.js | description": {
     "message": "Fai in modo che il tempo di risposta del server per il documento principale sia breve perché tutte le altre richieste dipendono da questo. [Scopri di più sulla metrica Time to First Byte](https://developer.chrome.com/docs/lighthouse/performance/time-to-first-byte/)."
   },
@@ -1540,24 +1339,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Il tempo di risposta iniziale del server è stato breve"
-  },
-  "core/audits/splash-screen.js | description": {
-    "message": "Una schermata iniziale a tema assicura un'esperienza di alta qualità quando gli utenti avviano la tua app dalla schermata Home. [Scopri di più sulle schermate iniziali](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
-  },
-  "core/audits/splash-screen.js | failureTitle": {
-    "message": "Non è configurato con una schermata iniziale personalizzata"
-  },
-  "core/audits/splash-screen.js | title": {
-    "message": "Configurato con una schermata iniziale personalizzata"
-  },
-  "core/audits/themed-omnibox.js | description": {
-    "message": "È possibile impostare per la barra degli indirizzi del browser un tema corrispondente a quello del tuo sito. [Scopri di più sulla barra degli indirizzi a tema.](https://developer.chrome.com/docs/lighthouse/pwa/themed-omnibox/)"
-  },
-  "core/audits/themed-omnibox.js | failureTitle": {
-    "message": "Non imposta un colore tema per la barra degli indirizzi."
-  },
-  "core/audits/themed-omnibox.js | title": {
-    "message": "Imposta un colore tema per la barra degli indirizzi."
   },
   "core/audits/third-party-cookies.js | description": {
     "message": "Il supporto per i cookie di terze parti verrà rimosso in una versione futura di Chrome. [Scopri di più sull'eliminazione graduale dei cookie di terze parti](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
@@ -1612,18 +1393,6 @@
   },
   "core/audits/third-party-summary.js | title": {
     "message": "Riduci al minimo l'utilizzo di codice di terze parti"
-  },
-  "core/audits/timing-budget.js | columnMeasurement": {
-    "message": "Misurazione"
-  },
-  "core/audits/timing-budget.js | columnTimingMetric": {
-    "message": "Metrica"
-  },
-  "core/audits/timing-budget.js | description": {
-    "message": "Imposta un budget per le tempistiche per tenere sotto controllo le prestazioni del tuo sito. I siti con ottime prestazioni vengono caricati velocemente e rispondono rapidamente agli eventi di input utente. [Scopri di più sui budget delle prestazioni](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/timing-budget.js | title": {
-    "message": "Budget per le tempistiche"
   },
   "core/audits/unsized-images.js | description": {
     "message": "Imposta larghezza e altezza esplicite negli elementi immagine per ridurre le variazioni di layout e migliorare la metrica CLS. [Scopri come impostare le dimensioni delle immagini](https://web.dev/articles/optimize-cls#images_without_dimensions)"
@@ -1718,8 +1487,8 @@
   "core/audits/work-during-interaction.js | presentationDelay": {
     "message": "Ritardo presentazione"
   },
-  "core/audits/work-during-interaction.js | processingTime": {
-    "message": "Tempo di elaborazione"
+  "core/audits/work-during-interaction.js | processingDuration": {
+    "message": "Durata elaborazione"
   },
   "core/audits/work-during-interaction.js | title": {
     "message": "Minimizza il lavoro durante l'interazione con il tasto"
@@ -1796,12 +1565,6 @@
   "core/config/default-config.js | bestPracticesUXGroupTitle": {
     "message": "Esperienza utente"
   },
-  "core/config/default-config.js | budgetsGroupDescription": {
-    "message": "I budget per le prestazioni consentono di stabilire gli standard per le prestazioni del tuo sito."
-  },
-  "core/config/default-config.js | budgetsGroupTitle": {
-    "message": "Budget"
-  },
   "core/config/default-config.js | diagnosticsGroupDescription": {
     "message": "Ulteriori informazioni sulle prestazioni della tua applicazione. Questi valori non [incidono direttamente](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) sul punteggio Prestazioni."
   },
@@ -1814,12 +1577,6 @@
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "Miglioramenti della prima visualizzazione"
   },
-  "core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "Questi suggerimenti possono aiutarti a velocizzare il caricamento della pagina. Non [incidono direttamente](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) sul punteggio Prestazioni."
-  },
-  "core/config/default-config.js | loadOpportunitiesGroupTitle": {
-    "message": "Opportunità"
-  },
   "core/config/default-config.js | metricGroupTitle": {
     "message": "Metriche"
   },
@@ -1831,21 +1588,6 @@
   },
   "core/config/default-config.js | performanceCategoryTitle": {
     "message": "Prestazioni"
-  },
-  "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "Questi controlli consentono di convalidare gli aspetti di un'app web progressiva. [Scopri le caratteristiche di un'app web progressiva di qualità](https://web.dev/articles/pwa-checklist)."
-  },
-  "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Questi controlli sono richiesti in base all'[Elenco di controllo PWA](https://web.dev/articles/pwa-checklist) di riferimento, ma non vengono eseguiti automaticamente da Lighthouse. Non incidono sul tuo punteggio, ma è importante verificarli manualmente."
-  },
-  "core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
-  },
-  "core/config/default-config.js | pwaInstallableGroupTitle": {
-    "message": "Installabile"
-  },
-  "core/config/default-config.js | pwaOptimizedGroupTitle": {
-    "message": "Ottimizzato per PWA"
   },
   "core/config/default-config.js | seoCategoryDescription": {
     "message": "Questi controlli assicurano che la pagina stia applicando il seguente consiglio relativo all'ottimizzazione per i motori di ricerca di base. Esistono molti altri fattori che Lighthouse non tratta qui che potrebbero influire sul tuo ranking di ricerca, incluse le prestazioni su [Core Web Vitals](https://web.dev/explore/vitals). [Scopri di più su Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
@@ -2516,9 +2258,6 @@
   "core/lib/i18n/i18n.js | columnName": {
     "message": "Nome"
   },
-  "core/lib/i18n/i18n.js | columnOverBudget": {
-    "message": "Oltre il budget"
-  },
   "core/lib/i18n/i18n.js | columnRequests": {
     "message": "Richieste"
   },
@@ -2728,9 +2467,6 @@
   },
   "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
     "message": "Prestazioni"
-  },
-  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
-    "message": "App web progressiva"
   },
   "flow-report/src/i18n/ui-strings.js | categorySeo": {
     "message": "SEO"
@@ -3397,9 +3133,6 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Controlli superati"
-  },
-  "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "In base ai [criteri di installazione aggiornati di Chrome](https://developer.chrome.com/blog/update-install-criteria), Lighthouse ritirerà la categoria PWA in una release futura. Fai riferimento alla [documentazione aggiornata relativa alle PWA](https://developer.chrome.com/docs/devtools/progressive-web-apps/) per i futuri test delle PWA."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Caricamento pagina iniziale"

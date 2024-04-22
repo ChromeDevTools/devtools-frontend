@@ -35,6 +35,24 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, and `menuitem` elements have accessible names"
   },
+  "core/audits/accessibility/aria-conditional-attr.js | description": {
+    "message": "Some ARIA attributes are only allowed on an element under certain conditions. [Learn more about conditional ARIA attributes](https://dequeuniversity.com/rules/axe/4.9/aria-conditional-attr)."
+  },
+  "core/audits/accessibility/aria-conditional-attr.js | failureTitle": {
+    "message": "ARIA attributes are not used as specified for the element's role"
+  },
+  "core/audits/accessibility/aria-conditional-attr.js | title": {
+    "message": "ARIA attributes are used as specified for the element's role"
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | description": {
+    "message": "Deprecated ARIA roles may not be processed correctly by assistive technology. [Learn more about deprecated ARIA roles](https://dequeuniversity.com/rules/axe/4.9/aria-deprecated-role)."
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | failureTitle": {
+    "message": "Deprecated ARIA roles were used"
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | title": {
+    "message": "Deprecated ARIA roles were not used"
+  },
   "core/audits/accessibility/aria-dialog-name.js | description": {
     "message": "ARIA dialog elements without accessible names may prevent screen readers users from discerning the purpose of these elements. [Learn how to make ARIA dialog elements more accessible](https://dequeuniversity.com/rules/axe/4.9/aria-dialog-name)."
   },
@@ -88,6 +106,15 @@
   },
   "core/audits/accessibility/aria-progressbar-name.js | title": {
     "message": "ARIA `progressbar` elements have accessible names"
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | description": {
+    "message": "Using ARIA attributes in roles where they are prohibited can mean that important information is not communicated to users of assistive technologies. [Learn more about prohibited ARIA roles](https://dequeuniversity.com/rules/axe/4.9/aria-prohibited-attr)."
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | failureTitle": {
+    "message": "Elements use prohibited ARIA attributes"
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | title": {
+    "message": "Elements use only permitted ARIA attributes"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Some ARIA roles have required attributes that describe the state of the element to screen readers. [Learn more about roles and required attributes](https://dequeuniversity.com/rules/axe/4.9/aria-required-attr)."
@@ -235,15 +262,6 @@
   },
   "core/audits/accessibility/document-title.js | title": {
     "message": "Document has a `<title>` element"
-  },
-  "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "All focusable elements must have a unique `id` to ensure that they're visible to assistive technologies. [Learn how to fix duplicate `id`s](https://dequeuniversity.com/rules/axe/4.9/duplicate-id-active)."
-  },
-  "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
-    "message": "`[id]` attributes on active, focusable elements are not unique"
-  },
-  "core/audits/accessibility/duplicate-id-active.js | title": {
-    "message": "`[id]` attributes on active, focusable elements are unique"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
     "message": "The value of an ARIA ID must be unique to prevent other instances from being overlooked by assistive technologies. [Learn how to fix duplicate ARIA IDs](https://dequeuniversity.com/rules/axe/4.9/duplicate-id-aria)."
@@ -743,18 +761,6 @@
   "core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Enable text compression"
   },
-  "core/audits/content-width.js | description": {
-    "message": "If the width of your app's content doesn't match the width of the viewport, your app might not be optimized for mobile screens. [Learn how to size content for the viewport](https://developer.chrome.com/docs/lighthouse/pwa/content-width/)."
-  },
-  "core/audits/content-width.js | explanation": {
-    "message": "The viewport size of {innerWidth}px does not match the window size of {outerWidth}px."
-  },
-  "core/audits/content-width.js | failureTitle": {
-    "message": "Content is not sized correctly for the viewport"
-  },
-  "core/audits/content-width.js | title": {
-    "message": "Content is sized correctly for the viewport"
-  },
   "core/audits/critical-request-chains.js | description": {
     "message": "The Critical Request Chains below show you what resources are loaded with a high priority. Consider reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load. [Learn how to avoid chaining critical requests](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains/)."
   },
@@ -1004,105 +1010,6 @@
   "core/audits/image-size-responsive.js | title": {
     "message": "Serves images with appropriate resolution"
   },
-  "core/audits/installable-manifest.js | already-installed": {
-    "message": "The app is already installed"
-  },
-  "core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Could not download a required icon from the manifest"
-  },
-  "core/audits/installable-manifest.js | columnValue": {
-    "message": "Failure reason"
-  },
-  "core/audits/installable-manifest.js | description": {
-    "message": "Service worker is the technology that enables your app to use many Progressive Web App features, such as offline, add to homescreen, and push notifications. With proper service worker and manifest implementations, browsers can proactively prompt users to add your app to their homescreen, which can lead to higher engagement. [Learn more about manifest installability requirements](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)."
-  },
-  "core/audits/installable-manifest.js | displayValue": {
-    "message": "{itemCount, plural,\n    =1 {1 reason}\n    other {# reasons}\n    }"
-  },
-  "core/audits/installable-manifest.js | failureTitle": {
-    "message": "Web app manifest or service worker do not meet the installability requirements"
-  },
-  "core/audits/installable-manifest.js | ids-do-not-match": {
-    "message": "The Play Store app URL and Play Store ID do not match"
-  },
-  "core/audits/installable-manifest.js | in-incognito": {
-    "message": "Page is loaded in an incognito window"
-  },
-  "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "Manifest `display` property must be one of `standalone`, `fullscreen`, or `minimal-ui`"
-  },
-  "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
-    "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
-  },
-  "core/audits/installable-manifest.js | manifest-empty": {
-    "message": "Manifest could not be fetched, is empty, or could not be parsed"
-  },
-  "core/audits/installable-manifest.js | manifest-location-changed": {
-    "message": "Manifest URL changed while the manifest was being fetched."
-  },
-  "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Manifest does not contain a `name` or `short_name` field"
-  },
-  "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {value0} px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\"."
-  },
-  "core/audits/installable-manifest.js | manifest-parsing-or-network-error": {
-    "message": "Manifest could not be fetched, is empty, or could not be parsed"
-  },
-  "core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "No supplied icon is at least {value0} px square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\""
-  },
-  "core/audits/installable-manifest.js | no-icon-available": {
-    "message": "Downloaded icon was empty or corrupted"
-  },
-  "core/audits/installable-manifest.js | no-id-specified": {
-    "message": "No Play store ID provided"
-  },
-  "core/audits/installable-manifest.js | no-manifest": {
-    "message": "Page has no manifest <link> URL"
-  },
-  "core/audits/installable-manifest.js | no-url-for-service-worker": {
-    "message": "Could not check service worker without a 'start_url' field in the manifest"
-  },
-  "core/audits/installable-manifest.js | noErrorId": {
-    "message": "Installability error id '{errorId}' is not recognized"
-  },
-  "core/audits/installable-manifest.js | not-from-secure-origin": {
-    "message": "Page is not served from a secure origin"
-  },
-  "core/audits/installable-manifest.js | not-in-main-frame": {
-    "message": "Page is not loaded in the main frame"
-  },
-  "core/audits/installable-manifest.js | not-offline-capable": {
-    "message": "Page does not work offline"
-  },
-  "core/audits/installable-manifest.js | pipeline-restarted": {
-    "message": "PWA has been uninstalled and installability checks resetting."
-  },
-  "core/audits/installable-manifest.js | platform-not-supported-on-android": {
-    "message": "The specified application platform is not supported on Android"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications": {
-    "message": "Manifest specifies prefer_related_applications: true"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
-    "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
-  },
-  "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | start-url-not-valid": {
-    "message": "Manifest start URL is not valid"
-  },
-  "core/audits/installable-manifest.js | title": {
-    "message": "Web app manifest and service worker meet the installability requirements"
-  },
-  "core/audits/installable-manifest.js | url-not-supported-for-webapk": {
-    "message": "A URL in the manifest contains a username, password, or port"
-  },
-  "core/audits/installable-manifest.js | warn-not-offline-capable": {
-    "message": "Page does not work offline. The page will not be regarded as installable after Chrome 93, stable release August 2021."
-  },
   "core/audits/is-on-https.js | allowed": {
     "message": "Allowed"
   },
@@ -1160,15 +1067,6 @@
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Largest Contentful Paint element"
   },
-  "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "Layout shift impact"
-  },
-  "core/audits/layout-shift-elements.js | description": {
-    "message": "These DOM elements were most affected by layout shifts. Some layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)"
-  },
-  "core/audits/layout-shift-elements.js | title": {
-    "message": "Avoid large layout shifts"
-  },
   "core/audits/layout-shifts.js | columnScore": {
     "message": "Layout shift score"
   },
@@ -1223,33 +1121,6 @@
   "core/audits/mainthread-work-breakdown.js | title": {
     "message": "Minimizes main-thread work"
   },
-  "core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "To reach the most number of users, sites should work across every major browser. [Learn about cross-browser compatibility](https://developer.chrome.com/docs/lighthouse/pwa/pwa-cross-browser/)."
-  },
-  "core/audits/manual/pwa-cross-browser.js | title": {
-    "message": "Site works cross-browser"
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Ensure individual pages are deep linkable via URL and that URLs are unique for the purpose of shareability on social media. [Learn more about providing deep links](https://developer.chrome.com/docs/lighthouse/pwa/pwa-each-page-has-url/)."
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | title": {
-    "message": "Each page has a URL"
-  },
-  "core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Transitions should feel snappy as you tap around, even on a slow network. This experience is key to a user's perception of performance. [Learn more about page transitions](https://developer.chrome.com/docs/lighthouse/pwa/pwa-page-transitions/)."
-  },
-  "core/audits/manual/pwa-page-transitions.js | title": {
-    "message": "Page transitions don't feel like they block on the network"
-  },
-  "core/audits/maskable-icon.js | description": {
-    "message": "A maskable icon ensures that the image fills the entire shape without being letterboxed when installing the app on a device. [Learn about maskable manifest icons](https://developer.chrome.com/docs/lighthouse/pwa/maskable-icon-audit/)."
-  },
-  "core/audits/maskable-icon.js | failureTitle": {
-    "message": "Manifest doesn't have a maskable icon"
-  },
-  "core/audits/maskable-icon.js | title": {
-    "message": "Manifest has a maskable icon"
-  },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more about the Cumulative Layout Shift metric](https://web.dev/articles/cls)."
   },
@@ -1289,15 +1160,6 @@
   "core/audits/network-server-latency.js | title": {
     "message": "Server Backend Latencies"
   },
-  "core/audits/no-unload-listeners.js | description": {
-    "message": "The `unload` event does not fire reliably and listening for it can prevent browser optimizations like the Back-Forward Cache. Use `pagehide` or `visibilitychange` events instead. [Learn more about unload event listeners](https://web.dev/articles/bfcache#never_use_the_unload_event)"
-  },
-  "core/audits/no-unload-listeners.js | failureTitle": {
-    "message": "Registers an `unload` listener"
-  },
-  "core/audits/no-unload-listeners.js | title": {
-    "message": "Avoids `unload` event listeners"
-  },
   "core/audits/non-composited-animations.js | description": {
     "message": "Animations which are not composited can be janky and increase CLS. [Learn how to avoid non-composited animations](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)"
   },
@@ -1325,15 +1187,6 @@
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Effect has unsupported timing parameters"
   },
-  "core/audits/performance-budget.js | description": {
-    "message": "Keep the quantity and size of network requests under the targets set by the provided performance budget. [Learn more about performance budgets](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/performance-budget.js | requestCountOverBudget": {
-    "message": "{count, plural,\n    =1 {1 request}\n    other {# requests}\n   }"
-  },
-  "core/audits/performance-budget.js | title": {
-    "message": "Performance budget"
-  },
   "core/audits/preload-fonts.js | description": {
     "message": "Preload `optional` fonts so first-time visitors may use them. [Learn more about preloading fonts](https://web.dev/articles/preload-optional-fonts)"
   },
@@ -1348,6 +1201,15 @@
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "Preload Largest Contentful Paint image"
+  },
+  "core/audits/redirects-http.js | description": {
+    "message": "Make sure that you redirect all HTTP traffic to HTTPS in order to enable secure web features for all your users. [Learn more](https://developer.chrome.com/docs/lighthouse/pwa/redirects-http/)."
+  },
+  "core/audits/redirects-http.js | failureTitle": {
+    "message": "Does not redirect HTTP traffic to HTTPS"
+  },
+  "core/audits/redirects-http.js | title": {
+    "message": "Redirects HTTP traffic to HTTPS"
   },
   "core/audits/redirects.js | description": {
     "message": "Redirects introduce additional delays before the page can be loaded. [Learn how to avoid page redirects](https://developer.chrome.com/docs/lighthouse/performance/redirects/)."
@@ -1484,15 +1346,6 @@
   "core/audits/seo/meta-description.js | title": {
     "message": "Document has a meta description"
   },
-  "core/audits/seo/plugins.js | description": {
-    "message": "Search engines can't index plugin content, and many devices restrict plugins or don't support them. [Learn more about avoiding plugins](https://developer.chrome.com/docs/lighthouse/seo/plugins/)."
-  },
-  "core/audits/seo/plugins.js | failureTitle": {
-    "message": "Document uses plugins"
-  },
-  "core/audits/seo/plugins.js | title": {
-    "message": "Document avoids plugins"
-  },
   "core/audits/seo/robots-txt.js | description": {
     "message": "If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed. [Learn more about robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/)."
   },
@@ -1511,27 +1364,6 @@
   "core/audits/seo/robots-txt.js | title": {
     "message": "robots.txt is valid"
   },
-  "core/audits/seo/tap-targets.js | description": {
-    "message": "Interactive elements like buttons and links should be large enough (48x48px), or have enough space around them, to be easy enough to tap without overlapping onto other elements. [Learn more about tap targets](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
-  },
-  "core/audits/seo/tap-targets.js | displayValue": {
-    "message": "{decimalProportion, number, percent} appropriately sized tap targets"
-  },
-  "core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
-    "message": "Tap targets are too small because there's no viewport meta tag optimized for mobile screens"
-  },
-  "core/audits/seo/tap-targets.js | failureTitle": {
-    "message": "Tap targets are not sized appropriately"
-  },
-  "core/audits/seo/tap-targets.js | overlappingTargetHeader": {
-    "message": "Overlapping Target"
-  },
-  "core/audits/seo/tap-targets.js | tapTargetHeader": {
-    "message": "Tap Target"
-  },
-  "core/audits/seo/tap-targets.js | title": {
-    "message": "Tap targets are sized appropriately"
-  },
   "core/audits/server-response-time.js | description": {
     "message": "Keep the server response time for the main document short because all other requests depend on it. [Learn more about the Time to First Byte metric](https://developer.chrome.com/docs/lighthouse/performance/time-to-first-byte/)."
   },
@@ -1543,24 +1375,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Initial server response time was short"
-  },
-  "core/audits/splash-screen.js | description": {
-    "message": "A themed splash screen ensures a high-quality experience when users launch your app from their homescreens. [Learn more about splash screens](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
-  },
-  "core/audits/splash-screen.js | failureTitle": {
-    "message": "Is not configured for a custom splash screen"
-  },
-  "core/audits/splash-screen.js | title": {
-    "message": "Configured for a custom splash screen"
-  },
-  "core/audits/themed-omnibox.js | description": {
-    "message": "The browser address bar can be themed to match your site. [Learn more about theming the address bar](https://developer.chrome.com/docs/lighthouse/pwa/themed-omnibox/)."
-  },
-  "core/audits/themed-omnibox.js | failureTitle": {
-    "message": "Does not set a theme color for the address bar."
-  },
-  "core/audits/themed-omnibox.js | title": {
-    "message": "Sets a theme color for the address bar."
   },
   "core/audits/third-party-cookies.js | description": {
     "message": "Support for third-party cookies will be removed in a future version of Chrome. [Learn more about phasing out third-party cookies](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
@@ -1615,18 +1429,6 @@
   },
   "core/audits/third-party-summary.js | title": {
     "message": "Minimize third-party usage"
-  },
-  "core/audits/timing-budget.js | columnMeasurement": {
-    "message": "Measurement"
-  },
-  "core/audits/timing-budget.js | columnTimingMetric": {
-    "message": "Metric"
-  },
-  "core/audits/timing-budget.js | description": {
-    "message": "Set a timing budget to help you keep an eye on the performance of your site. Performant sites load fast and respond to user input events quickly. [Learn more about performance budgets](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/timing-budget.js | title": {
-    "message": "Timing budget"
   },
   "core/audits/unsized-images.js | description": {
     "message": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/articles/optimize-cls#images_without_dimensions)"
@@ -1721,8 +1523,8 @@
   "core/audits/work-during-interaction.js | presentationDelay": {
     "message": "Presentation delay"
   },
-  "core/audits/work-during-interaction.js | processingTime": {
-    "message": "Processing time"
+  "core/audits/work-during-interaction.js | processingDuration": {
+    "message": "Processing duration"
   },
   "core/audits/work-during-interaction.js | title": {
     "message": "Minimizes work during key interaction"
@@ -1799,12 +1601,6 @@
   "core/config/default-config.js | bestPracticesUXGroupTitle": {
     "message": "User Experience"
   },
-  "core/config/default-config.js | budgetsGroupDescription": {
-    "message": "Performance budgets set standards for the performance of your site."
-  },
-  "core/config/default-config.js | budgetsGroupTitle": {
-    "message": "Budgets"
-  },
   "core/config/default-config.js | diagnosticsGroupDescription": {
     "message": "More information about the performance of your application. These numbers don't [directly affect](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) the Performance score."
   },
@@ -1817,12 +1613,6 @@
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "First Paint Improvements"
   },
-  "core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "These suggestions can help your page load faster. They don't [directly affect](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) the Performance score."
-  },
-  "core/config/default-config.js | loadOpportunitiesGroupTitle": {
-    "message": "Opportunities"
-  },
   "core/config/default-config.js | metricGroupTitle": {
     "message": "Metrics"
   },
@@ -1834,21 +1624,6 @@
   },
   "core/config/default-config.js | performanceCategoryTitle": {
     "message": "Performance"
-  },
-  "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "These checks validate the aspects of a Progressive Web App. [Learn what makes a good Progressive Web App](https://web.dev/articles/pwa-checklist)."
-  },
-  "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "These checks are required by the baseline [PWA Checklist](https://web.dev/articles/pwa-checklist) but are not automatically checked by Lighthouse. They do not affect your score but it's important that you verify them manually."
-  },
-  "core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
-  },
-  "core/config/default-config.js | pwaInstallableGroupTitle": {
-    "message": "Installable"
-  },
-  "core/config/default-config.js | pwaOptimizedGroupTitle": {
-    "message": "PWA Optimized"
   },
   "core/config/default-config.js | seoCategoryDescription": {
     "message": "These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on [Core Web Vitals](https://web.dev/explore/vitals). [Learn more about Google Search Essentials](https://support.google.com/webmasters/answer/35769)."
@@ -2519,9 +2294,6 @@
   "core/lib/i18n/i18n.js | columnName": {
     "message": "Name"
   },
-  "core/lib/i18n/i18n.js | columnOverBudget": {
-    "message": "Over Budget"
-  },
   "core/lib/i18n/i18n.js | columnRequests": {
     "message": "Requests"
   },
@@ -2696,6 +2468,9 @@
   "core/lib/lh-error.js | requestContentTimeout": {
     "message": "Fetching resource content has exceeded the allotted time"
   },
+  "core/lib/lh-error.js | targetCrashed": {
+    "message": "Browser tab has unexpectedly crashed."
+  },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "The URL you have provided appears to be invalid."
   },
@@ -2731,9 +2506,6 @@
   },
   "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
     "message": "Performance"
-  },
-  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
-    "message": "Progressive Web App"
   },
   "flow-report/src/i18n/ui-strings.js | categorySeo": {
     "message": "SEO"
@@ -3400,9 +3172,6 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "Passed audits"
-  },
-  "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "As per [Chrome’s updated Installability Criteria](https://developer.chrome.com/blog/update-install-criteria), Lighthouse will be deprecating the PWA category in a future release. Please refer to the [updated PWA documentation](https://developer.chrome.com/docs/devtools/progressive-web-apps/) for future PWA testing."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Initial page load"

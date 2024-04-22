@@ -1,4 +1,4 @@
-declare var X: {
+declare var Y: {
     new (e: any, t: any): {
         _document: any;
         _lighthouseChannel: string;
@@ -19,14 +19,14 @@ declare var X: {
         setLighthouseChannel(e: any): void;
         document(): any;
         isDevTools(): boolean;
-        find(e: any, t: any): any;
+        find(e: any, t?: any): any;
         maybeFind(e: any, t: any): any;
         findAll(e: any, t: any): any[];
         fireEventOn(e: any, t: any, n: any): void;
         saveFile(e: any, t: any): void;
     };
 };
-declare var te: {
+declare var ne: {
     new (e: any): {
         _dom: any;
         _opts: {};
@@ -40,7 +40,7 @@ declare var te: {
         _renderReport(e: any): any;
     };
 };
-declare var ne: {
+declare var re: {
     new (e: any, t?: {}): {
         _dom: any;
         _opts: {};
@@ -100,15 +100,15 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace Mt {
-    export { zt as registerLocaleData };
-    export { Lt as hasLocale };
+declare namespace Lt {
+    export { At as registerLocaleData };
+    export { Ct as hasLocale };
 }
-declare function St(r: any, e?: {}): HTMLElement;
-declare function Ct(r: any, e: any): {
+declare function kt(r: any, e?: {}): HTMLElement;
+declare function St(r: any, e: any): {
     lhr: any;
     missingIcuMessageIds: any[];
 };
-declare function zt(r: any, e: any): void;
-declare function Lt(r: any): boolean;
-export { X as DOM, te as ReportRenderer, ne as ReportUIFeatures, Mt as format, St as renderReport, Ct as swapLocale };
+declare function At(r: any, e: any): void;
+declare function Ct(r: any): boolean;
+export { Y as DOM, ne as ReportRenderer, re as ReportUIFeatures, Lt as format, kt as renderReport, St as swapLocale };

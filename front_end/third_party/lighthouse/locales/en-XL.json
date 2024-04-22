@@ -35,6 +35,24 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, âńd̂ `menuitem` él̂ém̂én̂t́ŝ h́âv́ê áĉćêśŝíb̂ĺê ńâḿêś"
   },
+  "core/audits/accessibility/aria-conditional-attr.js | description": {
+    "message": "Ŝóm̂é ÂŔÎÁ ât́t̂ŕîb́ût́êś âŕê ón̂ĺŷ ál̂ĺôẃêd́ ôń âń êĺêḿêńt̂ ún̂d́êŕ ĉér̂t́âín̂ ćôńd̂ít̂íôńŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ćôńd̂ít̂íôńâĺ ÂŔÎÁ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.9/aria-conditional-attr)."
+  },
+  "core/audits/accessibility/aria-conditional-attr.js | failureTitle": {
+    "message": "ÂŔÎÁ ât́t̂ŕîb́ût́êś âŕê ńôt́ ûśêd́ âś ŝṕêćîf́îéd̂ f́ôŕ t̂h́ê él̂ém̂én̂t́'ŝ ŕôĺê"
+  },
+  "core/audits/accessibility/aria-conditional-attr.js | title": {
+    "message": "ÂŔÎÁ ât́t̂ŕîb́ût́êś âŕê úŝéd̂ áŝ śp̂éĉíf̂íêd́ f̂ór̂ t́ĥé êĺêḿêńt̂'ś r̂ól̂é"
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | description": {
+    "message": "D̂ép̂ŕêćât́êd́ ÂŔÎÁ r̂ól̂éŝ ḿâý n̂ót̂ b́ê ṕr̂óĉéŝśêd́ ĉór̂ŕêćt̂ĺŷ b́ŷ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝý. [L̂éâŕn̂ ḿôŕê áb̂óût́ d̂ép̂ŕêćât́êd́ ÂŔÎÁ r̂ól̂éŝ](https://dequeuniversity.com/rules/axe/4.9/aria-deprecated-role)."
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | failureTitle": {
+    "message": "D̂ép̂ŕêćât́êd́ ÂŔÎÁ r̂ól̂éŝ ẃêŕê úŝéd̂"
+  },
+  "core/audits/accessibility/aria-deprecated-role.js | title": {
+    "message": "D̂ép̂ŕêćât́êd́ ÂŔÎÁ r̂ól̂éŝ ẃêŕê ńôt́ ûśêd́"
+  },
   "core/audits/accessibility/aria-dialog-name.js | description": {
     "message": "ÂŔÎÁ d̂íâĺôǵ êĺêḿêńt̂ś ŵít̂h́ôút̂ áĉćêśŝíb̂ĺê ńâḿêś m̂áŷ ṕr̂év̂én̂t́ ŝćr̂éêń r̂éâd́êŕŝ úŝér̂ś f̂ŕôḿ d̂íŝćêŕn̂ín̂ǵ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́êśê él̂ém̂én̂t́ŝ. [Ĺêár̂ń ĥóŵ t́ô ḿâḱê ÁR̂ÍÂ d́îál̂óĝ él̂ém̂én̂t́ŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.9/aria-dialog-name)."
   },
@@ -88,6 +106,15 @@
   },
   "core/audits/accessibility/aria-progressbar-name.js | title": {
     "message": "ÂŔÎÁ `progressbar` êĺêḿêńt̂ś ĥáv̂é âćĉéŝśîb́l̂é n̂ám̂éŝ"
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | description": {
+    "message": "Ûśîńĝ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ ín̂ ŕôĺêś ŵh́êŕê t́ĥéŷ ár̂é p̂ŕôh́îb́ît́êd́ ĉán̂ ḿêán̂ t́ĥát̂ ím̂ṕôŕt̂án̂t́ îńf̂ór̂ḿât́îón̂ íŝ ńôt́ ĉóm̂ḿûńîćât́êd́ t̂ó ûśêŕŝ óf̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ŕôh́îb́ît́êd́ ÂŔÎÁ r̂ól̂éŝ](https://dequeuniversity.com/rules/axe/4.9/aria-prohibited-attr)."
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | failureTitle": {
+    "message": "Êĺêḿêńt̂ś ûśê ṕr̂óĥíb̂ít̂éd̂ ÁR̂ÍÂ át̂t́r̂íb̂út̂éŝ"
+  },
+  "core/audits/accessibility/aria-prohibited-attr.js | title": {
+    "message": "Êĺêḿêńt̂ś ûśê ón̂ĺŷ ṕêŕm̂ít̂t́êd́ ÂŔÎÁ ât́t̂ŕîb́ût́êś"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Ŝóm̂é ÂŔÎÁ r̂ól̂éŝ h́âv́ê ŕêq́ûír̂éd̂ át̂t́r̂íb̂út̂éŝ t́ĥát̂ d́êśĉŕîb́ê t́ĥé ŝt́ât́ê óf̂ t́ĥé êĺêḿêńt̂ t́ô śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ r̂ól̂éŝ án̂d́ r̂éq̂úîŕêd́ ât́t̂ŕîb́ût́êś](https://dequeuniversity.com/rules/axe/4.9/aria-required-attr)."
@@ -235,15 +262,6 @@
   },
   "core/audits/accessibility/document-title.js | title": {
     "message": "D̂óĉúm̂én̂t́ ĥáŝ á `<title>` êĺêḿêńt̂"
-  },
-  "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Âĺl̂ f́ôćûśâb́l̂é êĺêḿêńt̂ś m̂úŝt́ ĥáv̂é â ún̂íq̂úê `id` t́ô én̂śûŕê t́ĥát̂ t́ĥéŷ'ŕê v́îśîb́l̂é t̂ó âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê `id`ś](https://dequeuniversity.com/rules/axe/4.9/duplicate-id-active)."
-  },
-  "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
-    "message": "`[id]` ât́t̂ŕîb́ût́êś ôń âćt̂ív̂é, f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ ár̂é n̂ót̂ ún̂íq̂úê"
-  },
-  "core/audits/accessibility/duplicate-id-active.js | title": {
-    "message": "`[id]` ât́t̂ŕîb́ût́êś ôń âćt̂ív̂é, f̂óĉúŝáb̂ĺê él̂ém̂én̂t́ŝ ár̂é ûńîq́ûé"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
     "message": "T̂h́ê v́âĺûé ôf́ âń ÂŔÎÁ ÎD́ m̂úŝt́ b̂é ûńîq́ûé t̂ó p̂ŕêv́êńt̂ ót̂h́êŕ îńŝt́âńĉéŝ f́r̂óm̂ b́êín̂ǵ ôv́êŕl̂óôḱêd́ b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń ĥóŵ t́ô f́îx́ d̂úp̂ĺîćât́ê ÁR̂ÍÂ ÍD̂ś](https://dequeuniversity.com/rules/axe/4.9/duplicate-id-aria)."
@@ -743,18 +761,6 @@
   "core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Êńâb́l̂é t̂éx̂t́ ĉóm̂ṕr̂éŝśîón̂"
   },
-  "core/audits/content-width.js | description": {
-    "message": "Îf́ t̂h́ê ẃîd́t̂h́ ôf́ ŷóûŕ âṕp̂'ś ĉón̂t́êńt̂ d́ôéŝń't̂ ḿât́ĉh́ t̂h́ê ẃîd́t̂h́ ôf́ t̂h́ê v́îéŵṕôŕt̂, ýôúr̂ áp̂ṕ m̂íĝh́t̂ ńôt́ b̂é ôṕt̂ím̂íẑéd̂ f́ôŕ m̂ób̂íl̂é ŝćr̂éêńŝ. [Ĺêár̂ń ĥóŵ t́ô śîźê ćôńt̂én̂t́ f̂ór̂ t́ĥé v̂íêẃp̂ór̂t́](https://developer.chrome.com/docs/lighthouse/pwa/content-width/)."
-  },
-  "core/audits/content-width.js | explanation": {
-    "message": "T̂h́ê v́îéŵṕôŕt̂ śîźê óf̂ {innerWidth}ṕx̂ d́ôéŝ ńôt́ m̂át̂ćĥ t́ĥé ŵín̂d́ôẃ ŝíẑé ôf́ {outerWidth}p̂x́."
-  },
-  "core/audits/content-width.js | failureTitle": {
-    "message": "Ĉón̂t́êńt̂ íŝ ńôt́ ŝíẑéd̂ ćôŕr̂éĉt́l̂ý f̂ór̂ t́ĥé v̂íêẃp̂ór̂t́"
-  },
-  "core/audits/content-width.js | title": {
-    "message": "Ĉón̂t́êńt̂ íŝ śîźêd́ ĉór̂ŕêćt̂ĺŷ f́ôŕ t̂h́ê v́îéŵṕôŕt̂"
-  },
   "core/audits/critical-request-chains.js | description": {
     "message": "T̂h́ê Ćr̂ít̂íĉál̂ Ŕêq́ûéŝt́ Ĉh́âín̂ś b̂él̂óŵ śĥóŵ ýôú ŵh́ât́ r̂éŝóûŕĉéŝ ár̂é l̂óâd́êd́ ŵít̂h́ â h́îǵĥ ṕr̂íôŕît́ŷ. Ćôńŝíd̂ér̂ ŕêd́ûćîńĝ t́ĥé l̂én̂ǵt̂h́ ôf́ ĉh́âín̂ś, r̂éd̂úĉín̂ǵ t̂h́ê d́ôẃn̂ĺôád̂ śîźê óf̂ ŕêśôúr̂ćêś, ôŕ d̂éf̂ér̂ŕîńĝ t́ĥé d̂óŵńl̂óâd́ ôf́ ûńn̂éĉéŝśâŕŷ ŕêśôúr̂ćêś t̂ó îḿp̂ŕôv́ê ṕâǵê ĺôád̂. [Ĺêár̂ń ĥóŵ t́ô áv̂óîd́ ĉh́âín̂ín̂ǵ ĉŕît́îćâĺ r̂éq̂úêśt̂ś](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains/)."
   },
@@ -1004,105 +1010,6 @@
   "core/audits/image-size-responsive.js | title": {
     "message": "Ŝér̂v́êś îḿâǵêś ŵít̂h́ âṕp̂ŕôṕr̂íât́ê ŕêśôĺût́îón̂"
   },
-  "core/audits/installable-manifest.js | already-installed": {
-    "message": "T̂h́ê áp̂ṕ îś âĺr̂éâd́ŷ ín̂śt̂ál̂ĺêd́"
-  },
-  "core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Ĉóûĺd̂ ńôt́ d̂óŵńl̂óâd́ â ŕêq́ûír̂éd̂ íĉón̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́"
-  },
-  "core/audits/installable-manifest.js | columnValue": {
-    "message": "F̂áîĺûŕê ŕêáŝón̂"
-  },
-  "core/audits/installable-manifest.js | description": {
-    "message": "Ŝér̂v́îćê ẃôŕk̂ér̂ íŝ t́ĥé t̂éĉh́n̂ól̂óĝý t̂h́ât́ êńâb́l̂éŝ ýôúr̂ áp̂ṕ t̂ó ûśê ḿâńŷ Ṕr̂óĝŕêśŝív̂é Ŵéb̂ Áp̂ṕ f̂éât́ûŕêś, ŝúĉh́ âś ôf́f̂ĺîńê, ád̂d́ t̂ó ĥóm̂éŝćr̂éêń, âńd̂ ṕûśĥ ńôt́îf́îćât́îón̂ś. Ŵít̂h́ p̂ŕôṕêŕ ŝér̂v́îćê ẃôŕk̂ér̂ án̂d́ m̂án̂íf̂éŝt́ îḿp̂ĺêḿêńt̂át̂íôńŝ, b́r̂óŵśêŕŝ ćâń p̂ŕôáĉt́îv́êĺŷ ṕr̂óm̂ṕt̂ úŝér̂ś t̂ó âd́d̂ ýôúr̂ áp̂ṕ t̂ó t̂h́êír̂ h́ôḿêśĉŕêén̂, ẃĥíĉh́ ĉán̂ ĺêád̂ t́ô h́îǵĥér̂ én̂ǵâǵêḿêńt̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ḿâńîf́êśt̂ ín̂śt̂ál̂ĺâb́îĺît́ŷ ŕêq́ûír̂ém̂én̂t́ŝ](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)."
-  },
-  "core/audits/installable-manifest.js | displayValue": {
-    "message": "{itemCount, plural,\n    =1 {1 r̂éâśôń}\n    other {# r̂éâśôńŝ}\n    }"
-  },
-  "core/audits/installable-manifest.js | failureTitle": {
-    "message": "Ŵéb̂ áp̂ṕ m̂án̂íf̂éŝt́ ôŕ ŝér̂v́îćê ẃôŕk̂ér̂ d́ô ńôt́ m̂éêt́ t̂h́ê ín̂śt̂ál̂ĺâb́îĺît́ŷ ŕêq́ûír̂ém̂én̂t́ŝ"
-  },
-  "core/audits/installable-manifest.js | ids-do-not-match": {
-    "message": "T̂h́ê Ṕl̂áŷ Śt̂ór̂é âṕp̂ ÚR̂Ĺ âńd̂ Ṕl̂áŷ Śt̂ór̂é ÎD́ d̂ó n̂ót̂ ḿât́ĉh́"
-  },
-  "core/audits/installable-manifest.js | in-incognito": {
-    "message": "P̂áĝé îś l̂óâd́êd́ îń âń îńĉóĝńît́ô ẃîńd̂óŵ"
-  },
-  "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "M̂án̂íf̂éŝt́ `display` p̂ŕôṕêŕt̂ý m̂úŝt́ b̂é ôńê óf̂ `standalone`, `fullscreen`, ór̂ `minimal-ui`"
-  },
-  "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
-    "message": "M̂án̂íf̂éŝt́ ĉón̂t́âín̂ś 'd̂íŝṕl̂áŷ_óv̂ér̂ŕîd́ê' f́îél̂d́, âńd̂ t́ĥé f̂ír̂śt̂ śûṕp̂ór̂t́êd́ d̂íŝṕl̂áŷ ḿôd́ê ḿûśt̂ b́ê ón̂é ôf́ 'ŝt́âńd̂ál̂ón̂é', 'f̂úl̂ĺŝćr̂éêń', ôŕ 'm̂ín̂ím̂ál̂-úî'"
-  },
-  "core/audits/installable-manifest.js | manifest-empty": {
-    "message": "M̂án̂íf̂éŝt́ ĉóûĺd̂ ńôt́ b̂é f̂ét̂ćĥéd̂, íŝ ém̂ṕt̂ý, ôŕ ĉóûĺd̂ ńôt́ b̂é p̂ár̂śêd́"
-  },
-  "core/audits/installable-manifest.js | manifest-location-changed": {
-    "message": "M̂án̂íf̂éŝt́ ÛŔL̂ ćĥán̂ǵêd́ ŵh́îĺê t́ĥé m̂án̂íf̂éŝt́ ŵáŝ b́êín̂ǵ f̂ét̂ćĥéd̂."
-  },
-  "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â `name` ór̂ `short_name` f́îél̂d́"
-  },
-  "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {value0} p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê śîźêś ât́t̂ŕîb́ût́ê ḿûśt̂ b́ê śêt́, âńd̂ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"âńŷ\"."
-  },
-  "core/audits/installable-manifest.js | manifest-parsing-or-network-error": {
-    "message": "M̂án̂íf̂éŝt́ ĉóûĺd̂ ńôt́ b̂é f̂ét̂ćĥéd̂, íŝ ém̂ṕt̂ý, ôŕ ĉóûĺd̂ ńôt́ b̂é p̂ár̂śêd́"
-  },
-  "core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {value0} ṕx̂ śq̂úâŕê ín̂ ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"âńŷ\""
-  },
-  "core/audits/installable-manifest.js | no-icon-available": {
-    "message": "D̂óŵńl̂óâd́êd́ îćôń ŵáŝ ém̂ṕt̂ý ôŕ ĉór̂ŕûṕt̂éd̂"
-  },
-  "core/audits/installable-manifest.js | no-id-specified": {
-    "message": "N̂ó P̂ĺâý ŝt́ôŕê ÍD̂ ṕr̂óv̂íd̂éd̂"
-  },
-  "core/audits/installable-manifest.js | no-manifest": {
-    "message": "P̂áĝé ĥáŝ ńô ḿâńîf́êśt̂ <ĺîńk̂> ÚR̂Ĺ"
-  },
-  "core/audits/installable-manifest.js | no-url-for-service-worker": {
-    "message": "Ĉóûĺd̂ ńôt́ ĉh́êćk̂ śêŕv̂íĉé ŵór̂ḱêŕ ŵít̂h́ôút̂ á 'ŝt́âŕt̂_úr̂ĺ' f̂íêĺd̂ ín̂ t́ĥé m̂án̂íf̂éŝt́"
-  },
-  "core/audits/installable-manifest.js | noErrorId": {
-    "message": "Îńŝt́âĺl̂áb̂íl̂ít̂ý êŕr̂ór̂ íd̂ '{errorId}' íŝ ńôt́ r̂éĉóĝńîźêd́"
-  },
-  "core/audits/installable-manifest.js | not-from-secure-origin": {
-    "message": "P̂áĝé îś n̂ót̂ śêŕv̂éd̂ f́r̂óm̂ á ŝéĉúr̂é ôŕîǵîń"
-  },
-  "core/audits/installable-manifest.js | not-in-main-frame": {
-    "message": "P̂áĝé îś n̂ót̂ ĺôád̂éd̂ ín̂ t́ĥé m̂áîń f̂ŕâḿê"
-  },
-  "core/audits/installable-manifest.js | not-offline-capable": {
-    "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é"
-  },
-  "core/audits/installable-manifest.js | pipeline-restarted": {
-    "message": "P̂ẂÂ h́âś b̂éêń ûńîńŝt́âĺl̂éd̂ án̂d́ îńŝt́âĺl̂áb̂íl̂ít̂ý ĉh́êćk̂ś r̂éŝét̂t́îńĝ."
-  },
-  "core/audits/installable-manifest.js | platform-not-supported-on-android": {
-    "message": "T̂h́ê śp̂éĉíf̂íêd́ âṕp̂ĺîćât́îón̂ ṕl̂át̂f́ôŕm̂ íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ ón̂ Án̂d́r̂óîd́"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications": {
-    "message": "M̂án̂íf̂éŝt́ ŝṕêćîf́îéŝ ṕr̂éf̂ér̂_ŕêĺât́êd́_âṕp̂ĺîćât́îón̂ś: t̂ŕûé"
-  },
-  "core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
-    "message": "p̂ŕêf́êŕ_r̂él̂át̂éd̂_áp̂ṕl̂íĉát̂íôńŝ íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ ôń Ĉh́r̂óm̂é B̂ét̂á âńd̂ Śt̂áb̂ĺê ćĥán̂ńêĺŝ ón̂ Án̂d́r̂óîd́."
-  },
-  "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥé p̂áĝé îś îńŝt́âĺl̂áb̂ĺê. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
-  },
-  "core/audits/installable-manifest.js | start-url-not-valid": {
-    "message": "M̂án̂íf̂éŝt́ ŝt́âŕt̂ ÚR̂Ĺ îś n̂ót̂ v́âĺîd́"
-  },
-  "core/audits/installable-manifest.js | title": {
-    "message": "Ŵéb̂ áp̂ṕ m̂án̂íf̂éŝt́ âńd̂ śêŕv̂íĉé ŵór̂ḱêŕ m̂éêt́ t̂h́ê ín̂śt̂ál̂ĺâb́îĺît́ŷ ŕêq́ûír̂ém̂én̂t́ŝ"
-  },
-  "core/audits/installable-manifest.js | url-not-supported-for-webapk": {
-    "message": "Â ÚR̂Ĺ îń t̂h́ê ḿâńîf́êśt̂ ćôńt̂áîńŝ á ûśêŕn̂ám̂é, p̂áŝśŵór̂d́, ôŕ p̂ór̂t́"
-  },
-  "core/audits/installable-manifest.js | warn-not-offline-capable": {
-    "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é. T̂h́ê ṕâǵê ẃîĺl̂ ńôt́ b̂é r̂éĝár̂d́êd́ âś îńŝt́âĺl̂áb̂ĺê áf̂t́êŕ Ĉh́r̂óm̂é 93, ŝt́âb́l̂é r̂él̂éâśê Áûǵûśt̂ 2021."
-  },
   "core/audits/is-on-https.js | allowed": {
     "message": "Âĺl̂óŵéd̂"
   },
@@ -1160,15 +1067,6 @@
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ êĺêḿêńt̂"
   },
-  "core/audits/layout-shift-elements.js | columnContribution": {
-    "message": "L̂áŷóût́ ŝh́îf́t̂ ím̂ṕâćt̂"
-  },
-  "core/audits/layout-shift-elements.js | description": {
-    "message": "T̂h́êśê D́ÔḾ êĺêḿêńt̂ś ŵér̂é m̂óŝt́ âf́f̂éĉt́êd́ b̂ý l̂áŷóût́ ŝh́îf́t̂ś. Ŝóm̂é l̂áŷóût́ ŝh́îf́t̂ś m̂áŷ ńôt́ b̂é îńĉĺûd́êd́ îń t̂h́ê ĆL̂Ś m̂ét̂ŕîć v̂ál̂úê d́ûé t̂ó [ŵín̂d́ôẃîńĝ](https://web.dev/articles/cls#what_is_cls). [Ĺêár̂ń ĥóŵ t́ô ím̂ṕr̂óv̂é ĈĹŜ](https://web.dev/articles/optimize-cls)"
-  },
-  "core/audits/layout-shift-elements.js | title": {
-    "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
-  },
   "core/audits/layout-shifts.js | columnScore": {
     "message": "L̂áŷóût́ ŝh́îf́t̂ śĉór̂é"
   },
@@ -1223,33 +1121,6 @@
   "core/audits/mainthread-work-breakdown.js | title": {
     "message": "M̂ín̂ím̂íẑéŝ ḿâín̂-t́ĥŕêád̂ ẃôŕk̂"
   },
-  "core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "T̂ó r̂éâćĥ t́ĥé m̂óŝt́ n̂úm̂b́êŕ ôf́ ûśêŕŝ, śît́êś ŝh́ôúl̂d́ ŵór̂ḱ âćr̂óŝś êv́êŕŷ ḿâj́ôŕ b̂ŕôẃŝér̂. [Ĺêár̂ń âb́ôút̂ ćr̂óŝś-b̂ŕôẃŝér̂ ćôḿp̂át̂íb̂íl̂ít̂ý](https://developer.chrome.com/docs/lighthouse/pwa/pwa-cross-browser/)."
-  },
-  "core/audits/manual/pwa-cross-browser.js | title": {
-    "message": "Ŝít̂é ŵór̂ḱŝ ćr̂óŝś-b̂ŕôẃŝér̂"
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Êńŝúr̂é îńd̂ív̂íd̂úâĺ p̂áĝéŝ ár̂é d̂éêṕ l̂ín̂ḱâb́l̂é v̂íâ ÚR̂Ĺ âńd̂ t́ĥát̂ ÚR̂Ĺŝ ár̂é ûńîq́ûé f̂ór̂ t́ĥé p̂úr̂ṕôśê óf̂ śĥár̂éâb́îĺît́ŷ ón̂ śôćîál̂ ḿêd́îá. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ŕôv́îd́îńĝ d́êép̂ ĺîńk̂ś](https://developer.chrome.com/docs/lighthouse/pwa/pwa-each-page-has-url/)."
-  },
-  "core/audits/manual/pwa-each-page-has-url.js | title": {
-    "message": "Êáĉh́ p̂áĝé ĥáŝ á ÛŔL̂"
-  },
-  "core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "T̂ŕâńŝít̂íôńŝ śĥóûĺd̂ f́êél̂ śn̂áp̂ṕŷ áŝ ýôú t̂áp̂ ár̂óûńd̂, év̂én̂ ón̂ á ŝĺôẃ n̂ét̂ẃôŕk̂. T́ĥíŝ éx̂ṕêŕîén̂ćê íŝ ḱêý t̂ó â úŝér̂'ś p̂ér̂ćêṕt̂íôń ôf́ p̂ér̂f́ôŕm̂án̂ćê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕâǵê t́r̂án̂śît́îón̂ś](https://developer.chrome.com/docs/lighthouse/pwa/pwa-page-transitions/)."
-  },
-  "core/audits/manual/pwa-page-transitions.js | title": {
-    "message": "P̂áĝé t̂ŕâńŝít̂íôńŝ d́ôń't̂ f́êél̂ ĺîḱê t́ĥéŷ b́l̂óĉḱ ôń t̂h́ê ńêt́ŵór̂ḱ"
-  },
-  "core/audits/maskable-icon.js | description": {
-    "message": "Â ḿâśk̂áb̂ĺê íĉón̂ én̂śûŕêś t̂h́ât́ t̂h́ê ím̂áĝé f̂íl̂ĺŝ t́ĥé êńt̂ír̂é ŝh́âṕê ẃît́ĥóût́ b̂éîńĝ ĺêt́t̂ér̂b́ôx́êd́ ŵh́êń îńŝt́âĺl̂ín̂ǵ t̂h́ê áp̂ṕ ôń â d́êv́îćê. [Ĺêár̂ń âb́ôút̂ ḿâśk̂áb̂ĺê ḿâńîf́êśt̂ íĉón̂ś](https://developer.chrome.com/docs/lighthouse/pwa/maskable-icon-audit/)."
-  },
-  "core/audits/maskable-icon.js | failureTitle": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêśn̂'t́ ĥáv̂é â ḿâśk̂áb̂ĺê íĉón̂"
-  },
-  "core/audits/maskable-icon.js | title": {
-    "message": "M̂án̂íf̂éŝt́ ĥáŝ á m̂áŝḱâb́l̂é îćôń"
-  },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ ḿêáŝúr̂éŝ t́ĥé m̂óv̂ém̂én̂t́ ôf́ v̂íŝíb̂ĺê él̂ém̂én̂t́ŝ ẃît́ĥín̂ t́ĥé v̂íêẃp̂ór̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ćûḿûĺât́îv́ê Ĺâýôút̂ Śĥíf̂t́ m̂ét̂ŕîć](https://web.dev/articles/cls)."
   },
@@ -1289,15 +1160,6 @@
   "core/audits/network-server-latency.js | title": {
     "message": "Ŝér̂v́êŕ B̂áĉḱêńd̂ Ĺât́êńĉíêś"
   },
-  "core/audits/no-unload-listeners.js | description": {
-    "message": "T̂h́ê `unload` év̂én̂t́ d̂óêś n̂ót̂ f́îŕê ŕêĺîáb̂ĺŷ án̂d́ l̂íŝt́êńîńĝ f́ôŕ ît́ ĉán̂ ṕr̂év̂én̂t́ b̂ŕôẃŝér̂ óp̂t́îḿîźât́îón̂ś l̂ík̂é t̂h́ê B́âćk̂-F́ôŕŵár̂d́ Ĉáĉh́ê. Úŝé `pagehide` ôŕ `visibilitychange` êv́êńt̂ś îńŝt́êád̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ún̂ĺôád̂ év̂én̂t́ l̂íŝt́êńêŕŝ](https://web.dev/articles/bfcache#never_use_the_unload_event)"
-  },
-  "core/audits/no-unload-listeners.js | failureTitle": {
-    "message": "R̂éĝíŝt́êŕŝ án̂ `unload` ĺîśt̂én̂ér̂"
-  },
-  "core/audits/no-unload-listeners.js | title": {
-    "message": "Âv́ôíd̂ś `unload` êv́êńt̂ ĺîśt̂én̂ér̂ś"
-  },
   "core/audits/non-composited-animations.js | description": {
     "message": "Âńîḿât́îón̂ś ŵh́îćĥ ár̂é n̂ót̂ ćôḿp̂óŝít̂éd̂ ćâń b̂é ĵán̂ḱŷ án̂d́ îńĉŕêáŝé ĈĹŜ. [Ĺêár̂ń ĥóŵ t́ô áv̂óîd́ n̂ón̂-ćôḿp̂óŝít̂éd̂ án̂ím̂át̂íôńŝ](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)"
   },
@@ -1325,15 +1187,6 @@
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Êf́f̂éĉt́ ĥáŝ ún̂śûṕp̂ór̂t́êd́ t̂ím̂ín̂ǵ p̂ár̂ám̂ét̂ér̂ś"
   },
-  "core/audits/performance-budget.js | description": {
-    "message": "K̂éêṕ t̂h́ê q́ûán̂t́ît́ŷ án̂d́ ŝíẑé ôf́ n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ ún̂d́êŕ t̂h́ê t́âŕĝét̂ś ŝét̂ b́ŷ t́ĥé p̂ŕôv́îd́êd́ p̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕêŕf̂ór̂ḿâńĉé b̂úd̂ǵêt́ŝ](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/performance-budget.js | requestCountOverBudget": {
-    "message": "{count, plural,\n    =1 {1 r̂éq̂úêśt̂}\n    other {# ŕêq́ûéŝt́ŝ}\n   }"
-  },
-  "core/audits/performance-budget.js | title": {
-    "message": "P̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂"
-  },
   "core/audits/preload-fonts.js | description": {
     "message": "P̂ŕêĺôád̂ `optional` f́ôńt̂ś ŝó f̂ír̂śt̂-t́îḿê v́îśît́ôŕŝ ḿâý ûśê t́ĥém̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕr̂él̂óâd́îńĝ f́ôńt̂ś](https://web.dev/articles/preload-optional-fonts)"
   },
@@ -1348,6 +1201,15 @@
   },
   "core/audits/prioritize-lcp-image.js | title": {
     "message": "P̂ŕêĺôád̂ Ĺâŕĝéŝt́ Ĉón̂t́êńt̂f́ûĺ P̂áîńt̂ ím̂áĝé"
+  },
+  "core/audits/redirects-http.js | description": {
+    "message": "M̂ák̂é ŝúr̂é t̂h́ât́ ŷóû ŕêd́îŕêćt̂ ál̂ĺ ĤT́T̂Ṕ t̂ŕâf́f̂íĉ t́ô H́T̂T́P̂Ś îń ôŕd̂ér̂ t́ô én̂áb̂ĺê śêćûŕê ẃêb́ f̂éât́ûŕêś f̂ór̂ ál̂ĺ ŷóûŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é](https://developer.chrome.com/docs/lighthouse/pwa/redirects-http/)."
+  },
+  "core/audits/redirects-http.js | failureTitle": {
+    "message": "D̂óêś n̂ót̂ ŕêd́îŕêćt̂ H́T̂T́P̂ t́r̂áf̂f́îć t̂ó ĤT́T̂ṔŜ"
+  },
+  "core/audits/redirects-http.js | title": {
+    "message": "R̂éd̂ír̂éĉt́ŝ H́T̂T́P̂ t́r̂áf̂f́îć t̂ó ĤT́T̂ṔŜ"
   },
   "core/audits/redirects.js | description": {
     "message": "R̂éd̂ír̂éĉt́ŝ ín̂t́r̂ód̂úĉé âd́d̂ít̂íôńâĺ d̂él̂áŷś b̂éf̂ór̂é t̂h́ê ṕâǵê ćâń b̂é l̂óâd́êd́. [L̂éâŕn̂ h́ôẃ t̂ó âv́ôíd̂ ṕâǵê ŕêd́îŕêćt̂ś](https://developer.chrome.com/docs/lighthouse/performance/redirects/)."
@@ -1484,15 +1346,6 @@
   "core/audits/seo/meta-description.js | title": {
     "message": "D̂óĉúm̂én̂t́ ĥáŝ á m̂ét̂á d̂éŝćr̂íp̂t́îón̂"
   },
-  "core/audits/seo/plugins.js | description": {
-    "message": "Ŝéâŕĉh́ êńĝín̂éŝ ćâń't̂ ín̂d́êx́ p̂ĺûǵîń ĉón̂t́êńt̂, án̂d́ m̂án̂ý d̂év̂íĉéŝ ŕêśt̂ŕîćt̂ ṕl̂úĝín̂ś ôŕ d̂ón̂'t́ ŝúp̂ṕôŕt̂ t́ĥém̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ áv̂óîd́îńĝ ṕl̂úĝín̂ś](https://developer.chrome.com/docs/lighthouse/seo/plugins/)."
-  },
-  "core/audits/seo/plugins.js | failureTitle": {
-    "message": "D̂óĉúm̂én̂t́ ûśêś p̂ĺûǵîńŝ"
-  },
-  "core/audits/seo/plugins.js | title": {
-    "message": "D̂óĉúm̂én̂t́ âv́ôíd̂ś p̂ĺûǵîńŝ"
-  },
   "core/audits/seo/robots-txt.js | description": {
     "message": "Îf́ ŷóûŕ r̂ób̂ót̂ś.t̂x́t̂ f́îĺê íŝ ḿâĺf̂ór̂ḿêd́, ĉŕâẃl̂ér̂ś m̂áŷ ńôt́ b̂é âb́l̂é t̂ó ûńd̂ér̂śt̂án̂d́ ĥóŵ ýôú ŵán̂t́ ŷóûŕ ŵéb̂śît́ê t́ô b́ê ćr̂áŵĺêd́ ôŕ îńd̂éx̂éd̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ŕôb́ôt́ŝ.t́x̂t́](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/)."
   },
@@ -1511,27 +1364,6 @@
   "core/audits/seo/robots-txt.js | title": {
     "message": "r̂ób̂ót̂ś.t̂x́t̂ íŝ v́âĺîd́"
   },
-  "core/audits/seo/tap-targets.js | description": {
-    "message": "Îńt̂ér̂áĉt́îv́ê él̂ém̂én̂t́ŝ ĺîḱê b́ût́t̂ón̂ś âńd̂ ĺîńk̂ś ŝh́ôúl̂d́ b̂é l̂ár̂ǵê én̂óûǵĥ (48x́48p̂x́), ôŕ ĥáv̂é êńôúĝh́ ŝṕâćê ár̂óûńd̂ t́ĥém̂, t́ô b́ê éâśŷ én̂óûǵĥ t́ô t́âṕ ŵít̂h́ôút̂ óv̂ér̂ĺâṕp̂ín̂ǵ ôńt̂ó ôt́ĥér̂ él̂ém̂én̂t́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âṕ t̂ár̂ǵêt́ŝ](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
-  },
-  "core/audits/seo/tap-targets.js | displayValue": {
-    "message": "{decimalProportion, number, percent} âṕp̂ŕôṕr̂íât́êĺŷ śîźêd́ t̂áp̂ t́âŕĝét̂ś"
-  },
-  "core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
-    "message": "T̂áp̂ t́âŕĝét̂ś âŕê t́ôó ŝḿâĺl̂ b́êćâúŝé t̂h́êŕê'ś n̂ó v̂íêẃp̂ór̂t́ m̂ét̂á t̂áĝ óp̂t́îḿîźêd́ f̂ór̂ ḿôb́îĺê śĉŕêén̂ś"
-  },
-  "core/audits/seo/tap-targets.js | failureTitle": {
-    "message": "T̂áp̂ t́âŕĝét̂ś âŕê ńôt́ ŝíẑéd̂ áp̂ṕr̂óp̂ŕîát̂él̂ý"
-  },
-  "core/audits/seo/tap-targets.js | overlappingTargetHeader": {
-    "message": "Ôv́êŕl̂áp̂ṕîńĝ T́âŕĝét̂"
-  },
-  "core/audits/seo/tap-targets.js | tapTargetHeader": {
-    "message": "T̂áp̂ T́âŕĝét̂"
-  },
-  "core/audits/seo/tap-targets.js | title": {
-    "message": "T̂áp̂ t́âŕĝét̂ś âŕê śîźêd́ âṕp̂ŕôṕr̂íât́êĺŷ"
-  },
   "core/audits/server-response-time.js | description": {
     "message": "K̂éêṕ t̂h́ê śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê f́ôŕ t̂h́ê ḿâín̂ d́ôćûḿêńt̂ śĥór̂t́ b̂éĉáûśê ál̂ĺ ôt́ĥér̂ ŕêq́ûéŝt́ŝ d́êṕêńd̂ ón̂ ít̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé T̂ím̂é t̂ó F̂ír̂śt̂ B́ŷt́ê ḿêt́r̂íĉ](https://developer.chrome.com/docs/lighthouse/performance/time-to-first-byte/)."
   },
@@ -1543,24 +1375,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Îńît́îál̂ śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê ẃâś ŝh́ôŕt̂"
-  },
-  "core/audits/splash-screen.js | description": {
-    "message": "Â t́ĥém̂éd̂ śp̂ĺâśĥ śĉŕêén̂ én̂śûŕêś â h́îǵĥ-q́ûál̂ít̂ý êx́p̂ér̂íêńĉé ŵh́êń ûśêŕŝ ĺâún̂ćĥ ýôúr̂ áp̂ṕ f̂ŕôḿ t̂h́êír̂ h́ôḿêśĉŕêén̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ŝṕl̂áŝh́ ŝćr̂éêńŝ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
-  },
-  "core/audits/splash-screen.js | failureTitle": {
-    "message": "Îś n̂ót̂ ćôńf̂íĝúr̂éd̂ f́ôŕ â ćûśt̂óm̂ śp̂ĺâśĥ śĉŕêén̂"
-  },
-  "core/audits/splash-screen.js | title": {
-    "message": "Ĉón̂f́îǵûŕêd́ f̂ór̂ á ĉúŝt́ôḿ ŝṕl̂áŝh́ ŝćr̂éêń"
-  },
-  "core/audits/themed-omnibox.js | description": {
-    "message": "T̂h́ê b́r̂óŵśêŕ âd́d̂ŕêśŝ b́âŕ ĉán̂ b́ê t́ĥém̂éd̂ t́ô ḿât́ĉh́ ŷóûŕ ŝít̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́êḿîńĝ t́ĥé âd́d̂ŕêśŝ b́âŕ](https://developer.chrome.com/docs/lighthouse/pwa/themed-omnibox/)."
-  },
-  "core/audits/themed-omnibox.js | failureTitle": {
-    "message": "D̂óêś n̂ót̂ śêt́ â t́ĥém̂é ĉól̂ór̂ f́ôŕ t̂h́ê ád̂d́r̂éŝś b̂ár̂."
-  },
-  "core/audits/themed-omnibox.js | title": {
-    "message": "Ŝét̂ś â t́ĥém̂é ĉól̂ór̂ f́ôŕ t̂h́ê ád̂d́r̂éŝś b̂ár̂."
   },
   "core/audits/third-party-cookies.js | description": {
     "message": "Ŝúp̂ṕôŕt̂ f́ôŕ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ ẃîĺl̂ b́ê ŕêḿôv́êd́ îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂h́âśîńĝ óût́ t̂h́îŕd̂-ṕâŕt̂ý ĉóôḱîéŝ](https://developer.chrome.com/en/docs/privacy-sandbox/third-party-cookie-phase-out/)."
@@ -1615,18 +1429,6 @@
   },
   "core/audits/third-party-summary.js | title": {
     "message": "M̂ín̂ím̂íẑé t̂h́îŕd̂-ṕâŕt̂ý ûśâǵê"
-  },
-  "core/audits/timing-budget.js | columnMeasurement": {
-    "message": "M̂éâśûŕêḿêńt̂"
-  },
-  "core/audits/timing-budget.js | columnTimingMetric": {
-    "message": "M̂ét̂ŕîć"
-  },
-  "core/audits/timing-budget.js | description": {
-    "message": "Ŝét̂ á t̂ím̂ín̂ǵ b̂úd̂ǵêt́ t̂ó ĥél̂ṕ ŷóû ḱêép̂ án̂ éŷé ôń t̂h́ê ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ ŝít̂é. P̂ér̂f́ôŕm̂án̂t́ ŝít̂éŝ ĺôád̂ f́âśt̂ án̂d́ r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́ êv́êńt̂ś q̂úîćk̂ĺŷ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ṕêŕf̂ór̂ḿâńĉé b̂úd̂ǵêt́ŝ](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
-  },
-  "core/audits/timing-budget.js | title": {
-    "message": "T̂ím̂ín̂ǵ b̂úd̂ǵêt́"
   },
   "core/audits/unsized-images.js | description": {
     "message": "Ŝét̂ án̂ éx̂ṕl̂íĉít̂ ẃîd́t̂h́ âńd̂ h́êíĝh́t̂ ón̂ ím̂áĝé êĺêḿêńt̂ś t̂ó r̂éd̂úĉé l̂áŷóût́ ŝh́îf́t̂ś âńd̂ ím̂ṕr̂óv̂é ĈĹŜ. [Ĺêár̂ń ĥóŵ t́ô śêt́ îḿâǵê d́îḿêńŝíôńŝ](https://web.dev/articles/optimize-cls#images_without_dimensions)"
@@ -1721,8 +1523,8 @@
   "core/audits/work-during-interaction.js | presentationDelay": {
     "message": "P̂ŕêśêńt̂át̂íôń d̂él̂áŷ"
   },
-  "core/audits/work-during-interaction.js | processingTime": {
-    "message": "P̂ŕôćêśŝín̂ǵ t̂ím̂é"
+  "core/audits/work-during-interaction.js | processingDuration": {
+    "message": "P̂ŕôćêśŝín̂ǵ d̂úr̂át̂íôń"
   },
   "core/audits/work-during-interaction.js | title": {
     "message": "M̂ín̂ím̂íẑéŝ ẃôŕk̂ d́ûŕîńĝ ḱêý îńt̂ér̂áĉt́îón̂"
@@ -1799,12 +1601,6 @@
   "core/config/default-config.js | bestPracticesUXGroupTitle": {
     "message": "Ûśêŕ Êx́p̂ér̂íêńĉé"
   },
-  "core/config/default-config.js | budgetsGroupDescription": {
-    "message": "P̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂ś ŝét̂ śt̂án̂d́âŕd̂ś f̂ór̂ t́ĥé p̂ér̂f́ôŕm̂án̂ćê óf̂ ýôúr̂ śît́ê."
-  },
-  "core/config/default-config.js | budgetsGroupTitle": {
-    "message": "B̂úd̂ǵêt́ŝ"
-  },
   "core/config/default-config.js | diagnosticsGroupDescription": {
     "message": "M̂ór̂é îńf̂ór̂ḿât́îón̂ áb̂óût́ t̂h́ê ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ âṕp̂ĺîćât́îón̂. T́ĥéŝé n̂úm̂b́êŕŝ d́ôń't̂ [d́îŕêćt̂ĺŷ áf̂f́êćt̂](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) t́ĥé P̂ér̂f́ôŕm̂án̂ćê śĉór̂é."
   },
@@ -1817,12 +1613,6 @@
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "F̂ír̂śt̂ Ṕâín̂t́ Îḿp̂ŕôv́êḿêńt̂ś"
   },
-  "core/config/default-config.js | loadOpportunitiesGroupDescription": {
-    "message": "T̂h́êśê śûǵĝéŝt́îón̂ś ĉán̂ h́êĺp̂ ýôúr̂ ṕâǵê ĺôád̂ f́âśt̂ér̂. T́ĥéŷ d́ôń't̂ [d́îŕêćt̂ĺŷ áf̂f́êćt̂](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) t́ĥé P̂ér̂f́ôŕm̂án̂ćê śĉór̂é."
-  },
-  "core/config/default-config.js | loadOpportunitiesGroupTitle": {
-    "message": "Ôṕp̂ór̂t́ûńît́îéŝ"
-  },
   "core/config/default-config.js | metricGroupTitle": {
     "message": "M̂ét̂ŕîćŝ"
   },
@@ -1834,21 +1624,6 @@
   },
   "core/config/default-config.js | performanceCategoryTitle": {
     "message": "P̂ér̂f́ôŕm̂án̂ćê"
-  },
-  "core/config/default-config.js | pwaCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ v́âĺîd́ât́ê t́ĥé âśp̂éĉt́ŝ óf̂ á P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂. [Ĺêár̂ń ŵh́ât́ m̂ák̂éŝ á ĝóôd́ P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂](https://web.dev/articles/pwa-checklist)."
-  },
-  "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ ár̂é r̂éq̂úîŕêd́ b̂ý t̂h́ê b́âśêĺîńê [ṔŴÁ Ĉh́êćk̂ĺîśt̂](https://web.dev/articles/pwa-checklist) b́ût́ âŕê ńôt́ âút̂óm̂át̂íĉál̂ĺŷ ćĥéĉḱêd́ b̂ý L̂íĝh́t̂h́ôúŝé. T̂h́êý d̂ó n̂ót̂ áf̂f́êćt̂ ýôúr̂ śĉór̂é b̂út̂ ít̂'ś îḿp̂ór̂t́âńt̂ t́ĥát̂ ýôú v̂ér̂íf̂ý t̂h́êḿ m̂án̂úâĺl̂ý."
-  },
-  "core/config/default-config.js | pwaCategoryTitle": {
-    "message": "P̂ẂÂ"
-  },
-  "core/config/default-config.js | pwaInstallableGroupTitle": {
-    "message": "Îńŝt́âĺl̂áb̂ĺê"
-  },
-  "core/config/default-config.js | pwaOptimizedGroupTitle": {
-    "message": "P̂ẂÂ Óp̂t́îḿîźêd́"
   },
   "core/config/default-config.js | seoCategoryDescription": {
     "message": "T̂h́êśê ćĥéĉḱŝ én̂śûŕê t́ĥát̂ ýôúr̂ ṕâǵê íŝ f́ôĺl̂óŵín̂ǵ b̂áŝíĉ śêár̂ćĥ én̂ǵîńê óp̂t́îḿîźât́îón̂ ád̂v́îćê. T́ĥér̂é âŕê ḿâńŷ ád̂d́ît́îón̂ál̂ f́âćt̂ór̂ś L̂íĝh́t̂h́ôúŝé d̂óêś n̂ót̂ śĉór̂é ĥér̂é t̂h́ât́ m̂áŷ áf̂f́êćt̂ ýôúr̂ śêár̂ćĥ ŕâńk̂ín̂ǵ, îńĉĺûd́îńĝ ṕêŕf̂ór̂ḿâńĉé ôń [Ĉór̂é Ŵéb̂ V́ît́âĺŝ](https://web.dev/explore/vitals). [Ĺêár̂ń m̂ór̂é âb́ôút̂ Ǵôóĝĺê Śêár̂ćĥ Éŝśêńt̂íâĺŝ](https://support.google.com/webmasters/answer/35769)."
@@ -2519,9 +2294,6 @@
   "core/lib/i18n/i18n.js | columnName": {
     "message": "N̂ám̂é"
   },
-  "core/lib/i18n/i18n.js | columnOverBudget": {
-    "message": "Ôv́êŕ B̂úd̂ǵêt́"
-  },
   "core/lib/i18n/i18n.js | columnRequests": {
     "message": "R̂éq̂úêśt̂ś"
   },
@@ -2696,6 +2468,9 @@
   "core/lib/lh-error.js | requestContentTimeout": {
     "message": "F̂ét̂ćĥín̂ǵ r̂éŝóûŕĉé ĉón̂t́êńt̂ h́âś êx́ĉéêd́êd́ t̂h́ê ál̂ĺôt́t̂éd̂ t́îḿê"
   },
+  "core/lib/lh-error.js | targetCrashed": {
+    "message": "B̂ŕôẃŝér̂ t́âb́ ĥáŝ ún̂éx̂ṕêćt̂éd̂ĺŷ ćr̂áŝh́êd́."
+  },
   "core/lib/lh-error.js | urlInvalid": {
     "message": "T̂h́ê ÚR̂Ĺ ŷóû h́âv́ê ṕr̂óv̂íd̂éd̂ áp̂ṕêár̂ś t̂ó b̂é îńv̂ál̂íd̂."
   },
@@ -2731,9 +2506,6 @@
   },
   "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
     "message": "P̂ér̂f́ôŕm̂án̂ćê"
-  },
-  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
-    "message": "P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂"
   },
   "flow-report/src/i18n/ui-strings.js | categorySeo": {
     "message": "ŜÉÔ"
@@ -3400,9 +3172,6 @@
   },
   "report/renderer/report-utils.js | passedAuditsGroupTitle": {
     "message": "P̂áŝśêd́ âúd̂ít̂ś"
-  },
-  "report/renderer/report-utils.js | pwaRemovalMessage": {
-    "message": "Âś p̂ér̂ [Ćĥŕôḿê’ś ûṕd̂át̂éd̂ Ín̂śt̂ál̂ĺâb́îĺît́ŷ Ćr̂ít̂ér̂íâ](https://developer.chrome.com/blog/update-install-criteria), Ĺîǵĥt́ĥóûśê ẃîĺl̂ b́ê d́êṕr̂éĉát̂ín̂ǵ t̂h́ê ṔŴÁ ĉát̂éĝór̂ý îń â f́ût́ûŕê ŕêĺêáŝé. P̂ĺêáŝé r̂éf̂ér̂ t́ô t́ĥé [ûṕd̂át̂éd̂ ṔŴÁ d̂óĉúm̂én̂t́ât́îón̂](https://developer.chrome.com/docs/devtools/progressive-web-apps/) f́ôŕ f̂út̂úr̂é P̂ẂÂ t́êśt̂ín̂ǵ."
   },
   "report/renderer/report-utils.js | runtimeAnalysisWindow": {
     "message": "Îńît́îál̂ ṕâǵê ĺôád̂"

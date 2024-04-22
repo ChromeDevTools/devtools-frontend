@@ -13,3 +13,12 @@ export function expectCall<TArgs extends any[] = any[], TReturnValue = any>(
     });
   });
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function expectCalled<TArgs extends any[] = any[], TReturnValue = any>(
+    stub: sinon.SinonStub<TArgs, TReturnValue>, fakeFn?: (...args: TArgs) => TReturnValue): Promise<TArgs> {
+  if (stub.called) {
+    return Promise.resolve(stub.lastCall.args);
+  }
+  return expectCall(stub, fakeFn);
+}

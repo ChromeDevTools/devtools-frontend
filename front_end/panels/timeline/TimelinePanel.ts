@@ -863,6 +863,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private onModeChanged(): void {
+    this.flameChart.updateCountersGraphToggle(this.showMemorySetting.get());
     this.updateOverviewControls();
     this.doResize();
     this.select(null);

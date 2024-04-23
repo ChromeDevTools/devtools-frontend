@@ -1714,6 +1714,7 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
 export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
     /* Excluded from this release type: [_isElementHandle] */
+    /* Excluded from this release type: isolatedHandle */
     /* Excluded from this release type: bindIsolatedHandle */
     /* Excluded from this release type: handle */
     /* Excluded from this release type: __constructor */

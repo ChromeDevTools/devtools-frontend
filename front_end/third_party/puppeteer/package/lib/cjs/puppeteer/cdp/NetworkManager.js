@@ -54,12 +54,11 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         }
         const subscriptions = new disposable_js_1.DisposableStack();
         this.#clients.set(client, subscriptions);
+        const clientEmitter = subscriptions.use(new EventEmitter_js_1.EventEmitter(client));
         for (const [event, handler] of this.#handlers) {
-            subscriptions.use(
-            // TODO: Remove any here.
-            new EventEmitter_js_1.EventSubscription(client, event, (arg) => {
+            clientEmitter.on(event, (arg) => {
                 return handler.bind(this)(client, arg);
-            }));
+            });
         }
         await Promise.all([
             this.#ignoreHTTPSErrors

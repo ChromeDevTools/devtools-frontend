@@ -10,7 +10,7 @@ const Deferred_js_1 = require("../util/Deferred.js");
 class BidiCdpSession extends CDPSession_js_1.CDPSession {
     static sessions = new Map();
     #detached = false;
-    #connection = undefined;
+    #connection;
     #sessionId = Deferred_js_1.Deferred.create();
     frame;
     constructor(frame, sessionId) {
@@ -28,11 +28,11 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
         else {
             (async () => {
                 try {
-                    const session = await connection.send('cdp.getSession', {
+                    const { result } = await connection.send('cdp.getSession', {
                         context: frame._id,
                     });
-                    this.#sessionId.resolve(session.result.session);
-                    BidiCdpSession.sessions.set(session.result.session, this);
+                    this.#sessionId.resolve(result.session);
+                    BidiCdpSession.sessions.set(result.session, this);
                 }
                 catch (error) {
                     this.#sessionId.reject(error);
@@ -61,7 +61,9 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
         return result.result;
     }
     async detach() {
-        if (this.#connection === undefined || this.#detached) {
+        if (this.#connection === undefined ||
+            this.#connection.closed ||
+            this.#detached) {
             return;
         }
         try {
@@ -70,10 +72,16 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
             });
         }
         finally {
-            BidiCdpSession.sessions.delete(this.id());
-            this.#detached = true;
+            this.onClose();
         }
     }
+    /**
+     * @internal
+     */
+    onClose = () => {
+        BidiCdpSession.sessions.delete(this.id());
+        this.#detached = true;
+    };
     id() {
         const value = this.#sessionId.value();
         return typeof value === 'string' ? value : '';

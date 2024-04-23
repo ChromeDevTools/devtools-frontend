@@ -226,6 +226,12 @@ let ElementHandle = (() => {
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         /**
+         * @internal
+         * Cached isolatedHandle to prevent
+         * trying to adopt it multiple times
+         */
+        isolatedHandle = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        /**
          * A given method will have it's `this` replaced with an isolated version of
          * `this` when decorated with this decorator.
          *
@@ -235,54 +241,52 @@ let ElementHandle = (() => {
          */
         static bindIsolatedHandle(target, _) {
             return async function (...args) {
-                const env_1 = { stack: [], error: void 0, hasError: false };
-                try {
-                    // If the handle is already isolated, then we don't need to adopt it
-                    // again.
-                    if (this.realm === this.frame.isolatedRealm()) {
-                        return await target.call(this, ...args);
-                    }
-                    const adoptedThis = __addDisposableResource(env_1, await this.frame.isolatedRealm().adoptHandle(this), false);
-                    const result = await target.call(adoptedThis, ...args);
-                    // If the function returns `adoptedThis`, then we return `this`.
-                    if (result === adoptedThis) {
-                        return this;
-                    }
-                    // If the function returns a handle, transfer it into the current realm.
-                    if (result instanceof JSHandle_js_1.JSHandle) {
-                        return await this.realm.transferHandle(result);
-                    }
-                    // If the function returns an array of handlers, transfer them into the
-                    // current realm.
-                    if (Array.isArray(result)) {
-                        await Promise.all(result.map(async (item, index, result) => {
-                            if (item instanceof JSHandle_js_1.JSHandle) {
-                                result[index] = await this.realm.transferHandle(item);
-                            }
-                        }));
-                    }
-                    if (result instanceof Map) {
-                        await Promise.all([...result.entries()].map(async ([key, value]) => {
-                            if (value instanceof JSHandle_js_1.JSHandle) {
-                                result.set(key, await this.realm.transferHandle(value));
-                            }
-                        }));
-                    }
-                    return result;
+                // If the handle is already isolated, then we don't need to adopt it
+                // again.
+                if (this.realm === this.frame.isolatedRealm()) {
+                    return await target.call(this, ...args);
                 }
-                catch (e_1) {
-                    env_1.error = e_1;
-                    env_1.hasError = true;
+                let adoptedThis;
+                if (this['isolatedHandle']) {
+                    adoptedThis = this['isolatedHandle'];
                 }
-                finally {
-                    __disposeResources(env_1);
+                else {
+                    this['isolatedHandle'] = adoptedThis = await this.frame
+                        .isolatedRealm()
+                        .adoptHandle(this);
                 }
+                const result = await target.call(adoptedThis, ...args);
+                // If the function returns `adoptedThis`, then we return `this`.
+                if (result === adoptedThis) {
+                    return this;
+                }
+                // If the function returns a handle, transfer it into the current realm.
+                if (result instanceof JSHandle_js_1.JSHandle) {
+                    return await this.realm.transferHandle(result);
+                }
+                // If the function returns an array of handlers, transfer them into the
+                // current realm.
+                if (Array.isArray(result)) {
+                    await Promise.all(result.map(async (item, index, result) => {
+                        if (item instanceof JSHandle_js_1.JSHandle) {
+                            result[index] = await this.realm.transferHandle(item);
+                        }
+                    }));
+                }
+                if (result instanceof Map) {
+                    await Promise.all([...result.entries()].map(async ([key, value]) => {
+                        if (value instanceof JSHandle_js_1.JSHandle) {
+                            result.set(key, await this.realm.transferHandle(value));
+                        }
+                    }));
+                }
+                return result;
             };
         }
         /**
          * @internal
          */
-        handle = (__runInitializers(this, _instanceExtraInitializers), void 0);
+        handle;
         /**
          * @internal
          */
@@ -408,21 +412,21 @@ let ElementHandle = (() => {
          * @returns A promise to the result of the function.
          */
         async $eval(selector, pageFunction, ...args) {
-            const env_2 = { stack: [], error: void 0, hasError: false };
+            const env_1 = { stack: [], error: void 0, hasError: false };
             try {
                 pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$eval.name, pageFunction);
-                const elementHandle = __addDisposableResource(env_2, await this.$(selector), false);
+                const elementHandle = __addDisposableResource(env_1, await this.$(selector), false);
                 if (!elementHandle) {
                     throw new Error(`Error: failed to find element matching selector "${selector}"`);
                 }
                 return await elementHandle.evaluate(pageFunction, ...args);
             }
-            catch (e_2) {
-                env_2.error = e_2;
-                env_2.hasError = true;
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
             }
             finally {
-                __disposeResources(env_2);
+                __disposeResources(env_1);
             }
         }
         /**
@@ -459,11 +463,11 @@ let ElementHandle = (() => {
          * @returns A promise to the result of the function.
          */
         async $$eval(selector, pageFunction, ...args) {
-            const env_3 = { stack: [], error: void 0, hasError: false };
+            const env_2 = { stack: [], error: void 0, hasError: false };
             try {
                 pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$$eval.name, pageFunction);
                 const results = await this.$$(selector);
-                const elements = __addDisposableResource(env_3, await this.evaluateHandle((_, ...elements) => {
+                const elements = __addDisposableResource(env_2, await this.evaluateHandle((_, ...elements) => {
                     return elements;
                 }, ...results), false);
                 const [result] = await Promise.all([
@@ -474,12 +478,12 @@ let ElementHandle = (() => {
                 ]);
                 return result;
             }
-            catch (e_3) {
-                env_3.error = e_3;
-                env_3.hasError = true;
+            catch (e_2) {
+                env_2.error = e_2;
+                env_2.hasError = true;
             }
             finally {
-                __disposeResources(env_3);
+                __disposeResources(env_2);
             }
         }
         /**
@@ -847,9 +851,9 @@ let ElementHandle = (() => {
             let frame = this.frame;
             let parentFrame;
             while ((parentFrame = frame?.parentFrame())) {
-                const env_4 = { stack: [], error: void 0, hasError: false };
+                const env_3 = { stack: [], error: void 0, hasError: false };
                 try {
-                    const handle = __addDisposableResource(env_4, await frame.frameElement(), false);
+                    const handle = __addDisposableResource(env_3, await frame.frameElement(), false);
                     if (!handle) {
                         throw new Error('Unsupported frame type');
                     }
@@ -879,12 +883,12 @@ let ElementHandle = (() => {
                     await handle.#intersectBoundingBoxesWithFrame(boxes);
                     frame = parentFrame;
                 }
-                catch (e_4) {
-                    env_4.error = e_4;
-                    env_4.hasError = true;
+                catch (e_3) {
+                    env_3.error = e_3;
+                    env_3.hasError = true;
                 }
                 finally {
-                    __disposeResources(env_4);
+                    __disposeResources(env_3);
                 }
             }
             const box = boxes.find(box => {
@@ -1048,9 +1052,9 @@ let ElementHandle = (() => {
             let frame = this.frame;
             let parentFrame;
             while ((parentFrame = frame?.parentFrame())) {
-                const env_5 = { stack: [], error: void 0, hasError: false };
+                const env_4 = { stack: [], error: void 0, hasError: false };
                 try {
-                    const handle = __addDisposableResource(env_5, await frame.frameElement(), false);
+                    const handle = __addDisposableResource(env_4, await frame.frameElement(), false);
                     if (!handle) {
                         throw new Error('Unsupported frame type');
                     }
@@ -1077,12 +1081,12 @@ let ElementHandle = (() => {
                     point.y += parentBox.top;
                     frame = parentFrame;
                 }
-                catch (e_5) {
-                    env_5.error = e_5;
-                    env_5.hasError = true;
+                catch (e_4) {
+                    env_4.error = e_4;
+                    env_4.hasError = true;
                 }
                 finally {
-                    __disposeResources(env_5);
+                    __disposeResources(env_4);
                 }
             }
             return point;
@@ -1160,12 +1164,12 @@ let ElementHandle = (() => {
          * (full intersection). Defaults to 1.
          */
         async isIntersectingViewport(options = {}) {
-            const env_6 = { stack: [], error: void 0, hasError: false };
+            const env_5 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
                 // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
-                const target = __addDisposableResource(env_6, handle && (await handle.#getOwnerSVGElement()), false);
+                const target = __addDisposableResource(env_5, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {
                     const visibleRatio = await new Promise(resolve => {
                         const observer = new IntersectionObserver(entries => {
@@ -1177,12 +1181,12 @@ let ElementHandle = (() => {
                     return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
                 }, options.threshold ?? 0);
             }
-            catch (e_6) {
-                env_6.error = e_6;
-                env_6.hasError = true;
+            catch (e_5) {
+                env_5.error = e_5;
+                env_5.hasError = true;
             }
             finally {
-                __disposeResources(env_6);
+                __disposeResources(env_5);
             }
         }
         /**

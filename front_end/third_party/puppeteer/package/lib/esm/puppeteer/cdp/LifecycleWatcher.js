@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { FrameEvent } from '../api/Frame.js';
-import { EventSubscription } from '../common/EventEmitter.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
@@ -48,17 +48,18 @@ export class LifecycleWatcher {
         });
         this.#frame = frame;
         this.#timeout = timeout;
-        this.#subscriptions.use(
-        // Revert if TODO #1 is done
-        new EventSubscription(frame._frameManager, FrameManagerEvent.LifecycleEvent, this.#checkLifecycleComplete.bind(this)));
-        this.#subscriptions.use(new EventSubscription(frame, FrameEvent.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)));
-        this.#subscriptions.use(new EventSubscription(frame, FrameEvent.FrameNavigated, this.#navigated.bind(this)));
-        this.#subscriptions.use(new EventSubscription(frame, FrameEvent.FrameSwapped, this.#frameSwapped.bind(this)));
-        this.#subscriptions.use(new EventSubscription(frame, FrameEvent.FrameSwappedByActivation, this.#frameSwapped.bind(this)));
-        this.#subscriptions.use(new EventSubscription(frame, FrameEvent.FrameDetached, this.#onFrameDetached.bind(this)));
-        this.#subscriptions.use(new EventSubscription(networkManager, NetworkManagerEvent.Request, this.#onRequest.bind(this)));
-        this.#subscriptions.use(new EventSubscription(networkManager, NetworkManagerEvent.Response, this.#onResponse.bind(this)));
-        this.#subscriptions.use(new EventSubscription(networkManager, NetworkManagerEvent.RequestFailed, this.#onRequestFailed.bind(this)));
+        const frameManagerEmitter = this.#subscriptions.use(new EventEmitter(frame._frameManager));
+        frameManagerEmitter.on(FrameManagerEvent.LifecycleEvent, this.#checkLifecycleComplete.bind(this));
+        const frameEmitter = this.#subscriptions.use(new EventEmitter(frame));
+        frameEmitter.on(FrameEvent.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this));
+        frameEmitter.on(FrameEvent.FrameNavigated, this.#navigated.bind(this));
+        frameEmitter.on(FrameEvent.FrameSwapped, this.#frameSwapped.bind(this));
+        frameEmitter.on(FrameEvent.FrameSwappedByActivation, this.#frameSwapped.bind(this));
+        frameEmitter.on(FrameEvent.FrameDetached, this.#onFrameDetached.bind(this));
+        const networkManagerEmitter = this.#subscriptions.use(new EventEmitter(networkManager));
+        networkManagerEmitter.on(NetworkManagerEvent.Request, this.#onRequest.bind(this));
+        networkManagerEmitter.on(NetworkManagerEvent.Response, this.#onResponse.bind(this));
+        networkManagerEmitter.on(NetworkManagerEvent.RequestFailed, this.#onRequestFailed.bind(this));
         this.#terminationDeferred = Deferred.create({
             timeout: this.#timeout,
             message: `Navigation timeout of ${this.#timeout} ms exceeded`,

@@ -140,8 +140,9 @@ class JSCoverage {
         this.#scriptURLs.clear();
         this.#scriptSources.clear();
         this.#subscriptions = new disposable_js_1.DisposableStack();
-        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(this.#client, 'Debugger.scriptParsed', this.#onScriptParsed.bind(this)));
-        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(this.#client, 'Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this)));
+        const clientEmitter = this.#subscriptions.use(new EventEmitter_js_1.EventEmitter(this.#client));
+        clientEmitter.on('Debugger.scriptParsed', this.#onScriptParsed.bind(this));
+        clientEmitter.on('Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this));
         await Promise.all([
             this.#client.send('Profiler.enable'),
             this.#client.send('Profiler.startPreciseCoverage', {
@@ -244,8 +245,9 @@ class CSSCoverage {
         this.#stylesheetURLs.clear();
         this.#stylesheetSources.clear();
         this.#eventListeners = new disposable_js_1.DisposableStack();
-        this.#eventListeners.use(new EventEmitter_js_1.EventSubscription(this.#client, 'CSS.styleSheetAdded', this.#onStyleSheet.bind(this)));
-        this.#eventListeners.use(new EventEmitter_js_1.EventSubscription(this.#client, 'Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this)));
+        const clientEmitter = this.#eventListeners.use(new EventEmitter_js_1.EventEmitter(this.#client));
+        clientEmitter.on('CSS.styleSheetAdded', this.#onStyleSheet.bind(this));
+        clientEmitter.on('Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this));
         await Promise.all([
             this.#client.send('DOM.enable'),
             this.#client.send('CSS.enable'),

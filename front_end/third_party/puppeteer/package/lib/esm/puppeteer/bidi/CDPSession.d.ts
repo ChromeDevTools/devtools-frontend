@@ -19,6 +19,10 @@ export declare class BidiCdpSession extends CDPSession {
     connection(): CdpConnection | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     detach(): Promise<void>;
+    /**
+     * @internal
+     */
+    onClose: () => void;
     id(): string;
 }
 //# sourceMappingURL=CDPSession.d.ts.map

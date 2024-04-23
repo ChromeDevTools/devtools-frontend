@@ -1245,7 +1245,9 @@ export class TimelineUIUtils {
     const contentHelper = new TimelineDetailsContentHelper(maybeTargetForEvent(traceParseData, event), linkifier);
 
     const defaultColorForEvent = this.eventColor(event);
-    const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
+    const isMarker =
+        traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) && isMarkerEvent(traceParseData, event);
+    const color = isMarker ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
 
     contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
 
@@ -2690,6 +2692,47 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
       traceParsedData.Meta.navigationsByFrameId,
   );
   return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
+}
+
+/**
+ * Determines if an event is potentially a marker event. A marker event here
+ * is a single moment in time that we want to highlight on the timeline, such as
+ * the LCP time. This method does not filter out events: for example, it treats
+ * every LCP Candidate event as a potential marker event.
+ **/
+export function isMarkerEvent(
+    traceParseData: TraceEngine.Handlers.Types.TraceParseData,
+    event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  const {KnownEventName} = TraceEngine.Types.TraceEvents;
+
+  if (event.name === KnownEventName.TimeStamp) {
+    return true;
+  }
+
+  if (TraceEngine.Types.TraceEvents.isTraceEventFirstContentfulPaint(event) ||
+      TraceEngine.Types.TraceEvents.isTraceEventFirstPaint(event)) {
+    return event.args.frame === traceParseData.Meta.mainFrameId;
+  }
+
+  if (TraceEngine.Types.TraceEvents.isTraceEventMarkDOMContent(event) ||
+      TraceEngine.Types.TraceEvents.isTraceEventMarkLoad(event) ||
+      TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event)) {
+    // isOutermostMainFrame was added in 2022, so we fallback to isMainFrame
+    // for older traces.
+    if (!event.args.data) {
+      return false;
+    }
+    const {isOutermostMainFrame, isMainFrame} = event.args.data;
+    if (typeof isOutermostMainFrame !== 'undefined') {
+      // If isOutermostMainFrame is defined we want to use that and not
+      // fallback to isMainFrame, even if isOutermostMainFrame is false. Hence
+      // this check.
+      return isOutermostMainFrame;
+    }
+    return Boolean(isMainFrame);
+  }
+
+  return false;
 }
 
 // This function only exists to abstract dealing with two different event types

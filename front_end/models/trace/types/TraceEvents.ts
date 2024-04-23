@@ -735,7 +735,7 @@ export interface TraceEventMarkDOMContent extends TraceEventInstant {
     data?: TraceEventArgsData & {
       frame: string,
       isMainFrame: boolean,
-      page: string,
+      isOutermostMainFrame?: boolean, page: string,
     },
   };
 }
@@ -747,6 +747,7 @@ export interface TraceEventMarkLoad extends TraceEventInstant {
       frame: string,
       isMainFrame: boolean,
       page: string,
+      isOutermostMainFrame?: boolean,
     },
   };
 }

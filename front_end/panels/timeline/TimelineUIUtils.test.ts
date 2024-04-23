@@ -1178,4 +1178,196 @@ describeWithMockConnection('TimelineUIUtils', function() {
       });
     });
   });
+
+  describe('isMarkerEvent', () => {
+    it('is true for a timestamp event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const timestamp =
+          traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventTimeStamp);
+      assert.isOk(timestamp);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, timestamp));
+    });
+
+    it('is true for a Mark First Paint event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markFirstPaint =
+          traceParsedData.PageLoadMetrics.allMarkerEvents.find(TraceEngine.Types.TraceEvents.isTraceEventFirstPaint);
+      assert.isOk(markFirstPaint);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, markFirstPaint));
+    });
+
+    it('is true for a Mark FCP event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markFCPEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventFirstContentfulPaint);
+      assert.isOk(markFCPEvent);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, markFCPEvent));
+    });
+
+    it('is false for a Mark FCP event not on the main frame', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markFCPEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventFirstContentfulPaint);
+      assert.isOk(markFCPEvent);
+      assert.isOk(markFCPEvent.args);
+      // Now make a copy (so we do not mutate any data) and pretend it is not on the main frame.
+      const copyOfEvent = {...markFCPEvent, args: {...markFCPEvent.args}};
+      copyOfEvent.args.frame = 'not-the-main-frame';
+      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, copyOfEvent));
+    });
+
+    it('is true for a MarkDOMContent event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markDOMContentEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventMarkDOMContent);
+      assert.isOk(markDOMContentEvent);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, markDOMContentEvent));
+    });
+
+    it('is true for a MarkLoad event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markLoadEvent =
+          traceParsedData.PageLoadMetrics.allMarkerEvents.find(TraceEngine.Types.TraceEvents.isTraceEventMarkLoad);
+      assert.isOk(markLoadEvent);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, markLoadEvent));
+    });
+
+    it('is true for a LCP candiadate event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markLCPCandidate = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
+      assert.isOk(markLCPCandidate);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, markLCPCandidate));
+    });
+
+    it('is false for a MarkDOMContent event not on outermost main frame', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
+      const markDOMContentEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventMarkDOMContent);
+      assert.isOk(markDOMContentEvent);
+      assert.isOk(markDOMContentEvent.args);
+      assert.isOk(markDOMContentEvent.args.data);
+
+      const copyOfEventNotOutermostFrame = {
+        ...markDOMContentEvent,
+        args: {
+          ...markDOMContentEvent.args,
+          data: {
+            ...markDOMContentEvent.args.data,
+            isOutermostMainFrame: false,
+          },
+        },
+
+      };
+      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, copyOfEventNotOutermostFrame));
+    });
+
+    // it('is true for a MarkDOMContent event that set to isOutermostMainFrame', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isOutermostMainFrame: true,
+    //       },
+    //     },
+    //   });
+    //   assert.isTrue(timelineModel.isMarkerEvent(markDOMContentEvent));
+    // });
+
+    // it('is false for a MarkDOMContent event that set to isOutermostMainFrame=false', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isOutermostMainFrame: false,
+    //       },
+    //     },
+    //   });
+    //   assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
+    // });
+
+    // it('is false for a MarkDOMContent event that set to isMainFrame=false', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isMainFrame: false,
+    //       },
+    //     },
+    //   });
+    //   assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
+    // });
+
+    // it('is true for a MarkLoad event that set to isMainFrame=true', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markLoadEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkLoad,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isMainFrame: true,
+    //       },
+    //     },
+    //   });
+    //   assert.isTrue(timelineModel.isMarkerEvent(markLoadEvent));
+    // });
+
+    // it('is true for a MarkLCPCandidate event that set to isOutermostMainFrame=true', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markLCPCandidateEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkLCPCandidate,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isOutermostMainFrame: true,
+    //       },
+    //     },
+    //   });
+    //   assert.isTrue(timelineModel.isMarkerEvent(markLCPCandidateEvent));
+    // });
+
+    // it('is true for a MarkLCPInvalidate event that set to isOutermostMainFrame=true', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const markLCPInvalidateEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.MarkLCPInvalidate,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     args: {
+    //       data: {
+    //         isOutermostMainFrame: true,
+    //       },
+    //     },
+    //   });
+    //   assert.isTrue(timelineModel.isMarkerEvent(markLCPInvalidateEvent));
+    // });
+
+    // it('is false for some unrelated event that is never a marker such as an animation', async function() {
+    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+    //   const animationEvent = makeFakeSDKEventFromPayload({
+    //     categories: [DevToolsTimelineCategory],
+    //     name: TimelineModel.TimelineModel.RecordType.Animation,
+    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    //     ts: 1,
+    //     threadId: 1,
+    //   });
+    //   assert.isFalse(timelineModel.isMarkerEvent(animationEvent));
+    // });
+  });
 });

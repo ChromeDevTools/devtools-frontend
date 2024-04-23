@@ -164,30 +164,6 @@ export class TimelineModelImpl {
     return Math.max(index, 0);
   }
 
-  /**
-   * Determines if an event is potentially a marker event. A marker event here
-   * is a single moment in time that we want to highlight on the timeline, such as
-   * the LCP point. This method does not filter out events: for example, it treats
-   * every LCP Candidate event as a potential marker event. The logic to pick the
-   * right candidate to use is implemeneted in the TimelineFlameChartDataProvider.
-   **/
-  isMarkerEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    switch (event.name) {
-      case RecordType.TimeStamp:
-        return true;
-      case RecordType.MarkFirstPaint:
-      case RecordType.MarkFCP:
-        return Boolean(this.mainFrame) && event.args.frame === this.mainFrame.frameId && Boolean(event.args.data);
-      case RecordType.MarkDOMContent:
-      case RecordType.MarkLoad:
-      case RecordType.MarkLCPCandidate:
-      case RecordType.MarkLCPInvalidate:
-        return Boolean(event.args['data']['isOutermostMainFrame'] ?? event.args['data']['isMainFrame']);
-      default:
-        return false;
-    }
-  }
-
   static eventFrameId(event: TraceEngine.Legacy.Event): Protocol.Page.FrameId|null {
     const data = event.args['data'] || event.args['beginData'];
     return data && data['frame'] || null;

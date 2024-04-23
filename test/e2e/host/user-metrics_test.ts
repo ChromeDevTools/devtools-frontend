@@ -428,26 +428,6 @@ describe('User metrics for CSS overview', () => {
 });
 
 describe('User Metrics for sidebar panes', () => {
-  it('dispatches sidebar panes events for navigating Elements Panel sidebar panes', async () => {
-    await navigateToSidePane('Computed');
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.Elements.SidebarTabShown',
-        actionCode: 2,  // Computed
-      },
-    ]);
-  });
-
-  it('should not dispatch sidebar panes events for navigating to the same pane', async () => {
-    await navigateToSidePane('Styles');
-
-    const {frontend} = getBrowserAndPages();
-    const events = await retrieveRecordedHistogramEvents(frontend);
-    const eventNames = events.map(event => event.actionName);
-
-    assert.notInclude(eventNames, 'DevTools.Elements.SidebarTabShown');
-  });
-
   it('dispatches sidebar panes events for switching to \'Workspace\' tab in the \'Sources\' panel', async () => {
     await click('#tab-sources');
     await navigateToSidePane('Workspace');

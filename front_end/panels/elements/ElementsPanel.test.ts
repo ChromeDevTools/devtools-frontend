@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
@@ -10,7 +9,6 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import {recordedMetricsContain} from '../../testing/UserMetricsHelpers.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
@@ -49,33 +47,6 @@ describeWithMockConnection('ElementsPanel', () => {
                                                             }],
                                                           },
                                                         }));
-  });
-
-  it('records metrics when the styles and computed tabs are selected', () => {
-    const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
-    assert.exists(panel.sidebarPaneView);
-    const tabbedPane = panel.sidebarPaneView.tabbedPane();
-    // The first event is not recorded
-    tabbedPane.selectTab(Elements.ElementsPanel.SidebarPaneTabId.Styles);
-
-    tabbedPane.selectTab(Elements.ElementsPanel.SidebarPaneTabId.Computed);
-    assert.isTrue(
-        recordedMetricsContain(
-            Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.computed),
-        'Expected "computed" tab to show up in metrics');
-    assert.isFalse(
-        recordedMetricsContain(
-            Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.styles),
-        'Expected "Styles" tab to not show up in metrics');
-
-    tabbedPane.selectTab(Elements.ElementsPanel.SidebarPaneTabId.Styles);
-    assert.isTrue(
-        recordedMetricsContain(
-            Host.InspectorFrontendHostAPI.EnumeratedHistogram.ElementsSidebarTabShown,
-            Host.UserMetrics.ElementsSidebarTabCodes.styles),
-        'Expected "Styles" tab to show up in metrics');
   });
 
   const createsTreeOutlines = (inScope: boolean) => () => {

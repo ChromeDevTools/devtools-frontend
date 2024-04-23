@@ -80,12 +80,6 @@ export class UserMetrics {
     );
   }
 
-  elementsSidebarTabShown(sidebarPaneName: string): void {
-    const code = ElementsSidebarTabCodes[sidebarPaneName as keyof typeof ElementsSidebarTabCodes] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ElementsSidebarTabShown, code, ElementsSidebarTabCodes.MaxValue);
-  }
-
   sourcesSidebarTabShown(sidebarPaneName: string): void {
     const code = SourcesSidebarTabCodes[sidebarPaneName as keyof typeof SourcesSidebarTabCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(

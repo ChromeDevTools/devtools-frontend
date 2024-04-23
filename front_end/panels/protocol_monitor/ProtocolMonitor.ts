@@ -312,7 +312,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                   splitWidget.toggleSidebar();
                 }
                 this.dispatchEventToListeners(Events.CommandChange, {command, parameters, targetId});
-              }, {jslogContext: 'edit-and-resend'});
+              }, {jslogContext: 'edit-and-resend', disabled: typeColumn.title !== 'sent'});
 
               /**
                * You can click the "Filter" item in the context menu to filter the
@@ -333,7 +333,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                   return;
                 }
                 const [domain, method] = String(methodColumn.value).split('.');
-                const type = typeColumn.value === 'sent' ? 'method' : 'event';
+                const type = typeColumn.title === 'sent' ? 'method' : 'event';
                 Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
                     `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}` as
                     Platform.DevToolsPath.UrlString);

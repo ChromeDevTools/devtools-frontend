@@ -27,6 +27,19 @@ describeWithMockConnection('AutofillModel', () => {
     assert.isTrue(disableSpy.notCalled);
   });
 
+  it('sets test addresses by calling the Autofill backend', () => {
+    const target = createTarget();
+    const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
+    const setAddressSpy = sinon.spy(autofillModel!.agent, 'invoke_setAddresses');
+    assert.isTrue(setAddressSpy.notCalled);
+
+    autofillModel!.disable();
+    assert.isTrue(setAddressSpy.notCalled);
+
+    autofillModel!.enable();
+    assert.isTrue(setAddressSpy.calledOnce);
+  });
+
   it('dispatches addressFormFilledEvent on autofill event', () => {
     const target = createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);

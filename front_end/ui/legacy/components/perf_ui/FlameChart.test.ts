@@ -657,7 +657,7 @@ describeWithEnvironment('FlameChart', () => {
       });
     });
 
-    describe('coordinatesToGroupIndexAndButton', () => {
+    describe('coordinatesToGroupIndexAndHoverType', () => {
       it('returns the correct group index for given coordinates', () => {
         const provider = new IndexAndCoordinatesConversionTestProvider();
         const delegate = new MockFlameChartDelegate();
@@ -679,21 +679,21 @@ describeWithEnvironment('FlameChart', () => {
         //   x: any inside the view
         //   y: 17(inclusive) to 55(exclusive)
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 16, /* headerOnly= */ false),
-            {groupIndex: -1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 16),
+            {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17, /* headerOnly= */ false),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 50, /* headerOnly= */ false),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 50),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 55, /* headerOnly= */ false),
-            {groupIndex: 1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 55),
+            {groupIndex: 1, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
       });
 
       it('returns the correct group index for given coordinates after re-order', () => {
@@ -720,21 +720,21 @@ describeWithEnvironment('FlameChart', () => {
         //   y: 55(inclusive) to 89(exclusive)
         // Now Group 1 will be before Group 0. so (y)54 will be mapped to Group 1
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 54, /* headerOnly= */ false),
-            {groupIndex: 1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 54),
+            {groupIndex: 1, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 55, /* headerOnly= */ false),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 55),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 88, /* headerOnly= */ false),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 88),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 89, /* headerOnly= */ false),
-            {groupIndex: -1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 89),
+            {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
       });
 
       it('returns the correct group index and the icon type for given coordinates', () => {
@@ -755,62 +755,65 @@ describeWithEnvironment('FlameChart', () => {
 
         // Start of the view (before the edit icon).
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(0, 17, /* headerOnly= */ false), {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(0, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
         // Start of the edit icon.
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(/* HEADER_LEFT_PADDING */ 6, 17, /* headerOnly= */ false),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.EDIT});
+            chartInstance.coordinatesToGroupIndexAndHoverType(/* HEADER_LEFT_PADDING */ 6, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_EDIT_BUTTON});
         // End of the edit icon, which is the start of the title label
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17, /* headerOnly= */ false),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
         // End of the title label, For title label checking, the end is included.
         const endOfTitle = /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22 + labelWidth;
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(endOfTitle, 17, /* headerOnly= */ true), {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(endOfTitle, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK_HEADER});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(endOfTitle + 1, 17, /* headerOnly= */ true),
-            {groupIndex: -1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(endOfTitle + 1, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.INSIDE_TRACK});
 
         chartInstance.setEditModeForTest(true);
-        // Start of the view (before the first icon).
+        // Start of the view (before the first icon). Will return OUTSIDE_TRACKS for edit mode because we want to ignore
+        // everything other than icons in edit mode.
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(0, 17, /* headerOnly= */ false), {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(0, 17),
+            {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
         // First icon (Up)
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(/* HEADER_LEFT_PADDING */ 6, 17, /* headerOnly= */ false),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.UP});
+            chartInstance.coordinatesToGroupIndexAndHoverType(/* HEADER_LEFT_PADDING */ 6, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_UP_BUTTON});
         // Second icon (Down)
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17, /* headerOnly= */ false),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.DOWN});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE */ 22, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_DOWN_BUTTON});
         // Third icon (Hide)
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE * 2 */ 38, 17, /* headerOnly= */ false),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.HIDE});
-        // This is after the third icon, which is the start of the title label. so should only return the index of group.
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDIT_BUTTON_SIZE * 2 */ 38, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_HIDE_BUTTON});
+        // This is after the third icon, which is the start of the title label. so should return OUTSIDE_TRACKS.
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDITION_MODE_INDENT */ 54, 17, /* headerOnly= */ true),
-            {groupIndex: 0});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDITION_MODE_INDENT */ 54, 17),
+            {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
         // End of the title label, and it's the start of the save icon.
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(
-                /* HEADER_LEFT_PADDING + EDITION_MODE_INDENT */ 54 + labelWidth, 17,
-                /* headerOnly= */ false),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.SAVE});
+            chartInstance.coordinatesToGroupIndexAndHoverType(
+                /* HEADER_LEFT_PADDING + EDITION_MODE_INDENT */ 54 + labelWidth, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_SAVE_BUTTON});
         // End of the save icon. For save icon checking, the end is excluded.
         const endOfSaveIcon =
             /* HEADER_LEFT_PADDING + EDITION_MODE_INDENT */ 54 + labelWidth + /* EDIT_BUTTON_SIZE */ 16;
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(endOfSaveIcon - 1, 17, /* headerOnly= */ true),
-            {groupIndex: 0, editButtonType: PerfUI.FlameChart.EditButtonType.SAVE});
+            chartInstance.coordinatesToGroupIndexAndHoverType(endOfSaveIcon - 1, 17),
+            {groupIndex: 0, hoverType: PerfUI.FlameChart.HoverType.TRACK_CONFIG_SAVE_BUTTON});
         assert.deepEqual(
-            chartInstance.coordinatesToGroupIndexAndButton(endOfSaveIcon, 17, /* headerOnly= */ true),
-            {groupIndex: -1});
+            chartInstance.coordinatesToGroupIndexAndHoverType(endOfSaveIcon, 17),
+            {groupIndex: -1, hoverType: PerfUI.FlameChart.HoverType.OUTSIDE_TRACKS});
       });
     });
   });

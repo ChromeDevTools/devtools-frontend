@@ -100,6 +100,20 @@ describe('AidaClient', () => {
     stub.restore();
   });
 
+  it('adds metadata to disallow logging', () => {
+    const stub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
+    stub.withArgs('ci_disallowLogging').returns('true');
+    const request = Host.AidaClient.AidaClient.buildApiRequest('foo');
+    assert.deepStrictEqual(request, {
+      input: 'foo',
+      client: 'CHROME_DEVTOOLS',
+      metadata: {
+        disable_user_content_logging: true,
+      },
+    });
+    stub.restore();
+  });
+
   async function getAllResults(provider: Host.AidaClient.AidaClient): Promise<Host.AidaClient.AidaResponse[]> {
     const results = [];
     for await (const result of provider.fetch('foo')) {

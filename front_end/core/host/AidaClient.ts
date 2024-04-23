@@ -15,6 +15,10 @@ export interface AidaRequest {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     model_id?: string,
   };
+  metadata?: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    disable_user_content_logging: boolean,
+  };
 }
 
 export interface AidaResponse {
@@ -39,6 +43,11 @@ export class AidaClient {
     if (modelId) {
       request.options ??= {};
       request.options.model_id = modelId;
+    }
+    if (Root.Runtime.Runtime.queryParam('ci_disallowLogging') === 'true') {
+      request.metadata = {
+        disable_user_content_logging: true,
+      };
     }
     return request;
   }

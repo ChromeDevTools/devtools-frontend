@@ -474,7 +474,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.tagTypeContext.slot = this.adornSlot(config, this.tagTypeContext);
       const deferredNode = nodeShortcut.deferredNode;
       this.tagTypeContext.slot.addEventListener('click', () => {
-        Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.SLOT);
         deferredNode.resolve(node => {
           void Common.Revealer.reveal(node);
         });
@@ -2229,8 +2228,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const onClick = ((() => {
                        if (adorner.isActive()) {
                          node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
-                         Host.userMetrics.badgeActivated(
-                             isSubgrid ? Host.UserMetrics.BadgeType.SUBGRID : Host.UserMetrics.BadgeType.GRID);
                        } else {
                          node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
                        }
@@ -2272,7 +2269,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightScrollSnapInPersistentOverlay(nodeId);
-                         Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.SCROLL_SNAP);
                        } else {
                          model.hideScrollSnapInPersistentOverlay(nodeId);
                        }
@@ -2316,7 +2312,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightFlexContainerInPersistentOverlay(nodeId);
-                         Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.FLEX);
                        } else {
                          model.hideFlexContainerInPersistentOverlay(nodeId);
                        }
@@ -2361,7 +2356,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                        const model = node.domModel().overlayModel();
                        if (adorner.isActive()) {
                          model.highlightContainerQueryInPersistentOverlay(nodeId);
-                         Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.CONTAINER);
                        } else {
                          model.hideContainerQueryInPersistentOverlay(nodeId);
                        }

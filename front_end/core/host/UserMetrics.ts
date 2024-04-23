@@ -363,11 +363,6 @@ export class UserMetrics {
         EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MaxValue);
   }
 
-  badgeActivated(badge: BadgeType): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.BadgeActivated, badge, BadgeType.MaxValue);
-  }
-
   animationPlaybackRateChanged(playbackRate: AnimationsPlaybackRate): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.AnimationPlaybackRateChanged, playbackRate, AnimationsPlaybackRate.MaxValue);

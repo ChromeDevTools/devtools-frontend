@@ -959,6 +959,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/handlers/MetaHandler.js",
   "front_end/models/trace/handlers/ModelHandlers.js",
   "front_end/models/trace/handlers/NetworkRequestsHandler.js",
+  "front_end/models/trace/handlers/PageFramesHandler.js",
   "front_end/models/trace/handlers/PageLoadMetricsHandler.js",
   "front_end/models/trace/handlers/RendererHandler.js",
   "front_end/models/trace/handlers/SamplesHandler.js",

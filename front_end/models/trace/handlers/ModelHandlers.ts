@@ -16,6 +16,7 @@ export * as LayoutShifts from './LayoutShiftsHandler.js';
 export * as Memory from './MemoryHandler.js';
 export * as Meta from './MetaHandler.js';
 export * as NetworkRequests from './NetworkRequestsHandler.js';
+export * as PageFrames from './PageFramesHandler.js';
 export * as PageLoadMetrics from './PageLoadMetricsHandler.js';
 export * as Renderer from './RendererHandler.js';
 export * as Samples from './SamplesHandler.js';

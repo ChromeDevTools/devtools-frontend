@@ -171,6 +171,29 @@ describe('The Performance tool, Bottom-up panel', function() {
     });
   });
 
+  it('group by', async () => {
+    const expectedActivities = ['Scripting', 'System', 'Loading', 'Rendering', 'Painting'];
+    await step('navigate to the Bottom Up tab', async () => {
+      await navigateToBottomUpTab();
+    });
+
+    await step('use group-by drop down and validate activities', async () => {
+      const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle;
+      const rootActivity = await waitForElementWithTextContent('h2_with_suffix', timelineTree);
+      if (!rootActivity) {
+        assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
+      }
+      const dropdown = await waitFor('select[aria-label="Group by"]');
+      await dropdown.evaluate(el => {
+        (el as HTMLSelectElement).selectedIndex = 2;
+        el.dispatchEvent(new Event('change'));
+      });
+
+      assert.isTrue(
+          await validateTreeParentActivities(expectedActivities), 'Tree does not contain expected activities');
+    });
+  });
+
   it('filtered results keep context', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = ['h2_with_suffix', 'container2', 'Function Call', 'Timer Fired'];

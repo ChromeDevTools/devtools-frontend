@@ -349,6 +349,14 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   refreshTree(): void {
+    if (!this.element.parentElement) {
+      // This function can be called in different views (Bottom-Up and
+      // Call Tree) by the same single event whenever the group-by
+      // dropdown changes value. Thus, we bail out whenever the view is
+      // not visible, which we know if the related element is detached
+      // from the document.
+      return;
+    }
     this.linkifier.reset();
     this.dataGrid.rootNode().removeChildren();
     if (!this.modelInternal) {

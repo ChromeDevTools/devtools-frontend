@@ -207,10 +207,6 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
-  "keywords": [
-   "before",
-   "after"
-  ],
   "name": "-webkit-ruby-position"
  },
  {
@@ -2860,6 +2856,10 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "over",
+   "under"
+  ],
   "name": "ruby-position"
  },
  {
@@ -3825,12 +3825,6 @@ export const generatedPropertyValues = {
   "values": [
    "logical",
    "visual"
-  ]
- },
- "-webkit-ruby-position": {
-  "values": [
-   "before",
-   "after"
   ]
  },
  "-webkit-text-security": {
@@ -5281,6 +5275,12 @@ export const generatedPropertyValues = {
  "row-gap": {
   "values": [
    "normal"
+  ]
+ },
+ "ruby-position": {
+  "values": [
+   "over",
+   "under"
   ]
  },
  "rx": {

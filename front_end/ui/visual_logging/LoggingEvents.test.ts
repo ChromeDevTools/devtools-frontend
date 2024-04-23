@@ -37,7 +37,7 @@ describe('LoggingEvents', () => {
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
         stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
-        [{id: 0, type: 1, context: 42, parent: 1}, {id: 1, type: 1}]);
+        [{id: 0, type: 1, context: 42, parent: 1, height: 0, width: 0}, {id: 1, type: 1, height: 0, width: 0}]);
   });
 
   it('calls UI binding to log a click', async () => {
@@ -203,8 +203,7 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
     );
-    VisualLogging.LoggingEvents.logResize(throttler)(element, new DOMRect(0, 0, 100, 50));
-    await assertThrottled(recordResize);
+    VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50));
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
   });
 
@@ -213,8 +212,7 @@ describe('LoggingEvents', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordResize',
     );
-    VisualLogging.LoggingEvents.logResize(throttler)(element, new DOMRect(0, 0, 100, 50));
-    await assertThrottled(recordResize);
+    VisualLogging.LoggingEvents.logResize(element, new DOMRect(0, 0, 100, 50));
     assert.deepStrictEqual(stabilizeEvent(recordResize.firstCall.firstArg), {veid: 0, width: 100, height: 50});
   });
 });

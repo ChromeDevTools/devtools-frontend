@@ -11,7 +11,7 @@ export interface LoggingState {
   veid: number;
   parent: LoggingState|null;
   processedForDebugging?: boolean;
-  size?: DOMRect;
+  size: DOMRect;
   selectOpen?: boolean;
 }
 
@@ -44,6 +44,7 @@ export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfi
     config,
     veid: nextVeId(),
     parent: parent ? getLoggingState(parent) : null,
+    size: new DOMRect(0, 0, 0, 0),
   };
   state.set(loggable, loggableState);
   return loggableState;

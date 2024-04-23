@@ -11,7 +11,7 @@ import {getDomState, visibleOverlap} from './DomState.js';
 import {type Loggable} from './Loggable.js';
 import {getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown, logResize} from './LoggingEvents.js';
-import {getLoggingState, getOrCreateLoggingState} from './LoggingState.js';
+import {getLoggingState, getOrCreateLoggingState, type LoggingState} from './LoggingState.js';
 import {getNonDomState, unregisterAllLoggables, unregisterLoggable} from './NonDomState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
@@ -38,6 +38,7 @@ const mutationObserver = new MutationObserver(scheduleProcessing);
 const resizeObserver = new ResizeObserver(onResizeOrIntersection);
 const intersectionObserver = new IntersectionObserver(onResizeOrIntersection);
 const documents: Document[] = [];
+const pendingResize = new Map<Element, DOMRect>();
 
 function observeMutations(roots: Node[]): void {
   for (const root of roots) {
@@ -245,6 +246,16 @@ function maybeCancelDrag(event: Event): void {
   void dragLogThrottler.schedule(cancelLogging);
 }
 
+function isAncestorOf(state1: LoggingState|null, state2: LoggingState|null): boolean {
+  while (state2) {
+    if (state2 === state1) {
+      return true;
+    }
+    state2 = state2.parent;
+  }
+  return false;
+}
+
 function onResizeOrIntersection(entries: ResizeObserverEntry[]|IntersectionObserverEntry[]): void {
   for (const entry of entries) {
     const element = entry.target;
@@ -253,9 +264,37 @@ function onResizeOrIntersection(entries: ResizeObserverEntry[]|IntersectionObser
     if (!loggingState?.size) {
       continue;
     }
-    if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
-        Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
-      void logResize(resizeLogThrottler)(element, overlap);
+
+    let hasPendingParent = false;
+    for (const pendingElement of pendingResize.keys()) {
+      if (pendingElement === element) {
+        continue;
+      }
+      const pendingState = getLoggingState(pendingElement);
+      if (isAncestorOf(pendingState, loggingState)) {
+        hasPendingParent = true;
+        break;
+      }
+      if (isAncestorOf(loggingState, pendingState)) {
+        pendingResize.delete(pendingElement);
+      }
     }
+    if (hasPendingParent) {
+      continue;
+    }
+    pendingResize.set(element, overlap);
+    void resizeLogThrottler.schedule(async () => {
+      for (const [element, overlap] of pendingResize.entries()) {
+        const loggingState = getLoggingState(element);
+        if (!loggingState) {
+          continue;
+        }
+        if (Math.abs(overlap.width - loggingState.size.width) >= RESIZE_REPORT_THRESHOLD ||
+            Math.abs(overlap.height - loggingState.size.height) >= RESIZE_REPORT_THRESHOLD) {
+          logResize(element, overlap);
+        }
+      }
+      pendingResize.clear();
+    });
   }
 }

@@ -219,7 +219,7 @@
 
   /* Universal surfaces */
 
-  --sys-color-surface: var(--ref-palette-neutral100);
+  --sys-color-surface: var(--ref-palette-neutral99);
   --sys-color-surface-variant: var(--ref-palette-neutral-variant90);
 
   /* Containers */
@@ -444,6 +444,7 @@
 :root.baseline-default,
 :root.baseline-grayscale {
   --sys-color-base: var(--ref-palette-neutral100);
+  --sys-color-surface: var(--ref-palette-neutral100);
 
   &.-theme-with-dark-background {
     --sys-color-surface5: color-mix(in sRGB, #d1e1ff 14%, var(--ref-palette-neutral10));

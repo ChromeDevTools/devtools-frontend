@@ -1488,6 +1488,35 @@
                     ]
                 },
                 {
+                    "id": "SharedDictionaryError",
+                    "type": "string",
+                    "enum": [
+                        "UseErrorCrossOriginNoCorsRequest",
+                        "UseErrorDictionaryLoadFailure",
+                        "UseErrorMatchingDictionaryNotUsed",
+                        "UseErrorUnexpectedContentDictionaryHeader",
+                        "WriteErrorCossOriginNoCorsRequest",
+                        "WriteErrorDisallowedBySettings",
+                        "WriteErrorExpiredResponse",
+                        "WriteErrorFeatureDisabled",
+                        "WriteErrorInsufficientResources",
+                        "WriteErrorInvalidMatchField",
+                        "WriteErrorInvalidStructuredHeader",
+                        "WriteErrorNavigationRequest",
+                        "WriteErrorNoMatchField",
+                        "WriteErrorNonListMatchDestField",
+                        "WriteErrorNonSecureContext",
+                        "WriteErrorNonStringIdField",
+                        "WriteErrorNonStringInMatchDestList",
+                        "WriteErrorNonStringMatchField",
+                        "WriteErrorNonTokenTypeField",
+                        "WriteErrorRequestAborted",
+                        "WriteErrorShuttingDown",
+                        "WriteErrorTooLongIdField",
+                        "WriteErrorUnsupportedType"
+                    ]
+                },
+                {
                     "id": "AttributionReportingIssueDetails",
                     "description": "Details for issues around \"Attribution Reporting API\" usage.\nExplainer: https://github.com/WICG/attribution-reporting-api",
                     "type": "object",
@@ -1554,6 +1583,20 @@
                             "name": "location",
                             "optional": true,
                             "$ref": "SourceCodeLocation"
+                        }
+                    ]
+                },
+                {
+                    "id": "SharedDictionaryIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "sharedDictionaryError",
+                            "$ref": "SharedDictionaryError"
+                        },
+                        {
+                            "name": "request",
+                            "$ref": "AffectedRequest"
                         }
                     ]
                 },
@@ -1871,7 +1914,8 @@
                         "CookieDeprecationMetadataIssue",
                         "StylesheetLoadingIssue",
                         "FederatedAuthUserInfoRequestIssue",
-                        "PropertyRuleIssue"
+                        "PropertyRuleIssue",
+                        "SharedDictionaryIssue"
                     ]
                 },
                 {
@@ -1979,6 +2023,11 @@
                             "name": "federatedAuthUserInfoRequestIssueDetails",
                             "optional": true,
                             "$ref": "FederatedAuthUserInfoRequestIssueDetails"
+                        },
+                        {
+                            "name": "sharedDictionaryIssueDetails",
+                            "optional": true,
+                            "$ref": "SharedDictionaryIssueDetails"
                         }
                     ]
                 },

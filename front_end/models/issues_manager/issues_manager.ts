@@ -24,6 +24,7 @@ import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
+import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 
@@ -50,6 +51,7 @@ export {
   QuirksModeIssue,
   RelatedIssue,
   SharedArrayBufferIssue,
+  SharedDictionaryIssue,
   SourceFrameIssuesManager,
   StylesheetLoadingIssue,
 };

@@ -36,6 +36,7 @@ devtools_module("issues_manager") {
     "QuirksModeIssue.ts",
     "RelatedIssue.ts",
     "SharedArrayBufferIssue.ts",
+    "SharedDictionaryIssue.ts",
     "SourceFrameIssuesManager.ts",
     "StylesheetLoadingIssue.ts",
   ]
@@ -172,6 +173,29 @@ devtools_issue_description_files = [
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",
   "stylesheetRequestFailed.md",
+  "sharedDictionaryUseErrorCrossOriginNoCorsRequest.md",
+  "sharedDictionaryUseErrorDictionaryLoadFailure.md",
+  "sharedDictionaryUseErrorMatchingDictionaryNotUsed.md",
+  "sharedDictionaryUseErrorUnexpectedContentDictionaryHeader.md",
+  "sharedDictionaryWriteErrorCossOriginNoCorsRequest.md",
+  "sharedDictionaryWriteErrorDisallowedBySettings.md",
+  "sharedDictionaryWriteErrorExpiredResponse.md",
+  "sharedDictionaryWriteErrorFeatureDisabled.md",
+  "sharedDictionaryWriteErrorInsufficientResources.md",
+  "sharedDictionaryWriteErrorInvalidMatchField.md",
+  "sharedDictionaryWriteErrorInvalidStructuredHeader.md",
+  "sharedDictionaryWriteErrorNavigationRequest.md",
+  "sharedDictionaryWriteErrorNoMatchField.md",
+  "sharedDictionaryWriteErrorNonListMatchDestField.md",
+  "sharedDictionaryWriteErrorNonSecureContext.md",
+  "sharedDictionaryWriteErrorNonStringIdField.md",
+  "sharedDictionaryWriteErrorNonStringInMatchDestList.md",
+  "sharedDictionaryWriteErrorNonStringMatchField.md",
+  "sharedDictionaryWriteErrorNonTokenTypeField.md",
+  "sharedDictionaryWriteErrorRequestAborted.md",
+  "sharedDictionaryWriteErrorShuttingDown.md",
+  "sharedDictionaryWriteErrorTooLongIdField.md",
+  "sharedDictionaryWriteErrorUnsupportedType.md",
 ]
 
 devtools_pre_built("descriptions") {
@@ -222,6 +246,7 @@ ts_library("unittests") {
     "MarkdownIssueDescription.test.ts",
     "PropertyRuleIssue.test.ts",
     "RelatedIssue.test.ts",
+    "SharedDictionaryIssue.test.ts",
     "StylesheetLoadingIssue.test.ts",
   ]
 

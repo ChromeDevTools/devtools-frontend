@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -86,8 +87,11 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       if (this.#filledFields[i].value === '') {
         continue;
       }
-      // Regex replaces whitespace or comma/dot followed by whitespace with a single space.
-      const needle = this.#filledFields[i].value.replaceAll(/[.,]*\s+/g, ' ');
+      // 1) Replace multiple whitespaces with a single space.
+      // 2) Escape special characters.
+      // 3) For ',' or '.' before whitespace, insert the '?' quantifier.
+      const needle = Platform.StringUtilities.escapeForRegExp(this.#filledFields[i].value.replaceAll(/\s/g, ' '))
+                         .replaceAll(/([.,]+)\s/g, '$1? ');
       const matches = this.#address.replaceAll(/\s/g, ' ').matchAll(new RegExp(needle, 'g'));
       for (const match of matches) {
         if (typeof match.index !== 'undefined') {

@@ -158,6 +158,74 @@ describeWithMockConnection('AutofillManager', () => {
       await assertAutofillManagerEvent(inEvent, outEvent);
     });
 
+    it('with a comma in the address', async () => {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Outback Road 1, Melbourne',
+          autofillType: 'Street address',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
+        },
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'ADDRESS_HOME_STREET_ADDRESS', value: 'Outback Road 1, Melbourne'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: 'Outback Road 1, Melbourne',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 25, filledFieldIndex: 0}],
+        autofillModel: model,
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
+
+    it('for phone numbers starting with "+"', async () => {
+      const filledFields = [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: 'phone',
+          value: '+1234567890',
+          autofillType: 'Phone number',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+          fieldId: 1 as Protocol.DOM.BackendNodeId,
+          frameId: '1' as Protocol.Page.FrameId,
+        },
+      ];
+      const inEvent = {
+        addressUi: {
+          addressFields: [
+            {
+              fields: [
+                {name: 'PHONE_HOME_WHOLE_NUMBER', value: '+1234567890'},
+              ],
+            },
+          ],
+        },
+        filledFields,
+      };
+      const outEvent = {
+        address: '+1234567890',
+        filledFields,
+        matches: [{startIndex: 0, endIndex: 11, filledFieldIndex: 0}],
+        autofillModel: model,
+      };
+      await assertAutofillManagerEvent(inEvent, outEvent);
+    });
+
     it('with an empty string as filled field value', async () => {
       const filledFields = [
         {

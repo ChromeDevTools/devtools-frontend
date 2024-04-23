@@ -1442,6 +1442,38 @@ export function isSyntheticInvalidation(event: TraceEventData): event is Synthet
   return event.name === 'SyntheticInvalidation';
 }
 
+export interface TraceEventDrawLazyPixelRef extends TraceEventInstant {
+  name: KnownEventName.DrawLazyPixelRef;
+  args?: TraceEventArgs&{
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    LazyPixelRef: number,
+  };
+}
+export function isTraceEventDrawLazyPixelRef(event: TraceEventData): event is TraceEventDrawLazyPixelRef {
+  return event.name === KnownEventName.DrawLazyPixelRef;
+}
+
+export interface TraceEventDecodeLazyPixelRef extends TraceEventInstant {
+  name: KnownEventName.DecodeLazyPixelRef;
+  args?: TraceEventArgs&{
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    LazyPixelRef: number,
+  };
+}
+export function isTraceEventDecodeLazyPixelRef(event: TraceEventData): event is TraceEventDecodeLazyPixelRef {
+  return event.name === KnownEventName.DecodeLazyPixelRef;
+}
+
+export interface TraceEventDecodeImage extends TraceEventComplete {
+  name: KnownEventName.DecodeImage;
+  args: TraceEventArgs&{
+    imageType: string,
+  };
+}
+export function isTraceEventDecodeImage(event: TraceEventData): event is TraceEventDecodeImage {
+  return event.name === KnownEventName.DecodeImage;
+}
+
 export interface SelectorTiming {
   'elapsed (us)': number;
   // eslint-disable-next-line @typescript-eslint/naming-convention

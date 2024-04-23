@@ -7,6 +7,7 @@ export * as AuctionWorklets from './AuctionWorkletsHandler.js';
 export * as ExtensionTraceData from './ExtensionTraceDataHandler.js';
 export * as Frames from './FramesHandler.js';
 export * as GPU from './GPUHandler.js';
+export * as ImagePainting from './ImagePaintingHandler.js';
 export * as Initiators from './InitiatorsHandler.js';
 export * as Invalidations from './InvalidationsHandler.js';
 export * as LargestImagePaint from './LargestImagePaintHandler.js';

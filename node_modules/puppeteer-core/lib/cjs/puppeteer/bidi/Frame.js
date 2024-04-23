@@ -197,7 +197,7 @@ let BidiFrame = (() => {
             this.browsingContext.on('closed', () => {
                 for (const session of CDPSession_js_1.BidiCdpSession.sessions.values()) {
                     if (session.frame === this) {
-                        void session.detach().catch(util_js_1.debugError);
+                        session.onClose();
                     }
                 }
                 this.page().trustedEmitter.emit("framedetached" /* PageEvent.FrameDetached */, this);

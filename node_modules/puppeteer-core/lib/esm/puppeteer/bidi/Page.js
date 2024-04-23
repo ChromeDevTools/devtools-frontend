@@ -98,6 +98,8 @@ import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import { rewriteNavigationError } from './util.js';
 /**
+ * Implements Page using WebDriver BiDi.
+ *
  * @internal
  */
 let BidiPage = (() => {

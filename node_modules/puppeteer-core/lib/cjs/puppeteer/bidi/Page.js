@@ -101,6 +101,8 @@ const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
 const util_js_2 = require("./util.js");
 /**
+ * Implements Page using WebDriver BiDi.
+ *
  * @internal
  */
 let BidiPage = (() => {

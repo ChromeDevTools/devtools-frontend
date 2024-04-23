@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { EventEmitter, EventSubscription } from '../common/EventEmitter.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import { NetworkManagerEvent, } from '../common/NetworkManagerEvents.js';
 import { debugError, isString } from '../common/util.js';
 import { assert } from '../util/assert.js';
@@ -51,12 +51,11 @@ export class NetworkManager extends EventEmitter {
         }
         const subscriptions = new DisposableStack();
         this.#clients.set(client, subscriptions);
+        const clientEmitter = subscriptions.use(new EventEmitter(client));
         for (const [event, handler] of this.#handlers) {
-            subscriptions.use(
-            // TODO: Remove any here.
-            new EventSubscription(client, event, (arg) => {
+            clientEmitter.on(event, (arg) => {
                 return handler.bind(this)(client, arg);
-            }));
+            });
         }
         await Promise.all([
             this.#ignoreHTTPSErrors

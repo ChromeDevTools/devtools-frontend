@@ -28,6 +28,8 @@ import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
 import type { BidiWebWorker } from './WebWorker.js';
 /**
+ * Implements Page using WebDriver BiDi.
+ *
  * @internal
  */
 export declare class BidiPage extends Page {

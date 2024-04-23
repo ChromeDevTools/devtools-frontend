@@ -118,6 +118,12 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     [_isElementHandle]: boolean;
     /**
+     * @internal
+     * Cached isolatedHandle to prevent
+     * trying to adopt it multiple times
+     */
+    isolatedHandle?: typeof this;
+    /**
      * A given method will have it's `this` replaced with an isolated version of
      * `this` when decorated with this decorator.
      *

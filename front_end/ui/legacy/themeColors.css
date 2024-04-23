@@ -451,6 +451,7 @@
     --sys-color-surface1: color-mix(in sRGB, #d1e1ff 5%, var(--ref-palette-neutral10));
     --sys-color-divider: var(--ref-palette-neutral40);
     --sys-color-base: var(--ref-palette-neutral25);
+    --sys-color-surface: var(--ref-palette-neutral10);
   }
 }
 

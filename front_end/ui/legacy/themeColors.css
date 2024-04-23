@@ -422,6 +422,11 @@
   --app-color-coverage-used: var(--ref-palette-neutral80);
   --app-color-coverage-unused: var(--sys-color-error-bright);
   --app-color-toolbar-background: var(--sys-color-surface4);
+
+  /**
+   * Colors for menus.
+   */
+  --app-color-menu-background: var(--sys-color-surface);
 }
 
 :root.baseline-default {
@@ -831,4 +836,9 @@
   --app-color-coverage-used: var(--ref-palette-neutral40);
   --app-color-coverage-unused: var(--sys-color-error-bright);
   --app-color-toolbar-background: var(--sys-color-base);
+
+  /**
+   * Colors for menus.
+   */
+  --app-color-menu-background: var(--sys-color-surface3);
 }

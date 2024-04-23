@@ -7,12 +7,12 @@
 .soft-context-menu {
   overflow-y: auto;
   min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
-  /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
-  padding: 4px 0;
+  /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.ts */
+  padding: var(--sys-size-5) 0;
   border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 7px;
-  background-color: var(--sys-color-cdt-base-container);
-  box-shadow: var(--drop-shadow);
+  border-radius: var(--sys-shape-corner-small);
+  background-color: var(--app-color-menu-background);
+  box-shadow: var(--sys-elevation-level3); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 :host-context(.-theme-with-dark-background) .soft-context-menu {
@@ -20,14 +20,19 @@
 }
 
 .dockside-title {
-  padding-right: 13px;
+  padding-right: var(--sys-size-14);
+}
+
+.dockside-title + .toolbar {
+  margin-right: -8px;
 }
 
 .soft-context-menu-item {
   display: flex;
   width: 100%;
   font-size: 12px;
-  padding: 3px 7px 3px 8px;
+  height: var(--sys-size-11);
+  padding: 0 var(--sys-size-8);
   white-space: nowrap;
   align-items: center;
 
@@ -36,17 +41,23 @@
   }
 
   & devtools-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
     pointer-events: none;
 
     &.checkmark {
-      margin: -1px 5px -1px 0;
+      margin-right: var(--sys-size-3);
       opacity: 0%;
 
       .soft-context-menu-item[checked] & {
         opacity: 100%;
       }
+    }
+
+    &[name="experiment"] {
+      width: var(--sys-size-11);
+      height: var(--sys-size-11);
+      padding: 0 var(--sys-size-3);
     }
   }
 }
@@ -57,23 +68,26 @@
 }
 
 .soft-context-menu-separator {
-  height: 10px;
-  margin: 0 1px;
+  padding: var(--sys-size-4) 0;
 
   & > .separator-line {
-    margin: 0;
-    height: 5px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    height: var(--sys-size-1);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     pointer-events: none;
   }
 }
 
 .soft-context-menu-item-submenu-arrow {
   pointer-events: none;
-  font-size: 11px;
   text-align: right;
   align-self: center;
   margin-left: auto;
+
+  & > devtools-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    color: var(--sys-color-on-surface-subtle);
+  }
 }
 
 .soft-context-menu-custom-item {
@@ -84,11 +98,11 @@
 }
 
 .soft-context-menu-shortcut {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
   pointer-events: none;
   flex: 1 1 auto;
   text-align: right;
-  padding-left: 10px;
+  padding-left: var(--sys-size-6);
 
   .soft-context-menu-item-mouse-over & {
     color: inherit;

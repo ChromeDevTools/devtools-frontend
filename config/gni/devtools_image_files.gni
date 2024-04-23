@@ -163,6 +163,7 @@ devtools_svg_sources = [
   "justify-items-end.svg",
   "justify-items-start.svg",
   "justify-items-stretch.svg",
+  "keyboard-arrow-right.svg",
   "keyboard-pen.svg",
   "large-arrow-right-filled.svg",
   "layers-filled.svg",

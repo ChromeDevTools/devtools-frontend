@@ -18,7 +18,7 @@ describe('The Elements tab', function() {
     const elementsContentPanel = await waitFor('#elements-content');
     const selectedNode = await waitForElementWithTextContent('Inspected Node', elementsContentPanel);
     await selectedNode.click({button: 'right'});
-    const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML', false);
+    const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML');
     await editAsHTMLOption.click();
     await waitFor('.elements-disclosure devtools-text-editor');
     await openSourcesPanel();

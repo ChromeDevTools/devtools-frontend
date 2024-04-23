@@ -214,7 +214,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private contextMenu?: UI.ContextMenu.ContextMenu;
   private viewportElement: HTMLElement;
   private canvas: HTMLCanvasElement;
-  private entryInfo: HTMLElement;
+  private popoverElement: HTMLElement;
   private readonly markerHighlighElement: HTMLElement;
   readonly highlightElement: HTMLElement;
   readonly revealDescendantsArrowHighlightElement: HTMLElement;
@@ -301,7 +301,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
 
-    this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
+    this.popoverElement = this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
     this.highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
     this.revealDescendantsArrowHighlightElement =
@@ -407,7 +407,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   hideHighlight(): void {
     if (this.#searchResultEntryIndex === -1) {
-      this.entryInfo.removeChildren();
+      this.popoverElement.removeChildren();
       this.lastPopoverState = {
         entryIndex: -1,
         hiddenEntriesPopover: false,
@@ -551,28 +551,79 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // Check if the mouse is hovering any group's header area
     const {groupIndex, hoverType} = this.coordinatesToGroupIndexAndHoverType(mouseEvent.offsetX, mouseEvent.offsetY);
     switch (hoverType) {
+      case HoverType.TRACK_CONFIG_UP_BUTTON:
+      case HoverType.TRACK_CONFIG_DOWN_BUTTON:
+      case HoverType.TRACK_CONFIG_HIDE_BUTTON:
+      case HoverType.TRACK_CONFIG_SHOW_BUTTON:
+      case HoverType.TRACK_CONFIG_SAVE_BUTTON: {
+        this.hideHighlight();
+        this.viewportElement.style.cursor = 'pointer';
+        const iconTooltipElement = this.#prepareIconInfo(groupIndex, hoverType);
+        if (iconTooltipElement) {
+          this.popoverElement.appendChild(iconTooltipElement);
+          this.updatePopoverOffset();
+        }
+        return;
+      }
       case HoverType.TRACK_CONFIG_EDIT_BUTTON:
       case HoverType.INSIDE_TRACK_HEADER:
         this.hideHighlight();
         this.viewportElement.style.cursor = 'pointer';
         // Show edit icon for the hovered group
-        this.resetCanvas();
         this.draw(/* hoveredGroupIndex= */ groupIndex);
         return;
       case HoverType.INSIDE_TRACK:
         // Show edit icon for the hovered group
-        this.resetCanvas();
         this.draw(/* hoveredGroupIndex= */ groupIndex);
         this.updateHighlight();
         return;
       case HoverType.OUTSIDE_TRACKS:
         // No group is hovered.
         // Redraw the flame chart to clear the potentially previously draw edit icon.
-        this.resetCanvas();
         this.draw();
         this.updateHighlight();
         return;
     }
+  }
+
+  #prepareIconInfo(groupIndex: number, iconType: HoverType): Element|null {
+    const group = this.rawTimelineData?.groups[groupIndex];
+    if (!group) {
+      return null;
+    }
+
+    // Only show first 20 characters to make the tooltip not too long.
+    const maxTitleChars = 20;
+    const displayName = Platform.StringUtilities.trimMiddle(group.name, maxTitleChars);
+
+    let iconTooltip = '';
+    switch (iconType) {
+      case HoverType.TRACK_CONFIG_UP_BUTTON:
+        iconTooltip = `Move ${displayName} track up`;
+        break;
+      case HoverType.TRACK_CONFIG_DOWN_BUTTON:
+        iconTooltip = `Move ${displayName} track down`;
+        break;
+      case HoverType.TRACK_CONFIG_HIDE_BUTTON:
+        if (this.groupIsLastVisibleTopLevel(group)) {
+          iconTooltip = 'Can not hide the last top level track';
+        } else {
+          iconTooltip = `Hide ${displayName} track`;
+        }
+        break;
+      case HoverType.TRACK_CONFIG_SHOW_BUTTON:
+        iconTooltip = `Show ${displayName} track`;
+        break;
+      case HoverType.TRACK_CONFIG_SAVE_BUTTON:
+        iconTooltip = 'Save current track configuration';
+        break;
+      default:
+        return null;
+    }
+    const element = document.createElement('div');
+    element.createChild('span', 'timeline-info-title').textContent = iconTooltip;
+
+    return element;
   }
 
   private updateHighlight(): void {
@@ -600,7 +651,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.chartViewport.isDragging()) {
       return;
     }
-    this.updatePopover(entryIndex);
+    this.#updatePopoverForEntry(entryIndex);
     this.viewportElement.style.cursor = this.dataProvider.canJumpToEntry(entryIndex) ? 'pointer' : 'default';
     this.highlightEntry(entryIndex);
   }
@@ -613,29 +664,29 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   showPopoverForSearchResult(selectedSearchResult: number): void {
     this.#searchResultEntryIndex = selectedSearchResult;
-    this.updatePopover(selectedSearchResult);
+    this.#updatePopoverForEntry(selectedSearchResult);
   }
 
-  private updatePopover(entryIndex: number): void {
+  #updatePopoverForEntry(entryIndex: number): void {
     // Just update position if cursor is hovering the same entry.
     const isMouseOverRevealChildrenArrow = this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex);
     if (entryIndex === this.lastPopoverState.entryIndex &&
         isMouseOverRevealChildrenArrow === this.lastPopoverState.hiddenEntriesPopover) {
       return this.updatePopoverOffset();
     }
-    this.entryInfo.removeChildren();
+    this.popoverElement.removeChildren();
     const data = this.timelineData();
     if (!data) {
       return;
     }
     const group = data.groups.at(this.selectedGroupIndex);
     // If the mouse is hovering over the hidden descendants arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
-    const popoverElement = (isMouseOverRevealChildrenArrow && group) ?
+    const entryInfo = (isMouseOverRevealChildrenArrow && group) ?
         this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
             this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(entryIndex) :
         this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
-    if (popoverElement) {
-      this.entryInfo.appendChild(popoverElement);
+    if (entryInfo) {
+      this.popoverElement.appendChild(entryInfo);
       this.updatePopoverOffset();
     }
     this.lastPopoverState = {
@@ -656,10 +707,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       mouseY = coordinate?.y ? coordinate.y - canvasViewportOffsetY : mouseY;
     }
 
-    const parentWidth = this.entryInfo.parentElement ? this.entryInfo.parentElement.clientWidth : 0;
-    const parentHeight = this.entryInfo.parentElement ? this.entryInfo.parentElement.clientHeight : 0;
-    const infoWidth = this.entryInfo.clientWidth;
-    const infoHeight = this.entryInfo.clientHeight;
+    const parentWidth = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientWidth : 0;
+    const parentHeight = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientHeight : 0;
+    const infoWidth = this.popoverElement.clientWidth;
+    const infoHeight = this.popoverElement.clientHeight;
     const /** @const */ offsetX = 10;
     const /** @const */ offsetY = 6;
     let x;
@@ -673,8 +724,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         break;
       }
     }
-    this.entryInfo.style.left = x + 'px';
-    this.entryInfo.style.top = y + 'px';
+    this.popoverElement.style.left = x + 'px';
+    this.popoverElement.style.top = y + 'px';
   }
 
   /**
@@ -723,7 +774,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         case HoverType.TRACK_CONFIG_EDIT_BUTTON:
           this.#editMode = !this.#editMode;
           this.updateLevelPositions();
-          this.resetCanvas();
           this.draw();
           return;
         case HoverType.INSIDE_TRACK_HEADER:
@@ -770,7 +820,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     } else {
       this.selectedGroupIndex = groupIndex;
       this.flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
-      this.resetCanvas();
       this.draw();
       UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}));
     }
@@ -779,14 +828,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private deselectAllGroups(): void {
     this.selectedGroupIndex = -1;
     this.flameChartDelegate.updateSelectedGroup(this, null);
-    this.resetCanvas();
     this.draw();
   }
 
   private deselectAllEntries(): void {
     this.selectedEntryIndex = -1;
     this.rawTimelineData?.resetFlowData();
-    this.resetCanvas();
     this.draw();
   }
 
@@ -874,7 +921,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     this.updateHeight();
-    this.resetCanvas();
     this.draw();
 
     this.scrollGroupIntoView(groupIndex);
@@ -916,7 +962,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.updateHighlight();
     this.updateHeight();
-    this.resetCanvas();
     this.draw();
   }
 
@@ -949,7 +994,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.updateHighlight();
     this.updateHeight();
-    this.resetCanvas();
     this.draw();
   }
 
@@ -987,7 +1031,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.updateHighlight();
     this.updateHeight();
-    this.resetCanvas();
     this.draw();
   }
 
@@ -1702,6 +1745,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!timelineData) {
       return;
     }
+    this.resetCanvas();
+
     const canvasWidth = this.offsetWidth;
     const canvasHeight = this.offsetHeight;
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
@@ -3373,7 +3418,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!this.timelineData()) {
       return;
     }
-    this.resetCanvas();
     this.updateHeight();
     this.updateBoundaries();
     this.draw();

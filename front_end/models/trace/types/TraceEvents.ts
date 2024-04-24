@@ -2342,7 +2342,6 @@ export const enum KnownEventName {
   ImageDecodeTask = 'ImageDecodeTask',
   ImageUploadTask = 'ImageUploadTask',
   DecodeImage = 'Decode Image',
-  ResizeImage = 'Resize Image',
   DrawLazyPixelRef = 'Draw LazyPixelRef',
   DecodeLazyPixelRef = 'Decode LazyPixelRef',
   GPUTask = 'GPUTask',

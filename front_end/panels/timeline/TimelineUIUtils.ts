@@ -876,7 +876,6 @@ export class TimelineUIUtils {
       case recordType.ResourceFinish:
       case recordType.PaintImage:
       case recordType.DecodeImage:
-      case recordType.ResizeImage:
       case recordType.DecodeLazyPixelRef: {
         const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
@@ -952,7 +951,6 @@ export class TimelineUIUtils {
 
       case recordType.PaintImage:
       case recordType.DecodeImage:
-      case recordType.ResizeImage:
       case recordType.DecodeLazyPixelRef:
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad:
@@ -1411,7 +1409,6 @@ export class TimelineUIUtils {
       case recordTypes.PaintImage:
       case recordTypes.DecodeLazyPixelRef:
       case recordTypes.DecodeImage:
-      case recordTypes.ResizeImage:
       case recordTypes.DrawLazyPixelRef: {
         relatedNodeLabel = i18nString(UIStrings.ownerElement);
         url = timelineData.url;

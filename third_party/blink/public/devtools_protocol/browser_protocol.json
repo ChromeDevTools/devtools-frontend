@@ -6645,6 +6645,33 @@
                     ]
                 },
                 {
+                    "name": "getElementByRelation",
+                    "description": "Returns the NodeId of the matched element according to certain relations.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the node from which to query the relation.",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "relation",
+                            "description": "Type of relation to get.",
+                            "type": "string",
+                            "enum": [
+                                "PopoverTarget"
+                            ]
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodeId",
+                            "description": "NodeId of the element matching the queried relation.",
+                            "$ref": "NodeId"
+                        }
+                    ]
+                },
+                {
                     "name": "redo",
                     "description": "Re-does the last undone action.",
                     "experimental": true
@@ -18081,7 +18108,8 @@
                         "EmbedderExtensions",
                         "EmbedderExtensionMessaging",
                         "EmbedderExtensionMessagingForOpenPort",
-                        "EmbedderExtensionSentMessageToCachedFrame"
+                        "EmbedderExtensionSentMessageToCachedFrame",
+                        "RequestedByWebViewClient"
                     ]
                 },
                 {

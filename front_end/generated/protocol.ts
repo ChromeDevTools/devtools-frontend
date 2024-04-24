@@ -4460,6 +4460,28 @@ export namespace DOM {
     nodeIds: NodeId[];
   }
 
+  export const enum GetElementByRelationRequestRelation {
+    PopoverTarget = 'PopoverTarget',
+  }
+
+  export interface GetElementByRelationRequest {
+    /**
+     * Id of the node from which to query the relation.
+     */
+    nodeId: NodeId;
+    /**
+     * Type of relation to get.
+     */
+    relation: GetElementByRelationRequestRelation;
+  }
+
+  export interface GetElementByRelationResponse extends ProtocolResponseWithError {
+    /**
+     * NodeId of the element matching the queried relation.
+     */
+    nodeId: NodeId;
+  }
+
   export interface RemoveAttributeRequest {
     /**
      * Id of the element to remove attribute from.
@@ -12179,6 +12201,7 @@ export namespace Page {
     EmbedderExtensionMessaging = 'EmbedderExtensionMessaging',
     EmbedderExtensionMessagingForOpenPort = 'EmbedderExtensionMessagingForOpenPort',
     EmbedderExtensionSentMessageToCachedFrame = 'EmbedderExtensionSentMessageToCachedFrame',
+    RequestedByWebViewClient = 'RequestedByWebViewClient',
   }
 
   /**

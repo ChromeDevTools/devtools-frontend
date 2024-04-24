@@ -47,17 +47,12 @@ export class HideIssuesMenu extends HTMLElement {
     event.stopPropagation();
     const buttonElement = this.#shadow.querySelector('button');
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
-      useSoftMenu: true,
-      onSoftMenuClosed: () => {
-        this.classList.toggle('has-context-menu-opened', false);
-      },
       x: buttonElement?.getBoundingClientRect().left,
       y: buttonElement?.getBoundingClientRect().bottom,
     });
     contextMenu.headerSection().appendItem(
         this.#menuItemLabel, () => this.#menuItemAction(), {jslogContext: 'toggle-similar-issues'});
     void contextMenu.show();
-    this.classList.toggle('has-context-menu-opened', true);
   }
 
   #render(): void {

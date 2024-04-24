@@ -60,7 +60,7 @@ export class FormatPickerContextMenu {
       Common.Color.Format.XYZ_D50,
       Common.Color.Format.XYZ_D65,
     ];
-    const menu = new UI.ContextMenu.ContextMenu(e, {useSoftMenu: true, onSoftMenuClosed: () => resolveShowPromise?.()});
+    const menu = new UI.ContextMenu.ContextMenu(e, {onSoftMenuClosed: () => resolveShowPromise?.()});
     const legacySection = menu.section('legacy');
     const wideSection = menu.section('wide');
     const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()', false, 'color').section();

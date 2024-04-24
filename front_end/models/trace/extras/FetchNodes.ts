@@ -58,9 +58,7 @@ const nodeIdsForEventCache = new WeakMap<Types.TraceEvents.TraceEventData, Set<P
  * without having to mock the CDP layer.
  **/
 export function nodeIdsForEvent(
-    // not used currently, but we will need this for some events in the future
-    // to be able to resolve nodeIds that span multiple related events.
-    _modelData: Handlers.Types.TraceParseData,
+    modelData: Handlers.Types.TraceParseData,
     event: Types.TraceEvents.TraceEventData,
     ): Set<Protocol.DOM.BackendNodeId> {
   const fromCache = nodeIdsForEventCache.get(event);
@@ -79,11 +77,24 @@ export function nodeIdsForEvent(
     foundIds.add(event.args.data.nodeId);
   } else if (Types.TraceEvents.isTraceEventScrollLayer(event) && typeof event.args.data.nodeId !== 'undefined') {
     foundIds.add(event.args.data.nodeId);
+  } else if (Types.TraceEvents.isTraceEventDecodeImage(event)) {
+    // For a DecodeImage event, we can use the ImagePaintingHandler, which has
+    // done the work to build the relationship between a DecodeImage event and
+    // the corresponding PaintImage event.
+    const paintImageEvent = modelData.ImagePainting.paintImageForEvent.get(event);
+    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+      foundIds.add(paintImageEvent.args.data.nodeId);
+    }
+  } else if (Types.TraceEvents.isTraceEventDrawLazyPixelRef(event) && event.args?.LazyPixelRef) {
+    const paintImageEvent = modelData.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
+    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+      foundIds.add(paintImageEvent.args.data.nodeId);
+    }
   }
-
   nodeIdsForEventCache.set(event, foundIds);
   return foundIds;
 }
+
 /**
  * Looks up for backend node ids in different types of trace events
  * and resolves them into related DOM nodes.

@@ -522,9 +522,6 @@ export class TimelineModelImpl {
       }
 
       case RecordType.Paint: {
-        if ('nodeId' in eventData) {
-          timelineData.backendNodeIds.push(eventData['nodeId']);
-        }
         // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
         if (!eventData['layerId']) {
           break;
@@ -535,7 +532,6 @@ export class TimelineModelImpl {
       }
 
       case RecordType.PaintImage: {
-        timelineData.backendNodeIds.push(eventData['nodeId']);
         timelineData.url = eventData['url'];
         break;
       }
@@ -552,7 +548,6 @@ export class TimelineModelImpl {
           break;
         }
         const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
-        timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
       }
@@ -564,7 +559,6 @@ export class TimelineModelImpl {
         }
         this.paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
         const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
-        timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
       }

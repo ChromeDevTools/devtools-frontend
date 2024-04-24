@@ -163,6 +163,24 @@ describeWithMockConnection('FetchNodes', function() {
       const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, scrollLayerEvent);
       assert.deepEqual(Array.from(nodeIds), [4]);
     });
+
+    it('identifies node ids for a DecodeImage event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const decodeImageEvent =
+          traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDecodeImage);
+      assert.isOk(decodeImageEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, decodeImageEvent);
+      assert.deepEqual(Array.from(nodeIds), [240]);
+    });
+
+    it('identifies node ids for a DrawLazyPixelRef event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const drawLazyPixelRefEvent =
+          traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDrawLazyPixelRef);
+      assert.isOk(drawLazyPixelRefEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, drawLazyPixelRefEvent);
+      assert.deepEqual(Array.from(nodeIds), [212]);
+    });
   });
 
   describe('LayoutShifts', () => {

@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -742,6 +743,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderFooter(): LitHtml.LitTemplate {
+    const showThumbsUpDownButtons = Root.Runtime.Runtime.queryParam('ci_disallowLogging') !== 'true';
     // clang-format off
     const disclaimer = LitHtml.html`<span>
               This feature may display inaccurate or offensive information that doesn't represent Google's views.
@@ -821,34 +823,36 @@ export class ConsoleInsight extends HTMLElement {
         </div>
         <div class="filler"></div>
         <div class="rating">
-          <${Buttons.Button.Button.litTagName}
-            data-rating=${'true'}
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'thumb-up',
-                active: this.#selectedRating !== undefined && this.#selectedRating,
-                title: i18nString(UIStrings.thumbsUp),
-                jslogContext: 'thumbs-up',
-              } as Buttons.Button.ButtonData
-            }
-            @click=${this.#onRating}
-          ></${Buttons.Button.Button.litTagName}>
-          <${Buttons.Button.Button.litTagName}
-            data-rating=${'false'}
-            .data=${
-              {
-                variant: Buttons.Button.Variant.ICON,
-                size: Buttons.Button.Size.SMALL,
-                iconName: 'thumb-down',
-                active: this.#selectedRating !== undefined && !this.#selectedRating,
-                title: i18nString(UIStrings.thumbsDown),
-                jslogContext: 'thumbs-down',
-              } as Buttons.Button.ButtonData
-            }
-            @click=${this.#onRating}
-          ></${Buttons.Button.Button.litTagName}>
+          ${showThumbsUpDownButtons ? html`
+            <${Buttons.Button.Button.litTagName}
+              data-rating=${'true'}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.ICON,
+                  size: Buttons.Button.Size.SMALL,
+                  iconName: 'thumb-up',
+                  active: this.#selectedRating !== undefined && this.#selectedRating,
+                  title: i18nString(UIStrings.thumbsUp),
+                  jslogContext: 'thumbs-up',
+                } as Buttons.Button.ButtonData
+              }
+              @click=${this.#onRating}
+            ></${Buttons.Button.Button.litTagName}>
+            <${Buttons.Button.Button.litTagName}
+              data-rating=${'false'}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.ICON,
+                  size: Buttons.Button.Size.SMALL,
+                  iconName: 'thumb-down',
+                  active: this.#selectedRating !== undefined && !this.#selectedRating,
+                  title: i18nString(UIStrings.thumbsDown),
+                  jslogContext: 'thumbs-down',
+                } as Buttons.Button.ButtonData
+              }
+              @click=${this.#onRating}
+            ></${Buttons.Button.Button.litTagName}>
+          ` : LitHtml.nothing}
           <${Buttons.Button.Button.litTagName}
             .data=${
               {

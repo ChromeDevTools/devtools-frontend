@@ -1171,7 +1171,6 @@ export class TimelineUIUtils {
 
   static async buildTraceEventDetails(
       event: TraceEngine.Legacy.CompatibleTraceEvent,
-      model: TimelineModel.TimelineModel.TimelineModelImpl,
       linkifier: LegacyComponents.Linkifier.Linkifier,
       detailed: boolean,
       // TODO(crbug.com/1430809): the order of these arguments is slightly
@@ -2029,7 +2028,9 @@ export class TimelineUIUtils {
     const link = document.createElement('span');
 
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+
     if (!traceBoundsState) {
+      console.error('Tried to link to an entry without any traceBoundsState. This should never happen.');
       return link;
     }
 

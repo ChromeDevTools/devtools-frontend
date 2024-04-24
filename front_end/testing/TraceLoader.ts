@@ -132,6 +132,11 @@ export class TraceLoader {
       context: Mocha.Context|Mocha.Suite|null, name: string,
       config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.DEFAULT):
       Promise<TraceEngine.Handlers.Types.TraceParseData> {
+    // Force the TraceBounds to be reset to empty. This ensures that in
+    // tests where we are using the new engine data we don't accidentally
+    // rely on the fact that a previous test has set the BoundsManager.
+    TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true});
+
     const configCacheKey = TraceEngine.Types.Configuration.configToCacheKey(config);
 
     const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
@@ -150,8 +155,27 @@ export class TraceLoader {
   }
 
   /**
+   * Initialise the BoundsManager with the bounds from a trace.
+   * This isn't always required, but some of our code - particularly at the UI
+   * level - rely on this being set. This is always set in the actual panel, but
+   * parsing a trace in a test does not automatically set it.
+   **/
+  static initTraceBoundsManager(data: TraceEngine.Handlers.Types.TraceParseData): void {
+    TraceBounds.TraceBounds.BoundsManager
+        .instance({
+          forceNew: true,
+        })
+        .resetWithNewBounds(data.Meta.traceBounds);
+  }
+
+  /**
    * Returns tracingModel, timelineModel, performanceModel, traceParsedData
    * from the given trace file.
+   *
+   * @deprecated: we are almost done removing the old models from the
+   * codebase. All new features and tests should rely only on the new engine
+   * and soon this method will be removed. Talk to @jacktfranklin if you have
+   * to use this helper in any new tests.
    *
    * @param context The Mocha test context. |allModelsFromFile| function easily
    * takes up more than our default Mocha timeout, which is 2s. So we have to

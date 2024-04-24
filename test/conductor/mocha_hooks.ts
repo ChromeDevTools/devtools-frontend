@@ -18,7 +18,6 @@ import {
   unregisterAllServiceWorkers,
   watchForHang,
 } from './hooks.js';
-import {SOURCE_ROOT} from './paths.js';
 import {TestConfig} from './test_config.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
@@ -70,7 +69,7 @@ const testSuiteCoverageMap = createCoverageMap();
 const testsRunWithCoverageEnvSet = Boolean(process.env.COVERAGE || process.env.COVERAGE_FOLDERS || TestConfig.coverage);
 
 const SHOULD_GATHER_COVERAGE_INFORMATION = testsRunWithCoverageEnvSet && DERIVED_SERVER_TYPE === 'component-docs';
-const INTERACTIONS_COVERAGE_LOCATION = path.join(SOURCE_ROOT, 'interactions-coverage/');
+const INTERACTIONS_COVERAGE_LOCATION = path.join(TestConfig.artifactsDir, 'interactions-coverage/');
 
 let didPauseAtBeginning = false;
 

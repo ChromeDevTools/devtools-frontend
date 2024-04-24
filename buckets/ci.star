@@ -67,7 +67,10 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             name = "Stand-alone Linux",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
-            properties = {"parallel": True},
+            properties = {
+                "parallel": True,
+                "perf_benchmarks": True,
+            },
         ),
         builder_descriptor(
             name = "Stand-alone Shuffled Parallel Linux",

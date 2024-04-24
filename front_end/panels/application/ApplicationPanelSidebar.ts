@@ -658,7 +658,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private addCookieDocument(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
-    // In case the current frame was unreachable, show it's cookies
+    // In case the current frame was unreachable, show its cookies
     // instead of the error interstitials because they might help to
     // debug why the frame was unreachable.
     const urlToParse = frame.unreachableUrl() || frame.url;

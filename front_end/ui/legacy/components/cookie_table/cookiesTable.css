@@ -12,10 +12,6 @@
   filter: grayscale();
 }
 
-.cookies-table:focus-within tr.flagged-cookie-attribute-row.selected devtools-icon {
-  filter: brightness(0) invert(1);
-}
-
 .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
   background-color: var(--sys-color-surface-yellow-high);
 }

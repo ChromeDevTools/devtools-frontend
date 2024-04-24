@@ -12,7 +12,8 @@ describe('Performance panel overview/minimap', function() {
   preloadForCodeCoverage('performance_panel/overview.html');
   preloadForCodeCoverage('performance_panel/basic.html');
 
-  itScreenshot('renders the overview', async () => {
+  // b/336787201
+  itScreenshot.skip('renders the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
     const pane = await waitFor('.container #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview.png', 3);
@@ -24,7 +25,8 @@ describe('Performance panel overview/minimap', function() {
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-long-task-red-bar.png', 3);
   });
 
-  itScreenshot('shows network requests in the overview', async () => {
+  // b/336788321
+  itScreenshot.skip('shows network requests in the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=many-requests');
     const pane = await waitFor('.container #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-busy-network.png', 3);

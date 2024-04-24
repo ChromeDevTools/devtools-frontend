@@ -2489,13 +2489,10 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  static displayNameForFrame(frame: TimelineModel.TimelineModel.PageFrame, trimAt: number = 30): string {
-    const url = frame.url;
-    if (!trimAt) {
-      trimAt = 30;
-    }
+  static displayNameForFrame(frame: TraceEngine.Types.TraceEvents.TraceFrame, trimAt: number = 80): string {
+    const url = frame.url as Platform.DevToolsPath.UrlString;
     return Common.ParsedURL.schemeIs(url, 'about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
-                                                      frame.url.trimEnd(trimAt);
+                                                      frame.url.slice(0, trimAt);
   }
 }
 

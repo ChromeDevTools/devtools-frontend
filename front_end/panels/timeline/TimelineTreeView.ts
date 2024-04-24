@@ -844,8 +844,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         if (!this.modelInternal) {
           throw new Error('Unable to find model for group by frame operation');
         }
-        const frame = id ? this.modelInternal.timelineModel().pageFrameById(id as Protocol.Page.FrameId) : undefined;
-        const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame, 80) : i18nString(UIStrings.page);
+        const frame = id ? this.traceParseData()?.PageFrames.frames.get(id) : undefined;
+        const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
         return {name: frameName, color: color, icon: undefined};
       }
 

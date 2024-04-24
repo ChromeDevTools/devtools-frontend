@@ -1241,113 +1241,42 @@ describeWithMockConnection('TimelineUIUtils', function() {
       };
       assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(traceParsedData, copyOfEventNotOutermostFrame));
     });
+  });
 
-    // it('is true for a MarkDOMContent event that set to isOutermostMainFrame', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isOutermostMainFrame: true,
-    //       },
-    //     },
-    //   });
-    //   assert.isTrue(timelineModel.isMarkerEvent(markDOMContentEvent));
-    // });
+  describe('displayNameForFrame', () => {
+    it('trims the URL at 80 chars by default', async () => {
+      const frame: TraceEngine.Types.TraceEvents.TraceFrame = {
+        name: 'test-frame',
+        url: 'https://' +
+            'a'.repeat(80),
+        frame: 'frame-id',
+        processId: TraceEngine.Types.TraceEvents.ProcessID(1),
+      };
+      const name = Timeline.TimelineUIUtils.TimelineUIUtils.displayNameForFrame(frame);
+      assert.strictEqual(name, `https://${'a'.repeat(72) /* 80 minus the 8 chars for 'https://' */}`);
+      assert.lengthOf(name, 80);
+    });
 
-    // it('is false for a MarkDOMContent event that set to isOutermostMainFrame=false', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isOutermostMainFrame: false,
-    //       },
-    //     },
-    //   });
-    //   assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
-    // });
+    it('uses the frame name if the URL is about:', async () => {
+      const frame: TraceEngine.Types.TraceEvents.TraceFrame = {
+        name: 'test-frame',
+        url: 'about:blank',
+        frame: 'frame-id',
+        processId: TraceEngine.Types.TraceEvents.ProcessID(1),
+      };
+      const name = Timeline.TimelineUIUtils.TimelineUIUtils.displayNameForFrame(frame);
+      assert.strictEqual(name, '"test-frame"');
+    });
 
-    // it('is false for a MarkDOMContent event that set to isMainFrame=false', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markDOMContentEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isMainFrame: false,
-    //       },
-    //     },
-    //   });
-    //   assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
-    // });
-
-    // it('is true for a MarkLoad event that set to isMainFrame=true', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markLoadEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkLoad,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isMainFrame: true,
-    //       },
-    //     },
-    //   });
-    //   assert.isTrue(timelineModel.isMarkerEvent(markLoadEvent));
-    // });
-
-    // it('is true for a MarkLCPCandidate event that set to isOutermostMainFrame=true', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markLCPCandidateEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkLCPCandidate,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isOutermostMainFrame: true,
-    //       },
-    //     },
-    //   });
-    //   assert.isTrue(timelineModel.isMarkerEvent(markLCPCandidateEvent));
-    // });
-
-    // it('is true for a MarkLCPInvalidate event that set to isOutermostMainFrame=true', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const markLCPInvalidateEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.MarkLCPInvalidate,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     args: {
-    //       data: {
-    //         isOutermostMainFrame: true,
-    //       },
-    //     },
-    //   });
-    //   assert.isTrue(timelineModel.isMarkerEvent(markLCPInvalidateEvent));
-    // });
-
-    // it('is false for some unrelated event that is never a marker such as an animation', async function() {
-    //   const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-    //   const animationEvent = makeFakeSDKEventFromPayload({
-    //     categories: [DevToolsTimelineCategory],
-    //     name: TimelineModel.TimelineModel.RecordType.Animation,
-    //     ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-    //     ts: 1,
-    //     threadId: 1,
-    //   });
-    //   assert.isFalse(timelineModel.isMarkerEvent(animationEvent));
-    // });
+    it('trims the frame name from the middle if it is too long', async () => {
+      const frame: TraceEngine.Types.TraceEvents.TraceFrame = {
+        name: 'test-frame-that-is-long',
+        url: 'about:blank',
+        frame: 'frame-id',
+        processId: TraceEngine.Types.TraceEvents.ProcessID(1),
+      };
+      const name = Timeline.TimelineUIUtils.TimelineUIUtils.displayNameForFrame(frame, 10);
+      assert.strictEqual(name, '"test-…long"');
+    });
   });
 });

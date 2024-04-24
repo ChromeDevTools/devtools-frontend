@@ -1574,6 +1574,23 @@
       supports_incremental_style: false,
     },
     {
+      name: "font-variant-emoji",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      runtime_flag: "FontVariantEmoji",
+      font: true,
+      name_for_methods: "VariantEmoji",
+      type_name: "FontDescription::FontVariantEmoji",
+      converter: "ConvertFontVariantEmoji",
+      priority: 1,
+      keywords: ["normal", "text", "emoji", "unicode"],
+      typedom_types: ["Keyword"],
+      valid_for_first_letter: true,
+      valid_for_first_line: true,
+      valid_for_marker: true,
+      supports_incremental_style: false,
+    },
+    {
       name: "font-variant-position",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -4161,6 +4178,7 @@
         resolver: "bottom",
       },
       supports_incremental_style: true,
+      valid_for_permission_element: true,
     },
     {
       name: "padding-left",
@@ -4180,6 +4198,7 @@
         resolver: "left",
       },
       supports_incremental_style: true,
+      valid_for_permission_element: true,
     },
     {
       name: "padding-right",
@@ -4199,6 +4218,7 @@
         resolver: "right",
       },
       supports_incremental_style: true,
+      valid_for_permission_element: true,
     },
     {
       name: "padding-top",
@@ -4218,6 +4238,7 @@
         resolver: "top",
       },
       supports_incremental_style: true,
+      valid_for_permission_element: true,
     },
     {
       name: "page",
@@ -5680,7 +5701,6 @@
       keywords: ["baseline", "sub", "super", "text-top", "text-bottom", "middle"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
-      valid_for_permission_element: true,
     },
     {
       name: "view-timeline-axis",
@@ -7625,9 +7645,10 @@
       longhands: [
         "font-style", "font-variant-ligatures", "font-variant-caps",
         "font-variant-numeric", "font-variant-east-asian", "font-variant-alternates",
-        "font-variant-position", "font-weight", "font-stretch", "font-size",
-        "line-height", "font-family", "font-optical-sizing", "font-size-adjust",
-        "font-kerning", "font-feature-settings", "font-variation-settings"
+        "font-variant-position", "font-variant-emoji", "font-weight", "font-stretch",
+        "font-size", "line-height", "font-family", "font-optical-sizing",
+        "font-size-adjust", "font-kerning", "font-feature-settings",
+        "font-variation-settings"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       // Changes to anything related to fonts require that we call style.UpdateFont(),
@@ -7638,7 +7659,8 @@
       name: "font-variant",
       longhands: [
         "font-variant-ligatures", "font-variant-caps", "font-variant-alternates",
-        "font-variant-numeric", "font-variant-east-asian", "font-variant-position"
+        "font-variant-numeric", "font-variant-east-asian", "font-variant-position",
+        "font-variant-emoji"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,

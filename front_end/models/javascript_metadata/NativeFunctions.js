@@ -6436,6 +6436,10 @@ export const NativeFunctions = [
     signatures: [["mapper"]]
   },
   {
+    name: "inspect",
+    signatures: [["?inspect_observer"]]
+  },
+  {
     name: "first",
     signatures: [["?options"]]
   },
@@ -8004,7 +8008,7 @@ export const NativeFunctions = [
   },
   {
     name: "RTCEncodedAudioFrame",
-    signatures: [["originalFrame","?newMetadata"]]
+    signatures: [["originalFrame","?options"]]
   },
   {
     name: "setMetadata",
@@ -8012,7 +8016,7 @@ export const NativeFunctions = [
   },
   {
     name: "RTCEncodedVideoFrame",
-    signatures: [["originalFrame","?newMetadata"]]
+    signatures: [["originalFrame","?options"]]
   },
   {
     name: "RTCErrorEvent",

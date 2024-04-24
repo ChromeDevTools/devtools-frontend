@@ -213,10 +213,6 @@ const UIStrings = {
    */
   errors: 'Errors',
   /**
-   *@description Text in Console View of the Console panel
-   */
-  logLevels: 'Log levels',
-  /**
    *@description Title text of a setting in Console View of the Console panel
    */
   overriddenByFilterSidebar: 'Overridden by filter sidebar',
@@ -1613,7 +1609,7 @@ export class ConsoleViewFilter {
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   currentFilter: ConsoleFilter;
   private levelLabels: Map<Protocol.Log.LogEntryLevel, string>;
-  readonly levelMenuButton: UI.Toolbar.ToolbarButton;
+  readonly levelMenuButton: UI.Toolbar.ToolbarMenuButton;
 
   constructor(filterChangedCallback: () => void) {
     this.filterChanged = filterChangedCallback;
@@ -1652,11 +1648,10 @@ export class ConsoleViewFilter {
       [Protocol.Log.LogEntryLevel.Error, i18nString(UIStrings.errors)],
     ]));
 
-    this.levelMenuButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.logLevels));
+    this.levelMenuButton =
+        new UI.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), undefined, 'log-level');
+    this.levelMenuButton.setGlyph('');
     this.levelMenuButton.turnIntoSelect();
-    this.levelMenuButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.showLevelContextMenu.bind(this));
-    UI.ARIAUtils.markAsMenuButton(this.levelMenuButton.element);
-    this.levelMenuButton.element.setAttribute('jslog', `${VisualLogging.dropDown('log-level').track({click: true})}`);
 
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));
@@ -1745,17 +1740,10 @@ export class ConsoleViewFilter {
     this.levelMenuButton.setTitle(i18nString(UIStrings.logLevelS, {PH1: text}));
   }
 
-  private showLevelContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
-    const mouseEvent = event.data;
+  private appendLevelMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     const setting = this.messageLevelFiltersSetting;
     const levels = setting.get();
 
-    const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
-      useSoftMenu: true,
-      x: this.levelMenuButton.element.getBoundingClientRect().left,
-      y: this.levelMenuButton.element.getBoundingClientRect().top +
-          (this.levelMenuButton.element as HTMLElement).offsetHeight,
-    });
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.default), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()),
         {jslogContext: 'default'});
@@ -1763,7 +1751,6 @@ export class ConsoleViewFilter {
       contextMenu.defaultSection().appendCheckboxItem(
           levelText, toggleShowLevel.bind(null, level), {checked: levels[level], jslogContext: level});
     }
-    void contextMenu.show();
 
     function toggleShowLevel(level: string): void {
       levels[level] = !levels[level];

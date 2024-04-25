@@ -10,6 +10,7 @@ button.soft-dropdown {
   position: relative;
   border: none;
   background: none;
+  max-width: 120px;
 }
 
 button.soft-dropdown[disabled] {
@@ -18,7 +19,7 @@ button.soft-dropdown[disabled] {
 
 button.soft-dropdown > .title {
   padding-right: 5px;
-  flex: 0 1 120px;
+  flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
 }

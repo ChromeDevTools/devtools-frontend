@@ -1181,53 +1181,31 @@ export class TimelineUIUtils {
       ): Promise<DocumentFragment> {
     const maybeTarget = maybeTargetForEvent(traceParseData, event);
     const {duration, selfTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-    let relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null = null;
+
+    const relatedNodesMap = traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+        await TraceEngine.Extras.FetchNodes.extractRelatedDOMNodesFromEvent(
+            traceParseData,
+            event,
+            ) :
+        null;
+
     if (maybeTarget) {
-      const target = (maybeTarget as SDK.Target.Target);
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
         const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
-          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(target, url, false, {
+          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(maybeTarget, url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
             precomputedFeatures: undefined,
           });
         } else if (
             traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) &&
             TraceEngine.Types.TraceEvents.isTraceEventPaint(event)) {
-          previewElement = await TimelineUIUtils.buildPicturePreviewContent(traceParseData, event, target);
+          previewElement = await TimelineUIUtils.buildPicturePreviewContent(traceParseData, event, maybeTarget);
         }
         // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
         event[previewElementSymbol] = previewElement;
-      }
-
-      // TODO: once the new engine can resolve nodeIds for the events that the
-      // old engine can, we can remove this block and use the FetchNodes resolver directly.
-      // Right now because we rely on both engines, we gather up all the IDs from both and pass them all onto CDP.
-      const nodeIdsToResolve = new Set<Protocol.DOM.BackendNodeId>();
-
-      // Gather up NodeIDs via the legacy trace engine
-      const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
-      if (timelineData.backendNodeIds) {
-        for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
-          nodeIdsToResolve.add(timelineData.backendNodeIds[i]);
-        }
-      }
-
-      // Gather up NodeIDs via the new trace engine
-      if (traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-        const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceParseData, event);
-        for (const id of nodeIds) {
-          nodeIdsToResolve.add(id);
-        }
-      }
-
-      if (nodeIdsToResolve.size) {
-        const domModel = target.model(SDK.DOMModel.DOMModel);
-        if (domModel) {
-          relatedNodesMap = await domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve);
-        }
       }
     }
 

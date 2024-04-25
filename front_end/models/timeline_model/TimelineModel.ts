@@ -1029,12 +1029,10 @@ export class PageFrame {
 
 export class EventOnTimelineData {
   url: Platform.DevToolsPath.UrlString|null;
-  backendNodeIds: Protocol.DOM.BackendNodeId[];
   frameId: Protocol.Page.FrameId|null;
 
   constructor() {
     this.url = null;
-    this.backendNodeIds = [];
     this.frameId = null;
   }
 

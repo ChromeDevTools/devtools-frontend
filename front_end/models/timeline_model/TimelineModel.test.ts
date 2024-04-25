@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {
-  StubbedThread,
-} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
@@ -38,8 +34,6 @@ describeWithEnvironment('TimelineData', function() {
     if (!lcpSDKEvent) {
       throw new Error('Could not find SDK Event.');
     }
-    const dataForEvent = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpSDKEvent);
-    dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
 
     // Now find the same event from the new engine
     const lcpNewEngineEvent = data.traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
@@ -50,26 +44,6 @@ describeWithEnvironment('TimelineData', function() {
     }
     // Make sure we got the matching events.
     assert.strictEqual(lcpNewEngineEvent, lcpSDKEvent.rawPayload());
-
-    assert.strictEqual(
-        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpSDKEvent).backendNodeIds,
-        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpNewEngineEvent).backendNodeIds,
-    );
-  });
-
-  it('stores data for a constructed event using the event as the key', async function() {
-    const thread = StubbedThread.make(1);
-    // None of the details here matter, we just need some constructed event.
-    const fakeConstructedEvent = new TraceEngine.Legacy.ConstructedEvent(
-        'blink.user_timing',
-        'some-test-event',
-        TraceEngine.Types.TraceEvents.Phase.INSTANT,
-        100,
-        thread,
-    );
-    const dataForEvent = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakeConstructedEvent);
-    dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
-    assert.strictEqual(dataForEvent, TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakeConstructedEvent));
   });
 
   it('extracts image url for a Decode Image event', async function() {

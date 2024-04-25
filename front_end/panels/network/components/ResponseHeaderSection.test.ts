@@ -812,6 +812,33 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
   });
 
+  it('does not persist invalid header names', async () => {
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [{
+          "name": "server",
+          "value": "overridden server"
+        }]
+      }
+    ]`;
+    const actualHeaders = [{name: 'server', value: 'overridden server'}];
+    const originalHeaders = [{name: 'server', value: 'original server'}];
+
+    const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    assert.isNotNull(component.shadowRoot);
+    const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    assert.instanceOf(addHeaderButton, HTMLElement);
+    addHeaderButton.click();
+    await coordinator.done();
+
+    assert.strictEqual(spy.callCount, 1);
+    await editHeaderRow(component, 1, HeaderAttribute.HeaderName, 'valid');
+    assert.strictEqual(spy.callCount, 2);
+    await editHeaderRow(component, 1, HeaderAttribute.HeaderName, 'in:valid');
+    assert.strictEqual(spy.callCount, 2);
+  });
+
   it('can remove a newly added header', async () => {
     const actualHeaders = [
       {name: 'server', value: 'original server'},

@@ -44,14 +44,6 @@ export const generatedProperties = [
   "name": "-alternative-animation-with-timeline"
  },
  {
-  "longhands": [
-   "view-timeline-name",
-   "view-timeline-axis",
-   "view-timeline-inset"
-  ],
-  "name": "-alternative-view-timeline-with-inset"
- },
- {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -3667,7 +3659,8 @@ export const generatedProperties = [
  {
   "longhands": [
    "view-timeline-name",
-   "view-timeline-axis"
+   "view-timeline-axis",
+   "view-timeline-inset"
   ],
   "name": "view-timeline"
  },

@@ -340,6 +340,10 @@ export interface SyntheticNetworkRequest extends TraceEventComplete {
       responseHeaders: Array<{name: string, value: string}>,
       fetchPriorityHint: FetchPriorityHint,
       url: string,
+      /** True only if got a 'resourceFinish' event indicating a failure. */
+      failed: boolean,
+      /** True only if got a 'resourceFinish' event. */
+      finished: boolean,
       // Optional fields
       initiator?: Initiator,
       requestMethod?: string,

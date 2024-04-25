@@ -21,6 +21,7 @@ export enum InsightWarning {
   NO_LCP = 'NO_LCP',
   // No network request could be identified as the primary HTML document.
   NO_DOCUMENT_REQUEST = 'NO_DOCUMENT_REQUEST',
+  NO_LAYOUT = 'NO_LAYOUT',
 }
 
 export type InsightResult<R extends Record<string, unknown>> = R&{

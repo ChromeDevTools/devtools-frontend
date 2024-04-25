@@ -1025,6 +1025,19 @@ export function isTraceEventStyleInvalidatorInvalidationTracking(event: TraceEve
   return event.name === KnownEventName.StyleInvalidatorInvalidationTracking;
 }
 
+export interface TraceEventBeginCommitCompositorFrame extends TraceEventInstant {
+  name: KnownEventName.BeginCommitCompositorFrame;
+  args: TraceEventArgs&{
+    frame: string,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_mobile_optimized: boolean,
+  };
+}
+export function isTraceEventBeginCommitCompositorFrame(event: TraceEventData):
+    event is TraceEventBeginCommitCompositorFrame {
+  return event.name === KnownEventName.BeginCommitCompositorFrame;
+}
+
 export interface TraceEventScheduleStyleRecalculation extends TraceEventInstant {
   name: KnownEventName.ScheduleStyleRecalculation;
   args: TraceEventArgs&{
@@ -2311,6 +2324,7 @@ export const enum KnownEventName {
   StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
   StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
   SelectorStats = 'SelectorStats',
+  BeginCommitCompositorFrame = 'BeginCommitCompositorFrame',
 
   /* Paint */
   ScrollLayer = 'ScrollLayer',

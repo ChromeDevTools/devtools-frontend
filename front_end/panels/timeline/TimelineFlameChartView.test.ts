@@ -28,10 +28,14 @@ const baseTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
   max: TraceEngine.Types.Timing.MicroSeconds(10_000),
   range: TraceEngine.Types.Timing.MicroSeconds(10_000),
 };
-const boundsManager =
-    TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
 
 describeWithEnvironment('TimelineFlameChartView', function() {
+  let boundsManager: TraceBounds.TraceBounds.BoundsManager;
+  beforeEach(() => {
+    boundsManager =
+        TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(baseTraceWindow);
+  });
+
   it('Can search for events by name in the timeline', async function() {
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method

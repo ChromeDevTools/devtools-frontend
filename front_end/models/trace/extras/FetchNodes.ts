@@ -71,6 +71,10 @@ export function nodeIdsForEvent(
     event.args.endData.layoutRoots.forEach(root => foundIds.add(root.nodeId));
   } else if (Types.TraceEvents.isSyntheticLayoutShift(event) && event.args.data?.impacted_nodes) {
     event.args.data.impacted_nodes.forEach(node => foundIds.add(node.node_id));
+  } else if (
+      Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event) &&
+      typeof event.args.data?.nodeId !== 'undefined') {
+    foundIds.add(event.args.data.nodeId);
   } else if (Types.TraceEvents.isTraceEventPaint(event) && typeof event.args.data.nodeId !== 'undefined') {
     foundIds.add(event.args.data.nodeId);
   } else if (Types.TraceEvents.isTraceEventPaintImage(event) && typeof event.args.data.nodeId !== 'undefined') {

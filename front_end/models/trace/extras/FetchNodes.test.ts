@@ -181,6 +181,15 @@ describeWithMockConnection('FetchNodes', function() {
       const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, drawLazyPixelRefEvent);
       assert.deepEqual(Array.from(nodeIds), [212]);
     });
+
+    it('identifies node ids for a MarkLCP event', async function() {
+      const traceData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const lcpCandidateEvent = traceData.PageLoadMetrics.allMarkerEvents.find(
+          TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
+      assert.isOk(lcpCandidateEvent);
+      const nodeIds = TraceEngine.Extras.FetchNodes.nodeIdsForEvent(traceData, lcpCandidateEvent);
+      assert.deepEqual(Array.from(nodeIds), [209]);
+    });
   });
 
   describe('LayoutShifts', () => {

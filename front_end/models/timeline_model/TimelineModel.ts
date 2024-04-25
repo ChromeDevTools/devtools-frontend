@@ -570,11 +570,6 @@ export class TimelineModelImpl {
         break;
       }
 
-      case RecordType.MarkLCPCandidate: {
-        timelineData.backendNodeIds.push(eventData['nodeId']);
-        break;
-      }
-
       case RecordType.MarkDOMContent:
       case RecordType.MarkLoad: {
         const frameId = TimelineModelImpl.eventFrameId(event);

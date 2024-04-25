@@ -178,6 +178,8 @@ describe('Timeline breadcrumbs', () => {
       range: TraceEngine.Types.Timing.MicroSeconds(9000),
     };
 
+    TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(initialTraceWindow);
+
     const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
     const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {

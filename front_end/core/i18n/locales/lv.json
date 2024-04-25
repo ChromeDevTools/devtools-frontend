@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Izmaiņu atvilktne"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "Izstrādātāja resursu panelis"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Panelis Elementi"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "{PH1}. pavediens"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Atvēlētais skripts “Worker”"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "{PH1}. pavediens"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indekss)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Iespējams, daži ieraksti ir modificēti"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Sākt no atslēgas"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Kopējais ierakstu skaits: {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Dzēst atlasīto"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Filtrēt"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Atsvaidzināt"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Kļūdas"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Filtrēt"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "Ziņojumi konsolē: {PH1}"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Žurnāla līmenis: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Žurnāla līmeņi"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Reģistrēt XMLHttpRequests"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Pagaidām izmantots: {PH1} no {PH2} ({PH3}%), nav izmantots: {PH4}."
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "URL filtrs"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Notīrīt tvērumu"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Ielādēt, izmantojot vietni"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Ievadiet tekstu, ko meklēt kolonnās URL un Kļūda"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Ielādēt HTTP(S) izstrādātāju resursus, izmantojot pārbaudāmo vietni, nevis izstrādātāja rīkus"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Atvērt ēnu redaktoru"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Filtrēt"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Filtrēt aprēķinātos stilus"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Grupēt"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Atveidotie fonti"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Filtrs"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Filtrēt rekvizītus"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Nav atbilstošu rekvizītu"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Ja šī izvēles rūtiņa nav atzīmēta, tiks rādīti tikai rekvizīti, kuru vērtība nav tukša vai nedefinēta."
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "CSS īpašuma nosaukums: {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "CSS īpašuma vērtība: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "strukturēta stila lapa"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Kopēt CSS izmaiņas"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Filtrēt"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Filtrēt stilus"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Samazinājums vai palielinājums, izmantojot peles ritenīti vai augšupvērsto/lejupvērsto bultiņu. {PH1}: ±100, Shift: ±10, Alt: ±0,1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teksts)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Izvērst"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Izvēlieties pārklājuma krāsu šim elementam"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Pārslēgt notikumu uztvērēju pasīvā vai bloķēšanas režīmā"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Atpakaļ"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Atcelt"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Konsoles ziņojums"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Turpināt"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Atspējot šo funkciju"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Izstrādātāja rīkos radās kļūda"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Tīkla pieprasījums"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Tālāk"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Šī funkcija nav pieejama."
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Saistītais kods"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Ziņot par juridisku problēmu"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Tā vietā izmantot meklēšanu"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Pierakstieties, lai varētu izmantot šo funkciju"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Atjaunināt iestatījumus"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Šī funkcija ir pieejama tikai lietotājiem, kuri sasnieguši 18 gadu vecumu."
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Konsoles ziņojumu skaidrojums, izmantojot MI"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Brīdinājuma skaidrojums"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Šī funkcija nav pieejama jūsu reģionā."
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Jūsu organizācija izslēdza šo funkciju. Lai iegūtu plašāku informāciju, sazinieties ar saviem administratoriem."
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "This feature is currently being rolled out. Stay tuned."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Lai varētu izmantot šo funkciju, izstrādātāja rīku iestatījumos atjauniniet valodas preferenci uz angļu valodu."
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Rādīt rīku Problēmas"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Veiktspēja"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Ierakstīt"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Rādīt rīku Veiktspēja"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Rādīt jaunākās laika grafika sesijas"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Sākt profilēšanu un atkārtoti ielādēt lapu"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Apturēt"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Salikšanas iemesli"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Steka trasējums:"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Filtrēt žurnāla ziņojumus"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Informācija"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Dati"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Ievadiet regulāro izteiksmi, piemēram, https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Notikuma avots"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "Chrome izmantoja HTTP/3 savienojumu, jo DNS record norādīja, ka atbalsta HTTP/3. Netika pārbaudīts, cik ātri var izveidot savienojumu, izmantojot citu HTTP versiju."
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "agrīnās-norādes"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(neizdevās)"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Dati"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Ievadiet regulāro izteiksmi, piemēram, “(web)?socket”"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtrēt"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Tiek rādītas provizoriskās galvenes. Atspējojiet kešatmiņu, lai skatītu pilnas galvenes."
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Agrīno norāžu galvenes"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(no diska kešatmiņas)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(no agrīnajām norādēm)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(no kešatmiņas)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "sistēmas pārraugs"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Apkopotais vienas darbības laiks"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Apkopotais kopējais laiks"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "CENTRĀLĀ PROCESORA PROFILI"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "Centrālā procesora profili parāda, kur jūsu lapas JavaScript funkcijās tiek tērēts izpildes laiks."
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} ms"
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1}%"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Nosaukums"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Netiek optimizēts"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "Ierakstīt JavaScript centrālā procesora profilu"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Notiek ierakstīšana…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Vienas darbības laiks"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "Sākt centrālā procesora profilēšanu"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "Apturēt centrālā procesora profilēšanu"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Kopējais laiks"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Piešķiršanas izlase"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Ignorēt šo saglabātāju"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "ignorēts"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "šeit:"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "Virkne, kas attēlo dažas rakstzīmes no citas virknes."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Pārtraukt šī saglabātāja ignorēšanu"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Saglabāt kā globālu mainīgo"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Iekļaut momentuzņēmumā skaitliskas vērtības"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Klases filtrs"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Kods"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Notiek ierakstīšana…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Atjaunot ignorētos saglabātājus"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Paturēšana"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nevar ielādēt profilu, kamēr notiek cita profila ierakstīšana."
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Šī paneļa darbība nākamajā versijā tiks pārtraukta. Izmantojiet veiktspējas paneli, lai ierakstītu JavaScript centrālā procesora profilus."
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Atsauksmes"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Pāriet uz veiktspējas paneli"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Neizdevās ielādēt profilu: {PH1}."
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Nekad nepārtraukt šeit"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Pieprasījums tiek atvērts izstrādātāja resursu panelī."
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "Lai vēlreiz iespējotu, pārbaudiet, vai fails nav iekļauts ignorēšanas sarakstā, un ielādējiet atkārtoti."
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Noņemt no ignorēto saraksta"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Rādīt pieprasījumu"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Neizdevās ielādēt avota karti."
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Automātiska pabeigšana"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Automātiski lietot struktūrdruku samazinātiem avotiem"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Automātiski rādīt failus sānjoslā"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Automātiskas beigu iekavas"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Iekavu atbilstība"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Atspējot automātisko pabeigšanu"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Atspējot automātiskas beigu iekavas"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Atspējot iekavu atbilstību meklēšanu"
   },
@@ -11975,6 +11921,9 @@
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Atkļūdošanas laikā rādīt iekļautās mainīgo vērtības"
   },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Automātiski nelietot struktūrdruku samazinātiem avotiem"
+  },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Automātiski nerādīt failus sānjoslā"
   },
@@ -11995,6 +11944,9 @@
   },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Iespējot automātisko pabeigšanu"
+  },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Iespējot automātiskas beigu iekavas"
   },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Iespējot iekavu atbilstību meklēšanu"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Ilguma filtrs"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Filtrēt notikumu žurnālu"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Sākuma laiks"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Diapazons: {PH1}—{PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Atlasītāja statistika"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Kopsavilkums"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Ietvars"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Ietvars — {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Ietvari"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Īslaicīgi neaktīvs ietvars"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Galvenais"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Galvenais — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "Ignorēto sarakstā"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Daļēji atveidots ietvars"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Rastrs"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "{PH1}. rasterizētāja pavediens"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} (vienas darbības ilgums: {PH2})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Apakšietvars"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Pavediens"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, ātrums: {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "— Tīkla ierobežošana ir iespējota"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "- Atlasītāja statistika ir iespējota"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Ievērojams virstēriņš marķējuma instrumentācijas dēļ"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Tver papildu atveides instrumentāciju; sekmē ievērojamu veiktspējas virstēriņu"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "Tiek tverta CSS atlasītāja statistika"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Notīrīt"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Iespējot papildu marķējuma instrumentāciju (lēna)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "Iespējot CSS atlasītāja statistiku"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Neizdevās saglabāt laika grafiku: {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Kopēt tabulu"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Pagājušais laiks (ms)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Rindiņa {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Mēģinājumi noteikt atbilstību"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Atbilstību skaits"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "Lēna ceļa neatbilstību procentuālā daļa"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Atlasītājs"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Atlasītāja statistika"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "Stilu lapa"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Tabula ir kopēta starpliktuvē"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Nevar saistīt"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "Nevar saistīt, izmantojot: {PH1}"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Darbība"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome paplašinājumu virstēriņš]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Filtrēt"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Filtrēt apgrieztā secībā"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Filtra izsaukumu koks"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} ms"
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Prioritāte"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Apstrādes ilgums"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Izveidotās kešatmiņas lielums"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "Atlasiet iestatījumu “{PH1}”, lai vāktu detalizētu CSS atlasītāja atbilstības statistiku."
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (viena darbība)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "skripts tika ielādēts no kešatmiņas"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "skripts nav piemērots"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Atlasītāja statistika"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Vienas darbības laiks"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Rādīšanas aizkave"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Apstrādes ilgums"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Paslēpt chrome ietvaru skatā Slāņi"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Visi"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Notīrīt ievadi"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "piem., /small[d]+/ url:a.com/b"

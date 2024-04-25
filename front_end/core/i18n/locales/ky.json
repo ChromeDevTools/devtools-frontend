@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Суурманы өзгөртөт"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "\"Иштеп чыгуучулар үчүн булактар\" панели"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Элементтер панели"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "{PH1}-топтом"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Дайындалган Worker"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "{PH1}-топтом"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker – {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Айрым киргизүүлөр өзгөргөн болушу мүмкүн"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Ачкычтан баштоо"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Жалпы саны: {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Тандалгандарды өчүрүү"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Чыпка"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Жаңыртуу"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Каталар"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Чыпка"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "Консолдо {PH1} билдирүү бар"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Таржымалдын деңгээли: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Таржымал деңгээлдери"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "XMLHttpRequests таржымалы"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH2} ичинен {PH1} ({PH3}%) колдонулду, {PH4} колдонула элек."
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "URL чыпкасы"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Иштөө аймагын тазалоо"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Вебсайт аркылуу жүктөө"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "URL жана Каталар тилкелери боюнча издөө үчүн текстти киргизиңиз"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "HTTP(S) иштеп чыгуучунун булактарын Иштеп чыгуучунун куралдары аркылуу эмес, сиз текшерген вебсайт аркылуу жүктөңүз"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Көлөкө түзөтүүчүсүн ачуу"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Чыпка"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Эсептелген стилдерди чыпкалоо"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Топ"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Түзүлгөн ариптер"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Чыпка"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Чыпканын мүнөздөмөлөрү"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Дал келген мүнөздөмө жок"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Кутуча белгиленбесе, мааниси бош болбогон жана аныкталбагандардан башка мүнөздөмөлөр гана көрсөтүлөт"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "CSS мүнөздөмөсүнүн аталышы: {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "CSS мүнөздөмөсүнүн мааниси: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "түзүлгөн стиль жадыбалы"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "CSS өзгөртүүлөрүн көчүрүү"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Чыпка"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Стилдерди чыпкалоо"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Чычкан дөңгөлөгү же өйдө/ылдый баскычтары менен чоңойтуу/кичирейтүү. {PH1}: ±100, Shift баскычы: ±10, Alt: ±0.1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Жайып көрсөтүү"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Бул элементтин үстүнө коюлган түсүн тандаңыз"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Иш-чараларды угуу блогу пассивдүү же бөгөттөөчү экенин аныктай турган параметрди өчүрүү/күйгүзүү"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Артка"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Жокко чыгаруу"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Консоль билдирүүсү"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Улантуу"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Бул функцияны өчүрүү"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Иштеп чыгуучунун куралдарында ката кетти"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Тармак сурамы"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Кийинки"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Бул функция жеткиликтүү эмес"
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Тиешелүү код"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Статистиканы жакшыртуу үчүн бул бетти кайрадан жүктөп, тиешелүү тармактын сурамы жөнүндө маалыматты алыңыз."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Юридикалык маселе тууралуу арыздануу"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Издөө тутумун колдонуу"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Функцияны колдонуу үчүн аккаунтуңузга кириңиз"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Параметрлерди жаңыртуу"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Бул функция 18 жаштан улуу колдонуучулар үчүн гана жеткиликтүү."
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Консолдогу билдирүүлөрдү ЖИнин жардамы менен түшүнүү"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Бул эскертүү тууралуу маалымат"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Бул функция сиз жашаган аймакта жеткиликсиз."
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Уюмуңуз бул функцияны өчүрүп койду. Кошумча маалымат алуу үчүн администраторлоруңузга кайрылыңыз."
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "Бул функция толугу менен жарыкка чыга элек. Кабардар болуп туруңуз."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Бул функцияны колдонуу үчүн Иштеп чыгуучунун куралдарынын параметрлеринен Тил параметрин англис тилине жаңыртыңыз."
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Маселелерди көрсөтүү"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Иштин майнаптуулугу"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Жаздыруу"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Иштин майнаптуулугун көрсөтүү"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Убакыт түрмөгүнүн акыркы сеанстарын көрсөтүү"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Профилдөөнү баштап, баракты кайра жүктөңүз"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Токтотуу"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Түзүлүштүн себептери"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Стекти трассирлөө:"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Таржымалдагы билдирүүлөрдү чыпкалоо"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Маалымат"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Дайын-даректер"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Кадимки сөз айкашын киргизиңиз, мисалы: https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Иш-чаранын булагы"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "DNS record HTTP/3 колдоого алынганын көрсөткөндүктөн, Chrome HTTP/3 байланышын колдонду жана башка HTTP версияларын пайдаланууга аракет кылган жок."
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "эрте кыйытмалар"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(аткарылган жок)"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Дайын-даректер"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Кадимки сөз айкашын киргизиңиз, мисалы, (web)?socket"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Чыпка"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Убактылуу аталыштар көрсөтүлдү. Аталыштарды толугу менен көрүү үчүн кэшти өчүрүңүз."
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Эрте кыйытмалардын аталыштары"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(диск кешинен)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(эрте кыйытмалардан)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(эстутум кэшинен)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "тутумду көзөмөлдөө"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Бириктирилген убакыт"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Бириктирилген жалпы убакыт"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "ПРОЦЕССОРДУН ПРОФИЛДЕРИ"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "Процессор профилдери барагыңыздын JavaScript функцияларында аткаруу убакыты кайсы нерсеге кетип жатканын көрсөтөт."
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} мсек."
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1} %"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Аталышы"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Оптималдаштырылган жок"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "JavaScript процессор профилин жаздыруу"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Жаздырылууда…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Жеке убакыт"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "Процессорду профилдөөнү баштоо"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "Процессорду профилдөөнү токтотуу"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Жалпы убакыт"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Бөлүштүрүү үлгүсү"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Бул кармап калгычты четке кагуу"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "четке кагылды"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "дюйм"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "Башка саптын кээ бир символдорун билдирген сап."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Бул кармап калгыч четке кагылбасын"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Глобалдык өзгөрмө катары сактоо"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Скришншотто номерлердин мааниси камтылсын"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Класстарды чыпкалоо"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Код"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Жаздырылууда…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Четке кагылган кармап калгычтарды калыбына келтирүү"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Кармап калгычтар"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Бир профиль жаздырылып жатканда башка профилди жүктөөгө болбойт."
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Кийинки версияда бул панель жоюлат. JavaScript процессор профилдерин жаздыруу үчүн Майнаптуулук панелин колдонуңуз."
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Пикир билдирүү"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Майнаптуулук панелине өтүү"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Профиль жүктөлбөй койду: {PH1}."
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Бул жерде эч качан тындырылбасын"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Сурам \"Иштеп чыгуучулар үчүн булактар\" панелинде ачылат"
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "Кайра иштетүү үчүн файл эсепке алынбагандардын тизмесинде болбогонун текшерип, кайра жүктөңүз."
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Четке кагылгандардын тизмесинен өчүрүү"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Cурамды көрсөтүү"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Булак картасы жүктөлгөн жок."
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Сөздү автоматтык түрдө бүтүрүү"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Кичирейтилген булактарды автоматтык түрдө форматтоо"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Файлдарды каптал тактадан автоматтык түрдө көрсөтүү"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Кашааларды автоматтык түрдө жабуу"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Кашаанын дал келиши"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Сөздү автоматтык түрдө бүтүрүүнү өчүрүү"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Кашаалар автоматтык түрдө жабылбасын"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Кашаанын дал келүүсүн өчүрүү"
   },
@@ -11967,13 +11913,16 @@
     "message": "Фокусту жылдыруу өтмөгүн өчүрүү"
   },
   "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
-    "message": "Wasm модулунун кадамдарын автоматтык түрдө жөндөөнү өчүрүү"
+    "message": "Wasm кодун автоматтык түрдө аткарууну өчүрүү"
   },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Файлдын аягынан өтүп сыдырууга тыюу салуу"
   },
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Мүчүлүштүктөрдү оңдоо учурунда саптагы өзгөрүлмө маанилерди көрсөтүү"
+  },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Кичирейтилген булактар автоматтык түрдө форматталбасын"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Капталдагы тактада жайгашкан файлдар автоматтык түрдө ачылбасын"
@@ -11996,6 +11945,9 @@
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Сөздү автоматтык түрдө бүтүрүүнү иштетүү"
   },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Кашаалар автоматтык түрдө жабылсын"
+  },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Кашааны дал келтирүүнү иштетүү"
   },
@@ -12012,7 +11964,7 @@
     "message": "Фокусту жылдыруу өтмөгүн иштетүү"
   },
   "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
-    "message": "Wasm модулунун кадамдарын автоматтык түрдө жөндөөнү иштетүү"
+    "message": "Wasm кодун автоматтык түрдө аткарууну иштетүү"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Консолдогу тандалган текстти баалоо"
@@ -12180,7 +12132,7 @@
     "message": "Акыркы белгилер"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Мүчүлүштүктөрдү оңдоо маалыматы менен wasm модулун оңдоодо, wasm байт кодунда тындырбаңыз"
+    "message": "Мүчүлүштүктөрдү оңдоо маалыматы менен Wasm модулун оңдоодо wasm байт кодунда тындырылбасын"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Көрүү"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Узактык чыпкасы"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Окуялар таржымалын чыпкалоо"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Баштоо убакыты"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Диапазон:  {PH1} – {PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Тандагычтардын статистикасы"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Корутунду"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Фрейм"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Фрейм – {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Фреймдер"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Сенек абалындагы фрейм"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Негизги"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Негизги – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "Четке кагылгандардын тизмесинде"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Жарым-жартылай көрсөтүлгөн алкак"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Растр"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "Растеризатор топтому {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} (жеке убакыт: {PH2})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Көмөкчү фрейм"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Топтом"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} – {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Тармакты жөнгө салуу иштетилди"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "- Тандагычтардын статистикасы иштетилди"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Боёк аспаптарынын айынан майнаптуулугу олуттуу төмөндөдү"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Өркүндөтүлгөн боёк аспаптарына мүмкүнчүлүктү чектеп, майнаптуулукту бир кыйла төмөндөтөт"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "CSS тандагычтарынын статистикасын чогултат"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Тазалоо"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Өркүндөтүлгөн боёк аспаптарын иштетүү (жай)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "CSS тандагычтарынын статистикасын иштетүү"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Убакыт түрмөгү сакталган жок: {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Жадыбалды көчүрүү"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Сарпталган убакыт (мсек.)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Cап {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Дал келүүлөрдү табуу аракеттери"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Дал келүүлөрдүн саны"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "Жай жолдо % дал келген жок"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Тандагыч"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Тандагычтардын статистикасы"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "Style Sheet"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Жадыбал алмашуу буферине көчүрүлдү"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Байланыштыруу мүмкүн эмес"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "{PH1} аркылуу байланышпай жатат"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Аракеттер"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome кеңейтүүлөрүнүн кошумча эсептөө убактысы]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Чыпка"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Төмөндөн өйдө карай чыпкалоо"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Чалуу дарагын чыпкалоо"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} мсек."
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Маанилүүлүгү"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Иштетүүнүн узактыгы"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Өндүрүлгөн кештин өлчөмү"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "CSS тандагычтарынын дал келүүлөрү тууралуу кеңири статистиканы чогултуу үчүн \"{PH1}\" дегенди тандаңыз."
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (жеке)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "кештен жүктөлгөн скрипт"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "скрипт жараксыз"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Тандагычтардын статистикасы"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Жеке убакыт"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Презентациянын кечигүүсү"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Иштетүүнүн узактыгы"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "chrome фреймин Катмарлар панелинде жашыруу"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Баары"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Киргизилген нерсени тазалоо"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "мисалы: /small[d]+/ url:a.com/b"

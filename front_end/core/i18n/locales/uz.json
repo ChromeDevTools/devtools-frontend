@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Javonni oʻzgartiradi"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "Dasturchi resurslari paneli"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Elementlar paneli"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "{PH1} zanjiri"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Tanlangan: Worker"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "{PH1} zanjiri"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker – {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Ayrim qaydlar tahrirlangan boʻlishi mumkin"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Kalitidan boshlash"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Jami qaydlar: {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Oʻchirish tanlandi"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Filtr"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Yangilash"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Xatoliklar"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Filtr"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "terminalda {PH1} ta xabar bor"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Jurnalga yozish darajasi: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Darajalar jurnali"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "XMLHttpRequests soʻrovlarini jurnalga yozish"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} / {PH2} ({PH3}%) band, {PH4} ishlatilmagan."
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "URL filtri"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Qamrovni tozalash"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Sayt orqali yuklash"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Qidiriladigan matnni URL va Xato ustunlarida kiriting"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "HTTP(S) dasturchi resurslarini DevTools oʻrniga tekshiruvdagi sayt orqali yuklash"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Soya muharririni ochish"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Filtr"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Hisoblanadigan uslublarni filtrlash"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Guruhlash"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Renderlangan shriftlar"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Filtr"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Xususiyatlarini filtrlash"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Mos xususiyat topilmadi"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Bu tanlov bekor qilinsa, boʻsh yoki 0 qiymatlari boʻlgan xususiyatlar koʻrsatilmaydi."
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "CSS xususiyati nomi: {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "CSS xususiyati qiymati: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "tuzilgan stylesheet"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "CSS oʻzgarishlarini nusxalash"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Filtr"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Stillarni filtrlash"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Sichqoncha gʻildiragi yoki tepaga/pastga tugmalari bilan balandlatish/pasaytirish mumkin. {PH1}: ±100, Shift: ±10, Alt: ±0.1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(matn)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Yoyish"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Bu element uchun ustiga joylanadigan rangni tanlang"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Hodisa aniqlagichining faol emasligi yoki bloklanishi"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Orqaga"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Bekor qilish"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Konsol xabari"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Davom etish"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Bu funksiyani faolsizlantirish"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "DevTools ichida xatolik yuz berdi"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Tarmoq soʻrovi"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Keyingisi"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Bu funksiya ishlamaydi"
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Tegishli kod"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Yanada batafsil statistika tuzish uchun sahifani yangilab, bu xabar uchun tarmoq soʻrovlari axborotini yozib oling."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Yuridik muammo haqida xabar berish"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Qidiruv tizimidan foydalanish"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Bu funksiyadan foydalanish uchun hisobingizga kiring"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Sozlamalarni yangilash"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Bu funksiyadan faqat 18 yoshdan katta yoshdagilar foydalanishi mumkin."
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Konsoldagi xabarlar uchun AI tuzgan izohlar"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Ogohlantirish izohi"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Bu funksiya mamlakatingizda ishlamaydi."
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Bu funksiya tashkilotingiz tomonidan faolsizlantirilgan. Batafsil axborot uchun administratorga murojaat qiling."
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "Bu funksiya hali butunlay chiqmagan. Xabar olib turing."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Bu funksiyadan foydalanish uchun DevTools sozlamalaridagi tilni ingliz tiliga oʻzgartiring."
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Muammolar"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Unumdorlik"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Yozib olish"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Unumdorlikni ochish"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Oxirgi yilnoma seanslarini ochish"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Profaylingni boshlash va sahifani qayta yuklash"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Stop"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Tartiblash sababi"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Stek trassirovkasi:"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Jurnal xabarlarini filtrlash"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Axborot"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Maʼlumotlar"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Odatiy ifoda kiriting, masalan: https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Hodisa manbasi"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "Chrome HTTP/3 bilan mos DNS record koʻrsatilgani uchun HTTP/3 aloqasidan foydalandi. HTTP versiyasidan farqli aloqa ustuvorligi aniqlanmadi."
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "erta bildirgilar"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(bajarilmadi)"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Maʼlumotlar"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Odatiy shaklda kiriting, masalan: (web)?socket"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filtr"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Erta sarlavhalar chiqarilgan. Toʻliq sarlavhalarni koʻrish uchun keshni faolsizlantiring."
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Erta bildirgilar sarlavhalari"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk keshidan)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(erta bildirgilardan)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(xotira keshidan)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "tizim monitori"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Jamlanma mustaqil vaqt"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Hisoblangan umumiy vaqt"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "CPU PROFILLARI"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "Sahifangiz JavaScript funksiyalarini bajarishiga ketadigan vaqt CPU profillarda chiqadi."
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} ms"
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1} %"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Nomi"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Opmizatsiyasiz"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "JavaScript CPU profilini yozish"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Yozib olinmoqda…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Mustaqil vaqt"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "CPU profaylingni boshlash"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "CPU profaylingni toʻxtatish"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Umumiy vaqt"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Namunali taqsimot"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Mazkur ushlab turish amalini inkor etish"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "inkor etilgan"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "ichida"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "Tarkibida boshqa qator belgilari mavjud qator."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Mazkur ushlab turish amali inkor etilmasin"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Global qiymat shaklida saqlash"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Tasvirda raqamli qiymatlarni kiritish"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Class filtri"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Kod"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Yozib olinmoqda…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Inkor etilgan ushlab turish amallarini tiklash"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Qoluvchilar"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Bir profil yozilayotganda boshqasi yuklanmaydi."
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Kelgusi versiyada bu panel bekor qilinadi. JavaScript CPU profillarini yozib olish uchun Unumdorlik panelidan foydalaning."
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Fikr-mulohaza"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Unumdorlik panelini ochish"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Profil yuklanmadi: {PH1}."
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Bu yerda hech qachon pauza qilinmasin"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Soʻrovni Dasturchi resurslari panelida ochish"
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "Qayta yoqish uchun fayl inkor etish roʻyxatida emasligini tekshiring va qayta yuklang."
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Inkor etiladiganlardan olib tashlash"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Soʻrovni chiqarish"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Manba xaritasi yuklanmadi."
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Avtomatik kiritish"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Kichraytirilgan manba kodini avtomatik saranjomlaydi"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Fayllar yon panelda avtomatik chiqsin"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Qavslarning avtomatik yopilishi"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Figurali qavslarni moslash"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Avtomatik kiritishni faolsizlantirish"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Qavslar avtomatik yopilmasin"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Figurali qavslar mosligi tekshirilmasin"
   },
@@ -11975,6 +11921,9 @@
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Debag qilish vaqtida ichki oʻzgaruvchan qiymatlar chiqsin"
   },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Kichraytirilgan manba kodi avtomatik saranjomlanmasin"
+  },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Fayllar yon panelda avtomatik chiqmasin"
   },
@@ -11995,6 +11944,9 @@
   },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Avtomatik kiritishni yoqish"
+  },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Qavslar avtomatik yopilsin"
   },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Enable bracket matching"
@@ -12180,7 +12132,7 @@
     "message": "Yakuniy belgilar"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Nosozlikni aniqlash axboroti bilan wasm tuzatilayotganda iloji boricha wasm baytkodida pauza qilmang"
+    "message": "Nosozlikni aniqlash axboroti bilan Wasm tuzatilayotganda iloji boricha wasm baytkodida pauza qilmang"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Davomiylik filtri"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Hodisalar jurnalini filtrlash"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Boshlanish vaqti"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Diapazon:  {PH1} – {PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Selektorlar statistikasi"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Xulosa"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Freym"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Freym — {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Freymlar"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Nofaol freym"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Asosiy"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Asosiy — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "Inkor etish roʻyxatida"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Qisman namoyish qilingan freym"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Raster"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "Rasterlash zanjiri #{PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} (mustaqil {PH2})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Quyi freym"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Zanjir"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Tarmoq qotirilishi yoniq"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "- Selektorlar statistikasi yoniq"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Apparatli chizish tufayli qurlima sezilarli sekin ishlashi mumkin"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Kengaytirilgan apparatli chizishni yozib oladi, lekin unumdorlikni jiddiy pasaytiradi"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "CSS selektorlar statistikasini qayd qiladi"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Tozalash"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Kengaytirilgan apparatli chizishni yoqish (sekin)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "CSS selektorlari statistikasini yoqish"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Vaqt tasmasi saqlanmadi: {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Jadvalni nusxalash"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Sarflangan vaqt (ms)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Chiziq {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Moslik topishga urinishlar"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Mosliklar"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "Sekin usulda mos kelmagan qiymatlar %"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Selektor"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Selektorlar statistikasi"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "CSS"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Jadval vaqtinchalik xotiraga nusxalandi"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Ulash imkonsiz"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "{PH1} orqali ulash imkonsiz"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Harakat"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome kengaytmalari koʻp xotira ishlatmoqda]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Filtr"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Pastdan tepaga filtrlash"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Chaqiruv daraxtini filtrlash"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} ms"
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Muhimligi"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Qayta ishlash davomiyligi"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Yasalgan kesh hajmi"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "CSS selektorlari mosligi haqida batafsil statistika jamlash uchun \"{PH1}\" sozlamasini tanlang."
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (mustaqil)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "skript keshdan yuklandi"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "skript ishlamaydi"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Selektorlar statistikasi"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Mustaqil vaqt"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Taqdimot kechikishi"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Qayta ishlash davomiyligi"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Qatlamlar panelida chrome freymini berkitish"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Hammasi"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Tozalash"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "m-n, /small[d]+/ url:a.com/b"

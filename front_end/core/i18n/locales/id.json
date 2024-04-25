@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Mengubah panel samping"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "Panel Resource Developer"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Panel elemen"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Worker khusus"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "Thread {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Beberapa entri mungkin telah diubah"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Mulai dari kunci"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Jumlah entri: {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Hapus yang Dipilih"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Filter"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Muat ulang"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Error"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Filter"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} pesan dalam konsol"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Tingkat log: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Level log"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Mencatat log XMLHttpRequests"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} dari {PH2} ({PH3}%) digunakan sejauh ini, {PH4} tidak digunakan."
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "Filter URL"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Hapus cakupan"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Muat dari situs"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Masukkan teks untuk menelusuri kolom URL dan Error"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Muat resource developer HTTP(S) melalui situs yang Anda periksa, bukan melalui DevTools"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Buka editor bayangan"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Filter"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Filter Gaya yang Dikomputasi"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Grup"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Font yang Dirender"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Filter"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Filter Properti"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Tidak ada properti yang cocok"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Jika centang dihapus, hanya properti yang nilainya null atau tidak ditentukan yang akan ditampilkan"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "Nama properti CSS: {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "Nilai properti CSS: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "stylesheet yang dikonstruksi"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Salin perubahan CSS"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Filter"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Filter Gaya"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Penambahan/pengurangan dengan penggulir mouse atau tombol atas/bawah. {PH1}: ±100, Shift: ±10, Alt: ±0.1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teks)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Luaskan"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Pilih warna overlay untuk elemen ini"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Tombol alih jika pemroses peristiwa pasif atau memblokir"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Kembali"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Batal"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Pesan konsol"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Lanjutkan"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Nonaktifkan fitur ini"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "DevTools mengalami error"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Permintaan jaringan"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Berikutnya"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Fitur ini tidak tersedia"
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Kode terkait"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Laporkan masalah hukum"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Gunakan penelusuran"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Login untuk menggunakan fitur ini"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Perbarui Setelan"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Fitur ini hanya tersedia bagi pengguna yang berusia 18 tahun ke atas."
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Pahami pesan konsol dengan AI"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Pahami peringatan ini"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Fitur ini tidak tersedia di wilayah Anda."
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Organisasi Anda menonaktifkan fitur ini. Hubungi administrator Anda untuk mengetahui informasi selengkapnya."
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "This feature is currently being rolled out. Stay tuned."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Untuk menggunakan fitur ini, perbarui Preferensi bahasa Anda di Setelan DevTools menjadi bahasa Inggris."
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Tampilkan Masalah"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Performa"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Rekam"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Tampilkan Performa"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Tampilkan sesi linimasa saat ini"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Mulai membuat profil dan muat ulang halaman"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Hentikan"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Menggabungkan Alasan"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Pelacakan tumpukan:"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Filter pesan log"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Info"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Data"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Masukkan ekspresi reguler, misalnya: https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Sumber Peristiwa"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "Chrome menggunakan koneksi HTTP/3 karena DNS record menunjukkan dukungan HTTP/3. Tidak ada yang lebih cepat daripada membuat koneksi menggunakan versi HTTP lain."
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "petunjuk awal"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(gagal)"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Data"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Masukkan regex, misal: (web)?socket"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filter"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Header sementara ditampilkan. Nonaktifkan cache untuk melihat header lengkap."
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Header Petunjuk Awal"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(dari cache disk)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(dari petunjuk awal)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(dari cache memori)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "pemantau sistem"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Waktu tunggal teragregasi"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Total waktu gabungan"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "PROFIL CPU"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "Profil CPU menunjukkan tempat waktu eksekusi dihabiskan di fungsi JavaScript halaman Anda."
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} milidetik"
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1}%"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Nama"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Tidak dioptimalkan"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "Rekam Profil CPU JavaScript"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Merekam…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Waktu Tunggal"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "Mulai pembuatan profiler CPU"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "Hentikan profiling CPU"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Waktu Total"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Pengambilan sampel alokasi"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Abaikan retainer ini"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "diabaikan"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "di"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "String yang mewakili beberapa karakter dari string lain."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Berhenti mengabaikan retainer ini"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Simpan sebagai variabel global"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Sertakan nilai numerik di cuplikan heap"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Filter class"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Kode"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Merekam…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Pulihkan retainer yang diabaikan"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Penahan"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Tidak dapat memuat profil saat profil lain sedang direkam."
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Panel ini tidak akan digunakan lagi pada versi mendatang. Gunakan panel Performa untuk merekam profil CPU JavaScript."
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Masukan"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Buka Panel Performa"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Pemuatan profil gagal: {PH1}."
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Jangan pernah menjeda di sini"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Membuka permintaan di panel resource Developer"
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "Untuk mengaktifkan lagi, pastikan file tidak ada dalam daftar yang diabaikan lalu muat ulang."
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Hapus dari daftar yang diabaikan"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Tampilkan permintaan"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Peta sumber gagal dimuat."
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Pelengkapan otomatis"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Pretty print sumber yang diminifikasi secara otomatis"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Buka file di sidebar secara otomatis"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Tanda kurung tutup otomatis"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Pencocokan tanda kurung"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Nonaktifkan pelengkapan otomatis"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Nonaktifkan tanda kurung tutup otomatis"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Nonaktifkan pencocokan tanda kurung"
   },
@@ -11967,13 +11913,16 @@
     "message": "Nonaktifkan tab memindahkan fokus"
   },
   "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
-    "message": "Nonaktifkan step over otomatis wasm"
+    "message": "Nonaktifkan step over otomatis Wasm"
   },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Larang scrolling melewati akhir file"
   },
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Tampilkan nilai variabel dalam satu baris saat melakukan debug"
+  },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Jangan pretty print sumber yang diminifikasi secara otomatis"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Jangan membuka file di sidebar secara otomatis"
@@ -11996,6 +11945,9 @@
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Aktifkan pelengkapan otomatis"
   },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Aktifkan tanda kurung tutup otomatis"
+  },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Aktifkan pencocokan tanda kurung"
   },
@@ -12012,7 +11964,7 @@
     "message": "Aktifkan tab memindahkan fokus"
   },
   "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
-    "message": "Aktifkan step over otomatis wasm"
+    "message": "Aktifkan step over otomatis Wasm"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluasi teks yang dipilih di konsol"
@@ -12180,7 +12132,7 @@
     "message": "Tambahan"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Saat melakukan proses debug pada wasm dengan informasi debug, jangan jeda bytecode wasm jika memungkinkan"
+    "message": "Saat melakukan proses debug pada Wasm dengan informasi debug, jangan jeda bytecode wasm jika memungkinkan"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Tonton"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Filter durasi"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Filter log aktivitas"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Waktu Mulai"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Rentang:  {PH1} – {PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Statistik Pemilih"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Ringkasan"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Frame"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Frame — {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Frame"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Frame Tidak Ada Aktivitas"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Utama"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Utama — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "Pada daftar yang diabaikan"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Frame yang Ditampilkan Sebagian"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Raster"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "Thread Yang Diraster {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} ({PH2} mandiri)"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Subframe"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Thread"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} pukul {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Throttling jaringan diaktifkan"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "- Statistik pemilih diaktifkan"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Overhead yang signifikan karena instrumentasi paint"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Mengambil instrumentasi paint lanjutan, memperkenalkan overhead performa yang signifikan"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "Merekam statistik pemilih CSS"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Hapus"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktifkan instrumentasi paint lanjutan (lambat)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "Aktifkan statistik pemilih CSS"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Gagal menyimpan linimasa: {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Salin Tabel"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Berlalu (md)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Baris {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Percobaan Kecocokan"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Jumlah Kecocokan"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "% ketidakcocokan jalur lambat"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Pemilih"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Statistik Pemilih"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "Lembar Gaya"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Tabel disalin ke papan klip"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Tidak dapat menautkan"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "Tidak dapat menautkan melalui {PH1}"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Aktivitas"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome ekstensi overhead]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Filter"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Filter dari bawah ke atas"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Filter hierarki panggilan"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} milidetik"
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Prioritas"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Durasi pemrosesan"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Ukuran Cache yang Dihasilkan"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "Pilih \"{PH1}\" untuk mengumpulkan statistik pencocokan pemilih CSS yang mendetail."
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (self)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "skrip dimuat dari cache"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "skrip tidak memenuhi syarat"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Statistik Pemilih"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Waktu Tunggal"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Penundaan presentasi"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Durasi pemrosesan"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Sembunyikan frame chrome di tampilan Lapisan"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Semua"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Hapus input"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "mis. /small[d]+/ url:a.com/b"

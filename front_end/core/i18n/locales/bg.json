@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Слой за промени"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "Панел с ресурси за програмисти"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Панел за елементи"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Нишка {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Специализиран обект Worker"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "Нишка {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker – {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} – {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(показалец)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Някои записи може да са променени"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Стартиране от ключа"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Общ брой записи: {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Изтриване на избраните"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Филтър"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Опресняване"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Грешки"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Филтър"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} съобщения в конзолата"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Ниво на запис в регистрационния файл: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Нива на регистрационния файл"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Регистриране на обектите XMLHttpRequest"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Използвано досега: {PH1} от {PH2} ({PH3}%), неизползвано: {PH4}."
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "Филтър за URL адреса"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Изчистване на данните за обхвата"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Зареждане чрез уебсайт"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Въведете текст за търсене в колоните с URL адреси и грешки"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Зареждане на HTTP(S) ресурсите за програмисти чрез уебсайта, който проверявате, а не чрез DevTools"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Отваряне на редактора на сенки"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Филтър"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Филтриране на изчислените стилове"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Група"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Рендерирани шрифтове"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Филтър"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Филтриране на свойствата"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Няма съответстващо свойство"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Когато не е поставена отметка, ще се показват само свойствата, чиито стойности не са нито null, нито неопределени"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "Име на свойството в CSS: {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "Стойност на свойството в CSS: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "съставен стилов лист"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Копиране на промените в CSS"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Филтър"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Филтриране на стиловете"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Увеличете/намалете стойността с колелцето на мишката или клавишите със стрелка нагоре/надолу. {PH1}: ±100, Shift: ±10, Alt: ±0,1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Разгъване"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Изберете цвета на наслагването за този елемент"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Превключване на типа на приемателя на събития – пасивен или блокиращ"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Назад"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Отказ"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Съобщение в конзолата"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Напред"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Деактивиране на тази функция"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Възникна грешка в DevTools"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Заявка в мрежата"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Напред"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Тази функция не е налице"
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Сроден код"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Подаване на сигнал за правен проблем"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Използване на търсенето вместо това"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Влезте в профила си, за да използвате тази функция"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Актуализиране на настройките"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Тази функция е налице само за потребители, навършили 18 години."
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Обяснение на съобщенията в конзолата с помощта на AI"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Обяснение на това предупреждение"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Тази функция не е налице в региона ви."
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Организацията ви е изключила тази функция. За повече информация се обърнете към администраторите си."
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "This feature is currently being rolled out. Stay tuned."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "За да използвате тази функция, в настройките на DevTools променете предпочитанието си за език на английски."
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Показване на инструмента за проблеми"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Ефективност"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Записване"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Показване на инструмента за ефективност"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Показване на скорошните сесии в инструмента за хронология"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Стартиране на профилирането и презареждане на страницата"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Спиране"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причини за композитинг"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Трасиране на стека:"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Филтриране на съобщенията в регистрационния файл"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Информация"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Данни"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Въведете регулярен израз, като например https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Източник за събитието"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "Chrome използва HTTP/3 връзка, тъй като съответният DNS record указва поддръжка на HTTP/3. Не бе извършен успореден опит за установяване на връзка посредством друга версия на HTTP."
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "ранни подсказки"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(неуспешно)"
@@ -8373,7 +8346,7 @@
     "message": "Текст"
   },
   "panels/network/NetworkLogViewColumns.ts | time": {
-    "message": "Час"
+    "message": "Време"
   },
   "panels/network/NetworkLogViewColumns.ts | totalDuration": {
     "message": "Обща продължителност"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Данни"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Въведете регулярен израз, като например: (web)?socket"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Филтър"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Показани са временни заглавки. Деактивирайте кеша, за да видите пълните заглавки."
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Заглавки за ранните подсказки"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(от кеша на диска)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(от ранните подсказки)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(от кеша на паметта)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "наблюдение на системата"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Обобщено собствено време"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Сумарно общо време"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "ПРОФИЛИ ЗА ПРОЦЕСОРА"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "Профилите на процесора показват къде се изразходва времето при изпълнението на JavaScript функциите на страницата ви."
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} мсек"
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1}%"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Име"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Не е оптимизирано"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "Записване на профил на процесора при работа с JavaScript"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Записва се…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Собствено време"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "Стартиране на профилирането на процесора"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "Спиране на профилирането на процесора"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Общо време"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL адрес"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Семплиране на разпределението"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Пренебрегване на този обект за задържане"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "пренебрегнато"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "във:"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "Низ, който представлява някои от знаците от друг низ."
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Спиране на пренебрегването на този обект за задържане"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Съхраняване като глобална променлива"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Включване на цифровите стойности в моментната снимка"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Филтриране на класове"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Код"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Записва се…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Възстановяване на пренебрегнатите обекти за задържане"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Съхраняващи обекти"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Профилът не може да бъде зареден, докато се записва друг профил."
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Този панел ще бъде оттеглен в предстоящата версия. Използвайте панела „Ефективност“, за да записвате профили на процесора при работа с JavaScript."
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Отзиви"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Към панела „Ефективност“"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Зареждането на профила не бе успешно: {PH1}."
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Без пауза тук"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Отваря заявката в панела с ресурси за програмисти"
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "За повторно активиране трябва да се уверите, че файлът не е в списъка за пренебрегване, след което да презаредите."
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Премахване от списъка за пренебрегване"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Показване на заявката"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Картата на изходния код не бе заредена."
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Автоматично довършване"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Автоматично отпечатване с форматиране на минимизираните източници"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Автоматично показване на файловете в страничната лента"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Автоматично затваряне на скобите"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Намиране на съответстващи скоби"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Деактивиране на автоматичното довършване"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Деактивиране на автоматичното затваряне на скобите"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Деактивиране на намирането на съответстващи скоби"
   },
@@ -11967,13 +11913,16 @@
     "message": "Деактивиране на преместването на фокуса с клавиша Tab"
   },
   "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
-    "message": "Деактивиране на автоматичното изпълнение на функциите step в Wasm"
+    "message": "Деактивиране на автоматичното постъпково изпълнение в Wasm"
   },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Забраняване на превъртането след края на файла"
   },
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Стойностите на променливите да се показват във вложен вид при отстраняване на грешки"
+  },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Без автоматично отпечатване с форматиране на минимизираните източници"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Без автоматично показване на файловете в страничната лента"
@@ -11996,6 +11945,9 @@
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Активиране на автоматичното довършване"
   },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Активиране на автоматичното затваряне на скобите"
+  },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Активиране на намирането на съответстващи скоби"
   },
@@ -12012,7 +11964,7 @@
     "message": "Активиране на преместването на фокуса с клавиша Tab"
   },
   "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
-    "message": "Активиране на автоматичното изпълнение на функциите step в Wasm"
+    "message": "Активиране на автоматичното постъпково изпълнение в Wasm"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Анализ на избрания текст в конзолата"
@@ -12180,7 +12132,7 @@
     "message": "Следпоставени"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Когато отстранявате грешки в Wasm посредством информация за целта, не поставяйте на пауза байткода на Wasm, ако е възможно"
+    "message": "Когато отстранявате грешки в Wasm посредством информация за целта, да не се поставя на пауза при байткод на Wasm, ако е възможно"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Наблюдение"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Филтриране по продължителност"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Филтриране на регистъра на събитията"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Начален час"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Диапазон: {PH1} – {PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Статистика за селектора"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Обобщена информация"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Кадър"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Рамка – {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Кадри"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Рамка при неактивност"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Основно"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Основно – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "В списъка за пренебрегване"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Частично изобразен кадър"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Растер"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "Нишка {PH1} на растеризатора"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} (собствено: {PH2})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Подрамка"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Нишка"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} – {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Ограничаването на мрежата е активирано"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "– Статистиката за селектора е активирана"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Използва се значително количество ресурси поради инструментация на изобразяването"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Записване на разширената инструментация на изобразяването. За целта се използва значително количество допълнителни ресурси"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "Записва статистически данни за CSS селектора"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Изчистване"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Активиране на разширената инструментация на изобразяването (бавна)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "Активиране на статистиката за CSS селектора"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Запазването на хронологията не бе успешно: {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Копиране на таблицата"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Изминало време (мсек)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Ред {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Опити за намиране на съответствие"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Брой съответствия"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "% несъответствия с бавен път"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Селектор"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Статистика за селектора"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "Стилов лист"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Таблицата бе копирана в буферната памет"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Не може да се свърже"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "Не може да се свърже чрез {PH1}"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Активност"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[допълнителни ресурси, използвани от разширения за Chrome]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Филтър"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Филтриране от долу нагоре"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Филтриране на дървото на извикванията"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} мсек"
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Приоритет"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Продължителност на обработването"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Размер на създадения кеш"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "Изберете „{PH1}“, за да събирате подробни статистически данни за съответствията на CSS селекторите."
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (собствено време)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "скриптът е зареден от кеша"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "скриптът не отговаря на условията"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Статистика за селектора"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Собствено време"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Забавяне на представянето"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Продължителност на обработването"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Скриване на рамката на chrome в изгледа със слоеве"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Всички"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Изчистване на въведеното"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "напр. /small[d]+/ url:a.com/b"

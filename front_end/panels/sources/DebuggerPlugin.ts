@@ -1046,6 +1046,10 @@ export class DebuggerPlugin extends Plugin {
 
     while (CodeMirror.syntaxParserRunning(this.editor.editor)) {
       await new Promise(resolve => window.requestIdleCallback(resolve));
+      // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
+      if (!this.editor) {
+        return null;
+      }
       CodeMirror.ensureSyntaxTree(this.editor.state, executionOffset, 16);
     }
 
@@ -1055,7 +1059,8 @@ export class DebuggerPlugin extends Plugin {
     }
 
     const scopeMappings = await computeScopeMappings(callFrame, rawLocationToEditorOffset);
-    if (scopeMappings.length === 0) {
+    // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
+    if (!this.editor || scopeMappings.length === 0) {
       return null;
     }
 

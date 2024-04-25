@@ -86,6 +86,9 @@
   "core/common/Revealer.ts | changesDrawer": {
     "message": "Փոփոխությունների դարակ"
   },
+  "core/common/Revealer.ts | developerResourcesPanel": {
+    "message": "Մշակողների համար ռեսուրսների վահանակ"
+  },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Տարրերի վահանակ"
   },
@@ -1664,18 +1667,6 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Հոսք {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Առանձնացված Worker"
-  },
-  "models/timeline_model/TimelineModel.ts | threadS": {
-    "message": "Հոսք {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker․ {PH1} – {PH2}"
-  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(ինդեքս)"
   },
@@ -2696,9 +2687,6 @@
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "Որոշ տվյալներ կարող են փոփոխված լինել"
   },
-  "panels/application/IndexedDBViews.ts | startFromKey": {
-    "message": "Գործարկում ստեղնից"
-  },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
     "message": "Գրառումների ընդհանուր թիվը՝ {PH1}"
   },
@@ -3001,9 +2989,6 @@
   },
   "panels/application/StorageItemsView.ts | deleteSelected": {
     "message": "Ջնջե՞լ նշվածը"
-  },
-  "panels/application/StorageItemsView.ts | filter": {
-    "message": "Զտիչ"
   },
   "panels/application/StorageItemsView.ts | refresh": {
     "message": "Թարմացնել"
@@ -4910,9 +4895,6 @@
   "panels/console/ConsoleView.ts | errors": {
     "message": "Սխալներ"
   },
-  "panels/console/ConsoleView.ts | filter": {
-    "message": "Զտիչ"
-  },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} հաղորդագրություն վահանակում"
   },
@@ -4951,9 +4933,6 @@
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Մատյանի վարման մակարդակը՝ {PH1}"
-  },
-  "panels/console/ConsoleView.ts | logLevels": {
-    "message": "Մակարդակներ"
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Գրանցել XMLHttpRequests հարցումները"
@@ -5303,9 +5282,6 @@
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH2}-ից {PH1}-ն օգտագործված է ({PH3}%), {PH4}-ը՝ չօգտագործված։"
   },
-  "panels/coverage/CoverageView.ts | urlFilter": {
-    "message": "URL-ի զտիչ"
-  },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Մաքրել ծածկույթը"
   },
@@ -5525,9 +5501,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Բեռնել կայքի միջոցով"
   },
-  "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Մուտքագրեք տեքստ՝ URL հասցեների և սխալների աղյուսակներում որոնելու համար"
-  },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Բեռնել մշակողի HTTP(S) ռեսուրսները ձեր կողմից ստուգվող կայքի, այլ ոչ թե ծրագրավորողի գործիքների միջոցով"
   },
@@ -5587,12 +5560,6 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Ցուցադրել շողքերի խմբագրիչը"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filter": {
-    "message": "Զտիչ"
-  },
-  "panels/elements/ComputedStyleWidget.ts | filterComputedStyles": {
-    "message": "Զտել հաշվարկված ոճերը"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Խմբավորել"
@@ -5855,12 +5822,6 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Արտապատկերված տառատեսակներ"
   },
-  "panels/elements/PropertiesWidget.ts | filter": {
-    "message": "Զտեք"
-  },
-  "panels/elements/PropertiesWidget.ts | filterProperties": {
-    "message": "Զտեք հատկությունները"
-  },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "Համընկնող հատկություն չկա"
   },
@@ -5869,6 +5830,12 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Երբ այս նշավանդակը նշված չէ, դատարկ և անորոշ արժեքներով հատկությունները չեն ցուցադրվի։"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyName": {
+    "message": "CSS հատկանիշի անվանումը՝ {PH1}"
+  },
+  "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
+    "message": "CSS հատկության արժեքը՝ {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ոճերի ստեղված աղյուսակ"
@@ -5966,12 +5933,6 @@
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Պատճենել CSS-ի փոփոխությունները"
   },
-  "panels/elements/StylesSidebarPane.ts | filter": {
-    "message": "Զտիչ"
-  },
-  "panels/elements/StylesSidebarPane.ts | filterStyles": {
-    "message": "Զտել ոճերը"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "ՄԵծացում/փոքրացում մկնիկի անիվի կամ «վերև»/«ներքև» ստեղների միջոցով։ {PH1}՝ ±100, Shift: ±10, Alt: ±0,1"
   },
@@ -6052,6 +6013,9 @@
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(տեքստ)"
+  },
+  "panels/elements/components/ElementsTreeExpandButton.ts | expand": {
+    "message": "Ծավալել"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Ընտրեք վրադրվող գույն այս տարրի համար"
@@ -6362,6 +6326,9 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Ցույց տալ կամ թաքցնել՝ արդյոք իրադարձությունների ունկնդիրը պասիվ է, թե արգելափակող"
   },
+  "panels/explain/components/ConsoleInsight.ts | back": {
+    "message": "Հետ"
+  },
   "panels/explain/components/ConsoleInsight.ts | cancel": {
     "message": "Չեղարկել"
   },
@@ -6370,6 +6337,12 @@
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "Վահանակի հաղորդագրություն"
+  },
+  "panels/explain/components/ConsoleInsight.ts | continue": {
+    "message": "Շարունակել"
+  },
+  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
+    "message": "Անջատել այս գործառույթը"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "Ծրագրավորողի գործիքներում սխալ է առաջացել"
@@ -6392,6 +6365,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Ցանցի հարցում"
   },
+  "panels/explain/components/ConsoleInsight.ts | next": {
+    "message": "Առաջ"
+  },
   "panels/explain/components/ConsoleInsight.ts | notAvailable": {
     "message": "Գործառույթը հասանելի չէ"
   },
@@ -6410,8 +6386,14 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Կապված կոդ"
   },
+  "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
+    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+  },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Հաղորդել իրավական խնդրի մասին"
+  },
+  "panels/explain/components/ConsoleInsight.ts | search": {
+    "message": "Օգտագործել որոնողական համակարգ"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Մուտք գործեք՝ այս գործառույթն օգտագործելու համար"
@@ -6431,6 +6413,9 @@
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Թարմացնել կարգավորումները"
   },
+  "panels/explain/explain-meta.ts | ageRestricted": {
+    "message": "Այս գործառույթը հասանելի է միայն 18 տարեկան և ավելի բարձր տարիքի օգտատերերին։"
+  },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Հասկացեք վահանակի հաղորդագրությունները AI-ի օգնությամբ"
   },
@@ -6442,6 +6427,15 @@
   },
   "panels/explain/explain-meta.ts | explainThisWarning": {
     "message": "Հասկացեք այս զգուշացումը"
+  },
+  "panels/explain/explain-meta.ts | geoRestricted": {
+    "message": "Այս գործառույթն անհասանելի է ձեր տարածաշրջանում։"
+  },
+  "panels/explain/explain-meta.ts | policyRestricted": {
+    "message": "Ձեր կազմակերպությունն անջատել է այս գործառույթը։ Լրացուցիչ տեղեկությունների համար դիմեք ձեր ադմինիստրատորներին։"
+  },
+  "panels/explain/explain-meta.ts | rolloutRestricted": {
+    "message": "This feature is currently being rolled out. Stay tuned."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Այս գործառույթն օգտագործելու համար ծրագրավորողի գործիքների կարգավորումներում ձեր նախընտրելի լեզուն դարձրեք անգլերեն։"
@@ -6829,24 +6823,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Ցույց տալ խնդիրները"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | performance": {
-    "message": "Արդյունավետություն"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | record": {
-    "message": "Գրացնել տվյալներ"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
-    "message": "Ցույց տալ «Արդյունավետություն» ներդիրը"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
-    "message": "Ցույց տալ ժամանակագրության վերջին աշխատաշրջանները"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
-    "message": "Սկսել պրոֆիլավորումը և նորից բեռնել էջը"
-  },
-  "panels/js_profiler/js_profiler-meta.ts | stop": {
-    "message": "Կանգնեցնել"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Պատճառների հավաքում"
@@ -7448,9 +7424,6 @@
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
     "message": "Սթեքի ժամանակագրություն՝"
   },
-  "panels/media/PlayerMessagesView.ts | filterLogMessages": {
-    "message": "Զտել մատյանի հաղորդագրությունները"
-  },
   "panels/media/PlayerMessagesView.ts | info": {
     "message": "Տեղեկություններ"
   },
@@ -7805,9 +7778,6 @@
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "Տվյալներ"
   },
-  "panels/network/EventSourceMessagesView.ts | enterRegex": {
-    "message": "Մուտքագրեք կանոնավոր արտահայտություն, օրինակ՝ https?"
-  },
   "panels/network/EventSourceMessagesView.ts | eventSource": {
     "message": "Իրադարձության աղբյուրը"
   },
@@ -7894,6 +7864,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
     "message": "Chrome դիտարկիչը կապ հաստատելու համար օգտագործել է HTTP/3 հաղորդակարգը, քանի որ DNS recordը պարունակում է HTTP/3 հաղորդակարգն աջակցելու մասին նշում։ Այս HTTP տարբերակի օգնությամբ կապ հաստատվել է ավելի վաղ, քան այլ հաղորդակարգերով։"
+  },
+  "panels/network/NetworkDataGridNode.ts | earlyHints": {
+    "message": "վաղ հուշումներ"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(ձախողվեց)"
@@ -8373,7 +8346,7 @@
     "message": "Տեքստ"
   },
   "panels/network/NetworkLogViewColumns.ts | time": {
-    "message": "Ժամանակ"
+    "message": "Տևողությունը"
   },
   "panels/network/NetworkLogViewColumns.ts | totalDuration": {
     "message": "Ընդհանուր տևողությունը"
@@ -8738,9 +8711,6 @@
   "panels/network/ResourceWebSocketFrameView.ts | data": {
     "message": "Տվյալներ"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Մուտքագրեք կանոնավոր արտահայտություն, օրինակ՝ (web)?socket"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Զտիչ"
   },
@@ -8882,8 +8852,14 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Ցուցադրվում են ժամանակի գլխագրերը։ Անջատեք քեշը՝ բոլոր գլխագրերը տեսնելու համար։"
   },
+  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Վաղ հուշումների վերնագրեր"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(սկավառակի քեշից)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(վաղ հուշումներից)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(հիշողության քեշից)"
@@ -9146,51 +9122,6 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "համակարգի դիտարկում"
   },
-  "panels/profiler/CPUProfileView.ts | aggregatedSelfTime": {
-    "message": "Միավորված սեփական ժամանակը"
-  },
-  "panels/profiler/CPUProfileView.ts | aggregatedTotalTime": {
-    "message": "Ընդհանուր ժամանակը"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "CPU ՊՐՈՖԻԼՆԵՐ"
-  },
-  "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "CPU-ի պրոֆիլները ցույց են տալի, թե որտեղ է ծախսվել ժամանակը ձեր էջի JavaScript գործառույթների կատարման համար։"
-  },
-  "panels/profiler/CPUProfileView.ts | fms": {
-    "message": "{PH1} մվ"
-  },
-  "panels/profiler/CPUProfileView.ts | formatPercent": {
-    "message": "{PH1} %"
-  },
-  "panels/profiler/CPUProfileView.ts | name": {
-    "message": "Անուն"
-  },
-  "panels/profiler/CPUProfileView.ts | notOptimized": {
-    "message": "Օպտիմալացված չէ"
-  },
-  "panels/profiler/CPUProfileView.ts | recordJavascriptCpuProfile": {
-    "message": "JavaScript CPU պրոֆիլի տվյալների գրանցում"
-  },
-  "panels/profiler/CPUProfileView.ts | recording": {
-    "message": "Տվյալների գրանցում…"
-  },
-  "panels/profiler/CPUProfileView.ts | selfTime": {
-    "message": "Մեկ գործողության ժամանակը"
-  },
-  "panels/profiler/CPUProfileView.ts | startCpuProfiling": {
-    "message": "Սկսել CPU-ի պրոֆիլավորումը"
-  },
-  "panels/profiler/CPUProfileView.ts | stopCpuProfiling": {
-    "message": "Կանգնեցնել CPU-ի պրոֆիլավորումը"
-  },
-  "panels/profiler/CPUProfileView.ts | totalTime": {
-    "message": "Ընդհանուր ժամանակը"
-  },
-  "panels/profiler/CPUProfileView.ts | url": {
-    "message": "URL"
-  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Բաշխման նմուշառում"
   },
@@ -9344,6 +9275,12 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | genericStringsTwoPlaceholders": {
     "message": "{PH1}, {PH2}"
   },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignoreThisRetainer": {
+    "message": "Անտեսել այս պահպանիչը"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | ignored": {
+    "message": "անտեսված է"
+  },
   "panels/profiler/HeapSnapshotGridNodes.ts | inElement": {
     "message": "ներսում"
   },
@@ -9376,6 +9313,9 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "Տող, որը ներկայացնում է մեկ այլ տողի նիշերից մի քանիսը։"
+  },
+  "panels/profiler/HeapSnapshotGridNodes.ts | stopIgnoringThisRetainer": {
+    "message": "Կանգնեցնել այս պահպանիչի անտեսումը"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Պահել որպես գլոբալ փոփոխական"
@@ -9412,9 +9352,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "Ներառել թվային արժեքներ լուսանկարում"
-  },
-  "panels/profiler/HeapSnapshotView.ts | classFilter": {
-    "message": "Կարգի զտիչ"
   },
   "panels/profiler/HeapSnapshotView.ts | code": {
     "message": "Կոդ"
@@ -9472,6 +9409,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Տվյալների գրանցում…"
+  },
+  "panels/profiler/HeapSnapshotView.ts | restoreIgnoredRetainers": {
+    "message": "Վերականգնել անտեսված պահպանիչները"
   },
   "panels/profiler/HeapSnapshotView.ts | retainers": {
     "message": "Պահված ուղիներ"
@@ -9733,15 +9673,6 @@
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Չհաջողվեց բեռնել պրոֆիլը, քանի որ այլ պրոֆիլի տվյալներ են գրանցվում։"
-  },
-  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
-    "message": "Այս վահանակն այլևս չի աջակցվի հաջորդ տարբերակում։ JavaScript CPU պրոֆիլները գրանցելու համար օգտագործեք «Արդյունավետություն» վահանակը։"
-  },
-  "panels/profiler/ProfilesPanel.ts | feedback": {
-    "message": "Կարծիք հայտնել"
-  },
-  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
-    "message": "Անցնել «Արդյունավետություն» վահանակ"
   },
   "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
     "message": "Չհաջողվեց բեռնել պրոֆիլը՝ {PH1}։"
@@ -11468,6 +11399,9 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Երբեք չդադարեցնել այստեղ"
   },
+  "panels/sources/DebuggerPlugin.ts | openDeveloperResources": {
+    "message": "Բացում է հարցումը Մշակողների համար ռեսուրսների վահանակում"
+  },
   "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
     "message": "Կրկին միացնելու համար համոզվեք, որ ֆայլը անտեսվածների ցանկում չէ, և նորից բեռնեք։"
   },
@@ -11476,6 +11410,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Հեռացնել անտեսվածների ցանկից"
+  },
+  "panels/sources/DebuggerPlugin.ts | showRequest": {
+    "message": "Ցույց տալ հարցումը"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
     "message": "Չհաջողվեց բեռնել աղբյուրի քարտեզը"
@@ -11912,8 +11849,14 @@
   "panels/sources/sources-meta.ts | autocompletion": {
     "message": "Ինքնալրացում"
   },
+  "panels/sources/sources-meta.ts | automaticallyPrettyPrintMinifiedSources": {
+    "message": "Ավտոմատացնել գեղեցիկ ձևաչափման փոքրացված աղբյուրները"
+  },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
     "message": "Ֆայլերն ավտոմատ ցուցադրել կողագոտում"
+  },
+  "panels/sources/sources-meta.ts | bracketClosing": {
+    "message": "Փակագծերի ավտոմատ փակում"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Փակագծերի համընկնում"
@@ -11951,6 +11894,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Անջատել ինքնալրացումը"
   },
+  "panels/sources/sources-meta.ts | disableBracketClosing": {
+    "message": "Անջատել փակագծերի ավտոմատ փակումը"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "Անջատել փակագծերի համընկնումը"
   },
@@ -11975,6 +11921,9 @@
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
     "message": "Վրիպազերծման ընթացքում ցույց տալ փոփոխական արժեքները որպես ներկառուցված"
   },
+  "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
+    "message": "Չավտոմատացնել գեղեցիկ ձևաչափման փոքրացված աղբյուրները"
+  },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Ֆայլերը ավտոմատ չցուցադրել կողագոտում"
   },
@@ -11995,6 +11944,9 @@
   },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Միացնել ինքնալրացումը"
+  },
+  "panels/sources/sources-meta.ts | enableBracketClosing": {
+    "message": "Միացնել փակագծերի ավտոմատ փակումը"
   },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Միացնել փակագծերի զուգադրումը"
@@ -12180,7 +12132,7 @@
     "message": "Վերջում"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
-    "message": "Հնարավորության դեպքում կանգ չառնել Wasm բայթկոդի վրա՝ Wasm-ը վրիպազերծման տեղեկությունների միջոցով վրիպազերծելու ժամանակ"
+    "message": "Հնարավորության դեպքում կանգ չառնել Wasm կոդի վրա՝ Wasm-ը վրիպազերծման տեղեկությունների միջոցով վրիպազերծելու ժամանակ"
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Վերահսկիչ արժեքի արտահայտություն"
@@ -12557,9 +12509,6 @@
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Տևողության զտիչ"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | filterEventLog": {
-    "message": "Զտել իրադարձությունների մատյանը"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Սկզբի ժամը"
   },
@@ -12668,6 +12617,9 @@
   "panels/timeline/TimelineDetailsView.ts | rangeSS": {
     "message": "Միջակայք՝  {PH1} – {PH2}"
   },
+  "panels/timeline/TimelineDetailsView.ts | selectorStats": {
+    "message": "Ընտրիչի վիճակագրություն"
+  },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Ամփոփ տվյալներ"
   },
@@ -12689,41 +12641,14 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Շրջանակ"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "Շրջանակ — {PH1}"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Շրջանակներ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Ոչ ակտիվ շրջանակ"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
-    "message": "Գլխավոր"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "Հիմնական — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "Անտեսվածների ցանկում"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Մասամբ ներկայացված շրջանակ"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "Պատկերացանց"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "Պատկերացանցիչի հոսք {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
-    "message": "{PH1} (մեկ գործողություն՝ {PH2})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | subframe": {
-    "message": "Ենթաշրջանակ"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
-    "message": "Հոսք"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}՝ {PH2}"
@@ -12767,6 +12692,9 @@
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "– Ցանցի թողունակության սահմանափակումը միացված է"
   },
+  "panels/timeline/TimelinePanel.ts | SelectorStatsEnabled": {
+    "message": "– Ընտրիչի վիճակագրությունը միացված է"
+  },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Զգալի ծախսատարություն գոնավորման գործիքների պատճառով"
   },
@@ -12784,6 +12712,9 @@
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
     "message": "Գրանցում է գունավորման լրացուցիչ գործիքավորումը, ներկայացնում է արդյունավետության զգալի կորուսը"
+  },
+  "panels/timeline/TimelinePanel.ts | capturesSelectorStats": {
+    "message": "Գրանցում է CSS ընտրիչի վիճակագրությունը"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "Մաքրել"
@@ -12817,6 +12748,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Միացնել գունավորման լրացուցիչ գործիքավորումը (դանդաղ)"
+  },
+  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
+    "message": "Միացնել CSS ընտրիչի վիճակագրությունը"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
     "message": "Չհաջողվեց պահել ժամանակագրությունը՝ {PH1} ({PH2})"
@@ -12884,20 +12818,47 @@
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
   },
+  "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
+    "message": "Պատճենել աղյուսակը"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | elapsed": {
+    "message": "Անցած ժամանակը (մվ)"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | lineNumber": {
+    "message": "Տող {PH1}:{PH2}"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
+    "message": "Համընկնումներ գտնելու փորձեր"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
+    "message": "Համընկնումների թիվը"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
+    "message": "Դանդաղ ուղով անհամապատասխանությունների %"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selector": {
+    "message": "Ընտրիչ"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
+    "message": "Ընտրիչի վիճակագրություն"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
+    "message": "Ոճերի թերթ"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | tableCopiedToClipboard": {
+    "message": "Աղյուսակը պատճենվեց սեղմատախտակին"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLink": {
+    "message": "Հնարավոր չէ կապել"
+  },
+  "panels/timeline/TimelineSelectorStatsView.ts | unableToLinkViaStyleSheetId": {
+    "message": "Հնարավոր չէ կապել {PH1}-ի միջոցով"
+  },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Գործողություններ"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome ընդլայնումների ծախսատարություն]"
-  },
-  "panels/timeline/TimelineTreeView.ts | filter": {
-    "message": "Զտիչ"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterBottomup": {
-    "message": "Զտել ներքևից վերև"
-  },
-  "panels/timeline/TimelineTreeView.ts | filterCallTree": {
-    "message": "Զտելի կանչերի ծառը"
   },
   "panels/timeline/TimelineTreeView.ts | fms": {
     "message": "{PH1} մվ"
@@ -13193,6 +13154,9 @@
   "panels/timeline/TimelineUIUtils.ts | priority": {
     "message": "Առաջնահերթություն"
   },
+  "panels/timeline/TimelineUIUtils.ts | processingDuration": {
+    "message": "Մշակման տևողությունը"
+  },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Քեշի կատարված չափը"
   },
@@ -13241,6 +13205,9 @@
   "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
     "message": "{PH1} [{PH2}…]"
   },
+  "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
+    "message": "Ընտրեք «{PH1}»՝ CSS ընտրիչների համընկնումների մասին մանրամասն վիճակագրություն հավաքելու համար։"
+  },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (մեկ գործողություն)"
   },
@@ -13256,8 +13223,8 @@
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "սկրիպտը բեռնվել է քեշից"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
-    "message": "սկրիպտը չի աջակցվում"
+  "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
+    "message": "Ընտրիչի վիճակագրություն"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Մեկ գործողության ժամանակը"
@@ -13384,6 +13351,9 @@
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
     "message": "Ներկայացման հետաձգում"
+  },
+  "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
+    "message": "Մշակման տևողությունը"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Թաքցնել chrome շրջանակը «Շերտեր» ռեժիմում"
@@ -13780,9 +13750,6 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Բոլորը"
-  },
-  "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Մաքրել"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "օր․՝ /small[d]+/ url:a.com/b"

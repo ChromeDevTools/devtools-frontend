@@ -64,6 +64,7 @@ devtools_issue_description_files = [
   "arInvalidRegisterOsTriggerHeader.md",
   "arInvalidRegisterSourceHeader.md",
   "arInvalidRegisterTriggerHeader.md",
+  "arNavigationRegistrationWithoutTransientUserActivation.md",
   "arOsSourceIgnored.md",
   "arOsTriggerIgnored.md",
   "arPermissionPolicyDisabled.md",

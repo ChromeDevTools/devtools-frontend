@@ -7731,6 +7731,10 @@ export const NativeFunctions = [
     signatures: [["input","indices","?options"]]
   },
   {
+    name: "gelu",
+    signatures: [["?input"]]
+  },
+  {
     name: "gemm",
     signatures: [["a","b","?options"]]
   },

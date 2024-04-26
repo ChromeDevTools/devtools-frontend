@@ -826,7 +826,7 @@ export interface SyntheticLayoutShift extends TraceEventLayoutShift {
   parsedData: LayoutShiftParsedData;
 }
 
-export type Priority = 'Low'|'High'|'Medium'|'VeryHigh'|'Highest';
+export type Priority = 'VeryLow'|'Low'|'Medium'|'High'|'VeryHigh';
 export type FetchPriorityHint = 'low'|'high'|'auto';
 export type RenderBlocking = 'blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking';
 

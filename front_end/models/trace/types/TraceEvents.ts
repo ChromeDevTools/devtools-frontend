@@ -2211,6 +2211,23 @@ export function isTraceEventV8Compile(event: TraceEventData): event is TraceEven
   return event.name === KnownEventName.Compile;
 }
 
+export interface TraceEventFunctionCall extends TraceEventComplete {
+  name: KnownEventName.FunctionCall;
+  args: TraceEventArgs&{
+    data?: {
+      frame?: string,
+      columnNumber?: number,
+      lineNumber?: number,
+      functionName?: string,
+      scriptId?: number,
+      url?: string,
+    },
+  };
+}
+export function isTraceEventFunctionCall(event: TraceEventData): event is TraceEventFunctionCall {
+  return event.name === KnownEventName.FunctionCall;
+}
+
 /**
  * Generally, before JS is executed, a trace event is dispatched that
  * parents the JS calls. These we call "invocation" events. This

@@ -474,29 +474,6 @@ export class TimelineModelImpl {
         break;
       }
 
-      // @ts-ignore fallthrough intended.
-      case RecordType.FunctionCall: {
-        // Compatibility with old format.
-        if (typeof eventData['scriptName'] === 'string') {
-          eventData['url'] = eventData['scriptName'];
-        }
-        if (typeof eventData['scriptLine'] === 'number') {
-          eventData['lineNumber'] = eventData['scriptLine'];
-        }
-      }
-
-      case RecordType.EvaluateScript:
-      case RecordType.CompileScript:
-      // @ts-ignore fallthrough intended.
-      case RecordType.CacheScript: {
-        if (typeof eventData['lineNumber'] === 'number') {
-          --eventData['lineNumber'];
-        }
-        if (typeof eventData['columnNumber'] === 'number') {
-          --eventData['columnNumber'];
-        }
-      }
-
       case RecordType.RunMicrotasks: {
         // Microtasks technically are not necessarily scripts, but for purpose of
         // forced sync style recalc or layout detection they are.

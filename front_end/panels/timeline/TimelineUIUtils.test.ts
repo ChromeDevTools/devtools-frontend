@@ -68,20 +68,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('creates top frame location text for function calls', async function() {
-    const event = new TraceEngine.Legacy.ConstructedEvent(
-        'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-
-    event.addArgs({
-      data: {
-        functionName: 'test',
-        url: 'test.js',
-        scriptId: SCRIPT_ID_STRING,
-        lineNumber: 0,
-        columnNumber: 0,
-      },
-    });
+    const events = await TraceLoader.rawEvents(this, 'one-second-interaction.json.gz');
+    const functionCallEvent = events.find(TraceEngine.Types.TraceEvents.isTraceEventFunctionCall);
+    assert.isOk(functionCallEvent);
     assert.strictEqual(
-        'test.js:1:1', await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(event));
+        'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:11:43',
+        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(functionCallEvent));
   });
 
   it('creates top frame location text as a fallback', async function() {
@@ -94,27 +86,30 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   describe('script location as an URL', function() {
-    let event: TraceEngine.Legacy.ConstructedEvent;
-    beforeEach(() => {
-      event = new TraceEngine.Legacy.ConstructedEvent(
-          'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
-          TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-
-      event.addArgs({
-        data: {
-          functionName: 'test',
-          url: 'https://google.com/test.js',
-          scriptId: SCRIPT_ID_STRING,
-          lineNumber: 0,
-          columnNumber: 0,
-        },
-      });
-    });
     it('makes the script location of a call frame a full URL when the inspected target is not the same the call frame was taken from (e.g. a loaded file)',
        async function() {
+         const fakeFunctionCall: TraceEngine.Types.TraceEvents.TraceEventFunctionCall = {
+           name: TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall,
+           ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+           cat: 'devtools-timeline',
+           dur: TraceEngine.Types.Timing.MicroSeconds(100),
+           ts: TraceEngine.Types.Timing.MicroSeconds(100),
+           pid: TraceEngine.Types.TraceEvents.ProcessID(1),
+           tid: TraceEngine.Types.TraceEvents.ThreadID(1),
+           args: {
+             data: {
+               functionName: 'test',
+               url: 'https://google.com/test.js',
+               scriptId: Number(SCRIPT_ID_STRING),
+               lineNumber: 1,
+               columnNumber: 1,
+             },
+           },
+         };
+
          target.setInspectedURL('https://not-google.com' as Platform.DevToolsPath.UrlString);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-             event, target, new Components.Linkifier.Linkifier());
+             fakeFunctionCall, target, new Components.Linkifier.Linkifier());
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }
@@ -123,9 +118,27 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
     it('makes the script location of a call frame a script name when the inspected target is the one the call frame was taken from',
        async function() {
+         const fakeFunctionCall: TraceEngine.Types.TraceEvents.TraceEventFunctionCall = {
+           name: TraceEngine.Types.TraceEvents.KnownEventName.FunctionCall,
+           ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+           cat: 'devtools-timeline',
+           dur: TraceEngine.Types.Timing.MicroSeconds(100),
+           ts: TraceEngine.Types.Timing.MicroSeconds(100),
+           pid: TraceEngine.Types.TraceEvents.ProcessID(1),
+           tid: TraceEngine.Types.TraceEvents.ThreadID(1),
+           args: {
+             data: {
+               functionName: 'test',
+               url: 'https://google.com/test.js',
+               scriptId: Number(SCRIPT_ID_STRING),
+               lineNumber: 1,
+               columnNumber: 1,
+             },
+           },
+         };
          target.setInspectedURL('https://google.com' as Platform.DevToolsPath.UrlString);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-             event, target, new Components.Linkifier.Linkifier());
+             fakeFunctionCall, target, new Components.Linkifier.Linkifier());
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }

@@ -122,7 +122,6 @@ describeWithEnvironment('TraceModel helpers', function() {
                       ?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
       if (!fcp || !fcp.event) {
         assert.fail('FCP not found');
-        return;
       }
       const navigationForFirstRequest =
           TraceModel.Helpers.Trace.getNavigationForTraceEvent(fcp.event, Meta.mainFrameId, Meta.navigationsByFrameId);
@@ -417,6 +416,33 @@ describeWithEnvironment('TraceModel helpers', function() {
         '@ 41818.833 for 2005.601: third measure',
       ]);
       assert.strictEqual(synthEvents.length, 237);
+    });
+  });
+
+  describe('getZeroIndexedLineAndColumnNumbersForEvent', () => {
+    it('subtracts one from the line number of a function call', async () => {
+      const fakeFunctionCall: TraceModel.Types.TraceEvents.TraceEventFunctionCall = {
+        name: TraceModel.Types.TraceEvents.KnownEventName.FunctionCall,
+        ph: TraceModel.Types.TraceEvents.Phase.COMPLETE,
+        cat: 'devtools-timeline',
+        dur: TraceModel.Types.Timing.MicroSeconds(100),
+        ts: TraceModel.Types.Timing.MicroSeconds(100),
+        pid: TraceModel.Types.TraceEvents.ProcessID(1),
+        tid: TraceModel.Types.TraceEvents.ThreadID(1),
+        args: {
+          data: {
+            functionName: 'test',
+            url: 'https://google.com/test.js',
+            scriptId: Number(123),
+            lineNumber: 1,
+            columnNumber: 1,
+          },
+        },
+      };
+      assert.deepEqual(TraceModel.Helpers.Trace.getZeroIndexedLineAndColumnNumbersForEvent(fakeFunctionCall), {
+        lineNumber: 0,
+        columnNumber: 0,
+      });
     });
   });
 });

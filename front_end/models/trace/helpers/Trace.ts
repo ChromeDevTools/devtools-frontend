@@ -312,3 +312,69 @@ export function createMatchedSortedSyntheticEvents<T extends Types.TraceEvents.T
   const syntheticEvents = createSortedSyntheticEvents<T>(matchedPairs, syntheticEventCallback);
   return syntheticEvents;
 }
+
+/**
+ * Different trace events return line/column numbers that are 1 or 0 indexed.
+ * This function knows which events return 1 indexed numbers and normalizes
+ * them. The UI expects 0 indexed line numbers, so that is what we return.
+ */
+export function getZeroIndexedLineAndColumnNumbersForEvent(event: Types.TraceEvents.TraceEventData): {
+  lineNumber?: number,
+  columnNumber?: number,
+} {
+  // Some events emit line numbers that are 1 indexed, but the UI layer expects
+  // numbers to be 0 indexed. So here, if the event matches a known 1-indexed
+  // number event, we subtract one from the line and column numbers.
+  // Otherwise, if the event has args.data.lineNumber/colNumber, we return it
+  // as is.
+  const numbers = getRawLineAndColumnNumbersForEvent(event);
+  const {lineNumber, columnNumber} = numbers;
+
+  switch (event.name) {
+    // All these events have line/column numbers which are 1 indexed; so we
+    // subtract to make them 0 indexed.
+    case Types.TraceEvents.KnownEventName.FunctionCall:
+    case Types.TraceEvents.KnownEventName.EvaluateScript:
+    case Types.TraceEvents.KnownEventName.Compile:
+    case Types.TraceEvents.KnownEventName.CacheScript: {
+      return {
+        lineNumber: typeof lineNumber === 'number' ? lineNumber - 1 : undefined,
+        columnNumber: typeof columnNumber === 'number' ? columnNumber - 1 : undefined,
+      };
+    }
+    default: {
+      return numbers;
+    }
+  }
+}
+
+/**
+ * NOTE: you probably do not want this function! (Which is why it is not exported).
+ *
+ * Some trace events have 0 indexed line/column numbers, and others have 1
+ * indexed. This function does NOT normalize them, but
+ * `getZeroIndexedLineAndColumnNumbersForEvent` does. It is best to use that!
+ *
+ * @see {@link getZeroIndexedLineAndColumnNumbersForEvent}
+ **/
+function getRawLineAndColumnNumbersForEvent(event: Types.TraceEvents.TraceEventData): {
+  lineNumber?: number,
+  columnNumber?: number,
+} {
+  if (!event.args?.data) {
+    return {
+      lineNumber: undefined,
+      columnNumber: undefined,
+    };
+  }
+  let lineNumber: number|undefined = undefined;
+  let columnNumber: number|undefined = undefined;
+  if ('lineNumber' in event.args.data && typeof event.args.data.lineNumber === 'number') {
+    lineNumber = event.args.data.lineNumber;
+  }
+  if ('columnNumber' in event.args.data && typeof event.args.data.columnNumber === 'number') {
+    columnNumber = event.args.data.columnNumber;
+  }
+
+  return {lineNumber, columnNumber};
+}

@@ -795,12 +795,13 @@ export class TimelineUIUtils {
         detailsText = i18nString(UIStrings.sCollected, {PH1: Platform.NumberUtilities.bytesToString(delta)});
         break;
       }
-      case recordType.FunctionCall:
-        if (eventData && eventData['url'] && eventData['lineNumber'] !== undefined &&
-            eventData['columnNumber'] !== undefined) {
-          detailsText = eventData.url + ':' + (eventData.lineNumber + 1) + ':' + (eventData.columnNumber + 1);
+      case recordType.FunctionCall: {
+        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        if (lineNumber !== undefined && columnNumber !== undefined) {
+          detailsText = eventData.url + ':' + (lineNumber + 1) + ':' + (columnNumber + 1);
         }
         break;
+      }
       case recordType.JSRoot:
       case recordType.JSFrame:
       case recordType.JSIdleFrame:
@@ -836,9 +837,10 @@ export class TimelineUIUtils {
       case recordType.CompileScript:
       case recordType.CacheScript:
       case recordType.EvaluateScript: {
+        const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
         const url = eventData && eventData['url'];
         if (url) {
-          detailsText = Bindings.ResourceUtils.displayNameForURL(url) + ':' + (eventData['lineNumber'] + 1);
+          detailsText = Bindings.ResourceUtils.displayNameForURL(url) + ':' + ((lineNumber || 0) + 1);
         }
         break;
       }
@@ -978,11 +980,12 @@ export class TimelineUIUtils {
       case recordType.JSFrame: {
         details = document.createElement('span');
         UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(eventData));
+        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
         const location = this.linkifyLocation({
           scriptId: eventData['scriptId'],
           url: eventData['url'],
-          lineNumber: eventData['lineNumber'],
-          columnNumber: eventData['columnNumber'],
+          lineNumber: lineNumber || 0,
+          columnNumber: columnNumber,
           target,
           isFreshRecording,
           linkifier,
@@ -1013,10 +1016,11 @@ export class TimelineUIUtils {
       case recordType.EvaluateScript: {
         const url = eventData['url'];
         if (url) {
+          const {lineNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
           details = this.linkifyLocation({
             scriptId: null,
             url,
-            lineNumber: eventData['lineNumber'],
+            lineNumber: lineNumber || 0,
             columnNumber: 0,
             target,
             isFreshRecording,
@@ -1263,9 +1267,8 @@ export class TimelineUIUtils {
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isTraceEventV8Compile(event)) {
       url = event.args.data?.url as Platform.DevToolsPath.UrlString;
       if (url) {
-        const lineNumber = event.args?.data?.lineNumber || 0;
-        const columnNumber = event.args?.data?.columnNumber;
-        contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber, columnNumber);
+        const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+        contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
       }
       const isEager = Boolean(event.args.data?.eager);
       if (isEager) {
@@ -1348,8 +1351,8 @@ export class TimelineUIUtils {
       case recordTypes.CacheScript: {
         url = eventData && eventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
-          contentHelper.appendLocationRow(
-              i18nString(UIStrings.script), url, eventData['lineNumber'], eventData['columnNumber']);
+          const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+          contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
         }
         contentHelper.appendTextRow(
             i18nString(UIStrings.compilationCacheSize),
@@ -1360,8 +1363,8 @@ export class TimelineUIUtils {
       case recordTypes.EvaluateScript: {
         url = eventData && eventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
-          contentHelper.appendLocationRow(
-              i18nString(UIStrings.script), url, eventData['lineNumber'], eventData['columnNumber']);
+          const {lineNumber, columnNumber} = getZeroIndexedLineAndColumnNumbersForEvent(event);
+          contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
         }
         break;
       }
@@ -2727,4 +2730,21 @@ function maybeTargetForEvent(
   }
 
   return targetForEvent(traceParsedData, event);
+}
+
+// This function only exists to abstract dealing with two different event types
+// whilst we are in the middle of the migration. We are working on removing the
+// CompatibleTraceEvent type, at which point this method can be removed and we
+// can use the method in TraceEngine.Helpers directly
+function getZeroIndexedLineAndColumnNumbersForEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): {
+  lineNumber?: number,
+  columnNumber?: number,
+} {
+  if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+    return TraceEngine.Helpers.Trace.getZeroIndexedLineAndColumnNumbersForEvent(event);
+  }
+  return {
+    lineNumber: undefined,
+    columnNumber: undefined,
+  };
 }

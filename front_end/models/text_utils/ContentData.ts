@@ -98,7 +98,7 @@ export class ContentData {
       const charset = this.isTextContent ? this.charset : null;
       return contentAsDataURL(this.#contentAsBase64, this.mimeType ?? '', true, charset);
     }
-    return contentAsDataURL(this.text, this.mimeType ?? '', false);
+    return contentAsDataURL(this.text, this.mimeType ?? '', false, 'utf-8');
   }
 
   /**

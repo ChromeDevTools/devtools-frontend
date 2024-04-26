@@ -41,7 +41,7 @@ describeWithLocale('RequestPreviewView', () => {
     component.detach();
   });
 
-  it('does not add utf-8 charset to the data URL for the HTML preview for already decoded content', async () => {
+  it('does add utf-8 charset to the data URL for the HTML preview for already decoded content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
@@ -59,7 +59,7 @@ describeWithLocale('RequestPreviewView', () => {
     const frame = widget.contentElement.querySelector('iframe');
     assert.exists(frame);
 
-    assert.notInclude(frame.src, 'charset=utf-8');
+    assert.include(frame.src, 'charset=utf-8');
     assert.notInclude(frame.src, ' base64');
   });
 

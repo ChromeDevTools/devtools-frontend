@@ -154,6 +154,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
   }
 
+  hasTrackConfigurationMode(): boolean {
+    return true;
+  }
+
   modifyTree(node: number, action: TraceEngine.EntriesFilter.FilterAction): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.SyntheticTraceEntry;
 

@@ -56,6 +56,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#maxLevel;
   }
 
+  hasTrackConfigurationMode(): boolean {
+    return false;
+  }
+
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     if (this.#timelineDataInternal && this.#timelineDataInternal.entryLevels.length !== 0) {
       // The flame chart data is built already, so return the cached data.

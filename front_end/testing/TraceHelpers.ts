@@ -139,7 +139,6 @@ export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Rend
   const tree = thread.tree;
   if (!tree) {
     assert(false, `Couldn't get tree in thread ${thread.name}`);
-    return null as never;
   }
   return tree;
 }
@@ -154,7 +153,6 @@ export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Re
   const node = [...tree.roots][index];
   if (node === undefined) {
     assert(false, `Couldn't get the id of the root at index ${index} in thread ${thread.name}`);
-    return null as never;
   }
   return node;
 }
@@ -202,7 +200,6 @@ export function getNodeFor(
   const node = findNode(tree.roots, nodeId);
   if (!node) {
     assert(false, `Couldn't get the node with id ${nodeId} in thread ${thread.name}`);
-    return null as never;
   }
   return node;
 }
@@ -521,6 +518,10 @@ export function makeMockSamplesHandlerData(profileCalls: TraceEngine.Types.Trace
 export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   minimumBoundary(): number {
     return 0;
+  }
+
+  hasTrackConfigurationMode(): boolean {
+    return false;
   }
 
   totalTime(): number {

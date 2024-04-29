@@ -386,6 +386,10 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     this.maxLevel = 0;
   }
 
+  hasTrackConfigurationMode(): boolean {
+    return false;
+  }
+
   /**
    * Add a group with |name| that can contain |depth| different tracks.
    */

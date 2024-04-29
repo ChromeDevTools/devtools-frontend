@@ -159,7 +159,21 @@ async function process(): Promise<void> {
         document.addEventListener('dragend', maybeCancelDrag, {capture: true});
       }
       if (loggingState.config.track?.change) {
+        element.addEventListener('input', (event: Event) => {
+          if (!(event instanceof InputEvent)) {
+            return;
+          }
+          if (loggingState.lastInputEventType && loggingState.lastInputEventType !== event.inputType) {
+            void logChange(event);
+          }
+          loggingState.lastInputEventType = event.inputType;
+        }, {capture: true});
         element.addEventListener('change', logChange, {capture: true});
+        element.addEventListener('focusout', event => {
+          if (loggingState.lastInputEventType) {
+            void logChange(event);
+          }
+        }, {capture: true});
       }
       const trackKeyDown = loggingState.config.track?.keydown;
       if (trackKeyDown) {

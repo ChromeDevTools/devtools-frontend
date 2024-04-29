@@ -185,7 +185,6 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   detach(): void {
-    this.maybeDispatchChange();
     this.removeFromElement();
     if (this.focusRestorer) {
       this.focusRestorer.restore();
@@ -478,16 +477,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
   }
 
-  private maybeDispatchChange(): void {
-    if (this.changed && this.elementInternal) {
-      this.elementInternal.dispatchEvent(new Event('change'));
-      this.changed = false;
-    }
-  }
-
   private onBlur(): void {
     this.clearAutocomplete();
-    this.maybeDispatchChange();
   }
 
   private refreshGhostText(): void {

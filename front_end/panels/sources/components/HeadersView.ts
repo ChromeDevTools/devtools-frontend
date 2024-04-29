@@ -170,11 +170,9 @@ export class HeadersViewComponent extends HTMLElement {
       // onFocusOut will remove the header -> blur instead of focusing on next editable
       event.preventDefault();
       target.blur();
-      target.dispatchEvent(new Event('change'));
     } else if (keyboardEvent.key === 'Enter') {
       event.preventDefault();
       target.blur();
-      target.dispatchEvent(new Event('change'));
       this.#focusNext(target);
     } else if (keyboardEvent.key === 'Escape') {
       event.consume();

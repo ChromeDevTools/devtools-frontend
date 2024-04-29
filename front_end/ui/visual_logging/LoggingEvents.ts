@@ -90,8 +90,13 @@ export async function logChange(event: Event): Promise<void> {
   const loggingState = getLoggingState(event.currentTarget as Element);
   assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
+  const context = loggingState.lastInputEventType;
+  delete loggingState.lastInputEventType;
+  if (context) {
+    changeEvent.context = await contextAsNumber(context);
+  }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordChange(changeEvent);
-  processEventForDebugging('Change', loggingState);
+  processEventForDebugging('Change', loggingState, {context});
 }
 
 let pendingKeyDownContext: string|null = null;

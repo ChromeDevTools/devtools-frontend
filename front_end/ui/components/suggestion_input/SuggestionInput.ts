@@ -298,12 +298,8 @@ export class SuggestionInput extends LitElement {
 
   #handleBlurEvent = (): void => {
     window.getSelection()?.removeAllRanges();
-    const changed = this.value !== this.#editableContent.value;
     this.value = this.#editableContent.value;
     this.expression = this.#editableContent.value;
-    if (changed) {
-      this.dispatchEvent(new Event('change'));
-    }
   };
 
   #handleFocusEvent = (event: FocusEvent): void => {

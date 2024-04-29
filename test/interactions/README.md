@@ -49,6 +49,7 @@ This tells the test runner to update any screenshots that fail. Once you've done
 2. Trigger a CQ run and wait for it to finish.
 3. Fetch the new screenshots from the bots by using `./scripts/tools/update_goldens_v2.py`.
 
+Note that if you do this step on Linux, you shouldn't need to then get the updates from the bot, because the bots also test and run on Linux.
 
 ### Generating and/or updating screenshots via CQ bots
 

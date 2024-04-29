@@ -44,6 +44,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.titlesElement = document.createElement('div');
     this.titlesElement.classList.add('titles');
     this.titlesElement.classList.add('no-subtitle');
+    this.titlesElement.setAttribute('jslog', `${VisualLogging.value('title').track({dblclick: true, change: true})}`);
     this.titleContainer = this.titlesElement.createChild('span', 'title-container');
     this.titleElement = this.titleContainer.createChild('span', 'title');
     this.subtitleElement = this.titlesElement.createChild('span', 'subtitle');

@@ -1370,6 +1370,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.navigatorView = navigatorView;
     this.uiSourceCodeInternal = uiSourceCode;
     this.updateIcon();
+    (this.titleElement as HTMLElement).setAttribute('jslog', `${VisualLogging.value('title').track({change: true})}`);
   }
 
   updateIcon(): void {

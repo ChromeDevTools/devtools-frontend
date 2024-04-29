@@ -272,7 +272,8 @@ export class StylePropertiesSection {
     }
 
     this.selectorElement.addEventListener('click', this.handleSelectorClick.bind(this), false);
-    this.selectorElement.setAttribute('jslog', `${VisualLogging.stylesSelector().track({click: true})}`);
+    this.selectorElement.setAttribute(
+        'jslog', `${VisualLogging.cssQuery('selector').track({click: true, change: true})}`);
     this.element.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.element.addEventListener('mousedown', this.handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this.handleEmptySpaceClick.bind(this), false);
@@ -850,6 +851,7 @@ export class StylePropertiesSection {
       queryPrefix,
       queryText,
       onQueryTextClick,
+      jslogContext: 'media-query',
     };
     return mediaQueryElement;
   }
@@ -871,6 +873,7 @@ export class StylePropertiesSection {
       queryName: containerQuery.name,
       queryText: containerQuery.text,
       onQueryTextClick,
+      jslogContext: 'container-query',
     };
     if (!/^style\(.*\)/.test(containerQuery.text)) {
       // We only add container element for non-style queries.
@@ -890,6 +893,7 @@ export class StylePropertiesSection {
       queryPrefix: '@scope',
       queryText: scope.text,
       onQueryTextClick,
+      jslogContext: 'scope',
     };
     return scopeElement;
   }
@@ -910,6 +914,7 @@ export class StylePropertiesSection {
       queryPrefix: '@supports',
       queryText: supports.text,
       onQueryTextClick,
+      jslogContext: 'supports',
     };
     return supportsElement;
   }

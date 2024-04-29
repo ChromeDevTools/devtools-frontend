@@ -13,6 +13,7 @@ describe('CSSQuery', () => {
     component.data = {
       queryPrefix: '@container',
       queryText: '(min-width: 10px)',
+      jslogContext: 'foo',
     };
 
     const queryElement = component.shadowRoot!.querySelector<HTMLElement>('.query');
@@ -36,6 +37,7 @@ describe('CSSQuery', () => {
       queryName: 'container-query-1',
       queryText: '(max-width: 10px)',
       onQueryTextClick: clickListener,
+      jslogContext: 'foo',
     };
 
     const queryElement = component.shadowRoot!.querySelector<HTMLElement>('.query');

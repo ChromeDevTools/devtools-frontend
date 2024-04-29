@@ -48,6 +48,7 @@ export const counter = LoggingConfig.makeConfigStringBuilder.bind(null, 'Counter
  */
 export const controlPoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'ControlPoint');
 export const cssColorMix = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssColorMix');
+export const cssQuery = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssQuery');
 export const deviceModeRuler = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeviceModeRuler');
 export const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 export const drawer = LoggingConfig.makeConfigStringBuilder.bind(null, 'Drawer');
@@ -91,7 +92,6 @@ export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 
 export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
 export const section = LoggingConfig.makeConfigStringBuilder.bind(null, 'Section');
 export const sectionHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'SectionHeader');
-export const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
 export const tableRow = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableRow');
 export const tableCell = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableCell');
 export const tableHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableHeader');

@@ -5,6 +5,7 @@
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import cssQueryStyles from './cssQuery.css.js';
 
@@ -15,6 +16,7 @@ export interface CSSQueryData {
   queryName?: string;
   queryText: string;
   onQueryTextClick?: (event: Event) => void;
+  jslogContext: string;
 }
 
 export class CSSQuery extends HTMLElement {
@@ -25,12 +27,14 @@ export class CSSQuery extends HTMLElement {
   #queryName?: string;
   #queryText: string = '';
   #onQueryTextClick?: (event: Event) => void;
+  #jslogContext?: string;
 
   set data(data: CSSQueryData) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
     this.#queryText = data.queryText;
     this.#onQueryTextClick = data.onQueryTextClick;
+    this.#jslogContext = data.jslogContext;
     this.#render();
   }
 
@@ -54,7 +58,7 @@ export class CSSQuery extends HTMLElement {
     `;
 
     render(html`
-      <div class=${queryClasses}>
+      <div class=${queryClasses} jslog=${VisualLogging.cssQuery(this.#jslogContext).track({click:true, change: true})}>
         <slot name="indent"></slot>${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : LitHtml.nothing}${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : LitHtml.nothing}${queryText} {
       </div>
     `, this.#shadow, {

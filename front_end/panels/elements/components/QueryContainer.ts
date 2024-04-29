@@ -6,6 +6,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {type DOMNode} from './Helper.js';
 import queryContainerStyles from './queryContainer.css.js';
@@ -85,6 +86,7 @@ export class QueryContainer extends HTMLElement {
       <a href="#"
         draggable=false
         class="container-link"
+        jslog=${VisualLogging.cssQuery('container-query').track({click: true})}
         @click=${this.#onContainerLinkClick}
         @mouseenter=${this.#onContainerLinkMouseEnter}
         @mouseleave=${this.#onContainerLinkMouseLeave}

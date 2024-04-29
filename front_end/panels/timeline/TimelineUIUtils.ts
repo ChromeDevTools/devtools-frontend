@@ -2748,3 +2748,37 @@ function getZeroIndexedLineAndColumnNumbersForEvent(event: TraceEngine.Legacy.Co
     columnNumber: undefined,
   };
 }
+
+// TODO: once the CompatibleTraceEvent type is removed, this function can be
+// updated to take only new types.
+export function urlForEvent(
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null,
+    event: TraceEngine.Legacy.CompatibleTraceEvent): Platform.DevToolsPath.UrlString|null {
+  if (!traceParsedData || !TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+    return null;
+  }
+
+  // DecodeImage events use the URL from the relevant PaintImage event.
+  if (TraceEngine.Types.TraceEvents.isTraceEventDecodeImage(event)) {
+    const paintEvent = traceParsedData.ImagePainting.paintImageForEvent.get(event);
+    return paintEvent ? urlForEvent(traceParsedData, paintEvent) : null;
+  }
+
+  // DrawLazyPixelRef events use the URL from the relevant PaintImage event.
+  if (TraceEngine.Types.TraceEvents.isTraceEventDrawLazyPixelRef(event) && event.args?.LazyPixelRef) {
+    const paintEvent = traceParsedData.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
+    return paintEvent ? urlForEvent(traceParsedData, paintEvent) : null;
+  }
+
+  // ParseHTML events store the URL under beginData, not data.
+  if (TraceEngine.Types.TraceEvents.isTraceEventParseHTML(event)) {
+    return event.args.beginData.url as Platform.DevToolsPath.UrlString;
+  }
+
+  // For all other events, try to see if the URL is provided, else return null.
+  if (event.args?.data?.url) {
+    return event.args.data.url as Platform.DevToolsPath.UrlString;
+  }
+
+  return null;
+}

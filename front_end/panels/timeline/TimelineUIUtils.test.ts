@@ -1292,4 +1292,37 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(name, '"test-…long"');
     });
   });
+
+  describe('urlForEvent', () => {
+    it('returns the URL if it has one', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const commitLoadEvent =
+          traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventCommitLoad);
+      assert.isOk(commitLoadEvent);
+      const url = Timeline.TimelineUIUtils.urlForEvent(traceParsedData, commitLoadEvent);
+      assert.isNotNull(url);
+      assert.strictEqual(url, commitLoadEvent.args.data?.url);
+    });
+
+    it('finds the URL for a ParseHTML event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parseHTMLEvent =
+          traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventParseHTML);
+      assert.isOk(parseHTMLEvent);
+      const url = Timeline.TimelineUIUtils.urlForEvent(traceParsedData, parseHTMLEvent);
+      assert.isNotNull(url);
+      assert.strictEqual(url, parseHTMLEvent.args.beginData.url);
+    });
+
+    it('uses the PaintImage URL for a DecodeImage event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const decodeImage =
+          traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDecodeImage);
+      assert.isOk(decodeImage);
+      const url = Timeline.TimelineUIUtils.urlForEvent(traceParsedData, decodeImage);
+      assert.isNotNull(url);
+      assert.strictEqual(
+          url, 'https://web-dev.imgix.net/image/admin/WkMOiDtaDgiAA2YkRZ5H.jpg?fit=crop&h=64&w=64&dpr=1&q=75');
+    });
+  });
 });

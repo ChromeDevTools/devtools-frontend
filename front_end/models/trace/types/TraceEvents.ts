@@ -91,6 +91,7 @@ export interface TraceEventArgs {
 
 export interface TraceEventArgsData {
   stackTrace?: TraceEventCallFrame[];
+  url?: string;
   navigationId?: string;
   frame?: string;
 }

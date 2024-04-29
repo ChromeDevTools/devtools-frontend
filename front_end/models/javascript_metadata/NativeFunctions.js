@@ -7864,7 +7864,7 @@ export const NativeFunctions = [
   },
   {
     name: "softplus",
-    signatures: [["?options"],["input","?options"]]
+    signatures: [["?input"]]
   },
   {
     name: "softsign",

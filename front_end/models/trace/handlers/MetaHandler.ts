@@ -214,16 +214,35 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     for (const frame of (event.args.data.frames ?? [])) {
       updateRendererProcessByFrame(event, frame);
 
-      if (frame.parent) {
-        continue;
+      if (!frame.parent) {
+        topLevelRendererIds.add(frame.processId);
       }
 
-      if (frame.url) {
-        mainFrameId = frame.frame;
-        mainFrameURL = frame.url;
+      // isOutermostMainFrame was added to trace events in April 2024
+      // [crrev.com/c/5424783].
+      // If our trace has that, it is the most accurate way of determining the
+      // main frame, as only one frame will have it set to true.
+      const canUseIsOutermostToDetermineMainFrame = 'isOutermostMainFrame' in frame;
+      if (canUseIsOutermostToDetermineMainFrame) {
+        // We have a "new" trace with isOutermostMainFrame. Therefore we mark
+        // the frame as the main frame if and ONLY IF it has
+        // isOutermostMainFrame set to true.
+        if (frame.isOutermostMainFrame) {
+          mainFrameId = frame.frame;
+          mainFrameURL = frame.url;
+        }
+      } else {
+        // We have an "old" trace without isOutermostMainFrame.
+        // We fallback to looking for frames without a parent, and that have a
+        // URL set. This is a crude but pretty reliable way to determine the
+        // main frame.
+        if (!frame.parent && frame.url) {
+          mainFrameId = frame.frame;
+          mainFrameURL = frame.url;
+        }
       }
-      topLevelRendererIds.add(frame.processId);
     }
+
     return;
   }
 

@@ -112,6 +112,9 @@ export interface TraceFrame {
   processId: ProcessID;
   url: string;
   parent?: string;
+  // Added to Chromium in April 2024:
+  // crrev.com/c/5424783
+  isOutermostMainFrame?: boolean;
 }
 
 // Sample events.

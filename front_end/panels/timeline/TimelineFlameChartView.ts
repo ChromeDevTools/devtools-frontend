@@ -260,15 +260,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkDataProvider.setModel(newTraceEngineData);
     ExtensionDataGatherer.instance().modelChanged(newTraceEngineData);
     this.#reset();
-
-    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
-    if (!traceBoundsState) {
-      throw new Error('TimelineFlameChartView could not set the window bounds.');
-    }
-    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-    this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
-    this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
-    this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
@@ -286,6 +277,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
     this.updateSearchResults(false, false);
+
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (!traceBoundsState) {
+      throw new Error('TimelineFlameChartView could not set the window bounds.');
+    }
+    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+    this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
+    this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
   }
 
   #updateDetailViews(): void {

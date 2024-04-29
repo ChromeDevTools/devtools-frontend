@@ -32,6 +32,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
@@ -85,6 +86,15 @@ const UIStrings = {
    *@description Text for an action that shows all of the hidden entries of the Flame Chart
    */
   resetTrace: 'Reset trace',
+
+  /**
+   *@description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
+   */
+  enterTrackConfigurationMode: 'Configure tracks…',
+  /**
+   *@description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
+   */
+  exitTrackConfigurationMode: 'Finish configuring tracks',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -95,59 +105,40 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * |headerLeftPadding|Arrow|
  * |expansionArrowIndent|
  *
- * Normal mode:
- * - Nesting Level 0
- * |ICON_WIDTH|expansionArrowIndent|
- * |headerLeftPadding|EDIT  ICON|Arrow|LabelXPadding|Title|LabelXPadding|
- *                   |ICON WIDTH|<--            labelWidth           -->|
- *
- * - Nesting Level 1
- * |ICON_WIDTH|expansionArrowIndent|expansionArrowIndent|
- * |headerLeftPadding|EDIT  ICON|                    |Arrow|LabelXPadding|Title|LabelXPadding|
- *                   |ICON WIDTH|<--                      labelWidth                      -->|
- *
- * - Nesting Level 2
- * |ICON_WIDTH|expansionArrowIndent|expansionArrowIndent|expansionArrowIndent|
- * |headerLeftPadding|EDIT  ICON|                                         |Arrow|LabelXPadding|Title|LabelXPadding|
- *                   |ICON WIDTH|<--                                labelWidth                                 -->|
- *
- * Edit mode:
- * - Nesting Level 0
- * |       EDITION_MODE_INDENT      |expansionArrowIndent|
- * |headerLeftPadding| UP   ICON|DOWN  ICON|HIDE  ICON|Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
- *                   |<-    EDITION_MODE_INDENT     ->|<--            labelWidth           -->|
- *
- * - Nesting Level 1
- * |       EDITION_MODE_INDENT      |expansionArrowIndent|expansionArrowIndent|
- * |headerLeftPadding| UP   ICON|DOWN  ICON|HIDE  ICON|                    |Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
- *                   |<-    EDITION_MODE_INDENT     ->|<--                      labelWidth                      -->|
- *
- * - Nesting Level 2
- * |       EDITION_MODE_INDENT      |expansionArrowIndent|expansionArrowIndent|expansionArrowIndent|
- * |headerLeftPadding| UP   ICON|DOWN  ICON|HIDE  ICON|                                         |Arrow|LabelXPadding|Title|LabelXPadding|SAVE  ICON|
- *                   |<-    EDITION_MODE_INDENT     ->|<--                                labelWidth                                 -->|
- */
+ * When we are in edit mode, we render 3 icons to the left of the track's title.
+ * When we are in normal mode, there are no icons to the left of the track's title.
+ **/
+
+// Placed to the left of the track header.
 const HEADER_LEFT_PADDING = 6;
 const ARROW_SIDE = 8;
+
 const EXPANSION_ARROW_INDENT = HEADER_LEFT_PADDING + ARROW_SIDE / 2;
 const HEADER_LABEL_X_PADDING = 3;
 const HEADER_LABEL_Y_PADDING = 2;
 
-const ICON_LEFT_PADDING = HEADER_LEFT_PADDING;
-// This number is get from front_end/ui/components/buttons/button.css
-const EDIT_BUTTON_SIZE = 16;
-const EDITION_MODE_INDENT = EDIT_BUTTON_SIZE * 3;
-const UP_ICON_LEFT = ICON_LEFT_PADDING;
-const DOWN_ICON_LEFT = UP_ICON_LEFT + EDIT_BUTTON_SIZE;
-const HIDE_ICON_LEFT = DOWN_ICON_LEFT + EDIT_BUTTON_SIZE;
-const EDIT_ICON_LEFT = ICON_LEFT_PADDING;
+// The width of each of the edit mode icons.
+const EDIT_ICON_WIDTH = 16;
+// This gap might seem quite small - but the icons themselves have some
+// whitespace either side, so we don't need a huge gap.
+const GAP_BETWEEN_EDIT_ICONS = 3;
+// The UP icon is first, and is rendered in from the left just as the track text.
+const UP_ICON_LEFT = HEADER_LEFT_PADDING;
+// The DOWN icon is after the UP icon, hence we take the up icon's position,
+// add its width and then the gap between them.
+const DOWN_ICON_LEFT = UP_ICON_LEFT + EDIT_ICON_WIDTH + GAP_BETWEEN_EDIT_ICONS;
+// The HIDE icon is after the DOWN icon, hence we take the up icon's position,
+// add its width and then the gap between them.
+const HIDE_ICON_LEFT = DOWN_ICON_LEFT + EDIT_ICON_WIDTH + GAP_BETWEEN_EDIT_ICONS;
+
+// Represents the total width taken by the 3 icons (up, down, hide/show, and
+// the gap between them.)
+// We calculate this by taking the space to the left of the hide icon (which
+// encompasses UP/DOWN icons), adding on the width of the HIDE icon, and then a
+// bit of extra padding.
+const EDIT_MODE_TOTAL_ICON_WIDTH = HIDE_ICON_LEFT + EDIT_ICON_WIDTH + GAP_BETWEEN_EDIT_ICONS;
 
 // These are copied from front_end/images/*.svg, because we need to draw them with canvas.
-// edit.svg
-const editIconPath =
-    'M4.5 15.5h.875l7.875-7.875-.438-.437-.437-.438L4.5 14.625v.875ZM3 17v-3L13.708 3.292A.965.965 0 0 1 14.417 3c.277 0 .513.097.708.292l1.583 1.583c.195.195.292.43.292.708a.965.965 0 0 1-.292.709L6 17H3Zm10.25-9.375-.438-.437-.437-.438.875.875Z';
-// checkmark.svg
-const saveIconPath = 'm8.229 14.062-3.521-3.541L5.75 9.479l2.479 2.459 6.021-6L15.292 7l-7.063 7.062Z';
 // arrow-up.svg
 const moveUpIconPath = 'M9.25 17V5.875L7.062 8.062L6 7L10 3L14 7L12.938 8.062L10.75 5.875V17H9.25Z';
 // arrow-down.svg
@@ -165,8 +156,6 @@ export const enum HoverType {
   TRACK_CONFIG_DOWN_BUTTON = 'TRACK_CONFIG_DOWN_BUTTON',
   TRACK_CONFIG_HIDE_BUTTON = 'TRACK_CONFIG_HIDE_BUTTON',
   TRACK_CONFIG_SHOW_BUTTON = 'TRACK_CONFIG_SHOW_BUTTON',
-  TRACK_CONFIG_EDIT_BUTTON = 'TRACK_CONFIG_EDIT_BUTTON',
-  TRACK_CONFIG_SAVE_BUTTON = 'TRACK_CONFIG_SAVE_BUTTON',
   INSIDE_TRACK_HEADER = 'INSIDE_TRACK_HEADER',
   INSIDE_TRACK = 'INSIDE_TRACK',
   OUTSIDE_TRACKS = 'OUTSIDE_TRACKS',
@@ -554,8 +543,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       case HoverType.TRACK_CONFIG_UP_BUTTON:
       case HoverType.TRACK_CONFIG_DOWN_BUTTON:
       case HoverType.TRACK_CONFIG_HIDE_BUTTON:
-      case HoverType.TRACK_CONFIG_SHOW_BUTTON:
-      case HoverType.TRACK_CONFIG_SAVE_BUTTON: {
+      case HoverType.TRACK_CONFIG_SHOW_BUTTON: {
         this.hideHighlight();
         this.viewportElement.style.cursor = 'pointer';
         const iconTooltipElement = this.#prepareIconInfo(groupIndex, hoverType);
@@ -565,16 +553,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         }
         return;
       }
-      case HoverType.TRACK_CONFIG_EDIT_BUTTON:
       case HoverType.INSIDE_TRACK_HEADER:
         this.hideHighlight();
         this.viewportElement.style.cursor = 'pointer';
-        // Show edit icon for the hovered group
-        this.draw(/* hoveredGroupIndex= */ groupIndex);
         return;
       case HoverType.INSIDE_TRACK:
-        // Show edit icon for the hovered group
-        this.draw(/* hoveredGroupIndex= */ groupIndex);
         this.updateHighlight();
         return;
       case HoverType.OUTSIDE_TRACKS:
@@ -613,9 +596,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         break;
       case HoverType.TRACK_CONFIG_SHOW_BUTTON:
         iconTooltip = `Show ${displayName} track`;
-        break;
-      case HoverType.TRACK_CONFIG_SAVE_BUTTON:
-        iconTooltip = 'Save current track configuration';
         break;
       default:
         return null;
@@ -769,12 +749,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           return;
         case HoverType.TRACK_CONFIG_SHOW_BUTTON:
           this.showGroup(groupIndex);
-          return;
-        case HoverType.TRACK_CONFIG_SAVE_BUTTON:
-        case HoverType.TRACK_CONFIG_EDIT_BUTTON:
-          this.#editMode = !this.#editMode;
-          this.updateLevelPositions();
-          this.draw();
           return;
         case HoverType.INSIDE_TRACK_HEADER:
           this.selectGroup(groupIndex);
@@ -1064,11 +1038,55 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.dataProvider.findPossibleContextMenuActions?.(this.selectedEntryIndex);
   }
 
-  onContextMenu(_event: Event): void {
-    // The context menu only applies if the user is hovering over an individual entry.
-    if (this.highlightedEntryIndex === -1) {
+  #buildEnterEditModeContextMenu(event: MouseEvent): void {
+    if (this.#editMode) {
       return;
     }
+
+    this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    const label = i18nString(UIStrings.enterTrackConfigurationMode);
+    this.contextMenu.defaultSection().appendItem(label, () => {
+      this.#enterEditMode();
+    });
+    void this.contextMenu.show();
+  }
+
+  #buildExitEditModeContextMenu(event: MouseEvent): void {
+    if (this.#editMode === false) {
+      return;
+    }
+    this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    const label = i18nString(UIStrings.exitTrackConfigurationMode);
+    this.contextMenu.defaultSection().appendItem(label, () => {
+      this.#exitEditMode();
+    });
+    void this.contextMenu.show();
+  }
+
+  onContextMenu(event: MouseEvent): void {
+    const {hoverType} = this.coordinatesToGroupIndexAndHoverType(event.offsetX, event.offsetY);
+
+    // If the user is in edit mode, allow a right click anywhere to exit the mode.
+    if (this.#editMode) {
+      this.#buildExitEditModeContextMenu(event);
+      return;
+    }
+
+    // If we are not in edit mode, and the user right clicks on the header,
+    // allow them to enter edit mode
+    if (hoverType === HoverType.INSIDE_TRACK_HEADER) {
+      this.#buildEnterEditModeContextMenu(event);
+    }
+
+    if (this.highlightedEntryIndex === -1) {
+      // If the user has not selected an individual entry, we do not show any
+      // context menu, so finish here.
+      return;
+    }
+    // Build the context menu for right clicking individual entries.
+    // The context menu only applies if the user is hovering over an individual
+    // entry, and we are not in edit mode (which we know we cannot be given the
+    // confidional checks above)
 
     // Update the selected index to match the highlighted index, which
     // represents the entry under the cursor where the user has right clicked
@@ -1081,7 +1099,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    this.contextMenu = new UI.ContextMenu.ContextMenu(_event, {useSoftMenu: true});
+    this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
     const hideEntryOption = this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
       this.modifyTree(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION, this.selectedEntryIndex);
@@ -1675,13 +1693,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         const nextIndex = sortedGroupIndexes[i + 1] ?? sortedGroupIndexes.length;
 
         if (y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[nextIndex]) {
-          // This section is used to calculate the position of current group's header and save icon.
+          // This section is used to calculate the position of current group's header
+          // If we are in edit mode, the track label is pushed right to make room for the icons.
           const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
           context.save();
           context.font = this.#font;
-          const saveIconLeft =
-              HEADER_LEFT_PADDING + EDITION_MODE_INDENT + this.labelWidthForGroup(context, groups[groupIndex]);
-          const headerRight = HEADER_LEFT_PADDING + (this.#editMode ? EDITION_MODE_INDENT : EDIT_BUTTON_SIZE) +
+          const headerRight = HEADER_LEFT_PADDING + (this.#editMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0) +
               this.labelWidthForGroup(context, groups[groupIndex]);
           context.restore();
 
@@ -1690,29 +1707,27 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
           if (this.#editMode) {
             if (mouseInHeaderRow) {
-              if (UP_ICON_LEFT <= x && x < UP_ICON_LEFT + EDIT_BUTTON_SIZE) {
+              if (UP_ICON_LEFT <= x && x < UP_ICON_LEFT + EDIT_ICON_WIDTH) {
                 return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_UP_BUTTON};
               }
-              if (DOWN_ICON_LEFT <= x && x < DOWN_ICON_LEFT + EDIT_BUTTON_SIZE) {
+              if (DOWN_ICON_LEFT <= x && x < DOWN_ICON_LEFT + EDIT_ICON_WIDTH) {
                 return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_DOWN_BUTTON};
               }
-              if (HIDE_ICON_LEFT <= x && x < HIDE_ICON_LEFT + EDIT_BUTTON_SIZE) {
+              if (HIDE_ICON_LEFT <= x && x < HIDE_ICON_LEFT + EDIT_ICON_WIDTH) {
                 return {
                   groupIndex: groupIndex,
                   hoverType: groups[groupIndex].hidden ? HoverType.TRACK_CONFIG_SHOW_BUTTON :
                                                          HoverType.TRACK_CONFIG_HIDE_BUTTON,
                 };
               }
-              if (saveIconLeft <= x && x < saveIconLeft + EDIT_BUTTON_SIZE) {
-                return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_SAVE_BUTTON};
+              if (mouseInHeaderRow && x <= headerRight) {
+                return {groupIndex: groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
               }
             }
             // Ignore any other actions when user is customizing the tracks.
             // For example, we won't toggle the expand status in the editing mode.
           } else {
-            if (mouseInHeaderRow && EDIT_ICON_LEFT <= x && x < EDIT_ICON_LEFT + EDIT_BUTTON_SIZE) {
-              return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_EDIT_BUTTON};
-            }
+            // User is not in edit mode so they can either be in the header, or in the track.
             if (mouseInHeaderRow && x <= headerRight) {
               return {groupIndex: groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
             }
@@ -1723,6 +1738,36 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     return {groupIndex: -1, hoverType: HoverType.OUTSIDE_TRACKS};
+  }
+
+  #enterEditMode(): void {
+    const div = document.createElement('div');
+    div.classList.add('flame-chart-edit-confirm');
+    const button = new Buttons.Button.Button();
+    button.data = {
+      variant: Buttons.Button.Variant.PRIMARY,
+    };
+    button.innerText = i18nString(UIStrings.exitTrackConfigurationMode);
+    div.appendChild(button);
+    button.addEventListener('click', () => {
+      this.#exitEditMode();
+    });
+
+    this.viewportElement.appendChild(div);
+    this.#editMode = true;
+    this.updateLevelPositions();
+    this.draw();
+  }
+
+  #exitEditMode(): void {
+    const confirmButton = this.viewportElement.querySelector('.flame-chart-edit-confirm');
+    if (confirmButton) {
+      this.viewportElement.removeChild(confirmButton);
+    }
+
+    this.#editMode = false;
+    this.updateLevelPositions();
+    this.draw();
   }
 
   private markerIndexBeforeTime(time: number): number {
@@ -1740,7 +1785,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         timelineData.markers, time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
   }
 
-  private draw(hoveredGroupIndex?: number): void {
+  private draw(): void {
     const timelineData = this.timelineData();
     if (!timelineData) {
       return;
@@ -1803,7 +1848,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
     context.restore();
 
-    this.drawGroupHeaders(canvasWidth, canvasHeight, hoveredGroupIndex);
+    this.drawGroupHeaders(canvasWidth, canvasHeight);
     this.drawFlowEvents(context, timelineData);
     this.drawMarkerLines();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
@@ -2157,7 +2202,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * @param hoveredGroupIndex This is used to show the edit icon for hovered group. If it is undefined or -1, it means
    * there is no group being hovered.
    */
-  private drawGroupHeaders(width: number, height: number, hoveredGroupIndex?: number): void {
+  private drawGroupHeaders(width: number, height: number): void {
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     const top = this.chartViewport.scrollOffset();
     const ratio = window.devicePixelRatio;
@@ -2230,14 +2275,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // If there is only one track, we won't allow the track reordering or hiding.
     const trackConfigurationAllowed = groups.length > 1;
 
-    // When it is normal mode, there is only an edit icon in the group headers.
+    // When it is normal mode, there are no icons to the left of a track.
     // When it is in edit mode, there are three icons to customize the groups.
-    const iconsWidth = this.#editMode ? EDITION_MODE_INDENT : EDIT_BUTTON_SIZE;
+    const iconsWidth = this.#editMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0;
     this.forEachGroupInViewport((offset, index, group) => {
       context.font = this.#font;
       if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         // In edit mode, we draw an extra rectangle for the save icon.
-        const labelBackgroundWidth = this.labelWidthForGroup(context, group) + (this.#editMode ? EDIT_BUTTON_SIZE : 0);
+        const labelBackgroundWidth = this.labelWidthForGroup(context, group);
         if (this.isGroupFocused(index)) {
           context.fillStyle =
               ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
@@ -2272,9 +2317,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
       // The icon and track title will look like this
       // Normal mode:
-      // [Edit]Track title
+      // Track title
       // Edit mode:
-      // [ Up ][Down][Hide]Track title[Save]
+      // [ Up ][Down][Hide]Track title
       if (trackConfigurationAllowed) {
         if (this.#editMode) {
           const iconColor = group.hidden ? '--sys-color-token-subtle' : '--sys-color-on-surface';
@@ -2287,11 +2332,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           drawIcon(
               HIDE_ICON_LEFT, offset, group.hidden ? showIconPath : hideIconPath,
               this.groupIsLastVisibleTopLevel(group) ? '--sys-color-state-disabled' : iconColor);
-          drawIcon(
-              HEADER_LEFT_PADDING + EDITION_MODE_INDENT + this.labelWidthForGroup(context, group), offset, saveIconPath,
-              iconColor);
-        } else if (hoveredGroupIndex === index) {
-          drawIcon(EDIT_ICON_LEFT, offset, editIconPath);
         }
       }
     });
@@ -2373,12 +2413,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       context.translate(x, y);
       // This color is same as the background of the whole flame chart.
       context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
-      context.fillRect(0, 0, EDIT_BUTTON_SIZE, EDIT_BUTTON_SIZE);
+      context.fillRect(0, 0, EDIT_ICON_WIDTH, EDIT_ICON_WIDTH);
 
       context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(iconColor);
       // The pathData from front_end/images folder is for a 20 pixel icon.
       // So we add a scale to draw the icon in a correct size.
-      const scale = EDIT_BUTTON_SIZE / 20;
+      const scale = EDIT_ICON_WIDTH / 20;
       context.scale(scale, scale);
       context.fill(p);
       context.restore();

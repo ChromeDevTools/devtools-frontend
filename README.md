@@ -45,6 +45,42 @@ python3 -m http.server 8000 --directory out/Default/gen/front_end
 
 The frontend will be available at `http://localhost:8000/inspector.html` (or `http://localhost:8000/rn_inspector.html` for the RN-specific entry point).
 
+### Syncing with the upstream repo
+
+Periodically, we will sync this project with the upstream [ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend) repo. We always update our fork from a stable upstream branch.
+
+#### Viewing the last synced version
+
+```sh
+git tag --merged <branch>
+```
+
+#### Performing a repo sync
+
+1. (One-time prerequisite) Add a Git remote pointing to [ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend).
+
+    ```sh
+    git remote add chromedevtools git@github.com:ChromeDevTools/devtools-frontend.git
+    ```
+
+    > Note: The `chromedevtools` naming is optional — `upstream` will typically be set already when originally cloning your local repo with `gh repo clone`.
+
+2. Merge with the target `chromedevtools` branch, then resolve all conflicts(!).
+
+    ```sh
+    git switch -c repo-sync # Create a new branch for the repo sync PR
+    git rebase upstream/main # Ensure your local branch is up-to-date
+    git fetch --all
+    git merge chromedevtools/chromium/5845
+    ```
+
+3. Submit and merge your PR.
+4. Tag the merge commit! This marks the point at which we synced the repo with the upstream branch.
+
+    ```sh
+    git tag sync-chromium-5845
+    ```
+
 ## Contributing
 
 ### Project documentation

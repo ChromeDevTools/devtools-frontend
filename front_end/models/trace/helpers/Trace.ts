@@ -378,3 +378,24 @@ function getRawLineAndColumnNumbersForEvent(event: Types.TraceEvents.TraceEventD
 
   return {lineNumber, columnNumber};
 }
+
+export function frameIDForEvent(event: Types.TraceEvents.TraceEventData): string|null {
+  // There are a few events (for example UpdateLayoutTree, ParseHTML) that have
+  // the frame stored in args.beginData
+  // Rather than list them all we just check for the presence of the field, so
+  // we are robust against future trace events also doing this.
+  // This check seems very robust, but it also helps satisfy TypeScript and
+  // prevents us against unexpected data.
+  if (event.args && 'beginData' in event.args && typeof event.args.beginData === 'object' &&
+      event.args.beginData !== null && 'frame' in event.args.beginData &&
+      typeof event.args.beginData.frame === 'string') {
+    return event.args.beginData.frame;
+  }
+  // Otherwise, we expect frame to be in args.data
+  if (event.args?.data?.frame) {
+    return event.args.data.frame;
+  }
+
+  // No known frame for this event.
+  return null;
+}

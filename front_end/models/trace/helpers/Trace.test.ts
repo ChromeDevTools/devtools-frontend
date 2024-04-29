@@ -445,4 +445,35 @@ describeWithEnvironment('TraceModel helpers', function() {
       });
     });
   });
+
+  describe('frameIDForEvent', () => {
+    it('returns the frame ID from beginData if the event has it', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parseHTMLEvent =
+          traceParsedData.Renderer.allTraceEntries.find(TraceModel.Types.TraceEvents.isTraceEventParseHTML);
+      assert.isOk(parseHTMLEvent);
+      const frameId = TraceModel.Helpers.Trace.frameIDForEvent(parseHTMLEvent);
+      assert.isNotNull(frameId);
+      assert.strictEqual(frameId, parseHTMLEvent.args.beginData.frame);
+    });
+
+    it('returns the frame ID from args.data if the event has it', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const invalidateLayoutEvent =
+          traceParsedData.Renderer.allTraceEntries.find(TraceModel.Types.TraceEvents.isTraceEventInvalidateLayout);
+      assert.isOk(invalidateLayoutEvent);
+      const frameId = TraceModel.Helpers.Trace.frameIDForEvent(invalidateLayoutEvent);
+      assert.isNotNull(frameId);
+      assert.strictEqual(frameId, invalidateLayoutEvent.args.data.frame);
+    });
+
+    it('returns null if the event does not have a frame', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const v8CompileEvent =
+          traceParsedData.Renderer.allTraceEntries.find(TraceModel.Types.TraceEvents.isTraceEventV8Compile);
+      assert.isOk(v8CompileEvent);
+      const frameId = TraceModel.Helpers.Trace.frameIDForEvent(v8CompileEvent);
+      assert.isNull(frameId);
+    });
+  });
 });

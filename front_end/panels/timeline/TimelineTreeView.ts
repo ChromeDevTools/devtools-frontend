@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -928,8 +927,15 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         return (event: TraceEngine.Legacy.CompatibleTraceEvent) =>
                    TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent) =>
-                   TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).frameId || '';
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent) => {
+          if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+            // Doesn't happen, but needed to satisfy TS whilst we work on
+            // removing the old engine and its types completely.
+            return '';
+          }
+          const frameId = TraceEngine.Helpers.Trace.frameIDForEvent(event);
+          return frameId || this.traceParseData()?.Meta.mainFrameId || '';
+        };
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return null;
@@ -962,24 +968,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
     const domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
     return domainMatch && domainMatch[0] || '';
-  }
-
-  override appendContextMenuItems(
-      contextMenu: UI.ContextMenu.ContextMenu, node: TimelineModel.TimelineProfileTree.Node): void {
-    if (this.groupBySetting.get() !== AggregatedTimelineTreeView.GroupBy.Frame) {
-      return;
-    }
-    if (!node.isGroupNode()) {
-      return;
-    }
-    if (!this.modelInternal) {
-      return;
-    }
-    const frame = this.modelInternal.timelineModel().pageFrameById((node.id as Protocol.Page.FrameId));
-    if (!frame || !frame.ownerNode) {
-      return;
-    }
-    contextMenu.appendApplicableItems(frame.ownerNode);
   }
 
   private static isExtensionInternalURL(url: Platform.DevToolsPath.UrlString): boolean {

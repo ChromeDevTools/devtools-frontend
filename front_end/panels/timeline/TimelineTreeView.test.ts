@@ -226,23 +226,19 @@ describeWithEnvironment('TimelineTreeView', function() {
     });
 
     it('can group entries by frame', async function() {
-      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'web-dev-with-commit.json.gz');
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
       const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Frame);
-      // TODO(crbug.com/336283309): grouping by frame relies on the legacy performance model
-      callTreeView.setModelWithEvents(performanceModel, traceParsedData.Renderer.allTraceEntries, traceParsedData);
+      callTreeView.setModelWithEvents(null, traceParsedData.Renderer.allTraceEntries, traceParsedData);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
-      topLevelGroupNodes.map(n => n[1].id);
 
       assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
-        '',  // this represents the main frame
-             // There are then two other frame IDs
         '25D2F12F1818C70B5BD4325CC9ACD8FF',
         '1094B71EC09B8BD3DD48B77D091D6024',
       ]);

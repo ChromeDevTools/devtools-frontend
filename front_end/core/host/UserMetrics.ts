@@ -1024,7 +1024,6 @@ export enum DevtoolsExperiments {
   'contrast-issues' = 44,
   'experimental-cookie-features' = 45,
   'styles-pane-css-changes' = 55,
-  'evaluate-expressions-with-source-maps' = 58,
   'instrumentation-breakpoints' = 61,
   'authored-deployed-grouping' = 63,
   'important-dom-properties' = 64,

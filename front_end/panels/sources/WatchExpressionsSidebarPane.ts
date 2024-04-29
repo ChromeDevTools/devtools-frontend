@@ -36,7 +36,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Formatter from '../../models/formatter/formatter.js';
@@ -347,15 +346,13 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   async #evaluateExpression(executionContext: SDK.RuntimeModel.ExecutionContext, expression: string):
       Promise<SDK.RuntimeModel.EvaluationResult> {
-    if (Root.Runtime.experiments.isEnabled('evaluate-expressions-with-source-maps')) {
-      const callFrame = executionContext.debuggerModel.selectedCallFrame();
-      if (callFrame) {
-        const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
-        try {
-          expression =
-              await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
-        } catch {
-        }
+    const callFrame = executionContext.debuggerModel.selectedCallFrame();
+    if (callFrame) {
+      const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+      try {
+        expression =
+            await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
+      } catch {
       }
     }
 

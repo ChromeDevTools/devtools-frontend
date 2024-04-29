@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, disableExperiment, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
@@ -74,26 +74,6 @@ describe('Sources Tab', function() {
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
     assert.strictEqual(value, '84');
-
-    await click(RESUME_BUTTON);
-    await scriptEvaluation;
-  });
-
-  it('shows correct preview for `this.#x` member expressions despite Terser minification', async () => {
-    const {target, frontend} = getBrowserAndPages();
-
-    // This only works without consistent source map variable experiment.
-    await disableExperiment('evaluate-expressions-with-source-maps');
-
-    await openSourceCodeEditorForFile('popover-terser.js', 'popover-terser.html');
-    await addBreakpointForLine(frontend, 5);
-
-    const scriptEvaluation = target.evaluate('test();');
-    await hover(LAST_ELEMENT_SELECTOR);
-
-    const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
-    const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
-    assert.strictEqual(value, '21');
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;

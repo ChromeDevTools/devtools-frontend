@@ -236,11 +236,6 @@ describe('The Sources Tab', function() {
     });
 
     await step('Check that expression evaluation understands unminified name', async () => {
-      await frontend.evaluate(`(async () => {
-        const Root = await import('./core/root/root.js');
-        Root.Runtime.experiments.setEnabled('evaluate-expressions-with-source-maps', true);
-      })()`);
-
       await click(CONSOLE_TAB_SELECTOR);
       await focusConsolePrompt();
       await pasteText('`Hello${text}!`');

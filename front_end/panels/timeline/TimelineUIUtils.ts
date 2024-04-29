@@ -610,7 +610,7 @@ export class TimelineUIUtils {
             TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, traceEvent));
       }
     }
-    const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).url;
+    const url = urlForEvent(traceParsedData ?? null, traceEvent);
     if (url) {
       tokens.push(url);
     }
@@ -782,8 +782,9 @@ export class TimelineUIUtils {
     return ThemeSupport.ThemeSupport.instance().getComputedValue(cssVarName);
   }
 
-  static async buildDetailsTextForTraceEvent(event: TraceEngine.Legacy.Event|
-                                             TraceEngine.Types.TraceEvents.TraceEventData): Promise<string|null> {
+  static async buildDetailsTextForTraceEvent(
+      event: TraceEngine.Legacy.Event|TraceEngine.Types.TraceEvents.TraceEventData,
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): Promise<string|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
     const eventData = event.args['data'];
@@ -879,7 +880,7 @@ export class TimelineUIUtils {
       case recordType.PaintImage:
       case recordType.DecodeImage:
       case recordType.DecodeLazyPixelRef: {
-        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
+        const url = urlForEvent(traceParsedData, event);
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
         }
@@ -924,7 +925,8 @@ export class TimelineUIUtils {
 
   static async buildDetailsNodeForTraceEvent(
       event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
-      linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false): Promise<Node|null> {
+      linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false,
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
     let detailsText;
@@ -947,7 +949,7 @@ export class TimelineUIUtils {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy: {
-        detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event);
+        detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, traceParsedData);
         break;
       }
 
@@ -961,7 +963,7 @@ export class TimelineUIUtils {
       case recordType.ResourceReceivedData:
       case recordType.ResourceReceiveResponse:
       case recordType.ResourceFinish: {
-        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
+        const url = urlForEvent(traceParsedData, event);
         if (url) {
           const options = {
             tabStop: true,
@@ -1195,7 +1197,7 @@ export class TimelineUIUtils {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
-        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
+        const url = urlForEvent(traceParseData, event);
         if (url) {
           previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(maybeTarget, url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
@@ -1231,7 +1233,6 @@ export class TimelineUIUtils {
     contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
 
     const eventData = event.args['data'];
-    const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
     const initiator = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
         traceParseData?.Initiators.eventToInitiator.get(event) ?? null :
         null;
@@ -1307,7 +1308,7 @@ export class TimelineUIUtils {
       case recordTypes.JSSystemFrame:
       case recordTypes.FunctionCall: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
         }
@@ -1414,7 +1415,7 @@ export class TimelineUIUtils {
       case recordTypes.DecodeImage:
       case recordTypes.DrawLazyPixelRef: {
         relatedNodeLabel = i18nString(UIStrings.ownerElement);
-        url = timelineData.url;
+        url = urlForEvent(traceParseData, event);
         if (url) {
           const options = {
             tabStop: true,
@@ -1558,7 +1559,7 @@ export class TimelineUIUtils {
 
       case recordTypes.EventTiming: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
@@ -1630,7 +1631,7 @@ export class TimelineUIUtils {
 
       default: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
-            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording);
+            event, maybeTargetForEvent(traceParseData, event), linkifier, isFreshRecording, traceParseData);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }

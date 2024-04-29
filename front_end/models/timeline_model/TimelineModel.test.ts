@@ -45,17 +45,4 @@ describeWithEnvironment('TimelineData', function() {
     // Make sure we got the matching events.
     assert.strictEqual(lcpNewEngineEvent, lcpSDKEvent.rawPayload());
   });
-
-  it('extracts image url for a Decode Image event', async function() {
-    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
-    const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
-
-    const decodeImageEvent =
-        allSDKEvents.find(event => event.name === TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage);
-    if (!decodeImageEvent) {
-      throw new Error('Could not find Decode Image event Event.');
-    }
-    const dataForEvent = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(decodeImageEvent);
-    assert.isTrue(dataForEvent.url?.includes('.jpg'));
-  });
 });

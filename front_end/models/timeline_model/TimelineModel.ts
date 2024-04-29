@@ -49,9 +49,6 @@ export class TimelineModelImpl {
   private lastScheduleStyleRecalculation!: {
     [x: string]: TraceEngine.Types.TraceEvents.TraceEventData,
   };
-  private paintImageEventByPixelRefId!: {
-    [x: string]: TraceEngine.Legacy.Event,
-  };
   private lastPaintForLayer!: {
     [x: string]: TraceEngine.Legacy.Event,
   };
@@ -371,7 +368,6 @@ export class TimelineModelImpl {
 
   private resetProcessingState(): void {
     this.lastScheduleStyleRecalculation = {};
-    this.paintImageEventByPixelRefId = {};
     this.lastPaintForLayer = {};
     this.currentScriptEvent = null;
     this.eventStack = [];
@@ -437,16 +433,6 @@ export class TimelineModelImpl {
     timelineData.frameId = pageFrameId || (this.mainFrame && this.mainFrame.frameId) || '';
 
     switch (event.name) {
-      case RecordType.ResourceSendRequest:
-      case RecordType.WebSocketCreate: {
-        const lastEvent = eventStack[eventStack.length - 1];
-        if (!(lastEvent instanceof TraceEngine.Legacy.PayloadEvent)) {
-          break;
-        }
-        timelineData.url = eventData['url'];
-        break;
-      }
-
       case RecordType.ScheduleStyleRecalculation: {
         if (!(event instanceof TraceEngine.Legacy.PayloadEvent)) {
           break;
@@ -505,37 +491,6 @@ export class TimelineModelImpl {
         }
         const layerId = eventData['layerId'];
         this.lastPaintForLayer[layerId] = event;
-        break;
-      }
-
-      case RecordType.PaintImage: {
-        timelineData.url = eventData['url'];
-        break;
-      }
-
-      case RecordType.DecodeImage: {
-        let paintImageEvent = this.findAncestorEvent(RecordType.PaintImage);
-        if (!paintImageEvent) {
-          const decodeLazyPixelRefEvent = this.findAncestorEvent(RecordType.DecodeLazyPixelRef);
-          paintImageEvent =
-              decodeLazyPixelRefEvent && this.paintImageEventByPixelRefId[decodeLazyPixelRefEvent.args['LazyPixelRef']];
-        }
-        if (!paintImageEvent) {
-          break;
-        }
-        const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
-        timelineData.url = paintImageData.url;
-        break;
-      }
-
-      case RecordType.DrawLazyPixelRef: {
-        const paintImageEvent = this.findAncestorEvent(RecordType.PaintImage);
-        if (!paintImageEvent) {
-          break;
-        }
-        this.paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
-        const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
-        timelineData.url = paintImageData.url;
         break;
       }
 
@@ -661,16 +616,6 @@ export class TimelineModelImpl {
         return;
       }
     }
-  }
-
-  private findAncestorEvent(name: string): TraceEngine.Legacy.Event|null {
-    for (let i = this.eventStack.length - 1; i >= 0; --i) {
-      const event = this.eventStack[i];
-      if (event.name === name) {
-        return event;
-      }
-    }
-    return null;
   }
 
   private addPageFrame(event: TraceEngine.Legacy.Event, payload: any): boolean {
@@ -1003,11 +948,9 @@ export class PageFrame {
 }
 
 export class EventOnTimelineData {
-  url: Platform.DevToolsPath.UrlString|null;
   frameId: Protocol.Page.FrameId|null;
 
   constructor() {
-    this.url = null;
     this.frameId = null;
   }
 

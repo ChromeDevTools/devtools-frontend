@@ -68,21 +68,25 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('creates top frame location text for function calls', async function() {
-    const events = await TraceLoader.rawEvents(this, 'one-second-interaction.json.gz');
-    const functionCallEvent = events.find(TraceEngine.Types.TraceEvents.isTraceEventFunctionCall);
+    const traceParsedData = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    const functionCallEvent =
+        traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventFunctionCall);
     assert.isOk(functionCallEvent);
     assert.strictEqual(
         'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:11:43',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(functionCallEvent));
+        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
+            functionCallEvent, traceParsedData));
   });
 
   it('creates top frame location text as a fallback', async function() {
-    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
-    const timerInstallEvent = events.find(TraceEngine.Types.TraceEvents.isTraceEventTimerInstall);
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const timerInstallEvent =
+        traceParsedData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventTimerInstall);
     assert.isOk(timerInstallEvent);
     assert.strictEqual(
         'https://web.dev/js/index-7b6f3de4.js:96:533',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(timerInstallEvent));
+        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
+            timerInstallEvent, traceParsedData));
   });
 
   describe('script location as an URL', function() {
@@ -109,7 +113,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
          target.setInspectedURL('https://not-google.com' as Platform.DevToolsPath.UrlString);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-             fakeFunctionCall, target, new Components.Linkifier.Linkifier());
+             fakeFunctionCall, target, new Components.Linkifier.Linkifier(), false, null);
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }
@@ -138,7 +142,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
          };
          target.setInspectedURL('https://google.com' as Platform.DevToolsPath.UrlString);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-             fakeFunctionCall, target, new Components.Linkifier.Linkifier());
+             fakeFunctionCall, target, new Components.Linkifier.Linkifier(), false, null);
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }
@@ -256,7 +260,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       const linkifier = new Components.Linkifier.Linkifier();
       const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-          profileCall, target, linkifier, true);
+          profileCall, target, linkifier, true, traceParsedData);
       if (!node) {
         throw new Error('Node was unexpectedly null');
       }

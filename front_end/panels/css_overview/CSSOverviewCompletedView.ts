@@ -661,7 +661,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       this.#viewMap.set(id, view);
     }
 
-    this.#elementContainer.appendTab(id, tabTitle, view, true);
+    this.#elementContainer.appendTab(id, tabTitle, view, payload.type);
   }
 
   #fontInfoToFragment(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
@@ -859,9 +859,10 @@ export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     });
   }
 
-  appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, isCloseable?: boolean): void {
+  appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext?: string): void {
     if (!this.#tabbedPane.hasTab(id)) {
-      this.#tabbedPane.appendTab(id, tabTitle, view, undefined, undefined, isCloseable);
+      this.#tabbedPane.appendTab(
+          id, tabTitle, view, undefined, undefined, /* isCloseable */ true, undefined, undefined, jslogContext);
     }
 
     this.#tabbedPane.selectTab(id);

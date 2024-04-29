@@ -551,7 +551,7 @@ export interface TraceEventNavigationStart extends TraceEventMark {
 }
 
 export interface TraceEventFirstContentfulPaint extends TraceEventMark {
-  name: 'firstContentfulPaint';
+  name: KnownEventName.MarkFCP;
   args: TraceEventArgs&{
     frame: string,
     data?: TraceEventArgsData&{
@@ -586,11 +586,11 @@ const markerTypeGuards = [
 export const MarkerName =
     ['MarkDOMContent', 'MarkLoad', 'firstPaint', 'firstContentfulPaint', 'largestContentfulPaint::Candidate'] as const;
 
-interface MakerEvent extends TraceEventData {
+export interface MarkerEvent extends TraceEventData {
   name: typeof MarkerName[number];
 }
 
-export function isTraceEventMarkerEvent(event: TraceEventData): event is MakerEvent {
+export function isTraceEventMarkerEvent(event: TraceEventData): event is MarkerEvent {
   return markerTypeGuards.some(fn => fn(event));
 }
 
@@ -604,7 +604,7 @@ export function eventIsPageLoadEvent(event: TraceEventData): event is PageLoadEv
 }
 
 export interface TraceEventLargestContentfulPaintCandidate extends TraceEventMark {
-  name: 'largestContentfulPaint::Candidate';
+  name: KnownEventName.MarkLCPCandidate;
   args: TraceEventArgs&{
     frame: string,
     data?: TraceEventArgsData&{
@@ -1716,7 +1716,7 @@ export function isTraceEventFirstContentfulPaint(traceEventData: TraceEventData)
 
 export function isTraceEventLargestContentfulPaintCandidate(traceEventData: TraceEventData):
     traceEventData is TraceEventLargestContentfulPaintCandidate {
-  return traceEventData.name === 'largestContentfulPaint::Candidate';
+  return traceEventData.name === KnownEventName.MarkLCPCandidate;
 }
 export function isTraceEventLargestImagePaintCandidate(traceEventData: TraceEventData):
     traceEventData is TraceEventLargestImagePaintCandidate {

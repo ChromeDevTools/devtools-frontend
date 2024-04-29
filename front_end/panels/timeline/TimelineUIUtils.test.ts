@@ -23,6 +23,7 @@ import {
   setupPageResourceLoaderForSourceMap,
 } from '../../testing/SourceMapHelpers.js';
 import {
+  getEventOfType,
   getMainThread,
   makeCompleteEvent,
   makeMockSamplesHandlerData,
@@ -1327,6 +1328,46 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.isNotNull(url);
       assert.strictEqual(
           url, 'https://web-dev.imgix.net/image/admin/WkMOiDtaDgiAA2YkRZ5H.jpg?fit=crop&h=64&w=64&dpr=1&q=75');
+    });
+  });
+
+  describe('buildDetailsNodeForMarkerEvents', () => {
+    it('builds the right link for an LCP Event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const markLCPEvent = getEventOfType(
+          traceParsedData.PageLoadMetrics.allMarkerEvents,
+          TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
+      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+          markLCPEvent,
+      );
+      const url = html.querySelector('x-link')?.getAttribute('href');
+      assert.strictEqual(url, 'https://web.dev/lcp/');
+      assert.strictEqual(html.innerText, 'Learn more about largest contentful paint.');
+    });
+
+    it('builds the right link for an FCP Event', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const markFCPEvent = getEventOfType(
+          traceParsedData.PageLoadMetrics.allMarkerEvents,
+          TraceEngine.Types.TraceEvents.isTraceEventFirstContentfulPaint);
+      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+          markFCPEvent,
+      );
+      const url = html.querySelector('x-link')?.getAttribute('href');
+      assert.strictEqual(url, 'https://web.dev/first-contentful-paint/');
+      assert.strictEqual(html.innerText, 'Learn more about first contentful paint.');
+    });
+
+    it('builds a generic event for other marker events', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const markLoadEvent = getEventOfType(
+          traceParsedData.PageLoadMetrics.allMarkerEvents, TraceEngine.Types.TraceEvents.isTraceEventMarkLoad);
+      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+          markLoadEvent,
+      );
+      const url = html.querySelector('x-link')?.getAttribute('href');
+      assert.strictEqual(url, 'https://web.dev/user-centric-performance-metrics/');
+      assert.strictEqual(html.innerText, 'Learn more about page performance metrics.');
     });
   });
 });

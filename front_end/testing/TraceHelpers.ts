@@ -662,3 +662,18 @@ export function getBaseTraceParseModelData(overrides: Partial<TraceParseData> = 
     ...overrides,
   } as Partial<TraceParseData>as TraceParseData;
 }
+
+/**
+ * A helper that will query the given array of events and find the first event
+ * matching the predicate. It will also assert that a match is found, which
+ * saves the need to do that for every test.
+ */
+export function getEventOfType<T extends TraceEngine.Types.TraceEvents.TraceEventData>(
+    events: TraceEngine.Types.TraceEvents.TraceEventData[],
+    predicate: (e: TraceEngine.Types.TraceEvents.TraceEventData) => e is T): T {
+  const match = events.find(predicate);
+  if (!match) {
+    throw new Error('Failed to find matching event of type.');
+  }
+  return match;
+}

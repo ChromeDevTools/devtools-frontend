@@ -1123,17 +1123,15 @@ export class TimelineUIUtils {
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
   }
 
-  static buildDetailsNodeForPerformanceEvent(event: TraceEngine.Legacy.Event|
-                                             TraceEngine.Types.TraceEvents.TraceEventData): Element {
+  static buildDetailsNodeForMarkerEvents(event: TraceEngine.Types.TraceEvents.MarkerEvent): HTMLElement {
     let link = 'https://web.dev/user-centric-performance-metrics/';
     let name = 'page performance metrics';
-    const recordType = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
-      case recordType.MarkLCPCandidate:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkLCPCandidate:
         link = 'https://web.dev/lcp/';
         name = 'largest contentful paint';
         break;
-      case recordType.MarkFCP:
+      case TraceEngine.Types.TraceEvents.KnownEventName.MarkFCP:
         link = 'https://web.dev/first-contentful-paint/';
         name = 'first contentful paint';
         break;
@@ -1141,9 +1139,10 @@ export class TimelineUIUtils {
         break;
     }
 
-    return UI.Fragment.html`<div>${
+    const html = UI.Fragment.html`<div>${
         UI.XLink.XLink.create(
             link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')} about ${name}.</div>`;
+    return html as HTMLElement;
   }
 
   static buildConsumeCacheDetails(
@@ -1550,8 +1549,12 @@ export class TimelineUIUtils {
 
           contentHelper.appendTextRow(
               i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
-          contentHelper.appendElementRow(
-              i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+
+          if (TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+              TraceEngine.Types.TraceEvents.isTraceEventMarkerEvent(event)) {
+            contentHelper.appendElementRow(
+                i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForMarkerEvents(event));
+          }
         }
 
         break;

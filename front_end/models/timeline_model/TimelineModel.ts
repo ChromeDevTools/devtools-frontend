@@ -33,7 +33,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
 
 export class TimelineModelImpl {
@@ -344,7 +343,6 @@ export class TimelineModelImpl {
     }
 
     const eventData = event.args['data'] || event.args['beginData'] || {};
-    const timelineData = EventOnTimelineData.forEvent(event);
     switch (event.name) {
       case RecordType.ScheduleStyleRecalculation: {
         if (!(event instanceof TraceEngine.Legacy.PayloadEvent)) {
@@ -389,13 +387,6 @@ export class TimelineModelImpl {
         }
         const layerId = eventData['layerId'];
         this.lastPaintForLayer[layerId] = event;
-        break;
-      }
-
-      case RecordType.FrameStartedLoading: {
-        if (timelineData.frameId !== event.args['frame']) {
-          return false;
-        }
         break;
       }
 
@@ -673,41 +664,6 @@ export namespace TimelineModelImpl {
     IdleCallbackAddon: 5,
   };
 }
-
-export class EventOnTimelineData {
-  frameId: Protocol.Page.FrameId|null;
-
-  constructor() {
-    this.frameId = null;
-  }
-
-  static forEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): EventOnTimelineData {
-    if (event instanceof TraceEngine.Legacy.PayloadEvent) {
-      return EventOnTimelineData.forTraceEventData(event.rawPayload());
-    }
-    if (!(event instanceof TraceEngine.Legacy.Event)) {
-      return EventOnTimelineData.forTraceEventData(event);
-    }
-    return getOrCreateEventData(event);
-  }
-
-  static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
-    return getOrCreateEventData(event);
-  }
-}
-
-function getOrCreateEventData(event: TraceEngine.Legacy.ConstructedEvent|
-                              TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
-  let data = eventToData.get(event);
-  if (!data) {
-    data = new EventOnTimelineData();
-    eventToData.set(event, data);
-  }
-  return data;
-}
-
-const eventToData =
-    new Map<TraceEngine.Legacy.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData, EventOnTimelineData>();
 
 export interface MetadataEvents {
   page: TraceEngine.Legacy.Event[];

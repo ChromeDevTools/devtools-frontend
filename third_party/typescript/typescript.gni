@@ -74,10 +74,7 @@ template("ts_library") {
     # When use_remoteexec=true or use_siso=true, node actions run on remote
     # Linux worker. So it should include linux node binary in inputs.
     if (use_remoteexec || use_siso) {
-      inputs += [
-        "//third_party/node/linux/node-linux-x64.tar.gz.sha1",
-        "//third_party/node/linux/node-linux-x64/bin/node",
-      ]
+      inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
     }
 
     _typescript_config_name = target_name

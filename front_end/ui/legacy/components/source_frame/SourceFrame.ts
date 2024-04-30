@@ -688,7 +688,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         ?.setAttribute('jslog', `${VisualLogging.gutter('line-numbers').track({click: true})}`);
     this.textEditor.shadowRoot?.querySelector('.cm-foldGutter')
         ?.setAttribute('jslog', `${VisualLogging.gutter('fold')}`);
-    this.textEditor.shadowRoot?.querySelector('.cm-content')?.setAttribute('jslog', `${VisualLogging.textField()}`);
+    this.textEditor.setAttribute('jslog', `${VisualLogging.textField().track({change: true})}`);
   }
 
   onTextChanged(): void {

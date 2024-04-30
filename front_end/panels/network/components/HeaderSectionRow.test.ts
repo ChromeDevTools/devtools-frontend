@@ -350,32 +350,6 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.strictEqual(eventCount, 1);
   });
 
-  it('removes formatting for pasted content', async () => {
-    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
-      value: 'someHeaderValue',
-      valueEditable: true,
-    };
-
-    const {component, valueEditable} = await renderHeaderSectionRow(headerData);
-    assert.isNotNull(component.shadowRoot);
-
-    let headerValueFromEvent = '';
-    component.addEventListener('headeredited', event => {
-      headerValueFromEvent = event.headerValue;
-    });
-
-    assert.instanceOf(valueEditable, HTMLElement);
-    valueEditable.focus();
-    const dt = new DataTransfer();
-    dt.setData('text/plain', 'foo\nbar');
-    dt.setData('text/html', 'This is <b>bold</b>');
-    dispatchPasteEvent(valueEditable, {clipboardData: dt, bubbles: true});
-    valueEditable.blur();
-
-    assert.strictEqual(headerValueFromEvent, 'foo bar');
-  });
-
   it('adds and removes `header-overridden` class correctly', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),

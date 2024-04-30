@@ -66,7 +66,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly detailsView: TimelineDetailsView;
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly boundRefresh: () => void;
+  readonly #boundRefreshAfterIgnoreList: () => void;
   #selectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -145,7 +145,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
-    this.boundRefresh = this.#reset.bind(this);
+    this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
 
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
@@ -288,6 +288,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max);
   }
 
+  #refreshAfterIgnoreList(): void {
+    // The ignore list will only affect Thread tracks, which will only be in main flame chart.
+    // So just force recalculate and redraw the main flame chart here.
+    this.mainDataProvider.timelineData(true);
+    this.mainFlameChart.scheduleUpdate();
+  }
+
   #updateDetailViews(): void {
     this.countersView.setModel(this.#traceEngineData, this.#selectedEvents);
     // TODO(crbug.com/1459265):  Change to await after migration work.
@@ -330,12 +337,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   override willHide(): void {
     this.networkFlameChartGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
-    Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.boundRefresh);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
   }
 
   override wasShown(): void {
     this.networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
-    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.boundRefresh);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

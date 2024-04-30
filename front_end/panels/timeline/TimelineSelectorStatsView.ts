@@ -78,24 +78,17 @@ export const enum SelectorTimingsKey {
   StyleSheetId = 'style_sheet_id',
 }
 
-interface SelectorTimings {
-  [SelectorTimingsKey.Elapsed]: number;
-  [SelectorTimingsKey.FastRejectCount]: number;
-  [SelectorTimingsKey.MatchAttempts]: number;
-  [SelectorTimingsKey.MatchCount]: number;
-  [SelectorTimingsKey.Selector]: string;
-  [SelectorTimingsKey.StyleSheetId]: string;
-}
-
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #datagrid: DataGrid.DataGridController.DataGridController;
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
 
-  constructor() {
+  constructor(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null) {
     super();
 
     this.#datagrid = new DataGrid.DataGridController.DataGridController();
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
+    this.#traceParsedData = traceParsedData;
 
     this.#datagrid.data = {
       label: i18nString(UIStrings.selectorStats),
@@ -207,16 +200,17 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.#datagrid);
   }
 
-  setEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    const selectorStats = event.args['selector_stats'];
+  setEvent(event: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree): boolean {
+    if (!this.#traceParsedData) {
+      return false;
+    }
+    const selectorStats = this.#traceParsedData.SelectorStats.dataForUpdateLayoutEvent.get(event);
     if (!selectorStats) {
       this.#datagrid.data = {...this.#datagrid.data, rows: []};
       return false;
     }
 
-    // Host.userMetrics.recordPerformancePanelAction(Host.UserMetrics.PerformancePanelAction.ViewSelectorStats);
-
-    const timings: SelectorTimings[] = selectorStats['selector_timings'];
+    const timings: TraceEngine.Types.TraceEvents.SelectorTiming[] = selectorStats.timings;
     void this.createRowsForTable(timings).then(rows => {
       this.#datagrid.data = {...this.#datagrid.data, rows};
     });
@@ -224,16 +218,20 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     return true;
   }
 
-  setAggregatedEvent(events: TraceEngine.Legacy.Event[]): boolean {
-    const timings: SelectorTimings[] = [];
-    const selectorMap = new Map<String, SelectorTimings>();
+  setAggregatedEvents(events: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree[]): void {
+    const timings: TraceEngine.Types.TraceEvents.SelectorTiming[] = [];
+    const selectorMap = new Map<String, TraceEngine.Types.TraceEvents.SelectorTiming>();
+
+    if (!this.#traceParsedData) {
+      return;
+    }
     while (events.length > 0) {
-      const e = events.pop();
-      const selectorStats = e?.args['selector_stats'];
+      const event = events.pop();
+      const selectorStats = event ? this.#traceParsedData.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       } else {
-        const data: SelectorTimings[] = selectorStats['selector_timings'];
+        const data: TraceEngine.Types.TraceEvents.SelectorTiming[] = selectorStats.timings;
         for (const timing of data) {
           const key = timing[SelectorTimingsKey.Selector] + '_' + timing[SelectorTimingsKey.StyleSheetId];
           const findTiming = selectorMap.get(key);
@@ -255,17 +253,16 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       selectorMap.clear();
     } else {
       this.#datagrid.data = {...this.#datagrid.data, rows: []};
-      return false;
+      return;
     }
 
     void this.createRowsForTable(timings).then(rows => {
       this.#datagrid.data = {...this.#datagrid.data, rows};
     });
-
-    return true;
   }
 
-  private async createRowsForTable(timings: SelectorTimings[]): Promise<DataGrid.DataGridUtils.Row[]> {
+  private async createRowsForTable(timings: TraceEngine.Types.TraceEvents.SelectorTiming[]):
+      Promise<DataGrid.DataGridUtils.Row[]> {
     async function toSourceFileLocation(
         cssModel: SDK.CSSModel.CSSModel, styleSheetId: Protocol.CSS.StyleSheetId, selectorText: string,
         selectorLocations: Map<string, Protocol.CSS.SourceRange[]>):

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {getMainThread} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
@@ -474,6 +475,30 @@ describeWithEnvironment('TraceModel helpers', function() {
       assert.isOk(v8CompileEvent);
       const frameId = TraceModel.Helpers.Trace.frameIDForEvent(v8CompileEvent);
       assert.isNull(frameId);
+    });
+  });
+
+  describe('findUpdateLayoutTreeEvents', () => {
+    it('returns the set of UpdateLayoutTree events within the right time range', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'selector-stats.json.gz');
+      const mainThread = getMainThread(traceParsedData.Renderer);
+      const foundEvents = TraceModel.Helpers.Trace.findUpdateLayoutTreeEvents(
+          mainThread.entries,
+          traceParsedData.Meta.traceBounds.min,
+      );
+      assert.lengthOf(foundEvents, 11);
+
+      const lastEvent = foundEvents.at(-1);
+      assert.isOk(lastEvent);
+
+      // Check we can filter by endTime by making the endTime less than the start
+      // time of the last event:
+      const filteredByEndTimeEvents = TraceModel.Helpers.Trace.findUpdateLayoutTreeEvents(
+          mainThread.entries,
+          traceParsedData.Meta.traceBounds.min,
+          TraceModel.Types.Timing.MicroSeconds(lastEvent.ts - 1_000),
+      );
+      assert.lengthOf(filteredByEndTimeEvents, 10);
     });
   });
 });

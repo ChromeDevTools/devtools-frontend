@@ -1505,6 +1505,8 @@ export interface SelectorTiming {
   'selector': string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   'style_sheet_id': string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'match_count': number;
 }
 
 export interface SelectorStats {
@@ -1512,7 +1514,7 @@ export interface SelectorStats {
   selector_timings: SelectorTiming[];
 }
 
-export interface TraceEventStyleRecalcSelectorStats extends TraceEventComplete {
+export interface TraceEventSelectorStats extends TraceEventComplete {
   name: KnownEventName.SelectorStats;
   args: TraceEventArgs&{
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1520,15 +1522,14 @@ export interface TraceEventStyleRecalcSelectorStats extends TraceEventComplete {
   };
 }
 
-export function isStyleRecalcSelectorStats(event: TraceEventData): event is TraceEventStyleRecalcSelectorStats {
+export function isTraceEventSelectorStats(event: TraceEventData): event is TraceEventSelectorStats {
   return event.name === KnownEventName.SelectorStats;
 }
 
 export interface TraceEventUpdateLayoutTree extends TraceEventComplete {
   name: KnownEventName.UpdateLayoutTree;
   args: TraceEventArgs&{
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    selector_stats?: SelectorStats, elementCount: number,
+    elementCount: number,
     beginData?: {
       frame: string,
       stackTrace?: TraceEventCallFrame[],

@@ -94,10 +94,8 @@ export function processEventForDebugging(event: string, state: LoggingState|null
   if (veDebuggingEnabled) {
     showDebugPopover(`${Object.entries(entry).map(([k, v]) => `${k}: ${v}`).join('; ')}`);
   }
-  if (veDebugLoggingEnabled) {
-    const time = Date.now() - sessionStartTime;
-    veDebugEventsLog.push({...entry, veid: state?.veid, time});
-  }
+  const time = Date.now() - sessionStartTime;
+  maybeLogDebugEvent({...entry, veid: state?.veid, time});
 }
 
 type Entry = {
@@ -146,9 +144,9 @@ export function processImpressionsForDebugging(states: LoggingState[]): void {
   const entries = [...impressions.values()].filter(i => 'parent' in i);
   if (entries.length === 1) {
     entries[0].time = Date.now() - sessionStartTime;
-    veDebugEventsLog.push(entries[0]);
+    maybeLogDebugEvent(entries[0]);
   } else {
-    veDebugEventsLog.push({event: 'Impression', children: entries, time: Date.now() - sessionStartTime});
+    maybeLogDebugEvent({event: 'Impression', children: entries, time: Date.now() - sessionStartTime});
   }
 }
 
@@ -200,6 +198,15 @@ export function debugString(config: LoggingConfig): string {
 
 const veDebugEventsLog: Entry[] = [];
 
+function maybeLogDebugEvent(entry: Entry): void {
+  if (!localStorage.getItem('veDebugLoggingEnabled')) {
+    return;
+  }
+  veDebugEventsLog.push(entry);
+  // eslint-disable-next-line no-console
+  console.info('VE Debug:', entry);
+}
+
 function setVeDebugLoggingEnabled(enabled: boolean): void {
   if (enabled) {
     localStorage.setItem('veDebugLoggingEnabled', 'true');
@@ -234,11 +241,8 @@ function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): En
 let sessionStartTime: number = Date.now();
 
 export function processStartLoggingForDebugging(): void {
-  if (!localStorage.getItem('veDebugLoggingEnabled')) {
-    return;
-  }
   sessionStartTime = Date.now();
-  veDebugEventsLog.push({event: 'SessionStart'});
+  maybeLogDebugEvent({event: 'SessionStart'});
 }
 
 // @ts-ignore

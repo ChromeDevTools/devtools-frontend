@@ -1044,9 +1044,10 @@ export enum DevtoolsExperiments {
   'timeline-extensions' = 89,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
+  'timeline-enable-old-timeline-model-engine' = 92,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 92,
+  'MaxValue' = 93,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

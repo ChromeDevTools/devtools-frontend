@@ -1033,7 +1033,6 @@ export enum DevtoolsExperiments {
   'highlight-errors-elements-panel' = 73,
   'set-all-breakpoints-eagerly' = 74,
   'use-source-map-scopes' = 76,
-  'storage-buckets-tree' = 77,
   'network-panel-filter-bar-redesign' = 79,
   'autofill-view' = 82,
   'sources-frame-indentation-markers-temporarily-disable' = 83,

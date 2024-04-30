@@ -286,7 +286,6 @@ export const enum ExperimentName {
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlight-errors-elements-panel',
   SET_ALL_BREAKPOINTS_EAGERLY = 'set-all-breakpoints-eagerly',
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
-  STORAGE_BUCKETS_TREE = 'storage-buckets-tree',
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
   AUTOFILL_VIEW = 'autofill-view',
   INDENTATION_MARKERS_TEMP_DISABLE = 'sources-frame-indentation-markers-temporarily-disable',

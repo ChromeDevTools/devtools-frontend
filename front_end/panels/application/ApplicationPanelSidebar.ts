@@ -345,10 +345,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     storageTreeElement.appendChild(this.cacheStorageListTreeElement);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STORAGE_BUCKETS_TREE)) {
-      this.storageBucketsTreeElement = new StorageBucketsTreeParentElement(panel);
-      storageTreeElement.appendChild(this.storageBucketsTreeElement);
-    }
+    this.storageBucketsTreeElement = new StorageBucketsTreeParentElement(panel);
+    storageTreeElement.appendChild(this.storageBucketsTreeElement);
 
     const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
     const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle);

@@ -368,9 +368,6 @@ export class MainImpl {
         false);
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.STORAGE_BUCKETS_TREE, 'Enable storage buckets tree in Application panel', true);
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
         'Redesign of the filter bar in the Network panel',
         false,

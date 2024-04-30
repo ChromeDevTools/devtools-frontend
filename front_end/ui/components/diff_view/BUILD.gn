@@ -21,6 +21,7 @@ devtools_module("diff_view") {
     "../../../core/sdk:bundle",
     "../../../third_party/diff:bundle",
     "../../lit-html:bundle",
+    "../../visual_logging:bundle",
     "../code_highlighter:bundle",
     "../helpers:bundle",
   ]

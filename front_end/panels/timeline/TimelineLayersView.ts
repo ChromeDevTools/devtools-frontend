@@ -9,18 +9,14 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
-  private readonly model: TimelineModel.TimelineModel.TimelineModelImpl;
   private readonly showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void;
   private readonly rightSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
   private readonly layers3DView: LayerViewer.Layers3DView.Layers3DView;
   private frameLayerTree?: TimelineModel.TracingLayerTree.TracingFrameLayerTree;
   private updateWhenVisible?: boolean;
-  constructor(
-      model: TimelineModel.TimelineModel.TimelineModelImpl,
-      showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void) {
+  constructor(showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void) {
     super(true, false, 'timeline-layers-view');
-    this.model = model;
     this.showPaintProfilerCallback = showPaintProfilerCallback;
 
     this.element.classList.add('timeline-layers-view');

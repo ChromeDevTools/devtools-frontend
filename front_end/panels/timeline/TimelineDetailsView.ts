@@ -312,8 +312,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     if (this.lazyLayersView) {
       return this.lazyLayersView;
     }
-    this.lazyLayersView =
-        new TimelineLayersView(this.model.timelineModel(), this.showSnapshotInPaintProfiler.bind(this));
+    this.lazyLayersView = new TimelineLayersView(this.showSnapshotInPaintProfiler.bind(this));
     return this.lazyLayersView;
   }
 

@@ -79,7 +79,8 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.inputBoxElement.addEventListener(
         TextPrompt.TextPrompt.PromptInputEvent.eventName, this.onInput.bind(this), false);
     this.inputBoxElement.setAttribute(
-        'jslog', `${VisualLogging.textField().track({keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Enter|Tab'})}`);
+        'jslog',
+        `${VisualLogging.textField().track({change: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Enter|Tab'})}`);
     hbox.appendChild(this.inputBoxElement);
 
     this.hintElement = hbox.createChild('span', 'filtered-list-widget-hint');

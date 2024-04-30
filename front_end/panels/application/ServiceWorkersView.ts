@@ -565,7 +565,7 @@ export class Section {
     const form =
         this.wrapWidget(this.section.appendField(label)).createChild('form', 'service-worker-editor-with-button');
     const editor = UI.UIUtils.createInput('source-code service-worker-notification-editor');
-    editor.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context(jslogContext)}`);
+    editor.setAttribute('jslog', `${VisualLogging.textField().track({change: true}).context(jslogContext)}`);
     form.appendChild(editor);
     const button = UI.UIUtils.createTextButton(label, undefined, {jslogContext});
     button.type = 'submit';

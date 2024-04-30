@@ -199,7 +199,7 @@ export class ConsolePin {
   <div class='console-pin'>
   ${this.deletePinIcon}
   <div class='console-pin-name' $='name' jslog="${VisualLogging.textField().track({
-      keydown: true,
+      change: true,
     })}"></div>
   <div class='console-pin-preview' $='preview'></div>
   </div>`;

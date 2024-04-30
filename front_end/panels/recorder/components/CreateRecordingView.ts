@@ -287,7 +287,7 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#defaultRecordingName}
             @focus=${this.#onInputFocus}
             @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField('user-flow-name').track({keydown: true})}
+            jslog=${VisualLogging.textField('user-flow-name').track({change: true})}
             class="devtools-text-input"
             id="user-flow-name"
           />
@@ -305,7 +305,7 @@ export class CreateRecordingView extends HTMLElement {
             value=${this.#recorderSettings?.selectorAttribute}
             placeholder="data-testid"
             @keydown=${this.#onKeyDown}
-            jslog=${VisualLogging.textField('selector-attribute').track({keydown: true})}
+            jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
             class="devtools-text-input"
             id="selector-attribute"
           />

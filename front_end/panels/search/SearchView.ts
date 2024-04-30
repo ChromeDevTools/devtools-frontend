@@ -152,7 +152,8 @@ export class SearchView extends UI.Widget.VBox {
     this.search.addEventListener('keydown', event => {
       this.onKeyDown((event as KeyboardEvent));
     });
-    this.search.setAttribute('jslog', `${VisualLogging.textField().track({keydown: 'ArrowUp|ArrowDown|Enter'})}`);
+    this.search.setAttribute(
+        'jslog', `${VisualLogging.textField().track({change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}`);
     searchContainer.appendChild(this.search);
     this.search.placeholder = i18nString(UIStrings.search);
     this.search.setAttribute('type', 'search');

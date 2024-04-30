@@ -780,7 +780,7 @@ export class RecordingView extends HTMLElement {
             value=${
               this.#settings.timeout || Models.RecordingPlayer.defaultTimeout
             }
-            jslog=${VisualLogging.textField('timeout').track({keydown: true})}
+            jslog=${VisualLogging.textField('timeout').track({change: true})}
             class="devtools-text-input"
             type="number">
         </label>
@@ -919,7 +919,7 @@ export class RecordingView extends HTMLElement {
                 jslog=${VisualLogging.close().track({click: true})}
               ></${Buttons.Button.Button.litTagName}>
             </div>
-            <div class="text-editor" jslog=${VisualLogging.textField().track({keydown: true})}>
+            <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
               <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
           this.#editorState
         }></${TextEditor.TextEditor.TextEditor.litTagName}>

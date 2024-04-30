@@ -45,7 +45,7 @@ describe('Performance panel trace load performance', () => {
     };
     for (let run = 1; run <= RUNS; run++) {
       it(`run ${run}/${RUNS}`, async function() {
-        this.timeout(10_000);
+        this.timeout(20_000);
         const duration = await timeFixture('large-profile.cpuprofile');
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));

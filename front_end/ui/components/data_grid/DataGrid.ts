@@ -811,7 +811,7 @@ export class DataGrid extends HTMLElement {
                 const cellIsFocusableCell = anyColumnsSortable && columnIndex === tabbableCell[0] && tabbableCell[1] === 0;
 
                 return LitHtml.html`<th class=${thClasses}
-                  jslog=${VisualLogging.tableHeader().track({click: anyColumnsSortable}).context(col.id)}
+                  jslog=${VisualLogging.tableHeader().track({click: anyColumnsSortable, resize: true}).context(col.id)}
                   style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                   data-grid-header-cell=${col.id}
                   @focus=${() => {
@@ -881,7 +881,7 @@ export class DataGrid extends HTMLElement {
                   const cellOutput = col.visible ? renderCellValue(cell) : null;
                   return LitHtml.html`<td
                     class=${cellClasses}
-                    jslog=${VisualLogging.tableCell().track({click: true, resize: true})}).context(col.id)}
+                    jslog=${VisualLogging.tableCell().track({click: true})}).context(col.id)}
                     style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                     tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}

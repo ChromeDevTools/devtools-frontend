@@ -414,7 +414,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         'jslog',
         `${
             VisualLogging.tableHeader()
-                .track({click: column.sortable})
+                .track({click: column.sortable, resize: true})
                 .context(Platform.StringUtilities.toKebabCase(columnId))}`);
     cell.className = columnId + '-column';
     nodeToColumnIdMap.set(cell, columnId);
@@ -1957,7 +1957,6 @@ export class DataGridNode<T> {
                     keydown: editableCell ? 'Enter|Space|Escape' : false,
                     dblclick: editableCell,
                     change: editableCell,
-                    resize: true,
                   })
                   .context(Platform.StringUtilities.toKebabCase(columnId))}`);
       const alignment = this.dataGrid.columns[columnId].align;

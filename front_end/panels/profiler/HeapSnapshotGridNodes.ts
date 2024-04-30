@@ -296,7 +296,7 @@ export class HeapSnapshotGridNode extends
   }
 
   createValueCell(columnId: string): HTMLElement {
-    const jslog = VisualLogging.tableCell('numeric-column').track({click: true, resize: true});
+    const jslog = VisualLogging.tableCell('numeric-column').track({click: true});
     const cell = (UI.Fragment.html`<td class="numeric-column" jslog=${jslog} />` as HTMLElement);
     const dataGrid = (this.dataGrid as HeapSnapshotSortableDataGrid);
     if (dataGrid.snapshot && dataGrid.snapshot.totalSize !== 0) {
@@ -646,7 +646,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
   }
 
   createObjectCellWithValue(valueStyle: string, value: string): HTMLElement {
-    const jslog = VisualLogging.tableCell('object-column').track({click: true, resize: true});
+    const jslog = VisualLogging.tableCell('object-column').track({click: true});
     const fragment = UI.Fragment.Fragment.build`
   <td class="object-column disclosure" jslog=${jslog}>
   <div class="source-code event-properties" style="overflow: visible;" $="container">

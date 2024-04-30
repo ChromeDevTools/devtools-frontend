@@ -16,7 +16,6 @@ import {ActiveFilters} from './ActiveFilters.js';
 import {getCategoryStyles, stringIsEventCategory} from './EventUICategory.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
-import {type PerformanceModel} from './PerformanceModel.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {type TimelineSelection} from './TimelineSelection.js';
@@ -154,7 +153,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
-  modelInternal: PerformanceModel|null;
   #selectedEvents: TraceEngine.Legacy.CompatibleTraceEvent[]|null;
   private searchResults: TimelineModel.TimelineProfileTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;
@@ -182,7 +180,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
 
   constructor() {
     super();
-    this.modelInternal = null;
     this.#selectedEvents = null;
     this.element.classList.add('timeline-tree-view');
 
@@ -199,17 +196,11 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   setModelWithEvents(
-      model: PerformanceModel|null,
       selectedEvents: TraceEngine.Legacy.CompatibleTraceEvent[]|null,
       traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null,
       ): void {
-    this.modelInternal = model;
     this.#traceParseData = traceParseData;
     this.#selectedEvents = selectedEvents;
-  }
-
-  model(): PerformanceModel|null {
-    return this.modelInternal;
   }
 
   traceParseData(): TraceEngine.Handlers.Types.TraceParseData|null {
@@ -358,7 +349,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
     this.linkifier.reset();
     this.dataGrid.rootNode().removeChildren();
-    if (!this.modelInternal) {
+    if (!this.#traceParseData) {
       this.updateDetailsForSelection();
       return;
     }
@@ -840,9 +831,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         break;
 
       case AggregatedTimelineTreeView.GroupBy.Frame: {
-        if (!this.modelInternal) {
-          throw new Error('Unable to find model for group by frame operation');
-        }
         const frame = id ? this.traceParseData()?.PageFrames.frames.get(id) : undefined;
         const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
         return {name: frameName, color: color, icon: undefined};

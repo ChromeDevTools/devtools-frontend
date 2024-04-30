@@ -1047,6 +1047,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const label = i18nString(UIStrings.enterTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
       this.#enterEditMode();
+    }, {
+      jslogContext: 'track-configuration-enter',
     });
     void this.contextMenu.show();
   }
@@ -1059,6 +1061,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const label = i18nString(UIStrings.exitTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
       this.#exitEditMode();
+    }, {
+      jslogContext: 'track-configuration-exit',
     });
     void this.contextMenu.show();
   }
@@ -1756,6 +1760,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const button = new Buttons.Button.Button();
     button.data = {
       variant: Buttons.Button.Variant.PRIMARY,
+      jslogContext: 'track-configuration-exit',
     };
     button.innerText = i18nString(UIStrings.exitTrackConfigurationMode);
     div.appendChild(button);
